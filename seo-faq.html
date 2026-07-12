@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>SEO FAQ Library — S8E8</title>
+</head>
+<body>
+<title>SEO FAQ Library — S8E8</title>
+<style>
+  :root {
+    --bg: #f4f5f6;
+    --surface: #ffffff;
+    --surface-2: #fafafa;
+    --ink: #1e1f21;
+    --ink-soft: #6d6f73;
+    --ink-faint: #9a9ca0;
+    --line: #e7e6e6;
+    --line-strong: #dcdbdb;
+    --accent: #f06a6a;
+    --accent-ink: #cc3a49;
+    --shadow: 0 1px 2px rgba(0,0,0,0.06);
+    --radius: 10px;
+    font-synthesis-weight: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #191a1c;
+      --surface: #26272a;
+      --surface-2: #2c2d30;
+      --ink: #f3f3f2;
+      --ink-soft: #a6a8ac;
+      --ink-faint: #74767a;
+      --line: #35363a;
+      --line-strong: #3f4045;
+      --accent: #f47c7c;
+      --accent-ink: #f8a0a0;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f5f6; --surface: #ffffff; --surface-2: #fafafa;
+    --ink: #1e1f21; --ink-soft: #6d6f73; --ink-faint: #9a9ca0;
+    --line: #e7e6e6; --line-strong: #dcdbdb; --accent: #f06a6a; --accent-ink: #cc3a49;
+    --shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #191a1c; --surface: #26272a; --surface-2: #2c2d30;
+    --ink: #f3f3f2; --ink-soft: #a6a8ac; --ink-faint: #74767a;
+    --line: #35363a; --line-strong: #3f4045; --accent: #f47c7c; --accent-ink: #f8a0a0;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- top bar ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 22px;
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .brand-mark {
+    width: 26px; height: 26px; border-radius: 7px; flex: none;
+    background: linear-gradient(140deg, var(--accent), #f9a25a);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px;
+    box-shadow: var(--shadow);
+  }
+  .brand-name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+  .brand-name span { color: var(--ink-faint); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .search {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface-2); border: 1px solid var(--line-strong);
+    border-radius: 8px; padding: 6px 10px; min-width: 150px;
+  }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+  .search svg { flex: none; opacity: .5; }
+  .search input {
+    border: 0; background: transparent; color: var(--ink); outline: none;
+    font-size: 14px; width: 100%; font-family: inherit;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font: inherit; font-size: 13.5px; font-weight: 600;
+    padding: 8px 14px; border-radius: 8px; cursor: pointer;
+    border: 1px solid transparent; white-space: nowrap;
+    transition: transform .08s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--ink); color: var(--surface); }
+  .btn-primary:hover { background: color-mix(in srgb, var(--ink) 85%, var(--accent)); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line-strong); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
+  :root[data-theme="dark"] .btn-primary,
+  @media (prefers-color-scheme: dark) { }
+
+  /* ---- shell ---- */
+  .page { max-width: 1160px; margin: 0 auto; padding: 26px 22px 80px; }
+  .shell {
+    display: grid; grid-template-columns: 236px minmax(0, 1fr);
+    gap: 28px; align-items: start;
+  }
+
+  /* ---- rail ---- */
+  .rail { position: sticky; top: 74px; align-self: start; max-height: calc(100vh - 96px); overflow-y: auto; }
+  .rail-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--ink-faint); padding: 4px 10px 10px;
+  }
+  .rail a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; border-radius: 7px; text-decoration: none;
+    color: var(--ink-soft); font-size: 13.5px; font-weight: 500; line-height: 1.3;
+    transition: background .12s ease, color .12s ease;
+  }
+  .rail a:hover { background: var(--surface-2); color: var(--ink); }
+  .rail a.active { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--ink); font-weight: 600; }
+  .rail .dot { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+  .rail .rname { flex: 1; min-width: 0; }
+  .rail .rcount { font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  /* ---- intro ---- */
+  .intro { margin-bottom: 14px; }
+  .content { min-width: 0; }
+  h1.title { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; text-wrap: balance; }
+  .lede { color: var(--ink-soft); font-size: 15px; max-width: 62ch; margin: 0 0 16px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .stat {
+    display: flex; flex-direction: column; gap: 1px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 9px; padding: 9px 14px; box-shadow: var(--shadow);
+  }
+  .stat b { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .stat span { font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+  .source-note {
+    font-size: 12.5px; color: var(--ink-faint); margin-bottom: 18px;
+    padding: 10px 14px; background: var(--surface-2);
+    border: 1px dashed var(--line-strong); border-radius: 8px; max-width: 100%;
+  }
+
+  /* ---- cards ---- */
+  .section { margin-top: 22px; scroll-margin-top: 76px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 11px;
+    padding: 13px 16px; border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 7px;
+    line-height: 1.2;
+  }
+  .chip .cdot { width: 8px; height: 8px; border-radius: 2.5px; flex: none; }
+  .card-head .n {
+    font-size: 12px; color: var(--ink-faint); font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-head .hspace { flex: 1; }
+  .copy-sec {
+    display: inline-flex; align-items: center; gap: 6px;
+    font: inherit; font-size: 12px; font-weight: 600; color: var(--ink-faint);
+    background: transparent; border: 1px solid var(--line-strong); border-radius: 7px;
+    padding: 5px 9px; cursor: pointer; transition: color .12s, border-color .12s, background .12s;
+  }
+  .copy-sec:hover { color: var(--ink); border-color: var(--ink-soft); background: var(--surface); }
+  ul.qlist { list-style: none; margin: 0; padding: 5px 0; }
+  ul.qlist li {
+    display: flex; gap: 11px; padding: 9px 16px 9px 16px;
+    border-top: 1px solid transparent; align-items: flex-start;
+  }
+  ul.qlist li + li { border-top: 1px solid var(--line); }
+  ul.qlist li .q { flex: 1; }
+  ul.qlist li .marker {
+    flex: none; margin-top: 2px; width: 15px; height: 15px; border-radius: 5px;
+    display: grid; place-items: center; font-size: 10px; color: var(--ink-faint);
+    background: var(--surface-2); border: 1px solid var(--line);
+  }
+  ul.qlist li:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .no-results { padding: 40px 16px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+
+  footer.pageft {
+    margin-top: 34px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--ink-faint); display: flex; flex-wrap: wrap; gap: 6px 16px;
+  }
+
+  /* ---- toast ---- */
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--surface);
+    padding: 10px 18px; border-radius: 9px; font-size: 13.5px; font-weight: 600;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.22); opacity: 0; pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease; z-index: 90;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast .tdot { width: 8px; height: 8px; border-radius: 50%; background: #6ac48b; flex: none; }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; gap: 18px; }
+    .rail { display: none; }
+    .search { min-width: 120px; }
+    .brand-name span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">S8</div>
+    <div class="brand-name">SEO FAQ Library <span>· from Slack</span></div>
+  </div>
+  <div class="spacer"></div>
+  <label class="search" aria-label="Filter questions">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="filter" type="text" placeholder="Filter questions…" autocomplete="off" />
+  </label>
+  <button class="btn btn-primary" id="copyAll">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+    Copy all
+  </button>
+</div>
+
+<div class="page">
+  <header class="intro">
+    <h1 class="title">SEO &amp; Account Management FAQ</h1>
+    <p class="lede">Every recurring question the team has actually asked, pulled from the full history of <b>#seo</b> and <b>#accountmanagement</b> on Slack and grouped by theme. Filter to narrow it, or copy any section straight into a Google Doc.</p>
+    <div class="stats">
+      <div class="stat"><b id="stat-q">0</b><span>Questions</span></div>
+      <div class="stat"><b id="stat-c">0</b><span>Categories</span></div>
+      <div class="stat"><b>2019–26</b><span>Span</span></div>
+      <div class="stat"><b>3,037</b><span>Threads read</span></div>
+    </div>
+  </header>
+
+  <div class="source-note">
+    Source: 12-analyst classification of 819 <b>#seo</b> threads and 2,218 <b>#accountmanagement</b> threads (2018–2026). These are the recurring general questions, deduplicated and phrased close to how the team asked them. Purely internal-ops threads (Basecamp mechanics, sign/billboard pricing) are omitted unless they touch SEO.
+  </div>
+
+  <div class="shell">
+    <aside class="rail" id="rail">
+      <div class="rail-label">Categories</div>
+    </aside>
+    <main class="content" id="content"></main>
+  </div>
+
+  <footer class="pageft">
+    <span>S8E8 internal reference</span>
+    <span>·</span>
+    <span>Built from real Slack history</span>
+    <span>·</span>
+    <span id="ft-count"></span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"><span class="tdot"></span><span id="toast-msg">Copied</span></div>
+
+<script>
+const DATA = [
+  { cat: "Google Business Profile & Local Listings", color: "#4573d2", questions: [
+    "Do we create/set up GBPs for clients, or just advise them to do it themselves?",
+    "Do we set up and optimize GBP, or only advise?",
+    "Should we create a GBP 90 days before an office opens (per Google Support), or 1 month? Is that still the policy?",
+    "Can we remove/delete old photos from a GBP, or only add?",
+    "Is there an easy way to reorder photos on a GBP?",
+    "Are GBP “Highlights” something we can change? Is there a fixed list to choose from?",
+    "Should a client’s personal GBP and practice GBP be merged when they share a location/contact?",
+    "Business name only vs. business name + doctor name on listings — what’s best practice?",
+    "What do I use for a GBP description when the client has no website (our ChatGPT prompt needs a URL)?",
+    "Should we avoid specific CTAs (“Call Today,” “Visit Us Now”) in GBP descriptions, as Google recommends?",
+    "Can we post blog posts to a client’s GBP?",
+    "Can we give a client a Yext login to update their own info without exposing all our listings?",
+    "Does setting up Yext push info out to Yelp?",
+    "Should a client claim their Yelp listing? Any issues with doing so?",
+    "Is the “Spring Cleaning” GBP checklist safe to tell clients is fully applied once they’ve filled it out?",
+    "Where do scheduling/reservation links go in the listings, for consistency?",
+    "Do we need a separate SEO listing form for each location of a multi-location practice?"
+  ]},
+  { cat: "Reviews & Reputation", color: "#5da283", questions: [
+    "Why is a Google review count not incrementing at the rate reviews are coming in?",
+    "Why does a review show “11 months ago” when it was only 4 months old?",
+    "Would Google remove reviews posted before the current owner took over the business?",
+    "Do we respond to GMB/Google reviews on behalf of clients?",
+    "Any guidelines or recommendations for responding to a negative review?",
+    "Does addressing reviews risk violating HIPAA? What do we say to that concern?",
+    "Is it worth hiring a company that claims it can remove bad reviews?",
+    "Do we know offices that reward staff for earning positive reviews? (incentive ideas)"
+  ]},
+  { cat: "GEO / AI Search (ChatGPT, LLMs)", color: "#7a6ff0", questions: [
+    "What is S8E8’s involvement/experience with GEO — what’s our standard response when a client wants to explore it?",
+    "How do we explain GEO pages and AI search (LLM text) to a client?",
+    "How are clients getting found via ChatGPT, and how do we increase it?",
+    "Does the JavaScript coding a hamburger menu hurt a site’s ability to be found via GEO?",
+    "What’s the process when a client wants a GEO snapshot because they’re considering bulking up their SEO package?",
+    "Talking points for prospects on Instagram posts becoming Google-searchable?"
+  ]},
+  { cat: "AI-Written Content (clients using ChatGPT)", color: "#cd5bd4", questions: [
+    "Is there a standard response for clients asking whether they can write their own service/article content with ChatGPT vs. us creating it?",
+    "A client asks why he should keep paying a freelance blogger vs. just using ChatGPT — what do we say?",
+    "Did we ever create an email template / verbiage for why clients should not use AI for blogs?"
+  ]},
+  { cat: "Technical SEO (titles, indexing, redirects, crawling)", color: "#39a0a0", questions: [
+    "Is it OK for the title tag to be identical on two different pages?",
+    "For long practice names, do we prioritize title-tag length (under 60 chars) or including all the info (name + location)?",
+    "It’s impossible to keep title tags under 60 characters after adding a second location — suggestions?",
+    "After fixing page titles to proper case in Webflow, do we just need Google to re-crawl for it to reflect live?",
+    "Does ALL-CAPS text hurt SEO? Does sentence case vs. all caps make a real difference?",
+    "Are these robots.txt / GSC crawl-warning notifications anything to worry about?",
+    "Is this GSC crawl warning something that needs attention?",
+    "How should we respond when a client sends a screenshot of a GSC “noindex” warning?",
+    "Why are there so many redirect notifications on a client’s practice websites — how do we explain them?",
+    "Do we internal-link service pages and blogs to each other?",
+    "With two live domains, won’t Google see the new site as duplicate/plagiarized content? Should old pages stay unpublished until the old site is down?",
+    "Do we run SEO checks on Apple / Bing / Safari, not just Google?",
+    "What is a Google “credibility rating” that a competitor vendor claims to manage — do we do that?"
+  ]},
+  { cat: "Website & On-Page Content", color: "#4a8fb3", questions: [
+    "Are there rules for minimum homepage copy / word count, or non-negotiable services/keywords to include?",
+    "Is a lot of text above the fold a good thing? Should certain keywords be prioritized there?",
+    "Why are we putting big blocks of copy in hero sections lately? (above-the-fold SEO rationale)",
+    "SEO-wise, is it better to reuse a client’s existing service-page descriptions when migrating, or write new ones?",
+    "Multi-location landing pages: what’s the content standard when one location has more info than another?",
+    "Is it OK to repeat some custom photos across many service pages?"
+  ]},
+  { cat: "Analytics, Reporting & Call Tracking", color: "#6a5fc4", questions: [
+    "What does a GA4 event marked “Schedule” actually track — clicks on the Schedule Appointment button?",
+    "What is “cross-network” traffic in GA4?",
+    "What platform do we use to see a client’s most-visited pages?",
+    "What’s driving what looks like spam referral traffic to a blog post — any fix besides removing it?",
+    "Do hang-up / immediately-ended phone calls count toward a client’s patient-lead numbers?",
+    "What is the average conversion rate on our websites? (benchmark ask)",
+    "Can you explain these session-duration / page-1 ranking stats for a sales deck?",
+    "Are people aware of the changes we’re seeing in GSC impressions / CTR / avg. ranking data?",
+    "How do I answer a client asking about backlinks?"
+  ]},
+  { cat: "Domains, Migrations, Hosting & Relocations", color: "#e8863b", questions: [
+    "Is a $7,500–10,000 exact-match domain (e.g., dentalwellness.com) worth it?",
+    "Do we purchase domains for clients, and who does it?",
+    "Do we charge for domain hosting when a client transfers control to us?",
+    "What’s the difference between the $250/mo and $500/mo hosting tiers?",
+    "What does a client need on their end to self-host their site after their term ends?",
+    "What’s the domain-transfer timeline before a site launch (~30 days before go-live)?",
+    "What do we recommend if an acquisition client can’t access the old domain but the new site is ready?",
+    "Is there a checklist of what we need from a practice when they’re moving/relocating?",
+    "What’s the best way to bulk find/replace a practice name across 150+ blog and service pages?"
+  ]},
+  { cat: "Multi-Location & Practice Naming", color: "#8aab3a", questions: [
+    "Can a doctor operate two locations under one name/DBA — what would he need to do?",
+    "How do we market a GP-owned pediatric practice when we can’t legally call her a “pediatric dentist”?",
+    "Any objection to a client naming their practice a variation of “88 Dental”? (brand-collision check)",
+    "What’s the process for checking trademarks and domains during practice naming?"
+  ]},
+  { cat: "Content Production Process & Cadence", color: "#e8384f", questions: [
+    "After content calendars are approved, what’s the next step?",
+    "Where should I route a client’s corrections/edits on blog articles?",
+    "Who makes client blog edits — AMs, or do we pass them to the writer?",
+    "What’s a good cadence for uploading a backlog of blogs (e.g., 8 pieces — 2 every other week vs. all at once)?",
+    "Can we start blog articles once a client has a Launch Site, or wait for the full website?",
+    "Where does a copywriter’s dental/education content knowledge come from? (prospect asks)"
+  ]},
+  { cat: "Onboarding, Routing & Team Process", color: "#8f9296", questions: [
+    "When do we set up Local SEO / Yext — after the logistics call, before the SEO strategy call?",
+    "Who’s the right person to tag for Google Tags / Google Analytics setup to-dos?",
+    "If an audit surfaces critical errors, which go to dev vs. an SEO to-do?",
+    "Are new clients still being assigned SEO specialists while the lead is out, or is that paused?",
+    "Is 2.5 audits per person per day a sustainable pace?",
+    "How much time between the “Quarterly SEO Checkup” and the “Send Progress Report” to-dos?",
+    "Will moving/rescheduling overdue to-do dates mess up how the team is prioritizing?"
+  ]},
+  { cat: "Packages, Scope & What’s Included", color: "#d9a13a", questions: [
+    "Does the blog-articles SEO tier also include all the local SEO work?",
+    "Do 2023 Essential clients get service pages?",
+    "Is “website launch SEO service pages” counted 0-5-10 like blog posts, and can it be a service page or a blog post?",
+    "Do essential clients get a dedicated SEO call?",
+    "Where is there a central doc of everything included in each marketing package?",
+    "Do we count a sitemap as a full writing slot?",
+    "Is a-la-carte Local SEO still $250/mo, or has it changed?",
+    "Did the a-la-carte monthly blog option jump to $1,400/mo?",
+    "Do we offer single-platform social media (e.g., Facebook only)?",
+    "Do we use heatmapping/UX tools like Hotjar?"
+  ]},
+  { cat: "Compliance & Legal", color: "#d94f8f", questions: [
+    "Are our sites ADA-accessible for the visually impaired? (client saw a lawsuit article)",
+    "What do we tell clients about ADA accessibility options and their costs (the 3 options)?",
+    "Have there been HIPAA compliance changes requiring privacy-policy updates across all sites?",
+    "Are we legally responsible for cookie-consent pop-ups on client sites?"
+  ]}
+];
+
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+const content = document.getElementById('content');
+const rail = document.getElementById('rail');
+let totalQ = 0;
+
+DATA.forEach((group, gi) => {
+  totalQ += group.questions.length;
+  const id = 'sec-' + slug(group.cat);
+
+  // rail entry
+  const a = document.createElement('a');
+  a.href = '#' + id; a.dataset.target = id;
+  a.innerHTML = `<span class="dot" style="background:${group.color}"></span><span class="rname">${esc(group.cat)}</span><span class="rcount">${group.questions.length}</span>`;
+  rail.appendChild(a);
+
+  // section
+  const sec = document.createElement('section');
+  sec.className = 'section'; sec.id = id; sec.dataset.cat = group.cat.toLowerCase();
+  sec.innerHTML = `
+    <div class="card">
+      <div class="card-head">
+        <span class="chip" style="background:color-mix(in srgb, ${group.color} 14%, var(--surface)); color:color-mix(in srgb, ${group.color} 62%, var(--ink)); border:1px solid color-mix(in srgb, ${group.color} 32%, transparent)">
+          <span class="cdot" style="background:${group.color}"></span>${esc(group.cat)}
+        </span>
+        <span class="n">${group.questions.length} question${group.questions.length>1?'s':''}</span>
+        <span class="hspace"></span>
+        <button class="copy-sec" data-gi="${gi}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copy section
+        </button>
+      </div>
+      <ul class="qlist">
+        ${group.questions.map((q,qi)=>`<li data-q="${esc(q.toLowerCase())}"><span class="marker">${qi+1}</span><span class="q">${esc(q)}</span></li>`).join('')}
+      </ul>
+    </div>`;
+  content.appendChild(sec);
+});
+
+document.getElementById('stat-q').textContent = totalQ;
+document.getElementById('stat-c').textContent = DATA.length;
+document.getElementById('ft-count').textContent = `${totalQ} questions across ${DATA.length} categories`;
+
+/* ---------- copy helpers ---------- */
+function buildHTML(groups) {
+  let h = `<h1>SEO &amp; Account Management FAQ</h1>`;
+  groups.forEach(g => {
+    h += `<h2>${esc(g.cat)}</h2><ul>` + g.questions.map(q=>`<li>${esc(q)}</li>`).join('') + `</ul>`;
+  });
+  return h;
+}
+function buildText(groups) {
+  let t = "SEO & ACCOUNT MANAGEMENT FAQ\n";
+  groups.forEach(g => {
+    t += `\n${g.cat.toUpperCase()}\n`;
+    g.questions.forEach(q => { t += `• ${q}\n`; });
+  });
+  return t.trim();
+}
+async function copyGroups(groups, label) {
+  const html = buildHTML(groups), text = buildText(groups);
+  try {
+    if (navigator.clipboard && window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/html': new Blob([html], {type:'text/html'}),
+        'text/plain': new Blob([text], {type:'text/plain'})
+      })]);
+    } else {
+      await navigator.clipboard.writeText(text);
+    }
+    toast(label);
+  } catch(e) {
+    try { await navigator.clipboard.writeText(text); toast(label); }
+    catch(_) { toast('Copy failed — select &amp; copy manually'); }
+  }
+}
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+document.getElementById('copyAll').addEventListener('click', ()=>copyGroups(DATA, `Copied all ${totalQ} questions — paste into your doc`));
+document.querySelectorAll('.copy-sec').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const g = DATA[+btn.dataset.gi];
+    copyGroups([g], `Copied “${g.cat}”`);
+  });
+});
+
+/* ---------- filter ---------- */
+const filterInput = document.getElementById('filter');
+filterInput.addEventListener('input', () => {
+  const term = filterInput.value.trim().toLowerCase();
+  let anyVisible = false;
+  document.querySelectorAll('.section').forEach(sec => {
+    let shown = 0;
+    sec.querySelectorAll('.qlist li').forEach(li => {
+      const match = !term || li.dataset.q.includes(term);
+      li.style.display = match ? '' : 'none';
+      if (match) shown++;
+    });
+    sec.style.display = shown ? '' : 'none';
+    if (shown) anyVisible = true;
+  });
+  let nr = document.getElementById('noResults');
+  if (!anyVisible) {
+    if (!nr) {
+      nr = document.createElement('div');
+      nr.id = 'noResults'; nr.className = 'no-results';
+      nr.textContent = 'No questions match that filter.';
+      content.appendChild(nr);
+    }
+  } else if (nr) { nr.remove(); }
+});
+
+/* ---------- scroll spy ---------- */
+const links = [...rail.querySelectorAll('a')];
+const spy = new IntersectionObserver(entries => {
+  entries.forEach(en => {
+    if (en.isIntersecting) {
+      links.forEach(l => l.classList.toggle('active', l.dataset.target === en.target.id));
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+document.querySelectorAll('.section').forEach(s => spy.observe(s));
+</script>
+
+</body>
+</html>
