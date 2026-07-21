@@ -71,7 +71,7 @@
   }
   .legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); font-weight: 500; }
-  .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; flex: none; }
   .toolbar .spacer { margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
   .toolbar label {
     display: inline-flex; align-items: center; gap: 7px;
@@ -113,7 +113,7 @@
   .pill-cell:hover { filter: brightness(0.97); }
   @media (prefers-color-scheme: dark) { .pill-cell:hover { filter: brightness(1.12); } }
   .pill-cell:focus-visible { outline: 2px solid var(--ink-2); outline-offset: 1px; }
-  .pill-cell.selected { border-color: currentColor; }
+  .pill-cell.open { border-color: currentColor; }
   .pill-cell .math {
     display: none; font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
     opacity: 0.75; font-variant-numeric: tabular-nums;
@@ -124,6 +124,32 @@
   .pill-cell.edited { border-style: dashed; border-color: currentColor; }
   .pill-cell.na { color: var(--na-fg); background: var(--na-bg); }
 
+  .popover {
+    position: absolute; z-index: 50; display: none;
+    background: var(--card); border: 1px solid var(--border); border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 14px rgba(0, 0, 0, 0.08);
+    padding: 8px; width: 216px;
+  }
+  .popover.show { display: block; }
+  .popover .ph {
+    font-size: 11px; color: var(--ink-2); margin: 2px 4px 8px; line-height: 1.4;
+  }
+  .popover .ph b { color: var(--ink); font-weight: 600; }
+  .popover .opt {
+    display: flex; align-items: center; gap: 7px; width: 100%;
+    font: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;
+    border: 1px solid transparent; border-radius: 4px; padding: 6px 9px;
+    margin-bottom: 4px; font-family: inherit; text-align: left;
+  }
+  .popover .opt:hover { filter: brightness(0.96); }
+  @media (prefers-color-scheme: dark) { .popover .opt:hover { filter: brightness(1.12); } }
+  .popover .opt .check { margin-left: auto; font-size: 11px; }
+  .popover .opt.reset {
+    background: var(--card); color: var(--ink-2); border: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .popover .opt.reset:hover { background: var(--hover); filter: none; }
+
   .detail {
     padding: 12px 16px; border-top: 1px solid var(--border);
     font-size: 13px; color: var(--ink-2);
@@ -133,26 +159,12 @@
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 11.5px; background: var(--chip-bg); border-radius: 4px; padding: 1px 5px;
   }
-  .editbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
-  .editbar .lbl {
-    font-size: 10px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--ink-3); margin-right: 4px;
-  }
-  .setbtn {
-    font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
-    border: 1px solid transparent; border-radius: 4px; padding: 3px 9px;
-    display: inline-flex; align-items: center; gap: 5px;
-  }
-  .setbtn:hover { filter: brightness(0.96); }
-  @media (prefers-color-scheme: dark) { .setbtn:hover { filter: brightness(1.12); } }
-  .setbtn.active { border-color: currentColor; }
-  .setbtn.reset { background: var(--card); color: var(--ink-2); border: 1px solid var(--border); }
 
   .toast {
     position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
     background: var(--btn); color: var(--btn-fg); font-size: 13px; font-weight: 500;
     border-radius: 6px; padding: 8px 16px; opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s; z-index: 60; white-space: nowrap;
   }
   .toast.show { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
@@ -189,8 +201,8 @@
   <p class="sub">
     Updated from the live prioritization code. Rows are the <strong>10 tracked Asana projects</strong> and their
     criticality tiers (T1–T4) from the SEO Dashboard registry; columns are the <strong>client Service Package
-    tiers</strong> (rank 0–4) that order Capacity Desk advice. Click a cell to see where its label comes from,
-    or to change it — edits save in your browser, and “Copy edits” gives you a summary to send back.
+    tiers</strong> (rank 0–3) that order Capacity Desk advice. Click any cell to pick a different priority —
+    edits save in your browser, and “Copy edits” gives you a summary to send back.
   </p>
 
   <div class="card" id="matrixCard">
@@ -210,7 +222,7 @@
       </div>
     </div>
     <div class="scroll"><table id="matrix"></table></div>
-    <div class="detail" id="detail">Click a cell to inspect or change its priority.</div>
+    <div class="detail" id="detail">Click a cell to change its priority. Where a label comes from shows here.</div>
   </div>
 
   <div class="grid2">
@@ -220,7 +232,7 @@
       <h3>Axis 1 — task-type tier (SEO Dashboard)</h3>
       <p>Every tracked project carries a criticality tier in <code>seo_dashboard_registry.py</code>: T1 foundational (Strategy, Migrations, Calendar) down to T4 lower-stakes queues. In the Focus List the tier is the <b>outer sort</b>: a T1 task always outranks a T3 task, no matter how overdue the T3 is. Within a tier, tasks sort by severity (how far past due or past its stuck threshold).</p>
       <h3>Axis 2 — client package tier (Capacity Desk)</h3>
-      <p>Each client's Asana "Service Package" maps to a rank in <code>capacity_priority.py</code>: MRKT Leader (0) → Performance (1) → Essential (2) → Web Support (3) → no package (4, flagged "needs a package"). This order shapes Capacity Desk advice, never math.</p>
+      <p>Each client's Asana "Service Package" maps to a rank in <code>capacity_priority.py</code>: MRKT Leader (0) → Performance (1) → Essential (2) → Web Support (3). A client with a missing or unknown package falls to the bottom of the order with a <span class="flag">needs package</span> flag. This order shapes Capacity Desk advice, never math.</p>
       <h3>Overrides the matrix can't show</h3>
       <ul>
         <li><b>Pins &amp; nudges:</b> a pinned client jumps to the front of the priority order regardless of package; a nudge bumps a client up within it.</li>
@@ -240,13 +252,13 @@
       <h3>Columns (packages)</h3>
       <ul>
         <li>Market Leader → <b>MRKT Leader</b>, Support → <b>Web Support</b> (live Asana values).</li>
-        <li><b>New column: No Package</b> — clients with a missing or unknown package land on the lowest rank with a <span class="flag">needs package</span> flag rather than falling out of the system.</li>
       </ul>
       <h3>Cell labels are derived</h3>
       <p>The code ranks the two axes but never writes "Top Priority" into a cell. Labels here come from tier + package rank banded into five levels, and N/A cells are carried over from the old matrix's package scopes (the code doesn't encode which packages include which work). Disagree with a cell? Change it and hit “Copy edits”.</p>
     </div>
   </div>
 </div>
+<div class="popover" id="popover"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -255,16 +267,15 @@
     { key: "performance", label: "Performance", rank: 1 },
     { key: "essential",   label: "Essential",   rank: 2 },
     { key: "web_support", label: "Web Support", rank: 3 },
-    { key: "none",        label: "No Package",  rank: 4 },
   ];
   var BANDS = { 1: "Tier 1 · Foundational", 2: "Tier 2 · Production pipelines", 3: "Tier 3 · Recurring programs", 4: "Tier 4 · Lower-stakes queues" };
   var ROWS = [
-    { name: "SEO Strategy",         tier: 1, na: ["essential", "web_support", "none"] },
-    { name: "SEO Migrations",       tier: 1, na: ["essential", "web_support", "none"], was: "was “SEO Migration”" },
+    { name: "SEO Strategy",         tier: 1, na: ["essential", "web_support"] },
+    { name: "SEO Migrations",       tier: 1, na: ["essential", "web_support"], was: "was “SEO Migration”" },
     { name: "Content Calendar",     tier: 1, na: ["web_support"] },
     { name: "Content Production",   tier: 2, na: ["web_support"] },
     { name: "Service Pages",        tier: 2, na: ["web_support"], was: "new — tracked since V5" },
-    { name: "On-Page Optimization", tier: 2, na: ["essential", "web_support", "none"] },
+    { name: "On-Page Optimization", tier: 2, na: ["essential", "web_support"] },
     { name: "SEO Onboarding",       tier: 3, na: [], was: "was “Onboarding Tasks”" },
     { name: "Recurring Audits",     tier: 3, na: [] },
     { name: "Listing Reviews",      tier: 4, na: [], was: "new — tracked since V5" },
@@ -284,10 +295,17 @@
   var STORE_KEY = "priority-matrix-edits-v1";
   var edits = {};
   try { edits = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; } catch (e) { edits = {}; }
+  // Drop entries for cells that no longer exist (e.g. the removed No Package column).
+  Object.keys(edits).forEach(function (k) {
+    var pkey = k.split(":")[1];
+    var known = PACKAGES.some(function (p) { return p.key === pkey; });
+    if (!known || !LEVELS[edits[k]]) delete edits[k];
+  });
 
-  var selected = null; // {ri, pi}
+  var openCell = null; // {ri, pi} while the popover is showing
   var table = document.getElementById("matrix");
   var detail = document.getElementById("detail");
+  var popover = document.getElementById("popover");
   var copyBtn = document.getElementById("copyBtn");
   var resetAllBtn = document.getElementById("resetAllBtn");
 
@@ -298,8 +316,7 @@
     return SCORE_TO_LEVEL[row.tier + pkg.rank];
   }
   function currentLevel(ri, pi) {
-    var e = edits[cellKey(ri, pi)];
-    return e || computedLevel(ri, pi);
+    return edits[cellKey(ri, pi)] || computedLevel(ri, pi);
   }
   function saveEdits() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(edits)); } catch (e) {}
@@ -309,7 +326,7 @@
   function render() {
     var html = "<thead><tr><th>Task Type \\ Package</th>";
     PACKAGES.forEach(function (p) {
-      html += "<th>" + p.label + '<span class="rank">rank ' + p.rank + (p.key === "none" ? " · needs package" : "") + "</span></th>";
+      html += "<th>" + p.label + '<span class="rank">rank ' + p.rank + "</span></th>";
     });
     html += "</tr></thead><tbody>";
     var lastTier = 0;
@@ -322,10 +339,11 @@
       PACKAGES.forEach(function (p, pi) {
         var lvl = currentLevel(ri, pi);
         var isEdited = !!edits[cellKey(ri, pi)];
-        var isSel = selected && selected.ri === ri && selected.pi === pi;
-        var cls = "pill-cell" + (lvl === "na" ? " na" : "") + (isEdited ? " edited" : "") + (isSel ? " selected" : "");
+        var isOpen = openCell && openCell.ri === ri && openCell.pi === pi;
+        var cls = "pill-cell" + (lvl === "na" ? " na" : "") + (isEdited ? " edited" : "") + (isOpen ? " open" : "");
         var style = lvl === "na" ? "" : ' style="background:var(--' + lvl + '-bg);color:var(--' + lvl + '-fg)"';
-        html += '<td class="cell"><button class="' + cls + '" data-r="' + ri + '" data-p="' + pi + '"' + style + ">" +
+        html += '<td class="cell"><button type="button" class="' + cls + '" data-r="' + ri + '" data-p="' + pi + '"' + style +
+          ' aria-haspopup="menu" title="Click to change">' +
           (lvl === "na" ? "" : '<i class="dot" style="background:currentColor"></i>') + LEVELS[lvl].label +
           '<span class="pen" title="edited">✎</span>' +
           '<span class="math">T' + row.tier + "+P" + p.rank + "</span></button></td>";
@@ -335,15 +353,9 @@
     html += "</tbody>";
     table.innerHTML = html;
     copyBtn.disabled = resetAllBtn.disabled = editCount() === 0;
-    renderDetail();
   }
 
-  function renderDetail() {
-    if (!selected) {
-      detail.innerHTML = "Click a cell to inspect or change its priority.";
-      return;
-    }
-    var ri = selected.ri, pi = selected.pi;
+  function showDerivation(ri, pi) {
     var row = ROWS[ri], pkg = PACKAGES[pi];
     var comp = computedLevel(ri, pi);
     var cur = currentLevel(ri, pi);
@@ -353,47 +365,101 @@
       ? "computed <b>N/A</b> (carried over from the old matrix's package scopes)"
       : "T" + row.tier + " (<code>seo_dashboard_registry.py</code>) + package rank " + pkg.rank +
         " (<code>capacity_priority.py</code>) = score " + score + " → <b>" + LEVELS[comp].label + "</b>";
-    var head = "<b>" + row.name + " × " + pkg.label + "</b> — " + compText + "." +
-      (isEdited ? " Currently edited to <b>" + LEVELS[cur].label + "</b>." : "");
-    var bar = '<div class="editbar"><span class="lbl">Set to</span>';
+    detail.innerHTML = "<b>" + row.name + " × " + pkg.label + "</b> — " + compText + "." +
+      (isEdited ? " Edited to <b>" + LEVELS[cur].label + "</b>." : "");
+  }
+
+  function openPopover(btn, ri, pi) {
+    openCell = { ri: ri, pi: pi };
+    var comp = computedLevel(ri, pi);
+    var cur = currentLevel(ri, pi);
+    var row = ROWS[ri], pkg = PACKAGES[pi];
+
+    var html = '<div class="ph"><b>' + row.name + "</b> × " + pkg.label + "</div>";
     LEVEL_ORDER.forEach(function (k) {
-      var active = cur === k ? " active" : "";
       var style = k === "na"
         ? ' style="background:var(--na-bg);color:var(--na-fg)"'
         : ' style="background:var(--' + k + '-bg);color:var(--' + k + '-fg)"';
-      bar += '<button class="setbtn' + active + '" data-set="' + k + '"' + style + ">" +
-        (k === "na" ? "" : '<i class="dot" style="background:currentColor"></i>') + LEVELS[k].label + "</button>";
+      html += '<button type="button" class="opt" data-set="' + k + '"' + style + ">" +
+        (k === "na" ? "" : '<i class="dot" style="background:currentColor"></i>') +
+        LEVELS[k].label + (k === comp ? " (computed)" : "") +
+        (cur === k ? '<span class="check">✓</span>' : "") + "</button>";
     });
-    bar += '<button class="setbtn reset" data-set="__reset">Reset to computed</button></div>';
-    detail.innerHTML = head + bar;
+    if (edits[cellKey(ri, pi)]) {
+      html += '<button type="button" class="opt reset" data-set="__reset">↩ Reset to computed</button>';
+    }
+    popover.innerHTML = html;
+    popover.classList.add("show");
+
+    var rect = btn.getBoundingClientRect();
+    var popW = popover.offsetWidth, popH = popover.offsetHeight;
+    var left = rect.left + window.scrollX + rect.width / 2 - popW / 2;
+    left = Math.max(8 + window.scrollX, Math.min(left, window.scrollX + document.documentElement.clientWidth - popW - 8));
+    var top = rect.bottom + window.scrollY + 6;
+    if (rect.bottom + popH + 12 > window.innerHeight && rect.top - popH - 6 > 0) {
+      top = rect.top + window.scrollY - popH - 6;
+    }
+    popover.style.left = left + "px";
+    popover.style.top = top + "px";
+
+    showDerivation(ri, pi);
+    render(); // re-render so the open cell gets its outline
+  }
+
+  function closePopover() {
+    if (!openCell) return;
+    openCell = null;
+    popover.classList.remove("show");
+    render();
   }
 
   table.addEventListener("click", function (e) {
     var btn = e.target.closest ? e.target.closest(".pill-cell") : null;
     if (!btn) return;
-    selected = { ri: +btn.getAttribute("data-r"), pi: +btn.getAttribute("data-p") };
-    render();
+    var ri = +btn.getAttribute("data-r"), pi = +btn.getAttribute("data-p");
+    if (openCell && openCell.ri === ri && openCell.pi === pi) { closePopover(); return; }
+    openPopover(btn, ri, pi);
   });
 
-  detail.addEventListener("click", function (e) {
-    var btn = e.target.closest ? e.target.closest(".setbtn") : null;
-    if (!btn || !selected) return;
+  popover.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest(".opt") : null;
+    if (!btn || !openCell) return;
     var val = btn.getAttribute("data-set");
-    var key = cellKey(selected.ri, selected.pi);
-    if (val === "__reset" || val === computedLevel(selected.ri, selected.pi)) {
+    var ri = openCell.ri, pi = openCell.pi;
+    var key = cellKey(ri, pi);
+    if (val === "__reset" || val === computedLevel(ri, pi)) {
       delete edits[key];
+      showToast("Reset to computed");
     } else {
       edits[key] = val;
+      showToast(ROWS[ri].name + " × " + PACKAGES[pi].label + " → " + LEVELS[val].label);
     }
     saveEdits();
+    openCell = null;
+    popover.classList.remove("show");
     render();
+    showDerivation(ri, pi);
   });
+
+  document.addEventListener("click", function (e) {
+    if (!openCell) return;
+    if (popover.contains(e.target)) return;
+    if (e.target.closest && e.target.closest(".pill-cell")) return;
+    closePopover();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closePopover();
+  });
+  window.addEventListener("resize", closePopover);
+  document.querySelector(".scroll").addEventListener("scroll", closePopover);
 
   resetAllBtn.addEventListener("click", function () {
     if (!confirm("Clear all " + editCount() + " edits and go back to the computed matrix?")) return;
     edits = {};
     saveEdits();
+    closePopover();
     render();
+    detail.innerHTML = "All edits cleared — back to the computed matrix.";
   });
 
   copyBtn.addEventListener("click", function () {
