@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Task Priority Matrix</title>
+<style>
+  :root {
+    --page: #FAF9F7;
+    --card: #FFFFFF;
+    --border: rgba(214, 211, 209, 0.6);
+    --ink: #1C1917;
+    --ink-2: #57534E;
+    --ink-3: #A8A29E;
+    --hover: rgba(250, 250, 249, 0.5);
+    --btn: #1C1917;
+    --btn-fg: #FFFFFF;
+
+    --top-bg: #F2D8D6;    --top-fg: #7E2E29;  --top-dot: #B5443E;
+    --high-bg: #F4E1CF;   --high-fg: #82471F; --high-dot: #C07235;
+    --mod-bg: #F5EBCB;    --mod-fg: #6F591C;  --mod-dot: #C4A23C;
+    --low-bg: #E2E9D4;    --low-fg: #435A2B;  --low-dot: #7C974F;
+    --min-bg: #DAE5EE;    --min-fg: #2F5171;  --min-dot: #5E86A8;
+    --na-bg: #F5F5F4;     --na-fg: #A8A29E;
+
+    --chip-bg: rgba(231, 229, 228, 0.5);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #1C1917; --card: #292524; --border: rgba(87, 83, 78, 0.5);
+      --ink: #FAFAF9; --ink-2: #D6D3D1; --ink-3: #78716C;
+      --hover: rgba(41, 37, 36, 0.5);
+      --btn: #E7E5E4; --btn-fg: #1C1917;
+      --top-bg: #4A2523; --top-fg: #F0B7B3; --top-dot: #D66A63;
+      --high-bg: #46301C; --high-fg: #EFC9A3; --high-dot: #D68F53;
+      --mod-bg: #423919; --mod-fg: #E8D695; --mod-dot: #D0B255;
+      --low-bg: #303B22; --low-fg: #C8D8A9; --low-dot: #93AE64;
+      --min-bg: #24384A; --min-fg: #AECBE4; --min-dot: #6F9BC2;
+      --na-bg: #24211F; --na-fg: #57534E;
+      --chip-bg: rgba(68, 64, 60, 0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 40px 24px 64px; }
+
+  .eyebrow {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--ink-3); margin: 0 0 6px;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; text-wrap: balance; }
+  .sub { color: var(--ink-2); margin: 0 0 24px; max-width: 68ch; }
+  .sub strong { font-weight: 600; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+  .card + .card, .grid2 { margin-top: 20px; }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); font-weight: 500; }
+  .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .toolbar .spacer { margin-left: auto; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .toolbar label {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 500; color: var(--ink-2); cursor: pointer;
+    user-select: none;
+  }
+  .toolbar input { accent-color: var(--btn); }
+  .tbtn {
+    font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+    background: var(--card); color: var(--ink); border: 1px solid var(--border);
+    border-radius: 4px; padding: 4px 10px;
+  }
+  .tbtn:hover { background: var(--hover); }
+  .tbtn.primary { background: var(--btn); color: var(--btn-fg); border-color: var(--btn); }
+  .tbtn:disabled { opacity: 0.45; cursor: default; }
+
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 780px; }
+  th, td { text-align: left; padding: 10px 14px; border-top: 1px solid var(--border); }
+  thead th { border-top: none; font-size: 12px; font-weight: 600; color: var(--ink); vertical-align: bottom; }
+  thead .rank {
+    display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-3); margin-top: 2px;
+  }
+  .rowname { font-weight: 500; white-space: nowrap; }
+  .rowname .was { display: block; font-size: 11px; font-weight: 400; color: var(--ink-3); }
+  .tierband td {
+    padding: 6px 14px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3);
+    background: var(--hover);
+  }
+  td.cell { padding: 6px 6px; }
+  .pill-cell {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border-radius: 4px; padding: 7px 8px; font-size: 12.5px; font-weight: 500;
+    cursor: pointer; border: 1px solid transparent; min-width: 122px; width: 100%;
+    font-family: inherit;
+  }
+  .pill-cell:hover { filter: brightness(0.97); }
+  @media (prefers-color-scheme: dark) { .pill-cell:hover { filter: brightness(1.12); } }
+  .pill-cell:focus-visible { outline: 2px solid var(--ink-2); outline-offset: 1px; }
+  .pill-cell.selected { border-color: currentColor; }
+  .pill-cell .math {
+    display: none; font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    opacity: 0.75; font-variant-numeric: tabular-nums;
+  }
+  .show-math .pill-cell .math { display: inline; }
+  .pill-cell .pen { display: none; font-size: 10px; opacity: 0.8; }
+  .pill-cell.edited .pen { display: inline; }
+  .pill-cell.edited { border-style: dashed; border-color: currentColor; }
+  .pill-cell.na { color: var(--na-fg); background: var(--na-bg); }
+
+  .detail {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--ink-2);
+  }
+  .detail b { color: var(--ink); font-weight: 600; }
+  .detail code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px; background: var(--chip-bg); border-radius: 4px; padding: 1px 5px;
+  }
+  .editbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; }
+  .editbar .lbl {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-3); margin-right: 4px;
+  }
+  .setbtn {
+    font: inherit; font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 1px solid transparent; border-radius: 4px; padding: 3px 9px;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .setbtn:hover { filter: brightness(0.96); }
+  @media (prefers-color-scheme: dark) { .setbtn:hover { filter: brightness(1.12); } }
+  .setbtn.active { border-color: currentColor; }
+  .setbtn.reset { background: var(--card); color: var(--ink-2); border: 1px solid var(--border); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: var(--btn); color: var(--btn-fg); font-size: 13px; font-weight: 500;
+    border-radius: 6px; padding: 8px 16px; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; }
+  .panel h2 { font-size: 14px; font-weight: 600; margin: 0 0 10px; }
+  .panel h3 {
+    font-size: 10px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--ink-3); margin: 16px 0 6px;
+  }
+  .panel p, .panel li { font-size: 13px; color: var(--ink-2); }
+  .panel p { margin: 0 0 10px; }
+  .panel ul { margin: 0; padding-left: 18px; }
+  .panel li { margin-bottom: 7px; }
+  .panel li:last-child { margin-bottom: 0; }
+  .panel b { color: var(--ink); font-weight: 600; }
+  .panel code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px; background: var(--chip-bg); border-radius: 4px; padding: 1px 5px;
+  }
+  .flag {
+    display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--high-fg); background: var(--high-bg);
+    border-radius: 4px; padding: 1px 6px; vertical-align: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">SEO Dashboard · Capacity Desk · July 21, 2026</p>
+  <h1>Task Priority Matrix</h1>
+  <p class="sub">
+    Updated from the live prioritization code. Rows are the <strong>10 tracked Asana projects</strong> and their
+    criticality tiers (T1–T4) from the SEO Dashboard registry; columns are the <strong>client Service Package
+    tiers</strong> (rank 0–4) that order Capacity Desk advice. Click a cell to see where its label comes from,
+    or to change it — edits save in your browser, and “Copy edits” gives you a summary to send back.
+  </p>
+
+  <div class="card" id="matrixCard">
+    <div class="toolbar">
+      <div class="legend">
+        <span><i class="dot" style="background:var(--top-dot)"></i>Top</span>
+        <span><i class="dot" style="background:var(--high-dot)"></i>High</span>
+        <span><i class="dot" style="background:var(--mod-dot)"></i>Moderate</span>
+        <span><i class="dot" style="background:var(--low-dot)"></i>Lower</span>
+        <span><i class="dot" style="background:var(--min-dot)"></i>Low</span>
+        <span><i class="dot" style="background:var(--na-fg)"></i>N/A — not in package scope</span>
+      </div>
+      <div class="spacer">
+        <label><input type="checkbox" id="mathToggle"> Show the math</label>
+        <button class="tbtn primary" id="copyBtn" disabled>Copy edits</button>
+        <button class="tbtn" id="resetAllBtn" disabled>Reset all edits</button>
+      </div>
+    </div>
+    <div class="scroll"><table id="matrix"></table></div>
+    <div class="detail" id="detail">Click a cell to inspect or change its priority.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>How prioritization actually works now</h2>
+      <p>The old matrix was one hand-set table. Today priority is <b>computed from two independent rankings</b>, and this page crosses them for a familiar at-a-glance view.</p>
+      <h3>Axis 1 — task-type tier (SEO Dashboard)</h3>
+      <p>Every tracked project carries a criticality tier in <code>seo_dashboard_registry.py</code>: T1 foundational (Strategy, Migrations, Calendar) down to T4 lower-stakes queues. In the Focus List the tier is the <b>outer sort</b>: a T1 task always outranks a T3 task, no matter how overdue the T3 is. Within a tier, tasks sort by severity (how far past due or past its stuck threshold).</p>
+      <h3>Axis 2 — client package tier (Capacity Desk)</h3>
+      <p>Each client's Asana "Service Package" maps to a rank in <code>capacity_priority.py</code>: MRKT Leader (0) → Performance (1) → Essential (2) → Web Support (3) → no package (4, flagged "needs a package"). This order shapes Capacity Desk advice, never math.</p>
+      <h3>Overrides the matrix can't show</h3>
+      <ul>
+        <li><b>Pins &amp; nudges:</b> a pinned client jumps to the front of the priority order regardless of package; a nudge bumps a client up within it.</li>
+        <li><b>Promise escalation:</b> any request that endangers a pinned or higher-tier client's promised date escalates automatically, whatever its own cell says.</li>
+        <li><b>Deadlines:</b> a blown due date always lands in the Past-Due band above everything merely stalled.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h2>What changed since the old screenshot</h2>
+      <h3>Rows (task types)</h3>
+      <ul>
+        <li><b>AM Requests</b> → nearest tracked equivalent is <b>SEO Support Cases</b>, now a T4 queue. Biggest single change: the old matrix had it Top/High everywhere.</li>
+        <li><b>Post-Audit Issues</b> → no longer a tracked dashboard project; audit-issue tasks live in per-client projects and only count when multi-homed into a registry project.</li>
+        <li><b>New rows:</b> Service Pages (T2) and Listing Reviews (T4) are tracked now.</li>
+        <li>Renames: Onboarding Tasks → SEO Onboarding, SEO Migration → SEO Migrations.</li>
+      </ul>
+      <h3>Columns (packages)</h3>
+      <ul>
+        <li>Market Leader → <b>MRKT Leader</b>, Support → <b>Web Support</b> (live Asana values).</li>
+        <li><b>New column: No Package</b> — clients with a missing or unknown package land on the lowest rank with a <span class="flag">needs package</span> flag rather than falling out of the system.</li>
+      </ul>
+      <h3>Cell labels are derived</h3>
+      <p>The code ranks the two axes but never writes "Top Priority" into a cell. Labels here come from tier + package rank banded into five levels, and N/A cells are carried over from the old matrix's package scopes (the code doesn't encode which packages include which work). Disagree with a cell? Change it and hit “Copy edits”.</p>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  var PACKAGES = [
+    { key: "mrkt_leader", label: "MRKT Leader", rank: 0 },
+    { key: "performance", label: "Performance", rank: 1 },
+    { key: "essential",   label: "Essential",   rank: 2 },
+    { key: "web_support", label: "Web Support", rank: 3 },
+    { key: "none",        label: "No Package",  rank: 4 },
+  ];
+  var BANDS = { 1: "Tier 1 · Foundational", 2: "Tier 2 · Production pipelines", 3: "Tier 3 · Recurring programs", 4: "Tier 4 · Lower-stakes queues" };
+  var ROWS = [
+    { name: "SEO Strategy",         tier: 1, na: ["essential", "web_support", "none"] },
+    { name: "SEO Migrations",       tier: 1, na: ["essential", "web_support", "none"], was: "was “SEO Migration”" },
+    { name: "Content Calendar",     tier: 1, na: ["web_support"] },
+    { name: "Content Production",   tier: 2, na: ["web_support"] },
+    { name: "Service Pages",        tier: 2, na: ["web_support"], was: "new — tracked since V5" },
+    { name: "On-Page Optimization", tier: 2, na: ["essential", "web_support", "none"] },
+    { name: "SEO Onboarding",       tier: 3, na: [], was: "was “Onboarding Tasks”" },
+    { name: "Recurring Audits",     tier: 3, na: [] },
+    { name: "Listing Reviews",      tier: 4, na: [], was: "new — tracked since V5" },
+    { name: "SEO Support Cases",    tier: 4, na: [], was: "closest to old “AM Requests”" },
+  ];
+  var LEVELS = {
+    top:  { label: "Top Priority" },
+    high: { label: "High Priority" },
+    mod:  { label: "Moderate Priority" },
+    low:  { label: "Lower Priority" },
+    min:  { label: "Low Priority" },
+    na:   { label: "N/A" },
+  };
+  var LEVEL_ORDER = ["top", "high", "mod", "low", "min", "na"];
+  var SCORE_TO_LEVEL = [null, "top", "high", "high", "mod", "mod", "low", "low", "min"];
+
+  var STORE_KEY = "priority-matrix-edits-v1";
+  var edits = {};
+  try { edits = JSON.parse(localStorage.getItem(STORE_KEY) || "{}") || {}; } catch (e) { edits = {}; }
+
+  var selected = null; // {ri, pi}
+  var table = document.getElementById("matrix");
+  var detail = document.getElementById("detail");
+  var copyBtn = document.getElementById("copyBtn");
+  var resetAllBtn = document.getElementById("resetAllBtn");
+
+  function cellKey(ri, pi) { return ri + ":" + PACKAGES[pi].key; }
+  function computedLevel(ri, pi) {
+    var row = ROWS[ri], pkg = PACKAGES[pi];
+    if (row.na.indexOf(pkg.key) !== -1) return "na";
+    return SCORE_TO_LEVEL[row.tier + pkg.rank];
+  }
+  function currentLevel(ri, pi) {
+    var e = edits[cellKey(ri, pi)];
+    return e || computedLevel(ri, pi);
+  }
+  function saveEdits() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(edits)); } catch (e) {}
+  }
+  function editCount() { return Object.keys(edits).length; }
+
+  function render() {
+    var html = "<thead><tr><th>Task Type \\ Package</th>";
+    PACKAGES.forEach(function (p) {
+      html += "<th>" + p.label + '<span class="rank">rank ' + p.rank + (p.key === "none" ? " · needs package" : "") + "</span></th>";
+    });
+    html += "</tr></thead><tbody>";
+    var lastTier = 0;
+    ROWS.forEach(function (row, ri) {
+      if (row.tier !== lastTier) {
+        html += '<tr class="tierband"><td colspan="' + (PACKAGES.length + 1) + '">' + BANDS[row.tier] + "</td></tr>";
+        lastTier = row.tier;
+      }
+      html += '<tr><td class="rowname">' + row.name + (row.was ? '<span class="was">' + row.was + "</span>" : "") + "</td>";
+      PACKAGES.forEach(function (p, pi) {
+        var lvl = currentLevel(ri, pi);
+        var isEdited = !!edits[cellKey(ri, pi)];
+        var isSel = selected && selected.ri === ri && selected.pi === pi;
+        var cls = "pill-cell" + (lvl === "na" ? " na" : "") + (isEdited ? " edited" : "") + (isSel ? " selected" : "");
+        var style = lvl === "na" ? "" : ' style="background:var(--' + lvl + '-bg);color:var(--' + lvl + '-fg)"';
+        html += '<td class="cell"><button class="' + cls + '" data-r="' + ri + '" data-p="' + pi + '"' + style + ">" +
+          (lvl === "na" ? "" : '<i class="dot" style="background:currentColor"></i>') + LEVELS[lvl].label +
+          '<span class="pen" title="edited">✎</span>' +
+          '<span class="math">T' + row.tier + "+P" + p.rank + "</span></button></td>";
+      });
+      html += "</tr>";
+    });
+    html += "</tbody>";
+    table.innerHTML = html;
+    copyBtn.disabled = resetAllBtn.disabled = editCount() === 0;
+    renderDetail();
+  }
+
+  function renderDetail() {
+    if (!selected) {
+      detail.innerHTML = "Click a cell to inspect or change its priority.";
+      return;
+    }
+    var ri = selected.ri, pi = selected.pi;
+    var row = ROWS[ri], pkg = PACKAGES[pi];
+    var comp = computedLevel(ri, pi);
+    var cur = currentLevel(ri, pi);
+    var isEdited = !!edits[cellKey(ri, pi)];
+    var score = row.tier + pkg.rank;
+    var compText = comp === "na"
+      ? "computed <b>N/A</b> (carried over from the old matrix's package scopes)"
+      : "T" + row.tier + " (<code>seo_dashboard_registry.py</code>) + package rank " + pkg.rank +
+        " (<code>capacity_priority.py</code>) = score " + score + " → <b>" + LEVELS[comp].label + "</b>";
+    var head = "<b>" + row.name + " × " + pkg.label + "</b> — " + compText + "." +
+      (isEdited ? " Currently edited to <b>" + LEVELS[cur].label + "</b>." : "");
+    var bar = '<div class="editbar"><span class="lbl">Set to</span>';
+    LEVEL_ORDER.forEach(function (k) {
+      var active = cur === k ? " active" : "";
+      var style = k === "na"
+        ? ' style="background:var(--na-bg);color:var(--na-fg)"'
+        : ' style="background:var(--' + k + '-bg);color:var(--' + k + '-fg)"';
+      bar += '<button class="setbtn' + active + '" data-set="' + k + '"' + style + ">" +
+        (k === "na" ? "" : '<i class="dot" style="background:currentColor"></i>') + LEVELS[k].label + "</button>";
+    });
+    bar += '<button class="setbtn reset" data-set="__reset">Reset to computed</button></div>';
+    detail.innerHTML = head + bar;
+  }
+
+  table.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest(".pill-cell") : null;
+    if (!btn) return;
+    selected = { ri: +btn.getAttribute("data-r"), pi: +btn.getAttribute("data-p") };
+    render();
+  });
+
+  detail.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest(".setbtn") : null;
+    if (!btn || !selected) return;
+    var val = btn.getAttribute("data-set");
+    var key = cellKey(selected.ri, selected.pi);
+    if (val === "__reset" || val === computedLevel(selected.ri, selected.pi)) {
+      delete edits[key];
+    } else {
+      edits[key] = val;
+    }
+    saveEdits();
+    render();
+  });
+
+  resetAllBtn.addEventListener("click", function () {
+    if (!confirm("Clear all " + editCount() + " edits and go back to the computed matrix?")) return;
+    edits = {};
+    saveEdits();
+    render();
+  });
+
+  copyBtn.addEventListener("click", function () {
+    var lines = ["Priority matrix edits (" + new Date().toLocaleDateString() + "):"];
+    ROWS.forEach(function (row, ri) {
+      PACKAGES.forEach(function (p, pi) {
+        var e = edits[cellKey(ri, pi)];
+        if (!e) return;
+        lines.push("- " + row.name + " x " + p.label + ": " +
+          LEVELS[computedLevel(ri, pi)].label + " -> " + LEVELS[e].label);
+      });
+    });
+    var text = lines.join("\n");
+    function done() { showToast("Copied " + (lines.length - 1) + " edit" + (lines.length === 2 ? "" : "s") + " to clipboard"); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
+  }
+
+  document.getElementById("mathToggle").addEventListener("change", function (e) {
+    document.getElementById("matrixCard").classList.toggle("show-math", e.target.checked);
+  });
+
+  render();
+</script>
+</body>
+</html>
