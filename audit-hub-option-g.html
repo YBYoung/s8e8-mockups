@@ -507,6 +507,18 @@
     return '<td class="r"><span class="due' + red + '">' + c.due + tail + '</span></td>';
   }
   var LANES = [
+    {key:'all', label:'All',
+     hint:'Every enrolled client, blocked first.',
+     head:'<th></th><th>Client</th><th>Status</th><th class="r">Due</th><th>Last audit</th><th>Data</th>',
+     rows:function () { return blocked.concat(C.filter(function (c) { return c.kind !== 'blocked'; })); },
+     row:function (c, i) {
+       var stCls = c.kind === 'blocked' ? ' redink' : (c.kind === 'generating' ? ' blueink' : '');
+       var lastGlyph = c.last === 'No report yet' ? '' :
+         (c.viewed === true ? ' <span class="ok">✓</span>' : (c.viewed === false ? ' <span class="modew">○</span>' : ''));
+       var lastTxt = c.last === 'No report yet' ? '<span class="modew">None</span>' : c.last.replace('Sent ', '') ;
+       return nameCell(c, i) + '<td><div class="st' + stCls + '">' + c.line + '</div></td>' + dueCell(c) +
+         '<td><span class="due">' + lastTxt + '</span>' + lastGlyph + '</td><td>' + dots(c) + '</td>';
+     }},
     {key:'act', label:'Needs action', red:true,
      hint:'Everything that is blocked, and why.',
      head:'<th></th><th>Client</th><th>What is wrong</th><th class="r">Due</th><th>Data</th>',
