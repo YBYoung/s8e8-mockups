@@ -1,18 +1,16 @@
 <!--
-  Audit Hub redesign mockup : OPTION G "Hub" (wayfinder #745).
-  The requested mix of Ledger (B), Navigator (D3), and Lanes (E):
-  - Split layout from D3, but the LEFT panel takes 45% of the width and is a
-    real Ledger-style register table, not a card list.
-  - Lanes from E become the left panel's view switcher: Needs action, Drafts,
-    Schedule, Data health. Each lane swaps the table's COLUMNS to the ones
-    that question needs; the right detail pane stays constant.
-  - At-a-glance connectivity: a GA4/GSC/GBP three-dot cluster on every row in
-    every lane (filled green = connected, hollow = not), weeks in red when
-    below the QoQ minimum.
-  - Right pane: D3's detail (summary line, state actions, cycle story,
-    enrollment toggle, Data/Team/History, outbound links).
-  - Fully wired from one data array: lanes, row selection, arrow keys, search.
-  Palette and type: exec ink on neutral paper, system sans, color as ink only.
+  Audit Hub redesign mockup : OPTION G "Hub", extended (wayfinder #745).
+  The Ledger x Navigator x Lanes mix, now at realistic program scale:
+  - 40 enrolled clients (the real hub will show every enrolled client), so the
+    register's scroll behavior, lane counts, and scanning hold up under load.
+  - All counts (header sentence, lane badges) computed from the data array.
+  - Live: lane switching, row selection, arrow keys, search, tier filter.
+  - NEW: bulk data connections in the Data health lane. Multi-select clients
+    with checkboxes (or "Select all with issues"), and the right pane becomes
+    the bulk-connect window: per-source gap summary, per-client missing list,
+    one Google connect flow for the lot. Multi-select lives ONLY in Data
+    health; other lanes stay single-select triage.
+  Palette: exec ink on neutral paper, color as ink only. System sans.
 -->
 <title>Audit Hub redesign · Option G · Hub</title>
 <style>
@@ -78,7 +76,7 @@
 .audit-app .split{display:grid;grid-template-columns:45% 1fr;gap:20px;align-items:start;padding-top:16px}
 @media(max-width:980px){.audit-app .split{grid-template-columns:1fr}}
 
-/* lanes control (from Option E) */
+/* lanes control */
 .audit-app .lanes{display:inline-flex;background:var(--chip);border-radius:6px;padding:3px;gap:2px;flex-wrap:wrap}
 .audit-app .lanes button{font-family:var(--body);font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:6px 12px;border-radius:5px;cursor:pointer}
 .audit-app .lanes button:hover:not(.on){color:var(--ink)}
@@ -89,14 +87,22 @@
 .audit-app .lanetools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}
 .audit-app .lanetools .search{flex:1 1 130px;min-width:110px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--ink);padding:6px 9px;font:400 12.5px/1.2 var(--body)}
 .audit-app .lanetools .search::placeholder{color:var(--muted)}
-.audit-app .fsel{border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--sub);padding:6px 7px;font:600 11.5px/1.2 var(--body);max-width:120px}
+.audit-app .fsel{border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--sub);padding:6px 7px;font:600 11.5px/1.2 var(--body);max-width:150px}
 .audit-app .lanehint{font-size:11.5px;color:var(--muted);margin:0 0 8px}
+.audit-app .lanehint .paneax{margin-left:6px}
+.audit-app .count{font-size:11.5px;color:var(--muted);margin-left:auto}
+
+/* bulk bar (Data health multi-select) */
+.audit-app .bulkbar{display:none;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:8px 12px;margin:0 0 8px;font-size:12.5px;color:var(--sub);flex-wrap:wrap}
+.audit-app .bulkbar.shown{display:flex}
+.audit-app .bulkbar b{color:var(--ink)}
+.audit-app .bulkbar .gap{color:var(--red);font-weight:600}
 
 /* the register (left) */
 .audit-app .tcard{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
 .audit-app .tscroll{overflow-x:auto}
 .audit-app table.ht{width:100%;border-collapse:collapse}
-.audit-app .ht thead th{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;padding:10px 9px;border-bottom:1px solid var(--ink);white-space:nowrap;background:var(--card)}
+.audit-app .ht thead th{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;padding:10px 9px;border-bottom:1px solid var(--ink);white-space:nowrap;background:var(--card);position:sticky;top:0;z-index:2}
 .audit-app .ht thead th:first-child{padding-left:14px}
 .audit-app .ht thead th.r{text-align:right}
 .audit-app .ht tbody tr{border-bottom:1px solid var(--line-soft);cursor:pointer}
@@ -106,6 +112,8 @@
 .audit-app .ht td{padding:10px 9px;font-size:12.5px;vertical-align:middle}
 .audit-app .ht td:first-child{padding-left:14px}
 .audit-app .ht td.r{text-align:right;white-space:nowrap}
+.audit-app .ht .ck{width:26px;padding-right:0}
+.audit-app .ht .ck input{accent-color:var(--ink);cursor:pointer}
 .audit-app .idx{font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums;width:20px}
 .audit-app .cname{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
 .audit-app .ctier{margin-top:1px;font-size:10.5px;color:var(--muted);white-space:nowrap}
@@ -143,8 +151,8 @@
 .audit-app .foot-hint b{color:var(--sub);font-weight:600}
 
 /* the detail pane (right), sticky */
-.audit-app .pane{position:sticky;top:14px;background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:20px 24px 22px}
-@media(max-width:980px){.audit-app .pane{position:static}}
+.audit-app .pane{position:sticky;top:14px;background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:20px 24px 22px;max-height:calc(100vh - 28px);overflow-y:auto}
+@media(max-width:980px){.audit-app .pane{position:static;max-height:none}}
 .audit-app .pane h2{font:600 17px/1.2 var(--body);margin:0}
 .audit-app .psum{margin-top:5px;font-size:12.5px;color:var(--sub);line-height:1.5}
 .audit-app .psum b{color:var(--ink);font-weight:600}
@@ -174,6 +182,14 @@
 .audit-app .plinks a:hover{color:var(--ink)}
 .audit-app .paneax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:11.5px;cursor:pointer}
 .audit-app .paneax:hover{color:var(--ink)}
+/* bulk pane rows */
+.audit-app .bl{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px}
+.audit-app .bl:last-of-type{border-bottom:0}
+.audit-app .bl .nm{color:var(--ink);font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-app .bl .miss{color:var(--red);font-weight:600;font-size:11.5px;white-space:nowrap}
+.audit-app .bl .full{color:var(--green);font-size:11.5px;white-space:nowrap}
+.audit-app .bl .rm{color:var(--muted);cursor:pointer;font-size:12px}
+.audit-app .bl .rm:hover{color:var(--ink)}
 
 @media (prefers-reduced-motion:reduce){
   .audit-app .switch,.audit-app .switch i{transition:none}
@@ -198,7 +214,7 @@
     <div class="hd">
       <div>
         <h1>Audit Hub</h1>
-        <div class="meta">12 clients enrolled. <span class="redink">4 need your attention</span>, <b>2 drafts</b> are waiting to be reviewed and sent. Synced from Asana at 8:12 AM.</div>
+        <div class="meta" id="hdmeta"></div>
       </div>
       <div class="hd-actions">
         <button class="themebtn" id="themebtn" type="button">Theme</button>
@@ -215,12 +231,19 @@
         </div>
         <div class="lanetools">
           <input class="search" id="search" placeholder="Search clients" />
-          <select class="fsel"><option>Tier: any</option><option>Market Leader</option><option>Performance</option><option>Essential</option></select>
+          <select class="fsel" id="tiersel">
+            <option value="">Tier: any</option>
+            <option>Market Leader</option>
+            <option>Performance</option>
+            <option>Essential</option>
+          </select>
+          <span class="count" id="count"></span>
         </div>
         <p class="lanehint" id="lanehint"></p>
+        <div class="bulkbar" id="bulkbar"></div>
         <div class="tcard">
           <div class="tscroll"><table class="ht" id="regtable"><thead></thead><tbody></tbody></table></div>
-          <div class="foot-hint"><b>Click a row or use arrow keys</b> · lanes change the columns, the pane stays put · search is live</div>
+          <div class="foot-hint"><b>Click a row or use arrow keys</b> · lanes change the columns, the pane stays put · search, tier, and Data health multi-select are live</div>
         </div>
       </div>
 
@@ -239,9 +262,27 @@
     app.setAttribute('data-theme', dark ? 'light' : 'dark');
   });
 
-  // ---- data: one array drives the register and the pane ----
+  // ---- data: one array drives everything. 40 clients. ----
+  function slug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, ''); }
+  function mkOk(name, tier, who, gen, due, pct, w, lastDate, viewed) {
+    return {
+      id: slug(name), name: name, tier: tier, who: who, kind: 'ok',
+      line: 'Draft generates ' + gen, due: due, dueRed: '',
+      cyc: {pct: pct}, last: 'Sent ' + lastDate, viewed: viewed,
+      w: {ga4: w, gsc: w, gbp: w}, conn: {ga4: 1, gsc: 1, gbp: 1},
+      qoq: w >= 16, yoy: w >= 52, auto: true,
+      sum: tier + ' · <b>' + who + '</b> (Asana) · due <b>' + due + '</b> · last audit sent ' + lastDate +
+        (viewed ? ', <span class="seen">viewed</span>' : ', not yet viewed'),
+      story: 'The draft generates <b>' + gen + '</b>. Data is ' + (w >= 52 ? 'ready at ' + w + ' weeks.' :
+        (w >= 16 ? 'QoQ-ready at ' + w + ' weeks; YoY comparisons need 52 or more.' : 'thin at ' + w + ' weeks.')),
+      acts: [],
+      hist: [['Q2 2026', 'Sent ' + lastDate, viewed ? 'viewed' : 'not yet viewed']]
+    };
+  }
+
   var C = [
-    {id:'allure', name:'Allure Dental', tier:'Market Leader', ta:'ML', who:'Jessica Nguyen', kind:'blocked',
+    // ---- the detailed dozen ----
+    {id:'allure', name:'Allure Dental', tier:'Market Leader', who:'Jessica Nguyen', kind:'blocked',
      prob:'<b>Blocked:</b> Q2 draft unsent 16 days.', line:'Q2 draft unsent 16 days', due:'Jul 12', dueRed:'16d over',
      cyc:{pct:100, over:true}, last:'Draft · Jul 12', viewed:null,
      w:{ga4:61,gsc:64,gbp:61}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true,
@@ -250,7 +291,7 @@
      story:'The Q2 draft was generated <b>Jul 12</b>, three days before its Asana due date, and has been <span class="redink">waiting 16 days</span> for review. Sending or archiving it lets Q3 schedule normally.',
      acts:[['Review & send draft',1],['Archive draft',0]],
      hist:[['Q2 2026','<b>Draft</b> · Jul 12',''],['Q1 2026','Sent Apr 3','viewed Apr 5'],['Q4 2025','Sent Jan 6','viewed Jan 6'],['Q3 2025','Sent Oct 2','viewed Oct 4']]},
-    {id:'kent', name:'Kent Station Dental', tier:'Essential', ta:'Ess', who:'Soleil Parra', kind:'blocked',
+    {id:'kent', name:'Kent Station Dental', tier:'Essential', who:'Soleil Parra', kind:'blocked',
      prob:'<b>Failing:</b> generation failed 3 times, last Jul 26.', line:'Generation failing, 3 tries', due:'Jul 30', dueRed:'failing',
      cyc:{pct:97, over:true}, last:'Sent Apr 2', viewed:true,
      w:{ga4:55,gsc:55,gbp:55}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
@@ -258,7 +299,7 @@
      story:'Generation has <span class="redink">failed 3 times</span>, most recently Jul 26. The task is due <b>Jul 30</b>. Retrying from the error detail usually clears transient API failures.',
      acts:[['View error & retry',1],['Open in Asana',0]],
      hist:[['Q1 2026','Sent Apr 2','viewed Apr 3'],['Q4 2025','Sent Jan 8','viewed Jan 9']]},
-    {id:'plumb', name:'Plumb Dental', tier:'Performance', ta:'Perf', who:'Tanya Yeauger', kind:'blocked',
+    {id:'plumb', name:'Plumb Dental', tier:'Performance', who:'Tanya Yeauger', kind:'blocked',
      prob:'<b>Gap:</b> enrolled, no open Asana task.', line:'Enrolled, no open Asana task', due:'', dueRed:'no task',
      cyc:{none:true}, last:'Sent Jun 12', viewed:false,
      w:{ga4:34,gsc:34,gbp:34}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:false, auto:true,
@@ -266,7 +307,7 @@
      story:'Plumb is enrolled but has <span class="redink">no open audit task</span> in Asana, so nothing will generate. Creating the Q3 task with a due date restarts the cadence.',
      acts:[['Create task in Asana',1]],
      hist:[['Q2 2026','Sent Jun 12','not yet viewed'],['Q1 2026','Sent Mar 10','viewed Mar 12']]},
-    {id:'cedar', name:'Cedar Grove Family Dentistry', tier:'Essential', ta:'Ess', who:'Tommy C', kind:'blocked',
+    {id:'cedar', name:'Cedar Grove Family Dentistry', tier:'Essential', who:'Tommy C', kind:'blocked',
      prob:'<b>Not ready:</b> 8 weeks cached, QoQ needs 16 or more.', line:'8 weeks cached, needs 16+', due:'Aug 29', dueRed:'',
      cyc:{pct:8}, last:'No report yet', viewed:null,
      w:{ga4:8,gsc:8,gbp:8}, conn:{ga4:1,gsc:1,gbp:1}, qoq:false, yoy:false, auto:true, shortW:true,
@@ -274,7 +315,32 @@
      story:'Cedar Grove’s first audit is scheduled for <b>Aug 29</b> and will generate Aug 26. Only <span class="redink">8 weeks of data are cached</span>; QoQ comparisons need 16 or more. On pace to be ready in time.',
      acts:[['View cache detail',1]],
      hist:[['Q3 2026','First audit scheduled Aug 29','']]},
-    {id:'fisher', name:'Fisher & Zitterich Dentistry', tier:'Essential', ta:'Ess', who:'Tommy C', kind:'generating',
+    {id:'harbor', name:'Harbor Point Dental', tier:'Performance', who:'Soleil Parra', kind:'blocked',
+     prob:'<b>Failing:</b> generation failed 2 times, last Jul 27.', line:'Generation failing, 2 tries', due:'Aug 2', dueRed:'failing',
+     cyc:{pct:95, over:true}, last:'Sent May 1', viewed:true,
+     w:{ga4:47,gsc:47,gbp:47}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:false, auto:true,
+     sum:'Performance · <b>Soleil Parra</b> (Asana) · <span class="redink">due Aug 2, failing</span> · last audit sent May 1, <span class="seen">viewed</span>',
+     story:'Generation has <span class="redink">failed 2 times</span>, most recently Jul 27. The task is due <b>Aug 2</b>, so there is still time before the deadline passes.',
+     acts:[['View error & retry',1],['Open in Asana',0]],
+     hist:[['Q1 2026','Sent May 1','viewed May 2'],['Q4 2025','Sent Feb 3','viewed Feb 6']]},
+    {id:'maplemain', name:'Maple & Main Dentistry', tier:'Essential', who:'Tanya Yeauger', kind:'blocked',
+     prob:'<b>Gap:</b> enrolled, no open Asana task.', line:'Enrolled, no open Asana task', due:'', dueRed:'no task',
+     cyc:{none:true}, last:'Sent May 30', viewed:true,
+     w:{ga4:41,gsc:41,gbp:41}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:false, auto:true,
+     sum:'Essential · <b>Tanya Yeauger</b> (Asana) · <span class="redink">no upcoming task</span> · last audit sent May 30, <span class="seen">viewed</span>',
+     story:'Maple & Main is enrolled but has <span class="redink">no open audit task</span> in Asana. Creating the Q3 task with a due date restarts the cadence.',
+     acts:[['Create task in Asana',1]],
+     hist:[['Q2 2026','Sent May 30','viewed Jun 2'],['Q1 2026','Sent Feb 27','viewed Mar 1']]},
+    {id:'stonebridge', name:'Stonebridge Dental Arts', tier:'Market Leader', who:'Jessica Nguyen', kind:'blocked',
+     prob:'<b>Blocked:</b> Q2 draft unsent 10 days.', line:'Q2 draft unsent 10 days', due:'Jul 21', dueRed:'7d over',
+     cyc:{pct:100, over:true}, last:'Draft · Jul 18', viewed:null,
+     w:{ga4:66,gsc:66,gbp:66}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true,
+     draft:{gen:'Jul 18', wait:10}, auto:true,
+     sum:'Market Leader · <b>Jessica Nguyen</b> (Asana) · <span class="redink">due Jul 21, 7 days over</span> · last audit sent Apr 18, <span class="seen">viewed</span>',
+     story:'The Q2 draft was generated <b>Jul 18</b> and has been <span class="redink">waiting 10 days</span> for review. Sending or archiving it lets Q3 schedule normally.',
+     acts:[['Review & send draft',1],['Archive draft',0]],
+     hist:[['Q2 2026','<b>Draft</b> · Jul 18',''],['Q1 2026','Sent Apr 18','viewed Apr 20']]},
+    {id:'fisher', name:'Fisher & Zitterich Dentistry', tier:'Essential', who:'Tommy C', kind:'generating',
      prob:'', line:'Generating the Q2 draft · 62%', due:'Jul 29', dueRed:'',
      cyc:{pct:98}, last:'Sent Apr 28', viewed:true,
      w:{ga4:54,gsc:54,gbp:54}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
@@ -283,39 +349,16 @@
      story:'The Q2 draft is <b>generating now, 62% complete</b>. It will appear in Drafts when it finishes; the task is due <b>Jul 29</b>.',
      acts:[['View progress',1]],
      hist:[['Q1 2026','Sent Apr 28','viewed Apr 29'],['Q4 2025','Sent Jan 22','viewed Jan 25']]},
-    {id:'holliston', name:'Holliston Dentistry', tier:'Essential', ta:'Ess', who:'Yitzchak Young', kind:'ok',
-     prob:'', line:'Draft generates tomorrow, Jul 29', due:'Aug 1', dueRed:'',
-     cyc:{pct:96}, last:'Sent May 5', viewed:true,
-     w:{ga4:53,gsc:53,gbp:53}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
-     sum:'Essential · <b>Yitzchak Young</b> (Asana) · due <b>Aug 1</b> · last audit sent May 5, <span class="seen">viewed</span>',
-     story:'The draft generates <b>tomorrow, Jul 29</b>, three days before the Aug 1 due date. Data is ready at 53 weeks.',
-     acts:[],
-     hist:[['Q1 2026','Sent May 5','viewed May 6'],['Q4 2025','Sent Feb 2','viewed Feb 4']]},
-    {id:'champion', name:'Champion Dental Group', tier:'Performance', ta:'Perf', who:'Jessica Nguyen', kind:'ok',
-     prob:'', line:'Draft generates Aug 5', due:'Aug 8', dueRed:'',
-     cyc:{pct:90}, last:'Sent Jun 30', viewed:true,
-     w:{ga4:52,gsc:52,gbp:52}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
-     sum:'Performance · <b>Jessica Nguyen</b> (Asana) · due <b>Aug 8</b> · last audit sent Jun 30, <span class="seen">viewed</span>',
-     story:'The draft generates <b>Aug 5</b>. Data is ready at 52 weeks.',
-     acts:[],
-     hist:[['Q2 2026','Sent Jun 30','viewed Jul 1'],['Q1 2026','Sent Mar 28','viewed Mar 30']]},
-    {id:'inmotion', name:'In Motion Dentistry', tier:'Market Leader', ta:'ML', who:'Tanya Yeauger', kind:'ok',
-     prob:'', line:'Draft generates Aug 12', due:'Aug 15', dueRed:'',
-     cyc:{pct:55}, last:'Sent Jul 2', viewed:true,
-     w:{ga4:58,gsc:58,gbp:58}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
-     sum:'Market Leader · <b>Tanya Yeauger</b> (Asana) · due <b>Aug 15</b> · last audit sent Jul 2, <span class="seen">viewed</span>',
-     story:'The draft generates <b>Aug 12</b>. Data is ready at 58 weeks.',
-     acts:[],
-     hist:[['Q2 2026','Sent Jul 2','viewed Jul 3'],['Q1 2026','Sent Apr 4','viewed Apr 4']]},
-    {id:'lakeview', name:'Lakeview Dental Arts', tier:'Performance', ta:'Perf', who:'Tanya Yeauger', kind:'ok',
-     prob:'', line:'Draft generates Aug 19', due:'Aug 22', dueRed:'',
-     cyc:{pct:22}, last:'Sent Jul 10', viewed:false,
-     w:{ga4:57,gsc:57,gbp:57}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:true,
-     sum:'Performance · <b>Tanya Yeauger</b> (Asana) · due <b>Aug 22</b> · last audit sent Jul 10, not yet viewed',
-     story:'The draft generates <b>Aug 19</b>. The Q2 report sent Jul 10 has not been viewed yet.',
-     acts:[],
-     hist:[['Q2 2026','Sent Jul 10','not yet viewed'],['Q1 2026','Sent Apr 11','viewed Apr 14']]},
-    {id:'smile', name:'Smile & Co. Roseville', tier:'Performance', ta:'Perf', who:'Jessica Nguyen', kind:'manual',
+    {id:'clearwater', name:'Clearwater Dentistry', tier:'Performance', who:'Jessica Nguyen', kind:'ok',
+     prob:'', line:'Draft waiting 3 days', due:'Jul 28', dueRed:'',
+     cyc:{pct:99}, last:'Draft · Jul 25', viewed:null,
+     w:{ga4:59,gsc:59,gbp:59}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true,
+     draft:{gen:'Jul 25', wait:3}, auto:true,
+     sum:'Performance · <b>Jessica Nguyen</b> (Asana) · due <b>Jul 28</b> · Q2 draft waiting 3 days',
+     story:'The Q2 draft was generated <b>Jul 25</b> and has waited 3 days, still inside the normal review window. Review and send it before the next poll.',
+     acts:[['Review & send draft',1],['Archive draft',0]],
+     hist:[['Q2 2026','<b>Draft</b> · Jul 25',''],['Q1 2026','Sent Apr 24','viewed Apr 25']]},
+    {id:'smile', name:'Smile & Co. Roseville', tier:'Performance', who:'Jessica Nguyen', kind:'manual',
      prob:'', line:'Auto-audit off, manual only', due:'Aug 20', dueRed:'',
      cyc:{pct:32}, last:'Sent Jul 3', viewed:true,
      w:{ga4:60,gsc:60,gbp:60}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:false,
@@ -323,32 +366,92 @@
      story:'Auto-audit is <b>off</b> for this client. Generate by hand when the Aug 20 due date approaches.',
      acts:[['Generate now',1]],
      hist:[['Q2 2026','Sent Jul 3','viewed Jul 3'],['Q1 2026','Sent Apr 2','viewed Apr 5']]},
-    {id:'bright', name:'Bright Peak Dental', tier:'Performance', ta:'Perf', who:'Soleil Parra', kind:'ok',
-     prob:'', line:'Draft generates Sep 2', due:'Sep 5', dueRed:'',
-     cyc:{pct:30}, last:'Sent Jun 28', viewed:false,
-     w:{ga4:21,gsc:21,gbp:21}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:false, auto:true,
-     sum:'Performance · <b>Soleil Parra</b> (Asana) · due <b>Sep 5</b> · last audit sent Jun 28, not yet viewed',
-     story:'The draft generates <b>Sep 2</b>. The cache is thin at 21 weeks: QoQ-ready, but YoY comparisons need 52 or more.',
-     acts:[],
-     hist:[['Q2 2026','Sent Jun 28','not yet viewed'],['Q1 2026','Sent Mar 30','viewed Apr 1']]},
-    {id:'marina', name:'Marina Smiles Dental', tier:'Essential', ta:'Ess', who:'Unassigned', kind:'manual',
+    {id:'meadowlark', name:'Meadowlark Dental', tier:'Essential', who:'Tommy C', kind:'ok',
+     prob:'', line:'Draft generates Aug 21', due:'Aug 24', dueRed:'',
+     cyc:{pct:40}, last:'Sent Jun 20', viewed:true,
+     w:{ga4:38,gsc:0,gbp:38}, conn:{ga4:1,gsc:0,gbp:1}, qoq:true, yoy:false, auto:true,
+     sum:'Essential · <b>Tommy C</b> (Asana) · due <b>Aug 24</b> · <span class="redink">GSC not connected</span> · last audit sent Jun 20, <span class="seen">viewed</span>',
+     story:'The draft generates <b>Aug 21</b>, but <span class="redink">GSC is not connected</span>, so the search-performance section will be empty unless it is connected first.',
+     acts:[['Manage connections',1]],
+     hist:[['Q2 2026','Sent Jun 20','viewed Jun 23'],['Q1 2026','Sent Mar 18','viewed Mar 20']]},
+    {id:'marina', name:'Marina Smiles Dental', tier:'Essential', who:'Unassigned', kind:'manual',
      prob:'', line:'GBP not connected, manual only', due:'', dueRed:'no task',
      cyc:{none:true}, last:'No report yet', viewed:null,
      w:{ga4:26,gsc:26,gbp:0}, conn:{ga4:1,gsc:1,gbp:0}, qoq:true, yoy:false, auto:false,
      sum:'Essential · <b>Unassigned</b> · <span class="redink">GBP not connected</span> · no report yet',
      story:'<span class="redink">GBP is not connected</span>, so Generate is unavailable and no task is scheduled. Connecting GBP restores the cadence.',
      acts:[['Manage connections',1]],
-     hist:[]}
+     hist:[]},
+    // ---- the rest of the roster ----
+    {id:'bayline', name:'Bayline Dental', tier:'Essential', who:'Unassigned', kind:'manual',
+     prob:'', line:'GBP not connected, manual only', due:'', dueRed:'no task',
+     cyc:{none:true}, last:'No report yet', viewed:null,
+     w:{ga4:19,gsc:19,gbp:0}, conn:{ga4:1,gsc:1,gbp:0}, qoq:true, yoy:false, auto:false,
+     sum:'Essential · <b>Unassigned</b> · <span class="redink">GBP not connected</span> · no report yet',
+     story:'<span class="redink">GBP is not connected</span> and no audit task exists yet. Connect GBP and create the first task to start the cadence.',
+     acts:[['Manage connections',1]],
+     hist:[]},
+    {id:'ironhorse', name:'Iron Horse Dental', tier:'Performance', who:'Tanya Yeauger', kind:'manual',
+     prob:'', line:'Auto-audit off, manual only', due:'Aug 30', dueRed:'',
+     cyc:{pct:25}, last:'Sent Jul 8', viewed:true,
+     w:{ga4:63,gsc:63,gbp:63}, conn:{ga4:1,gsc:1,gbp:1}, qoq:true, yoy:true, auto:false,
+     sum:'Performance · <b>Tanya Yeauger</b> (Asana) · due <b>Aug 30</b> · last audit sent Jul 8, <span class="seen">viewed</span>',
+     story:'Auto-audit is <b>off</b> for this client. Generate by hand when the Aug 30 due date approaches.',
+     acts:[['Generate now',1]],
+     hist:[['Q2 2026','Sent Jul 8','viewed Jul 10']]},
+    mkOk('Sagebrush Dental','Essential','Tommy C','Sep 9','Sep 12',5,11,'no reports yet',null),
+    mkOk('Twin Rivers Dentistry','Essential','Soleil Parra','Sep 23','Sep 26',3,6,'no reports yet',null),
+    mkOk('Riverbend Dental Studio','Market Leader','Jessica Nguyen','Aug 6','Aug 9',90,62,'May 8',true),
+    mkOk('Oak Hollow Dentistry','Essential','Tommy C','Aug 7','Aug 10',88,49,'May 9',true),
+    mkOk('Pinecrest Smiles','Performance','Soleil Parra','Aug 8','Aug 11',85,50,'May 12',true),
+    mkOk('Summit Ridge Dental','Performance','Tanya Yeauger','Aug 9','Aug 12',80,55,'May 13',false),
+    mkOk('Blue Spruce Family Dental','Essential','Soleil Parra','Aug 12','Aug 15',72,51,'May 16',true),
+    mkOk('Willow Creek Smiles','Performance','Jessica Nguyen','Aug 14','Aug 17',68,58,'May 18',true),
+    mkOk('North Star Dental Care','Market Leader','Tanya Yeauger','Aug 16','Aug 19',60,71,'May 20',true),
+    mkOk('Crestview Dental Group','Performance','Soleil Parra','Aug 19','Aug 22',55,46,'May 23',false),
+    mkOk('Sunstone Dental','Essential','Tommy C','Aug 21','Aug 24',50,44,'May 25',true),
+    mkOk('Copper Canyon Dental','Performance','Jessica Nguyen','Aug 23','Aug 26',45,53,'May 27',true),
+    mkOk('Prairie Gate Dental','Essential','Tanya Yeauger','Aug 26','Aug 29',40,48,'May 30',true),
+    mkOk('Lantern Hill Dentistry','Essential','Soleil Parra','Aug 28','Aug 31',36,42,'Jun 1',false),
+    mkOk('Silver Birch Dental','Performance','Tommy C','Sep 2','Sep 5',30,57,'Jun 5',true),
+    mkOk('Foxglove Family Dental','Essential','Jessica Nguyen','Sep 4','Sep 7',26,39,'Jun 7',true),
+    mkOk('Highland Row Dental','Performance','Tanya Yeauger','Sep 9','Sep 12',20,61,'Jun 12',true),
+    mkOk('Cobalt Coast Dental','Performance','Soleil Parra','Sep 11','Sep 14',18,52,'Jun 14',false),
+    mkOk('Redwood Family Dentistry','Market Leader','Tommy C','Sep 16','Sep 19',12,68,'Jun 19',true),
+    mkOk('Beacon Hill Dental','Essential','Jessica Nguyen','Sep 18','Sep 21',10,45,'Jun 21',true),
+    mkOk('Verdant Valley Dental','Essential','Tanya Yeauger','Sep 23','Sep 26',6,41,'Jun 26',true),
+    mkOk('Bright Peak Dental','Performance','Soleil Parra','Sep 2','Sep 5',30,21,'Jun 28',false),
+    mkOk('Lakeview Dental Arts','Performance','Tanya Yeauger','Aug 19','Aug 22',22,57,'Jul 10',false),
+    mkOk('In Motion Dentistry','Market Leader','Tanya Yeauger','Aug 12','Aug 15',55,58,'Jul 2',true),
+    mkOk('Champion Dental Group','Performance','Jessica Nguyen','Aug 5','Aug 8',90,52,'Jun 30',true),
+    mkOk('Holliston Dentistry','Essential','Yitzchak Young','Jul 29','Aug 1',96,53,'May 5',true)
   ];
+  // thin-cache flags for the two ramp-up clients
+  C.forEach(function (c) { if (c.w.ga4 < 16) c.shortW = true; });
+  // ramp-up clients: no report history yet
+  ['sagebrushdental','twinriversdentistry'].forEach(function (id) {
+    var c = C.filter(function (x) { return x.id === id; })[0];
+    c.last = 'No report yet'; c.viewed = null;
+    c.sum = c.tier + ' · <b>' + c.who + '</b> (Asana) · first audit <b>' + c.due + '</b> · no report yet';
+    c.story = 'The first audit is scheduled for <b>' + c.due + '</b>. The cache is <span class="redink">thin at ' +
+      c.w.ga4 + ' weeks</span>; QoQ comparisons need 16 or more, so it may not be ready in time.';
+    c.hist = [];
+  });
   var byId = {}; C.forEach(function (c) { byId[c.id] = c; });
 
-  var LINKING = {id:'_link', name:'Needs linking',
+  var blocked = C.filter(function (c) { return c.kind === 'blocked'; });
+  var drafts = C.filter(function (c) { return c.draft; });
+  var LINKING = {id:'_link',
     sum:'2 Asana audit tasks are not matched to any client. They appear in no row until linked.',
     tasks:[['Q3 Audit · Sunrise Dental Care','Performance section · due Aug 14'],
            ['Quarterly Audit · Northgate Smiles','Essential section · no due date']]};
 
-  // ---- lanes: each lane picks rows and columns ----
-  var blocked = ['allure','kent','plumb','cedar'];
+  document.getElementById('hdmeta').innerHTML = C.length + ' clients enrolled. <span class="redink">' +
+    blocked.length + ' need your attention</span>, <b>' + drafts.filter(function (c) { return !c.draft.incoming; }).length +
+    ' drafts</b> are waiting to be reviewed and sent. Synced from Asana at 8:12 AM.';
+
+  // ---- lane definitions ----
+  function hasIssue(c) { return !c.conn.ga4 || !c.conn.gsc || !c.conn.gbp || c.w.ga4 < 16; }
   function dots(c) {
     return '<span class="dots" title="GA4 · GSC · GBP">' +
       ['ga4','gsc','gbp'].map(function (k) { return '<span class="dot' + (c.conn[k] ? '' : ' off') + '"></span>'; }).join('') +
@@ -365,17 +468,17 @@
     return '<td class="r"><span class="due' + red + '">' + c.due + tail + '</span></td>';
   }
   var LANES = [
-    {key:'act', label:'Needs action', count:4, red:true,
+    {key:'act', label:'Needs action', red:true,
      hint:'Everything that is blocked, and why.',
      head:'<th></th><th>Client</th><th>What is wrong</th><th class="r">Due</th><th>Data</th>',
-     rows:function () { return blocked.map(function (id) { return byId[id]; }); },
+     rows:function () { return blocked; },
      row:function (c, i) {
        return nameCell(c, i) + '<td><div class="st redink">' + c.prob + '</div></td>' + dueCell(c) + '<td>' + dots(c) + '</td>';
-     }, linkingRow:true},
-    {key:'drafts', label:'Drafts', count:2,
+     }, linkingRow:true, cols:5},
+    {key:'drafts', label:'Drafts',
      hint:'Reports waiting to be reviewed and sent.',
      head:'<th></th><th>Client</th><th>Generated</th><th class="r">Waiting</th><th class="r">Due</th><th>Data</th>',
-     rows:function () { return [byId.allure, byId.fisher]; },
+     rows:function () { return drafts; },
      row:function (c, i) {
        var waiting = c.draft.incoming
          ? '<span class="st blueink">generating · 62%</span>'
@@ -383,7 +486,7 @@
        return nameCell(c, i) + '<td><span class="due">' + c.draft.gen + '</span></td>' +
          '<td class="r">' + waiting + '</td>' + dueCell(c) + '<td>' + dots(c) + '</td>';
      }},
-    {key:'sched', label:'Schedule', count:12,
+    {key:'sched', label:'Schedule',
      hint:'Where every client sits in its cycle.',
      head:'<th></th><th>Client</th><th>Cycle</th><th class="r">Due</th><th>Mode</th><th>Data</th>',
      rows:function () { return C; },
@@ -393,9 +496,9 @@
        return nameCell(c, i) + '<td>' + bar + '</td>' + dueCell(c) +
          '<td><span class="modew">' + (c.auto ? 'Auto' : 'Manual') + '</span></td><td>' + dots(c) + '</td>';
      }},
-    {key:'data', label:'Data health', count:12,
+    {key:'data', label:'Data health',
      hint:'Connections and cache depth per source.',
-     head:'<th></th><th>Client</th><th class="r">GA4</th><th class="r">GSC</th><th class="r">GBP</th><th>QoQ</th><th>YoY</th>',
+     head:'<th class="ck"></th><th></th><th>Client</th><th class="r">GA4</th><th class="r">GSC</th><th class="r">GBP</th><th>QoQ</th><th>YoY</th>',
      rows:function () { return C; },
      row:function (c, i) {
        function wcell(k) {
@@ -403,35 +506,87 @@
          var red = c.w[k] < 16 ? ' redink' : '';
          return '<td class="r"><span class="wk num' + red + '" style="margin-left:0">' + c.w[k] + 'w</span></td>';
        }
-       return nameCell(c, i) + wcell('ga4') + wcell('gsc') + wcell('gbp') +
+       return '<td class="ck"><input type="checkbox" data-ck="' + c.id + '"' + (bulkSel.has(c.id) ? ' checked' : '') + '></td>' +
+         nameCell(c, i) + wcell('ga4') + wcell('gsc') + wcell('gbp') +
          '<td>' + (c.qoq ? '<span class="ok">ready ✓</span>' : '<span class="nok">needs 16w+</span>') + '</td>' +
          '<td>' + (c.yoy ? '<span class="ok">ready ✓</span>' : '<span class="nok">needs 52w+</span>') + '</td>';
-     }}
+     }, bulk:true}
   ];
 
-  // ---- state + render ----
-  var lane = LANES[0], sel = 'allure', q = '';
+  // ---- state ----
+  var lane = LANES[0], sel = 'allure', q = '', tier = '', bulkSel = new Set();
   var lanesEl = document.getElementById('lanes'), thead = document.querySelector('#regtable thead'),
       tbody = document.querySelector('#regtable tbody'), paneEl = document.getElementById('pane'),
-      hintEl = document.getElementById('lanehint');
+      hintEl = document.getElementById('lanehint'), countEl = document.getElementById('count'),
+      bulkbarEl = document.getElementById('bulkbar');
 
+  function visibleRows() {
+    return lane.rows().filter(function (c) {
+      return (!q || c.name.toLowerCase().indexOf(q) !== -1) && (!tier || c.tier === tier);
+    });
+  }
   function renderLanes() {
     lanesEl.innerHTML = LANES.map(function (l) {
       return '<button class="' + (l === lane ? 'on' : '') + '" data-k="' + l.key + '">' + l.label +
-        '<span class="n num' + (l.red ? ' redink' : '') + '">' + l.count + '</span></button>';
+        '<span class="n num' + (l.red ? ' redink' : '') + '">' + l.rows().length + '</span></button>';
     }).join('');
   }
-  function visibleRows() {
-    return lane.rows().filter(function (c) { return !q || c.name.toLowerCase().indexOf(q) !== -1; });
+  function renderBulkbar() {
+    if (!lane.bulk || bulkSel.size === 0) { bulkbarEl.classList.remove('shown'); return; }
+    var missing = {ga4:0, gsc:0, gbp:0}, full = 0;
+    bulkSel.forEach(function (id) {
+      var c = byId[id], any = false;
+      ['ga4','gsc','gbp'].forEach(function (k) { if (!c.conn[k]) { missing[k]++; any = true; } });
+      if (!any) full++;
+    });
+    var gaps = ['ga4','gsc','gbp'].filter(function (k) { return missing[k]; })
+      .map(function (k) { return '<span class="gap">' + k.toUpperCase() + ' missing on ' + missing[k] + '</span>'; }).join(' · ');
+    bulkbarEl.innerHTML = '<b>' + bulkSel.size + ' selected</b>' + (gaps ? ' · ' + gaps : '') +
+      (full ? ' · ' + full + ' already fully connected' : '') +
+      ' <span class="paneax" id="bulkclear" style="margin-left:auto">Clear selection</span>';
+    bulkbarEl.classList.add('shown');
+    document.getElementById('bulkclear').addEventListener('click', function () {
+      bulkSel.clear(); renderTable(); renderBulkbar(); renderPane();
+    });
   }
   function renderTable() {
-    hintEl.textContent = lane.hint;
+    hintEl.innerHTML = lane.hint + (lane.bulk ?
+      ' <span class="paneax" id="selissues">Select all with issues</span>' : '');
     thead.innerHTML = '<tr>' + lane.head + '</tr>';
     var rows = visibleRows();
+    countEl.textContent = rows.length + ' of ' + lane.rows().length;
     tbody.innerHTML = rows.map(function (c, i) {
       return '<tr data-id="' + c.id + '" class="' + (c.id === sel ? 'sel' : '') + '">' + lane.row(c, i) + '</tr>';
-    }).join('') + (lane.linkingRow && !q ?
-      '<tr class="linkrow" data-id="_link"><td colspan="5"><span class="cnt num">2</span>Asana tasks need linking →</td></tr>' : '');
+    }).join('') + (lane.linkingRow && !q && !tier ?
+      '<tr class="linkrow" data-id="_link"><td colspan="' + lane.cols + '"><span class="cnt num">2</span>Asana tasks need linking →</td></tr>' : '');
+    var si = document.getElementById('selissues');
+    if (si) si.addEventListener('click', function () {
+      C.filter(hasIssue).forEach(function (c) { bulkSel.add(c.id); });
+      renderTable(); renderBulkbar(); renderPane();
+    });
+  }
+  function paneBulk() {
+    var list = C.filter(function (c) { return bulkSel.has(c.id); });
+    var missing = {ga4:[], gsc:[], gbp:[]};
+    list.forEach(function (c) {
+      ['ga4','gsc','gbp'].forEach(function (k) { if (!c.conn[k]) missing[k].push(c.name); });
+    });
+    var gapSummary = ['ga4','gsc','gbp'].filter(function (k) { return missing[k].length; })
+      .map(function (k) { return '<b>' + k.toUpperCase() + '</b> missing on ' + missing[k].length; }).join(' · ') || 'no missing connections';
+    return '<h2>Connect data · ' + list.length + ' clients</h2>' +
+      '<div class="psum">' + gapSummary + '</div>' +
+      '<div class="pbtns"><button class="btn dark mini">Start Google connect flow</button><button class="btn ghost mini" id="paneclear">Clear selection</button></div>' +
+      '<div class="psec">How bulk connect works</div>' +
+      '<p class="pstory">One Google sign-in per agency account covers every selected client: available GA4 properties, GSC sites, and GBP locations are matched to clients by domain and you confirm each match. Sources already connected are skipped, so selecting healthy clients is harmless. Thin caches backfill automatically after connecting; history older than the Google retention windows cannot be recovered, which is why connecting early matters.</p>' +
+      '<div class="psec">Selected clients</div>' +
+      list.map(function (c) {
+        var miss = ['ga4','gsc','gbp'].filter(function (k) { return !c.conn[k]; }).map(function (k) { return k.toUpperCase(); });
+        var thin = c.w.ga4 && c.w.ga4 < 16 ? ' · thin cache ' + c.w.ga4 + 'w' : '';
+        return '<div class="bl"><span class="nm">' + c.name + '</span>' +
+          (miss.length ? '<span class="miss">' + miss.join(' + ') + ' missing' + thin + '</span>'
+                       : '<span class="full">fully connected' + (thin ? ', thin cache' : '') + '</span>') +
+          '<span class="rm" data-rm="' + c.id + '" title="Remove from selection">✕</span></div>';
+      }).join('');
   }
   function paneFor(c) {
     if (c.id === '_link') {
@@ -449,7 +604,7 @@
     function dline(k, label) {
       if (!c.conn[k]) return '<div class="pline"><span class="k">' + label + '</span><span class="v"><span class="nok">not connected</span></span></div>';
       var red = c.w[k] < 16;
-      return '<div class="pline"><span class="k">' + label + '</span><span class="v num' + '">' +
+      return '<div class="pline"><span class="k">' + label + '</span><span class="v num">' +
         (red ? '<span class="nok">' + c.w[k] + ' weeks</span>' : c.w[k] + ' weeks') + '</span>' +
         '<span class="okv">' + (c.qoq ? '<span class="ok">QoQ ✓</span>' : '<span class="nok">QoQ ✗</span>') + ' ' +
         (c.yoy ? '<span class="ok">YoY ✓</span>' : '<span class="nok">YoY ✗</span>') + '</span></div>';
@@ -468,18 +623,31 @@
         '<div><div class="psec">History</div>' +
           (c.hist.length ? c.hist.map(function (h) {
             return '<div class="pline"><span class="k">' + h[0] + '</span><span class="v">' + h[1] +
-              (h[2] ? (h[2].indexOf('viewed ') === 0 ? ' · <span class="seen">' + h[2] + '</span>' : ' · ' + h[2]) : '') + '</span></div>';
+              (h[2] ? (h[2].indexOf('viewed') === 0 ? ' · <span class="seen">' + h[2] + '</span>' : ' · ' + h[2]) : '') + '</span></div>';
           }).join('') : '<div class="pline"><span class="v" style="color:var(--muted)">No audits yet</span></div>') + '</div>' +
       '</div>' +
       '<div class="plinks"><a href="#">View in Asana ↗</a> · <a href="#">Open Report Editor ↗</a></div>';
   }
   function renderPane() {
+    if (lane.bulk && bulkSel.size > 0) {
+      paneEl.innerHTML = paneBulk();
+      var pc = document.getElementById('paneclear');
+      if (pc) pc.addEventListener('click', function () {
+        bulkSel.clear(); renderTable(); renderBulkbar(); renderPane();
+      });
+      paneEl.querySelectorAll('[data-rm]').forEach(function (x) {
+        x.addEventListener('click', function () {
+          bulkSel.delete(x.dataset.rm); renderTable(); renderBulkbar(); renderPane();
+        });
+      });
+      return;
+    }
     paneEl.innerHTML = paneFor(sel === '_link' ? {id:'_link'} : byId[sel]);
     paneEl.querySelectorAll('.switch').forEach(function (s) {
       s.addEventListener('click', function () { s.classList.toggle('on'); });
     });
   }
-  function renderAll() { renderLanes(); renderTable(); renderPane(); }
+  function renderAll() { renderLanes(); renderTable(); renderBulkbar(); renderPane(); }
 
   lanesEl.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
@@ -489,22 +657,31 @@
     renderAll();
   });
   tbody.addEventListener('click', function (e) {
+    var ck = e.target.closest('input[data-ck]');
+    if (ck) {
+      if (ck.checked) bulkSel.add(ck.dataset.ck); else bulkSel.delete(ck.dataset.ck);
+      renderBulkbar(); renderPane();
+      return;
+    }
     var tr = e.target.closest('tr'); if (!tr) return;
     sel = tr.dataset.id; renderTable(); renderPane();
   });
   document.getElementById('search').addEventListener('input', function (e) {
-    q = e.target.value.trim().toLowerCase();
-    renderTable();
+    q = e.target.value.trim().toLowerCase(); renderTable();
+  });
+  document.getElementById('tiersel').addEventListener('change', function (e) {
+    tier = e.target.value; renderTable();
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
     e.preventDefault();
     var ids = visibleRows().map(function (c) { return c.id; });
-    if (lane.linkingRow && !q) ids.push('_link');
+    if (lane.linkingRow && !q && !tier) ids.push('_link');
     var i = ids.indexOf(sel);
     var next = e.key === 'ArrowDown' ? Math.min(ids.length - 1, i + 1) : Math.max(0, i - 1);
     sel = ids[next]; renderTable(); renderPane();
+    var row = tbody.querySelector('tr.sel'); if (row) row.scrollIntoView({block:'nearest'});
   });
 
   renderAll();
