@@ -133,6 +133,43 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   .toast .tdot{width:8px;height:8px;border-radius:50%;background:#6ac48b;flex:none;}
 
+  /* ---- view tabs + ask ---- */
+  .viewtabs{display:inline-flex;gap:2px;background:var(--surface-2);border:1px solid var(--line-strong);border-radius:9px;padding:3px;margin:4px 0 2px;}
+  .viewtab{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-soft);background:transparent;border:0;border-radius:7px;padding:7px 16px;cursor:pointer;transition:.12s;}
+  .viewtab.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow);}
+  .view{display:none;} .view.active{display:block;}
+  body.mode-ask .search, body.mode-ask #expandAll, body.mode-ask #copyAll{display:none;}
+  .ask-hero{max-width:640px;margin:40px auto 0;text-align:center;}
+  .ask-title{font-size:22px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;}
+  .ask-sub{font-size:13.5px;color:var(--ink-soft);margin:0 auto 20px;max-width:48ch;line-height:1.5;}
+  .ask-box{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);}
+  .ask-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 15%,transparent);}
+  .ask-box svg{flex:none;opacity:.5;}
+  .ask-box input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);outline:none;font-size:16px;font-family:inherit;}
+  .ask-chips-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin:26px 0 12px;}
+  .ask-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+  .ask-chip{font:inherit;font-size:12.5px;font-weight:500;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;padding:7px 12px;cursor:pointer;transition:.12s;}
+  .ask-chip:hover{border-color:var(--accent);color:var(--ink);}
+  .ask-results{max-width:760px;margin:24px auto 0;}
+  .ans-hero{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
+  .ans-hero-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:10px;}
+  .match{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--green);display:inline-flex;align-items:center;gap:6px;}
+  .match .mdot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+  .match.low{color:var(--amber);} .match.low .mdot{background:var(--amber);}
+  .ans-cat{font-size:11.5px;color:var(--ink-faint);font-weight:600;}
+  .ans-q{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-bottom:10px;text-wrap:balance;}
+  .ans-a{font-size:15px;line-height:1.62;color:var(--ink);}
+  .ans-meta{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .ask-related h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);margin:0 0 10px;}
+  .rel-item{display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s;}
+  .rel-item:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 4%,transparent);}
+  .rel-item .rq{flex:1;font-weight:500;font-size:14px;}
+  .rel-item .rmatch{font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums;font-weight:600;}
+  .ans-none{background:var(--surface);border:1px dashed var(--line-strong);border-radius:12px;padding:26px 24px;text-align:center;}
+  .ans-none .nh{font-size:16px;font-weight:700;margin-bottom:6px;}
+  .ans-none .ns{font-size:13.5px;color:var(--ink-soft);margin:0 auto 16px;max-width:52ch;}
+  .ask-simnote{max-width:760px;margin:16px auto 0;font-size:11.5px;color:var(--ink-faint);text-align:center;font-style:italic;}
+
   /* ---- admin drawer ---- */
   .scrim{position:fixed;inset:0;background:rgba(0,0,0,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;}
   .scrim.show{opacity:1;pointer-events:auto;}
@@ -212,6 +249,12 @@
     </div>
   </header>
 
+  <div class="viewtabs" role="tablist">
+    <button class="viewtab active" data-view="browse">Browse the library</button>
+    <button class="viewtab" data-view="ask">Ask a question</button>
+  </div>
+
+  <div id="view-browse" class="view active">
   <div class="source-note" id="srcnote">
     Answers combine the team's real Slack replies, current SEO best practice, and flags for anything that is house policy or pricing. Before forwarding to a client, read any <span class="badge b-confirm">Confirm with leadership</span> note. This page is a static reference. Anything you add through <b>Admin</b> is saved in this browser only until the app version ships.
   </div>
@@ -219,6 +262,23 @@
   <div class="shell">
     <aside class="rail" id="rail"><div class="rail-label">Categories</div></aside>
     <main class="content" id="content"></main>
+  </div>
+  </div><!-- /view-browse -->
+
+  <div id="view-ask" class="view">
+    <div class="ask-hero">
+      <div class="ask-title">Ask the library</div>
+      <div class="ask-sub">One question, the team's answer, with its source and any flag to confirm before you send it to a client.</div>
+      <div class="ask-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="ask-input" type="text" placeholder="Type your question&hellip;" autocomplete="off">
+        <button class="btn btn-primary" id="ask-go">Ask</button>
+      </div>
+      <div class="ask-chips-label">Try one of these</div>
+      <div class="ask-chips" id="ask-chips"></div>
+    </div>
+    <div class="ask-results" id="ask-results"></div>
+    <div class="ask-simnote">Mockup note: matching here is simple keyword scoring. In the app this becomes real semantic search over the live library, and the same answers power the Capacity Desk ask box.</div>
   </div>
 
   <footer class="pageft">
@@ -553,8 +613,61 @@ document.getElementById('req-export').addEventListener('click',()=>{download('fa
 
 function download(name,text){const b=new Blob([text],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
 
+/* ---------- Ask (retrieval) ---------- */
+const ASTOP = new Set("the a an an and or of to for do we our is it in on with be are can does how what when who where why should any this that you your they their them from not no into out about vs".split(" "));
+const askTok = s => new Set((s||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/).filter(t=>t.length>2 && !ASTOP.has(t)));
+const FLAT = () => DATA.flatMap(g => g.questions.map(q => ({...q, cat:g.cat, color:g.color})));
+function askScore(qset, e){ const qt=askTok(e.q), at=askTok(e.a); let s=0; qset.forEach(t=>{ if(qt.has(t)) s+=2; else if(at.has(t)) s+=0.5; }); return s; }
+function askPct(s,maxP){ return Math.max(35,Math.min(98,Math.round((s/maxP)*100))); }
+function askAText(a){ return esc(a).replace(/\n/g,'<br>').replace(/\[link:([^\]]*)\]/g,'<span class="linkph">&#128279;$1</span>').replace(/\[CONFIRM:([^\]]*)\]/g,'<b style="color:var(--amber)">[CONFIRM:$1]</b>'); }
+function renderHero(top,maxP){ const e=top.e, p=askPct(top.s,maxP), low=p<55;
+  return `<div class="ans-hero">
+    <div class="ans-hero-head"><span class="match ${low?'low':''}"><span class="mdot"></span>${low?'Closest match':'Best match'} &middot; ${p}%</span><span class="ans-cat">${esc(e.cat)}</span><span class="qbadges">${badges(e)}</span></div>
+    <div class="ans-q">${esc(e.q)}</div>
+    <div class="ans-a">${askAText(e.a)}</div>
+    ${e.confirm?`<div class="confirm-box" style="margin-top:12px"><span>&#9888;</span><span><b>Confirm with leadership before sending.</b> This touches house policy, pricing, or a legal question.</span></div>`:''}
+    ${e.note?`<div class="note">Note: ${esc(e.note)}</div>`:''}
+    <div class="ans-meta"><span class="conf conf-${e.conf}"><span class="cd"></span>${e.conf} confidence</span><button class="copy-q" data-cpq="${encodeURIComponent(e.q+'\n\n'+e.a)}">Copy answer</button></div>
+  </div>`; }
+function renderRelated(list,maxP){ if(!list.length) return '';
+  return `<div class="ask-related"><h3>Other related answers</h3>${list.map(x=>`<div class="rel-item" data-relq="${esc(x.e.q)}"><span class="rq">${esc(x.e.q)}</span><span class="rmatch">${askPct(x.s,maxP)}%</span></div>`).join('')}</div>`; }
+function renderNoMatch(closest){
+  return `<div class="ans-none"><div class="nh">We don't have a strong answer for that yet.</div>
+    <div class="ns">Nothing in the library matches closely. Send it to the SEO lead and it lands in the question inbox to get answered.</div>
+    <button class="btn btn-primary" id="ask-submit">Submit this question</button>
+    ${closest.length?`<div class="ask-related" style="text-align:left;margin-top:22px"><h3>Closest we have</h3>${closest.map(x=>`<div class="rel-item" data-relq="${esc(x.e.q)}"><span class="rq">${esc(x.e.q)}</span></div>`).join('')}</div>`:''}</div>`; }
+function wireAskResults(query){
+  document.querySelectorAll('#ask-results .rel-item').forEach(it=>it.addEventListener('click',()=>{ document.getElementById('ask-input').value=it.dataset.relq; runAsk(it.dataset.relq); }));
+  document.querySelectorAll('#ask-results .copy-q').forEach(b=>b.addEventListener('click',()=>copyText(decodeURIComponent(b.dataset.cpq),'Copied answer')));
+  const sub=document.getElementById('ask-submit');
+  if(sub) sub.addEventListener('click',()=>{ clearForm(); openDrawer('p-req'); document.getElementById('req-q').value=query; document.getElementById('req-ctx').focus(); });
+}
+function runAsk(query){
+  const q=(query||'').trim(); if(!q) return;
+  const qset=askTok(q); const scored=FLAT().map(e=>({e,s:askScore(qset,e)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s);
+  const maxP=Math.max(1,qset.size*2); const results=document.getElementById('ask-results');
+  if(!scored.length || scored[0].s < 1.2){ results.innerHTML=renderNoMatch(scored.slice(0,3)); }
+  else { results.innerHTML=renderHero(scored[0],maxP)+renderRelated(scored.slice(1,5),maxP); }
+  wireAskResults(q); results.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+const ASK_EXAMPLES = ["Can we delete old photos from a GBP?","Do we respond to Google reviews for clients?","Is it OK to reuse a title tag on two pages?","How do clients get found through ChatGPT?","Do we set up GBP or just advise?","What is included in each package?"];
+function renderChips(){ const el=document.getElementById('ask-chips'); if(!el) return;
+  el.innerHTML=ASK_EXAMPLES.map(q=>`<button class="ask-chip">${esc(q)}</button>`).join('');
+  el.querySelectorAll('.ask-chip').forEach((b,i)=>b.addEventListener('click',()=>{ document.getElementById('ask-input').value=ASK_EXAMPLES[i]; runAsk(ASK_EXAMPLES[i]); }));
+}
+document.getElementById('ask-go').addEventListener('click',()=>runAsk(document.getElementById('ask-input').value));
+document.getElementById('ask-input').addEventListener('keydown',e=>{ if(e.key==='Enter') runAsk(document.getElementById('ask-input').value); });
+document.querySelectorAll('.viewtab').forEach(t=>t.addEventListener('click',()=>{
+  const v=t.dataset.view;
+  document.querySelectorAll('.viewtab').forEach(x=>x.classList.toggle('active',x===t));
+  document.getElementById('view-browse').classList.toggle('active',v==='browse');
+  document.getElementById('view-ask').classList.toggle('active',v==='ask');
+  document.body.classList.toggle('mode-ask',v==='ask');
+  if(v==='ask') document.getElementById('ask-input').focus();
+}));
+
 /* ---- boot ---- */
-render(); refreshCatSelect(); renderSources(); renderRequests();
+render(); refreshCatSelect(); renderSources(); renderRequests(); renderChips();
 </script>
 </body>
 </html>
