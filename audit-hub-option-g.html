@@ -207,6 +207,15 @@
 .audit-app .pline .v b{color:var(--ink);font-weight:600}
 .audit-app .pline .v .seen{color:var(--green)}
 .audit-app .pline .okv{margin-left:auto}
+.audit-app .since{color:var(--muted);font-size:11px}
+/* backfill coverage bar: right edge = today, span = 78w Google retention */
+.audit-app .rangebar{position:relative;height:5px;border-radius:3px;background:var(--line);margin:1px 0 8px}
+.audit-app .rangebar.empty{background:transparent;border-top:2px dashed var(--faint);height:0;border-radius:0;margin:5px 0 10px}
+.audit-app .rangebar .fill{position:absolute;right:0;top:0;bottom:0;border-radius:3px;background:var(--green)}
+.audit-app .rangebar .fill.mid{background:var(--muted)}
+.audit-app .rangebar .fill.low{background:var(--red)}
+.audit-app .rangebar .tick{position:absolute;top:-3px;height:11px;width:1px;background:var(--muted);opacity:.55;z-index:1}
+.audit-app .rangelegend{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);margin-top:4px}
 .audit-app .plinks{margin-top:14px;font-size:11.5px;color:var(--muted)}
 .audit-app .plinks a{color:var(--sub);text-decoration:underline;text-underline-offset:2px}
 .audit-app .plinks a:hover{color:var(--ink)}
@@ -671,13 +680,30 @@
     var btns = c.acts.map(function (a) {
       return '<button class="btn ' + (a[1] ? 'dark' : 'ghost') + ' mini">' + a[0] + '</button>';
     }).join('');
+    function sinceDate(w) {
+      var d = new Date(2026, 6, 28);
+      d.setDate(d.getDate() - w * 7);
+      var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return M[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
     function dline(k, label) {
-      if (!c.conn[k]) return '<div class="pline"><span class="k">' + label + '</span><span class="v"><span class="nok">not connected</span></span></div>';
-      var red = c.w[k] < 16;
+      if (!c.conn[k]) {
+        return '<div class="pline"><span class="k">' + label + '</span><span class="v"><span class="nok">not connected · no history is being kept</span></span></div>' +
+          '<div class="rangebar empty"></div>';
+      }
+      var w = c.w[k];
+      var cls = w >= 52 ? '' : (w >= 16 ? ' mid' : ' low');
+      var pct = Math.min(w, 78) / 78 * 100;
       return '<div class="pline"><span class="k">' + label + '</span><span class="v num">' +
-        (red ? '<span class="nok">' + c.w[k] + ' weeks</span>' : c.w[k] + ' weeks') + '</span>' +
+        (w < 16 ? '<span class="nok">' + w + ' weeks</span>' : w + ' weeks') +
+        ' <span class="since">· backfilled to <b>' + sinceDate(w) + '</b></span></span>' +
         '<span class="okv">' + (c.qoq ? '<span class="ok">QoQ ✓</span>' : '<span class="nok">QoQ ✗</span>') + ' ' +
-        (c.yoy ? '<span class="ok">YoY ✓</span>' : '<span class="nok">YoY ✗</span>') + '</span></div>';
+        (c.yoy ? '<span class="ok">YoY ✓</span>' : '<span class="nok">YoY ✗</span>') + '</span></div>' +
+        '<div class="rangebar">' +
+          '<span class="tick" style="right:' + (16 / 78 * 100) + '%" title="QoQ minimum · 16 weeks"></span>' +
+          '<span class="tick" style="right:' + (52 / 78 * 100) + '%" title="YoY minimum · 52 weeks"></span>' +
+          '<span class="fill' + cls + '" style="width:' + pct + '%"></span>' +
+        '</div>';
     }
     return '<h2>' + c.name + '</h2>' +
       '<div class="psum">' + c.sum + '</div>' +
@@ -685,6 +711,7 @@
       '<div class="psec">This cycle</div><p class="pstory">' + c.story + '</p>' +
       '<div class="ptoggle"><span class="switch' + (c.auto ? ' on' : '') + '"><i></i></span><span><b>Auto-audit ' + (c.auto ? 'on' : 'off') + '.</b> Drafts generate 3 days before the due date.</span></div>' +
       '<div class="psec">Data</div>' + dline('ga4', 'GA4') + dline('gsc', 'GSC') + dline('gbp', 'GBP') +
+      '<div class="rangelegend"><span>78w ago · Google retention limit</span><span>ticks: QoQ needs 16w · YoY needs 52w</span><span>today</span></div>' +
       '<div class="pcols" style="margin-top:4px">' +
         '<div><div class="psec">Team</div>' +
           '<div class="pline"><span class="k">Asana</span><span class="v">' + c.who + '</span></div>' +
