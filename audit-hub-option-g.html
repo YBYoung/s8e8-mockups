@@ -108,6 +108,19 @@
 .audit-app .fchip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:4px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--sub)}
 .audit-app .fchip .x{cursor:pointer;color:var(--muted);font-size:11px}
 .audit-app .fchip .x:hover{color:var(--ink)}
+/* branded dropdowns: no native select menus anywhere */
+.audit-app .dd{position:relative}
+.audit-app .dd-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--sub);padding:7px 10px;font:600 12px/1.2 var(--body);cursor:pointer;text-align:left}
+.audit-app .dd-btn:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .dd-btn.set{color:var(--ink)}
+.audit-app .dd-btn .chev{color:var(--muted);font-size:9px;flex:none}
+.audit-app .dd-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(17,20,28,.08);padding:4px}
+.audit-app .dd.open .dd-menu{display:block}
+.audit-app .dd.open .dd-btn{border-color:var(--muted);color:var(--ink)}
+.audit-app .dd-opt{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:4px;font-size:12px;font-weight:600;color:var(--sub);cursor:pointer}
+.audit-app .dd-opt:hover{background:var(--chip);color:var(--ink)}
+.audit-app .dd-opt.on{color:var(--ink)}
+.audit-app .dd-opt .tick{width:12px;color:var(--green);font-size:11px;flex:none}
 
 /* bulk bar (Data health): lives inside the table card */
 .audit-app .bulkbar{display:none;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line-soft);font-size:12px;color:var(--sub);flex-wrap:wrap}
@@ -247,34 +260,7 @@
       <div class="fwrap">
         <button class="filterbtn" id="filterbtn" type="button">Filters<span class="fbadge" id="fbadge"></span></button>
         <div class="fpop" id="fpop">
-          <select class="fsel" id="tiersel">
-            <option value="">Tier: any</option>
-            <option>Market Leader</option>
-            <option>Performance</option>
-            <option>Essential</option>
-          </select>
-          <select class="fsel" id="statsel">
-            <option value="">Status: any</option>
-            <option value="overdue">Overdue</option>
-            <option value="attn">Needs attention</option>
-          </select>
-          <select class="fsel" id="schedsel">
-            <option value="">Schedule: any</option>
-            <option value="on">Auto on</option>
-            <option value="off">Auto off</option>
-          </select>
-          <select class="fsel" id="repsel">
-            <option value="">Report: any</option>
-            <option value="draft">Draft waiting</option>
-            <option value="sent">Sent</option>
-            <option value="none">No report</option>
-          </select>
-          <select class="fsel" id="readysel">
-            <option value="">Readiness: any</option>
-            <option value="green">Green 52w+</option>
-            <option value="yellow">Yellow 16-51w</option>
-            <option value="red">Red: thin or disconnected</option>
-          </select>
+          <div id="fmenus" style="display:grid;gap:8px"></div>
         </div>
       </div>
       <div class="fchips" id="fchips"></div>
@@ -771,38 +757,71 @@
   fbtn.addEventListener('click', function (e) { e.stopPropagation(); fpop.classList.toggle('open'); });
   fpop.addEventListener('click', function (e) { e.stopPropagation(); });
   document.addEventListener('click', function () { fpop.classList.remove('open'); });
-  var FDEFS = [
-    ['tiersel', function () { return tier; }, function (v) { tier = v; }],
-    ['statsel', function () { return fStat; }, function (v) { fStat = v; }],
-    ['schedsel', function () { return fSched; }, function (v) { fSched = v; }],
-    ['repsel', function () { return fRep; }, function (v) { fRep = v; }],
-    ['readysel', function () { return fReady; }, function (v) { fReady = v; }]
+  var FILTERS = [
+    {id:'tier', label:'Tier', get:function () { return tier; }, set:function (v) { tier = v; },
+     opts:[['','Any'],['Market Leader','Market Leader'],['Performance','Performance'],['Essential','Essential']]},
+    {id:'stat', label:'Status', get:function () { return fStat; }, set:function (v) { fStat = v; },
+     opts:[['','Any'],['overdue','Overdue'],['attn','Needs attention']]},
+    {id:'sched', label:'Schedule', get:function () { return fSched; }, set:function (v) { fSched = v; },
+     opts:[['','Any'],['on','Auto on'],['off','Auto off']]},
+    {id:'rep', label:'Report', get:function () { return fRep; }, set:function (v) { fRep = v; },
+     opts:[['','Any'],['draft','Draft waiting'],['sent','Sent'],['none','No report']]},
+    {id:'ready', label:'Readiness', get:function () { return fReady; }, set:function (v) { fReady = v; },
+     opts:[['','Any'],['green','Green 52w+'],['yellow','Yellow 16-51w'],['red','Red: thin or disconnected']]}
   ];
+  var fmenusEl = document.getElementById('fmenus');
+  function optText(f) {
+    var v = f.get();
+    var o = f.opts.filter(function (x) { return x[0] === v; })[0];
+    return o ? o[1] : 'Any';
+  }
+  function renderMenus() {
+    fmenusEl.innerHTML = FILTERS.map(function (f) {
+      return '<div class="dd" data-dd="' + f.id + '">' +
+        '<button type="button" class="dd-btn' + (f.get() ? ' set' : '') + '" data-ddbtn="' + f.id + '">' +
+          '<span>' + f.label + ': ' + optText(f) + '</span><span class="chev">&#9662;</span></button>' +
+        '<div class="dd-menu">' + f.opts.map(function (o) {
+          return '<div class="dd-opt' + (f.get() === o[0] ? ' on' : '') + '" data-v="' + o[0] + '">' +
+            '<span class="tick">' + (f.get() === o[0] ? '&#10003;' : '') + '</span>' + o[1] + '</div>';
+        }).join('') + '</div></div>';
+    }).join('');
+  }
+  fmenusEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-ddbtn]');
+    if (btn) {
+      var dd = btn.parentElement;
+      var wasOpen = dd.classList.contains('open');
+      fmenusEl.querySelectorAll('.dd.open').forEach(function (x) { x.classList.remove('open'); });
+      if (!wasOpen) dd.classList.add('open');
+      return;
+    }
+    var opt = e.target.closest('.dd-opt');
+    if (opt) {
+      var f = FILTERS.filter(function (x) { return x.id === opt.closest('.dd').dataset.dd; })[0];
+      f.set(opt.dataset.v);
+      renderMenus(); renderTable(); renderFilterUI();
+    }
+  });
   function renderFilterUI() {
     var chips = [];
-    FDEFS.forEach(function (d) {
-      var el = document.getElementById(d[0]);
-      if (d[1]()) chips.push('<span class="fchip">' + el.selectedOptions[0].text + '<span class="x" data-f="' + d[0] + '">✕</span></span>');
+    FILTERS.forEach(function (f) {
+      if (f.get()) chips.push('<span class="fchip">' + f.label + ': ' + optText(f) + '<span class="x" data-f="' + f.id + '">✕</span></span>');
     });
     fchipsEl.innerHTML = chips.join('');
     fbadgeEl.textContent = chips.length ? String(chips.length) : '';
     fchipsEl.querySelectorAll('[data-f]').forEach(function (x) {
       x.addEventListener('click', function () {
-        var d = FDEFS.filter(function (dd) { return dd[0] === x.dataset.f; })[0];
-        d[2]('');
-        document.getElementById(d[0]).value = '';
-        renderTable(); renderFilterUI();
+        var f = FILTERS.filter(function (ff) { return ff.id === x.dataset.f; })[0];
+        f.set('');
+        renderMenus(); renderTable(); renderFilterUI();
       });
     });
   }
-  FDEFS.forEach(function (d) {
-    document.getElementById(d[0]).addEventListener('change', function (e) {
-      d[2](e.target.value); renderTable(); renderFilterUI();
-    });
-  });
+  renderMenus();
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    if (e.target.closest && e.target.closest('.fpop')) return;
     e.preventDefault();
     var ids = visibleRows().map(function (c) { return c.id; });
     if (lane.linkingRow && !anyFilter()) ids.push('_link');
