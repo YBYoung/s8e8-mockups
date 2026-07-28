@@ -92,8 +92,25 @@
 .audit-app .lanehint .paneax{margin-left:6px}
 .audit-app .count{font-size:11.5px;color:var(--muted);margin-left:auto}
 
-/* bulk bar (Data health multi-select) */
-.audit-app .bulkbar{display:none;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:8px 12px;margin:0 0 8px;font-size:12.5px;color:var(--sub);flex-wrap:wrap}
+/* command bar: one row spanning both columns */
+.audit-app .cmdbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0 12px}
+.audit-app .cmdbar .search{flex:0 1 190px;min-width:120px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--ink);padding:6px 9px;font:400 12.5px/1.2 var(--body)}
+.audit-app .cmdbar .search::placeholder{color:var(--muted)}
+.audit-app .fwrap{position:relative}
+.audit-app .filterbtn{font-family:var(--body);font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:5px;padding:6px 12px;cursor:pointer}
+.audit-app .filterbtn:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .fbadge{margin-left:6px;font-size:10.5px;font-weight:700;color:var(--red);font-variant-numeric:tabular-nums}
+.audit-app .fbadge:empty{display:none}
+.audit-app .fpop{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:30;background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(17,20,28,.08);padding:10px;width:230px}
+.audit-app .fpop.open{display:grid;gap:8px}
+.audit-app .fpop .fsel{max-width:none;width:100%}
+.audit-app .fchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.audit-app .fchip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:4px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--sub)}
+.audit-app .fchip .x{cursor:pointer;color:var(--muted);font-size:11px}
+.audit-app .fchip .x:hover{color:var(--ink)}
+
+/* bulk bar (Data health): lives inside the table card */
+.audit-app .bulkbar{display:none;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid var(--line-soft);font-size:12px;color:var(--sub);flex-wrap:wrap}
 .audit-app .bulkbar.shown{display:flex}
 .audit-app .bulkbar b{color:var(--ink)}
 .audit-app .bulkbar .gap{color:var(--red);font-weight:600}
@@ -223,14 +240,13 @@
       </div>
     </div>
 
-    <div class="split">
-      <!-- LEFT: the register, 45% -->
-      <div>
-        <div class="lanetools" style="margin-bottom:8px">
-          <div class="lanes" id="lanes"></div>
-        </div>
-        <div class="lanetools">
-          <input class="search" id="search" placeholder="Search clients" />
+    <!-- one command bar spanning both columns: the cards below start level -->
+    <div class="cmdbar">
+      <div class="lanes" id="lanes"></div>
+      <input class="search" id="search" placeholder="Search clients" />
+      <div class="fwrap">
+        <button class="filterbtn" id="filterbtn" type="button">Filters<span class="fbadge" id="fbadge"></span></button>
+        <div class="fpop" id="fpop">
           <select class="fsel" id="tiersel">
             <option value="">Tier: any</option>
             <option>Market Leader</option>
@@ -259,13 +275,19 @@
             <option value="yellow">Yellow 16-51w</option>
             <option value="red">Red: thin or disconnected</option>
           </select>
-          <span class="count" id="count"></span>
         </div>
-        <p class="lanehint" id="lanehint"></p>
-        <div class="bulkbar" id="bulkbar"></div>
+      </div>
+      <div class="fchips" id="fchips"></div>
+      <span class="count" id="count"></span>
+    </div>
+
+    <div class="split">
+      <!-- LEFT: the register, 45% -->
+      <div>
         <div class="tcard">
+          <div class="bulkbar" id="bulkbar"></div>
           <div class="tscroll"><table class="ht" id="regtable"><thead></thead><tbody></tbody></table></div>
-          <div class="foot-hint"><b>Click a row or use arrow keys</b> · lanes change the columns, the pane stays put · Data health: shift-click selects a range, the header checkbox selects everything shown</div>
+          <div class="foot-hint" id="foothint"></div>
         </div>
       </div>
 
@@ -557,7 +579,7 @@
   }
   var lanesEl = document.getElementById('lanes'), thead = document.querySelector('#regtable thead'),
       tbody = document.querySelector('#regtable tbody'), paneEl = document.getElementById('pane'),
-      hintEl = document.getElementById('lanehint'), countEl = document.getElementById('count'),
+      foothintEl = document.getElementById('foothint'), countEl = document.getElementById('count'),
       bulkbarEl = document.getElementById('bulkbar');
 
   function visibleRows() {
@@ -573,27 +595,39 @@
     }).join('');
   }
   function renderBulkbar() {
-    if (!lane.bulk || bulkSel.size === 0) { bulkbarEl.classList.remove('shown'); return; }
-    var missing = {ga4:0, gsc:0, gbp:0}, full = 0;
-    bulkSel.forEach(function (id) {
-      var c = byId[id], any = false;
-      ['ga4','gsc','gbp'].forEach(function (k) { if (!c.conn[k]) { missing[k]++; any = true; } });
-      if (!any) full++;
-    });
-    var gaps = ['ga4','gsc','gbp'].filter(function (k) { return missing[k]; })
-      .map(function (k) { return '<span class="gap">' + k.toUpperCase() + ' missing on ' + missing[k] + '</span>'; }).join(' · ');
-    bulkbarEl.innerHTML = '<b>' + bulkSel.size + ' selected</b>' + (gaps ? ' · ' + gaps : '') +
-      (full ? ' · ' + full + ' already fully connected' : '') +
-      ' <span class="paneax" id="bulkclear" style="margin-left:auto">Clear selection</span>';
+    if (!lane.bulk) { bulkbarEl.classList.remove('shown'); return; }
     bulkbarEl.classList.add('shown');
-    document.getElementById('bulkclear').addEventListener('click', function () {
+    var html = '<span class="paneax" id="fltissues">' + (dataIssuesOnly ? 'Show all clients' : 'Show issues only') +
+      '</span> · <span class="paneax" id="selissues">Select all with issues</span>';
+    if (bulkSel.size > 0) {
+      var missing = {ga4:0, gsc:0, gbp:0}, full = 0;
+      bulkSel.forEach(function (id) {
+        var c = byId[id], any = false;
+        ['ga4','gsc','gbp'].forEach(function (k) { if (!c.conn[k]) { missing[k]++; any = true; } });
+        if (!any) full++;
+      });
+      var gaps = ['ga4','gsc','gbp'].filter(function (k) { return missing[k]; })
+        .map(function (k) { return '<span class="gap">' + k.toUpperCase() + ' missing on ' + missing[k] + '</span>'; }).join(' · ');
+      html += ' <span style="margin-left:auto"></span><b>' + bulkSel.size + ' selected</b>' + (gaps ? ' · ' + gaps : '') +
+        (full ? ' · ' + full + ' fully connected' : '') +
+        ' · <span class="paneax" id="bulkclear">Clear</span>';
+    }
+    bulkbarEl.innerHTML = html;
+    var bc = document.getElementById('bulkclear');
+    if (bc) bc.addEventListener('click', function () {
       bulkSel.clear(); renderTable(); renderBulkbar(); renderPane();
+    });
+    document.getElementById('fltissues').addEventListener('click', function () {
+      dataIssuesOnly = !dataIssuesOnly; renderTable(); renderBulkbar();
+    });
+    document.getElementById('selissues').addEventListener('click', function () {
+      C.filter(hasIssue).forEach(function (c) { bulkSel.add(c.id); });
+      renderTable(); renderBulkbar(); renderPane();
     });
   }
   function renderTable() {
-    hintEl.innerHTML = lane.hint + (lane.bulk ?
-      ' <span class="paneax" id="fltissues">' + (dataIssuesOnly ? 'Show all clients' : 'Show issues only') + '</span>' +
-      ' · <span class="paneax" id="selissues">Select all with issues</span>' : '');
+    foothintEl.innerHTML = lane.hint + ' · <b>Click a row or use arrow keys</b>' +
+      (lane.bulk ? ' · shift-click selects a range, the header checkbox selects everything shown' : '');
     thead.innerHTML = '<tr>' + lane.head + '</tr>';
     var rows = visibleRows();
     countEl.textContent = rows.length + ' of ' + lane.rows().length;
@@ -601,16 +635,6 @@
       return '<tr data-id="' + c.id + '" class="' + (c.id === sel ? 'sel' : '') + '">' + lane.row(c, i) + '</tr>';
     }).join('') + (lane.linkingRow && !anyFilter() ?
       '<tr class="linkrow" data-id="_link"><td colspan="' + lane.cols + '"><span class="cnt num">2</span>Asana tasks need linking →</td></tr>' : '');
-    var si = document.getElementById('selissues');
-    if (si) si.addEventListener('click', function () {
-      C.filter(hasIssue).forEach(function (c) { bulkSel.add(c.id); });
-      renderTable(); renderBulkbar(); renderPane();
-    });
-    var fi = document.getElementById('fltissues');
-    if (fi) fi.addEventListener('click', function () {
-      dataIssuesOnly = !dataIssuesOnly;
-      renderTable();
-    });
     var ca = document.getElementById('ckall');
     if (ca) {
       var vis = rows.map(function (c) { return c.id; });
@@ -741,20 +765,40 @@
   document.getElementById('search').addEventListener('input', function (e) {
     q = e.target.value.trim().toLowerCase(); renderTable();
   });
-  document.getElementById('tiersel').addEventListener('change', function (e) {
-    tier = e.target.value; renderTable();
-  });
-  document.getElementById('statsel').addEventListener('change', function (e) {
-    fStat = e.target.value; renderTable();
-  });
-  document.getElementById('schedsel').addEventListener('change', function (e) {
-    fSched = e.target.value; renderTable();
-  });
-  document.getElementById('repsel').addEventListener('change', function (e) {
-    fRep = e.target.value; renderTable();
-  });
-  document.getElementById('readysel').addEventListener('change', function (e) {
-    fReady = e.target.value; renderTable();
+  // filter popover + chips
+  var fpop = document.getElementById('fpop'), fbtn = document.getElementById('filterbtn'),
+      fchipsEl = document.getElementById('fchips'), fbadgeEl = document.getElementById('fbadge');
+  fbtn.addEventListener('click', function (e) { e.stopPropagation(); fpop.classList.toggle('open'); });
+  fpop.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.addEventListener('click', function () { fpop.classList.remove('open'); });
+  var FDEFS = [
+    ['tiersel', function () { return tier; }, function (v) { tier = v; }],
+    ['statsel', function () { return fStat; }, function (v) { fStat = v; }],
+    ['schedsel', function () { return fSched; }, function (v) { fSched = v; }],
+    ['repsel', function () { return fRep; }, function (v) { fRep = v; }],
+    ['readysel', function () { return fReady; }, function (v) { fReady = v; }]
+  ];
+  function renderFilterUI() {
+    var chips = [];
+    FDEFS.forEach(function (d) {
+      var el = document.getElementById(d[0]);
+      if (d[1]()) chips.push('<span class="fchip">' + el.selectedOptions[0].text + '<span class="x" data-f="' + d[0] + '">✕</span></span>');
+    });
+    fchipsEl.innerHTML = chips.join('');
+    fbadgeEl.textContent = chips.length ? String(chips.length) : '';
+    fchipsEl.querySelectorAll('[data-f]').forEach(function (x) {
+      x.addEventListener('click', function () {
+        var d = FDEFS.filter(function (dd) { return dd[0] === x.dataset.f; })[0];
+        d[2]('');
+        document.getElementById(d[0]).value = '';
+        renderTable(); renderFilterUI();
+      });
+    });
+  }
+  FDEFS.forEach(function (d) {
+    document.getElementById(d[0]).addEventListener('change', function (e) {
+      d[2](e.target.value); renderTable(); renderFilterUI();
+    });
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
@@ -769,5 +813,6 @@
   });
 
   renderAll();
+  renderFilterUI();
 })();
 </script>
