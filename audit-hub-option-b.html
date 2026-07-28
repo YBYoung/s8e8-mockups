@@ -6,7 +6,7 @@
 
   Rev 3 identity, derived from what an audit IS (an inspection recorded in a
   register): a LEDGER.
-  - Neutral paper white, hairline rules, serif page title, numbered rows.
+  - Neutral paper white, hairline rules, sans page title, numbered rows.
   - Two-ink convention: red ink = overdue/blocked, green ink = confirmed/sent,
     black ink = everything else. No chips, no tiles, no gradients.
   - One flat sortable table with the existing hub's filters (tier, schedule,
@@ -24,7 +24,6 @@
   --green:#3C8F6E; --steady:#256E9C;
   --chip:#F2F4F8;
   --shadow:0 1px 2px rgba(17,20,28,.05);
-  --serif:Georgia,"Times New Roman",serif;
   --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
   background:var(--paper); color:var(--ink); font-family:var(--body);
   min-height:100vh; margin:-8px; padding-bottom:80px;
@@ -59,9 +58,9 @@
 .audit-app .col{max-width:1220px;margin:0 auto;width:100%;padding:0 30px}
 @media(max-width:880px){.audit-app .col{padding:0 16px}}
 
-/* header: serif title, one plain sentence */
+/* header: one plain sentence */
 .audit-app .hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:30px 0 0;border-bottom:2px solid var(--ink);padding-bottom:16px}
-.audit-app .hd h1{font:400 26px/1.1 var(--serif);letter-spacing:-.005em;margin:0}
+.audit-app .hd h1{font:600 20px/1.15 var(--body);letter-spacing:-.005em;margin:0}
 .audit-app .hd .meta{margin-top:7px;font-size:13px;color:var(--sub);max-width:640px;line-height:1.5}
 .audit-app .hd .meta b{color:var(--ink);font-weight:600}
 .audit-app .hd .meta .redink{color:var(--red);font-weight:600}
@@ -91,7 +90,7 @@
 /* needs-linking band: a ledger line item */
 .audit-app .attn{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
 .audit-app .attn-h{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer}
-.audit-app .attn-h .cnt{font:400 15px/1 var(--serif);color:var(--red);font-variant-numeric:tabular-nums}
+.audit-app .attn-h .cnt{font:700 13px/1 var(--body);color:var(--red);font-variant-numeric:tabular-nums}
 .audit-app .attn-h .tx{font-size:12.5px;color:var(--ink);font-weight:600}
 .audit-app .attn-h .sub{font-size:11.5px;color:var(--muted)}
 .audit-app .attn-h .chev{margin-left:auto;color:var(--muted);font-size:10px;transition:transform .15s}
@@ -121,7 +120,7 @@
 .audit-app .ht tbody tr.entry.open{background:var(--chip)}
 .audit-app .ht td{padding:13px 12px;font-size:13px;vertical-align:middle}
 .audit-app .ht td:first-child{padding-left:18px}
-.audit-app .idx{font:400 11px/1 var(--serif);color:var(--muted);font-variant-numeric:tabular-nums;width:26px}
+.audit-app .idx{font:400 10.5px/1 var(--body);color:var(--muted);font-variant-numeric:tabular-nums;width:26px}
 .audit-app .cname{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap}
 .audit-app .cname .caret{display:inline-block;color:var(--muted);font-size:9px;transition:transform .15s;margin-right:6px;vertical-align:1px}
 .audit-app tr.open .caret{transform:rotate(90deg);color:var(--ink)}
