@@ -1,0 +1,554 @@
+<!--
+  Audit Hub redesign mockup : OPTION D "Split" (wayfinder #745).
+
+  Concept: master-detail. NN/g's data-table guidance recommends a nonmodal
+  side panel over modals or page navigation for rich per-item detail, because
+  the user keeps the queue in view while inspecting one record. So:
+  - Left: a lean master list. Each entry is just name, tier, the cycle bar
+    (last audit -> today -> due, kept from Option B), and ONE synthesized
+    status line: a row-level rollup ("Blocked: draft unsent 16 days"),
+    not five parallel status fields. Needs-action entries sort to the top
+    and are the only place red ink appears in the list.
+  - Right: a persistent detail pane, the only place with depth. Progressive
+    disclosure: level one (the list) carries what's needed to triage; the
+    pane carries everything else: prose cycle story, data readiness, team,
+    history, enrollment toggle, outbound links. Airy like B's expander:
+    no inner boxed cards, plain key-value lines, whitespace and hairlines.
+  - One accent (the red var) is reserved for needs-action; green confirms;
+    steady blue marks in-progress generation. Color always pairs with words.
+  Shares Option B's ledger palette, two-ink convention, plain-sentence
+  status voice, and fictional dataset so options compare fairly.
+-->
+<title>Audit Hub redesign · Option D · Split</title>
+<style>
+.audit-app{
+  --paper:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --faint:#D3D7DF;
+  --red:#C25E55; --red-soft:#FBE7E5;
+  --green:#3C8F6E; --steady:#256E9C;
+  --chip:#F2F4F8;
+  --shadow:0 1px 2px rgba(17,20,28,.05);
+  --serif:Georgia,"Times New Roman",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  min-height:100vh; margin:-8px; padding-bottom:80px;
+}
+.audit-app[data-theme="dark"]{
+  --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+  --red:#D0766B; --red-soft:#2E1917;
+  --green:#4DAE87; --steady:#7CC0E8;
+  --chip:#1E222A;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  .audit-app:not([data-theme="light"]){
+    --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+    --red:#D0766B; --red-soft:#2E1917;
+    --green:#4DAE87; --steady:#7CC0E8;
+    --chip:#1E222A;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.audit-app *{box-sizing:border-box}
+.audit-app .num{font-variant-numeric:tabular-nums}
+
+/* mockup banner + option switcher (not part of the shipped page) */
+.audit-app .mockstrip{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--chip);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:600;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.audit-app .mockstrip a{color:var(--sub);text-decoration:none;padding:1px 6px;border-radius:4px}
+.audit-app .mockstrip a:hover{color:var(--ink);background:var(--card)}
+.audit-app .mockstrip a.here{color:var(--ink);background:var(--card);box-shadow:var(--shadow)}
+
+.audit-app .col{max-width:1220px;margin:0 auto;width:100%;padding:0 30px}
+@media(max-width:880px){.audit-app .col{padding:0 16px}}
+
+/* header: serif title, one plain sentence */
+.audit-app .hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:30px 0 0;border-bottom:2px solid var(--ink);padding-bottom:16px}
+.audit-app .hd h1{font:400 26px/1.1 var(--serif);letter-spacing:-.005em;margin:0}
+.audit-app .hd .meta{margin-top:7px;font-size:13px;color:var(--sub);max-width:640px;line-height:1.5}
+.audit-app .hd .meta b{color:var(--ink);font-weight:600}
+.audit-app .hd .meta .redink{color:var(--red);font-weight:600}
+.audit-app .hd-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.audit-app .btn{font-family:var(--body);font-size:13px;font-weight:600;border-radius:5px;padding:7px 14px;cursor:pointer;border:1px solid transparent}
+.audit-app .btn.ghost{background:var(--card);border-color:var(--line);color:var(--sub)}
+.audit-app .btn.ghost:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.audit-app .btn.dark:hover{opacity:.9}
+.audit-app .btn.mini{font-size:11.5px;padding:5px 11px}
+.audit-app .btn:focus-visible{outline:2px solid var(--sub);outline-offset:1px}
+.audit-app .themebtn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:5px;padding:6px 10px;cursor:pointer}
+.audit-app .themebtn:hover{color:var(--ink);border-color:var(--muted)}
+
+/* ================================================================
+   The split: master list left, persistent detail pane right
+   ================================================================ */
+.audit-app .split{display:flex;align-items:flex-start;gap:18px;padding:16px 0 0}
+@media(max-width:880px){.audit-app .split{flex-direction:column}}
+.audit-app .master{flex:0 0 340px;min-width:0}
+@media(max-width:880px){.audit-app .master{flex:none;width:100%}}
+
+/* compact controls above the list */
+.audit-app .mtools{display:flex;gap:8px;margin-bottom:10px}
+.audit-app .search{flex:1;min-width:0;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--ink);padding:7px 10px;font:400 12.5px/1.2 var(--body)}
+.audit-app .search::placeholder{color:var(--muted)}
+.audit-app .search:focus-visible{outline:2px solid var(--sub);outline-offset:1px}
+.audit-app .ftog{font-family:var(--body);font-size:11.5px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:5px;padding:7px 10px;cursor:pointer;white-space:nowrap}
+.audit-app .ftog:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .ftog.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+/* the list itself */
+.audit-app .mlist{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+.audit-app .mscroll{max-height:calc(100vh - 300px);min-height:320px;overflow-y:auto}
+@media(max-width:880px){.audit-app .mscroll{max-height:none}}
+.audit-app .mrow{width:100%;text-align:left;font-family:var(--body);display:block;background:transparent;border:0;border-bottom:1px solid var(--line-soft);padding:11px 14px;cursor:pointer}
+.audit-app .mrow:hover{background:var(--paper)}
+.audit-app .mrow.sel{background:var(--chip)}
+.audit-app .mrow:focus-visible{outline:2px solid var(--sub);outline-offset:-2px}
+.audit-app .mrow.hidden{display:none}
+.audit-app .mtop{display:flex;align-items:baseline;gap:8px}
+.audit-app .mname{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.audit-app .mtier{margin-left:auto;font-size:10.5px;color:var(--muted);white-space:nowrap}
+.audit-app .mst{margin-top:7px;font-size:11.5px;line-height:1.45;color:var(--sub)}
+.audit-app .mst b{color:var(--ink);font-weight:600}
+.audit-app .mrow.need .mst,.audit-app .mrow.need .mst b{color:var(--red)}
+.audit-app .mst .genink{color:var(--steady);font-weight:600}
+
+/* cycle bar, kept from Option B: last audit -> today -> due */
+.audit-app .cyc{margin-top:8px}
+.audit-app .cyc-bar{position:relative;height:3px;border-radius:2px;background:var(--line)}
+.audit-app .cyc-bar .done{position:absolute;left:0;top:0;bottom:0;background:var(--faint);border-radius:2px}
+.audit-app .cyc-bar .today{position:absolute;top:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.audit-app .cyc-bar.over .done{background:var(--red);opacity:.5}
+.audit-app .cyc-bar.over .today{background:var(--red)}
+.audit-app .cyc-bar.none{background:transparent;border-top:2px dashed var(--faint);height:0;border-radius:0}
+.audit-app .cyc-lab{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.audit-app .cyc-lab .r{text-align:right}
+.audit-app .cyc-lab .r.redink{color:var(--red);font-weight:600}
+
+/* unmatched Asana tasks: a quiet collapsible line under the list */
+.audit-app .attn{margin-top:10px;border:1px solid var(--line);border-radius:5px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+.audit-app .attn-h{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;font-size:11.5px;color:var(--sub)}
+.audit-app .attn-h .cnt{color:var(--red);font-weight:600;font-variant-numeric:tabular-nums}
+.audit-app .attn-h .chev{margin-left:auto;color:var(--muted);font-size:9px;transition:transform .15s}
+.audit-app .attn.closed .attn-h .chev{transform:rotate(-90deg)}
+.audit-app .attn.closed .attn-rows{display:none}
+.audit-app .attn-row{padding:8px 12px;border-top:1px solid var(--line-soft);font-size:11.5px}
+.audit-app .attn-row .tk{color:var(--ink);font-weight:600}
+.audit-app .attn-row .sec{margin-top:2px;color:var(--muted);font-size:10.5px}
+.audit-app .attn-row .ax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:10.5px;cursor:pointer;margin-right:10px}
+.audit-app .attn-row .ax:hover{color:var(--ink)}
+
+/* ================================================================
+   Detail pane: the only place with depth. No inner boxes.
+   ================================================================ */
+.audit-app .pane{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:24px 28px 26px;position:sticky;top:14px}
+@media(max-width:880px){.audit-app .pane{position:static;width:100%;padding:18px 16px 20px}}
+.audit-app .p{display:none}
+.audit-app .p.show{display:block}
+.audit-app .phead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.audit-app .phead h2{font:400 21px/1.15 var(--serif);margin:0}
+.audit-app .phead .who{margin-top:5px;font-size:12px;color:var(--muted)}
+.audit-app .phead .who b{color:var(--sub);font-weight:600}
+.audit-app .pbtns{display:flex;gap:8px;flex-wrap:wrap}
+.audit-app .xh{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px}
+.audit-app .xstory{font-size:13px;color:var(--sub);line-height:1.6;margin:0;max-width:520px}
+.audit-app .xstory b{color:var(--ink)}
+.audit-app .xstory .redink{color:var(--red);font-weight:600}
+.audit-app .xstory .genink{color:var(--steady);font-weight:600}
+.audit-app .psec{padding:18px 0 2px}
+.audit-app .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 44px;padding:18px 0 2px;border-top:1px solid var(--line-soft);margin-top:18px}
+@media(max-width:880px){.audit-app .pgrid{grid-template-columns:1fr;gap:18px 0}}
+.audit-app .xline{display:flex;align-items:baseline;gap:10px;padding:5px 0;font-size:12.5px}
+.audit-app .xline .k{color:var(--muted);width:62px;flex:none;font-size:11.5px}
+.audit-app .xline .v{color:var(--sub)}
+.audit-app .xline .v b{color:var(--ink);font-weight:600}
+.audit-app .xline .v .seen{color:var(--green)}
+.audit-app .xline .v .redink{color:var(--red);font-weight:600}
+.audit-app .xline .ok{color:var(--green);font-size:11px;white-space:nowrap}
+.audit-app .xline .ax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:11px;cursor:pointer;margin-left:auto}
+.audit-app .xline .ax:hover{color:var(--ink)}
+.audit-app .xtoggle{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:12px;color:var(--sub)}
+.audit-app .xtoggle b{color:var(--ink);font-weight:600;font-size:12.5px}
+.audit-app .switch{width:30px;height:17px;border-radius:17px;background:var(--faint);position:relative;transition:background .15s;flex:none;display:inline-block;cursor:pointer}
+.audit-app .switch i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+.audit-app .switch.on{background:var(--green)}
+.audit-app .switch.on i{left:15px}
+.audit-app .xlinks{margin-top:16px;font-size:11.5px;color:var(--muted)}
+.audit-app .xlinks a{color:var(--sub);text-decoration:underline;text-underline-offset:2px}
+.audit-app .xlinks a:hover{color:var(--ink)}
+.audit-app .pnote{font-size:12.5px;color:var(--muted);line-height:1.6;margin:18px 0 0;max-width:520px}
+
+/* footer hint: mockup wiring note */
+.audit-app .foot-hint{margin-top:14px;font-size:11px;color:var(--muted)}
+.audit-app .foot-hint b{color:var(--sub);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){
+  .audit-app .switch,.audit-app .switch i,.audit-app .attn-h .chev{transition:none}
+}
+</style>
+
+<div class="audit-app" id="app">
+  <div class="mockstrip">
+    <span>Mockup · Audit Hub redesign · #745 · not the shipped page</span>
+    <span>
+      <a href="./audit-hub-option-b.html">B · Ledger</a>
+      <a class="here" href="./audit-hub-option-d.html">D · Split</a>
+      <a href="./audit-hub-option-e.html">E · Lanes</a>
+      <a href="./audit-hub-option-f.html">F · Compact</a>
+    </span>
+  </div>
+
+  <div class="col">
+    <div class="hd">
+      <div>
+        <h1>Audit Hub</h1>
+        <div class="meta">12 clients enrolled. <span class="redink">4 need your attention</span>, <b>2 drafts</b> are waiting to be reviewed and sent. Synced from Asana at 8:12 AM.</div>
+      </div>
+      <div class="hd-actions">
+        <button class="themebtn" id="themebtn" type="button">Theme</button>
+        <button class="btn ghost">Run poll now</button>
+        <button class="btn dark">Sync from Asana</button>
+      </div>
+    </div>
+
+    <div class="split">
+
+      <!-- =================== master list =================== -->
+      <div class="master">
+        <div class="mtools">
+          <input class="search" id="q" placeholder="Search clients" />
+          <button class="ftog" id="ftog" type="button">Needs action · 4</button>
+        </div>
+
+        <div class="mlist">
+          <div class="mscroll" id="mscroll">
+
+            <button class="mrow need sel" type="button" data-pane="allure">
+              <div class="mtop"><span class="mname">Allure Dental</span><span class="mtier">ML</span></div>
+              <div class="cyc">
+                <div class="cyc-bar over"><span class="done" style="width:100%"></span><span class="today" style="left:100%"></span></div>
+                <div class="cyc-lab"><span>Apr 3</span><span class="r redink">due Jul 12 · 16d ago</span></div>
+              </div>
+              <div class="mst"><b>Blocked:</b> Q2 draft unsent 16 days.</div>
+            </button>
+
+            <button class="mrow need" type="button" data-pane="kent">
+              <div class="mtop"><span class="mname">Kent Station Dental</span><span class="mtier">Ess</span></div>
+              <div class="cyc">
+                <div class="cyc-bar over"><span class="done" style="width:97%"></span><span class="today" style="left:97%"></span></div>
+                <div class="cyc-lab"><span>Apr 2</span><span class="r redink">due Jul 30 · failing</span></div>
+              </div>
+              <div class="mst"><b>Failing:</b> generation failed 3 times, last Jul 26.</div>
+            </button>
+
+            <button class="mrow need" type="button" data-pane="generic" data-name="Plumb Dental" data-tier="Performance" data-who="Tanya Yeauger">
+              <div class="mtop"><span class="mname">Plumb Dental</span><span class="mtier">Perf</span></div>
+              <div class="cyc">
+                <div class="cyc-bar none"></div>
+                <div class="cyc-lab"><span>Jun 12</span><span class="r redink">no upcoming task</span></div>
+              </div>
+              <div class="mst"><b>Gap:</b> enrolled, no open Asana task.</div>
+            </button>
+
+            <button class="mrow need" type="button" data-pane="generic" data-name="Cedar Grove Family Dentistry" data-tier="Essential" data-who="Tommy Callahan">
+              <div class="mtop"><span class="mname">Cedar Grove Family Dentistry</span><span class="mtier">Ess</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:8%"></span><span class="today" style="left:8%"></span></div>
+                <div class="cyc-lab"><span>No report yet</span><span class="r">first audit Aug 29</span></div>
+              </div>
+              <div class="mst"><b>Not ready:</b> 8 weeks cached, QoQ needs 16+.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Fisher &amp; Zitterich Dentistry" data-tier="Essential" data-who="Tommy Callahan">
+              <div class="mtop"><span class="mname">Fisher &amp; Zitterich Dentistry</span><span class="mtier">Ess</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:98%"></span><span class="today" style="left:98%"></span></div>
+                <div class="cyc-lab"><span>Apr 28</span><span class="r">due Jul 29</span></div>
+              </div>
+              <div class="mst"><span class="genink">Generating the Q2 draft now · 62%</span></div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="holliston">
+              <div class="mtop"><span class="mname">Holliston Dentistry</span><span class="mtier">Ess</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:96%"></span><span class="today" style="left:96%"></span></div>
+                <div class="cyc-lab"><span>May 5</span><span class="r">due Aug 1</span></div>
+              </div>
+              <div class="mst">Draft generates <b>tomorrow</b>. Data ready.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Champion Dental Group" data-tier="Performance" data-who="Jessica Nguyen">
+              <div class="mtop"><span class="mname">Champion Dental Group</span><span class="mtier">Perf</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:90%"></span><span class="today" style="left:90%"></span></div>
+                <div class="cyc-lab"><span>Jun 30</span><span class="r">due Aug 8</span></div>
+              </div>
+              <div class="mst">Draft generates <b>Aug 5</b>. Data ready.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="In Motion Dentistry" data-tier="Market Leader" data-who="Tanya Yeauger">
+              <div class="mtop"><span class="mname">In Motion Dentistry</span><span class="mtier">ML</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:55%"></span><span class="today" style="left:55%"></span></div>
+                <div class="cyc-lab"><span>Jul 2</span><span class="r">due Aug 15</span></div>
+              </div>
+              <div class="mst">Draft generates <b>Aug 12</b>. Data ready.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Lakeview Dental Arts" data-tier="Performance" data-who="Tanya Yeauger">
+              <div class="mtop"><span class="mname">Lakeview Dental Arts</span><span class="mtier">Perf</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:22%"></span><span class="today" style="left:22%"></span></div>
+                <div class="cyc-lab"><span>Jul 10</span><span class="r">due Aug 22</span></div>
+              </div>
+              <div class="mst">Draft generates <b>Aug 19</b>.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Smile &amp; Co. Roseville" data-tier="Performance · manual" data-who="Jessica Nguyen">
+              <div class="mtop"><span class="mname">Smile &amp; Co. Roseville</span><span class="mtier">Perf · manual</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:32%"></span><span class="today" style="left:32%"></span></div>
+                <div class="cyc-lab"><span>Jul 3</span><span class="r">due Aug 20</span></div>
+              </div>
+              <div class="mst">Auto-audit off, runs when you generate.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Bright Peak Dental" data-tier="Performance" data-who="Soleil Parra">
+              <div class="mtop"><span class="mname">Bright Peak Dental</span><span class="mtier">Perf</span></div>
+              <div class="cyc">
+                <div class="cyc-bar"><span class="done" style="width:30%"></span><span class="today" style="left:30%"></span></div>
+                <div class="cyc-lab"><span>Jun 28</span><span class="r">due Sep 5</span></div>
+              </div>
+              <div class="mst">Draft generates <b>Sep 2</b>. 21w cached, QoQ-ready.</div>
+            </button>
+
+            <button class="mrow" type="button" data-pane="generic" data-name="Marina Smiles Dental" data-tier="Essential · manual" data-who="Unassigned">
+              <div class="mtop"><span class="mname">Marina Smiles Dental</span><span class="mtier">Ess · manual</span></div>
+              <div class="cyc">
+                <div class="cyc-bar none"></div>
+                <div class="cyc-lab"><span>No report yet</span><span class="r">no task scheduled</span></div>
+              </div>
+              <div class="mst">GBP not connected, 26w cached.</div>
+            </button>
+
+          </div>
+        </div>
+
+        <div class="attn closed" id="attn">
+          <div class="attn-h" onclick="document.getElementById('attn').classList.toggle('closed')">
+            <span class="cnt num">2</span>
+            <span>Asana audit tasks aren't matched to a client</span>
+            <span class="chev">&#9660;</span>
+          </div>
+          <div class="attn-rows">
+            <div class="attn-row">
+              <div class="tk">Q3 Audit · Sunrise Dental Care</div>
+              <div class="sec">Performance section · due Aug 14</div>
+              <div style="margin-top:5px"><span class="ax">Link to client</span><span class="ax">Open in Asana &#8599;</span></div>
+            </div>
+            <div class="attn-row">
+              <div class="tk">Quarterly Audit · Northgate Smiles</div>
+              <div class="sec">Essential section · no due date</div>
+              <div style="margin-top:5px"><span class="ax">Link to client</span><span class="ax">Open in Asana &#8599;</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================== detail pane =================== -->
+      <div class="pane" id="pane">
+
+        <!-- Allure Dental: blocked draft -->
+        <div class="p show" id="p-allure">
+          <div class="phead">
+            <div>
+              <h2>Allure Dental</h2>
+              <div class="who">Market Leader · Asana assignee <b>Jessica Nguyen</b></div>
+            </div>
+            <div class="pbtns">
+              <button class="btn dark">Review &amp; send draft</button>
+              <button class="btn ghost">Archive draft</button>
+            </div>
+          </div>
+          <div class="psec">
+            <div class="xh">This cycle</div>
+            <p class="xstory">The Q2 draft was generated <b>Jul 12</b>, three days before its Asana due date, and has been <span class="redink">waiting 16 days</span> for review. Sending or archiving it lets Q3 schedule normally.</p>
+          </div>
+          <div class="pgrid">
+            <div>
+              <div class="xh">Data</div>
+              <div class="xline"><span class="k">GA4</span><span class="v num">61 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GSC</span><span class="v num">64 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GBP</span><span class="v num">61 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xh" style="margin-top:18px">Team</div>
+              <div class="xline"><span class="k">Asana</span><span class="v">Jessica Nguyen</span></div>
+              <div class="xline"><span class="k">SEO</span><span class="v">Tanya Yeauger</span></div>
+              <div class="xline"><span class="k">MS</span><span class="v">Soleil Parra</span></div>
+            </div>
+            <div>
+              <div class="xh">History</div>
+              <div class="xline"><span class="k">Q2 2026</span><span class="v"><b>Draft</b> · Jul 12</span><span class="ax">Review</span></div>
+              <div class="xline"><span class="k">Q1 2026</span><span class="v">Sent Apr 3 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+              <div class="xline"><span class="k">Q4 2025</span><span class="v">Sent Jan 6 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+              <div class="xline"><span class="k">Q3 2025</span><span class="v">Sent Oct 2 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+            </div>
+          </div>
+          <div class="xtoggle">
+            <span class="switch on"><i></i></span>
+            <span><b>Auto-audit on.</b> Drafts generate 3 days before the due date.</span>
+          </div>
+          <div class="xlinks"><a href="#">View in Asana &#8599;</a> · <a href="#">Open Report Editor &#8599;</a></div>
+        </div>
+
+        <!-- Kent Station Dental: failing generation -->
+        <div class="p" id="p-kent">
+          <div class="phead">
+            <div>
+              <h2>Kent Station Dental</h2>
+              <div class="who">Essential · Asana assignee <b>Soleil Parra</b></div>
+            </div>
+            <div class="pbtns">
+              <button class="btn dark">View error &amp; retry</button>
+              <button class="btn ghost">Switch to manual</button>
+            </div>
+          </div>
+          <div class="psec">
+            <div class="xh">This cycle</div>
+            <p class="xstory">The Q2 draft has <span class="redink">failed to generate 3 times</span>, most recently <b>Jul 26</b>, and the Asana task is due <b>Jul 30</b>. The last error came from the report builder; retrying from the error view keeps this cycle on schedule.</p>
+          </div>
+          <div class="pgrid">
+            <div>
+              <div class="xh">Data</div>
+              <div class="xline"><span class="k">GA4</span><span class="v num">55 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GSC</span><span class="v num">55 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GBP</span><span class="v num">55 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xh" style="margin-top:18px">Team</div>
+              <div class="xline"><span class="k">Asana</span><span class="v">Soleil Parra</span></div>
+              <div class="xline"><span class="k">SEO</span><span class="v">Tommy Callahan</span></div>
+              <div class="xline"><span class="k">MS</span><span class="v">Jessica Nguyen</span></div>
+            </div>
+            <div>
+              <div class="xh">History</div>
+              <div class="xline"><span class="k">Q2 2026</span><span class="v"><span class="redink">Failed · 3 attempts</span>, last Jul 26</span><span class="ax">Error log</span></div>
+              <div class="xline"><span class="k">Q1 2026</span><span class="v">Sent Apr 2 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+              <div class="xline"><span class="k">Q4 2025</span><span class="v">Sent Jan 8 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+            </div>
+          </div>
+          <div class="xtoggle">
+            <span class="switch on"><i></i></span>
+            <span><b>Auto-audit on.</b> Retries pause after 3 failures until someone looks.</span>
+          </div>
+          <div class="xlinks"><a href="#">View in Asana &#8599;</a> · <a href="#">Open Report Editor &#8599;</a></div>
+        </div>
+
+        <!-- Holliston Dentistry: healthy -->
+        <div class="p" id="p-holliston">
+          <div class="phead">
+            <div>
+              <h2>Holliston Dentistry</h2>
+              <div class="who">Essential · Asana assignee <b>Yitzchak Young</b></div>
+            </div>
+            <div class="pbtns">
+              <button class="btn dark">Generate draft now</button>
+              <button class="btn ghost">Skip this cycle</button>
+            </div>
+          </div>
+          <div class="psec">
+            <div class="xh">This cycle</div>
+            <p class="xstory">Nothing to do here. The Q2 draft generates <b>tomorrow, Jul 29</b>, three days before the <b>Aug 1</b> due date. Data is ready across all three sources, so the draft should land in the review queue on its own.</p>
+          </div>
+          <div class="pgrid">
+            <div>
+              <div class="xh">Data</div>
+              <div class="xline"><span class="k">GA4</span><span class="v num">53 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GSC</span><span class="v num">53 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xline"><span class="k">GBP</span><span class="v num">53 weeks</span><span class="ok">QoQ &#10003; YoY &#10003;</span></div>
+              <div class="xh" style="margin-top:18px">Team</div>
+              <div class="xline"><span class="k">Asana</span><span class="v">Yitzchak Young</span></div>
+              <div class="xline"><span class="k">SEO</span><span class="v">Tanya Yeauger</span></div>
+              <div class="xline"><span class="k">MS</span><span class="v">Soleil Parra</span></div>
+            </div>
+            <div>
+              <div class="xh">History</div>
+              <div class="xline"><span class="k">Q2 2026</span><span class="v">Generates <b>Jul 29</b>, scheduled</span></div>
+              <div class="xline"><span class="k">Q1 2026</span><span class="v">Sent May 5 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+              <div class="xline"><span class="k">Q4 2025</span><span class="v">Sent Feb 2 <span class="seen">· viewed</span></span><span class="ax">View</span></div>
+            </div>
+          </div>
+          <div class="xtoggle">
+            <span class="switch on"><i></i></span>
+            <span><b>Auto-audit on.</b> Drafts generate 3 days before the due date.</span>
+          </div>
+          <div class="xlinks"><a href="#">View in Asana &#8599;</a> · <a href="#">Open Report Editor &#8599;</a></div>
+        </div>
+
+        <!-- generic pane for entries not wired in this mockup -->
+        <div class="p" id="p-generic">
+          <div class="phead">
+            <div>
+              <h2 id="g-name">Client</h2>
+              <div class="who"><span id="g-tier">Tier</span> · Asana assignee <b id="g-who">Unassigned</b></div>
+            </div>
+            <div class="pbtns">
+              <button class="btn dark">Generate draft now</button>
+              <button class="btn ghost">Open settings</button>
+            </div>
+          </div>
+          <p class="pnote">In the shipped page this pane carries the same depth as the wired examples: the cycle story, data readiness, team, history, and the auto-audit switch. In this mockup only Allure, Kent Station, and Holliston have full pane content.</p>
+          <div class="xlinks"><a href="#">View in Asana &#8599;</a> · <a href="#">Open Report Editor &#8599;</a></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="foot-hint"><b>Mockup wiring:</b> click a list entry to swap the detail pane · Allure, Kent Station, and Holliston are fully wired, other entries share a placeholder pane · the Needs-action toggle and search filter the list for real.</div>
+  </div>
+</div>
+
+<script>
+// Demo flourishes only: theme toggle, pane swapping, list filter/search.
+(function () {
+  var app = document.getElementById('app');
+  document.getElementById('themebtn').addEventListener('click', function () {
+    var cur = app.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+    app.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.audit-app .mrow'));
+  var panes = Array.prototype.slice.call(document.querySelectorAll('.audit-app .p'));
+  rows.forEach(function (r) {
+    r.addEventListener('click', function () {
+      rows.forEach(function (x) { x.classList.remove('sel'); });
+      r.classList.add('sel');
+      var id = 'p-' + r.getAttribute('data-pane');
+      panes.forEach(function (p) { p.classList.toggle('show', p.id === id); });
+      if (r.getAttribute('data-pane') === 'generic') {
+        document.getElementById('g-name').innerHTML = r.querySelector('.mname').innerHTML;
+        document.getElementById('g-tier').textContent = (r.getAttribute('data-tier') || '').replace(/&amp;/g, '&');
+        document.getElementById('g-who').textContent = r.getAttribute('data-who') || 'Unassigned';
+      }
+    });
+  });
+
+  // Needs-action filter + search, both real
+  var ftog = document.getElementById('ftog');
+  var q = document.getElementById('q');
+  function applyFilters() {
+    var needOnly = ftog.classList.contains('on');
+    var term = q.value.trim().toLowerCase();
+    rows.forEach(function (r) {
+      var name = r.querySelector('.mname').textContent.toLowerCase();
+      var hide = (needOnly && !r.classList.contains('need')) || (term && name.indexOf(term) === -1);
+      r.classList.toggle('hidden', hide);
+    });
+  }
+  ftog.addEventListener('click', function () { ftog.classList.toggle('on'); applyFilters(); });
+  q.addEventListener('input', applyFilters);
+
+  document.querySelectorAll('.audit-app .switch').forEach(function (s) {
+    s.addEventListener('click', function (e) { e.stopPropagation(); s.classList.toggle('on'); });
+  });
+})();
+</script>

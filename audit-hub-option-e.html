@@ -1,0 +1,568 @@
+<!--
+  Audit Hub redesign mockup : OPTION E "Lanes" (wayfinder #745).
+
+  Concept: instead of one wide register answering every question at once
+  (column sprawl is the known overwhelm failure mode of the current hub),
+  the page is chunked into VIEWS, each answering exactly ONE operator
+  question with only the columns that question needs.
+
+  Research reasoning:
+  - Chunking + progressive disclosure: a table with 4 purposeful columns is
+    scannable; a table with 10 defensive columns is not. Splitting by task
+    kills column sprawl at the root instead of hiding it behind expanders.
+  - NN/g's layer-cake scanning works when a surface has one clear purpose;
+    each lane here is one decision: unblock, send, check the rhythm, or
+    check the data.
+  - Counts in the segmented control give information scent before a click
+    ("Needs action 4" tells you the workload without opening the lane).
+  - Default lane = Needs action: urgency-first position, so the page opens
+    on the only list that demands anything from the operator.
+  - Unmatched Asana tasks live inside Needs action (they ARE a needs-action
+    item), not in a separate band competing for attention on every view.
+
+  Visual identity is inherited from Option B "Ledger": paper white, hairline
+  rules, serif title, two-ink convention (red = blocked, green = confirmed),
+  plain-sentence statuses, no chips, no tinted status backgrounds.
+-->
+<title>Audit Hub redesign · Option E · Lanes</title>
+<style>
+.audit-app{
+  --paper:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --faint:#D3D7DF;
+  --red:#C25E55; --red-soft:#FBE7E5;
+  --green:#3C8F6E; --steady:#256E9C;
+  --chip:#F2F4F8;
+  --shadow:0 1px 2px rgba(17,20,28,.05);
+  --serif:Georgia,"Times New Roman",serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  min-height:100vh; margin:-8px; padding-bottom:80px;
+}
+.audit-app[data-theme="dark"]{
+  --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+  --red:#D0766B; --red-soft:#2E1917;
+  --green:#4DAE87; --steady:#7CC0E8;
+  --chip:#1E222A;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  .audit-app:not([data-theme="light"]){
+    --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+    --red:#D0766B; --red-soft:#2E1917;
+    --green:#4DAE87; --steady:#7CC0E8;
+    --chip:#1E222A;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.audit-app *{box-sizing:border-box}
+.audit-app .num{font-variant-numeric:tabular-nums}
+
+/* mockup banner + option switcher (not part of the shipped page) */
+.audit-app .mockstrip{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--chip);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:600;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.audit-app .mockstrip a{color:var(--sub);text-decoration:none;padding:1px 6px;border-radius:4px}
+.audit-app .mockstrip a:hover{color:var(--ink);background:var(--card)}
+.audit-app .mockstrip a.here{color:var(--ink);background:var(--card);box-shadow:var(--shadow)}
+
+.audit-app .col{max-width:1220px;margin:0 auto;width:100%;padding:0 30px}
+@media(max-width:880px){.audit-app .col{padding:0 16px}}
+
+/* header: serif title, one plain sentence */
+.audit-app .hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:30px 0 0;border-bottom:2px solid var(--ink);padding-bottom:16px}
+.audit-app .hd h1{font:400 26px/1.1 var(--serif);letter-spacing:-.005em;margin:0}
+.audit-app .hd .meta{margin-top:7px;font-size:13px;color:var(--sub);max-width:640px;line-height:1.5}
+.audit-app .hd .meta b{color:var(--ink);font-weight:600}
+.audit-app .hd .meta .redink{color:var(--red);font-weight:600}
+.audit-app .hd-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.audit-app .btn{font-family:var(--body);font-size:13px;font-weight:600;border-radius:5px;padding:7px 14px;cursor:pointer;border:1px solid transparent}
+.audit-app .btn.ghost{background:var(--card);border-color:var(--line);color:var(--sub)}
+.audit-app .btn.ghost:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.audit-app .btn.dark:hover{opacity:.9}
+.audit-app .btn.mini{font-size:11.5px;padding:5px 11px}
+.audit-app .btn:focus-visible{outline:2px solid var(--sub);outline-offset:1px}
+.audit-app .themebtn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:5px;padding:6px 10px;cursor:pointer}
+.audit-app .themebtn:hover{color:var(--ink);border-color:var(--muted)}
+
+/* the lane switcher: B's .seg, promoted to the page's main control */
+.audit-app .lanesbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 0 0}
+.audit-app .seg{display:inline-flex;background:var(--chip);border-radius:5px;padding:2px;gap:2px}
+.audit-app .seg button{font-family:var(--body);font-size:12px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:4px 11px;border-radius:4px;cursor:pointer}
+.audit-app .seg button:hover:not(.on){color:var(--ink)}
+.audit-app .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.audit-app .seg.lanes{padding:3px;gap:3px}
+.audit-app .seg.lanes button{font-size:13px;padding:8px 18px;border-radius:4px}
+.audit-app .seg.lanes .n{font-variant-numeric:tabular-nums;color:var(--muted);margin-left:6px;font-weight:600}
+.audit-app .seg.lanes .n.redink{color:var(--red)}
+.audit-app .seg.lanes button.on .n{color:var(--sub)}
+.audit-app .seg.lanes button.on .n.redink{color:var(--red)}
+.audit-app .explain{padding:10px 2px 14px;font-size:12.5px;color:var(--muted)}
+
+/* views */
+.audit-app .view.hidden{display:none}
+.audit-app .tcard{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+.audit-app .tscroll{overflow-x:auto}
+.audit-app table.ht{width:100%;border-collapse:collapse}
+.audit-app .ht thead th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:12px 12px;border-bottom:1px solid var(--ink);white-space:nowrap;background:var(--card)}
+.audit-app .ht thead th:first-child{padding-left:18px}
+.audit-app .ht thead th:last-child{padding-right:18px}
+.audit-app .ht th.sortable{cursor:pointer;user-select:none}
+.audit-app .ht th.sortable:hover{color:var(--ink)}
+.audit-app .ht th .car{opacity:0;margin-left:5px;color:var(--ink)}
+.audit-app .ht th.sorted{color:var(--ink)}
+.audit-app .ht th.sorted .car{opacity:1}
+.audit-app .ht tbody tr{border-bottom:1px solid var(--line-soft)}
+.audit-app .ht tbody tr:hover{background:var(--paper)}
+.audit-app .ht td{padding:13px 12px;font-size:13px;vertical-align:middle}
+.audit-app .ht td:first-child{padding-left:18px}
+.audit-app .ht td:last-child{padding-right:18px}
+.audit-app .cname{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+.audit-app .ctier{margin-top:2px;font-size:11px;color:var(--muted);white-space:nowrap}
+.audit-app .ava{width:26px;height:26px;border-radius:5px;display:grid;place-items:center;font:600 10.5px/1 var(--body);background:var(--chip);color:var(--sub);border:1px solid var(--line)}
+.audit-app .ava.empty{border-style:dashed;color:var(--muted);background:transparent}
+
+/* status: one plain sentence, red ink when blocked */
+.audit-app .st{font-size:12.5px;line-height:1.45;color:var(--sub);max-width:360px}
+.audit-app .st b{color:var(--ink);font-weight:600}
+.audit-app .st.redink,.audit-app .st.redink b{color:var(--red)}
+.audit-app .go{font-size:11.5px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap}
+.audit-app .go:hover{opacity:.75}
+.audit-app .datecell{white-space:nowrap;font-size:12.5px;color:var(--sub)}
+.audit-app .datecell b{color:var(--ink);font-weight:600}
+.audit-app .datecell .seen{color:var(--green);font-size:11px}
+.audit-app .datecell .unseen{color:var(--muted);font-size:11px}
+.audit-app .datecell.redink,.audit-app .datecell.redink b{color:var(--red)}
+.audit-app .mutedcell{color:var(--muted)}
+
+/* cycle bar, from B: last audit -> today -> due */
+.audit-app .cyc{min-width:210px;max-width:280px}
+.audit-app .cyc-bar{position:relative;height:3px;border-radius:2px;background:var(--line)}
+.audit-app .cyc-bar .done{position:absolute;left:0;top:0;bottom:0;background:var(--faint);border-radius:2px}
+.audit-app .cyc-bar .today{position:absolute;top:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.audit-app .cyc-bar.over .done{background:var(--red);opacity:.5}
+.audit-app .cyc-bar.over .today{background:var(--red)}
+.audit-app .cyc-bar.none{background:transparent;border-top:2px dashed var(--faint);height:0;border-radius:0}
+.audit-app .cyc-lab{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.audit-app .cyc-lab .r{text-align:right}
+.audit-app .cyc-lab .r.redink{color:var(--red);font-weight:600}
+.audit-app .genprog{display:flex;flex-direction:column;gap:4px;max-width:210px}
+.audit-app .genprog .t{font-size:10.5px;font-weight:600;color:var(--steady)}
+.audit-app .genprog .bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden}
+.audit-app .genprog .bar i{display:block;height:100%;background:var(--steady);border-radius:2px;animation:gp 2.4s ease-in-out infinite alternate}
+@keyframes gp{from{width:58%}to{width:66%}}
+
+/* auto-audit switch (Schedule lane) */
+.audit-app .switch{width:30px;height:17px;border-radius:17px;background:var(--faint);position:relative;transition:background .15s;flex:none;display:inline-block;cursor:pointer;vertical-align:middle}
+.audit-app .switch i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+.audit-app .switch.on{background:var(--green)}
+.audit-app .switch.on i{left:15px}
+.audit-app .swlab{font-size:11px;color:var(--muted);margin-left:8px;vertical-align:middle}
+
+/* data-health marks: color always paired with a word */
+.audit-app .ok{color:var(--green);font-size:11.5px;font-weight:600;white-space:nowrap}
+.audit-app .no{color:var(--red);font-size:11.5px;font-weight:600;white-space:nowrap}
+.audit-app .note{font-size:12px;color:var(--sub);max-width:280px;line-height:1.45}
+.audit-app .note.redink{color:var(--red)}
+
+/* unmatched Asana tasks, inside Needs action only */
+.audit-app .unmatched{margin-top:14px}
+.audit-app .unmatched .uh{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:0 2px 8px}
+.audit-app .attn-row{display:flex;align-items:center;gap:12px;padding:9px 16px;border-top:1px solid var(--line-soft);font-size:12.5px;background:var(--card)}
+.audit-app .attn-row:first-of-type{border-top:0}
+.audit-app .attn-card{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+.audit-app .attn-row .tk{color:var(--ink);font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-app .attn-row .sec{font-size:11px;color:var(--muted);white-space:nowrap}
+.audit-app .attn-row .ax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:11.5px;white-space:nowrap;cursor:pointer}
+.audit-app .attn-row .ax:hover{color:var(--ink)}
+
+.audit-app .foot-hint{padding:14px 2px 0;font-size:11px;color:var(--muted)}
+.audit-app .foot-hint b{color:var(--sub);font-weight:600}
+
+@media (prefers-reduced-motion:reduce){
+  .audit-app .switch,.audit-app .switch i{transition:none}
+  .audit-app .genprog .bar i{animation:none;width:62%}
+}
+</style>
+
+<div class="audit-app" id="app">
+  <div class="mockstrip">
+    <span>Mockup · Audit Hub redesign · #745 · not the shipped page</span>
+    <span>
+      <a href="./audit-hub-option-b.html">B · Ledger</a>
+      <a href="./audit-hub-option-d.html">D · Split</a>
+      <a class="here" href="./audit-hub-option-e.html">E · Lanes</a>
+      <a href="./audit-hub-option-f.html">F · Compact</a>
+    </span>
+  </div>
+
+  <div class="col">
+    <div class="hd">
+      <div>
+        <h1>Audit Hub</h1>
+        <div class="meta">12 clients enrolled. <span class="redink">4 need your attention</span>, <b>2 drafts</b> are waiting to be reviewed and sent. Synced from Asana at 8:12 AM.</div>
+      </div>
+      <div class="hd-actions">
+        <button class="themebtn" id="themebtn" type="button">Theme</button>
+        <button class="btn ghost">Run poll now</button>
+        <button class="btn dark">Sync from Asana</button>
+      </div>
+    </div>
+
+    <div class="lanesbar">
+      <div class="seg lanes" id="laneseg">
+        <button class="on" data-view="v-needs">Needs action<span class="n redink">4</span></button>
+        <button data-view="v-drafts">Drafts<span class="n">2</span></button>
+        <button data-view="v-schedule">Schedule<span class="n">12</span></button>
+        <button data-view="v-health">Data health<span class="n">12</span></button>
+      </div>
+    </div>
+
+    <!-- ============ LANE 1 · NEEDS ACTION (default) ============ -->
+    <section class="view" id="v-needs">
+      <div class="explain">Everything that is blocked and why. Empty means nothing needs you today.</div>
+      <div class="tcard">
+        <div class="tscroll">
+          <table class="ht" style="min-width:760px">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>What's wrong</th>
+                <th>Do this</th>
+                <th>Assignee</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cname">Allure Dental</div><div class="ctier">Market Leader</div></td>
+                <td><div class="st redink"><b>The Q2 draft has sat unsent for 16 days.</b> Its Asana task was due Jul 12.</div></td>
+                <td><span class="go">Review &amp; send</span></td>
+                <td><span class="ava">JN</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Kent Station Dental</div><div class="ctier">Essential</div></td>
+                <td><div class="st redink"><b>Generation failed 3 times</b>, most recently Jul 26. Due Jul 30.</div></td>
+                <td><span class="go">View error &amp; retry</span></td>
+                <td><span class="ava">SP</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Plumb Dental</div><div class="ctier">Performance</div></td>
+                <td><div class="st redink"><b>Enrolled, but no open Asana task.</b> Nothing will schedule until one exists.</div></td>
+                <td><span class="go">Create task</span></td>
+                <td><span class="ava">TY</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Cedar Grove Family Dentistry</div><div class="ctier">Essential</div></td>
+                <td><div class="st redink"><b>Only 8 weeks cached</b>, QoQ needs 16+. First audit Aug 29 is at risk.</div></td>
+                <td><span class="go">Cache detail</span></td>
+                <td><span class="ava">TC</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="unmatched">
+        <div class="uh">Asana audit tasks not matched to a client · they won't appear in any lane until linked</div>
+        <div class="attn-card">
+          <div class="attn-row">
+            <span class="tk">Q3 Audit · Sunrise Dental Care</span>
+            <span class="sec">Performance section · due Aug 14</span>
+            <span class="ax">Link to client</span>
+            <span class="ax">Open in Asana &#8599;</span>
+          </div>
+          <div class="attn-row">
+            <span class="tk">Quarterly Audit · Northgate Smiles</span>
+            <span class="sec">Essential section · no due date</span>
+            <span class="ax">Link to client</span>
+            <span class="ax">Open in Asana &#8599;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LANE 2 · DRAFTS ============ -->
+    <section class="view hidden" id="v-drafts">
+      <div class="explain">Drafts awaiting your review before they go to the client.</div>
+      <div class="tcard">
+        <div class="tscroll">
+          <table class="ht" style="min-width:840px">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Draft generated</th>
+                <th>Waiting</th>
+                <th>Asana due</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cname">Allure Dental</div><div class="ctier">Market Leader</div></td>
+                <td class="datecell num">Jul 12</td>
+                <td class="datecell redink num"><b>16 days</b></td>
+                <td class="datecell redink num">Jul 12 · overdue</td>
+                <td>
+                  <button class="btn dark mini">Review &amp; send</button>
+                  <button class="btn ghost mini">Archive</button>
+                </td>
+              </tr>
+              <tr>
+                <td><div class="cname" style="color:var(--muted)">Fisher &amp; Zitterich Dentistry</div><div class="ctier">Essential · draft arrives today</div></td>
+                <td colspan="3"><div class="genprog"><span class="t">Generating now · 62%</span><span class="bar"><i></i></span></div></td>
+                <td class="mutedcell" style="font-size:12px">Actions appear when it lands</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LANE 3 · SCHEDULE ============ -->
+    <section class="view hidden" id="v-schedule">
+      <div class="explain">The quarterly rhythm for every enrolled client: where each one sits in its cycle and when the next draft generates.</div>
+      <div class="tcard">
+        <div class="tscroll">
+          <table class="ht" style="min-width:980px">
+            <thead>
+              <tr>
+                <th class="sortable">Client<span class="car">&#9650;</span></th>
+                <th class="sortable">Cycle<span class="car">&#9650;</span></th>
+                <th class="sortable sorted">Next generation<span class="car">&#9650;</span></th>
+                <th>Auto-audit</th>
+                <th class="sortable">Last audit<span class="car">&#9650;</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cname">Allure Dental</div><div class="ctier">Market Leader</div></td>
+                <td><div class="cyc"><div class="cyc-bar over"><span class="done" style="width:100%"></span><span class="today" style="left:100%"></span></div>
+                <div class="cyc-lab"><span>Apr 3</span><span class="r redink">due Jul 12 · 16d ago</span></div></div></td>
+                <td class="datecell">Draft ready · generated <b>Jul 12</b></td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Apr 3 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Kent Station Dental</div><div class="ctier">Essential</div></td>
+                <td><div class="cyc"><div class="cyc-bar over"><span class="done" style="width:97%"></span><span class="today" style="left:97%"></span></div>
+                <div class="cyc-lab"><span>Apr 2</span><span class="r redink">due Jul 30 · failing</span></div></div></td>
+                <td class="datecell redink"><b>Retry pending</b> · failed 3 times</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Apr 2 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Fisher &amp; Zitterich Dentistry</div><div class="ctier">Essential</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:98%"></span><span class="today" style="left:98%"></span></div>
+                <div class="cyc-lab"><span>Apr 28</span><span class="r">due Jul 29</span></div></div></td>
+                <td><div class="genprog"><span class="t">Generating now · 62%</span><span class="bar"><i></i></span></div></td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Apr 28 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Holliston Dentistry</div><div class="ctier">Essential</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:96%"></span><span class="today" style="left:96%"></span></div>
+                <div class="cyc-lab"><span>May 5</span><span class="r">due Aug 1</span></div></div></td>
+                <td class="datecell"><b>Tomorrow</b> · Jul 29</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent May 5 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Champion Dental Group</div><div class="ctier">Performance</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:90%"></span><span class="today" style="left:90%"></span></div>
+                <div class="cyc-lab"><span>Jun 30</span><span class="r">due Aug 8</span></div></div></td>
+                <td class="datecell num">Aug 5</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Jun 30 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">In Motion Dentistry</div><div class="ctier">Market Leader</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:55%"></span><span class="today" style="left:55%"></span></div>
+                <div class="cyc-lab"><span>Jul 2</span><span class="r">due Aug 15</span></div></div></td>
+                <td class="datecell num">Aug 12</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Jul 2 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Lakeview Dental Arts</div><div class="ctier">Performance</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:22%"></span><span class="today" style="left:22%"></span></div>
+                <div class="cyc-lab"><span>Jul 10</span><span class="r">due Aug 22</span></div></div></td>
+                <td class="datecell num">Aug 19</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Jul 10 <span class="unseen">&#9675; not viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Smile &amp; Co. Roseville</div><div class="ctier">Performance · manual</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:32%"></span><span class="today" style="left:32%"></span></div>
+                <div class="cyc-lab"><span>Jul 3</span><span class="r">due Aug 20</span></div></div></td>
+                <td class="datecell mutedcell">Manual · <span class="go">Generate now</span></td>
+                <td><span class="switch"><i></i></span><span class="swlab">off</span></td>
+                <td class="datecell num">Sent Jul 3 <span class="seen">&#10003; viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Cedar Grove Family Dentistry</div><div class="ctier">Essential</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:8%"></span><span class="today" style="left:8%"></span></div>
+                <div class="cyc-lab"><span>No report yet</span><span class="r">first audit Aug 29</span></div></div></td>
+                <td class="datecell num">Aug 26</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell mutedcell">None yet</td>
+              </tr>
+              <tr>
+                <td><div class="cname">Bright Peak Dental</div><div class="ctier">Performance</div></td>
+                <td><div class="cyc"><div class="cyc-bar"><span class="done" style="width:30%"></span><span class="today" style="left:30%"></span></div>
+                <div class="cyc-lab"><span>Jun 28</span><span class="r">due Sep 5</span></div></div></td>
+                <td class="datecell num">Sep 2</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Jun 28 <span class="unseen">&#9675; not viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Plumb Dental</div><div class="ctier">Performance</div></td>
+                <td><div class="cyc"><div class="cyc-bar none"></div>
+                <div class="cyc-lab"><span>Jun 12</span><span class="r redink">no upcoming task</span></div></div></td>
+                <td class="datecell redink">Nothing scheduled · no task</td>
+                <td><span class="switch on"><i></i></span><span class="swlab">on</span></td>
+                <td class="datecell num">Sent Jun 12 <span class="unseen">&#9675; not viewed</span></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Marina Smiles Dental</div><div class="ctier">Essential · manual</div></td>
+                <td><div class="cyc"><div class="cyc-bar none"></div>
+                <div class="cyc-lab"><span>No report yet</span><span class="r">no task scheduled</span></div></div></td>
+                <td class="datecell mutedcell">Manual · nothing scheduled</td>
+                <td><span class="switch"><i></i></span><span class="swlab">off</span></td>
+                <td class="datecell mutedcell">None yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LANE 4 · DATA HEALTH ============ -->
+    <section class="view hidden" id="v-health">
+      <div class="explain">Whether each client's cached analytics can support the comparisons an audit needs.</div>
+      <div class="tcard">
+        <div class="tscroll">
+          <table class="ht" style="min-width:900px">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>GA4</th>
+                <th>GSC</th>
+                <th>GBP</th>
+                <th>QoQ</th>
+                <th>YoY</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cname">Allure Dental</div><div class="ctier">Market Leader</div></td>
+                <td class="datecell num">61w</td><td class="datecell num">64w</td><td class="datecell num">61w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Kent Station Dental</div><div class="ctier">Essential</div></td>
+                <td class="datecell num">55w</td><td class="datecell num">57w</td><td class="datecell num">55w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note">Data is fine; the failures are in generation, not the cache.</td>
+              </tr>
+              <tr>
+                <td><div class="cname">Plumb Dental</div><div class="ctier">Performance</div></td>
+                <td class="datecell num">34w</td><td class="datecell num">36w</td><td class="datecell num">34w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="no">&#10007; not yet</span></td>
+                <td class="note">YoY unlocks near the one-year mark of caching.</td>
+              </tr>
+              <tr>
+                <td><div class="cname">Cedar Grove Family Dentistry</div><div class="ctier">Essential</div></td>
+                <td class="datecell num">8w</td><td class="datecell num">8w</td><td class="datecell num">8w</td>
+                <td><span class="no">&#10007; not yet</span></td><td><span class="no">&#10007; not yet</span></td>
+                <td class="note redink">8w cached, QoQ needs 16+.</td>
+              </tr>
+              <tr>
+                <td><div class="cname">Fisher &amp; Zitterich Dentistry</div><div class="ctier">Essential</div></td>
+                <td class="datecell num">59w</td><td class="datecell num">62w</td><td class="datecell num">59w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Holliston Dentistry</div><div class="ctier">Essential</div></td>
+                <td class="datecell num">53w</td><td class="datecell num">55w</td><td class="datecell num">53w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Champion Dental Group</div><div class="ctier">Performance</div></td>
+                <td class="datecell num">52w</td><td class="datecell num">54w</td><td class="datecell num">52w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">In Motion Dentistry</div><div class="ctier">Market Leader</div></td>
+                <td class="datecell num">58w</td><td class="datecell num">60w</td><td class="datecell num">58w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Lakeview Dental Arts</div><div class="ctier">Performance</div></td>
+                <td class="datecell num">57w</td><td class="datecell num">59w</td><td class="datecell num">57w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Smile &amp; Co. Roseville</div><div class="ctier">Performance · manual</div></td>
+                <td class="datecell num">60w</td><td class="datecell num">62w</td><td class="datecell num">60w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="ok">&#10003; ready</span></td>
+                <td class="note"></td>
+              </tr>
+              <tr>
+                <td><div class="cname">Bright Peak Dental</div><div class="ctier">Performance</div></td>
+                <td class="datecell num">21w</td><td class="datecell num">23w</td><td class="datecell num">21w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="no">&#10007; not yet</span></td>
+                <td class="note">QoQ works now; YoY needs a full year of cache.</td>
+              </tr>
+              <tr>
+                <td><div class="cname">Marina Smiles Dental</div><div class="ctier">Essential · manual</div></td>
+                <td class="datecell num">26w</td><td class="datecell num">26w</td><td class="datecell mutedcell num">0w</td>
+                <td><span class="ok">&#10003; ready</span></td><td><span class="no">&#10007; not yet</span></td>
+                <td class="note redink">GBP not connected.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot-hint"><b>Counts move between lanes as states change:</b> sending Allure's draft drops Needs action to 3 and Drafts to 1; when Fisher's draft lands it enters Drafts for review.</div>
+  </div>
+</div>
+
+<script>
+// Demo wiring: theme toggle, lane switching, auto-audit switches.
+(function () {
+  var app = document.getElementById('app');
+  document.getElementById('themebtn').addEventListener('click', function () {
+    var cur = app.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+    app.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+  // lane switcher: actually shows/hides the four views
+  var seg = document.getElementById('laneseg');
+  seg.querySelectorAll('button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      seg.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      document.querySelectorAll('.audit-app .view').forEach(function (v) {
+        v.classList.toggle('hidden', v.id !== b.getAttribute('data-view'));
+      });
+    });
+  });
+  document.querySelectorAll('.audit-app .switch').forEach(function (s) {
+    s.addEventListener('click', function (e) {
+      e.stopPropagation();
+      s.classList.toggle('on');
+      var lab = s.nextElementSibling;
+      if (lab && lab.classList.contains('swlab')) lab.textContent = s.classList.contains('on') ? 'on' : 'off';
+    });
+  });
+})();
+</script>

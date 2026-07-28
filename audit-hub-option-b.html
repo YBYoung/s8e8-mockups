@@ -15,36 +15,36 @@
     plain-sentence statuses. Kept from rev 1 B: in-place row expansion,
     now airy: no inner boxes, three loose columns, whitespace only.
 -->
-<title>Audit Hub redesign · Option B rev 3 · Ledger</title>
+<title>Audit Hub redesign · Option B rev 4 · Ledger</title>
 <style>
 .audit-app{
-  --paper:#FBFBFA; --card:#FFFFFF; --line:#E6E6E4; --line-soft:#F0F0EE;
-  --ink:#1A1C1D; --sub:#585C5F; --muted:#9CA0A3; --faint:#D8D8D5;
-  --red:#B23A32; --red-soft:#F7EBEA;
-  --green:#2F6B4F;
-  --chip:#F4F4F2;
-  --shadow:0 1px 2px rgba(20,22,23,.05);
+  --paper:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --faint:#D3D7DF;
+  --red:#C25E55; --red-soft:#FBE7E5;
+  --green:#3C8F6E; --steady:#256E9C;
+  --chip:#F2F4F8;
+  --shadow:0 1px 2px rgba(17,20,28,.05);
   --serif:Georgia,"Times New Roman",serif;
   --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
   background:var(--paper); color:var(--ink); font-family:var(--body);
   min-height:100vh; margin:-8px; padding-bottom:80px;
 }
 .audit-app[data-theme="dark"]{
-  --paper:#151617; --card:#1D1F20; --line:#333638; --line-soft:#292C2E;
-  --ink:#EAEBEC; --sub:#AFB3B6; --muted:#75797C; --faint:#44484A;
-  --red:#D3766D; --red-soft:#392422;
-  --green:#7AB597;
-  --chip:#26282A;
-  --shadow:0 1px 2px rgba(0,0,0,.35);
+  --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+  --red:#D0766B; --red-soft:#2E1917;
+  --green:#4DAE87; --steady:#7CC0E8;
+  --chip:#1E222A;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
 }
 @media (prefers-color-scheme:dark){
   .audit-app:not([data-theme="light"]){
-    --paper:#151617; --card:#1D1F20; --line:#333638; --line-soft:#292C2E;
-    --ink:#EAEBEC; --sub:#AFB3B6; --muted:#75797C; --faint:#44484A;
-    --red:#D3766D; --red-soft:#392422;
-    --green:#7AB597;
-    --chip:#26282A;
-    --shadow:0 1px 2px rgba(0,0,0,.35);
+    --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+    --red:#D0766B; --red-soft:#2E1917;
+    --green:#4DAE87; --steady:#7CC0E8;
+    --chip:#1E222A;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
   }
 }
 .audit-app *{box-sizing:border-box}
@@ -147,9 +147,9 @@
 .audit-app .st .go{font-size:11.5px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap}
 .audit-app .st .go:hover{opacity:.75}
 .audit-app .genprog{display:flex;flex-direction:column;gap:4px;max-width:210px}
-.audit-app .genprog .t{font-size:10.5px;font-weight:600;color:var(--sub)}
+.audit-app .genprog .t{font-size:10.5px;font-weight:600;color:var(--steady)}
 .audit-app .genprog .bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden}
-.audit-app .genprog .bar i{display:block;height:100%;background:var(--sub);border-radius:2px;animation:gp 2.4s ease-in-out infinite alternate}
+.audit-app .genprog .bar i{display:block;height:100%;background:var(--steady);border-radius:2px;animation:gp 2.4s ease-in-out infinite alternate}
 @keyframes gp{from{width:58%}to{width:66%}}
 .audit-app .lastcell{white-space:nowrap;font-size:12px;color:var(--sub)}
 .audit-app .lastcell .seen{color:var(--green);font-size:11px}
@@ -201,11 +201,12 @@
 
 <div class="audit-app" id="app">
   <div class="mockstrip">
-    <span>Mockup · Audit Hub redesign · #745 · rev 3 · not the shipped page</span>
+    <span>Mockup · Audit Hub redesign · #745 · rev 4 · not the shipped page</span>
     <span>
-      <a href="./audit-hub-option-a.html">A · Drawer (rev 1)</a>
-      <a class="here" href="./audit-hub-option-b.html">B · Ledger (rev 3)</a>
-      <a href="./audit-hub-option-c.html">C · Rail (rev 1)</a>
+      <a class="here" href="./audit-hub-option-b.html">B · Ledger</a>
+      <a href="./audit-hub-option-d.html">D · Split</a>
+      <a href="./audit-hub-option-e.html">E · Lanes</a>
+      <a href="./audit-hub-option-f.html">F · Compact</a>
     </span>
   </div>
 
