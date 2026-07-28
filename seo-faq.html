@@ -5,235 +5,195 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<title>SEO FAQ Library — S8E8</title>
-</head>
-<body>
-<title>SEO FAQ Library — S8E8</title>
+<title>SEO FAQ Library, S8E8</title>
 <style>
   :root {
-    --bg: #f4f5f6;
-    --surface: #ffffff;
-    --surface-2: #fafafa;
-    --ink: #1e1f21;
-    --ink-soft: #6d6f73;
-    --ink-faint: #9a9ca0;
-    --line: #e7e6e6;
-    --line-strong: #dcdbdb;
-    --accent: #f06a6a;
-    --accent-ink: #cc3a49;
-    --shadow: 0 1px 2px rgba(0,0,0,0.06);
-    --radius: 10px;
-    font-synthesis-weight: none;
+    --bg:#f4f5f6; --surface:#ffffff; --surface-2:#fafafa;
+    --ink:#1e1f21; --ink-soft:#6d6f73; --ink-faint:#9a9ca0;
+    --line:#e7e6e6; --line-strong:#dcdbdb;
+    --accent:#f06a6a; --accent-ink:#cc3a49;
+    --blue:#4573d2; --green:#5da283; --amber:#c8892b; --amber-bg:#fbf3e4;
+    --shadow:0 1px 2px rgba(0,0,0,0.06);
+    --radius:10px; font-synthesis-weight:none;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #191a1c;
-      --surface: #26272a;
-      --surface-2: #2c2d30;
-      --ink: #f3f3f2;
-      --ink-soft: #a6a8ac;
-      --ink-faint: #74767a;
-      --line: #35363a;
-      --line-strong: #3f4045;
-      --accent: #f47c7c;
-      --accent-ink: #f8a0a0;
-      --shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-  }
-  :root[data-theme="light"] {
-    --bg: #f4f5f6; --surface: #ffffff; --surface-2: #fafafa;
-    --ink: #1e1f21; --ink-soft: #6d6f73; --ink-faint: #9a9ca0;
-    --line: #e7e6e6; --line-strong: #dcdbdb; --accent: #f06a6a; --accent-ink: #cc3a49;
-    --shadow: 0 1px 2px rgba(0,0,0,0.06);
-  }
-  :root[data-theme="dark"] {
-    --bg: #191a1c; --surface: #26272a; --surface-2: #2c2d30;
-    --ink: #f3f3f2; --ink-soft: #a6a8ac; --ink-faint: #74767a;
-    --line: #35363a; --line-strong: #3f4045; --accent: #f47c7c; --accent-ink: #f8a0a0;
-    --shadow: 0 1px 2px rgba(0,0,0,0.3);
-  }
+  @media (prefers-color-scheme: dark){:root{
+    --bg:#191a1c; --surface:#26272a; --surface-2:#2c2d30;
+    --ink:#f3f3f2; --ink-soft:#a6a8ac; --ink-faint:#74767a;
+    --line:#35363a; --line-strong:#3f4045;
+    --accent:#f47c7c; --accent-ink:#f8a0a0;
+    --blue:#7aa0e6; --green:#83c0a0; --amber:#e0a95a; --amber-bg:#332a1a;
+    --shadow:0 1px 2px rgba(0,0,0,0.3);}}
+  :root[data-theme="light"]{--bg:#f4f5f6;--surface:#ffffff;--surface-2:#fafafa;--ink:#1e1f21;--ink-soft:#6d6f73;--ink-faint:#9a9ca0;--line:#e7e6e6;--line-strong:#dcdbdb;--accent:#f06a6a;--accent-ink:#cc3a49;--blue:#4573d2;--green:#5da283;--amber:#c8892b;--amber-bg:#fbf3e4;--shadow:0 1px 2px rgba(0,0,0,0.06);}
+  :root[data-theme="dark"]{--bg:#191a1c;--surface:#26272a;--surface-2:#2c2d30;--ink:#f3f3f2;--ink-soft:#a6a8ac;--ink-faint:#74767a;--line:#35363a;--line-strong:#3f4045;--accent:#f47c7c;--accent-ink:#f8a0a0;--blue:#7aa0e6;--green:#83c0a0;--amber:#e0a95a;--amber-bg:#332a1a;--shadow:0 1px 2px rgba(0,0,0,0.3);}
 
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
 
-  /* ---- top bar ---- */
-  .topbar {
-    position: sticky; top: 0; z-index: 40;
-    display: flex; align-items: center; gap: 16px;
-    padding: 12px 22px;
-    background: color-mix(in srgb, var(--surface) 90%, transparent);
-    backdrop-filter: saturate(1.4) blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
-  .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
-  .brand-mark {
-    width: 26px; height: 26px; border-radius: 7px; flex: none;
-    background: linear-gradient(140deg, var(--accent), #f9a25a);
-    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px;
-    box-shadow: var(--shadow);
-  }
-  .brand-name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
-  .brand-name span { color: var(--ink-faint); font-weight: 500; }
-  .topbar .spacer { flex: 1; }
-  .search {
-    display: flex; align-items: center; gap: 7px;
-    background: var(--surface-2); border: 1px solid var(--line-strong);
-    border-radius: 8px; padding: 6px 10px; min-width: 150px;
-  }
-  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
-  .search svg { flex: none; opacity: .5; }
-  .search input {
-    border: 0; background: transparent; color: var(--ink); outline: none;
-    font-size: 14px; width: 100%; font-family: inherit;
-  }
-  .btn {
-    display: inline-flex; align-items: center; gap: 7px;
-    font: inherit; font-size: 13.5px; font-weight: 600;
-    padding: 8px 14px; border-radius: 8px; cursor: pointer;
-    border: 1px solid transparent; white-space: nowrap;
-    transition: transform .08s ease, background .15s ease, border-color .15s ease;
-  }
-  .btn:active { transform: translateY(1px); }
-  .btn-primary { background: var(--ink); color: var(--surface); }
-  .btn-primary:hover { background: color-mix(in srgb, var(--ink) 85%, var(--accent)); }
-  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line-strong); }
-  .btn-ghost:hover { background: var(--surface-2); color: var(--ink); }
-  :root[data-theme="dark"] .btn-primary,
-  @media (prefers-color-scheme: dark) { }
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+    padding:12px 22px;background:color-mix(in srgb,var(--surface) 90%,transparent);
+    backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--line);}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0;}
+  .brand-mark{width:26px;height:26px;border-radius:7px;flex:none;
+    background:linear-gradient(140deg,var(--accent),#f9a25a);display:grid;place-items:center;
+    color:#fff;font-weight:700;font-size:13px;box-shadow:var(--shadow);}
+  .brand-name{font-weight:600;letter-spacing:-0.01em;white-space:nowrap;}
+  .brand-name span{color:var(--ink-faint);font-weight:500;}
+  .topbar .spacer{flex:1;}
+  .search{display:flex;align-items:center;gap:7px;background:var(--surface-2);
+    border:1px solid var(--line-strong);border-radius:8px;padding:6px 10px;min-width:160px;}
+  .search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent);}
+  .search svg{flex:none;opacity:.5;}
+  .search input{border:0;background:transparent;color:var(--ink);outline:none;font-size:14px;width:100%;font-family:inherit;}
+  .btn{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:13.5px;font-weight:600;
+    padding:8px 14px;border-radius:8px;cursor:pointer;border:1px solid transparent;white-space:nowrap;
+    transition:transform .08s ease,background .15s ease,border-color .15s ease;}
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--ink);color:var(--surface);}
+  .btn-primary:hover{background:color-mix(in srgb,var(--ink) 85%,var(--accent));}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border-color:var(--line-strong);}
+  .btn-ghost:hover{background:var(--surface-2);color:var(--ink);}
 
-  /* ---- shell ---- */
-  .page { max-width: 1160px; margin: 0 auto; padding: 26px 22px 80px; }
-  .shell {
-    display: grid; grid-template-columns: 236px minmax(0, 1fr);
-    gap: 28px; align-items: start;
-  }
+  .page{max-width:1160px;margin:0 auto;padding:26px 22px 90px;}
+  .shell{display:grid;grid-template-columns:236px minmax(0,1fr);gap:28px;align-items:start;}
+  .rail{position:sticky;top:74px;align-self:start;max-height:calc(100vh - 96px);overflow-y:auto;}
+  .rail-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);padding:4px 10px 10px;}
+  .rail a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;text-decoration:none;
+    color:var(--ink-soft);font-size:13.5px;font-weight:500;line-height:1.3;transition:background .12s,color .12s;}
+  .rail a:hover{background:var(--surface-2);color:var(--ink);}
+  .rail a.active{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);font-weight:600;}
+  .rail .dot{width:9px;height:9px;border-radius:3px;flex:none;}
+  .rail .rname{flex:1;min-width:0;}
+  .rail .rcount{font-size:11.5px;color:var(--ink-faint);font-variant-numeric:tabular-nums;}
 
-  /* ---- rail ---- */
-  .rail { position: sticky; top: 74px; align-self: start; max-height: calc(100vh - 96px); overflow-y: auto; }
-  .rail-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
-    color: var(--ink-faint); padding: 4px 10px 10px;
-  }
-  .rail a {
-    display: flex; align-items: center; gap: 10px;
-    padding: 7px 10px; border-radius: 7px; text-decoration: none;
-    color: var(--ink-soft); font-size: 13.5px; font-weight: 500; line-height: 1.3;
-    transition: background .12s ease, color .12s ease;
-  }
-  .rail a:hover { background: var(--surface-2); color: var(--ink); }
-  .rail a.active { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--ink); font-weight: 600; }
-  .rail .dot { width: 9px; height: 9px; border-radius: 3px; flex: none; }
-  .rail .rname { flex: 1; min-width: 0; }
-  .rail .rcount { font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .intro{margin-bottom:14px;}
+  .content{min-width:0;}
+  h1.title{font-size:27px;font-weight:700;letter-spacing:-0.02em;margin:0 0 8px;text-wrap:balance;}
+  .lede{color:var(--ink-soft);font-size:15px;max-width:64ch;margin:0 0 16px;}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+  .stat{display:flex;flex-direction:column;gap:1px;background:var(--surface);border:1px solid var(--line);
+    border-radius:9px;padding:9px 14px;box-shadow:var(--shadow);}
+  .stat b{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.01em;}
+  .stat span{font-size:11.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;font-weight:600;}
+  .source-note{font-size:12.5px;color:var(--ink-faint);margin:14px 0 6px;padding:10px 14px;background:var(--surface-2);
+    border:1px dashed var(--line-strong);border-radius:8px;}
 
-  /* ---- intro ---- */
-  .intro { margin-bottom: 14px; }
-  .content { min-width: 0; }
-  h1.title { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; text-wrap: balance; }
-  .lede { color: var(--ink-soft); font-size: 15px; max-width: 62ch; margin: 0 0 16px; }
-  .stats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
-  .stat {
-    display: flex; flex-direction: column; gap: 1px;
-    background: var(--surface); border: 1px solid var(--line);
-    border-radius: 9px; padding: 9px 14px; box-shadow: var(--shadow);
-  }
-  .stat b { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-  .stat span { font-size: 11.5px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
-  .source-note {
-    font-size: 12.5px; color: var(--ink-faint); margin-bottom: 18px;
-    padding: 10px 14px; background: var(--surface-2);
-    border: 1px dashed var(--line-strong); border-radius: 8px; max-width: 100%;
-  }
+  .section{margin-top:22px;scroll-margin-top:76px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .card-head{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--surface-2);}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:4px 11px;border-radius:7px;line-height:1.2;}
+  .chip .cdot{width:8px;height:8px;border-radius:2.5px;flex:none;}
+  .card-head .n{font-size:12px;color:var(--ink-faint);font-weight:600;font-variant-numeric:tabular-nums;}
+  .card-head .hspace{flex:1;}
+  .copy-sec{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:600;color:var(--ink-faint);
+    background:transparent;border:1px solid var(--line-strong);border-radius:7px;padding:5px 9px;cursor:pointer;transition:.12s;}
+  .copy-sec:hover{color:var(--ink);border-color:var(--ink-soft);background:var(--surface);}
 
-  /* ---- cards ---- */
-  .section { margin-top: 22px; scroll-margin-top: 76px; }
-  .card {
-    background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
-  }
-  .card-head {
-    display: flex; align-items: center; gap: 11px;
-    padding: 13px 16px; border-bottom: 1px solid var(--line);
-    background: var(--surface-2);
-  }
-  .chip {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: 13px; font-weight: 600; padding: 4px 11px; border-radius: 7px;
-    line-height: 1.2;
-  }
-  .chip .cdot { width: 8px; height: 8px; border-radius: 2.5px; flex: none; }
-  .card-head .n {
-    font-size: 12px; color: var(--ink-faint); font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  .card-head .hspace { flex: 1; }
-  .copy-sec {
-    display: inline-flex; align-items: center; gap: 6px;
-    font: inherit; font-size: 12px; font-weight: 600; color: var(--ink-faint);
-    background: transparent; border: 1px solid var(--line-strong); border-radius: 7px;
-    padding: 5px 9px; cursor: pointer; transition: color .12s, border-color .12s, background .12s;
-  }
-  .copy-sec:hover { color: var(--ink); border-color: var(--ink-soft); background: var(--surface); }
-  ul.qlist { list-style: none; margin: 0; padding: 5px 0; }
-  ul.qlist li {
-    display: flex; gap: 11px; padding: 9px 16px 9px 16px;
-    border-top: 1px solid transparent; align-items: flex-start;
-  }
-  ul.qlist li + li { border-top: 1px solid var(--line); }
-  ul.qlist li .q { flex: 1; }
-  ul.qlist li .marker {
-    flex: none; margin-top: 2px; width: 15px; height: 15px; border-radius: 5px;
-    display: grid; place-items: center; font-size: 10px; color: var(--ink-faint);
-    background: var(--surface-2); border: 1px solid var(--line);
-  }
-  ul.qlist li:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
-  .no-results { padding: 40px 16px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+  ul.qlist{list-style:none;margin:0;padding:2px 0;}
+  ul.qlist li{border-top:1px solid var(--line);}
+  ul.qlist li:first-child{border-top:0;}
+  .qrow{display:flex;gap:11px;padding:11px 16px;align-items:flex-start;cursor:pointer;transition:background .12s;}
+  .qrow:hover{background:color-mix(in srgb,var(--accent) 5%,transparent);}
+  .qrow .marker{flex:none;margin-top:1px;width:16px;height:16px;border-radius:5px;display:grid;place-items:center;
+    font-size:10px;color:var(--ink-faint);background:var(--surface-2);border:1px solid var(--line);font-variant-numeric:tabular-nums;}
+  .qrow .qtext{flex:1;font-weight:500;}
+  .qrow .qbadges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+  .qrow .chev{flex:none;margin-top:3px;color:var(--ink-faint);transition:transform .18s ease;}
+  li.open .qrow .chev{transform:rotate(90deg);}
+  .badge{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.02em;white-space:nowrap;line-height:1.5;}
+  .b-thread{background:color-mix(in srgb,var(--accent) 13%,var(--surface));color:var(--accent-ink);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);}
+  .b-best{background:color-mix(in srgb,var(--blue) 13%,var(--surface));color:color-mix(in srgb,var(--blue) 68%,var(--ink));border:1px solid color-mix(in srgb,var(--blue) 30%,transparent);}
+  .b-policy{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line-strong);}
+  .b-confirm{background:var(--amber-bg);color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);}
+  .b-dated{background:transparent;color:var(--ink-faint);border:1px dashed var(--line-strong);}
 
-  footer.pageft {
-    margin-top: 34px; padding-top: 16px;
-    border-top: 1px solid var(--line);
-    font-size: 12px; color: var(--ink-faint); display: flex; flex-wrap: wrap; gap: 6px 16px;
-  }
+  .answer{display:none;padding:0 16px 15px 43px;}
+  li.open .answer{display:block;}
+  .answer .atext{color:var(--ink);font-size:14.5px;line-height:1.6;}
+  .answer .confirm-box{margin-top:9px;padding:9px 12px;background:var(--amber-bg);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);
+    border-radius:8px;font-size:12.5px;color:color-mix(in srgb,var(--amber) 72%,var(--ink));display:flex;gap:8px;}
+  .answer .confirm-box b{color:var(--amber);}
+  .answer .note{margin-top:8px;font-size:12px;color:var(--ink-faint);font-style:italic;}
+  .linkph{font-weight:600;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 10%,transparent);border:1px dashed color-mix(in srgb,var(--accent) 42%,transparent);border-radius:5px;padding:1px 6px;font-size:12.5px;white-space:nowrap;}
+  .answer .ameta{margin-top:11px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .answer .conf{font-size:11px;color:var(--ink-faint);display:inline-flex;align-items:center;gap:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .answer .conf .cd{width:7px;height:7px;border-radius:50%;}
+  .conf-high .cd{background:var(--green);} .conf-medium .cd{background:var(--amber);} .conf-low .cd{background:var(--ink-faint);}
+  .copy-q{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-faint);
+    background:transparent;border:1px solid var(--line-strong);border-radius:6px;padding:4px 8px;cursor:pointer;transition:.12s;}
+  .copy-q:hover{color:var(--ink);border-color:var(--ink-soft);}
 
-  /* ---- toast ---- */
-  .toast {
-    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px);
-    background: var(--ink); color: var(--surface);
-    padding: 10px 18px; border-radius: 9px; font-size: 13.5px; font-weight: 600;
-    box-shadow: 0 8px 26px rgba(0,0,0,0.22); opacity: 0; pointer-events: none;
-    transition: opacity .2s ease, transform .2s ease; z-index: 90;
-    display: flex; align-items: center; gap: 9px;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast .tdot { width: 8px; height: 8px; border-radius: 50%; background: #6ac48b; flex: none; }
+  .no-results{padding:40px 16px;text-align:center;color:var(--ink-faint);font-size:14px;}
+  footer.pageft{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-faint);display:flex;flex-wrap:wrap;gap:6px 16px;}
 
-  @media (max-width: 860px) {
-    .shell { grid-template-columns: 1fr; gap: 18px; }
-    .rail { display: none; }
-    .search { min-width: 120px; }
-    .brand-name span { display: none; }
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--surface);
+    padding:10px 18px;border-radius:9px;font-size:13.5px;font-weight:600;box-shadow:0 8px 26px rgba(0,0,0,0.22);opacity:0;pointer-events:none;
+    transition:opacity .2s,transform .2s;z-index:90;display:flex;align-items:center;gap:9px;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast .tdot{width:8px;height:8px;border-radius:50%;background:#6ac48b;flex:none;}
+
+  /* ---- admin drawer ---- */
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.32);opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;}
+  .scrim.show{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,94vw);background:var(--surface);border-left:1px solid var(--line);
+    box-shadow:-12px 0 40px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .24s ease;z-index:70;display:flex;flex-direction:column;}
+  .drawer.show{transform:translateX(0);}
+  .dhead{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);}
+  .dhead h2{font-size:16px;font-weight:700;margin:0;flex:1;}
+  .dclose{background:transparent;border:0;cursor:pointer;color:var(--ink-faint);font-size:22px;line-height:1;padding:4px;}
+  .dclose:hover{color:var(--ink);}
+  .dtabs{display:flex;gap:4px;padding:10px 16px 0;border-bottom:1px solid var(--line);}
+  .dtab{font:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);background:transparent;border:0;border-bottom:2px solid transparent;
+    padding:8px 12px 10px;cursor:pointer;}
+  .dtab.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .dbody{flex:1;overflow-y:auto;padding:18px 20px 40px;}
+  .dpane{display:none;} .dpane.active{display:block;}
+  .field{margin-bottom:13px;}
+  .field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em;}
+  .field input[type=text],.field textarea,.field select{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--surface-2);
+    border:1px solid var(--line-strong);border-radius:8px;padding:9px 11px;outline:none;}
+  .field textarea{min-height:96px;resize:vertical;line-height:1.5;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);}
+  .field .hint{font-size:11.5px;color:var(--ink-faint);margin-top:4px;}
+  .frow{display:flex;gap:12px;} .frow>*{flex:1;}
+  .checks{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft);}
+  .checks label{display:inline-flex;align-items:center;gap:6px;font-weight:500;cursor:pointer;text-transform:none;letter-spacing:0;}
+  .pane-note{font-size:12.5px;color:var(--ink-faint);background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:8px;padding:10px 12px;margin-bottom:16px;line-height:1.5;}
+  .item-card{border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:10px;background:var(--surface-2);}
+  .item-card .ic-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .item-card .ic-title{font-weight:600;font-size:13.5px;flex:1;min-width:0;}
+  .item-card .ic-meta{font-size:11px;color:var(--ink-faint);}
+  .item-card .ic-body{font-size:12.5px;color:var(--ink-soft);white-space:pre-wrap;max-height:90px;overflow:hidden;margin-top:3px;}
+  .item-card .ic-actions{display:flex;gap:8px;margin-top:8px;}
+  .mini{font:inherit;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:6px;cursor:pointer;border:1px solid var(--line-strong);background:transparent;color:var(--ink-soft);}
+  .mini:hover{color:var(--ink);border-color:var(--ink-soft);}
+  .mini.danger:hover{color:#c0392b;border-color:#c0392b;}
+  .type-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;background:color-mix(in srgb,var(--blue) 13%,var(--surface));color:color-mix(in srgb,var(--blue) 68%,var(--ink));text-transform:uppercase;letter-spacing:.03em;}
+  .drow{display:flex;gap:9px;flex-wrap:wrap;margin-top:6px;}
+  .empty-list{font-size:12.5px;color:var(--ink-faint);text-align:center;padding:20px;}
+
+  @media (max-width:860px){.shell{grid-template-columns:1fr;gap:18px;}.rail{display:none;}.search{min-width:120px;}.brand-name span{display:none;}}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
 </style>
+</head>
+<body>
 
 <div class="topbar">
   <div class="brand">
     <div class="brand-mark">S8</div>
-    <div class="brand-name">SEO FAQ Library <span>· from Slack</span></div>
+    <div class="brand-name">SEO FAQ Library <span>&middot; answered</span></div>
   </div>
   <div class="spacer"></div>
-  <label class="search" aria-label="Filter questions">
+  <label class="search" aria-label="Filter questions and answers">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input id="filter" type="text" placeholder="Filter questions…" autocomplete="off" />
+    <input id="filter" type="text" placeholder="Search questions &amp; answers&hellip;" autocomplete="off" />
   </label>
+  <button class="btn btn-ghost" id="expandAll">Expand all</button>
+  <button class="btn btn-ghost" id="openAdmin">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.24.61.83 1 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Admin
+  </button>
   <button class="btn btn-primary" id="copyAll">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
     Copy all
@@ -243,300 +203,358 @@
 <div class="page">
   <header class="intro">
     <h1 class="title">SEO &amp; Account Management FAQ</h1>
-    <p class="lede">Every recurring question the team has actually asked, pulled from the full history of <b>#seo</b> and <b>#accountmanagement</b> on Slack and grouped by theme. Filter to narrow it, or copy any section straight into a Google Doc.</p>
+    <p class="lede">Every recurring question the team has actually asked, pulled from the full history of <b>#seo</b> and <b>#accountmanagement</b> on Slack, now with answers. Where we have a real answer from the threads it is marked; where it is general best practice it is marked; anything that needs a house decision is flagged to confirm with leadership before you send it to a client.</p>
     <div class="stats">
       <div class="stat"><b id="stat-q">0</b><span>Questions</span></div>
       <div class="stat"><b id="stat-c">0</b><span>Categories</span></div>
-      <div class="stat"><b>2019–26</b><span>Span</span></div>
+      <div class="stat"><b id="stat-flag">0</b><span>To confirm</span></div>
       <div class="stat"><b>3,037</b><span>Threads read</span></div>
     </div>
   </header>
 
-  <div class="source-note">
-    Source: 12-analyst classification of 819 <b>#seo</b> threads and 2,218 <b>#accountmanagement</b> threads (2018–2026). These are the recurring general questions, deduplicated and phrased close to how the team asked them. Purely internal-ops threads (Basecamp mechanics, sign/billboard pricing) are omitted unless they touch SEO.
+  <div class="source-note" id="srcnote">
+    Answers combine the team's real Slack replies, current SEO best practice, and flags for anything that is house policy or pricing. Before forwarding to a client, read any <span class="badge b-confirm">Confirm with leadership</span> note. This page is a static reference. Anything you add through <b>Admin</b> is saved in this browser only until the app version ships.
   </div>
 
   <div class="shell">
-    <aside class="rail" id="rail">
-      <div class="rail-label">Categories</div>
-    </aside>
+    <aside class="rail" id="rail"><div class="rail-label">Categories</div></aside>
     <main class="content" id="content"></main>
   </div>
 
   <footer class="pageft">
-    <span>S8E8 internal reference</span>
-    <span>·</span>
-    <span>Built from real Slack history</span>
-    <span>·</span>
+    <span>S8E8 internal reference</span><span>&middot;</span>
+    <span>Built from real Slack history</span><span>&middot;</span>
     <span id="ft-count"></span>
   </footer>
 </div>
 
+<!-- ADMIN DRAWER -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dhead">
+    <h2>Admin &amp; contributions</h2>
+    <button class="dclose" id="closeAdmin" aria-label="Close">&times;</button>
+  </div>
+  <div class="dtabs">
+    <button class="dtab active" data-pane="p-qa">Add / edit Q&amp;A</button>
+    <button class="dtab" data-pane="p-src">Source library</button>
+    <button class="dtab" data-pane="p-req">Question requests</button>
+  </div>
+  <div class="dbody">
+
+    <!-- Q&A pane -->
+    <div class="dpane active" id="p-qa">
+      <div class="pane-note">Add a new answered question or edit an existing answer. Changes save to this browser. Use <b>Export data file</b> to download the updated library to commit, or hand back to your dev.</div>
+      <div class="field"><label>Category</label>
+        <select id="qa-cat"></select>
+        <div class="hint">Pick an existing category, or choose &ldquo;+ New category&hellip;&rdquo; to create one.</div>
+      </div>
+      <div class="field" id="qa-newcat-wrap" style="display:none"><label>New category name</label><input type="text" id="qa-newcat" placeholder="e.g. Social &amp; Reputation"></div>
+      <div class="field"><label>Question</label><input type="text" id="qa-q" placeholder="The question, as the team would ask it"></div>
+      <div class="field"><label>Answer</label><textarea id="qa-a" placeholder="The answer. Plain, warm, forwardable. No em dashes."></textarea></div>
+      <div class="frow">
+        <div class="field"><label>Source</label>
+          <select id="qa-src">
+            <option value="thread">From our threads</option>
+            <option value="best-practice">SEO best practice</option>
+            <option value="policy-house">House policy</option>
+          </select>
+        </div>
+        <div class="field"><label>Confidence</label>
+          <select id="qa-conf"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Currency note (optional)</label><input type="text" id="qa-note" placeholder="What to re-verify, if anything"></div>
+      <div class="field"><div class="checks">
+        <label><input type="checkbox" id="qa-confirm"> Needs house confirmation</label>
+        <label><input type="checkbox" id="qa-dated"> May be dated</label>
+      </div></div>
+      <div class="drow">
+        <button class="btn btn-primary" id="qa-save">Save question</button>
+        <button class="btn btn-ghost" id="qa-clear">Clear form</button>
+        <span class="spacer" style="flex:1"></span>
+        <button class="btn btn-ghost" id="qa-export">Export data file</button>
+      </div>
+      <div id="qa-editing" style="display:none;margin-top:10px;font-size:12px;color:var(--accent-ink);font-weight:600"></div>
+    </div>
+
+    <!-- Source pane -->
+    <div class="dpane" id="p-src">
+      <div class="pane-note">Paste articles, video or podcast transcripts, audio notes, or links from the SEO experts you follow. In the app version these feed an AI pass that drafts and refreshes answers so the library stays current. For now they are saved here so nothing gets lost, and you can export them.</div>
+      <div class="field"><label>Title</label><input type="text" id="src-title" placeholder="e.g. Aleyda Solis: GEO checklist, Jan 2026"></div>
+      <div class="frow">
+        <div class="field"><label>Type</label>
+          <select id="src-type"><option>Article</option><option>Transcript</option><option>Audio note</option><option>URL</option><option>Other</option></select>
+        </div>
+        <div class="field"><label>Source / author</label><input type="text" id="src-author" placeholder="Who it's from"></div>
+      </div>
+      <div class="field"><label>Link (optional)</label><input type="text" id="src-url" placeholder="https://&hellip;"></div>
+      <div class="field"><label>Content</label><textarea id="src-body" placeholder="Paste the article, transcript, or notes here"></textarea></div>
+      <div class="drow">
+        <button class="btn btn-primary" id="src-save">Save to library</button>
+        <button class="btn btn-ghost" id="src-export">Export sources</button>
+      </div>
+      <h3 style="font-size:13px;margin:20px 0 10px;color:var(--ink-soft)">Saved sources (<span id="src-count">0</span>)</h3>
+      <div id="src-list"></div>
+    </div>
+
+    <!-- Requests pane -->
+    <div class="dpane" id="p-req">
+      <div class="pane-note">Anyone on the team, MSs, SEOs, or leadership, can drop a question the library should answer. These collect here for the SEO lead to answer and publish. In the app version this becomes a shared inbox with notifications.</div>
+      <div class="frow">
+        <div class="field"><label>Your name</label><input type="text" id="req-name" placeholder="Optional"></div>
+        <div class="field"><label>Your role</label>
+          <select id="req-role"><option>Marketing Specialist</option><option>SEO</option><option>Leadership</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Question</label><input type="text" id="req-q" placeholder="What should the library answer?"></div>
+      <div class="field"><label>Context (optional)</label><textarea id="req-ctx" placeholder="Why it comes up, which client prompted it, etc."></textarea></div>
+      <div class="drow">
+        <button class="btn btn-primary" id="req-save">Submit question</button>
+        <button class="btn btn-ghost" id="req-export">Export requests</button>
+      </div>
+      <h3 style="font-size:13px;margin:20px 0 10px;color:var(--ink-soft)">Open requests (<span id="req-count">0</span>)</h3>
+      <div id="req-list"></div>
+    </div>
+
+  </div>
+</aside>
+
 <div class="toast" id="toast"><span class="tdot"></span><span id="toast-msg">Copied</span></div>
 
 <script>
-const DATA = [
-  { cat: "Google Business Profile & Local Listings", color: "#4573d2", questions: [
-    "Do we create/set up GBPs for clients, or just advise them to do it themselves?",
-    "Do we set up and optimize GBP, or only advise?",
-    "Should we create a GBP 90 days before an office opens (per Google Support), or 1 month? Is that still the policy?",
-    "Can we remove/delete old photos from a GBP, or only add?",
-    "Is there an easy way to reorder photos on a GBP?",
-    "Are GBP “Highlights” something we can change? Is there a fixed list to choose from?",
-    "Should a client’s personal GBP and practice GBP be merged when they share a location/contact?",
-    "Business name only vs. business name + doctor name on listings — what’s best practice?",
-    "What do I use for a GBP description when the client has no website (our ChatGPT prompt needs a URL)?",
-    "Should we avoid specific CTAs (“Call Today,” “Visit Us Now”) in GBP descriptions, as Google recommends?",
-    "Can we post blog posts to a client’s GBP?",
-    "Can we give a client a Yext login to update their own info without exposing all our listings?",
-    "Does setting up Yext push info out to Yelp?",
-    "Should a client claim their Yelp listing? Any issues with doing so?",
-    "Is the “Spring Cleaning” GBP checklist safe to tell clients is fully applied once they’ve filled it out?",
-    "Where do scheduling/reservation links go in the listings, for consistency?",
-    "Do we need a separate SEO listing form for each location of a multi-location practice?"
-  ]},
-  { cat: "Reviews & Reputation", color: "#5da283", questions: [
-    "Why is a Google review count not incrementing at the rate reviews are coming in?",
-    "Why does a review show “11 months ago” when it was only 4 months old?",
-    "Would Google remove reviews posted before the current owner took over the business?",
-    "Do we respond to GMB/Google reviews on behalf of clients?",
-    "Any guidelines or recommendations for responding to a negative review?",
-    "Does addressing reviews risk violating HIPAA? What do we say to that concern?",
-    "Is it worth hiring a company that claims it can remove bad reviews?",
-    "Do we know offices that reward staff for earning positive reviews? (incentive ideas)"
-  ]},
-  { cat: "GEO / AI Search (ChatGPT, LLMs)", color: "#7a6ff0", questions: [
-    "What is S8E8’s involvement/experience with GEO — what’s our standard response when a client wants to explore it?",
-    "How do we explain GEO pages and AI search (LLM text) to a client?",
-    "How are clients getting found via ChatGPT, and how do we increase it?",
-    "Does the JavaScript coding a hamburger menu hurt a site’s ability to be found via GEO?",
-    "What’s the process when a client wants a GEO snapshot because they’re considering bulking up their SEO package?",
-    "Talking points for prospects on Instagram posts becoming Google-searchable?"
-  ]},
-  { cat: "AI-Written Content (clients using ChatGPT)", color: "#cd5bd4", questions: [
-    "Is there a standard response for clients asking whether they can write their own service/article content with ChatGPT vs. us creating it?",
-    "A client asks why he should keep paying a freelance blogger vs. just using ChatGPT — what do we say?",
-    "Did we ever create an email template / verbiage for why clients should not use AI for blogs?"
-  ]},
-  { cat: "Technical SEO (titles, indexing, redirects, crawling)", color: "#39a0a0", questions: [
-    "Is it OK for the title tag to be identical on two different pages?",
-    "For long practice names, do we prioritize title-tag length (under 60 chars) or including all the info (name + location)?",
-    "It’s impossible to keep title tags under 60 characters after adding a second location — suggestions?",
-    "After fixing page titles to proper case in Webflow, do we just need Google to re-crawl for it to reflect live?",
-    "Does ALL-CAPS text hurt SEO? Does sentence case vs. all caps make a real difference?",
-    "Are these robots.txt / GSC crawl-warning notifications anything to worry about?",
-    "Is this GSC crawl warning something that needs attention?",
-    "How should we respond when a client sends a screenshot of a GSC “noindex” warning?",
-    "Why are there so many redirect notifications on a client’s practice websites — how do we explain them?",
-    "Do we internal-link service pages and blogs to each other?",
-    "With two live domains, won’t Google see the new site as duplicate/plagiarized content? Should old pages stay unpublished until the old site is down?",
-    "Do we run SEO checks on Apple / Bing / Safari, not just Google?",
-    "What is a Google “credibility rating” that a competitor vendor claims to manage — do we do that?"
-  ]},
-  { cat: "Website & On-Page Content", color: "#4a8fb3", questions: [
-    "Are there rules for minimum homepage copy / word count, or non-negotiable services/keywords to include?",
-    "Is a lot of text above the fold a good thing? Should certain keywords be prioritized there?",
-    "Why are we putting big blocks of copy in hero sections lately? (above-the-fold SEO rationale)",
-    "SEO-wise, is it better to reuse a client’s existing service-page descriptions when migrating, or write new ones?",
-    "Multi-location landing pages: what’s the content standard when one location has more info than another?",
-    "Is it OK to repeat some custom photos across many service pages?"
-  ]},
-  { cat: "Analytics, Reporting & Call Tracking", color: "#6a5fc4", questions: [
-    "What does a GA4 event marked “Schedule” actually track — clicks on the Schedule Appointment button?",
-    "What is “cross-network” traffic in GA4?",
-    "What platform do we use to see a client’s most-visited pages?",
-    "What’s driving what looks like spam referral traffic to a blog post — any fix besides removing it?",
-    "Do hang-up / immediately-ended phone calls count toward a client’s patient-lead numbers?",
-    "What is the average conversion rate on our websites? (benchmark ask)",
-    "Can you explain these session-duration / page-1 ranking stats for a sales deck?",
-    "Are people aware of the changes we’re seeing in GSC impressions / CTR / avg. ranking data?",
-    "How do I answer a client asking about backlinks?"
-  ]},
-  { cat: "Domains, Migrations, Hosting & Relocations", color: "#e8863b", questions: [
-    "Is a $7,500–10,000 exact-match domain (e.g., dentalwellness.com) worth it?",
-    "Do we purchase domains for clients, and who does it?",
-    "Do we charge for domain hosting when a client transfers control to us?",
-    "What’s the difference between the $250/mo and $500/mo hosting tiers?",
-    "What does a client need on their end to self-host their site after their term ends?",
-    "What’s the domain-transfer timeline before a site launch (~30 days before go-live)?",
-    "What do we recommend if an acquisition client can’t access the old domain but the new site is ready?",
-    "Is there a checklist of what we need from a practice when they’re moving/relocating?",
-    "What’s the best way to bulk find/replace a practice name across 150+ blog and service pages?"
-  ]},
-  { cat: "Multi-Location & Practice Naming", color: "#8aab3a", questions: [
-    "Can a doctor operate two locations under one name/DBA — what would he need to do?",
-    "How do we market a GP-owned pediatric practice when we can’t legally call her a “pediatric dentist”?",
-    "Any objection to a client naming their practice a variation of “88 Dental”? (brand-collision check)",
-    "What’s the process for checking trademarks and domains during practice naming?"
-  ]},
-  { cat: "Content Production Process & Cadence", color: "#e8384f", questions: [
-    "After content calendars are approved, what’s the next step?",
-    "Where should I route a client’s corrections/edits on blog articles?",
-    "Who makes client blog edits — AMs, or do we pass them to the writer?",
-    "What’s a good cadence for uploading a backlog of blogs (e.g., 8 pieces — 2 every other week vs. all at once)?",
-    "Can we start blog articles once a client has a Launch Site, or wait for the full website?",
-    "Where does a copywriter’s dental/education content knowledge come from? (prospect asks)"
-  ]},
-  { cat: "Onboarding, Routing & Team Process", color: "#8f9296", questions: [
-    "When do we set up Local SEO / Yext — after the logistics call, before the SEO strategy call?",
-    "Who’s the right person to tag for Google Tags / Google Analytics setup to-dos?",
-    "If an audit surfaces critical errors, which go to dev vs. an SEO to-do?",
-    "Are new clients still being assigned SEO specialists while the lead is out, or is that paused?",
-    "Is 2.5 audits per person per day a sustainable pace?",
-    "How much time between the “Quarterly SEO Checkup” and the “Send Progress Report” to-dos?",
-    "Will moving/rescheduling overdue to-do dates mess up how the team is prioritizing?"
-  ]},
-  { cat: "Packages, Scope & What’s Included", color: "#d9a13a", questions: [
-    "Does the blog-articles SEO tier also include all the local SEO work?",
-    "Do 2023 Essential clients get service pages?",
-    "Is “website launch SEO service pages” counted 0-5-10 like blog posts, and can it be a service page or a blog post?",
-    "Do essential clients get a dedicated SEO call?",
-    "Where is there a central doc of everything included in each marketing package?",
-    "Do we count a sitemap as a full writing slot?",
-    "Is a-la-carte Local SEO still $250/mo, or has it changed?",
-    "Did the a-la-carte monthly blog option jump to $1,400/mo?",
-    "Do we offer single-platform social media (e.g., Facebook only)?",
-    "Do we use heatmapping/UX tools like Hotjar?"
-  ]},
-  { cat: "Compliance & Legal", color: "#d94f8f", questions: [
-    "Are our sites ADA-accessible for the visually impaired? (client saw a lawsuit article)",
-    "What do we tell clients about ADA accessibility options and their costs (the 3 options)?",
-    "Have there been HIPAA compliance changes requiring privacy-policy updates across all sites?",
-    "Are we legally responsible for cookie-consent pop-ups on client sites?"
-  ]}
-];
+const BASE = [{"cat": "Google Business Profile & Local Listings", "color": "#4573d2", "questions": [{"q": "Do we create/set up GBPs for clients, or just advise them to do it themselves?", "a": "Our preference is for the client to create their own Google Business Profile, then grant us access, and we set up and optimize it from there. Google also requires the profile to be verified, by video or phone, and we have walkthroughs for every step. Setup and optimization are part of the Local SEO service; once we have access we handle the rest.\n\nWhat needs to happen:\n1. Have them grant us access to their GBP.\n   - If they need to create one, send them the GBP setup Tango. [link: GBP setup Tango]\n   - If they just need to grant access, send them the Leadie Link and the access Tango. [link: Leadie Link] [link: grant-access Tango]\n2. If they still need to verify the profile, send the verification walkthroughs:\n   - Phone verification. [link: GBP phone verification]\n   - Video verification. [link: GBP video verification]", "src": "policy-house", "confirm": false, "dated": false, "note": "Insert the real Tango / Leadie / phone + video verification URLs (owner has them) in place of the link placeholders.", "conf": "high"}, {"q": "Do we set up and optimize GBP, or only advise?", "a": "We do both, once we have access, but our preference is for the client to create the profile first and then grant us access; Google also requires verification by video or phone. We have walkthroughs for each step (the exact links and the access-and-verify steps are under \"Do we create/set up GBPs for clients\"). Setup and optimization live inside the Local SEO service, and we optimize with Chat8e8 (photos, descriptions, categories, and so on). We are always happy to give free guidance without them adding the service.", "src": "policy-house", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Should we create a GBP 90 days before an office opens (per Google Support), or 1 month? Is that still the policy?", "a": "Google technically lets you create and verify a profile up to 90 days before opening, so doing it early is not against the rules. Our recommendation is still to create it closer to the open date, roughly a month out, because a profile for a business that is not open yet does not really earn visibility; Google favors places patients can actually visit, and clients who set up too early tend to come back confused about why they cannot find themselves on Maps. If a client wants to do it early anyway, we can, we just set the expectation up front that it may not help visibility until they are open.", "src": "thread", "confirm": false, "dated": false, "note": "Re-verify Google's pre-open verification window (currently around 90 days), since Google adjusts this periodically.", "conf": "high"}, {"q": "Can we remove/delete old photos from a GBP, or only add?", "a": "Yes, you can remove them, not just add. Any photo that we or the client uploaded through the profile can be deleted from the Photos section, so you can clear out old or off-brand images. The one exception is customer-uploaded photos: you cannot delete those directly, you can only flag them to Google for removal if they violate the guidelines.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Is there an easy way to reorder photos on a GBP?", "a": "No, there is no native way to reorder photos; drag and drop does not exist there. Google decides which images surface based on its own quality signals. The only workaround is manual: delete the photos and re-upload them one at a time in the order you want, and even then Google may still choose what to feature. Usually not worth the effort.", "src": "thread", "confirm": false, "dated": false, "note": "The GBP photo UI changes often; re-check whether Google has since added native reordering.", "conf": "high"}, {"q": "Are GBP “Highlights” something we can change? Is there a fixed list to choose from?", "a": "Those are Attributes, and yes, we can set many of them, but from a fixed list Google provides, not free-form text. The available options are tied to the business category; for a dental practice you will see things like accessibility, appointment options, health and safety, and identity attributes such as women-owned. You edit them in the profile under the attributes or 'From the business' section. A few attributes are subjective and get added by Google from customer feedback rather than by us, so not every highlight is directly editable.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Should a client’s personal GBP and practice GBP be merged when they share a location/contact?", "a": "Rule of thumb: if there is only one doctor working out of that location, merge the personal profile into the practice profile so you are not splitting reviews and visibility across two pages. If there are multiple doctors at the same location, it is fine for each to keep an individual practitioner profile, as long as they actually practice at that address. So it comes down to how many providers share the location.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Business name only vs. business name + doctor name on listings, what’s best practice?", "a": "Best practice is the business name only, ideally exactly as it appears on the practice signage, with no doctor name appended, and we do not recommend running a personal-name profile as the practice listing. The one nuance: at a multi-doctor office, individual practitioner profiles for each doctor are allowed alongside the practice listing, but the main listing itself stays as the clean brand name.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What do I use for a GBP description when the client has no website (our ChatGPT prompt needs a URL)?", "a": "You do not actually need a live site to write the description; the URL is just the easiest source of details for the prompt. When there is no website yet, pull the same information from the client's listing form and Website starter (services, location, what makes them different, tone) and feed that into the prompt in place of the site. The description follows Google's rules either way: what the practice offers and who it serves, no links and no promotional CTAs.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Should we avoid specific CTAs (“Call Today,” “Visit Us Now”) in GBP descriptions, as Google recommends?", "a": "Yes. Google's guidelines for the business description say to keep it to what the practice offers and to leave out promotional language, links, and calls to action like 'Call Today' or 'Visit Us Now.' Descriptions that lean on CTAs can read as spammy and do not help ranking. If you are seeing a lot of our existing descriptions with CTAs in them, those are worth cleaning up on the next pass; write them as a plain, benefit-focused summary of the practice instead.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Can we post blog posts to a client’s GBP?", "a": "We can, but we do not post the full blog to the profile. The move is to link to the post with a short blurb as a GBP update (a Post), not paste the whole article. It is more of an engagement play than a visibility one, so we do not offer it as a standard deliverable. We do set up regular GBP updates when a client is doing social posts with us through Zapier; otherwise, for a one-off, we can share Tango instructions so the client can post it themselves.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Can we give a client a Yext login to update their own info without exposing all our listings?", "a": "Please don't. Our Yext account holds every client's listings under one roof, so handing a client a login would expose all of our other clients' data, not just theirs; there is no per-client isolated login to give out. If the client needs their info updated, we do it for them (through Chat8e8, which syncs to Yext) or walk them through updating the source. If they specifically want self-serve control of their listings, that is a separate conversation, because our Yext-managed listings are not individually transferable.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Does setting up Yext push info out to Yelp?", "a": "Yext syndicates to a large publisher network, and Yelp has historically been part of it, so setting up Yext can populate a Yelp entry. That said, Yelp is the problem child of the bunch: Yelp really wants the business owner to claim and manage the page directly, so the Yext connection to Yelp is less reliable than something like Apple Maps or Bing, and updates may not always stick. For anything Yelp-specific, expect the owner may still need to claim it themselves.", "src": "best-practice", "confirm": false, "dated": false, "note": "Verify Yext's current Yelp syndication status; the Yext-Yelp publisher relationship has changed over the years and may not be fully active.", "conf": "medium"}, {"q": "Should a client claim their Yelp listing? Any issues with doing so?", "a": "Yes, claiming it is worth doing and there is no downside to the claim itself; it is free and it lets the practice control its info and respond to reviews. The 'stories' clients hear are about two things: Yelp's review filter, which hides reviews it does not consider established (that happens whether or not you claim), and Yelp's pushy ad sales calls after you claim, which you can simply decline. One firm rule: never solicit or pay for Yelp reviews, that is against their policy and is what actually gets pages in trouble. Claiming it and keeping the info accurate is the safe, smart move.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Is the “Spring Cleaning” GBP checklist safe to tell clients is fully applied once they’ve filled it out?", "a": "Hold off on telling the client everything is applied until we have confirmed it on our end. Filling out the checklist gives us the information, but the actual updates to the GBP and listings are a separate step someone on our team has to make and verify. Check the specific profile (SPA Orthodontics here) or with the SEO who owns it before you send an all-clear. [CONFIRM: whether a submitted Spring Cleaning checklist is auto-applied to the profile or requires a manual SEO update step]", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "Where do scheduling/reservation links go in the listings, for consistency?", "a": "Put the scheduling/booking link in the profile's booking or appointment-link field on the GBP itself, and add it to the booking URL field in Yext where the listing supports it, so it stays consistent. Two heads-ups: on a lot of the smaller directory listings the link does not actually populate or move the needle, so do not stress if it is not everywhere; and if the client uses a third-party booking integration (like Flex), a manually added link can fight the integration, so that has to be disabled first or the two will conflict.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Do we need a separate SEO listing form for each location of a multi-location practice?", "a": "If they are paying for Local SEO on each location, then yes, we need location-specific listing info for every practice, since the address, hours, categories, and other listing details differ per office. A lot of the basics may already come through the Website starter, but the SEO listing form captures the location-specific pieces the starter does not. Before sending the client multiple full forms, check with the SEO lead; there may be a lighter path than a complete separate form for each location. [CONFIRM: whether each location needs a full listing form or a streamlined per-location supplement]", "src": "thread", "confirm": true, "dated": false, "note": "", "conf": "medium"}]}, {"cat": "Reviews & Reputation", "color": "#5da283", "questions": [{"q": "Why is a Google review count not incrementing at the rate reviews are coming in?", "a": "A lagging count is almost always normal, not a problem on your end. Every new review passes through Google's automated spam filter, which checks for policy violations before the review and its count go live, so there can be a delay of hours to a few days. Google has also had occasional platform-wide glitches where counts froze or dropped and then corrected themselves. If a specific review has been visible for several days and still isn't reflected in the total, that is worth a Google support ticket.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Why does a review show “11 months ago” when it was only 4 months old?", "a": "That is almost always a display glitch on Google's side, not anything you or the client did. Timestamps can occasionally show the wrong age, especially if a review was edited at some point, but a genuine 11 months versus 4 months gap is far more likely to be a Google bug than a real edit. It does not affect the star rating and rarely matters for rankings, so it is usually not worth worrying about. If it shows on several reviews and the client is bothered, you can report it to Google with screenshots.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Would Google remove reviews posted before the current owner took over the business?", "a": "Google will not remove reviews simply because they predate the current owner; a change of ownership does not, on its own, break their review guidelines. The owner can flag or request removal of any review he believes violates the rules, but the final call is always Google's, and it is based on the content of the review, not who owned the practice when it was left. Either the client or we can submit those reports; if we do it on their behalf, we need a clean list of exactly which reviews and why. It helps to set the expectation up front that most legitimate reviews, positive or negative, will stay put.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Do we respond to GMB/Google reviews on behalf of clients?", "a": "No, responding to reviews is not something we do on a client's behalf; it has not been part of our service. We encourage clients to respond to their own reviews, since a reply that comes straight from the practice reads as more genuine to future patients. If a client wants help, we can coach them on what to say, especially for negative reviews and HIPAA-safe wording.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Any guidelines or recommendations for responding to a negative review?", "a": "Yes: respond promptly, stay calm and professional, and treat it as a chance to show future patients how the practice handles concerns. Thank the person for the feedback, acknowledge it without getting defensive, and invite them to continue the conversation offline by calling the office. Keep it brief and generic; do not confirm whether the person was a patient or mention any specific care, which keeps the reply HIPAA-safe. A thoughtful, measured response often does more for your reputation than the review itself.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Does addressing reviews risk violating HIPAA? What do we say to that concern?", "a": "It is completely fine for clients to respond to reviews; Google has no HIPAA-specific rules, so the practice just needs to follow HIPAA on their own. The safe approach: never confirm the reviewer is or was a patient, even if they say so themselves; do not mention specific treatments, procedures, appointments, or the reviewer's name; and do not apologize for specific care, since that can imply a patient relationship. Keep every reply generic, thank people for their feedback rather than for choosing the practice, and invite them to call the office to discuss anything further. Be cautious trusting AI-generated summaries on this, since they have misstated Google's own guidance before.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Is it worth hiring a company that claims it can remove bad reviews?", "a": "No, we would not recommend that. Those companies work by mass-flagging and falsely reporting reviews as spam, which is a black hat tactic that goes against Google's guidelines and can put the profile at risk. We are a white hat team and do not try to game the algorithm. Legitimate reviews for a previous owner, a former employee, or a clear guideline violation can be reported for removal the proper way, but paying to erase real negative reviews is not something we support. The durable fix is earning more recent, positive reviews, which Google weighs heavily.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Do we know offices that reward staff for earning positive reviews? (incentive ideas)", "a": "Rewarding your own team for encouraging patients to leave reviews is fine; that is about motivating staff, not buying reviews. The hard line is with patients: never offer money, discounts, gifts, or drawing entries in exchange for a review, since Google prohibits incentivized reviews and it can get reviews removed or the profile penalized. So a staff bonus for the team member who generates the most genuine reviews is okay; a gift card to the patient who leaves one is not. When in doubt, keep incentives pointed at your team, not at the reviewers.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}]}, {"cat": "GEO / AI Search (ChatGPT, LLMs)", "color": "#7a6ff0", "questions": [{"q": "What is S8E8’s involvement/experience with GEO, what’s our standard response when a client wants to explore it?", "a": "Here is our standard framing: GEO is already built into how we create performance content, and it is emphasized at a strategic level in our Performance and Market Leader packages. We use proprietary software when doing Generative Engine Optimization, though it is still a fast-moving field with no guaranteed way to be featured prominently in ChatGPT specifically. Most patients still find practices through Google, so Performance SEO is the foundation that also feeds AI visibility. If a client wants to go deeper, point them to s8e8.com/services/geo and loop in the SEO lead.", "src": "thread", "confirm": false, "dated": false, "note": "References our 2025 Performance and Market Leader packages and the proprietary-software framing from an internal thread; confirm this still matches S8E8's current GEO offering and package names before sending to a client.", "conf": "high"}, {"q": "How do we explain GEO pages and AI search (LLM text) to a client?", "a": "GEO is about making sure AI tools like ChatGPT, Perplexity, and Google's AI Overviews can find, trust, and quote your practice. Those tools pull from the same web they always have, so there is no special 'LLM text'; they read your normal on-page content, your Google Business Profile, your reviews, and mentions of you on trusted sites. To get surfaced, the practice needs consistent name, address, and phone details everywhere, clear factual answers to common patient questions on the site, structured data, and a strong review presence. In plain terms: the clearer and more consistent your information is across the web, the more likely an AI answer names you.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "How are clients getting found via ChatGPT, and how do we increase it?", "a": "Some patients are genuinely finding practices through ChatGPT and other AI tools. Getting indexed in Bing still helps, since ChatGPT has historically leaned on Bing's index, so verifying every client in Bing Webmaster Tools is a solid first step. Just know the picture has broadened: ChatGPT now also runs its own crawler (OAI-SearchBot) and cites sources directly, so the bigger levers are making sure the AI crawlers are allowed to read the site, keeping business details consistent everywhere, earning mentions and citations on trusted third-party sites, and publishing clear, factual answers to real patient questions. We build these best practices into the Performance package, which is the minimum level needed for this kind of visibility.", "src": "thread", "confirm": false, "dated": false, "note": "AI-search retrieval moves fast: ChatGPT's reliance on Bing is decreasing as it uses its own index and citations. Re-verify crawler/index specifics periodically.", "conf": "high"}, {"q": "Does the JavaScript coding a hamburger menu hurt a site’s ability to be found via GEO?", "a": "A JavaScript hamburger menu on its own should not hurt GEO or SEO, as long as the site has no indexing, technical, or user-experience issues. Modern crawlers and AI tools can generally read JavaScript, but the safest setup is to make sure the important navigation and content are present in the rendered HTML and reachable without relying only on script. It is good practice to keep JavaScript light so pages load fast and so navigation still works if a script fails. If you want extra certainty, add clear internal links and structured data so the key pages and topics stay discoverable regardless of the menu.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What’s the process when a client wants a GEO snapshot because they’re considering bulking up their SEO package?", "a": "When a client wants a GEO snapshot because they are considering bulking up their SEO, the process right now is to open a task in their Asana project and message the SEO lead so the snapshot can get set up. The official turnaround is about 5 business days. Clients typically start with the complimentary snapshot and can add a GEO package from there. For more detail you can also send them s8e8.com/services/geo.", "src": "thread", "confirm": false, "dated": false, "note": "The Asana intake step, the roughly 5-business-day turnaround, and the complimentary-first flow come from an internal thread while the GEO landing page was still being built; confirm the current intake steps before quoting timing to a client.", "conf": "high"}, {"q": "Talking points for prospects on Instagram posts becoming Google-searchable?", "a": "Public Instagram content is now able to show up in Google search results, which means a practice's social posts can play a bigger role in what people find about them online. The practical takeaway for prospects: the images, captions, and profile details you post publicly are now part of your searchable footprint, so keeping them accurate, on-brand, and consistent with your website helps. Creators who do not want a specific post indexed can toggle that off in their settings. Keep the framing high-level for now, since how our SEO and social efforts formally work together on this is still being shaped.", "src": "best-practice", "confirm": true, "dated": true, "note": "Instagram-to-Google indexing is a recent development and our internal position on coordinating social with search was still being defined at the time of this thread; confirm current guidance before giving prospects specifics.", "conf": "medium"}]}, {"cat": "AI-Written Content (clients using ChatGPT)", "color": "#cd5bd4", "questions": [{"q": "Is there a standard response for clients asking whether they can write their own service/article content with ChatGPT vs. us creating it?", "a": "We do not yet have a single standardized house response for this, so confirm current guidance before treating any wording as official. Be precise with clients on the substance: Google does not penalize content just for being AI-assisted, what it rewards is genuinely helpful content that shows real experience and expertise, which matters even more for health topics that shape patient decisions. Raw, unedited ChatGPT output tends to be generic, can introduce factual errors, and does not reflect the specific doctor, treatments, or community, so it rarely differentiates a practice or converts as well. Our content is built to be accurate, locally relevant, and tied to the practice's real expertise, which is what earns visibility and trust with both patients and AI tools.", "src": "best-practice", "confirm": true, "dated": false, "note": "Frame it as AI-assisted-but-expert-edited vs. raw AI, not AI-is-banned; Google rewards helpfulness and demonstrated expertise regardless of how a draft starts.", "conf": "medium"}, {"q": "A client asks why he should keep paying a freelance blogger vs. just using ChatGPT, what do we say?", "a": "The honest answer is that ChatGPT can produce a draft, but it cannot replace a skilled writer who knows the practice, checks facts, and writes for real patients. Dental content is health content, so accuracy and expertise carry real weight with both Google and AI tools; a generic AI blog can be wrong or bland in ways that quietly erode trust. A good blogger brings the practice's voice, local relevance, and a human edit that turns raw information into something patients actually connect with. Paying for that is paying for content that is accurate, differentiated, and built to earn visibility, not filler that looks like everyone else's.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Did we ever create an email template / verbiage for why clients should not use AI for blogs?", "a": "As of our internal discussion, we had not yet built our own email template or article on why clients should not lean on AI for blogs. The write-up people referenced is PEEC AI's, which is detailed, but our own version was still on the to-do list. So confirm whether we have since published house language before sending anything as official. In the meantime, the safe message is that AI drafts still need expert editing and fact-checking to be accurate, on-brand, and effective for a dental practice.", "src": "thread", "confirm": true, "dated": false, "note": "Thread confirms no house template existed yet; verify whether one has since been created before treating this as final.", "conf": "medium"}]}, {"cat": "Technical SEO (titles, indexing, redirects, crawling)", "color": "#39a0a0", "questions": [{"q": "Is it OK for the title tag to be identical on two different pages?", "a": "No, each page should have its own unique title tag. If two pages cover different content (as they should), duplicate titles make it harder for search engines to tell them apart and pick the right one to rank. Even a small tweak that accurately reflects each page fixes it, just make sure the title still describes what is on that specific page.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "For long practice names, do we prioritize title-tag length (under 60 chars) or including all the info (name + location)?", "a": "Keep the title under about 59 characters, since Google typically cuts it off right at 60. When space is tight, prioritize in this order: accuracy and relevance first, then location, then brand. Brand is easiest to rank for, location is harder, and non-brand service terms are hardest, so the harder-won signals deserve the space. Service pages usually follow the pattern [Service] in [City or City, State] | [Brand], and it is fine to drop something already covered in the URL or meta description rather than repeat it.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "It’s impossible to keep title tags under 60 characters after adding a second location, suggestions?", "a": "Do not just randomly cut info; trim strategically. First check with a tool like Mangools which titles actually exceed 60 characters, since often only the homepage and a page or two are over. Then drop anything already covered elsewhere: on the homepage you can usually remove the doctor's name (it lives in the meta description) while keeping both locations, and on pages like Patient Reviews you can drop the practice name because it already appears in the URL and meta description. The goal is to keep the most important, non-duplicated info and let the URL and meta description carry the rest.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "After fixing page titles to proper case in Webflow, do we just need Google to re-crawl for it to reflect live?", "a": "Yes, once the titles are corrected in Webflow it mostly comes down to Google re-crawling the pages. Keep in mind the metadata we enter is a suggestion; Google usually honors it but sometimes rewrites titles on its own, so give it a few days to a couple of weeks to reflect. To nudge it along, you can request indexing for those URLs in Google Search Console (URL Inspection, then Request Indexing) and make sure the pages are in the sitemap. One thing worth checking: if the text only looks capitalized because of CSS (uppercase styling) rather than being written in proper Title Case in the actual HTML, fix the underlying text too, since that is the version search engines and screen readers read.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Does ALL-CAPS text hurt SEO? Does sentence case vs. all caps make a real difference?", "a": "All caps does not directly hurt rankings; Google reads the letters the same whether they are upper or lower case. The real difference is readability and accessibility: long stretches of all-caps are harder for people to read and screen readers sometimes spell them out letter by letter, which is a poor experience. Best practice is to write titles, headings, and body copy in normal Title Case or sentence case in the HTML, then use CSS if you want them to appear uppercase visually. That keeps the clean version for search engines and users while still getting the look the client wants.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Are these robots.txt / GSC crawl-warning notifications anything to worry about?", "a": "In almost all cases these are nothing to worry about. There are pages we intentionally do not want Google to crawl or index (old, thank-you, or system pages), and robots.txt or a noindex tag simply tells Google to skip them, which is by design. If you want to be sure, tell us which client and we will double check that the blocked URLs are only the ones meant to be blocked. Bottom line for the client: these Search Console emails are informational and can be ignored.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Is this GSC crawl warning something that needs attention?", "a": "Usually not. These warnings almost always come from pages we deliberately keep out of Google's index using robots.txt or a noindex tag, which is expected and fine. Send us the client name and a screenshot and we will confirm the flagged URLs are only the ones meant to be excluded. As long as it is just those old or utility pages, there is no action needed.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "How should we respond when a client sends a screenshot of a GSC “noindex” warning?", "a": "Reassure them and confirm before promising anything. A good template: \"There are some pages we don't want Google to crawl or index, and this setting just tells Google to skip them, so you can safely ignore it.\" Before sending, glance at the screenshot and adjust the wording to match what it actually says (for example, do not mention robots.txt if the notice is about a noindex tag). If the flagged pages are ones that should be indexed (a service page, the homepage), that is the exception worth investigating, so check the specific URLs rather than assuming it is intentional.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Why are there so many redirect notifications on a client’s practice websites, how do we explain them?", "a": "Redirects are normal and expected: when we build a new site or move pages, the old URLs are pointed to the new ones, and Google flags that it sees the redirect. This is exactly how it is supposed to work and it preserves the SEO value from the old URLs. The only time redirects become a problem is redirect chains, where page A points to B which points to C instead of A going straight to C, and we specifically look for and clean those up in our audits. So the short answer for the client: these notifications are healthy, not errors.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Do we internal-link service pages and blogs to each other?", "a": "Yes, this is a standard part of how we build every new blog and service page. Each piece links to any contextually relevant service or navigation page plus a few other related pieces from the client's sitemap, and there are always links to core pages like Contact Us, Meet the Team, Homepage, and the Schedule an Appointment form if they have one. If a piece has few internal links, it is usually because the site is brand new (not much to link to yet) or the topic is just being introduced. When a client wants service pages delivered first and blogs linked into them afterward, we can absolutely do that; we plan the blogs around service topics and link them wherever it makes sense.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "With two live domains, won’t Google see the new site as duplicate/plagiarized content? Should old pages stay unpublished until the old site is down?", "a": "You can publish the new site now rather than leaving pages unpublished. Google is generally good at recognizing the original source, and once the old site comes down it will treat the new domain's pages as the canonical originals. The real risk is leaving both domains fully live for a long stretch, which can dilute or split SEO value, so push to get the old site taken down or, ideally, 301-redirected to the new domain as soon as possible. Since the client cannot get access to the old domain here, prioritize a firm takedown date; the longer both stay up, the more likely the new site gets held back. If you want to be extra safe while both are live, we can add a canonical tag on the new pages pointing to themselves and, where possible, ask that the old pages be noindexed.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Do we run SEO checks on Apple / Bing / Safari, not just Google?", "a": "Our ranking and reporting work centers on Google because that is where the overwhelming majority of dental patient searches happen, but our work does carry over to other engines. Good on-page SEO, schema, and site structure help everywhere, and our Local Listings work through Yext pushes the practice's info out to Google, Bing, Apple Maps, Yahoo, and dozens of top directories, so the business shows up consistently across those platforms too. Safari is a browser, not a search engine, so its results come from whatever engine the user has set (Google by default), meaning our Google work already covers it. [CONFIRM: whether we formally track or report Bing/Apple rankings for clients, or only optimize for Google and rely on listings coverage for the rest].", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "medium"}, {"q": "What is a Google “credibility rating” that a competitor vendor claims to manage, do we do that?", "a": "There is no official Google \"credibility rating\" as a proper-noun product or badge; it is not something Google issues or that a vendor can directly manage. The term most likely refers to Google's general sense of trust in a site, which comes from things like content quality, reviews, backlinks, and consistent business information (concepts related to Google's E-E-A-T guidelines). Third-party tools estimate this with their own scores, such as Moz's Domain Authority or Google Ads' Quality Score, but none of those is an actual Google credibility rating, and Google's real trust signals are a black box. So yes, we absolutely work on the things that build credibility with Google; we just would not promise a specific \"credibility rating\" number, because no such official metric exists.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}]}, {"cat": "Website & On-Page Content", "color": "#4a8fb3", "questions": [{"q": "Are there rules for minimum homepage copy / word count, or non-negotiable services/keywords to include?", "a": "Our rule of thumb is at least 500 words on a homepage, and we have SEO homepage guidelines in the shared doc that design should follow for the specifics. In practice not every site hits that number, so treat 500 as the target rather than a hard cutoff, and pull the exact non-negotiables from the guidelines doc. The key point to give the client: if they care about visibility, very minimal copy works against them, because the page needs enough clear, relevant content for search engines and AI tools to understand who they are and what they offer. Make sure their core services and location are represented in the copy.", "src": "thread", "confirm": false, "dated": false, "note": "The 500-word target and the homepage guidelines doc come from an internal thread; confirm the current numbers and required elements before quoting them to a client as a firm standard.", "conf": "medium"}, {"q": "Is a lot of text above the fold a good thing? Should certain keywords be prioritized there?", "a": "More text above the fold is not automatically better for SEO. What matters is that the most relevant keywords appear in the H1 and in clear supporting copy, not that the top of the page is packed with words. Too much text up top can clutter the experience, slow the page, and look rough on mobile, all of which hurt more than they help. So prioritize a strong, keyword-relevant H1 and concise, useful copy, and make sure it reads well on a phone.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Why are we putting big blocks of copy in hero sections lately? (above-the-fold SEO rationale)", "a": "The reason copy shows up in hero sections is that content near the top of the page carries weight; it is the first thing both patients and search engines read, so a relevant, keyword-rich line there helps establish what the page is about. That said, it should be a concise, purposeful line or short paragraph, not a wall of text, and it has to look good on mobile. If a hero block is turning into a paragraph that breaks the design on phones, that is a signal to tighten the copy, not to drop the SEO value entirely. The goal is relevant, readable content up top, balanced with clean design.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "SEO-wise, is it better to reuse a client’s existing service-page descriptions when migrating, or write new ones?", "a": "When migrating service pages, it is generally better to rewrite and improve the descriptions rather than copy the old ones over as-is. Fresh, well-structured copy lets us work in the right keywords, match the practice's voice, and avoid thin or duplicate content that does not help visibility. If an existing description is already strong and accurate, you can keep the good parts, but treat the migration as a chance to upgrade, not just move text. The priority is that each service page clearly and uniquely describes that service for both patients and search engines.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Multi-location landing pages: what’s the content standard when one location has more info than another?", "a": "For multi-location pages, aim for consistency: each location page should carry a similar depth of useful, location-specific detail so no single location looks thin next to another. A good structure leads with the practical info patients want, hours, address, and contact, then covers the services and detail for that location using clear, user-friendly headings. It is fine for some information to echo the main Services page, but keep each location page genuinely about that location so it reads as unique rather than copy-pasted. When one location has richer info, the goal is to bring the lighter page up to match, not to trim the detailed one down.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Is it OK to repeat some custom photos across many service pages?", "a": "Yes, it is fine to reuse some custom photos across service pages, and it is a better choice than filling pages with stock images. Reusing images does not carry an SEO penalty, so custom, authentic photos of the practice and team are the right call even when they repeat. Where you can, vary the imagery so pages still feel distinct, and give each image descriptive, relevant alt text. The bigger win is authentic photos over generic stock, so lean on the real ones you have.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}]}, {"cat": "Analytics, Reporting & Call Tracking", "color": "#6a5fc4", "questions": [{"q": "What does a GA4 event marked “Schedule” actually track, clicks on the Schedule Appointment button?", "a": "Yes. The \"Schedule\" event fires whenever a visitor clicks a scheduling link or Schedule Appointment button on the site. It covers all scheduling links across the site by default, not one specific button, so for a multi-location practice it captures clicks toward any location's scheduler unless we have set up separate tracking per link. If you need to break it out by location, let the SEO team know and we can add more granular tags.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What is “cross-network” traffic in GA4?", "a": "Cross-network is a GA4 traffic channel for visits that come from ads running across more than one of Google's ad networks at once, most commonly Performance Max and other cross-network campaigns that span Search, Display, YouTube, Gmail, and Discover. In plain terms, it is almost always paid ad traffic. If a client sees a sudden jump in cross-network, the usual cause is a new or expanded Google Ads campaign, so it is worth confirming what ad activity is running.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What platform do we use to see a client’s most-visited pages?", "a": "GA4 (Google Analytics 4) is where we pull a client's most-visited pages. Open the client's GA4 property and look at the Pages and screens report under Engagement, then set the date range you want (last 30 days is a good default). That gives you a ranked list of the site's top pages by views.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What’s driving what looks like spam referral traffic to a blog post, any fix besides removing it?", "a": "Spam referral traffic like this is usually a handful of junk sites scraping or auto-linking to the page, and you almost never need to remove the blog post itself. The referring domains do not actually hurt the site's SEO, but they do muddy the analytics, so the fix is to exclude them rather than delete good content: disavow the offending domains in Search Console so Google discounts them, and add a referral exclusion or filter in GA4 so their visits stop skewing the reports. If it is coming through to WhatConverts as well, we can filter those junk sources there too so lead counts stay clean.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Do hang-up / immediately-ended phone calls count toward a client’s patient-lead numbers?", "a": "By default every tracked call is logged, so yes, short hang-ups can show up in the raw count. You can see each call's length in the dashboard to tell a real inquiry from a quick hang-up, and we can set a minimum-duration rule so calls under a few seconds do not count as a lead. If one tracking number is generating a lot of hang-ups, that often means the number was recycled from a previous owner, and swapping it for a fresh number usually clears it up.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What is the average conversion rate on our websites? (benchmark ask)", "a": "We do not publish a single average conversion rate across our sites, because it would not be a meaningful number. Conversion rate swings widely based on the practice's location and competition, how much traffic the site gets, where that traffic comes from (SEO vs ads vs direct), what you are counting as a conversion (calls, forms, or bookings), and seasonality. It is far more useful to look at an individual client's own trend over time than to compare against a blanket benchmark.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Can you explain these session-duration / page-1 ranking stats for a sales deck?", "a": "Average session duration is how long a typical visitor spends on the site in one visit, clicking through pages before they leave; a longer duration signals more engaged visitors, so higher is generally better. Page 1 rankings is the share of tracked keywords for which the site appears on the first page of Google, so a figure like 42% means the site ranks on page 1 for that portion of the keyword set overall. Keep in mind we treat keyword rankings as a legacy progress signal that the market still recognizes rather than our main focus; our real work builds topical authority, and rankings tend to rise as a byproduct. Rankings also fluctuate naturally, so irrelevant ones can drop off while more relevant ones appear.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Are people aware of the changes we’re seeing in GSC impressions / CTR / avg. ranking data?", "a": "Yes, this is a known industry-wide shift, not a client-specific problem. Two things are driving it: AI Overviews and AI Mode now answer many queries right in the results, so users click through less and CTR drops; and Google's crackdown on the num=100 scraping parameter in mid-September 2025 removed a lot of bot-inflated impressions, which shows up as a sharp impressions drop in many GSC accounts. Google has also noted that impressions were over-inflated from roughly May 13, 2025 to April 27, 2026, so some of the apparent decline is really the data correcting itself. We watch this on a client-by-client basis rather than assuming any one account is underperforming.", "src": "best-practice", "confirm": false, "dated": false, "note": "Reflects GSC/AI Overview and num=100 changes as of 2025-2026; dates are period-specific and worth re-checking against Google's current guidance.", "conf": "high"}, {"q": "How do I answer a client asking about backlinks?", "a": "We can run a backlink audit for a client, but we do not run backlinking campaigns, because buying or farming links is an outdated tactic that Google penalizes; it has demoted major brands, Forbes among them, for link-farming schemes. Modern SEO earns links naturally through strong, genuinely useful content, which is what our work focuses on. The most effective form of link building today is Digital PR, and while that is a direction we want to grow into, it is not a service we currently offer.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}]}, {"cat": "Domains, Migrations, Hosting & Relocations", "color": "#e8863b", "questions": [{"q": "Is a $7,500–10,000 exact-match domain (e.g., dentalwellness.com) worth it?", "a": "Usually not. Owning a clean exact-match domain feels appealing, but very few patients type a URL directly anymore; they Google the practice name and click the result, so the domain string itself does little for traffic or rankings. An exact-match domain is also not the SEO advantage it once was, so paying five figures for it is hard to justify. A better move is to grab a clean, affordable domain built on the practice name (a quick search on a registrar like GoDaddy will surface plenty of options) and put that budget toward content and SEO instead.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Do we purchase domains for clients, and who does it?", "a": "We can, within reason. For a reasonable, low-cost domain we can handle the purchase, and because all our domains live in one central GoDaddy account, it needs to go through the account owner, who manages that account, to keep everything organized. For anything pricier (roughly over $50, such as a premium or exchange-listed domain), check with the account owner first; in those cases the client typically buys it on their end. [CONFIRM: current dollar threshold and who is the current domain owner of record before quoting this to a client.]", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "medium"}, {"q": "Do we charge for domain hosting when a client transfers control to us?", "a": "There is no separate or additional fee for domain hosting when a client hands their domain over to us. The domain is folded into their existing hosting cost, so it is already covered; they will not see a new line item just for us holding the domain. [CONFIRM: that this is still current before quoting, since it ties to hosting pricing.]", "src": "thread", "confirm": true, "dated": false, "note": "", "conf": "medium"}, {"q": "What’s the difference between the $250/mo and $500/mo hosting tiers?", "a": "The $500/mo hosting plan includes up to 2.5 hours of creative edits each month (photo swaps, copy updates, and similar small changes); the $250/mo plan does not include those edit hours. The $250/mo tier is an internal, legacy option we use to keep an existing client on when cost is a concern, so it is not something we offer to new clients. [CONFIRM: current pricing and the creative-edit allotment before quoting either tier to a client, since hosting rates can change.]", "src": "thread", "confirm": true, "dated": false, "note": "Prices ($250/$500 per month) are house policy pulled from an internal thread; verify against current pricing before sharing externally.", "conf": "medium"}, {"q": "What does a client need on their end to self-host their site after their term ends?", "a": "To take the site fully in-house, the client needs their own Webflow account on a CMS plan. Once that is set up, we can transfer the site over to their account with no interruption of service. We also recommend they have someone comfortable with Webflow (or basic web development) available for larger changes down the road, and we will pass along the site details plus Webflow's own training resources during the handoff.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What’s the domain-transfer timeline before a site launch (~30 days before go-live)?", "a": "Yes, we typically start helping a client move their domain from their old provider about 30 days before we go live with the new site. That window gives us time to gather access to their current domain registrar, point the domain to the new site, and let DNS changes propagate without cutting into launch day. Starting a month out is a buffer, not a hard rule; if a registrar is slow or access is hard to get, it is better to begin earlier than to rush it near go-live.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "What do we recommend if an acquisition client can’t access the old domain but the new site is ready?", "a": "If the client genuinely cannot get control of the old domain, the practical path is to launch the new site on a new domain; nothing can be forced without the cooperation of whoever currently owns the old one. Go ahead and publish the pages on the new site rather than leaving them unpublished, so Google indexes them as the original source, especially important before the old site comes down. The real risk is leaving both sites live for too long, which can create duplicate-content confusion for users and Google, so push to get the old domain taken down on a defined timeline. It is also worth having them check practice financial records, since whoever has been paying the renewal is a lead on tracking down access.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Is there a checklist of what we need from a practice when they’re moving/relocating?", "a": "For a relocation, the core items we need are the new full address, the go-live date for the move, and the new phone number if it is changing, so we can keep the practice's name, address, and phone consistent everywhere. From there we update the Google Business Profile address, refresh the listings/citations across directories, update the address and any location schema on the site, and adjust local content and service-area pages as needed. If the practice runs multiple locations or local SEO per location, confirm with the SEO lead whether a separate listing form is needed for the new spot. [CONFIRM: whether a formal internal relocation checklist doc exists to hand the team, or if this should be built.]", "src": "best-practice", "confirm": true, "dated": false, "note": "", "conf": "medium"}, {"q": "What’s the best way to bulk find/replace a practice name across 150+ blog and service pages?", "a": "Webflow does not have a true site-wide find-and-replace yet, so there is no one-click fix, but it does not have to be fully manual either. For blog posts and service pages that live in a CMS collection, export the collection to CSV, do a find-and-replace on the name in a spreadsheet, and re-import it, which updates all those items at once. Content baked into static pages still has to be edited page by page, and for a large batch it is worth looping in a developer to help or script parts of it. If the volume is manageable, working through them in one focused pass is often faster than setting up tooling.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}]}, {"cat": "Multi-Location & Practice Naming", "color": "#8aab3a", "questions": [{"q": "Can a doctor operate two locations under one name/DBA, what would he need to do?", "a": "In most cases a doctor can operate two locations under one name or DBA, and we work with plenty of clients who run multiple locations under a single brand. How to structure that legally and for taxes (one entity, a DBA, or separate entities) is really a question for his attorney and accountant, since some accountants recommend keeping locations separate for tax reasons. On our end, once the structure is settled, we can market multiple locations under one brand without a problem. It's worth having him confirm the legal and tax mechanics with his own advisors before finalizing.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "How do we market a GP-owned pediatric practice when we can’t legally call her a “pediatric dentist”?", "a": "This is a common situation, and the key point is that state dental boards and the ADA restrict specialty language, so a general dentist cannot be marketed as a \"pediatric dentist,\" \"pediatric specialist,\" or \"board certified in pediatric dentistry.\" Instead, we position the pediatric experience and environment without implying specialty status, using compliant phrasing like \"Dentistry for Children,\" \"Family and Children's Dentistry,\" or \"Dental Care for Kids.\" The message becomes who she serves and how she serves them, not a credential she doesn't hold. Exact rules vary by state dental board, so confirm the specific wording allowed in her state before finalizing copy.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Any objection to a client naming their practice a variation of “88 Dental”? (brand-collision check)", "a": "Before committing to a name like a variation of \"88 Dental,\" it's worth a quick brand-collision check: look for other dental practices using the same or a similar name, especially in their market, search the USPTO trademark database, and confirm the matching domain and Google Business presence are available. If another practice already owns that name or trademark nearby, it can create patient confusion and SEO competition, so a more distinct variation is usually safer. If nothing conflicts, a variation of \"88 Dental\" is generally fine.", "src": "best-practice", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "What’s the process for checking trademarks and domains during practice naming?", "a": "The general process covers three things: trademarks, domains, and existing business names. Search the USPTO trademark database for conflicting marks, check domain availability at a registrar for the exact name and close variations, and search the state's business registry along with a general Google and social handle check to catch existing practices using the same name. S8E8 also has an internal practice naming guide with our house step-by-step, so use that for the current process. [CONFIRM: exact steps in S8E8's internal naming guide]", "src": "best-practice", "confirm": true, "dated": false, "note": "", "conf": "medium"}]}, {"cat": "Content Production Process & Cadence", "color": "#e8384f", "questions": [{"q": "After content calendars are approved, what’s the next step?", "a": "Once a client's content calendars are approved, the next step is to set up a to-do in the project's Card Table to get the calendar built out. That to-do goes to the team member handling buildout so the approved pieces move into production. From there, the pieces are produced and scheduled on the calendar the client signed off on.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Where should I route a client’s corrections/edits on blog articles?", "a": "Route the client's corrections into the project's Card Table: add a new to-do for the writer and assign it for the following week. Put the specific feedback in the card comment so the writer can refer back to the exact post while making the edits. Small tweaks like light verbiage changes you can handle yourself if it's quicker, but anything larger should go to the writer through the Card Table so nothing gets lost.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Who makes client blog edits, AMs, or do we pass them to the writer?", "a": "Client blog edits normally go to the writer rather than the AM making them directly. If the change is small, like adjusting some verbiage on a blog, you're welcome to make it yourself to move faster, but that's your call. Anything larger should be passed to the writer so the source content stays consistent.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "What’s a good cadence for uploading a backlog of blogs (e.g., 8 pieces, 2 every other week vs. all at once)?", "a": "Either approach works. There's no problem publishing all of them at once, and staggering them out, like two every other week, is also fine. For a backlog with limited SEO value, pick whatever fits your workflow and the client's preference; the cadence won't meaningfully help or hurt rankings.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Can we start blog articles once a client has a Launch Site, or wait for the full website?", "a": "Blog articles can start once the client's Launch Site goes live, not just a launch page. You don't need to wait for the full website to be finished. The distinction matters: a launch page alone isn't enough, but a live Launch Site is the green light to begin blog content.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}, {"q": "Where does a copywriter’s dental/education content knowledge come from? (prospect asks)", "a": "Our original content comes from two main places: the client's homework, which tells us their story, their approach, and the services they offer, and our copywriters' own knowledge base built from decades of combined experience writing dental content. If a practice already has SEO or service-specific landing pages, we also move that existing content over to the new site and update it gradually through audits and content strategies with the SEO team. So it's a blend of what the practice tells us about themselves and our team's dental writing expertise.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "high"}]}, {"cat": "Onboarding, Routing & Team Process", "color": "#8f9296", "questions": [{"q": "When do we set up Local SEO / Yext, after the logistics call, before the SEO strategy call?", "a": "We set up Local SEO / Yext after the logistics call and before the SEO strategy call. That sequence was confirmed for 2025 clients, so double-check it still holds in the current onboarding flow before treating it as fixed.", "src": "thread", "confirm": false, "dated": true, "note": "Sequence confirmed for 2025 clients; verify it hasn't shifted for 2026 onboarding.", "conf": "medium"}, {"q": "Who’s the right person to tag for Google Tags / Google Analytics setup to-dos?", "a": "[CONFIRM: who owns Google Tag / GA4 setup to-dos, especially when a client is not on an active ads or SEO plan.] In practice our SEO side handles GA4 and Google Tag Manager setup, so an SEO can usually check whether a tag or property is already installed. For a client with no SEO or ads service, whether we take on the setup at all is a routing question that should be confirmed internally before you commit us to the work.", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "If an audit surfaces critical errors, which go to dev vs. an SEO to-do?", "a": "Critical audit errors are typically routed to dev as a to-do, since most of them, like domain or technical configuration issues, are web development fixes rather than SEO tasks. Whether lower-severity errors should follow the same path or be handled as an SEO to-do is not a settled rule. [CONFIRM: the intended split between dev to-dos and SEO to-dos for non-critical audit errors.]", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "Are new clients still being assigned SEO specialists while the lead is out, or is that paused?", "a": "When the SEO lead is out, new-client specialist assignments have been paused until they are back, based on the last time this came up. That is a temporary, situation-specific arrangement, so confirm the current status before acting on it. [CONFIRM: whether assignments are paused or being covered right now.]", "src": "thread", "confirm": true, "dated": true, "note": "Reflects a temporary arrangement while the lead was out; verify the current state.", "conf": "low"}, {"q": "Is 2.5 audits per person per day a sustainable pace?", "a": "[CONFIRM: whether 2.5 audits per person per day is an acceptable workload for the SEO team.] The figure came up in the context of moving site audits to a quarterly cadence, but there is no recorded answer on whether that pace is sustainable. This needs a direct read from the SEOs who would carry the load before it is set as the plan.", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "How much time between the “Quarterly SEO Checkup” and the “Send Progress Report” to-dos?", "a": "[CONFIRM: the intended gap between the Quarterly SEO Checkup and Send Progress Report to-dos.] The Progress Report is essentially the client-friendly version of the checkup deliverable, so the two are closely linked, but there is no recorded decision on whether they should land the same day or a set number of days apart. Confirm the preferred spacing before scheduling.", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "Will moving/rescheduling overdue to-do dates mess up how the team is prioritizing?", "a": "[CONFIRM: whether rescheduling overdue to-dos into the future disrupts how the team currently prioritizes.] Moving due dates can shift what shows up as overdue or up-next for others, so it is worth a quick heads-up to the team before a bulk date change, especially during a busy stretch. There is no recorded standing rule here, so check with the people whose queues it would touch.", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}]}, {"cat": "Packages, Scope & What’s Included", "color": "#d9a13a", "questions": [{"q": "Does the blog-articles SEO tier also include all the local SEO work?", "a": "No. Blog Articles and Local SEO are two separate services, and each is priced on its own. Being on the blog-articles tier does not fold in the local SEO work; if a client wants both, they are billed as distinct line items (or bundled into a marketing package). Check the client's CRM record to confirm exactly what they are currently paying for.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Do 2023 Essential clients get service pages?", "a": "For the 2023 Essential package, clients were slated to receive a fixed set of pages built up front (the CRM line item shows 6 pages total), but no ongoing monthly SEO content pages after that. Note that a few of the earliest clients in this bracket never had those pages created because the step was missed in the old process, so verify in the CRM and check whether the pages were actually built before quoting the client. Package inclusions changed year to year, so confirm the exact year and tier in the CRM.", "src": "thread", "confirm": true, "dated": true, "note": "2023 legacy Essential package; inclusions differ by signup year (2023 vs 2025), so confirm against the client's CRM line item.", "conf": "medium"}, {"q": "Is “website launch SEO service pages” counted 0-5-10 like blog posts, and can it be a service page or a blog post?", "a": "The website-launch SEO service pages (the 0-5-10 count) are actual service pages written up front at launch, not the same thing as the ongoing monthly content. Separately, the Performance package includes one custom-written piece per month and Market Leader includes two per month, and each of those monthly slots can be either a blog article or a service page. There was some open internal confusion about how these two buckets relate, so confirm the current definition with leadership before quoting a client.", "src": "thread", "confirm": true, "dated": false, "note": "", "conf": "medium"}, {"q": "Do essential clients get a dedicated SEO call?", "a": "No. Essential clients get a Welcome Call, but dedicated SEO strategy calls (and Social Media strategy calls) are not included at the Essential level. If a client wants recurring strategy calls, that points toward a higher tier. Package details can shift, so confirm against the current package sheet if the client pushes back.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Where is there a central doc of everything included in each marketing package?", "a": "The current package overview lives on the side-by-side comparison page at s8e8.com/side-by-side-comparison, and the Sales Proposal doc lists inclusions in more detail. For any individual client, the CRM is the source of truth, since older clients often have legacy naming (for example, Local SEO plus On-Site SEO wrapped into Website Hosting & Support equals today's Essential SEO). When the comparison page and the CRM disagree for a specific client, trust the CRM.", "src": "thread", "confirm": false, "dated": true, "note": "References the 2024 Sales Proposal; confirm the comparison page reflects the latest package year before forwarding.", "conf": "medium"}, {"q": "Do we count a sitemap as a full writing slot?", "a": "Practice has been to count a sitemap as a full writing slot, but this was stated informally rather than as a documented rule. Confirm with leadership before you rely on it for capacity planning or client scoping, since it affects how many pieces a client is owed that month.", "src": "thread", "confirm": true, "dated": false, "note": "", "conf": "low"}, {"q": "Is a-la-carte Local SEO still $250/mo, or has it changed?", "a": "Yes, a-la-carte Local SEO is offered at $250/month. Clients only save by bundling it with other services in a package. Because this is a price point, confirm it is still current on the comparison sheet before quoting a client.", "src": "thread", "confirm": false, "dated": true, "note": "Pricing figure; re-verify $250/mo is current for 2026 on the side-by-side comparison sheet before quoting.", "conf": "medium"}, {"q": "Did the a-la-carte monthly blog option jump to $1,400/mo?", "a": "The $1,400/month figure lines up with the Market Leader blog package (annual strategy plus 12 articles); the Performance blog package is $750/month (annual strategy plus 6 articles). When this came up internally there was pushback and an explicit \"let's chat about this,\" plus open questions about what the annual strategy actually includes, so treat the number as not fully settled. Confirm the current a-la-carte blog pricing and inclusions with leadership before quoting.", "src": "thread", "confirm": true, "dated": true, "note": "Pricing was actively being debated in-thread ($750 vs $1,400 tiers); re-verify current figures and article counts before quoting.", "conf": "medium"}, {"q": "Do we offer single-platform social media (e.g., Facebook only)?", "a": "Yes. Our a-la-carte social media management can be scoped to a single platform, such as Facebook only. Confirm current a-la-carte social pricing in the CRM or comparison sheet before quoting the client.", "src": "thread", "confirm": false, "dated": false, "note": "", "conf": "medium"}, {"q": "Do we use heatmapping/UX tools like Hotjar?", "a": "I could not find a confirmed answer in our records for whether we use heatmapping/UX tools like Hotjar. [CONFIRM: Does S8E8 use Hotjar or any heatmapping/UX measurement tool, and is it standard on client sites or available on request?] Please confirm with leadership before telling a client either way.", "src": "policy-house", "confirm": true, "dated": false, "note": "", "conf": "low"}]}, {"cat": "Compliance & Legal", "color": "#d94f8f", "questions": [{"q": "Are our sites ADA-accessible for the visually impaired? (client saw a lawsuit article)", "a": "We build all of our sites with accessibility best practices in mind: video closed captions, text descriptions of images, screen-reader-compatible text, and similar. It is not possible to guarantee complete accessibility to every possible disability, so we do our best to make sites as accessible as we can without compromising the user experience. If a client is worried about legal exposure after seeing a lawsuit article, do not make a legal guarantee; there are paid accessibility widget and audit options we can walk them through, and any question of legal compliance or liability should be confirmed with leadership and the client's own attorney.", "src": "best-practice", "confirm": true, "dated": false, "note": "Legal-compliance specifics and any liability claim must be confirmed with leadership/counsel; never state ADA compliance as a certainty.", "conf": "medium"}, {"q": "What do we tell clients about ADA accessibility options and their costs (the 3 options)?", "a": "There are three options we present. Option 1: we build the site to be as ADA-accessible as possible without compromising the aesthetics, at no added cost. Option 2: an AI-powered accessibility widget the client can turn on (it does affect the site's look), noted internally around $390/year. Option 3: a human-reviewed solution, noted around $2,600 one-time plus $390/year, which comes with a liability guarantee. The dollar figures appeared inconsistently in our own notes (a ~$50/month figure also came up), and the client typically pays for and sets up the widget while we implement it, so confirm the exact current pricing and terms with leadership before quoting, and steer any liability-guarantee questions to leadership/counsel.", "src": "thread", "confirm": true, "dated": true, "note": "Internal figures conflicted (~$390/yr vs ~$50/mo for the widget; $2,600 one-time + $390/yr for the human-reviewed option); re-verify all pricing and the liability-guarantee terms before quoting.", "conf": "low"}, {"q": "Have there been HIPAA compliance changes requiring privacy-policy updates across all sites?", "a": "Current best practice is that a dental practice's website should include its HIPAA Notice of Privacy Practices, alongside a standard Privacy Policy in the footer, and we have been adding privacy policies to sites. The Notice of Privacy Practices is the practice's own document, so it comes from the client, though we can help place it and can point them to compliant privacy-policy tooling (leadership was setting up a partnership with a privacy-compliance provider for this). This is a legal-compliance area, so confirm the current S8E8 process and whether anything is required versus recommended with leadership before you commit the client to specific steps.", "src": "best-practice", "confirm": true, "dated": false, "note": "Whether HIPAA/privacy-policy placement is required vs. recommended, and who authors the Notice of Privacy Practices, should be confirmed with leadership/counsel.", "conf": "medium"}, {"q": "Are we legally responsible for cookie-consent pop-ups on client sites?", "a": "Compliance with cookie and privacy laws is ultimately the practice's responsibility, not ours. Cookie-consent banners are generally required in the EU, and some states (California in particular) have privacy-policy requirements, but for a US dental practice a consent pop-up is usually not mandatory. We can add a cookie-consent banner on request, but be aware it limits our ability to track marketing effectiveness, since users must click accept before tracking runs. If a client is concerned or unsure, the right answer is to have them check with their own attorney, and any statement about who is legally responsible should be confirmed with leadership/counsel rather than asserted as fact.", "src": "best-practice", "confirm": true, "dated": false, "note": "Legal-responsibility and jurisdiction specifics should be confirmed with leadership/counsel; direct the client to their own attorney for a definitive answer.", "conf": "medium"}]}];
+const NEWCAT_COLORS = ["#4573d2","#5da283","#7a6ff0","#cd5bd4","#39a0a0","#4a8fb3","#6a5fc4","#e8863b","#8aab3a","#e8384f","#8f9296","#d9a13a","#d94f8f"];
+const SRC_LABEL = {thread:"From our threads","best-practice":"SEO best practice","policy-house":"House policy"};
+const SRC_CLASS = {thread:"b-thread","best-practice":"b-best","policy-house":"b-policy"};
+const LS = {overlay:"s8faq_overlay_v1", sources:"s8faq_sources_v1", requests:"s8faq_requests_v1"};
 
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const load = (k,d) => { try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch(e){ return d } };
+const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
+// overlay: { edits: {question:{a,src,confirm,dated,note,conf}}, adds:[{cat,q,a,src,confirm,dated,note,conf}], newcats:[{cat,color}] }
+let overlay = load(LS.overlay, {edits:{}, adds:[], newcats:[]});
+
+function workingData(){
+  const map = new Map();
+  const order = [];
+  BASE.forEach(g => { const c={cat:g.cat,color:g.color,questions:g.questions.map(q=>({...q}))}; map.set(g.cat,c); order.push(g.cat); });
+  (overlay.newcats||[]).forEach(nc => { if(!map.has(nc.cat)){ map.set(nc.cat,{cat:nc.cat,color:nc.color,questions:[]}); order.push(nc.cat);} });
+  // apply edits
+  map.forEach(g => g.questions.forEach(q => { const e=overlay.edits[q.q]; if(e) Object.assign(q,e); }));
+  // apply adds
+  (overlay.adds||[]).forEach(a => { let g=map.get(a.cat); if(!g){ g={cat:a.cat,color:NEWCAT_COLORS[order.length%NEWCAT_COLORS.length],questions:[]}; map.set(a.cat,g); order.push(a.cat);} g.questions.push({q:a.q,a:a.a,src:a.src,confirm:a.confirm,dated:a.dated,note:a.note,conf:a.conf}); });
+  return order.map(c=>map.get(c)).filter(g=>g.questions.length);
+}
+
+let DATA = workingData();
 const content = document.getElementById('content');
 const rail = document.getElementById('rail');
-let totalQ = 0;
 
-DATA.forEach((group, gi) => {
-  totalQ += group.questions.length;
-  const id = 'sec-' + slug(group.cat);
-
-  // rail entry
-  const a = document.createElement('a');
-  a.href = '#' + id; a.dataset.target = id;
-  a.innerHTML = `<span class="dot" style="background:${group.color}"></span><span class="rname">${esc(group.cat)}</span><span class="rcount">${group.questions.length}</span>`;
-  rail.appendChild(a);
-
-  // section
-  const sec = document.createElement('section');
-  sec.className = 'section'; sec.id = id; sec.dataset.cat = group.cat.toLowerCase();
-  sec.innerHTML = `
-    <div class="card">
-      <div class="card-head">
-        <span class="chip" style="background:color-mix(in srgb, ${group.color} 14%, var(--surface)); color:color-mix(in srgb, ${group.color} 62%, var(--ink)); border:1px solid color-mix(in srgb, ${group.color} 32%, transparent)">
-          <span class="cdot" style="background:${group.color}"></span>${esc(group.cat)}
-        </span>
-        <span class="n">${group.questions.length} question${group.questions.length>1?'s':''}</span>
-        <span class="hspace"></span>
-        <button class="copy-sec" data-gi="${gi}">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-          Copy section
-        </button>
-      </div>
-      <ul class="qlist">
-        ${group.questions.map((q,qi)=>`<li data-q="${esc(q.toLowerCase())}"><span class="marker">${qi+1}</span><span class="q">${esc(q)}</span></li>`).join('')}
-      </ul>
-    </div>`;
-  content.appendChild(sec);
-});
-
-document.getElementById('stat-q').textContent = totalQ;
-document.getElementById('stat-c').textContent = DATA.length;
-document.getElementById('ft-count').textContent = `${totalQ} questions across ${DATA.length} categories`;
-
-/* ---------- copy helpers ---------- */
-function buildHTML(groups) {
-  let h = `<h1>SEO &amp; Account Management FAQ</h1>`;
-  groups.forEach(g => {
-    h += `<h2>${esc(g.cat)}</h2><ul>` + g.questions.map(q=>`<li>${esc(q)}</li>`).join('') + `</ul>`;
-  });
+function badges(q){
+  let h = `<span class="badge ${SRC_CLASS[q.src]||'b-policy'}">${esc(SRC_LABEL[q.src]||'House policy')}</span>`;
+  if(q.confirm) h += `<span class="badge b-confirm">Confirm with leadership</span>`;
+  if(q.dated) h += `<span class="badge b-dated">Verify currency</span>`;
   return h;
 }
-function buildText(groups) {
-  let t = "SEO & ACCOUNT MANAGEMENT FAQ\n";
-  groups.forEach(g => {
-    t += `\n${g.cat.toUpperCase()}\n`;
-    g.questions.forEach(q => { t += `• ${q}\n`; });
+
+function render(){
+  DATA = workingData();
+  content.innerHTML='';
+  rail.innerHTML='<div class="rail-label">Categories</div>';
+  let totalQ=0, totalFlag=0;
+  DATA.forEach((group,gi)=>{
+    totalQ+=group.questions.length;
+    const id='sec-'+slug(group.cat);
+    const a=document.createElement('a');
+    a.href='#'+id; a.dataset.target=id;
+    a.innerHTML=`<span class="dot" style="background:${group.color}"></span><span class="rname">${esc(group.cat)}</span><span class="rcount">${group.questions.length}</span>`;
+    rail.appendChild(a);
+
+    const sec=document.createElement('section');
+    sec.className='section'; sec.id=id; sec.dataset.cat=group.cat.toLowerCase();
+    sec.innerHTML=`
+      <div class="card">
+        <div class="card-head">
+          <span class="chip" style="background:color-mix(in srgb, ${group.color} 14%, var(--surface)); color:color-mix(in srgb, ${group.color} 62%, var(--ink)); border:1px solid color-mix(in srgb, ${group.color} 32%, transparent)">
+            <span class="cdot" style="background:${group.color}"></span>${esc(group.cat)}
+          </span>
+          <span class="n">${group.questions.length} question${group.questions.length>1?'s':''}</span>
+          <span class="hspace"></span>
+          <button class="copy-sec" data-gi="${gi}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            Copy section
+          </button>
+        </div>
+        <ul class="qlist">
+          ${group.questions.map((q,qi)=>{
+            if(q.confirm) totalFlag++;
+            return `<li data-q="${esc((q.q+' '+q.a).toLowerCase())}" data-gi="${gi}" data-qi="${qi}">
+              <div class="qrow">
+                <span class="marker">${qi+1}</span>
+                <span class="qtext">${esc(q.q)}</span>
+                <span class="qbadges">${badges(q)}</span>
+                <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+              <div class="answer">
+                <div class="atext">${esc(q.a).replace(/\n/g,'<br>').replace(/\[link:([^\]]*)\]/g,'<span class="linkph">&#128279;$1</span>').replace(/\[CONFIRM:([^\]]*)\]/g,'<b style="color:var(--amber)">[CONFIRM:$1]</b>')}</div>
+                ${q.confirm?`<div class="confirm-box"><span>&#9888;</span><span><b>Confirm with leadership before sending.</b> This touches house policy, pricing, or a legal question we should not answer from memory.</span></div>`:''}
+                ${q.note?`<div class="note">Note: ${esc(q.note)}</div>`:''}
+                <div class="ameta">
+                  <span class="conf conf-${q.conf}"><span class="cd"></span>${q.conf} confidence</span>
+                  <button class="copy-q" data-gi="${gi}" data-qi="${qi}">Copy Q&amp;A</button>
+                  <button class="mini edit-q" data-gi="${gi}" data-qi="${qi}">Edit</button>
+                </div>
+              </div>
+            </li>`;
+          }).join('')}
+        </ul>
+      </div>`;
+    content.appendChild(sec);
   });
-  return t.trim();
-}
-async function copyGroups(groups, label) {
-  const html = buildHTML(groups), text = buildText(groups);
-  try {
-    if (navigator.clipboard && window.ClipboardItem) {
-      await navigator.clipboard.write([new ClipboardItem({
-        'text/html': new Blob([html], {type:'text/html'}),
-        'text/plain': new Blob([text], {type:'text/plain'})
-      })]);
-    } else {
-      await navigator.clipboard.writeText(text);
-    }
-    toast(label);
-  } catch(e) {
-    try { await navigator.clipboard.writeText(text); toast(label); }
-    catch(_) { toast('Copy failed — select &amp; copy manually'); }
-  }
-}
-let toastTimer;
-function toast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 1900);
+  document.getElementById('stat-q').textContent=totalQ;
+  document.getElementById('stat-c').textContent=DATA.length;
+  document.getElementById('stat-flag').textContent=totalFlag;
+  document.getElementById('ft-count').textContent=`${totalQ} questions across ${DATA.length} categories`;
+  wireRows();
+  applyFilter();
 }
 
-document.getElementById('copyAll').addEventListener('click', ()=>copyGroups(DATA, `Copied all ${totalQ} questions — paste into your doc`));
-document.querySelectorAll('.copy-sec').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const g = DATA[+btn.dataset.gi];
-    copyGroups([g], `Copied “${g.cat}”`);
+function wireRows(){
+  content.querySelectorAll('.qrow').forEach(row=>{
+    row.addEventListener('click', ()=> row.parentElement.classList.toggle('open'));
   });
-});
+  content.querySelectorAll('.copy-sec').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();copyGroups([DATA[+b.dataset.gi]],`Copied &ldquo;${DATA[+b.dataset.gi].cat}&rdquo;`);}));
+  content.querySelectorAll('.copy-q').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); const q=DATA[+b.dataset.gi].questions[+b.dataset.qi];
+    copyText(`${q.q}\n\n${q.a}`, 'Copied question &amp; answer');
+  }));
+  content.querySelectorAll('.edit-q').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); loadIntoForm(+b.dataset.gi,+b.dataset.qi); openDrawer('p-qa');
+  }));
+  const links=[...rail.querySelectorAll('a')];
+  const spy=new IntersectionObserver(ents=>ents.forEach(en=>{if(en.isIntersecting)links.forEach(l=>l.classList.toggle('active',l.dataset.target===en.target.id));}),{rootMargin:'-40% 0px -55% 0px'});
+  content.querySelectorAll('.section').forEach(s=>spy.observe(s));
+}
 
-/* ---------- filter ---------- */
-const filterInput = document.getElementById('filter');
-filterInput.addEventListener('input', () => {
-  const term = filterInput.value.trim().toLowerCase();
-  let anyVisible = false;
-  document.querySelectorAll('.section').forEach(sec => {
-    let shown = 0;
-    sec.querySelectorAll('.qlist li').forEach(li => {
-      const match = !term || li.dataset.q.includes(term);
-      li.style.display = match ? '' : 'none';
-      if (match) shown++;
+/* ---- copy helpers ---- */
+function buildText(groups){let t="SEO & ACCOUNT MANAGEMENT FAQ\n";groups.forEach(g=>{t+=`\n== ${g.cat.toUpperCase()} ==\n`;g.questions.forEach(q=>{t+=`\nQ: ${q.q}\nA: ${q.a}\n`;if(q.confirm)t+=`   [Confirm with leadership before sending.]\n`;});});return t.trim();}
+function buildHTML(groups){let h=`<h1>SEO &amp; Account Management FAQ</h1>`;groups.forEach(g=>{h+=`<h2>${esc(g.cat)}</h2>`;g.questions.forEach(q=>{h+=`<p><b>${esc(q.q)}</b><br>${esc(q.a)}${q.confirm?' <i>(confirm with leadership)</i>':''}</p>`;});});return h;}
+async function copyGroups(groups,label){const html=buildHTML(groups),text=buildText(groups);
+  try{ if(navigator.clipboard&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);}else{await navigator.clipboard.writeText(text);} toast(label);}
+  catch(e){ try{await navigator.clipboard.writeText(text);toast(label);}catch(_){toast('Copy failed');}}}
+async function copyText(t,label){try{await navigator.clipboard.writeText(t);toast(label);}catch(e){toast('Copy failed');}}
+let toastTimer; function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').innerHTML=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1900);}
+
+document.getElementById('copyAll').addEventListener('click',()=>copyGroups(DATA,`Copied all questions &amp; answers`));
+let allOpen=false;
+document.getElementById('expandAll').addEventListener('click',e=>{allOpen=!allOpen;content.querySelectorAll('.qlist li').forEach(li=>li.classList.toggle('open',allOpen));e.target.textContent=allOpen?'Collapse all':'Expand all';});
+
+/* ---- filter ---- */
+const filterInput=document.getElementById('filter');
+function applyFilter(){
+  const term=filterInput.value.trim().toLowerCase(); let anyVisible=false;
+  content.querySelectorAll('.section').forEach(sec=>{
+    let shown=0;
+    sec.querySelectorAll('.qlist li').forEach(li=>{
+      const match=!term||li.dataset.q.includes(term);
+      li.style.display=match?'':'none'; if(match){shown++; if(term) li.classList.add('open'); }
     });
-    sec.style.display = shown ? '' : 'none';
-    if (shown) anyVisible = true;
+    sec.style.display=shown?'':'none'; if(shown)anyVisible=true;
   });
-  let nr = document.getElementById('noResults');
-  if (!anyVisible) {
-    if (!nr) {
-      nr = document.createElement('div');
-      nr.id = 'noResults'; nr.className = 'no-results';
-      nr.textContent = 'No questions match that filter.';
-      content.appendChild(nr);
-    }
-  } else if (nr) { nr.remove(); }
+  let nr=document.getElementById('noResults');
+  if(!anyVisible){ if(!nr){nr=document.createElement('div');nr.id='noResults';nr.className='no-results';nr.textContent='Nothing matches that search.';content.appendChild(nr);} }
+  else if(nr)nr.remove();
+}
+filterInput.addEventListener('input',applyFilter);
+
+/* ---- admin drawer ---- */
+const drawer=document.getElementById('drawer'), scrim=document.getElementById('scrim');
+function openDrawer(pane){drawer.classList.add('show');scrim.classList.add('show');drawer.setAttribute('aria-hidden','false');if(pane)switchPane(pane);}
+function closeDrawer(){drawer.classList.remove('show');scrim.classList.remove('show');drawer.setAttribute('aria-hidden','true');}
+document.getElementById('openAdmin').addEventListener('click',()=>openDrawer());
+document.getElementById('closeAdmin').addEventListener('click',closeDrawer);
+scrim.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+function switchPane(id){document.querySelectorAll('.dtab').forEach(t=>t.classList.toggle('active',t.dataset.pane===id));document.querySelectorAll('.dpane').forEach(p=>p.classList.toggle('active',p.id===id));}
+document.querySelectorAll('.dtab').forEach(t=>t.addEventListener('click',()=>switchPane(t.dataset.pane)));
+
+/* ---- Q&A add/edit ---- */
+const qaCat=document.getElementById('qa-cat');
+function refreshCatSelect(){ qaCat.innerHTML = DATA.map(g=>`<option>${esc(g.cat)}</option>`).join('') + `<option value="__new">+ New category&hellip;</option>`; }
+qaCat.addEventListener('change',()=>document.getElementById('qa-newcat-wrap').style.display = qaCat.value==='__new'?'':'none');
+let editingKey=null;
+function loadIntoForm(gi,qi){
+  const q=DATA[gi].questions[qi]; editingKey=q.q;
+  refreshCatSelect(); qaCat.value=DATA[gi].cat; document.getElementById('qa-newcat-wrap').style.display='none';
+  document.getElementById('qa-q').value=q.q; document.getElementById('qa-a').value=q.a;
+  document.getElementById('qa-src').value=q.src; document.getElementById('qa-conf').value=q.conf;
+  document.getElementById('qa-note').value=q.note||''; document.getElementById('qa-confirm').checked=!!q.confirm; document.getElementById('qa-dated').checked=!!q.dated;
+  const ed=document.getElementById('qa-editing'); ed.style.display='block'; ed.textContent='Editing an existing answer. Saving will override it.';
+}
+function clearForm(){editingKey=null;['qa-q','qa-a','qa-note','qa-newcat'].forEach(id=>document.getElementById(id).value='');document.getElementById('qa-confirm').checked=false;document.getElementById('qa-dated').checked=false;document.getElementById('qa-editing').style.display='none';document.getElementById('qa-newcat-wrap').style.display='none';refreshCatSelect();}
+document.getElementById('qa-clear').addEventListener('click',clearForm);
+document.getElementById('qa-save').addEventListener('click',()=>{
+  const q=document.getElementById('qa-q').value.trim(), a=document.getElementById('qa-a').value.trim();
+  if(!q||!a){toast('Question and answer are both required');return;}
+  if(a.includes('—')){toast('Please remove em dashes from the answer');return;}
+  let cat=qaCat.value; if(cat==='__new'){cat=document.getElementById('qa-newcat').value.trim(); if(!cat){toast('Name the new category');return;} if(!overlay.newcats.some(n=>n.cat===cat))overlay.newcats.push({cat,color:NEWCAT_COLORS[(BASE.length+overlay.newcats.length)%NEWCAT_COLORS.length]});}
+  const fields={a,src:document.getElementById('qa-src').value,conf:document.getElementById('qa-conf').value,note:document.getElementById('qa-note').value.trim(),confirm:document.getElementById('qa-confirm').checked,dated:document.getElementById('qa-dated').checked};
+  const isExisting = BASE.some(g=>g.questions.some(x=>x.q===q)) || overlay.adds.some(x=>x.q===q);
+  if(editingKey||isExisting){ overlay.edits[q]={...fields}; if(!BASE.some(g=>g.questions.some(x=>x.q===q))){ const ad=overlay.adds.find(x=>x.q===q); if(ad)Object.assign(ad,fields,{cat}); } }
+  else { overlay.adds.push({cat,q,...fields}); }
+  save(LS.overlay,overlay); clearForm(); render(); refreshCatSelect(); toast('Saved');
+});
+document.getElementById('qa-export').addEventListener('click',()=>{
+  download('faq-data.json', JSON.stringify(workingData(),null,2)); toast('Downloaded faq-data.json');
 });
 
-/* ---------- scroll spy ---------- */
-const links = [...rail.querySelectorAll('a')];
-const spy = new IntersectionObserver(entries => {
-  entries.forEach(en => {
-    if (en.isIntersecting) {
-      links.forEach(l => l.classList.toggle('active', l.dataset.target === en.target.id));
-    }
-  });
-}, { rootMargin: '-40% 0px -55% 0px' });
-document.querySelectorAll('.section').forEach(s => spy.observe(s));
-</script>
+/* ---- Source library ---- */
+let sources=load(LS.sources,[]);
+function renderSources(){
+  document.getElementById('src-count').textContent=sources.length;
+  const el=document.getElementById('src-list');
+  if(!sources.length){el.innerHTML='<div class="empty-list">No sources yet. Paste an article or transcript above.</div>';return;}
+  el.innerHTML=sources.map((s,i)=>`<div class="item-card"><div class="ic-top"><span class="type-tag">${esc(s.type)}</span><span class="ic-title">${esc(s.title||'Untitled')}</span></div>
+    <div class="ic-meta">${esc(s.author||'')} ${s.url?'&middot; <a href="'+esc(s.url)+'" target="_blank" rel="noreferrer">link</a>':''} &middot; ${esc(s.added)}</div>
+    <div class="ic-body">${esc((s.body||'').slice(0,320))}${(s.body||'').length>320?'&hellip;':''}</div>
+    <div class="ic-actions"><button class="mini danger" data-del-src="${i}">Delete</button></div></div>`).join('');
+  el.querySelectorAll('[data-del-src]').forEach(b=>b.addEventListener('click',()=>{sources.splice(+b.dataset.delSrc,1);save(LS.sources,sources);renderSources();}));
+}
+document.getElementById('src-save').addEventListener('click',()=>{
+  const title=document.getElementById('src-title').value.trim(), body=document.getElementById('src-body').value.trim();
+  if(!title&&!body){toast('Add a title or some content');return;}
+  sources.unshift({title,type:document.getElementById('src-type').value,author:document.getElementById('src-author').value.trim(),url:document.getElementById('src-url').value.trim(),body,added:new Date().toISOString().slice(0,10)});
+  save(LS.sources,sources); ['src-title','src-author','src-url','src-body'].forEach(id=>document.getElementById(id).value=''); renderSources(); toast('Saved to source library');
+});
+document.getElementById('src-export').addEventListener('click',()=>{download('faq-sources.json',JSON.stringify(sources,null,2));toast('Downloaded faq-sources.json');});
 
+/* ---- Question requests ---- */
+let requests=load(LS.requests,[]);
+function renderRequests(){
+  document.getElementById('req-count').textContent=requests.length;
+  const el=document.getElementById('req-list');
+  if(!requests.length){el.innerHTML='<div class="empty-list">No open requests. Submit one above.</div>';return;}
+  el.innerHTML=requests.map((r,i)=>`<div class="item-card"><div class="ic-top"><span class="type-tag">${esc(r.role)}</span><span class="ic-title">${esc(r.q)}</span></div>
+    <div class="ic-meta">${esc(r.name||'Anonymous')} &middot; ${esc(r.added)}</div>
+    ${r.ctx?`<div class="ic-body">${esc(r.ctx)}</div>`:''}
+    <div class="ic-actions"><button class="mini" data-ans-req="${i}">Answer this</button><button class="mini danger" data-del-req="${i}">Remove</button></div></div>`).join('');
+  el.querySelectorAll('[data-del-req]').forEach(b=>b.addEventListener('click',()=>{requests.splice(+b.dataset.delReq,1);save(LS.requests,requests);renderRequests();}));
+  el.querySelectorAll('[data-ans-req]').forEach(b=>b.addEventListener('click',()=>{const r=requests[+b.dataset.ansReq];clearForm();document.getElementById('qa-q').value=r.q;switchPane('p-qa');document.getElementById('qa-a').focus();}));
+}
+document.getElementById('req-save').addEventListener('click',()=>{
+  const q=document.getElementById('req-q').value.trim(); if(!q){toast('Enter a question');return;}
+  requests.unshift({q,name:document.getElementById('req-name').value.trim(),role:document.getElementById('req-role').value,ctx:document.getElementById('req-ctx').value.trim(),added:new Date().toISOString().slice(0,10)});
+  save(LS.requests,requests); ['req-q','req-name','req-ctx'].forEach(id=>document.getElementById(id).value=''); renderRequests(); toast('Question submitted');
+});
+document.getElementById('req-export').addEventListener('click',()=>{download('faq-question-requests.json',JSON.stringify(requests,null,2));toast('Downloaded requests');});
+
+function download(name,text){const b=new Blob([text],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+
+/* ---- boot ---- */
+render(); refreshCatSelect(); renderSources(); renderRequests();
+</script>
 </body>
 </html>
