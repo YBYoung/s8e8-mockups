@@ -243,7 +243,7 @@
         <div class="bulkbar" id="bulkbar"></div>
         <div class="tcard">
           <div class="tscroll"><table class="ht" id="regtable"><thead></thead><tbody></tbody></table></div>
-          <div class="foot-hint"><b>Click a row or use arrow keys</b> · lanes change the columns, the pane stays put · search, tier, and Data health multi-select are live</div>
+          <div class="foot-hint"><b>Click a row or use arrow keys</b> · lanes change the columns, the pane stays put · Data health: shift-click selects a range, the header checkbox selects everything shown</div>
         </div>
       </div>
 
@@ -498,7 +498,7 @@
      }},
     {key:'data', label:'Data health',
      hint:'Connections and cache depth per source.',
-     head:'<th class="ck"></th><th></th><th>Client</th><th class="r">GA4</th><th class="r">GSC</th><th class="r">GBP</th><th>QoQ</th><th>YoY</th>',
+     head:'<th class="ck"><input type="checkbox" id="ckall" title="Select all shown"></th><th></th><th>Client</th><th class="r">GA4</th><th class="r">GSC</th><th class="r">GBP</th><th>QoQ</th><th>YoY</th>',
      rows:function () { return C; },
      row:function (c, i) {
        function wcell(k) {
@@ -514,7 +514,8 @@
   ];
 
   // ---- state ----
-  var lane = LANES[0], sel = 'allure', q = '', tier = '', bulkSel = new Set();
+  var lane = LANES[0], sel = 'allure', q = '', tier = '', bulkSel = new Set(),
+      dataIssuesOnly = false, lastCk = null;
   var lanesEl = document.getElementById('lanes'), thead = document.querySelector('#regtable thead'),
       tbody = document.querySelector('#regtable tbody'), paneEl = document.getElementById('pane'),
       hintEl = document.getElementById('lanehint'), countEl = document.getElementById('count'),
@@ -522,7 +523,8 @@
 
   function visibleRows() {
     return lane.rows().filter(function (c) {
-      return (!q || c.name.toLowerCase().indexOf(q) !== -1) && (!tier || c.tier === tier);
+      return (!q || c.name.toLowerCase().indexOf(q) !== -1) && (!tier || c.tier === tier) &&
+        !(lane.bulk && dataIssuesOnly && !hasIssue(c));
     });
   }
   function renderLanes() {
@@ -551,7 +553,8 @@
   }
   function renderTable() {
     hintEl.innerHTML = lane.hint + (lane.bulk ?
-      ' <span class="paneax" id="selissues">Select all with issues</span>' : '');
+      ' <span class="paneax" id="fltissues">' + (dataIssuesOnly ? 'Show all clients' : 'Show issues only') + '</span>' +
+      ' · <span class="paneax" id="selissues">Select all with issues</span>' : '');
     thead.innerHTML = '<tr>' + lane.head + '</tr>';
     var rows = visibleRows();
     countEl.textContent = rows.length + ' of ' + lane.rows().length;
@@ -564,6 +567,24 @@
       C.filter(hasIssue).forEach(function (c) { bulkSel.add(c.id); });
       renderTable(); renderBulkbar(); renderPane();
     });
+    var fi = document.getElementById('fltissues');
+    if (fi) fi.addEventListener('click', function () {
+      dataIssuesOnly = !dataIssuesOnly;
+      renderTable();
+    });
+    var ca = document.getElementById('ckall');
+    if (ca) {
+      var vis = rows.map(function (c) { return c.id; });
+      var picked = vis.filter(function (id) { return bulkSel.has(id); }).length;
+      ca.checked = vis.length > 0 && picked === vis.length;
+      ca.indeterminate = picked > 0 && picked < vis.length;
+      ca.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (ca.checked) vis.forEach(function (id) { bulkSel.add(id); });
+        else vis.forEach(function (id) { bulkSel.delete(id); });
+        renderTable(); renderBulkbar(); renderPane();
+      });
+    }
   }
   function paneBulk() {
     var list = C.filter(function (c) { return bulkSel.has(c.id); });
@@ -659,8 +680,20 @@
   tbody.addEventListener('click', function (e) {
     var ck = e.target.closest('input[data-ck]');
     if (ck) {
+      var ids = visibleRows().map(function (c) { return c.id; });
+      if (e.shiftKey && lastCk && ids.indexOf(lastCk) !== -1) {
+        var a = ids.indexOf(lastCk), b = ids.indexOf(ck.dataset.ck);
+        var lo = Math.min(a, b), hi = Math.max(a, b);
+        for (var j = lo; j <= hi; j++) {
+          if (ck.checked) bulkSel.add(ids[j]); else bulkSel.delete(ids[j]);
+        }
+        lastCk = ck.dataset.ck;
+        renderTable(); renderBulkbar(); renderPane();
+        return;
+      }
       if (ck.checked) bulkSel.add(ck.dataset.ck); else bulkSel.delete(ck.dataset.ck);
-      renderBulkbar(); renderPane();
+      lastCk = ck.dataset.ck;
+      renderTable(); renderBulkbar(); renderPane();
       return;
     }
     var tr = e.target.closest('tr'); if (!tr) return;
