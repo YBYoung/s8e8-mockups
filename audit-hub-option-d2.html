@@ -1,0 +1,598 @@
+<!--
+  Audit Hub redesign mockup : OPTION D2 "Preview" (wayfinder #745).
+
+  Concept: the approved Option B Ledger, untouched, plus an email-client
+  preview pane pinned along the BOTTOM of the viewport.
+
+  Why: the owner approved B as the information benchmark and likes the
+  master-detail Split idea best, but worries a split loses information
+  vs the Ledger and that its navigation isn't proven. D2's answer:
+  - The register table stays EXACTLY as approved: full width, B's exact
+    columns, filters, unmatched-tasks band, blocked-first sort. Nothing
+    is summarized away to make room for a side pane.
+  - Detail lives in a preview panel fixed to the bottom edge (the email
+    client pattern: list above, reading pane below). Selecting a row
+    never reflows the table or pushes rows apart, unlike in-place
+    expansion, so the ledger is always scannable end to end.
+  - The panel reuses B's expander content in its airy three-column
+    layout: cycle story + enrollment switch | data + team | history.
+  - A literal superset of Ledger: close the panel and you are looking
+    at Option B.
+  All 12 rows and the panel render from ONE data array, so every row
+  click, arrow key, search keystroke, and the Needs-attention filter
+  are real: navigation is provable in the mockup itself.
+-->
+<title>Audit Hub redesign · Option D2 · Preview</title>
+<style>
+.audit-app{
+  --paper:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --faint:#D3D7DF;
+  --red:#C25E55; --red-soft:#FBE7E5;
+  --green:#3C8F6E; --steady:#256E9C;
+  --chip:#F2F4F8;
+  --shadow:0 1px 2px rgba(17,20,28,.05);
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  min-height:100vh; margin:-8px; padding-bottom:340px;
+}
+.audit-app[data-theme="dark"]{
+  --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+  --red:#D0766B; --red-soft:#2E1917;
+  --green:#4DAE87; --steady:#7CC0E8;
+  --chip:#1E222A;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  .audit-app:not([data-theme="light"]){
+    --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+    --red:#D0766B; --red-soft:#2E1917;
+    --green:#4DAE87; --steady:#7CC0E8;
+    --chip:#1E222A;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.audit-app *{box-sizing:border-box}
+.audit-app .num{font-variant-numeric:tabular-nums}
+.audit-app.pvoff{padding-bottom:80px}
+
+/* mockup banner + option switcher (not part of the shipped page) */
+.audit-app .mockstrip{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--chip);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:600;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.audit-app .mockstrip a{color:var(--sub);text-decoration:none;padding:1px 6px;border-radius:4px}
+.audit-app .mockstrip a:hover{color:var(--ink);background:var(--card)}
+.audit-app .mockstrip a.here{color:var(--ink);background:var(--card);box-shadow:var(--shadow)}
+
+.audit-app .col{max-width:1220px;margin:0 auto;width:100%;padding:0 30px}
+@media(max-width:880px){.audit-app .col{padding:0 16px}}
+
+/* header: one plain sentence */
+.audit-app .hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:30px 0 0;border-bottom:2px solid var(--ink);padding-bottom:16px}
+.audit-app .hd h1{font:600 20px/1.15 var(--body);letter-spacing:-.005em;margin:0}
+.audit-app .hd .meta{margin-top:7px;font-size:13px;color:var(--sub);max-width:640px;line-height:1.5}
+.audit-app .hd .meta b{color:var(--ink);font-weight:600}
+.audit-app .hd .meta .redink{color:var(--red);font-weight:600}
+.audit-app .hd-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.audit-app .btn{font-family:var(--body);font-size:13px;font-weight:600;border-radius:5px;padding:7px 14px;cursor:pointer;border:1px solid transparent}
+.audit-app .btn.ghost{background:var(--card);border-color:var(--line);color:var(--sub)}
+.audit-app .btn.ghost:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.audit-app .btn.dark:hover{opacity:.9}
+.audit-app .btn.mini{font-size:11.5px;padding:5px 11px}
+.audit-app .btn:focus-visible{outline:2px solid var(--sub);outline-offset:1px}
+.audit-app .themebtn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:5px;padding:6px 10px;cursor:pointer}
+.audit-app .themebtn:hover{color:var(--ink);border-color:var(--muted)}
+
+/* toolbar: search + tier + the existing hub's filter selects */
+.audit-app .tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 0 12px}
+.audit-app .search{flex:0 1 220px;min-width:140px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--ink);padding:7px 10px;font:400 13px/1.2 var(--body)}
+.audit-app .search::placeholder{color:var(--muted)}
+.audit-app .search:focus-visible{outline:2px solid var(--sub);outline-offset:1px}
+.audit-app .seg{display:inline-flex;background:var(--chip);border-radius:5px;padding:2px;gap:2px}
+.audit-app .seg button{font-family:var(--body);font-size:12px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:4px 11px;border-radius:4px;cursor:pointer}
+.audit-app .seg button:hover:not(.on){color:var(--ink)}
+.audit-app .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.audit-app .fsel{max-width:170px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--sub);padding:7px 8px;font:600 12px/1.2 var(--body)}
+.audit-app .count{margin-left:auto;font-size:12px;color:var(--muted)}
+
+/* needs-linking band: a ledger line item */
+.audit-app .attn{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+.audit-app .attn-h{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer}
+.audit-app .attn-h .cnt{font:700 13px/1 var(--body);color:var(--red);font-variant-numeric:tabular-nums}
+.audit-app .attn-h .tx{font-size:12.5px;color:var(--ink);font-weight:600}
+.audit-app .attn-h .sub{font-size:11.5px;color:var(--muted)}
+.audit-app .attn-h .chev{margin-left:auto;color:var(--muted);font-size:10px;transition:transform .15s}
+.audit-app .attn.closed .attn-h .chev{transform:rotate(-90deg)}
+.audit-app .attn.closed .attn-rows{display:none}
+.audit-app .attn-row{display:flex;align-items:center;gap:12px;padding:8px 16px;border-top:1px solid var(--line-soft);font-size:12.5px}
+.audit-app .attn-row .tk{color:var(--ink);font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.audit-app .attn-row .sec{font-size:11px;color:var(--muted);white-space:nowrap}
+.audit-app .attn-row .ax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:11.5px;white-space:nowrap;cursor:pointer}
+.audit-app .attn-row .ax:hover{color:var(--ink)}
+
+/* ================================================================
+   The register: one flat sortable table, exactly Option B's
+   ================================================================ */
+.audit-app .tcard{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+.audit-app .tscroll{overflow-x:auto}
+.audit-app table.ht{width:100%;border-collapse:collapse;min-width:1040px}
+.audit-app .ht thead th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:12px 12px;border-bottom:1px solid var(--ink);white-space:nowrap;background:var(--card)}
+.audit-app .ht thead th:first-child{padding-left:18px}
+.audit-app .ht th.sortable{cursor:pointer;user-select:none}
+.audit-app .ht th.sortable:hover{color:var(--ink)}
+.audit-app .ht th .car{opacity:0;margin-left:5px;color:var(--ink)}
+.audit-app .ht th.sorted{color:var(--ink)}
+.audit-app .ht th.sorted .car{opacity:1}
+.audit-app .ht tbody tr.entry{border-bottom:1px solid var(--line-soft);cursor:pointer}
+.audit-app .ht tbody tr.entry:hover{background:var(--paper)}
+.audit-app .ht tbody tr.entry.sel{background:var(--chip)}
+.audit-app .ht tbody tr.entry.hidden{display:none}
+.audit-app .ht td{padding:13px 12px;font-size:13px;vertical-align:middle}
+.audit-app .ht td:first-child{padding-left:18px}
+.audit-app .idx{font:400 10.5px/1 var(--body);color:var(--muted);font-variant-numeric:tabular-nums;width:26px}
+.audit-app .cname{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+.audit-app .ctier{margin-top:2px;font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* cycle bar, kept from B: last audit -> today -> due */
+.audit-app .cyc{min-width:210px;max-width:280px}
+.audit-app .cyc-bar{position:relative;height:3px;border-radius:2px;background:var(--line)}
+.audit-app .cyc-bar .done{position:absolute;left:0;top:0;bottom:0;background:var(--faint);border-radius:2px}
+.audit-app .cyc-bar .today{position:absolute;top:50%;transform:translate(-50%,-50%);width:7px;height:7px;border-radius:50%;background:var(--ink)}
+.audit-app .cyc-bar.over .done{background:var(--red);opacity:.5}
+.audit-app .cyc-bar.over .today{background:var(--red)}
+.audit-app .cyc-bar.none{background:transparent;border-top:2px dashed var(--faint);height:0;border-radius:0}
+.audit-app .cyc-lab{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.audit-app .cyc-lab .r{text-align:right}
+.audit-app .cyc-lab .r.redink{color:var(--red);font-weight:600}
+.audit-app .cyc-lab .seen{color:var(--green)}
+
+/* status: one plain sentence, red ink when blocked */
+.audit-app .st{font-size:12.5px;line-height:1.45;color:var(--sub);max-width:340px}
+.audit-app .st b{color:var(--ink);font-weight:600}
+.audit-app .st.redink,.audit-app .st.redink b{color:var(--red)}
+.audit-app .st .go{font-size:11.5px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;white-space:nowrap}
+.audit-app .st .go:hover{opacity:.75}
+.audit-app .genprog{display:flex;flex-direction:column;gap:4px;max-width:210px}
+.audit-app .genprog .t{font-size:10.5px;font-weight:600;color:var(--steady)}
+.audit-app .genprog .bar{height:3px;border-radius:2px;background:var(--line);overflow:hidden}
+.audit-app .genprog .bar i{display:block;height:100%;background:var(--steady);border-radius:2px;animation:gp 2.4s ease-in-out infinite alternate}
+@keyframes gp{from{width:58%}to{width:66%}}
+.audit-app .lastcell{white-space:nowrap;font-size:12px;color:var(--sub)}
+.audit-app .lastcell .seen{color:var(--green);font-size:11px}
+.audit-app .lastcell .unseen{color:var(--muted);font-size:11px}
+.audit-app .lastcell.nonecell{color:var(--muted)}
+.audit-app .ava{width:26px;height:26px;border-radius:5px;display:grid;place-items:center;font:600 10.5px/1 var(--body);background:var(--chip);color:var(--sub);border:1px solid var(--line)}
+.audit-app .ava.empty{border-style:dashed;color:var(--muted);background:transparent}
+.audit-app .kebab{border:0;background:transparent;color:var(--muted);font-size:15px;cursor:pointer;padding:2px 6px;border-radius:5px;line-height:1}
+.audit-app .kebab:hover{color:var(--ink);background:var(--chip)}
+.audit-app .foot-hint{display:flex;justify-content:space-between;gap:10px;padding:11px 18px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);flex-wrap:wrap}
+.audit-app .foot-hint b{color:var(--sub);font-weight:600}
+
+/* ================================================================
+   Preview panel: pinned to the bottom edge, email-client style.
+   Carries B's expander content in its airy three-column layout.
+   ================================================================ */
+.audit-app .pv{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -1px 2px rgba(17,20,28,.06)}
+.audit-app.pvoff .pv{display:none}
+.audit-app .pvcol{max-width:1220px;margin:0 auto;width:100%;padding:12px 30px 16px}
+.audit-app .pvhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+.audit-app .pvname{font-size:14.5px;font-weight:600;color:var(--ink)}
+.audit-app .pvwho{font-size:11.5px;color:var(--muted)}
+.audit-app .pvwho b{color:var(--sub);font-weight:600}
+.audit-app .pvbtns{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.audit-app .pvclose{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;padding:3px 7px;border-radius:5px;line-height:1}
+.audit-app .pvclose:hover{color:var(--ink);background:var(--chip)}
+.audit-app .pvbody{max-height:222px;overflow-y:auto;padding-top:14px}
+.audit-app .xgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:44px}
+.audit-app .xh{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px}
+.audit-app .xstory{font-size:13px;color:var(--sub);line-height:1.6;margin:0}
+.audit-app .xstory b{color:var(--ink)}
+.audit-app .xstory .redink{color:var(--red);font-weight:600}
+.audit-app .xstory .genink{color:var(--steady);font-weight:600}
+.audit-app .xtoggle{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--sub)}
+.audit-app .xtoggle b{color:var(--ink);font-weight:600;font-size:12.5px}
+.audit-app .switch{width:30px;height:17px;border-radius:17px;background:var(--faint);position:relative;transition:background .15s;flex:none;display:inline-block;cursor:pointer}
+.audit-app .switch i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .15s}
+.audit-app .switch.on{background:var(--green)}
+.audit-app .switch.on i{left:15px}
+.audit-app .xline{display:flex;align-items:baseline;gap:10px;padding:5px 0;font-size:12.5px}
+.audit-app .xline .k{color:var(--muted);width:56px;flex:none;font-size:11.5px}
+.audit-app .xline .v{color:var(--sub)}
+.audit-app .xline .v b{color:var(--ink);font-weight:600}
+.audit-app .xline .v .seen{color:var(--green)}
+.audit-app .xline .v .redink{color:var(--red);font-weight:600}
+.audit-app .xline .ok{color:var(--green);font-size:11px;white-space:nowrap}
+.audit-app .xline .gap{color:var(--red);font-size:11px;font-weight:600;white-space:nowrap}
+.audit-app .xline .ax{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:11px;cursor:pointer;margin-left:auto}
+.audit-app .xline .ax:hover{color:var(--ink)}
+.audit-app .xnone{font-size:12.5px;color:var(--muted);line-height:1.55;margin:0}
+.audit-app .xlinks{margin-top:12px;font-size:11.5px;color:var(--muted)}
+.audit-app .xlinks a{color:var(--sub);text-decoration:underline;text-underline-offset:2px}
+.audit-app .xlinks a:hover{color:var(--ink)}
+
+/* collapsed-state affordance, bottom right */
+.audit-app .pvshow{display:none;position:fixed;right:18px;bottom:14px;z-index:30;font-family:var(--body);font-size:11px;font-weight:600;color:var(--sub);background:var(--card);border:1px solid var(--line);border-radius:5px;padding:6px 12px;cursor:pointer;box-shadow:0 -1px 2px rgba(17,20,28,.06)}
+.audit-app .pvshow:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app.pvoff .pvshow{display:block}
+
+/* narrow screens: the panel stops floating and sits below the table */
+@media(max-width:880px){
+  .audit-app{padding-bottom:80px}
+  .audit-app .pv{position:static;border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);margin-top:14px}
+  .audit-app .pvcol{padding:12px 16px 16px}
+  .audit-app .pvbody{max-height:none}
+  .audit-app .xgrid{grid-template-columns:1fr;gap:24px}
+  .audit-app .pvshow{position:static;display:none;margin-top:14px}
+  .audit-app.pvoff .pvshow{display:inline-block}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .audit-app .switch,.audit-app .switch i,.audit-app .attn-h .chev{transition:none}
+  .audit-app .genprog .bar i{animation:none;width:62%}
+}
+</style>
+
+<div class="audit-app" id="app">
+  <div class="mockstrip">
+    <span>Mockup · Audit Hub redesign · #745 · not the shipped page</span>
+    <span>
+      <a href="./audit-hub-option-b.html">B · Ledger</a>
+      <a href="./audit-hub-option-d.html">D · Split</a>
+      <a href="./audit-hub-option-d1.html">D1 · Table</a>
+      <a class="here" href="./audit-hub-option-d2.html">D2 · Preview</a>
+      <a href="./audit-hub-option-d3.html">D3 · Navigator</a>
+      <a href="./audit-hub-option-e.html">E · Lanes</a>
+    </span>
+  </div>
+
+  <div class="col">
+    <div class="hd">
+      <div>
+        <h1>Audit Hub</h1>
+        <div class="meta">12 clients enrolled. <span class="redink">4 need your attention</span>, <b>2 drafts</b> are waiting to be reviewed and sent. Synced from Asana at 8:12 AM.</div>
+      </div>
+      <div class="hd-actions">
+        <button class="themebtn" id="themebtn" type="button">Theme</button>
+        <button class="btn ghost">Run poll now</button>
+        <button class="btn dark">Sync from Asana</button>
+      </div>
+    </div>
+
+    <div class="tools">
+      <input class="search" id="q" placeholder="Search clients" />
+      <div class="seg">
+        <button class="on">All 12</button>
+        <button>ML 2</button>
+        <button>Perf 5</button>
+        <button>Ess 5</button>
+      </div>
+      <select class="fsel" id="schedsel"><option>Schedule: any</option><option>Auto on</option><option>Auto off</option><option>Needs attention</option></select>
+      <select class="fsel"><option>Report: any</option><option>Draft</option><option>Sent</option><option>No report</option></select>
+      <select class="fsel"><option>Readiness: any</option><option>Green 52w+</option><option>Yellow 13-51w</option><option>Red under 13w</option></select>
+      <span class="count" id="count">12 of 12 clients</span>
+    </div>
+
+    <div class="attn" id="attn">
+      <div class="attn-h" onclick="document.getElementById('attn').classList.toggle('closed')">
+        <span class="cnt num">2</span>
+        <span class="tx">Asana audit tasks aren't matched to a client</span>
+        <span class="sub">They won't appear in any row until linked</span>
+        <span class="chev">&#9660;</span>
+      </div>
+      <div class="attn-rows">
+        <div class="attn-row">
+          <span class="tk">Q3 Audit · Sunrise Dental Care</span>
+          <span class="sec">Performance section · due Aug 14</span>
+          <span class="ax">Link to client</span>
+          <span class="ax">Open in Asana &#8599;</span>
+        </div>
+        <div class="attn-row">
+          <span class="tk">Quarterly Audit · Northgate Smiles</span>
+          <span class="sec">Essential section · no due date</span>
+          <span class="ax">Link to client</span>
+          <span class="ax">Open in Asana &#8599;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="tscroll">
+        <table class="ht">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="sortable">Client<span class="car">&#9650;</span></th>
+              <th class="sortable sorted">Cycle<span class="car">&#9650;</span></th>
+              <th>Status</th>
+              <th class="sortable">Last audit<span class="car">&#9650;</span></th>
+              <th>Assignee</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody"><!-- rows render from the data array below --></tbody>
+        </table>
+      </div>
+      <div class="foot-hint">
+        <span><b>Click a row or use arrow keys</b> · preview pane pinned below · search and Schedule filter are live in this mockup</span>
+        <span>Enrollment switch lives in the preview pane · admin only</span>
+      </div>
+    </div>
+
+    <!-- =================== preview panel =================== -->
+    <div class="pv" id="pv">
+      <div class="pvcol">
+        <div class="pvhead">
+          <span class="pvname" id="pvname">Client</span>
+          <span class="pvwho" id="pvwho"></span>
+          <div class="pvbtns" id="pvbtns"></div>
+          <button class="pvclose" id="pvclose" type="button" title="Collapse preview">&#10005;</button>
+        </div>
+        <div class="pvbody"><div class="xgrid" id="pvgrid"></div></div>
+      </div>
+    </div>
+    <button class="pvshow" id="pvshow" type="button">Show preview</button>
+  </div>
+</div>
+
+<script>
+// One array drives BOTH the register rows and the preview panel, so every
+// row is fully navigable: click, arrow keys, search, Needs-attention filter.
+(function () {
+  var OKOK = '<span class="ok">QoQ &#10003; YoY &#10003;</span>';
+  var TEAM_A = [['Asana','Jessica Nguyen'],['SEO','Tanya Yeauger'],['MS','Soleil Parra']];
+  var LINKS = '<div class="xlinks"><a href="#">View in Asana &#8599;</a> · <a href="#">Open Report Editor &#8599;</a></div>';
+
+  var DATA = [
+    {name:'Allure Dental', tier:'Market Leader', av:'JN', who:'Jessica Nguyen', need:true,
+     cyc:{pct:100, over:true, left:'Apr 3', right:'due Jul 12 · 16d ago', red:true},
+     st:'<b>Q2 draft unsent 16 days.</b> <span class="go">Review &amp; send</span>', stRed:true,
+     last:'Draft · Jul 12',
+     actions:[['Review &amp; send draft','dark'],['Archive draft','ghost']],
+     story:'The Q2 draft was generated <b>Jul 12</b>, three days before its Asana due date, and has been <span class="redink">waiting 16 days</span> for review. Sending or archiving it lets Q3 schedule normally.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','61 weeks',OKOK],['GSC','64 weeks',OKOK],['GBP','61 weeks',OKOK]], team:TEAM_A,
+     hist:[['Q2 2026','<b>Draft</b> · Jul 12','Review'],['Q1 2026','Sent Apr 3 <span class="seen">· viewed Apr 5</span>','View'],['Q4 2025','Sent Jan 6 <span class="seen">· viewed Jan 6</span>','View'],['Q3 2025','Sent Oct 2 <span class="seen">· viewed Oct 4</span>','View']]},
+
+    {name:'Kent Station Dental', tier:'Essential', av:'SP', who:'Soleil Parra', need:true,
+     cyc:{pct:97, over:true, left:'Apr 2', right:'due Jul 30 · failing', red:true},
+     st:'<b>Generation failed 3 times</b>, last Jul 26. <span class="go">View error &amp; retry</span>', stRed:true,
+     last:'Sent Apr 2 <span class="seen">&#10003;</span>',
+     actions:[['View error &amp; retry','dark'],['Open in Asana','ghost']],
+     story:'The Q2 draft has <span class="redink">failed to generate 3 times</span>, most recently <b>Jul 26</b>, and the Asana task is due <b>Jul 30</b>. Retrying from the error view keeps this cycle on schedule.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Retries pause after 3 failures until someone looks.'},
+     data:[['GA4','55 weeks',OKOK],['GSC','55 weeks',OKOK],['GBP','55 weeks',OKOK]],
+     team:[['Asana','Soleil Parra'],['SEO','Tommy Callahan'],['MS','Jessica Nguyen']],
+     hist:[['Q2 2026','<span class="redink">Failed · 3 attempts</span>, last Jul 26','Error log'],['Q1 2026','Sent Apr 2 <span class="seen">· viewed</span>','View'],['Q4 2025','Sent Jan 8 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Plumb Dental', tier:'Performance', av:'TY', who:'Tanya Yeauger', need:true,
+     cyc:{none:true, left:'Jun 12', right:'no upcoming task', red:true},
+     st:'<b>Enrolled, no open Asana task.</b> <span class="go">Create task</span>', stRed:true,
+     last:'Sent Jun 12 <span class="unseen">&#9675;</span>',
+     actions:[['Create task in Asana','dark'],['Open settings','ghost']],
+     story:'Plumb is enrolled and its last report went out <b>Jun 12</b> (not opened yet), but there is <span class="redink">no open Asana task</span> to anchor the next cycle, so nothing will schedule until one exists.',
+     tog:{on:true, txt:'<b>Auto-audit on</b>, but it needs an Asana task to schedule against.'},
+     data:[['GA4','34 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GSC','34 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GBP','34 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>']],
+     team:[['Asana','Tanya Yeauger'],['SEO','Tommy Callahan'],['MS','Soleil Parra']],
+     hist:[['Q2 2026','Sent Jun 12 · not viewed yet','View'],['Q1 2026','Sent Mar 12 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Cedar Grove Family Dentistry', tier:'Essential', av:'TC', who:'Tommy Callahan', need:true,
+     cyc:{pct:8, left:'No report yet', right:'first audit Aug 29'},
+     st:'<b>8 weeks cached</b>, QoQ needs 16+. <span class="go">Cache detail</span>', stRed:true,
+     last:'None', lastNone:true,
+     actions:[['View cache detail','dark'],['Open settings','ghost']],
+     story:'Cedar Grove enrolled recently. The first audit is due <b>Aug 29</b> and would generate <b>Aug 26</b>, but only <span class="redink">8 weeks of data are cached</span> and the QoQ comparison needs 16 or more. The cache detail shows how each source is filling in.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> The first draft waits until the data is ready.'},
+     data:[['GA4','8 weeks','<span class="gap">QoQ needs 16+</span>'],['GSC','8 weeks','<span class="gap">QoQ needs 16+</span>'],['GBP','8 weeks','<span class="gap">QoQ needs 16+</span>']],
+     team:[['Asana','Tommy Callahan'],['SEO','Tanya Yeauger'],['MS','Jessica Nguyen']],
+     hist:[], histNone:'No audits yet. The first draft is scheduled to generate Aug 26.'},
+
+    {name:'Fisher &amp; Zitterich Dentistry', tier:'Essential', av:'TC', who:'Tommy Callahan',
+     cyc:{pct:98, left:'Apr 28', right:'due Jul 29'},
+     gen:'Generating the Q2 draft · 62%',
+     last:'Sent Apr 28 <span class="seen">&#10003;</span>',
+     actions:[['View progress','dark'],['Open in Asana','ghost']],
+     story:'The Q2 draft is <span class="genink">generating right now, 62% through</span>, ahead of the <b>Jul 29</b> due date. When it finishes it lands in the review queue on its own.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','54 weeks',OKOK],['GSC','54 weeks',OKOK],['GBP','54 weeks',OKOK]],
+     team:[['Asana','Tommy Callahan'],['SEO','Tanya Yeauger'],['MS','Soleil Parra']],
+     hist:[['Q2 2026','<span class="v"><b>Generating now</b> · 62%</span>'],['Q1 2026','Sent Apr 28 <span class="seen">· viewed</span>','View'],['Q4 2025','Sent Jan 26 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Holliston Dentistry', tier:'Essential', av:'YY', who:'Yitzchak Young',
+     cyc:{pct:96, left:'May 5', right:'due Aug 1'},
+     st:'Draft generates <b>tomorrow</b>. Data ready, 53w cached.',
+     last:'Sent May 5 <span class="seen">&#10003;</span>',
+     actions:[['Generate draft now','dark'],['Skip this cycle','ghost']],
+     story:'Nothing to do here. The Q2 draft generates <b>tomorrow, Jul 29</b>, three days before the <b>Aug 1</b> due date. Data is ready across all three sources, so the draft should land in the review queue on its own.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','53 weeks',OKOK],['GSC','53 weeks',OKOK],['GBP','53 weeks',OKOK]],
+     team:[['Asana','Yitzchak Young'],['SEO','Tanya Yeauger'],['MS','Soleil Parra']],
+     hist:[['Q2 2026','Generates <b>Jul 29</b>, scheduled'],['Q1 2026','Sent May 5 <span class="seen">· viewed</span>','View'],['Q4 2025','Sent Feb 2 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Champion Dental Group', tier:'Performance', av:'JN', who:'Jessica Nguyen',
+     cyc:{pct:90, left:'Jun 30', right:'due Aug 8'},
+     st:'Draft generates <b>Aug 5</b>. Data ready, 52w cached.',
+     last:'Sent Jun 30 <span class="seen">&#10003;</span>',
+     actions:[['Generate draft now','dark'],['Skip this cycle','ghost']],
+     story:'On schedule. The next draft generates <b>Aug 5</b>, three days before the <b>Aug 8</b> due date, and the last report went out <b>Jun 30</b> and was viewed the same week.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','52 weeks',OKOK],['GSC','52 weeks',OKOK],['GBP','52 weeks',OKOK]],
+     team:[['Asana','Jessica Nguyen'],['SEO','Tommy Callahan'],['MS','Soleil Parra']],
+     hist:[['Q3 2026','Generates <b>Aug 5</b>, scheduled'],['Q2 2026','Sent Jun 30 <span class="seen">· viewed</span>','View'],['Q1 2026','Sent Mar 27 <span class="seen">· viewed</span>','View']]},
+
+    {name:'In Motion Dentistry', tier:'Market Leader', av:'TY', who:'Tanya Yeauger',
+     cyc:{pct:55, left:'Jul 2', right:'due Aug 15'},
+     st:'Draft generates <b>Aug 12</b>. Data ready, 58w cached.',
+     last:'Sent Jul 2 <span class="seen">&#10003;</span>',
+     actions:[['Generate draft now','dark'],['Skip this cycle','ghost']],
+     story:'On schedule. The next draft generates <b>Aug 12</b> for the <b>Aug 15</b> due date. The <b>Jul 2</b> report was viewed, and data is ready across all three sources.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','58 weeks',OKOK],['GSC','58 weeks',OKOK],['GBP','58 weeks',OKOK]],
+     team:[['Asana','Tanya Yeauger'],['SEO','Tanya Yeauger'],['MS','Jessica Nguyen']],
+     hist:[['Q3 2026','Generates <b>Aug 12</b>, scheduled'],['Q2 2026','Sent Jul 2 <span class="seen">· viewed</span>','View'],['Q1 2026','Sent Apr 1 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Lakeview Dental Arts', tier:'Performance', av:'TY', who:'Tanya Yeauger',
+     cyc:{pct:22, left:'Jul 10', right:'due Aug 22'},
+     st:'Draft generates <b>Aug 19</b>.',
+     last:'Sent Jul 10 <span class="unseen">&#9675;</span>',
+     actions:[['Generate draft now','dark'],['Skip this cycle','ghost']],
+     story:'On schedule, one thing worth a glance: the <b>Jul 10</b> report has not been opened yet. The next draft generates <b>Aug 19</b> for the <b>Aug 22</b> due date.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','57 weeks',OKOK],['GSC','57 weeks',OKOK],['GBP','57 weeks',OKOK]],
+     team:[['Asana','Tanya Yeauger'],['SEO','Tommy Callahan'],['MS','Jessica Nguyen']],
+     hist:[['Q3 2026','Generates <b>Aug 19</b>, scheduled'],['Q2 2026','Sent Jul 10 · not viewed yet','View'],['Q1 2026','Sent Apr 9 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Smile &amp; Co. Roseville', tier:'Performance · manual', av:'JN', who:'Jessica Nguyen',
+     cyc:{pct:32, left:'Jul 3', right:'due Aug 20'},
+     st:'Auto-audit off. <span class="go">Generate now</span>',
+     last:'Sent Jul 3 <span class="seen">&#10003;</span>',
+     actions:[['Generate now','dark'],['Turn auto-audit on','ghost']],
+     story:'Auto-audit is <b>off</b> for this client, so nothing generates on its own. The <b>Aug 20</b> due date needs a manual generate; data is ready with 60 weeks cached.',
+     tog:{on:false, txt:'<b>Auto-audit off.</b> Drafts run only when someone generates one.'},
+     data:[['GA4','60 weeks',OKOK],['GSC','60 weeks',OKOK],['GBP','60 weeks',OKOK]],
+     team:[['Asana','Jessica Nguyen'],['SEO','Tanya Yeauger'],['MS','Soleil Parra']],
+     hist:[['Q2 2026','Sent Jul 3 <span class="seen">· viewed</span>','View'],['Q1 2026','Sent Apr 2 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Bright Peak Dental', tier:'Performance', av:'SP', who:'Soleil Parra',
+     cyc:{pct:30, left:'Jun 28', right:'due Sep 5'},
+     st:'Draft generates <b>Sep 2</b>. 21w cached, QoQ-ready.',
+     last:'Sent Jun 28 <span class="unseen">&#9675;</span>',
+     actions:[['Generate draft now','dark'],['Skip this cycle','ghost']],
+     story:'On schedule. The next draft generates <b>Sep 2</b> for the <b>Sep 5</b> due date. With 21 weeks cached the report compares quarter over quarter only; the year-over-year view unlocks as the cache fills.',
+     tog:{on:true, txt:'<b>Auto-audit on.</b> Drafts generate 3 days before the due date.'},
+     data:[['GA4','21 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GSC','21 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GBP','21 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>']],
+     team:[['Asana','Soleil Parra'],['SEO','Tommy Callahan'],['MS','Jessica Nguyen']],
+     hist:[['Q3 2026','Generates <b>Sep 2</b>, scheduled'],['Q2 2026','Sent Jun 28 · not viewed yet','View'],['Q1 2026','Sent Mar 27 <span class="seen">· viewed</span>','View']]},
+
+    {name:'Marina Smiles Dental', tier:'Essential · manual', av:'?', avEmpty:true, who:'Unassigned',
+     cyc:{none:true, left:'No report yet', right:'no task scheduled'},
+     st:'GBP not connected. <span class="go">Manage connections</span>',
+     last:'None', lastNone:true,
+     actions:[['Manage connections','dark'],['Open settings','ghost']],
+     story:'Marina Smiles has no report yet and no Asana task scheduled. <b>GBP is not connected</b>, so a first audit would ship without the profile data; connecting it first gives the report all three sources.',
+     tog:{on:false, txt:'<b>Auto-audit off.</b> Drafts run only when someone generates one.'},
+     data:[['GA4','26 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GSC','26 weeks','<span class="ok">QoQ &#10003;</span> <span class="gap">YoY needs 52+</span>'],['GBP','<span class="redink">Not connected</span>','']],
+     team:[['Asana','Unassigned'],['SEO','Tommy Callahan'],['MS','Soleil Parra']],
+     hist:[], histNone:'No audits yet. No task is scheduled; this client runs manually.'}
+  ];
+
+  var app = document.getElementById('app');
+  var tbody = document.getElementById('tbody');
+  var selected = 0;
+
+  function rowHTML(c, i) {
+    var bar = c.cyc.none
+      ? '<div class="cyc-bar none"></div>'
+      : '<div class="cyc-bar' + (c.cyc.over ? ' over' : '') + '"><span class="done" style="width:' + c.cyc.pct + '%"></span><span class="today" style="left:' + c.cyc.pct + '%"></span></div>';
+    var status = c.gen
+      ? '<div class="genprog"><span class="t">' + c.gen + '</span><span class="bar"><i></i></span></div>'
+      : '<div class="st' + (c.stRed ? ' redink' : '') + '">' + c.st + '</div>';
+    return '<tr class="entry" data-i="' + i + '">' +
+      '<td class="idx num">' + ('0' + (i + 1)).slice(-2) + '</td>' +
+      '<td><div class="cname">' + c.name + '</div><div class="ctier">' + c.tier + '</div></td>' +
+      '<td><div class="cyc">' + bar +
+        '<div class="cyc-lab"><span>' + c.cyc.left + '</span><span class="r' + (c.cyc.red ? ' redink' : '') + '">' + c.cyc.right + '</span></div></div></td>' +
+      '<td>' + status + '</td>' +
+      '<td class="lastcell' + (c.lastNone ? ' nonecell' : '') + '">' + c.last + '</td>' +
+      '<td><span class="ava' + (c.avEmpty ? ' empty' : '') + '">' + c.av + '</span></td>' +
+      '<td><button class="kebab" title="More">&#8943;</button></td></tr>';
+  }
+
+  function line(k, v, tail) {
+    return '<div class="xline"><span class="k">' + k + '</span><span class="v">' + v + '</span>' + (tail || '') + '</div>';
+  }
+
+  function renderPanel(c) {
+    document.getElementById('pvname').innerHTML = c.name;
+    document.getElementById('pvwho').innerHTML = c.tier.replace(' · manual', '') + ' · Asana assignee <b>' + c.who + '</b>';
+    document.getElementById('pvbtns').innerHTML = c.actions.map(function (a) {
+      return '<button class="btn ' + a[1] + ' mini">' + a[0] + '</button>';
+    }).join('');
+    var col1 = '<div><div class="xh">This cycle</div><p class="xstory">' + c.story + '</p>' +
+      '<div class="xtoggle"><span class="switch' + (c.tog.on ? ' on' : '') + '"><i></i></span><span>' + c.tog.txt + '</span></div></div>';
+    var col2 = '<div><div class="xh">Data</div>' +
+      c.data.map(function (d) { return line(d[0], '<span class="num">' + d[1] + '</span>', d[2]); }).join('') +
+      '<div class="xh" style="margin-top:18px">Team</div>' +
+      c.team.map(function (t) { return line(t[0], t[1]); }).join('') + '</div>';
+    var hist = c.hist.length
+      ? c.hist.map(function (h) { return line(h[0], h[1], h[2] ? '<span class="ax">' + h[2] + '</span>' : ''); }).join('')
+      : '<p class="xnone">' + c.histNone + '</p>';
+    var col3 = '<div><div class="xh">History</div>' + hist + LINKS + '</div>';
+    document.getElementById('pvgrid').innerHTML = col1 + col2 + col3;
+    document.querySelectorAll('.audit-app .pv .switch').forEach(function (s) {
+      s.addEventListener('click', function () { s.classList.toggle('on'); });
+    });
+  }
+
+  function select(i, scroll) {
+    selected = i;
+    tbody.querySelectorAll('tr.entry').forEach(function (r) {
+      r.classList.toggle('sel', +r.getAttribute('data-i') === i);
+    });
+    renderPanel(DATA[i]);
+    app.classList.remove('pvoff');
+    if (scroll) {
+      var row = tbody.querySelector('tr.entry[data-i="' + i + '"]');
+      if (row) row.scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // build the register
+  tbody.innerHTML = DATA.map(rowHTML).join('');
+  tbody.querySelectorAll('tr.entry').forEach(function (r) {
+    r.addEventListener('click', function () { select(+r.getAttribute('data-i')); });
+  });
+  select(0); // default selection: Allure
+
+  // live filters: search by name + Schedule's Needs-attention option
+  var q = document.getElementById('q');
+  var sched = document.getElementById('schedsel');
+  var count = document.getElementById('count');
+  function applyFilters() {
+    var term = q.value.trim().toLowerCase();
+    var needOnly = sched.value === 'Needs attention';
+    var shown = 0;
+    tbody.querySelectorAll('tr.entry').forEach(function (r) {
+      var c = DATA[+r.getAttribute('data-i')];
+      var plain = c.name.replace(/&amp;/g, '&').toLowerCase();
+      var hide = (needOnly && !c.need) || (term && plain.indexOf(term) === -1);
+      r.classList.toggle('hidden', hide);
+      if (!hide) shown++;
+    });
+    count.textContent = shown + ' of 12 clients';
+  }
+  q.addEventListener('input', applyFilters);
+  sched.addEventListener('change', applyFilters);
+
+  // arrow keys walk the visible rows
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+    var vis = [];
+    tbody.querySelectorAll('tr.entry:not(.hidden)').forEach(function (r) { vis.push(+r.getAttribute('data-i')); });
+    if (!vis.length) return;
+    var pos = vis.indexOf(selected);
+    if (pos === -1) pos = 0;
+    else pos = Math.max(0, Math.min(vis.length - 1, pos + (e.key === 'ArrowDown' ? 1 : -1)));
+    e.preventDefault();
+    select(vis[pos], true);
+  });
+
+  // collapse / reopen the preview panel
+  document.getElementById('pvclose').addEventListener('click', function () { app.classList.add('pvoff'); });
+  document.getElementById('pvshow').addEventListener('click', function () { app.classList.remove('pvoff'); });
+
+  // theme + demo-only seg control
+  document.getElementById('themebtn').addEventListener('click', function () {
+    var cur = app.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+    app.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+  document.querySelectorAll('.audit-app .seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      b.parentElement.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+    });
+  });
+})();
+</script>
