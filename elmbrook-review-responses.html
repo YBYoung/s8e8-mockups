@@ -57,8 +57,13 @@
   .review-text { margin-top: 10px; color: #44403C; }
   .rating-only { color: #A8A29E; font-style: italic; }
   .draft-block { margin-top: 16px; background: rgba(41,171,226,.06); border: 1px solid rgba(41,171,226,.25); border-radius: 6px; padding: 16px 18px; }
-  .draft-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: #29ABE2; margin-bottom: 8px; }
-  .draft-text { color: #16171A; }
+  .draft-label-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .draft-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: #29ABE2; }
+  .edit-state { display: flex; align-items: center; gap: 10px; }
+  .edited-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #78716C; background: #F5F5F4; border-radius: 4px; padding: 2px 7px; }
+  .reset-btn { background: none; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600; color: #29ABE2; padding: 0; text-decoration: underline; }
+  .draft-text { color: #16171A; border-radius: 4px; }
+  .draft-text:focus { outline: 2px solid rgba(41,171,226,.45); outline-offset: 3px; }
   .draft-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
   .log { background: #fff; border: 1px solid #E7E5E4; border-radius: 6px; }
   .log-row { padding: 20px 24px; border-bottom: 1px solid #F5F5F4; }
@@ -102,7 +107,7 @@
   <div class="howto">
     <h2>How to post a reply</h2>
     <div class="steps">
-      <div class="step"><span class="step-num">1</span><p><b>Copy the reply.</b> Each suggested reply below has a copy button.</p></div>
+      <div class="step"><span class="step-num">1</span><p><b>Copy the reply.</b> Want to change the wording first? Click the reply text and edit it right on the page; your edits save automatically on this device and will still be here next time.</p></div>
       <div class="step"><span class="step-num">2</span><p><b>Open your reviews.</b> The button asks which Google account to use; pick the practice account (drtaibl@elmbrookfamilydental.com). The newest reviews are at the top.</p></div>
       <div class="step"><span class="step-num">3</span><p><b>Paste and post.</b> Feel free to tweak a word or two so it sounds exactly like you.</p></div>
     </div>
@@ -129,8 +134,11 @@
       </div>
       <p class="review-text">Had a great experience at elmbrook dental. My first time in a long time for a cleaning and they were very professional and thorough  loved the experience,  I am going back.</p>
       <div class="draft-block">
-        <p class="draft-label">Suggested reply</p>
-        <p class="draft-text" id="d0">Hi Eric and Doreen! Coming back for a cleaning after a long time away is a big step, and we&#x27;re so glad your visit felt professional and thorough from start to finish. It was a pleasure to welcome you in, and we can&#x27;t wait to see you at the next one!</p>
+        <div class="draft-label-row">
+          <p class="draft-label">Suggested reply</p>
+          <span class="edit-state" id="s0" hidden><span class="edited-tag">Edited</span><button class="reset-btn" data-for="d0">Restore original</button></span>
+        </div>
+        <p class="draft-text" id="d0" data-key="eric---doreen-kovatch" contenteditable="plaintext-only" spellcheck="false">Hi Eric and Doreen! Coming back for a cleaning after a long time away is a big step, and we&#x27;re so glad your visit felt professional and thorough from start to finish. It was a pleasure to welcome you in, and we can&#x27;t wait to see you at the next one!</p>
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d0">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
@@ -147,8 +155,11 @@
       </div>
       <p class="review-text">Love all the staff and dentists here. Haven’t had a bad experience in the years I’ve been going, now all my friends and family go here too</p>
       <div class="draft-block">
-        <p class="draft-label">Suggested reply</p>
-        <p class="draft-text" id="d1">Kimberlee, what a wonderful thing to read! Knowing your friends and family now trust us with their smiles too might be the best compliment there is. Thank you for the years you&#x27;ve spent with us; we&#x27;re so grateful, and we look forward to many more.</p>
+        <div class="draft-label-row">
+          <p class="draft-label">Suggested reply</p>
+          <span class="edit-state" id="s1" hidden><span class="edited-tag">Edited</span><button class="reset-btn" data-for="d1">Restore original</button></span>
+        </div>
+        <p class="draft-text" id="d1" data-key="kimberlee-majdoch" contenteditable="plaintext-only" spellcheck="false">Kimberlee, what a wonderful thing to read! Knowing your friends and family now trust us with their smiles too might be the best compliment there is. Thank you for the years you&#x27;ve spent with us; we&#x27;re so grateful, and we look forward to many more.</p>
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d1">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
@@ -165,8 +176,11 @@
       </div>
       <p class="review-text">Dr. Paul Renner did an outstanding job with my dental implant. The entire process was smooth, professional, and exceeded my expectations. I couldn&#x27;t be happier with both the experience and the final result. Highly recommend!</p>
       <div class="draft-block">
-        <p class="draft-label">Suggested reply</p>
-        <p class="draft-text" id="d2">Max, this made our day! Dr. Renner takes real pride in making things feel smooth and comfortable from your first visit to the final result, and it means so much to know your experience exceeded expectations. Thank you for the recommendation; we&#x27;re here whenever you need us!</p>
+        <div class="draft-label-row">
+          <p class="draft-label">Suggested reply</p>
+          <span class="edit-state" id="s2" hidden><span class="edited-tag">Edited</span><button class="reset-btn" data-for="d2">Restore original</button></span>
+        </div>
+        <p class="draft-text" id="d2" data-key="max-feutz" contenteditable="plaintext-only" spellcheck="false">Max, this made our day! Dr. Renner takes real pride in making things feel smooth and comfortable from your first visit to the final result, and it means so much to know your experience exceeded expectations. Thank you for the recommendation; we&#x27;re here whenever you need us!</p>
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d2">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
@@ -183,8 +197,11 @@
       </div>
       <p class="review-text">I feel like I’ve had a lot of work done in the past year, but I’m very pleased with the results. From having cavities filled to a cap put on to a regular cleaning, Dr. Renner and the team at Elmbrook Family Dental (from hygienists to Front Desk) have been kind and helpful. Payments are easy, the reminders are great, and the whole experience is quite pleasant. Really enjoy the atmosphere at Barker too.</p>
       <div class="draft-block">
-        <p class="draft-label">Suggested reply</p>
-        <p class="draft-text" id="d3">Hi Liz! It has been quite a year, and we&#x27;re so pleased you&#x27;re happy with the results. From the front desk to our hygienists to Dr. Renner, everyone works hard to keep each visit easy and pleasant, so your kind words truly made our day. We&#x27;ll make sure the Barker Road team hears that you enjoy the atmosphere. See you next time!</p>
+        <div class="draft-label-row">
+          <p class="draft-label">Suggested reply</p>
+          <span class="edit-state" id="s3" hidden><span class="edited-tag">Edited</span><button class="reset-btn" data-for="d3">Restore original</button></span>
+        </div>
+        <p class="draft-text" id="d3" data-key="liz-blackbourn" contenteditable="plaintext-only" spellcheck="false">Hi Liz! It has been quite a year, and we&#x27;re so pleased you&#x27;re happy with the results. From the front desk to our hygienists to Dr. Renner, everyone works hard to keep each visit easy and pleasant, so your kind words truly made our day. We&#x27;ll make sure the Barker Road team hears that you enjoy the atmosphere. See you next time!</p>
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d3">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
@@ -201,8 +218,11 @@
       </div>
       <p class="review-text">I highly recommend Elmbrook Family Dental! From the moment I arrived, I was very impressed with my experience. My appointment time was honored right on schedule, which I really appreciated.<br><br>The facility is clean, comfortable, and very hygienic. The staff is extremely nice, friendly, and understanding of whatever situation you may find yourself in regarding your dental needs. They take the time to explain everything thoroughly and make sure you understand what is being done and why.<br><br>I left my appointment feeling like my teeth had received a very thorough cleaning, and I was very pleased with the results. I also had some questions about future appointments, and they took the time to answer everything clearly. I was able to quickly schedule my next cleaning at a time that worked with my schedule, which was especially important to me.<br>Overall, I had an excellent experience with Elmbrook Family Dental. The professionalism, cleanliness, friendliness, and attention to the patient really stood out to me. I highly recommend Elmbrook Family Dental to anyone looking for excellent dental care!</p>
       <div class="draft-block">
-        <p class="draft-label">Suggested reply</p>
-        <p class="draft-text" id="d4">Dean, thank you for such a thoughtful review! Running on schedule, keeping the office spotless, and taking the time to explain every step are things we care about deeply, so it&#x27;s rewarding to know each one stood out to you. We&#x27;re glad scheduling your next visit was easy, and we look forward to seeing you then!</p>
+        <div class="draft-label-row">
+          <p class="draft-label">Suggested reply</p>
+          <span class="edit-state" id="s4" hidden><span class="edited-tag">Edited</span><button class="reset-btn" data-for="d4">Restore original</button></span>
+        </div>
+        <p class="draft-text" id="d4" data-key="dean-c-" contenteditable="plaintext-only" spellcheck="false">Dean, thank you for such a thoughtful review! Running on schedule, keeping the office spotless, and taking the time to explain every step are things we care about deeply, so it&#x27;s rewarding to know each one stood out to you. We&#x27;re glad scheduling your next visit was easy, and we look forward to seeing you then!</p>
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d4">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
@@ -2206,6 +2226,47 @@
 </footer>
 
 <script>
+  const STORE = 'efd-barker-drafts:';
+  const originals = {};
+
+  document.querySelectorAll('.draft-text').forEach(el => {
+    const key = STORE + el.dataset.key;
+    const stateEl = document.getElementById('s' + el.id.slice(1));
+    originals[el.id] = el.innerText;
+
+    const setState = edited => { if (stateEl) stateEl.hidden = !edited; };
+
+    const saved = localStorage.getItem(key);
+    if (saved !== null && saved.trim() && saved !== originals[el.id]) {
+      el.innerText = saved;
+      setState(true);
+    }
+
+    let t;
+    el.addEventListener('input', () => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        const now = el.innerText;
+        if (now === originals[el.id]) {
+          localStorage.removeItem(key);
+          setState(false);
+        } else {
+          localStorage.setItem(key, now);
+          setState(true);
+        }
+      }, 300);
+    });
+  });
+
+  document.querySelectorAll('.reset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.for);
+      el.innerText = originals[el.id];
+      localStorage.removeItem(STORE + el.dataset.key);
+      btn.parentElement.hidden = true;
+    });
+  });
+
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', () => {
       const text = document.getElementById(btn.dataset.copy).innerText;
