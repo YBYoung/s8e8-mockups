@@ -66,6 +66,11 @@
   .draft-text { color: #16171A; border-radius: 4px; }
   .draft-text:focus { outline: 2px solid rgba(41,171,226,.45); outline-offset: 3px; }
   .draft-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .posted-check { display: flex; align-items: center; gap: 7px; margin-left: auto; font-size: 13px; font-weight: 600; color: #78716C; cursor: pointer; user-select: none; }
+  .posted-check input { width: 16px; height: 16px; accent-color: #29ABE2; cursor: pointer; }
+  .card.posted { opacity: .55; }
+  .card.posted .posted-check { color: #29ABE2; }
+  .card.posted:hover { opacity: 1; }
   .log { background: #fff; border: 1px solid #E7E5E4; border-radius: 6px; }
   .log-row { padding: 20px 24px; border-bottom: 1px solid #F5F5F4; }
   .log-row:last-child { border-bottom: none; }
@@ -110,7 +115,7 @@
     <div class="steps">
       <div class="step"><span class="step-num">1</span><p><b>Copy the reply.</b> Want to change the wording first? Click the reply text and edit it right on the page; your edits save automatically on this device and will still be here next time.</p></div>
       <div class="step"><span class="step-num">2</span><p><b>Open your reviews.</b> The button asks which Google account to use; pick the practice account (drtaibl@elmbrookfamilydental.com). The newest reviews are at the top.</p></div>
-      <div class="step"><span class="step-num">3</span><p><b>Paste and post.</b> Feel free to tweak a word or two so it sounds exactly like you.</p></div>
+      <div class="step"><span class="step-num">3</span><p><b>Paste, post, and check it off.</b> Feel free to tweak a word or two so it sounds exactly like you.</p></div>
     </div>
     <div class="howto-actions">
       <a class="btn btn-primary" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open your Google reviews manager&nbsp;&#8599;</a>
@@ -121,7 +126,7 @@
   <section>
     <div class="section-head">
       <h2>Awaiting your reply</h2>
-      <span class="count-chip">5</span>
+      <span class="count-chip"><span id="posted-count">0</span> of 5 posted</span>
     </div>
     <p class="section-note">Each reply below follows our review response approach: warm, personal, and careful to mention only what the reviewer shared themselves.</p>
     <div class="cards">
@@ -143,6 +148,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d0">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d0">Reply posted</label>
         </div>
       </div>
     </article>
@@ -164,6 +170,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d1">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d1">Reply posted</label>
         </div>
       </div>
     </article>
@@ -185,6 +192,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d2">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d2">Reply posted</label>
         </div>
       </div>
     </article>
@@ -206,6 +214,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d3">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d3">Reply posted</label>
         </div>
       </div>
     </article>
@@ -227,6 +236,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d4">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d4">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2267,6 +2277,28 @@
       btn.parentElement.hidden = true;
     });
   });
+
+  const POSTED = STORE.replace('drafts', 'posted');
+  const counter = document.getElementById('posted-count');
+  const updateCount = () => {
+    if (counter) counter.textContent = document.querySelectorAll('.posted-box:checked').length;
+  };
+  document.querySelectorAll('.posted-box').forEach(box => {
+    const el = document.getElementById(box.dataset.for);
+    const key = POSTED + el.dataset.key;
+    const card = box.closest('.card');
+    if (localStorage.getItem(key) === '1') {
+      box.checked = true;
+      card.classList.add('posted');
+    }
+    box.addEventListener('change', () => {
+      if (box.checked) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+      card.classList.toggle('posted', box.checked);
+      updateCount();
+    });
+  });
+  updateCount();
 
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', () => {

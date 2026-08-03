@@ -66,6 +66,11 @@
   .draft-text { color: #16171A; border-radius: 4px; }
   .draft-text:focus { outline: 2px solid rgba(41,171,226,.45); outline-offset: 3px; }
   .draft-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .posted-check { display: flex; align-items: center; gap: 7px; margin-left: auto; font-size: 13px; font-weight: 600; color: #78716C; cursor: pointer; user-select: none; }
+  .posted-check input { width: 16px; height: 16px; accent-color: #29ABE2; cursor: pointer; }
+  .card.posted { opacity: .55; }
+  .card.posted .posted-check { color: #29ABE2; }
+  .card.posted:hover { opacity: 1; }
   .log { background: #fff; border: 1px solid #E7E5E4; border-radius: 6px; }
   .log-row { padding: 20px 24px; border-bottom: 1px solid #F5F5F4; }
   .log-row:last-child { border-bottom: none; }
@@ -108,7 +113,7 @@
     <div class="steps">
       <div class="step"><span class="step-num">1</span><p><b>Copy the reply.</b> Want to change the wording first? Click the reply text and edit it right on the page; your edits save automatically on this device and will still be here next time.</p></div>
       <div class="step"><span class="step-num">2</span><p><b>Open your reviews.</b> The button asks which Google account to use; pick the practice account (drtaibl@elmbrookfamilydental.com). It opens straight to the Executive Drive listing.</p></div>
-      <div class="step"><span class="step-num">3</span><p><b>Paste and post.</b> Find the review by the patient's name, and feel free to tweak a word or two so it sounds exactly like you.</p></div>
+      <div class="step"><span class="step-num">3</span><p><b>Paste, post, and check it off.</b> Find the review by the patient's name, and feel free to tweak a word or two so it sounds exactly like you.</p></div>
     </div>
     <div class="howto-actions">
       <a class="btn btn-primary" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open Executive Drive reviews&nbsp;&#8599;</a>
@@ -118,7 +123,7 @@
   <section>
     <div class="section-head">
       <h2>Awaiting your reply</h2>
-      <span class="count-chip">150</span>
+      <span class="count-chip"><span id="posted-count">0</span> of 150 posted</span>
     </div>
     <p class="section-note">Newest first. Each reply follows our review response approach: warm, personal, and careful to mention only what the reviewer shared themselves. Reviews marked "edited" were written earlier and updated recently, which is why they appear near the top of your Google feed.</p>
     <div class="cards">
@@ -140,6 +145,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d0">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d0">Reply posted</label>
         </div>
       </div>
     </article>
@@ -161,6 +167,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d1">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d1">Reply posted</label>
         </div>
       </div>
     </article>
@@ -182,6 +189,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d2">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d2">Reply posted</label>
         </div>
       </div>
     </article>
@@ -203,6 +211,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d3">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d3">Reply posted</label>
         </div>
       </div>
     </article>
@@ -224,6 +233,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d4">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d4">Reply posted</label>
         </div>
       </div>
     </article>
@@ -245,6 +255,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d5">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d5">Reply posted</label>
         </div>
       </div>
     </article>
@@ -266,6 +277,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d6">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d6">Reply posted</label>
         </div>
       </div>
     </article>
@@ -287,6 +299,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d7">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d7">Reply posted</label>
         </div>
       </div>
     </article>
@@ -308,6 +321,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d8">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d8">Reply posted</label>
         </div>
       </div>
     </article>
@@ -329,6 +343,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d9">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d9">Reply posted</label>
         </div>
       </div>
     </article>
@@ -350,6 +365,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d10">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d10">Reply posted</label>
         </div>
       </div>
     </article>
@@ -371,6 +387,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d11">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d11">Reply posted</label>
         </div>
       </div>
     </article>
@@ -392,6 +409,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d12">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d12">Reply posted</label>
         </div>
       </div>
     </article>
@@ -413,6 +431,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d13">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d13">Reply posted</label>
         </div>
       </div>
     </article>
@@ -434,6 +453,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d14">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d14">Reply posted</label>
         </div>
       </div>
     </article>
@@ -455,6 +475,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d15">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d15">Reply posted</label>
         </div>
       </div>
     </article>
@@ -476,6 +497,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d16">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d16">Reply posted</label>
         </div>
       </div>
     </article>
@@ -497,6 +519,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d17">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d17">Reply posted</label>
         </div>
       </div>
     </article>
@@ -518,6 +541,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d18">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d18">Reply posted</label>
         </div>
       </div>
     </article>
@@ -539,6 +563,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d19">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d19">Reply posted</label>
         </div>
       </div>
     </article>
@@ -560,6 +585,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d20">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d20">Reply posted</label>
         </div>
       </div>
     </article>
@@ -581,6 +607,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d21">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d21">Reply posted</label>
         </div>
       </div>
     </article>
@@ -602,6 +629,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d22">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d22">Reply posted</label>
         </div>
       </div>
     </article>
@@ -623,6 +651,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d23">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d23">Reply posted</label>
         </div>
       </div>
     </article>
@@ -644,6 +673,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d24">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d24">Reply posted</label>
         </div>
       </div>
     </article>
@@ -665,6 +695,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d25">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d25">Reply posted</label>
         </div>
       </div>
     </article>
@@ -686,6 +717,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d26">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d26">Reply posted</label>
         </div>
       </div>
     </article>
@@ -707,6 +739,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d27">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d27">Reply posted</label>
         </div>
       </div>
     </article>
@@ -728,6 +761,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d28">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d28">Reply posted</label>
         </div>
       </div>
     </article>
@@ -749,6 +783,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d29">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d29">Reply posted</label>
         </div>
       </div>
     </article>
@@ -770,6 +805,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d30">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d30">Reply posted</label>
         </div>
       </div>
     </article>
@@ -791,6 +827,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d31">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d31">Reply posted</label>
         </div>
       </div>
     </article>
@@ -812,6 +849,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d32">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d32">Reply posted</label>
         </div>
       </div>
     </article>
@@ -833,6 +871,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d33">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d33">Reply posted</label>
         </div>
       </div>
     </article>
@@ -854,6 +893,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d34">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d34">Reply posted</label>
         </div>
       </div>
     </article>
@@ -875,6 +915,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d35">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d35">Reply posted</label>
         </div>
       </div>
     </article>
@@ -896,6 +937,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d36">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d36">Reply posted</label>
         </div>
       </div>
     </article>
@@ -917,6 +959,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d37">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d37">Reply posted</label>
         </div>
       </div>
     </article>
@@ -938,6 +981,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d38">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d38">Reply posted</label>
         </div>
       </div>
     </article>
@@ -959,6 +1003,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d39">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d39">Reply posted</label>
         </div>
       </div>
     </article>
@@ -980,6 +1025,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d40">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d40">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1001,6 +1047,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d41">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d41">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1022,6 +1069,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d42">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d42">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1043,6 +1091,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d43">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d43">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1064,6 +1113,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d44">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d44">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1085,6 +1135,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d45">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d45">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1106,6 +1157,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d46">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d46">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1127,6 +1179,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d47">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d47">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1148,6 +1201,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d48">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d48">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1169,6 +1223,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d49">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d49">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1190,6 +1245,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d50">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d50">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1211,6 +1267,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d51">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d51">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1232,6 +1289,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d52">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d52">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1253,6 +1311,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d53">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d53">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1274,6 +1333,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d54">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d54">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1295,6 +1355,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d55">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d55">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1316,6 +1377,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d56">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d56">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1337,6 +1399,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d57">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d57">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1358,6 +1421,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d58">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d58">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1379,6 +1443,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d59">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d59">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1400,6 +1465,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d60">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d60">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1421,6 +1487,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d61">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d61">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1442,6 +1509,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d62">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d62">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1463,6 +1531,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d63">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d63">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1484,6 +1553,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d64">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d64">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1505,6 +1575,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d65">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d65">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1526,6 +1597,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d66">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d66">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1547,6 +1619,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d67">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d67">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1568,6 +1641,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d68">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d68">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1589,6 +1663,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d69">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d69">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1610,6 +1685,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d70">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d70">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1631,6 +1707,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d71">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d71">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1652,6 +1729,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d72">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d72">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1673,6 +1751,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d73">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d73">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1694,6 +1773,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d74">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d74">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1715,6 +1795,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d75">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d75">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1736,6 +1817,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d76">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d76">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1757,6 +1839,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d77">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d77">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1778,6 +1861,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d78">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d78">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1799,6 +1883,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d79">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d79">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1820,6 +1905,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d80">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d80">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1841,6 +1927,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d81">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d81">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1862,6 +1949,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d82">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d82">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1883,6 +1971,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d83">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d83">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1904,6 +1993,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d84">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d84">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1925,6 +2015,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d85">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d85">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1946,6 +2037,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d86">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d86">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1967,6 +2059,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d87">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d87">Reply posted</label>
         </div>
       </div>
     </article>
@@ -1988,6 +2081,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d88">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d88">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2009,6 +2103,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d89">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d89">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2030,6 +2125,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d90">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d90">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2051,6 +2147,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d91">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d91">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2072,6 +2169,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d92">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d92">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2093,6 +2191,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d93">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d93">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2114,6 +2213,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d94">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d94">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2135,6 +2235,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d95">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d95">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2156,6 +2257,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d96">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d96">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2177,6 +2279,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d97">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d97">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2198,6 +2301,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d98">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d98">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2219,6 +2323,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d99">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d99">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2240,6 +2345,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d100">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d100">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2261,6 +2367,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d101">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d101">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2282,6 +2389,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d102">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d102">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2303,6 +2411,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d103">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d103">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2324,6 +2433,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d104">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d104">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2345,6 +2455,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d105">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d105">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2366,6 +2477,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d106">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d106">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2387,6 +2499,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d107">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d107">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2408,6 +2521,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d108">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d108">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2429,6 +2543,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d109">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d109">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2450,6 +2565,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d110">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d110">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2471,6 +2587,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d111">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d111">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2492,6 +2609,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d112">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d112">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2513,6 +2631,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d113">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d113">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2534,6 +2653,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d114">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d114">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2555,6 +2675,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d115">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d115">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2576,6 +2697,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d116">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d116">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2597,6 +2719,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d117">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d117">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2618,6 +2741,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d118">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d118">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2639,6 +2763,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d119">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d119">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2660,6 +2785,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d120">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d120">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2681,6 +2807,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d121">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d121">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2702,6 +2829,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d122">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d122">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2723,6 +2851,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d123">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d123">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2744,6 +2873,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d124">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d124">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2765,6 +2895,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d125">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d125">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2786,6 +2917,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d126">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d126">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2807,6 +2939,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d127">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d127">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2828,6 +2961,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d128">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d128">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2849,6 +2983,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d129">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d129">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2870,6 +3005,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d130">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d130">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2891,6 +3027,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d131">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d131">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2912,6 +3049,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d132">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d132">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2933,6 +3071,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d133">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d133">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2954,6 +3093,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d134">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d134">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2975,6 +3115,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d135">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d135">Reply posted</label>
         </div>
       </div>
     </article>
@@ -2996,6 +3137,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d136">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d136">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3017,6 +3159,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d137">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d137">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3038,6 +3181,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d138">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d138">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3059,6 +3203,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d139">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d139">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3080,6 +3225,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d140">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d140">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3101,6 +3247,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d141">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d141">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3122,6 +3269,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d142">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d142">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3143,6 +3291,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d143">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d143">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3164,6 +3313,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d144">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d144">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3185,6 +3335,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d145">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d145">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3206,6 +3357,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d146">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d146">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3227,6 +3379,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d147">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d147">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3248,6 +3401,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d148">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d148">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3269,6 +3423,7 @@
         <div class="draft-actions">
           <button class="btn btn-copy" data-copy="d149">Copy this reply</button>
           <a class="btn btn-link" href="https://accounts.google.com/AccountChooser?Email=drtaibl%40elmbrookfamilydental.com&amp;continue=https%3A%2F%2Fbusiness.google.com%2Fn%2F2391650011162786918%2Freviews" target="_blank" rel="noopener">Open reviews manager&nbsp;&#8599;</a>
+          <label class="posted-check"><input type="checkbox" class="posted-box" data-for="d149">Reply posted</label>
         </div>
       </div>
     </article>
@@ -3657,6 +3812,28 @@
       btn.parentElement.hidden = true;
     });
   });
+
+  const POSTED = STORE.replace('drafts', 'posted');
+  const counter = document.getElementById('posted-count');
+  const updateCount = () => {
+    if (counter) counter.textContent = document.querySelectorAll('.posted-box:checked').length;
+  };
+  document.querySelectorAll('.posted-box').forEach(box => {
+    const el = document.getElementById(box.dataset.for);
+    const key = POSTED + el.dataset.key;
+    const card = box.closest('.card');
+    if (localStorage.getItem(key) === '1') {
+      box.checked = true;
+      card.classList.add('posted');
+    }
+    box.addEventListener('change', () => {
+      if (box.checked) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+      card.classList.toggle('posted', box.checked);
+      updateCount();
+    });
+  });
+  updateCount();
 
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', () => {
