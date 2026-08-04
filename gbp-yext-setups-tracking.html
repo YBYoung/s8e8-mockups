@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GBP + Yext Setups Tracking - Mockups</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#ECEDF0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif; color:#0E1116; padding:36px 20px 80px; }
+  .wrap { max-width:1060px; margin:0 auto; }
+  .intro h1 { font-size:24px; font-weight:600; letter-spacing:-.005em; }
+  .intro p { color:#4A5163; font-size:13.5px; margin-top:6px; max-width:76ch; line-height:1.5; }
+  .mock-label { font-family:ui-monospace,"SF Mono",Menlo,monospace; text-transform:uppercase; letter-spacing:.09em; font-size:10px; font-weight:600; color:#8A91A2; margin:42px 0 10px; }
+  .mock-note { font-size:12px; color:#6A7183; margin:10px 0 0; line-height:1.55; max-width:80ch; }
+  .mock-note b { color:#0E1116; }
+
+  /* ============ Surface 1: Executive Report (dark, exec token vocabulary) ============ */
+  .exec {
+    --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+    --blue:#1FA8E0; --good:#3C8F6E; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+    --bad:#C25E55; --bad-bg:#2E1917; --steady:#7CC0E8; --steady-bg:#14262F;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    background:var(--page); color:var(--ink); border-radius:16px; padding:26px 28px;
+  }
+  .exec .panel { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 1px 2px rgba(0,0,0,.4); padding:20px 22px; }
+  .exec .lbl { font-family:var(--mono); text-transform:uppercase; letter-spacing:.09em; font-size:10px; font-weight:600; color:var(--muted); }
+  .exec .num { font-variant-numeric:tabular-nums; }
+  .exec h3 { font-size:15px; font-weight:600; letter-spacing:-.005em; }
+  .exec .head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .exec .head .meta { font-family:var(--mono); font-size:10px; color:var(--muted); }
+  .exec .head .meta b { color:var(--sub); }
+
+  .exec .strip { margin-top:16px; border-top:1px solid var(--line-soft); padding-top:14px; }
+  .exec .strip-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .exec .strip-head .win { font-size:11px; color:var(--muted); }
+  .exec .tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .exec .tiles.two { grid-template-columns:repeat(2,1fr); }
+  .exec .tile { background:var(--chip); border-radius:10px; padding:11px 13px; display:flex; flex-direction:column; }
+  .exec .tile .t { display:flex; align-items:center; gap:7px; font-size:12px; color:var(--sub); }
+  .exec .tile .sw { width:9px; height:9px; border-radius:3px; flex:none; }
+  .exec .tile .v { font-weight:800; font-size:22px; line-height:1; margin-top:7px; }
+  .exec .tile .v small { font-weight:600; font-size:12px; color:var(--muted); }
+  .exec .tile .hint { font-size:10.5px; color:var(--muted); margin-top:5px; line-height:1.45; }
+  .exec .note { background:var(--chip); border-radius:8px; padding:9px 12px; margin-top:12px; font-size:11.5px; color:var(--sub); line-height:1.55; }
+  .exec .ms-tag { font-family:var(--mono); font-size:9px; letter-spacing:.07em; text-transform:uppercase; color:var(--steady); background:var(--steady-bg); border-radius:5px; padding:2px 6px; margin-left:auto; }
+  .exec .bad-ink { color:var(--bad); }
+  .exec .cov { margin-top:10px; height:8px; border-radius:4px; overflow:hidden; display:flex; background:var(--line); }
+  .exec .cov i { display:block; height:100%; }
+  .exec .covleg { display:flex; gap:16px; margin-top:8px; font-family:var(--mono); font-size:10px; color:var(--muted); flex-wrap:wrap; }
+  .exec .covleg b { color:var(--sub); }
+
+  /* ============ Surface 2: SEO Dashboard (Warm Craft, light) ============ */
+  .craft { background:#FAF9F7; border:1px solid #E7E5E4; border-radius:16px; padding:26px 28px; }
+  .craft .card { background:#fff; border:1px solid rgba(231,229,228,.6); border-radius:6px; padding:18px 20px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+  .craft .card + .card { margin-top:14px; }
+  .craft h3 { font-size:14px; font-weight:600; color:#1C1917; }
+  .craft .sub { font-size:12px; color:#78716C; margin-top:3px; }
+  .craft .microlbl { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#A8A29E; }
+  .craft .mrow { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:16px; }
+  .craft .metric .k { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+  .craft .metric .n { font-size:26px; font-weight:600; color:#1C1917; margin-top:4px; font-variant-numeric:tabular-nums; }
+  .craft .metric .h { font-size:11px; color:#78716C; margin-top:2px; }
+  .craft .k.teal { color:#0D9488; } .craft .k.blue { color:#2563EB; } .craft .k.stone { color:#78716C; } .craft .k.rose { color:#BE123C; }
+  .craft table { width:100%; border-collapse:collapse; margin-top:14px; font-size:12.5px; }
+  .craft th { text-align:left; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#A8A29E; padding:6px 10px; border-bottom:1px solid #E7E5E4; }
+  .craft td { padding:8px 10px; border-bottom:1px solid #F5F5F4; color:#44403C; }
+  .craft td.task { font-weight:500; color:#1C1917; }
+  .craft tr:hover td { background:rgba(250,250,249,.5); }
+  .craft .tag { display:inline-block; font-size:10px; font-weight:600; border-radius:4px; padding:2px 7px; }
+  .craft .tag.setup { background:#F0FDFA; color:#0F766E; }
+  .craft .tag.access { background:#EFF6FF; color:#1D4ED8; }
+  .craft .tag.due { background:#FAFAF9; color:#57534E; border:1px solid #E7E5E4; }
+  .craft .overdue { color:#BE123C; font-weight:600; }
+  .craft .duesoon { color:#B45309; font-weight:600; }
+  .craft .pts { font-family:ui-monospace,Menlo,monospace; font-size:11px; color:#78716C; }
+  .craft .keybox { background:#FAFAF9; border:1px solid #E7E5E4; border-radius:6px; padding:12px 14px; margin-top:14px; }
+  .craft .keyrow { display:flex; justify-content:space-between; font-size:12px; color:#44403C; padding:3px 0; }
+  .craft .keyrow b { font-variant-numeric:tabular-nums; }
+  .craft .foot { font-size:11px; color:#A8A29E; margin-top:12px; line-height:1.5; }
+  @media (max-width:720px){ .exec .tiles { grid-template-columns:1fr; } .craft .mrow { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="intro">
+    <h1>GBP + Yext Setups &amp; Due-Date Checks - Tracking Mockups</h1>
+    <p>Two surfaces. Numbers are illustrative but shaped from the real Asana data (Aug 4 research pass).
+       Scope per your rulings: Set-Up Yext + Optimize GBP + "Setup GBP" variants score 25 pts; Get Access to GBP is tracked but MS-owned and unscored;
+       FB-Zap excluded; the Due-Date check scores 30 pts; Listings Reviews unchanged.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <div class="mock-label">Mockup 1 · Executive Report · new strips inside the Client Project Status panel</div>
+  <div class="exec">
+    <div class="panel">
+      <div class="head">
+        <h3>Client project status</h3>
+        <span class="meta">As of today · <b>49 of 344 with a current status</b></span>
+      </div>
+      <div style="margin-top:10px; font-size:11.5px; color:var(--muted);">[ status tiles + audit activity strip, unchanged, collapsed for this mockup ]</div>
+
+      <!-- NEW: Local setup activity -->
+      <div class="strip">
+        <div class="strip-head">
+          <span class="lbl">Local setup activity</span>
+          <span class="win">GBP + Yext setup tasks · last 90 days</span>
+        </div>
+        <div class="tiles">
+          <div class="tile">
+            <span class="t">Setups completed</span>
+            <span class="v num">18</span>
+            <span class="hint">7 in the last 30 days · Yext 10 · GBP 8</span>
+          </div>
+          <div class="tile">
+            <span class="t">Clients set up</span>
+            <span class="v num">11 <small>of 14 onboarding</small></span>
+            <span class="hint">a client counts when both its Yext and GBP setup tasks are done</span>
+          </div>
+          <div class="tile">
+            <span class="t">GBP access waiting <span class="ms-tag">MS-owned</span></span>
+            <span class="v num">9</span>
+            <span class="hint">oldest 34 days · blocks the SEO setup behind it · tracked, not scored</span>
+          </div>
+        </div>
+        <div class="note">
+          Setup tasks live in SEO Onboarding. Yext and GBP setups are the SEO team&rsquo;s scored work;
+          &ldquo;Get Access to GBP&rdquo; belongs to the MS and is reported here because a stalled access request
+          stalls the setup behind it.
+        </div>
+      </div>
+
+      <!-- NEW: Due-date hygiene -->
+      <div class="strip">
+        <div class="strip-head">
+          <span class="lbl">Due-date checks</span>
+          <span class="win">&ldquo;Doublecheck Project Due Dates&rdquo; · one per new client</span>
+        </div>
+        <div class="tiles two">
+          <div class="tile">
+            <span class="t">Checks completed</span>
+            <span class="v num">3 <small>of 21 created</small></span>
+            <span class="hint">every open check is a client project whose plan may have no dates</span>
+          </div>
+          <div class="tile">
+            <span class="t">Open checks</span>
+            <span class="v num">18</span>
+            <span class="hint"><span class="bad-ink">2 overdue</span> · 5 due in the next 7 days</span>
+          </div>
+        </div>
+        <div class="cov">
+          <i style="width:14%; background:var(--good)"></i>
+          <i style="width:10%; background:var(--bad)"></i>
+          <i style="width:76%; background:var(--line)"></i>
+        </div>
+        <div class="covleg">
+          <span><b>3</b> done</span><span><b>2</b> overdue</span><span><b>16</b> open, not yet due</span>
+        </div>
+        <div class="note">
+          This task exists so every client project gets real due dates. It is scored at 30 points,
+          above audits, because a project without dates hides from every deadline-driven view in this report.
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-note"><b>Design intent:</b> both strips reuse the Audit Activity vocabulary (chip tiles, neutral ink, mono labels) so the panel reads as one system.
+     The MS-owned tile is visually quieter and wears a steady-blue tag instead of a status color - it is a dependency signal, not a performance number.</p>
+
+  <!-- ============================================================ -->
+  <div class="mock-label">Mockup 2 · SEO Dashboard · SEO Onboarding queue tab · new setups section</div>
+  <div class="craft">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3>GBP + Yext Setups</h3>
+          <div class="sub">Inside SEO Onboarding · setup tasks worth <b>25 pts</b> · access tasks are MS-owned and unscored</div>
+        </div>
+        <span class="microlbl">Last 90 days</span>
+      </div>
+      <div class="mrow">
+        <div class="metric"><div class="k teal">Completed</div><div class="n">18</div><div class="h">7 in last 30 days</div></div>
+        <div class="metric"><div class="k stone">Open</div><div class="n">15</div><div class="h">across 12 clients</div></div>
+        <div class="metric"><div class="k rose">Stuck &gt; 30d</div><div class="n">4</div><div class="h">oldest 62 days</div></div>
+        <div class="metric"><div class="k blue">Access waiting</div><div class="n">9</div><div class="h">MS-owned · blocks setup</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Task</th><th>Client</th><th>Type</th><th>Assignee</th><th>Age</th><th>Due</th></tr></thead>
+        <tbody>
+          <tr><td class="task">⚙️ Set-Up Yext</td><td>Zenith Dental</td><td><span class="tag setup">Setup · 25</span></td><td>Tanya</td><td class="overdue">62d</td><td class="overdue">Jul 18</td></tr>
+          <tr><td class="task">⚙️ Optimize GBP</td><td>Oviedo Endodontics</td><td><span class="tag setup">Setup · 25</span></td><td>Yitzchak</td><td>49d</td><td>Aug 20</td></tr>
+          <tr><td class="task">🔑 Get Access to GBP</td><td>Hilltop Dental</td><td><span class="tag access">Access · MS</span></td><td>Cassidy</td><td>46d</td><td>Aug 12</td></tr>
+          <tr><td class="task">⚙️ Set-Up Yext</td><td>Brodsky Dental</td><td><span class="tag setup">Setup · 25</span></td><td>Jessica</td><td>29d</td><td class="duesoon">Aug 8</td></tr>
+        </tbody>
+      </table>
+      <div class="foot">Same table pattern as the queue&rsquo;s Oldest Open list, filtered to the setup name-family. Clicking a row opens the Asana task.</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3>Due-Date Checks</h3>
+          <div class="sub">&ldquo;✔️ Doublecheck Project Due Dates &amp; Task Statuses&rdquo; · worth <b>30 pts</b> · one per new client</div>
+        </div>
+        <span class="microlbl">All open</span>
+      </div>
+      <table>
+        <thead><tr><th>Client</th><th>Assignee</th><th>Created</th><th>Due</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="task">Center for Cosmetic &amp; General</td><td>Tanya</td><td>Jul 9</td><td class="overdue">Aug 6</td><td class="overdue">overdue</td></tr>
+          <tr><td class="task">Michelle J Ament DDS</td><td>Tanya</td><td>Jun 11</td><td class="duesoon">Aug 10</td><td class="duesoon">due soon</td></tr>
+          <tr><td class="task">Zenith Dental</td><td>Yitzchak</td><td>Jun 12</td><td>Aug 19</td><td><span class="tag due">open</span></td></tr>
+          <tr><td class="task">The Palms Denture &amp; Implant</td><td>Tanya</td><td>Jul 14</td><td>Aug 14</td><td><span class="tag due">open</span></td></tr>
+        </tbody>
+      </table>
+      <div class="foot">Completion rate so far: 3 of 21 ever created. This table is the accountability view - it always shows every open check, not a sample.</div>
+    </div>
+
+    <div class="card">
+      <h3>Leaderboard scoring key - what changes</h3>
+      <div class="keybox">
+        <div class="keyrow"><span>SEO Strategy presentation</span><b class="pts">50</b></div>
+        <div class="keyrow"><span><b>Due-date check (new)</b></span><b class="pts">30</b></div>
+        <div class="keyrow"><span>SEO Onboarding task</span><b class="pts">30</b></div>
+        <div class="keyrow"><span><b>GBP / Yext setup (new)</b></span><b class="pts">25</b></div>
+        <div class="keyrow"><span>Listings Review · Migration</span><b class="pts">25</b></div>
+        <div class="keyrow"><span>Recurring Audit</span><b class="pts">20</b></div>
+        <div class="keyrow"><span>Checklist subtask</span><b class="pts">3</b></div>
+        <div class="keyrow"><span>Get Access to GBP (MS-owned)</span><b class="pts">0</b></div>
+      </div>
+      <div class="foot">Setups and due-date checks are scored by name-match inside SEO Onboarding, the same mechanism that already reroutes stray audit tasks. The scoring key popup updates itself from this table.</div>
+    </div>
+  </div>
+  <p class="mock-note"><b>Open question shown in this mockup:</b> the setups section lives on the SEO Onboarding queue tab (where the tasks live).
+     If you want it on the Listing Reviews tab instead - or on both - say so; it is the same component either way.</p>
+
+</div>
+</body>
+</html>
