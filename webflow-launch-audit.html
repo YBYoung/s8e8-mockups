@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Webflow Launch Audit · Service &amp; Blog CMS · Aug 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F8; --card:#FFFFFF; --line:#DFE5EA; --hairline:#E9EDF1;
+    --ink:#182430; --mut:#5B6B7A; --faint:#8A98A5; --track:#EDF0F3;
+    --accent:#155E75;
+    --crit:#BB2D25; --crit-bg:#FBEFEE;
+    --warn:#A05A00; --warn-bg:#FBF4E8;
+    --verify:#4B5A68; --verify-bg:#EDF0F3;
+    --ok:#1A7A44; --ok-bg:#EBF5EF;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#10161C; --card:#171F27; --line:#2A3540; --hairline:#222C35;
+      --ink:#DEE6EC; --mut:#93A2B0; --faint:#667685; --track:#222C35;
+      --accent:#67B7CC;
+      --crit:#F08A84; --crit-bg:rgba(153,40,34,.18);
+      --warn:#E0A83E; --warn-bg:rgba(140,86,10,.16);
+      --verify:#AEBBC7; --verify-bg:rgba(75,90,104,.28);
+      --ok:#6CC493; --ok-bg:rgba(26,101,58,.2);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10161C; --card:#171F27; --line:#2A3540; --hairline:#222C35;
+    --ink:#DEE6EC; --mut:#93A2B0; --faint:#667685; --track:#222C35;
+    --accent:#67B7CC;
+    --crit:#F08A84; --crit-bg:rgba(153,40,34,.18);
+    --warn:#E0A83E; --warn-bg:rgba(140,86,10,.16);
+    --verify:#AEBBC7; --verify-bg:rgba(75,90,104,.28);
+    --ok:#6CC493; --ok-bg:rgba(26,101,58,.2);
+  }
+  :root[data-theme="light"]{
+    --bg:#F4F6F8; --card:#FFFFFF; --line:#DFE5EA; --hairline:#E9EDF1;
+    --ink:#182430; --mut:#5B6B7A; --faint:#8A98A5; --track:#EDF0F3;
+    --accent:#155E75;
+    --crit:#BB2D25; --crit-bg:#FBEFEE;
+    --warn:#A05A00; --warn-bg:#FBF4E8;
+    --verify:#4B5A68; --verify-bg:#EDF0F3;
+    --ok:#1A7A44; --ok-bg:#EBF5EF;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font:400 14.5px/1.6 "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased; padding:52px 20px 80px;
+  }
+  .mono{ font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .wrap{ max-width:920px; margin:0 auto; }
+  a{ color:var(--accent); }
+  a:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:2px; }
+
+  .eyebrow{ font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:11px; font-weight:500;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--faint); }
+  h1{ font-size:27px; font-weight:700; letter-spacing:-.015em; margin:8px 0 10px; text-wrap:balance; }
+  .lede{ color:var(--mut); max-width:66ch; }
+  .lede b{ color:var(--ink); font-weight:600; }
+
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+          border:1px solid var(--line); border-radius:3px; overflow:hidden; margin:28px 0 8px; }
+  .stat{ background:var(--card); padding:14px 16px; }
+  .stat .n{ font-family:"IBM Plex Mono", monospace; font-size:24px; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.2; }
+  .stat .l{ font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; margin-top:5px; }
+  .stat.crit .l{ color:var(--crit); } .stat.ok .l{ color:var(--ok); }
+  .stat.mut .l{ color:var(--faint); } .stat.warn .l{ color:var(--warn); }
+
+  section{ margin-top:44px; }
+  h2{ font-size:16px; font-weight:700; letter-spacing:-.005em; margin-bottom:4px; }
+  h2 .idx{ font-family:"IBM Plex Mono", monospace; font-size:12px; font-weight:500; color:var(--faint); margin-right:8px; }
+  .sub{ font-size:13px; color:var(--mut); margin-bottom:14px; max-width:72ch; }
+
+  .legend{ background:var(--card); border:1px solid var(--line); border-radius:3px; padding:16px 18px; margin-top:24px; }
+  .legend h3{ font-size:13px; font-weight:600; margin-bottom:8px; }
+  .legend ul{ list-style:none; }
+  .legend li{ padding:3px 0; font-size:13px; color:var(--mut); display:flex; gap:12px; align-items:baseline; }
+  .legend li b{ font-family:"IBM Plex Mono", monospace; color:var(--ink); font-weight:600;
+                font-variant-numeric:tabular-nums; white-space:nowrap; font-size:12px; }
+
+  .site{ background:var(--card); border:1px solid var(--line); border-radius:3px; padding:18px 20px; margin-bottom:12px; }
+  .site-head{ display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .site-head h3{ font-size:15.5px; font-weight:600; flex:1 1 auto; min-width:200px; }
+  .chip{ font-family:"IBM Plex Mono", monospace; display:inline-block; font-size:10px; font-weight:600;
+         letter-spacing:.08em; text-transform:uppercase; border-radius:2px; padding:3px 8px; white-space:nowrap; }
+  .chip.crit{ color:var(--crit); background:var(--crit-bg); }
+  .chip.warn{ color:var(--warn); background:var(--warn-bg); }
+  .chip.verify{ color:var(--verify); background:var(--verify-bg); }
+  .chip.ok{ color:var(--ok); background:var(--ok-bg); }
+
+  .conf{ display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  .conf .pct{ font-family:"IBM Plex Mono", monospace; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .conf .lab{ font-family:"IBM Plex Mono", monospace; font-size:9px; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); }
+  .bar{ width:64px; height:5px; background:var(--track); border-radius:2px; overflow:hidden; }
+  .bar i{ display:block; height:100%; }
+  .bar.crit i{ background:var(--crit); } .bar.warn i{ background:var(--warn); } .bar.verify i{ background:var(--verify); }
+
+  .meta{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; color:var(--faint); margin-top:5px; }
+  .meta span + span::before{ content:"/"; margin:0 7px; color:var(--line); }
+
+  .findings{ list-style:none; margin-top:12px; border-top:1px solid var(--hairline); padding-top:10px; }
+  .findings li{ display:flex; gap:12px; align-items:baseline; padding:4px 0; }
+  .findings .tag{ font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:600; letter-spacing:.05em;
+                  text-transform:uppercase; white-space:nowrap; font-variant-numeric:tabular-nums;
+                  width:84px; flex:0 0 84px; }
+  .tag.hi{ color:var(--crit); } .tag.med{ color:var(--warn); } .tag.low{ color:var(--faint); } .tag.info{ color:var(--ok); }
+  .findings p{ font-size:13.5px; color:var(--ink); }
+  .findings p .q{ color:var(--mut); }
+
+  .work{ margin-top:10px; font-size:12.5px; color:var(--mut); }
+  .work b{ font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:600; letter-spacing:.1em;
+           text-transform:uppercase; color:var(--faint); margin-right:6px; }
+
+  .links{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .links a{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; font-weight:500; text-decoration:none;
+            border:1px solid var(--line); border-radius:2px; padding:4px 10px; color:var(--ink); background:var(--card); }
+  .links a:hover{ background:var(--track); border-color:var(--faint); }
+  .links .dead{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; color:var(--faint);
+                border:1px dashed var(--line); border-radius:2px; padding:4px 10px; }
+
+  .rowlist .site{ padding:13px 20px; }
+  .rowline{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .rowline h3{ font-size:14px; font-weight:600; }
+  .rowline .why{ font-size:12.5px; color:var(--mut); flex:1 1 240px; }
+  .rowline a{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; }
+
+  .tblwrap{ overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:3px; }
+  table{ border-collapse:collapse; width:100%; min-width:780px; font-size:13px; }
+  th{ font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:600; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--faint); text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); }
+  td{ padding:9px 14px; border-bottom:1px solid var(--hairline); vertical-align:top; }
+  tr:last-child td{ border-bottom:none; }
+  td.num{ font-family:"IBM Plex Mono", monospace; font-size:12px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+  td .zero{ color:var(--crit); font-weight:600; }
+  td .good{ color:var(--ok); }
+  td .note, td.note{ color:var(--mut); }
+  td a{ text-decoration:none; border-bottom:1px solid var(--line); }
+  tr.flag td:first-child a{ font-weight:600; }
+
+  .method ol{ margin-left:20px; }
+  .method li{ padding:3px 0; color:var(--mut); font-size:13.5px; }
+  .method li b{ color:var(--ink); font-weight:600; }
+  .caveats{ margin-top:14px; }
+
+  footer{ margin-top:52px; font-family:"IBM Plex Mono", monospace; font-size:11.5px; color:var(--faint);
+          border-top:1px solid var(--line); padding-top:14px; }
+  @media (max-width:640px){ .stats{ grid-template-columns:repeat(2,1fr); } .findings .tag{ width:70px; flex-basis:70px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">S8E8 · Site inspection · For lead dev review</div>
+  <h1>Webflow Launch Audit: Service &amp; Blog CMS Setup</h1>
+  <p class="lede">Every Webflow site created since <b>May 5, 2026</b> that has been published (31 sites), checked for a working Services CMS, a working Blog CMS, live hub pages, and main-navigation links. <b>12 are live on a custom domain; 19 are still on webflow.io staging.</b> Run on Aug 5, 2026.</p>
+
+  <div class="stats">
+    <div class="stat crit"><div class="n">6</div><div class="l">Live sites flagged</div></div>
+    <div class="stat warn"><div class="n">2</div><div class="l">Live, verify manually</div></div>
+    <div class="stat ok"><div class="n">2</div><div class="l">Live &amp; clean</div></div>
+    <div class="stat mut"><div class="n">19</div><div class="l">Staging only</div></div>
+  </div>
+
+  <div class="legend">
+    <h3>How confidence is scored</h3>
+    <ul>
+      <li><b>95% API DATA</b><span>Item counts and publish states read straight from the Webflow CMS API. Essentially certain.</span></li>
+      <li><b>85% PAGE PROBE</b><span>Hub pages checked by requesting the live URLs (/services, /dental-services, /blog, /articles, and variants). A site using an unusual slug would read as "missing" when it is not.</span></li>
+      <li><b>70% NAV CHECK</b><span>Read from the published homepage's nav HTML. A dropdown menu built with JavaScript can hide a link from this check, so "not in nav" findings deserve a quick eyeball before acting.</span></li>
+    </ul>
+  </div>
+
+  <!-- ============================ LIVE, FLAGGED ============================ -->
+  <section>
+    <h2><span class="idx">01</span>Live sites with problems</h2>
+    <p class="sub">These are on a client's custom domain today. Ranked worst first. Each finding carries its own confidence so you know what is fact and what needs a look.</p>
+
+    <!-- Wildflower -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Wildflower Dentistry</h3>
+        <span class="chip crit">Critical</span>
+        <span class="conf"><span class="bar crit"><i style="width:90%"></i></span><span class="pct">90%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>wildflowerdentistry.com</span><span>created Jun 22</span><span>last published Jul 31</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>Services CMS collection exists but has <b>0 items</b>.</p></li>
+        <li><span class="tag hi">95% fact</span><p>Articles (blog) CMS collection exists but has <b>0 items</b>.</p></li>
+        <li><span class="tag med">85%</span><p>No services hub page and no blog hub page resolves on the live site (all common slugs return 404).</p></li>
+        <li><span class="tag med">75%</span><p>The main nav <b>contains a services link anyway</b>, so visitors likely land on a broken or empty page. <span class="q">This is the only live site with a nav link pointing at nothing.</span></p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Populate both CMS collections, build or publish the two hub pages, then re-check the nav target.</div>
+      <div class="links">
+        <a href="https://www.wildflowerdentistry.com" target="_blank" rel="noopener">Live site ↗</a>
+        <span class="dead">No services page found</span>
+        <span class="dead">No blog page found</span>
+        <a href="https://webflow.com/design/wildflower-dentistry" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Prestwick -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Prestwick Dentistry</h3>
+        <span class="chip crit">Critical</span>
+        <span class="conf"><span class="bar crit"><i style="width:85%"></i></span><span class="pct">85%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>prestwickdentistry.com</span><span>created Jul 6</span><span>last published Aug 4</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>Services CMS collection has <b>0 items</b>, yet /services is live and linked in the nav: that page is likely rendering an empty list or is a static shell with no CMS behind it.</p></li>
+        <li><span class="tag hi">95% fact</span><p>Articles (blog) CMS collection has <b>0 items</b>.</p></li>
+        <li><span class="tag med">85%</span><p>No blog hub page resolves on the live site.</p></li>
+        <li><span class="tag low">70%</span><p>No blog link found in the main nav.</p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Check what /services actually renders, wire it to the CMS, populate both collections, add a blog hub and nav link.</div>
+      <div class="links">
+        <a href="https://www.prestwickdentistry.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.prestwickdentistry.com/services" target="_blank" rel="noopener">Services page ↗</a>
+        <span class="dead">No blog page found</span>
+        <a href="https://webflow.com/design/prestwick-dentistry-3e4e61" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Smile Co -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Smile, Co. Tampa Palms</h3>
+        <span class="chip warn">Blog missing</span>
+        <span class="conf"><span class="bar warn"><i style="width:85%"></i></span><span class="pct">85%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>smilecotampapalms.com</span><span>created May 26</span><span>last published Aug 5</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>Articles (blog) CMS collection has <b>0 items</b>; the Authors collection has 1 item that was never published.</p></li>
+        <li><span class="tag med">85%</span><p>No blog hub page resolves on the live site, and no blog link in the nav.</p></li>
+        <li><span class="tag info">Healthy</span><p><span class="q">Services side is in good shape: 44 published items, hub page live at /dental-services, linked in nav.</span></p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Blog build-out only: populate Articles, publish the author, create the hub page and nav link.</div>
+      <div class="links">
+        <a href="https://www.smilecotampapalms.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.smilecotampapalms.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <span class="dead">No blog page found</span>
+        <a href="https://webflow.com/design/smile-co-tampa-palms" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Songbird -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Songbird Pediatric Dentistry</h3>
+        <span class="chip warn">Blog missing</span>
+        <span class="conf"><span class="bar warn"><i style="width:85%"></i></span><span class="pct">85%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>songbirddentistry.com</span><span>created Jun 16</span><span>last published Jul 30</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>Articles (blog) CMS collection has <b>0 items</b>.</p></li>
+        <li><span class="tag med">85%</span><p>No blog hub page resolves on the live site, and no blog link in the nav.</p></li>
+        <li><span class="tag low">Note</span><p><span class="q">Services hub is live and in nav, but the collection only holds 5 items, thin compared to sibling sites (typically 15 to 44).</span></p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Blog build-out, plus a call on whether 5 service pages is the intended scope for this client.</div>
+      <div class="links">
+        <a href="https://www.songbirddentistry.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.songbirddentistry.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <span class="dead">No blog page found</span>
+        <a href="https://webflow.com/design/songbird-pediatric-dentistry-f1540a" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Form + Function -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Form + Function Dental Aesthetics</h3>
+        <span class="chip warn">Empty services CMS</span>
+        <span class="conf"><span class="bar warn"><i style="width:80%"></i></span><span class="pct">80%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>formfunctiondental.com</span><span>created Jun 24</span><span>last published Jul 31</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>Services CMS collection has <b>0 items</b>, yet /dental-services is live and linked in the nav. The hub is likely rendering an empty list, or the service pages were built as static pages outside the CMS.</p></li>
+        <li><span class="tag low">Note</span><p><span class="q">Blog is wired correctly (hub live, in nav) but thin: only 3 published articles.</span></p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Confirm what /dental-services renders. If services are static pages, they are invisible to our CMS pipeline and should be migrated into the collection.</div>
+      <div class="links">
+        <a href="https://www.formfunctiondental.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.formfunctiondental.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <a href="https://www.formfunctiondental.com/articles" target="_blank" rel="noopener">Blog page ↗</a>
+        <a href="https://webflow.com/design/form-function-dental-aest-4ed21d8e9e526" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Rosales -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Randy Rosales, DDS</h3>
+        <span class="chip warn">Blog hidden from nav</span>
+        <span class="conf"><span class="bar warn"><i style="width:75%"></i></span><span class="pct">75%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>drrosales.com</span><span>also answers on drfotinos.com</span><span>created May 5</span><span>last published Jul 21</span></div>
+      <ul class="findings">
+        <li><span class="tag low">70%</span><p>The blog hub is live at /articles with <b>88 published articles</b>, but no blog link was found in the main nav or anywhere on the homepage. That content is close to invisible to visitors and to crawlers coming through the homepage.</p></li>
+        <li><span class="tag hi">95% fact</span><p>5 of 26 service items are sitting unpublished as drafts.</p></li>
+        <li><span class="tag low">Note</span><p><span class="q">The site serves two custom domains, drrosales.com and drfotinos.com. Worth confirming one 301-redirects to the other rather than serving duplicate content.</span></p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Add the blog to the nav, publish or discard the 5 draft services, confirm the domain redirect setup.</div>
+      <div class="links">
+        <a href="https://www.drrosales.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.drrosales.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <a href="https://www.drrosales.com/articles" target="_blank" rel="noopener">Blog page ↗</a>
+        <a href="https://webflow.com/design/randy-rosales-dds" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Washington -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Washington Center for Cosmetic &amp; Family Dentistry</h3>
+        <span class="chip verify">Verify manually</span>
+        <span class="conf"><span class="bar verify"><i style="width:60%"></i></span><span class="pct">60%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>amazingdentistry.com</span><span>created Jun 17</span><span>last published Jul 14</span></div>
+      <ul class="findings">
+        <li><span class="tag low">60%</span><p>Both hub pages are live with solid content (27 published service pages, 6 articles), but <b>neither appears in the main nav HTML</b>. Both are linked elsewhere on the homepage, which is why this is flagged for a manual look: a JavaScript dropdown could be hiding them from the automated check.</p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Two-minute check: open the site, click through the nav menus, confirm Services and Articles are reachable. If they are, close this one out.</div>
+      <div class="links">
+        <a href="https://www.amazingdentistry.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.amazingdentistry.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <a href="https://www.amazingdentistry.com/articles" target="_blank" rel="noopener">Blog page ↗</a>
+        <a href="https://webflow.com/design/washington-center-for-cosmetic-family-d" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+
+    <!-- Modern Roots -->
+    <div class="site">
+      <div class="site-head">
+        <h3>Modern Roots Dental (Austgen Family Dental)</h3>
+        <span class="chip verify">Minor</span>
+        <span class="conf"><span class="bar verify"><i style="width:95%"></i></span><span class="pct">95%</span><span class="lab">confident</span></span>
+      </div>
+      <div class="meta"><span>modernrootsdental.com</span><span>created May 19</span><span>last published Jul 30</span></div>
+      <ul class="findings">
+        <li><span class="tag hi">95% fact</span><p>6 of 15 service items are unpublished drafts. Everything else checks out: both hubs live, both in nav, 20 published articles.</p></li>
+      </ul>
+      <div class="work"><b>Getting into</b> Publish or discard the 6 draft services. Likely a 15-minute task.</div>
+      <div class="links">
+        <a href="https://www.modernrootsdental.com" target="_blank" rel="noopener">Live site ↗</a>
+        <a href="https://www.modernrootsdental.com/dental-services" target="_blank" rel="noopener">Services page ↗</a>
+        <a href="https://www.modernrootsdental.com/articles" target="_blank" rel="noopener">Blog page ↗</a>
+        <a href="https://webflow.com/design/modern-roots-dental-austgen-family-dent" target="_blank" rel="noopener">Open in Webflow ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LIVE, CLEAN ============================ -->
+  <section class="rowlist">
+    <h2><span class="idx">02</span>Live and clean</h2>
+    <p class="sub">Passed every check: populated CMS collections, live hub pages, both in the main nav.</p>
+    <div class="site">
+      <div class="rowline">
+        <span class="chip ok">Clean</span><h3>Seagrass Smiles Pediatric Dentistry</h3>
+        <span class="why">8 services, 17 articles, both hubs live and in nav</span>
+        <a href="https://www.seagrasssmilespediatricdentistry.com" target="_blank" rel="noopener">Live site ↗</a>
+      </div>
+    </div>
+    <div class="site">
+      <div class="rowline">
+        <span class="chip ok">Clean</span><h3>Atlanta Dentistry by Design</h3>
+        <span class="why">19 service pages, 115 articles, both hubs live and in nav</span>
+        <a href="https://www.atlantadentistrybydesign.com" target="_blank" rel="noopener">Live site ↗</a>
+      </div>
+    </div>
+    <div class="site">
+      <div class="rowline">
+        <span class="chip verify">Likely intentional</span><h3>Form Dental Studio</h3>
+        <span class="why">No Service or Blog CMS at all, but it is explicitly a splash page. Confirm and ignore.</span>
+        <a href="https://www.formdentalstudio.com" target="_blank" rel="noopener">Live site ↗</a>
+      </div>
+    </div>
+    <div class="site">
+      <div class="rowline">
+        <span class="chip verify">Likely intentional</span><h3>The Dental CMO Mastermind</h3>
+        <span class="why">Empty Service and Blog CMS, no hubs. Not a practice site, so probably fine as is.</span>
+        <a href="https://www.thedentalcmomastermind.com" target="_blank" rel="noopener">Live site ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ STAGING ============================ -->
+  <section>
+    <h2><span class="idx">03</span>Staging watchlist (19 sites, not yet on a custom domain)</h2>
+    <p class="sub">These have not truly gone live, so empty CMSs are expected mid-build. Three stand out as odd and are bolded: content exists but the structure around it is broken. Worth fixing before their launch day, not after.</p>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th>Site</th><th>Created</th><th>Services CMS</th><th>Blog CMS</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr class="flag">
+            <td><a href="https://greene-ratcliff-family-cosmetic-dentist.webflow.io" target="_blank" rel="noopener">Greene &amp; Ratcliff</a></td>
+            <td class="num">Jun 24</td><td class="num">22 items (20 pub)</td><td class="num good">709 published</td>
+            <td class="note">709 articles ready but no services hub page resolves and none in nav. Migration-scale content with a missing front door.</td>
+          </tr>
+          <tr class="flag">
+            <td><a href="https://first-light-dental.webflow.io" target="_blank" rel="noopener">First Light Dental</a></td>
+            <td class="num">Jul 6</td><td class="num good">43 published</td><td class="num good">103 published</td>
+            <td class="note">103 articles published but /articles does not resolve and no blog nav link. Blog hub page appears to be missing entirely.</td>
+          </tr>
+          <tr class="flag">
+            <td><a href="https://eir-dental-studio.webflow.io" target="_blank" rel="noopener">EIR Dental Studio</a></td>
+            <td class="num">May 5</td><td class="num"><span class="zero">0 items</span></td><td class="num good">54 published</td>
+            <td class="note">Blog fully wired, but Services CMS is empty and no services hub or nav link exists.</td>
+          </tr>
+          <tr>
+            <td><a href="https://sst-dentistry-68d2ab.webflow.io" target="_blank" rel="noopener">SST Dentistry</a></td>
+            <td class="num">Jul 30</td><td class="num">6 published</td><td class="num">11 published</td>
+            <td class="note">Content exists and /articles resolves, but neither hub is linked in the nav yet.</td>
+          </tr>
+          <tr>
+            <td><a href="https://tidal-dental-wellness.webflow.io" target="_blank" rel="noopener">Tidal Dental Wellness</a></td>
+            <td class="num">Jun 30</td><td class="num good">51 published</td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Services fully wired. Blog empty, no hub, no nav link.</td>
+          </tr>
+          <tr>
+            <td><a href="https://minnesota-craniofacial-center.webflow.io" target="_blank" rel="noopener">Minnesota Craniofacial Center</a></td>
+            <td class="num">Jul 2</td><td class="num">13 published</td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Services populated but no hub page resolves. Blog empty.</td>
+          </tr>
+          <tr>
+            <td><a href="https://branford-dental-care.webflow.io" target="_blank" rel="noopener">Branford Dental Care</a></td>
+            <td class="num">Jul 29</td><td class="num"><span class="zero">0 items</span></td><td class="num">5 published</td>
+            <td class="note">Early build. Blog started, services not.</td>
+          </tr>
+          <tr>
+            <td><a href="https://pacific-rim-dental.webflow.io" target="_blank" rel="noopener">Pacific Rim Dental</a></td>
+            <td class="num">Jun 10</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Hub page and nav exist for services, both CMSs empty.</td>
+          </tr>
+          <tr>
+            <td><a href="https://layne-family-dentistry-formerly-key-wes.webflow.io" target="_blank" rel="noopener">Layne Family Dentistry</a></td>
+            <td class="num">Jun 2</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Empty shell, oldest of the empty builds (2 months). Worth checking it is not stalled.</td>
+          </tr>
+          <tr>
+            <td><a href="https://modern-prosthodontics.webflow.io" target="_blank" rel="noopener">Modern Prosthodontics</a></td>
+            <td class="num">Jul 7</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Empty shell.</td>
+          </tr>
+          <tr>
+            <td><a href="https://bernadette-sawa-dds.webflow.io" target="_blank" rel="noopener">Bernadette Sawa, DDS</a></td>
+            <td class="num">Jul 7</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Empty shell, though a services hub page already resolves.</td>
+          </tr>
+          <tr>
+            <td><a href="https://westfield-center-dental-care-e98f43.webflow.io" target="_blank" rel="noopener">Westfield Center Dental Care</a></td>
+            <td class="num">Jul 21</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Empty shell.</td>
+          </tr>
+          <tr>
+            <td><a href="https://pediatric-dental-studios.webflow.io" target="_blank" rel="noopener">Pediatric Dental Studios</a></td>
+            <td class="num">Jul 27</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Empty shell, brand new.</td>
+          </tr>
+          <tr>
+            <td><a href="https://crestview-family-dentistry.webflow.io" target="_blank" rel="noopener">Crestview Family Dentistry</a></td>
+            <td class="num">Aug 4</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Created yesterday.</td>
+          </tr>
+          <tr>
+            <td><a href="https://lee-oms-perio.webflow.io" target="_blank" rel="noopener">Lee OMS &amp; Perio</a></td>
+            <td class="num">Aug 5</td><td class="num"><span class="zero">0 items</span></td><td class="num"><span class="zero">0 items</span></td>
+            <td class="note">Created today.</td>
+          </tr>
+          <tr>
+            <td><a href="https://dental-health-concepts.webflow.io" target="_blank" rel="noopener">Dental Health Concepts</a></td>
+            <td class="num">Jul 17</td><td class="num good">30 published</td><td class="num good">28 published</td>
+            <td class="note"><span class="good">Launch-ready:</span> both hubs live, both in nav.</td>
+          </tr>
+          <tr>
+            <td><a href="https://hill-avenue-dental.webflow.io" target="_blank" rel="noopener">Hill Avenue Dental</a></td>
+            <td class="num">Jul 23</td><td class="num good">16 published</td><td class="num good">209 published</td>
+            <td class="note"><span class="good">Launch-ready:</span> both hubs live, both in nav.</td>
+          </tr>
+          <tr>
+            <td><a href="https://allen-family-dentistry.webflow.io" target="_blank" rel="noopener">Allen Family Dentistry</a></td>
+            <td class="num">Jun 16</td><td class="num good">11 published</td><td class="num good">37 published</td>
+            <td class="note"><span class="good">Launch-ready:</span> both hubs live, both in nav.</td>
+          </tr>
+          <tr>
+            <td><a href="https://songbird-pediatric-splash-page.webflow.io" target="_blank" rel="noopener">Songbird Pediatric (Splash)</a></td>
+            <td class="num">May 20</td><td class="num note">none</td><td class="num note">none</td>
+            <td class="note">Splash page, superseded by the live Songbird site above. Likely retirable.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================ METHOD ============================ -->
+  <section class="method">
+    <h2><span class="idx">04</span>How this was checked, and where it can be wrong</h2>
+    <ol>
+      <li><b>CMS collections:</b> listed via the Webflow API for every site; item counts, draft flags, and publish states are exact.</li>
+      <li><b>Hub pages:</b> probed on the live/staging site over HTTP against common slugs (services, service, our-services, dental-services; blog, articles, posts, resources). A 200 response counts as live.</li>
+      <li><b>Navigation:</b> fetched each published homepage and parsed the nav element for links to the hub slugs.</li>
+      <li><b>Recency:</b> Webflow has no "first published" date, so "went live in the past 3 months" is approximated as "site created in the last 100 days and currently published." A site built earlier but launched recently would be missed; cross-referencing CRM launch dates would close that gap.</li>
+    </ol>
+    <p class="sub caveats">Two known blind spots: the API token lacks the pages:read scope, so hub-page existence relies on the HTTP probes above rather than the authoritative page list; and JavaScript-rendered dropdown menus can hide nav links from the parser, which is why nav findings cap at 70% confidence. The two verification items (Washington Center, Wildflower's nav target) are exactly the places where those blind spots could flip the verdict.</p>
+  </section>
+
+  <footer>
+    Generated Aug 5, 2026 · Webflow API (31 sites created since May 5) + live-site HTTP checks · Raw JSON available on request · Questions: Yitzchak
+  </footer>
+
+</div>
+</body>
+</html>
