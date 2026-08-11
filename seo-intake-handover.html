@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Intake Form: Portal Integration Hand-Over</title>
+</head>
+<body>
+<style>
+  :root {
+    --ground: #FAF9F7;
+    --card: #FFFFFF;
+    --border: rgba(231, 229, 228, 0.7);
+    --ink: #1C1917;
+    --ink-soft: #57534E;
+    --ink-faint: #A8A29E;
+    --accent: #0F766E;
+    --accent-soft: rgba(15, 118, 110, 0.08);
+    --code-bg: #F5F5F4;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #1C1917;
+      --card: #292524;
+      --border: rgba(68, 64, 60, 0.7);
+      --ink: #FAFAF9;
+      --ink-soft: #D6D3D1;
+      --ink-faint: #78716C;
+      --accent: #2DD4BF;
+      --accent-soft: rgba(45, 212, 191, 0.1);
+      --code-bg: #1C1917;
+      --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #1C1917;
+    --card: #292524;
+    --border: rgba(68, 64, 60, 0.7);
+    --ink: #FAFAF9;
+    --ink-soft: #D6D3D1;
+    --ink-faint: #78716C;
+    --accent: #2DD4BF;
+    --accent-soft: rgba(45, 212, 191, 0.1);
+    --code-bg: #1C1917;
+    --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0;
+    padding: 48px 20px 96px;
+  }
+  main { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .subtitle { color: var(--ink-soft); margin: 0; max-width: 60ch; }
+  section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    padding: 24px 28px;
+  }
+  h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  h3 {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    margin: 24px 0 8px;
+  }
+  p { margin: 0 0 12px; max-width: 68ch; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 6px; max-width: 62ch; }
+  strong { font-weight: 600; }
+  .muted { color: var(--ink-soft); }
+  code {
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    margin: 0 0 12px;
+  }
+  pre:last-child { margin-bottom: 0; }
+  pre code { background: none; border: none; padding: 0; font-size: 12px; line-height: 1.6; }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    padding: 8px 14px 8px 0;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 14px 9px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { white-space: nowrap; }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    padding: 2px 7px;
+    vertical-align: middle;
+  }
+  .tag-rec { background: var(--accent-soft); color: var(--accent); }
+  .callout {
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 0 0 12px;
+  }
+  .callout p { margin: 0; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 4px 18px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .email-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 0 0 16px;
+  }
+  .email-meta {
+    background: var(--code-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  .email-meta div { display: flex; gap: 10px; }
+  .email-meta dt {
+    flex: 0 0 74px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    line-height: 22px;
+  }
+  .email-meta dd { margin: 0; line-height: 22px; }
+  .email-body { padding: 16px 18px; font-size: 14px; }
+  .email-body p { margin: 0 0 10px; }
+  .email-body .email-h { font-weight: 600; font-size: 15px; margin-bottom: 12px; }
+  .email-cta {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--ground);
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 8px 18px;
+    margin-top: 4px;
+  }
+  .ph { color: var(--accent); font-style: normal; }
+  .copy-btn {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 12px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .copy-btn:hover { background: var(--accent-soft); }
+  .copy-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">OpenedQueries · S8E8 Client Portal</p>
+    <h1>SEO Intake Form: what the portal needs to rebuild it</h1>
+    <p class="subtitle">Everything required to host the SEO strategy homework inside the client portal and hand the answers back to OpenedQueries: the question list, the answer format, test data to build against, and the data hand-off route.</p>
+  </header>
+
+  <section>
+    <h2>The short version</h2>
+    <p>The intake form is five sections of questions with a known answer shape. To integrate it, the portal needs the <strong>question list</strong> (below), the <strong>answer format</strong> (below, with full test data), and an <strong>agreed route for the data</strong> to reach OpenedQueries. That route already exists: OpenedQueries syncs the marketing homework from the main S8E8 database every night through the read-only gateway. The SEO homework can travel the exact same road.</p>
+    <div class="callout">
+      <p><strong>One live touchpoint:</strong> Section 3 questions are not fixed. They are generated per practice by OpenedQueries based on the services chosen in Section 1. The portal calls one endpoint to fetch them (contract in the Section 3 notes below).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>How the form behaves</h2>
+    <ul>
+      <li><strong>Five sections, filled in order.</strong> Section 3 stays locked until Section 1 is complete, because its questions are generated from the Section 1 answers.</li>
+      <li><strong>Autosave.</strong> Answers save as the client types; clients can leave and come back. Partial answers are normal: real submissions arrive with some questions blank or missing entirely, so treat every answer as optional at the data level.</li>
+      <li><strong>Lifecycle statuses:</strong> <code>sent</code> → <code>in_progress</code> (first answer saved) → <code>submitted</code>. On the OpenedQueries side two more exist that the portal never sets: <code>incorporated</code> (answers folded into strategy work) and <code>skipped</code>.</li>
+      <li><strong>Every text question is free-form long text.</strong> Only Section 1 (checklist plus ranking) and the two Section 4 radio questions are structured.</li>
+      <li><strong>Some questions are customizable per client.</strong> The agency side can override the default wording of Sections 2, 5, and the differentiator question before sending. If the portal hosts the form, we either drop that feature or the portal reads the overrides too; worth a quick decision, not a blocker.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Section 1 · Your Services</h2>
+    <p>Two steps. First, a multi-select checklist of the 20 common services, plus free-text entries for anything not listed:</p>
+    <div class="services-grid">
+      <span>Dental Implants</span><span>Veneers</span><span>Teeth Whitening</span><span>Invisalign</span>
+      <span>Root Canals</span><span>Dental Crowns</span><span>Bridges</span><span>Dentures</span>
+      <span>Pediatric Dentistry</span><span>Emergency Dental Care</span><span>Cosmetic Dentistry</span><span>Periodontal Treatment</span>
+      <span>Oral Surgery</span><span>TMJ Treatment</span><span>Sleep Apnea Treatment</span><span>Sedation Dentistry</span>
+      <span>Dental Bonding</span><span>Full Mouth Reconstruction</span><span>All-on-4 Implants</span><span>Prosthodontics</span>
+    </div>
+    <p>Second, the client ranks their <strong>top priority services</strong> from what they selected: up to 5, and real clients often pick fewer (3 is common). Both lists are stored separately: <code>selected_services</code> (everything they offer) and <code>priority_services</code> (the ranked priorities, order matters).</p>
+  </section>
+
+  <section>
+    <h2>Section 2 · Your Patients</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Field key</th><th>Question</th></tr>
+      <tr><td><code>what_brings_them</code></td><td>What brings patients to your practice?</td></tr>
+      <tr><td><code>how_they_describe</code></td><td>How do patients describe their problems or goals?</td></tr>
+      <tr><td><code>concerns_before_booking</code></td><td>What concerns do patients have before booking?</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Section 3 · Your Expertise <span class="tag tag-rec">Dynamic</span></h2>
+    <p>This section has <strong>no fixed questions</strong>. After Section 1 is complete, OpenedQueries generates three tailored questions per priority service using AI (for example, a practice that prioritized All-on-4 Implants gets three questions specific to how they handle All-on-4 cases).</p>
+    <p>Answer keys follow the pattern <code>{service_name}_q{index}</code> with a <strong>zero-based index</strong>: <code>Dental Implants_q0</code>, <code>Dental Implants_q1</code>, <code>Dental Implants_q2</code>. The generated question text is stored alongside the answers (in <code>ai_questions</code>) so the pairing is never lost, and <code>question_sources</code> records whether each question came straight from the AI (<code>"ai"</code>) or was reworded by the team before sending (<code>"edited"</code>).</p>
+    <h3>Endpoint contract for the portal</h3>
+    <p>When the client finishes Section 1, the portal calls OpenedQueries with the priority services and gets the generated questions back. Response shape:</p>
+    <pre><code>{
+  "questions": {
+    "Dental Implants":  ["question text", "question text", "question text"],
+    "Invisalign":       ["question text", "question text", "question text"],
+    "Sedation Dentistry": ["question text", "question text", "question text"]
+  }
+}</code></pre>
+    <p>Generation takes a few seconds, so the portal should show a loading state. Results are cached: calling again with the same services returns instantly (the response then includes <code>"source": "cached"</code>). If the client goes back and changes their services, the same call regenerates. The current endpoint is tied to our internal form tokens, so we will stand up a portal-authenticated version of it; that is expected work on our side, not a problem.</p>
+  </section>
+
+  <section>
+    <h2>Section 4 · Transparency &amp; Trust</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Field key</th><th>Question</th><th>Type</th></tr>
+      <tr><td><code>insurance</code></td><td>Do you accept insurance?</td><td>Radio: <code>accept</code> / <code>no_insurance</code> / <code>some_plans</code></td></tr>
+      <tr><td><code>insurance_details</code></td><td>Which plans / details</td><td>Text, shown only for <code>accept</code> or <code>some_plans</code></td></tr>
+      <tr><td><code>pricing</code></td><td>How do you handle pricing on the site?</td><td>Radio: <code>show_pricing</code> / <code>show_ranges</code> / <code>no_pricing</code></td></tr>
+      <tr><td><code>pricing_details</code></td><td>How should we talk about cost?</td><td>Text, shown only for <code>no_pricing</code></td></tr>
+      <tr><td><code>differentiator</code></td><td>What sets you apart from other practices nearby?</td><td>Text</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Section 5 · Your Brand</h2>
+    <div class="table-wrap">
+    <table>
+      <tr><th>Field key</th><th>Question</th></tr>
+      <tr><td><code>tone</code></td><td>How would you describe the tone of your practice?</td></tr>
+      <tr><td><code>emphasis_avoid</code></td><td>Any topics you want to emphasize or avoid?</td></tr>
+      <tr><td><code>credentials</code></td><td>Have you been featured in media, won awards, or have credentials to highlight?</td></tr>
+      <tr><td><code>anything_else</code></td><td>Anything else we should know?</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Test data: a complete submitted form</h2>
+    <p>This is a full fabricated submission for a made-up practice, structurally identical to real submitted forms in production (verified against the live schema). It deliberately includes the quirks real data has: only 3 priority services ranked, one expertise question left unanswered (<code>Invisalign_q2</code> exists in <code>ai_questions</code> but not in the answers), one team-edited question, and an empty <code>anything_else</code>. Build against this and real submissions will parse.</p>
+    <button class="copy-btn" type="button" onclick="const c=document.getElementById('testdata').textContent;navigator.clipboard.writeText(c).then(()=>{this.textContent='Copied';setTimeout(()=>this.textContent='Copy JSON',1500)})">Copy JSON</button>
+    <pre><code id="testdata">{
+  "status": "submitted",
+  "selected_services": [
+    "Dental Implants",
+    "Invisalign",
+    "Sedation Dentistry",
+    "Teeth Whitening",
+    "Emergency Dental Care",
+    "Root Canals",
+    "Dental Crowns",
+    "Laser Gum Contouring"
+  ],
+  "priority_services": [
+    "Dental Implants",
+    "Invisalign",
+    "Sedation Dentistry"
+  ],
+  "ai_questions": {
+    "Dental Implants": [
+      "Walk us through what a typical implant case looks like at your practice, from consultation to final restoration.",
+      "What do you tell patients who are worried they are not a candidate for implants because of bone loss?",
+      "Do you place and restore implants in-house, or do you work with a specialist for part of the process?"
+    ],
+    "Invisalign": [
+      "What kinds of alignment problems do you most often treat with Invisalign, and when do you recommend something else?",
+      "How do you keep patients on track during Invisalign treatment?",
+      "What does a typical Invisalign timeline look like for your patients?"
+    ],
+    "Sedation Dentistry": [
+      "What sedation options do you offer, and how do you help patients choose between them?",
+      "Tell us about a patient whose dental anxiety you helped overcome.",
+      "What safety monitoring do you have in place during sedation appointments?"
+    ]
+  },
+  "question_sources": {
+    "Dental Implants_q0": "ai",
+    "Dental Implants_q1": "ai",
+    "Dental Implants_q2": "edited",
+    "Invisalign_q0": "ai",
+    "Invisalign_q1": "ai",
+    "Invisalign_q2": "ai",
+    "Sedation Dentistry_q0": "ai",
+    "Sedation Dentistry_q1": "ai",
+    "Sedation Dentistry_q2": "ai"
+  },
+  "section_responses": {
+    "patients": {
+      "what_brings_them": "Mostly word of mouth from existing patients, plus people searching online for implants or emergency care. We also get a lot of families who started with one member and brought everyone else over.",
+      "how_they_describe": "They usually do not use clinical terms. They say things like my tooth is throbbing, my dentures do not fit right anymore, or I hate how my smile looks in photos.",
+      "concerns_before_booking": "Cost is the big one, then fear of pain. A surprising number ask whether we will judge them for how long it has been since their last visit."
+    },
+    "expertise": {
+      "Dental Implants_q0": "Consultation with 3D imaging first, then a personalized treatment plan. Most single-implant cases take about four months start to finish, and we handle everything under one roof.",
+      "Dental Implants_q1": "We explain that bone grafting has come a long way and that most people who were told no five years ago are candidates today. We offer a free second-opinion consult for exactly this situation.",
+      "Dental Implants_q2": "Everything is in-house, including placement and the final crown. Patients never get referred out.",
+      "Invisalign_q0": "Crowding and spacing mostly. For severe bite issues we refer to a local orthodontist we trust rather than overpromise.",
+      "Invisalign_q1": "Check-ins every six weeks and a text line for questions between visits. Compliance is the whole game with aligners.",
+      "Sedation Dentistry_q0": "Nitrous oxide and oral sedation. We walk patients through both at the consult and match the option to their anxiety level and the length of the procedure.",
+      "Sedation Dentistry_q1": "One patient had not seen a dentist in 15 years after a bad experience. We did her first cleaning under nitrous, and she now comes in twice a year without any sedation at all.",
+      "Sedation Dentistry_q2": "Pulse oximetry and blood pressure monitoring throughout, and a staff member dedicated to monitoring during every sedation appointment."
+    },
+    "transparency": {
+      "insurance": "some_plans",
+      "insurance_details": "Delta Dental, Cigna, and MetLife. We file out-of-network claims for everyone else.",
+      "pricing": "show_ranges",
+      "differentiator": "Same-day crowns, in-house implants from start to finish, and evening hours twice a week. Most offices around us close at four."
+    },
+    "brand": {
+      "tone": "Warm and family-oriented, but modern. We want people to feel like regulars at a place that happens to have very good technology.",
+      "emphasis_avoid": "Emphasize sedation and anxiety-friendly care. Avoid anything that sounds like a discount clinic, no coupon language.",
+      "credentials": "Dr. Example is a Fellow of the ICOI and the practice was voted Best of the Northside three years running.",
+      "anything_else": ""
+    }
+  }
+}</code></pre>
+    <p class="muted">Parsing rules worth encoding: any answer key may be absent or an empty string; <code>priority_services</code> ranges from 1 to 5 entries and can be null on legacy rows; custom services typed by the client (like "Laser Gum Contouring" above) appear in <code>selected_services</code> alongside the standard 20 and can be prioritized like any other.</p>
+  </section>
+
+  <section>
+    <h2>Test data: a half-finished form</h2>
+    <p>Clients save and leave constantly, so the portal has to handle the autosaved middle state, not just the finished one. This fixture is the same practice mid-way through: Section 1 done, questions generated, one expertise answer saved, Section 2 partially typed, and Sections 4 and 5 <strong>absent entirely</strong> (sections only appear in <code>section_responses</code> once the client touches them).</p>
+    <button class="copy-btn" type="button" onclick="const c=document.getElementById('testdata2').textContent;navigator.clipboard.writeText(c).then(()=>{this.textContent='Copied';setTimeout(()=>this.textContent='Copy JSON',1500)})">Copy JSON</button>
+    <pre><code id="testdata2">{
+  "status": "in_progress",
+  "selected_services": [
+    "Dental Implants",
+    "Invisalign",
+    "Sedation Dentistry",
+    "Teeth Whitening",
+    "Emergency Dental Care",
+    "Root Canals",
+    "Dental Crowns",
+    "Laser Gum Contouring"
+  ],
+  "priority_services": [
+    "Dental Implants",
+    "Invisalign",
+    "Sedation Dentistry"
+  ],
+  "ai_questions": {
+    "Dental Implants": [
+      "Walk us through what a typical implant case looks like at your practice, from consultation to final restoration.",
+      "What do you tell patients who are worried they are not a candidate for implants because of bone loss?",
+      "Do you place and restore implants in-house, or do you work with a specialist for part of the process?"
+    ],
+    "Invisalign": [
+      "What kinds of alignment problems do you most often treat with Invisalign, and when do you recommend something else?",
+      "How do you keep patients on track during Invisalign treatment?",
+      "What does a typical Invisalign timeline look like for your patients?"
+    ],
+    "Sedation Dentistry": [
+      "What sedation options do you offer, and how do you help patients choose between them?",
+      "Tell us about a patient whose dental anxiety you helped overcome.",
+      "What safety monitoring do you have in place during sedation appointments?"
+    ]
+  },
+  "question_sources": {
+    "Dental Implants_q0": "ai",
+    "Dental Implants_q1": "ai",
+    "Dental Implants_q2": "ai",
+    "Invisalign_q0": "ai",
+    "Invisalign_q1": "ai",
+    "Invisalign_q2": "ai",
+    "Sedation Dentistry_q0": "ai",
+    "Sedation Dentistry_q1": "ai",
+    "Sedation Dentistry_q2": "ai"
+  },
+  "section_responses": {
+    "patients": {
+      "what_brings_them": "Mostly word of mouth from existing patients, plus people searching online for implants or emergency care.",
+      "how_they_describe": ""
+    },
+    "expertise": {
+      "Dental Implants_q0": "Consultation with 3D imaging first, then a personalized treatment plan. Most single-implant cases take about four months start to finish."
+    }
+  }
+}</code></pre>
+    <p class="muted">Autosave merges one section at a time, so a returning client must land back on this state exactly as saved. Submitting is allowed even with blanks; the only real gate is that Section 3 questions cannot exist before Section 1 answers do.</p>
+  </section>
+
+  <section>
+    <h2>Agency-side emails</h2>
+    <p>Two client-facing emails belong to this form today. If the portal takes over sending them, here is the exact copy, sender behavior, and timing. (A third thing happens on submission, an internal notification to the S8E8 team plus an Asana update, but that stays on the OpenedQueries side either way.)</p>
+
+    <h3>Sender identity, both emails</h3>
+    <ul>
+      <li>Sent from the client's <strong>Marketing Strategist</strong>: their name as the from-name, their title and headshot in the email header, and Reply-To set to their address.</li>
+      <li>If no strategist is assigned, it falls back to a generic "Studio Eighty Eight" sender with the signature block "Studio Eighty Eight / Dental Marketing &amp; Content Strategy".</li>
+      <li>The assigned SEO is BCC'd on the invite; an optional CC list can be set per client.</li>
+    </ul>
+
+    <h3>Email 1 · The invite</h3>
+    <p>Sent when the team clicks Send. The deadline defaults to 14 days out. The <span class="ph">greeting name</span> and the two intro paragraphs are editable per client before sending; everything below is the default copy. Highlighted parts are placeholders filled in at send time.</p>
+    <div class="email-card">
+      <dl class="email-meta">
+        <div><dt>Subject</dt><dd><span class="ph">{Practice Name}</span> -- Content Strategy Questionnaire</dd></div>
+        <div><dt>Preheader</dt><dd>Your content strategy questionnaire is ready -- due <span class="ph">{Month Day}</span></dd></div>
+      </dl>
+      <div class="email-body">
+        <p class="email-h">Content Strategy Questionnaire</p>
+        <p>Hi <span class="ph">{greeting name}</span>,</p>
+        <p>We have prepared a content strategy questionnaire for <strong><span class="ph">{Practice Name}</span></strong>. Your responses help us understand your practice and build a content plan tailored to your goals.</p>
+        <p>The questionnaire takes about 20 minutes and covers your services, patients, and priorities. You can save your progress and return anytime.</p>
+        <p>Please complete it by <strong><span class="ph">{Month Day}</span></strong>.</p>
+        <span class="email-cta">Start Questionnaire</span>
+      </div>
+    </div>
+    <p class="muted">"Resend" from the agency side sends this same email again unchanged: the deadline stays put, and the form link's 30-day expiry clock restarts.</p>
+
+    <h3>Email 2 · Deadline reminders</h3>
+    <p>Automated. A daily job checks every sent or in-progress form and sends a reminder when <strong>50%</strong> of the deadline window has elapsed, and again at <strong>80%</strong>. Each threshold fires exactly once (the send log makes it idempotent), and archived clients are never nagged. The urgency phrase reads "in the next few days" when 3 or fewer days remain, otherwise "within <span class="ph">{N}</span> days".</p>
+    <div class="email-card">
+      <dl class="email-meta">
+        <div><dt>Subject</dt><dd>Reminder: Your strategy questionnaire is due soon</dd></div>
+        <div><dt>Preheader</dt><dd>Your strategy questionnaire is due <span class="ph">{urgency phrase}</span></dd></div>
+      </dl>
+      <div class="email-body">
+        <p class="email-h">Questionnaire Reminder</p>
+        <p>Hi <span class="ph">{client name}</span>,</p>
+        <p>Your strategy questionnaire for <strong><span class="ph">{Strategy Name}</span></strong> is due <span class="ph">{urgency phrase}</span>. Your responses help us build a content strategy tailored to your practice.</p>
+        <p>It only takes about 20 minutes to complete. Pick up right where you left off.</p>
+        <span class="email-cta">Continue Questionnaire</span>
+      </div>
+    </div>
+    <p class="muted">Copy note that applies to everything client-facing: no em dashes, ever. The double hyphen in the subject lines above is the real, intended character.</p>
+  </section>
+
+  <section>
+    <h2>Getting the data into OpenedQueries</h2>
+
+    <h3>Option A · Portal writes to the S8E8 database, OpenedQueries reads it <span class="tag tag-rec">Recommended</span></h3>
+    <p>This is the pattern already running in production for the marketing homework: the portal stores answers in the main S8E8 database, and OpenedQueries pulls them nightly (and on demand) through the read-only database gateway. To extend it, we agree on one new table in the S8E8 database that holds the SEO answers in the shape above, keyed to the client. OpenedQueries requests read access to that table through the gateway and syncs it the same way it already syncs the marketing homework.</p>
+    <ul>
+      <li>No new API surface, no credentials exchanged.</li>
+      <li>OpenedQueries stays read-only against the S8E8 database, same as today.</li>
+      <li>The only joint work is agreeing on the table's columns, which this document mostly settles: the client key plus the six fields in the test data (<code>status</code>, <code>selected_services</code>, <code>priority_services</code>, <code>ai_questions</code>, <code>question_sources</code>, <code>section_responses</code>) and a submitted-at timestamp.</li>
+    </ul>
+
+    <h3>Option B · Portal pushes to an OpenedQueries endpoint</h3>
+    <p>OpenedQueries exposes an authenticated endpoint the portal calls when a client submits. Workable, but it means minting and managing an API key between the systems and building submission-retry behavior on the portal side. More moving parts for the same result, so Option A is preferred.</p>
+
+    <hr class="divider">
+
+    <h3>Either way, the portal still needs</h3>
+    <ul>
+      <li>The Section 3 question-generation endpoint (one call per form, contract above).</li>
+      <li>A way to know <em>which</em> client a form belongs to. The S8E8 client id is the natural key since both systems already share it.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
