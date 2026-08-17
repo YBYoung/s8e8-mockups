@@ -101,7 +101,7 @@ html,body{margin:0;padding:0}
 .exec-app .fly-lab .f1{display:block;font:800 13px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 .exec-app .fly-lab .f2{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:5px}
 .exec-app .fly-lab .f3{display:block;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-top:8px}
-.exec-app .fly-lab .f3.g{color:var(--good)} .exec-app .fly-lab .f3.w{color:var(--warn)} .exec-app .fly-lab .f3.b{color:var(--bad)}
+.exec-app .fly-lab .f3.g{color:var(--good)} .exec-app .fly-lab .f3.w{color:var(--warn)} .exec-app .fly-lab .f3.b{color:var(--bad)} .exec-app .fly-lab .f3.n{color:var(--muted)}
 
 .exec-app .tk{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:opacity .25s,stroke-width .25s}
 .exec-app .tk.base{stroke:var(--track)}
@@ -144,7 +144,9 @@ html,body{margin:0;padding:0}
 .exec-app .sc .meta{min-width:0;flex:1}
 .exec-app .sc .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font:700 11px/1.15 var(--body);color:var(--ink);overflow:hidden}
 .exec-app .sc .ms{display:block;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:3px}
-.exec-app .sc .ms.g{color:var(--good)} .exec-app .sc .ms.w{color:var(--warn)} .exec-app .sc .ms.b{color:var(--bad)}
+.exec-app .sc .ms.g{color:var(--good)} .exec-app .sc .ms.w{color:var(--warn)} .exec-app .sc .ms.b{color:var(--bad)} .exec-app .sc .ms.n{color:var(--muted)}
+.exec-app .sc.v-none{border-style:dotted}
+.exec-app .dh-s.n{color:var(--muted)}
 .exec-app .sc .jline{display:block;font-family:var(--mono);font-size:7px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--warn);margin-top:2px}
 .exec-app .sc .oline{display:block;font-family:var(--mono);font-size:7px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:2px}
 
@@ -335,8 +337,9 @@ html,body{margin:0;padding:0}
     support:[["Broken form on contact page","Sample Client G","K. Naylor","11 days late"],["Redirect cleanup request","Sample Client H","M. Okafor","7 days late"]],
     generic:[["Sample overdue task","Sample Client","Team member","6 days late"],["Second sample task","Another Client","Team member","3 days late"]]
   };
-  var WORD = {good:"On track", warn:"At risk", bad:"Behind"};
-  var VC = {good:"g", warn:"w", bad:"b"};
+  var WORD = {good:"On track", warn:"At risk", bad:"Behind", none:"No read"};
+  var VC = {good:"g", warn:"w", bad:"b", none:"n"};
+  function verd(d){ return d && d.verdict ? d.verdict : "none"; }
 
   var map = document.getElementById("map");
   var svg = document.getElementById("tracks");
@@ -396,8 +399,8 @@ html,body{margin:0;padding:0}
     var s = "";
     EDGES.forEach(function(e){ s += '<path class="tk base" d="'+edgePath(e)+'"/>'; });
     EDGES.forEach(function(e){
-      var v = data[e.from].verdict;
-      s += '<path class="tk '+VC[v]+'" data-e="'+edgeId(e)+'" d="'+edgePath(e)+'"/>';
+      var v = verd(data[e.from]);
+      if (v!=="none") s += '<path class="tk '+VC[v]+'" data-e="'+edgeId(e)+'" d="'+edgePath(e)+'"/>';
       if (v==="bad") s += '<path class="tk hot" data-e="'+edgeId(e)+'" d="'+edgePath(e)+'"/>';
     });
     var ob = nodeByKey("onboarding"), mg = nodeByKey("migrations"), st = nodeByKey("strategy");
@@ -405,8 +408,8 @@ html,body{margin:0;padding:0}
 
     /* flow dots: good = brisk, warn = sluggish, bad = no flow */
     EDGES.forEach(function(e){
-      var v = data[e.from].verdict;
-      if (v==="bad") return;
+      var v = verd(data[e.from]);
+      if (v==="bad" || v==="none") return;
       var dur = v==="good" ? 4.5 : 8;
       var p = edgePath(e);
       for (var i=0;i<1;i++){
@@ -416,11 +419,11 @@ html,body{margin:0;padding:0}
     });
 
     /* wheel state: spins, slows, or jams */
-    var wheelBad = false, wheelWarn = false;
+    var wheelBad = false, wheelWarn = false, wheelNone = false;
     NODES.forEach(function(nd){
       if (!nd.loop) return;
-      var v = data[nd.key].verdict;
-      if (v==="bad") wheelBad = true; else if (v==="warn") wheelWarn = true;
+      var v = verd(data[nd.key]);
+      if (v==="bad") wheelBad = true; else if (v==="warn") wheelWarn = true; else if (v==="none") wheelNone = true;
     });
     var spinDur = wheelBad ? null : (wheelWarn ? "34s" : "14s");
     s += '<g class="wheelspin'+(wheelBad?" jam":"")+'"'+(spinDur?' style="--spin:'+spinDur+'"':'')+'>'+rotationArrows()+'</g>';
@@ -430,24 +433,26 @@ html,body{margin:0;padding:0}
     var ws = document.getElementById("wheelState");
     if (wheelBad){ ws.textContent = "jammed"; ws.className = "f3 b"; }
     else if (wheelWarn){ ws.textContent = "turning slowly"; ws.className = "f3 w"; }
+    else if (wheelNone){ ws.textContent = "partial read"; ws.className = "f3 n"; }
     else { ws.textContent = "spinning"; ws.className = "f3 g"; }
 
     /* cards */
     map.querySelectorAll(".sc").forEach(function(el){ el.remove(); });
     NODES.forEach(function(nd){
       var d = data[nd.key];
-      var vc = VC[d.verdict];
-      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      var dv = verd(d);
+      var vc = VC[dv];
+      var isJeop = jeop[nd.key] && dv!=="bad";
       var el = document.createElement("button");
       el.type = "button";
-      el.className = "sc v-"+d.verdict+(isJeop?" jeop":"")+(selected===nd.key?" sel":"");
+      el.className = "sc v-"+dv+(isJeop?" jeop":"")+(selected===nd.key?" sel":"");
       el.style.left = (nd.x-CW/2)+"px"; el.style.top = (nd.y-CH/2)+"px";
-      el.setAttribute("aria-label", nd.name+": "+WORD[d.verdict]+", grade "+d.grade+(isJeop?", in jeopardy from upstream":""));
-      var late = d.late>0 ? d.late+" late" : "clear";
+      el.setAttribute("aria-label", nd.name+": "+WORD[dv]+", grade "+(d.grade==null?"none":d.grade)+(isJeop?", in jeopardy from upstream":""));
+      var late = dv==="none" ? "no data" : (d.late>0 ? d.late+" late" : "clear");
       el.innerHTML =
-        '<span class="ring">'+ringSvg(d.grade, d.verdict, 34)+'<span class="rv num">'+d.grade+'</span></span>'+
+        '<span class="ring">'+ringSvg(d.grade, dv, 34)+'<span class="rv num">'+(d.grade==null?"–":d.grade)+'</span></span>'+
         '<span class="meta"><span class="nm">'+nd.name+'</span>'+
-        '<span class="ms '+vc+'">'+WORD[d.verdict]+' · '+late+'</span>'+
+        '<span class="ms '+vc+'">'+WORD[dv]+' · '+late+'</span>'+
         (isJeop ? '<span class="jline">⚠ failing track</span>' : '')+
         (nd.optional ? '<span class="oline">optional bypass</span>' : '')+
         '</span>';
@@ -472,7 +477,8 @@ html,body{margin:0;padding:0}
 
   function ringSvg(grade, verdict, size){
     var r = (size-5)/2, c = 2*Math.PI*r;
-    var col = verdict==="good" ? "var(--good)" : verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    var col = verdict==="good" ? "var(--good)" : verdict==="warn" ? "var(--warn)" : verdict==="bad" ? "var(--bad)" : "var(--muted)";
+    if (grade==null) grade = 0;
     return '<svg viewBox="0 0 '+size+' '+size+'">'+
       '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="var(--line-soft)" stroke-width="3.5"/>'+
       '<circle class="rfill" cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="0 '+c+'" data-target="'+(c*grade/100)+' '+c+'"/>'+
@@ -500,8 +506,8 @@ html,body{margin:0;padding:0}
 
     document.getElementById("drName").textContent = nd.name;
     var vd = document.getElementById("drVerdict");
-    vd.textContent = WORD[d.verdict]+" · grade "+d.grade+(nd.loop?" · on the flywheel":"")+(nd.optional?" · optional bypass":"");
-    vd.className = "dh-s "+VC[d.verdict];
+    vd.textContent = WORD[verd(d)]+" · grade "+(d.grade==null?"none":d.grade)+(nd.loop?" · on the flywheel":"")+(nd.optional?" · optional bypass":"");
+    vd.className = "dh-s "+VC[verd(d)];
 
     var rows = d.late>0 ? (SAMPLE_TASKS[nd.key] || SAMPLE_TASKS.generic) : [];
     var b = '<div class="dr-stats">'+
@@ -521,22 +527,24 @@ html,body{margin:0;padding:0}
     }
     b += '<div class="dr-note">In the real app this panel is live data, and the button below opens the existing Task Hub filtered to '+nd.name+'.</div>';
     document.getElementById("drBody").innerHTML = b;
-    if (!keepOpen) drawer.classList.add("open");
-    else drawer.classList.add("open");
+    drawer.classList.add("open");
   }
-  document.getElementById("drClose").addEventListener("click", function(){
+  function closeDrawer(){
     drawer.classList.remove("open"); selected = null;
     map.querySelectorAll(".sc").forEach(function(el){ el.classList.remove("sel"); });
-  });
+  }
+  document.getElementById("drClose").addEventListener("click", closeDrawer);
 
   function renderHealth(data, jeop){
     var breaches = [], jl = [], risks = [];
+    var unread = [];
     NODES.forEach(function(nd){
-      if (nd.optional){ if (data[nd.key].verdict!=="good") risks.push(nd.name); return; }
-      var v = data[nd.key].verdict;
+      var v = verd(data[nd.key]);
+      if (nd.optional){ if (v!=="good" && v!=="none") risks.push(nd.name); return; }
       if (v==="bad") breaches.push(nd.name);
       else if (jeop[nd.key]) jl.push(nd.name);
       else if (v==="warn") risks.push(nd.name);
+      else if (v==="none") unread.push(nd.name);
     });
     var strip = document.getElementById("healthStrip");
     var badge, cls;
@@ -554,6 +562,7 @@ html,body{margin:0;padding:0}
     } else {
       txt = "The line and the flywheel are both on track. This is what healthy looks like.";
     }
+    if (unread.length) txt += " No honest read yet for: "+unread.join(", ")+".";
     strip.innerHTML = '<span class="hv '+cls+'">'+badge+'</span><span class="ht">'+txt+'</span>';
   }
 
@@ -570,10 +579,11 @@ html,body{margin:0;padding:0}
   }
 
   function showTip(nd, d, isJeop, ev){
-    var col = d.verdict==="good" ? "var(--good)" : d.verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    var dv = verd(d);
+    var col = dv==="good" ? "var(--good)" : dv==="warn" ? "var(--warn)" : dv==="bad" ? "var(--bad)" : "var(--muted)";
     tip.innerHTML =
-      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+d.grade+'</span></div>'+
-      '<div class="t-vd" style="color:'+col+'">'+WORD[d.verdict]+(nd.optional?" · optional bypass":"")+(nd.loop?" · on the flywheel":"")+'</div>'+
+      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+(d.grade==null?"–":d.grade)+'</span></div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[dv]+(nd.optional?" · optional bypass":"")+(nd.loop?" · on the flywheel":"")+'</div>'+
       '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
       '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
       '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
@@ -600,7 +610,7 @@ html,body{margin:0;padding:0}
   }
   document.getElementById("cpOpen").addEventListener("click", function(){ setPop(true); });
   document.querySelector(".pop-head .pop-x").addEventListener("click", function(){ setPop(false); });
-  document.addEventListener("keydown", function(ev){ if (ev.key==="Escape" && drawer.classList.contains("open")){ drawer.classList.remove("open"); selected=null; } else if (ev.key==="Escape"){ setPop(false); } });
+  document.addEventListener("keydown", function(ev){ if (ev.key!=="Escape") return; if (drawer.classList.contains("open")) closeDrawer(); else setPop(false); });
 
   var app = document.getElementById("app");
   var themeBtn = document.getElementById("themeBtn");
