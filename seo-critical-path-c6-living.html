@@ -100,9 +100,9 @@ html,body{margin:0;padding:0}
 @keyframes roll{to{stroke-dashoffset:-10}}
 .exec-app .tk.byp{stroke:var(--track);stroke-width:2;stroke-dasharray:1 7}
 .exec-app .dot{transition:opacity .25s}
-.exec-app .dot{fill:var(--card)}
-.exec-app .dot.g{stroke:var(--good);stroke-width:2.25}
-.exec-app .dot.w{stroke:var(--warn);stroke-width:2.25}
+.exec-app .dot{fill:var(--card);opacity:.55}
+.exec-app .dot.g{stroke:var(--good);stroke-width:1.5}
+.exec-app .dot.w{stroke:var(--warn);stroke-width:1.5}
 /* hover focus: dim everything not connected to the hovered card */
 .exec-app svg.focus .tk:not(.base):not(.lit){opacity:.18}
 .exec-app svg.focus .dot:not(.lit){opacity:.12}
@@ -388,10 +388,10 @@ html,body{margin:0;padding:0}
     EDGES.forEach(function(e){
       var v = data[e.from].verdict;
       if (v==="bad") return;
-      var dur = v==="good" ? 2.6 : 5.2;
+      var dur = v==="good" ? 4.5 : 8;
       var p = edgePath(e);
-      for (var i=0;i<2;i++){
-        s += '<circle class="dot '+VC[v]+'" data-e="'+edgeId(e)+'" r="3.5">'+
+      for (var i=0;i<1;i++){
+        s += '<circle class="dot '+VC[v]+'" data-e="'+edgeId(e)+'" r="2.75">'+
           '<animateMotion dur="'+dur+'s" begin="-'+(i*dur/2)+'s" repeatCount="indefinite" path="'+p+'"/></circle>';
       }
     });
