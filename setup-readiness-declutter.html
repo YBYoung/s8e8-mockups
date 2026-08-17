@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup Readiness drawer: declutter options</title>
+<style>
+  body{margin:0;background:#FAF9F7;color:#1c1917;font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 24px 80px}
+  .wrap{max-width:1280px;margin:0 auto}
+  h1{font-size:22px;font-weight:600;margin:0 0 4px}
+  .sub{color:#78716c;margin:0 0 28px;font-size:14px}
+  section{background:#fff;border:1px solid rgba(231,229,228,.6);border-radius:6px;padding:20px;margin-bottom:24px}
+  h2{font-size:15px;font-weight:600;margin:0 0 2px}
+  .tag{display:inline-block;border-radius:4px;padding:1px 8px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:2px}
+  .tag.rec{background:#d1fae5;color:#047857}
+  .note{color:#57534e;font-size:13px;margin:4px 0 14px}
+  img{width:100%;height:auto;border:1px solid rgba(231,229,228,.8);border-radius:4px;display:block}
+  .pair{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:1100px){.pair{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Setup Readiness drawer: declutter options</h1>
+  <p class="sub">Live screenshots from the local app (real data, 27 clients). Nothing shipped yet; pick a direction.</p>
+
+  <section>
+    <h2>Current (live today)</h2>
+    <p class="note">Dashed &ldquo;no task&rdquo; chips repeat up to four per row, and &ldquo;&middot; Unassigned&rdquo; appears at full weight in nearly every red chip. The Asana link column gets pushed off the right edge.</p>
+    <img src="img/sr-current.png" alt="Current drawer">
+  </section>
+
+  <section>
+    <h2>Variant A: quiet the noise</h2>
+    <p class="note">&ldquo;no task&rdquo; becomes a faint dash (hover says &ldquo;No task in Asana&rdquo;); &ldquo;&middot; Unassigned&rdquo; stays but drops to muted weight. More explicit, still fairly wide.</p>
+    <img src="img/sr-variant-a.png" alt="Variant A">
+  </section>
+
+  <section>
+    <h2>Variant B: drop the repeated &ldquo;Unassigned&rdquo;<span class="tag rec">recommended</span></h2>
+    <p class="note">Same quiet dashes, and a bare age chip (&ldquo;542d&rdquo;) simply means unassigned; a muted first name shows only when someone owns the task (&ldquo;164d &middot; Soleil&rdquo;). Every column fits without side-scrolling, and the red chips become the only thing the eye lands on. MS access chips unchanged.</p>
+    <div class="pair">
+      <img src="img/sr-variant-b.png" alt="Variant B light">
+      <img src="img/sr-variant-b-dark.png" alt="Variant B dark">
+    </div>
+  </section>
+</div>
+</body>
+</html>
