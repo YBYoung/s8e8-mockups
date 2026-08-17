@@ -55,7 +55,17 @@ html,body{margin:0;padding:0}
 .exec-app .tb-theme:hover{color:var(--rail-ink)}
 .exec-app .rainbow{height:3px;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899)}
 .exec-app .mockstrip{background:var(--chip);color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:9px;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line)}
-.exec-app .behind{padding:26px 30px;max-width:1180px;margin:0 auto;width:100%;filter:blur(2px);opacity:.55;pointer-events:none}
+.exec-app .behind{padding:26px 30px 60px;max-width:1180px;margin:0 auto;width:100%}
+.exec-app .bh-t{font:800 30px/1 var(--disp);text-transform:uppercase;letter-spacing:-.01em;margin:0;color:var(--ink)}
+.exec-app .bh-sub{color:var(--sub);font-size:13.5px;margin-top:7px}
+.exec-app .bh-ctl{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px}
+.exec-app .bh-seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:4px;gap:2px}
+.exec-app .bh-seg i{font-style:normal;font-family:var(--body);font-size:13px;font-weight:600;color:var(--sub);padding:8px 14px;border-radius:8px}
+.exec-app .bh-seg i.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.exec-app .cp-btn{display:inline-flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 15px;font:600 12.5px var(--body);color:var(--ink);cursor:pointer;box-shadow:var(--shadow)}
+.exec-app .cp-btn:hover{border-color:var(--sub)}
+.exec-app .cp-btn svg{flex:none;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round}
+.exec-app .cp-btn .dotf{fill:var(--ink);stroke:none}
 .exec-app .bh-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-top:18px}
 .exec-app .bh-line{height:12px;border-radius:4px;background:var(--chip);margin-top:10px}
 .exec-app .scrim{position:fixed;inset:0;background:rgba(10,10,12,.45);z-index:8}
@@ -189,11 +199,20 @@ html,body{margin:0;padding:0}
   <div class="rainbow"></div>
   <div class="mockstrip">Mockup · Option C6 · Living Flywheel · sample data</div>
 
-  <div class="behind" aria-hidden="true">
-    <div class="bh-card"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
-    <div class="bh-card"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
+  <div class="behind">
+    <h1 class="bh-t">Executive Report</h1>
+    <div class="bh-sub">How the SEO practice is doing · August 17, 2026</div>
+    <div class="bh-ctl">
+      <div class="bh-seg" aria-hidden="true"><i class="on">This quarter</i><i>Last quarter</i><i>This month</i><i>YTD</i></div>
+      <button class="cp-btn" id="cpOpen" type="button" aria-haspopup="dialog">
+        <svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><circle class="dotf" cx="2.2" cy="7.5" r="1.7"/><path d="M4.2 7.5h2.3"/><circle cx="10.4" cy="7.5" r="3.4"/></svg>
+        Critical Path
+      </button>
+    </div>
+    <div class="bh-card" aria-hidden="true"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
+    <div class="bh-card" aria-hidden="true"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
   </div>
-  <div class="scrim" aria-hidden="true"></div>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
 
   <div class="pop" role="dialog" aria-modal="true" aria-label="SEO Critical Path">
     <div class="pop-card">
@@ -202,7 +221,7 @@ html,body{margin:0;padding:0}
           <h2>SEO Critical Path</h2>
           <div class="pop-sub">The line runs once per piece of work: intake, plan, produce. Then everything feeds the flywheel, the phase that repeats every cycle. Dots flow where work is moving; flow stops where it is not.</div>
         </div>
-        <button class="pop-x" type="button" title="In the app: closes back to the report">×</button>
+        <button class="pop-x" type="button" title="Close · back to the report">×</button>
       </div>
 
       <div class="pop-body">
@@ -572,6 +591,16 @@ html,body{margin:0;padding:0}
     tip.style.left=x+"px"; tip.style.top=y+"px";
   }
   function hideTip(){ tip.style.display="none"; }
+
+  var popEl = document.querySelector(".pop");
+  var scrimEl = document.getElementById("scrim");
+  function setPop(open){
+    popEl.style.display = open ? "grid" : "none";
+    scrimEl.style.display = open ? "block" : "none";
+  }
+  document.getElementById("cpOpen").addEventListener("click", function(){ setPop(true); });
+  document.querySelector(".pop-head .pop-x").addEventListener("click", function(){ setPop(false); });
+  document.addEventListener("keydown", function(ev){ if (ev.key==="Escape" && drawer.classList.contains("open")){ drawer.classList.remove("open"); selected=null; } else if (ev.key==="Escape"){ setPop(false); } });
 
   var app = document.getElementById("app");
   var themeBtn = document.getElementById("themeBtn");
