@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Critical Path · Option C · Metro Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Option C: "Metro Map". The path drawn as a transit line with
+   stations, a split through production, and an optional bypass
+   loop. Exec report tokens, light + dark. Sample data only.
+   ================================================================ */
+html,body{margin:0;padding:0}
+.exec-app{
+  --rail:#0A0A0B; --rail-ink:#F4F5F7; --rail-dim:#7C8291;
+  --page:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --chip:#F2F4F8;
+  --blue:#1FA8E0;
+  --good:#0F9D6E; --good-bg:#E7F6EF;
+  --warn:#E0912F; --warn-bg:#FBF0DF;
+  --bad:#E4483F; --bad-bg:#FBE7E5;
+  --track:#D4D9E3; --shadow:0 1px 2px rgba(17,20,28,.05);
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Arial,sans-serif;
+  background:var(--page); color:var(--ink); font-family:var(--body);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+@media (prefers-color-scheme:dark){
+  .exec-app:not([data-theme="light"]){
+    --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+    --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+    --bad:#E4574D; --bad-bg:#2E1917; --track:#333A48;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.exec-app[data-theme="dark"]{
+  --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+  --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+  --bad:#E4574D; --bad-bg:#2E1917; --track:#333A48;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+.exec-app *{box-sizing:border-box}
+.exec-app .num{font-variant-numeric:tabular-nums}
+.exec-app .topbar{background:var(--rail);color:var(--rail-ink);display:flex;align-items:center;justify-content:space-between;padding:13px 30px;position:sticky;top:0;z-index:5}
+.exec-app .tb-brand{display:flex;align-items:center;gap:14px}
+.exec-app .tb-logo{font:800 15px/1 var(--disp);letter-spacing:.06em;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exec-app .tb-tag{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px;color:var(--rail-dim);border-left:1px solid #2a2a2e;padding-left:14px}
+.exec-app .tb-theme{border:0;background:transparent;cursor:pointer;color:var(--rail-dim);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding:4px}
+.exec-app .tb-theme:hover{color:var(--rail-ink)}
+.exec-app .rainbow{height:3px;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899)}
+.exec-app .mockstrip{background:var(--chip);color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:9px;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line)}
+.exec-app .behind{padding:26px 30px;max-width:1180px;margin:0 auto;width:100%;filter:blur(2px);opacity:.55;pointer-events:none}
+.exec-app .bh-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-top:18px}
+.exec-app .bh-line{height:12px;border-radius:4px;background:var(--chip);margin-top:10px}
+.exec-app .scrim{position:fixed;inset:0;background:rgba(10,10,12,.45);z-index:8}
+
+.exec-app .pop{position:fixed;inset:0;z-index:9;display:grid;place-items:center;padding:22px}
+.exec-app .pop-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(10,12,18,.35);width:min(1180px,100%);max-height:calc(100vh - 44px);display:flex;flex-direction:column;overflow:hidden}
+.exec-app .pop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 24px 0;flex-wrap:wrap}
+.exec-app .pop-head h2{font:800 17px/1.1 var(--body);margin:0;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.exec-app .pop-sub{color:var(--sub);font-size:12.5px;margin-top:6px;max-width:66ch;line-height:1.5}
+.exec-app .pop-x{border:0;background:var(--chip);color:var(--sub);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1;flex:none}
+.exec-app .pop-x:hover{color:var(--ink)}
+.exec-app .pop-body{overflow:auto;padding:0 24px 22px}
+
+.exec-app .ctl{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px}
+.exec-app .seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:4px;gap:2px}
+.exec-app .seg button{font-family:var(--body);font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:7px 13px;border-radius:8px;cursor:pointer}
+.exec-app .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.exec-app .seg-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.exec-app .health{display:flex;align-items:center;gap:16px;background:var(--chip);border-radius:12px;padding:13px 16px;margin-top:14px;flex-wrap:wrap}
+.exec-app .health .hv{font:800 21px/1 var(--body);white-space:nowrap}
+.exec-app .health .hv.ok{color:var(--good)} .exec-app .health .hv.warn{color:var(--warn)} .exec-app .health .hv.bad{color:var(--bad)}
+.exec-app .health .ht{font-size:12.5px;color:var(--sub);line-height:1.5;flex:1;min-width:260px}
+.exec-app .health .ht b{color:var(--ink)}
+
+/* map */
+.exec-app .map-wrap{margin-top:16px;overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--card)}
+.exec-app .map{position:relative;width:1092px;height:520px}
+.exec-app .map svg{position:absolute;inset:0;width:100%;height:100%}
+.exec-app .seg-track{fill:none;stroke-width:7;stroke-linecap:round}
+.exec-app .seg-track.g{stroke:var(--good)} .exec-app .seg-track.w{stroke:var(--warn)} .exec-app .seg-track.b{stroke:var(--bad)}
+.exec-app .seg-track.hot{stroke-dasharray:1 14;stroke-width:7;animation:roll 1s linear infinite}
+@keyframes roll{to{stroke-dashoffset:-15}}
+@media (prefers-reduced-motion:reduce){.exec-app .seg-track.hot{animation:none}}
+.exec-app .seg-bypass{fill:none;stroke:var(--track);stroke-width:4;stroke-dasharray:7 7;stroke-linecap:round}
+.exec-app .st-ring{fill:var(--card);stroke-width:4.5}
+.exec-app .st-ring.g{stroke:var(--good)} .exec-app .st-ring.w{stroke:var(--warn)} .exec-app .st-ring.b{stroke:var(--bad)}
+.exec-app .st-jeop{fill:none;stroke:var(--warn);stroke-width:1.75;stroke-dasharray:4 4}
+.exec-app .st-pulse{fill:none;stroke:var(--bad);stroke-width:2;opacity:.7;animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.6);opacity:.8}100%{transform:scale(1.5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.exec-app .st-pulse{animation:none;opacity:.35}}
+.exec-app .st-x{font:800 11px var(--body)}
+.exec-app .st-x.g{fill:var(--good)} .exec-app .st-x.w{fill:var(--warn)} .exec-app .st-x.b{fill:var(--bad)}
+
+/* station labels */
+.exec-app .slab{position:absolute;width:150px;cursor:pointer;background:transparent;border:0;text-align:left;font-family:var(--body);padding:0}
+.exec-app .slab .snm{display:block;font:700 12.5px/1.2 var(--body);color:var(--ink)}
+.exec-app .slab .srow{display:flex;align-items:center;gap:6px;margin-top:3px}
+.exec-app .slab .sgr{font:800 14px/1 var(--body);color:var(--ink)}
+.exec-app .slab .svd{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px}
+.exec-app .slab .svd.g{color:var(--good);background:var(--good-bg)} .exec-app .slab .svd.w{color:var(--warn);background:var(--warn-bg)} .exec-app .slab .svd.b{color:var(--bad);background:var(--bad-bg)}
+.exec-app .slab .sjp{display:block;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--warn);margin-top:3px}
+.exec-app .slab .sopt{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.exec-app .slab.right{text-align:right}
+.exec-app .slab.right .srow{justify-content:flex-end}
+.exec-app .map-note{position:absolute;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+.exec-app .legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--sub);font-size:11.5px}
+.exec-app .legend .li{display:inline-flex;align-items:center;gap:7px}
+.exec-app .legend .tk{width:22px;height:0;border-top:5px solid var(--good);border-radius:3px;flex:none}
+.exec-app .legend .tk.w{border-color:var(--warn)} .exec-app .legend .tk.b{border-color:var(--bad)}
+.exec-app .legend .tk.o{border-top:3px dashed var(--track)}
+.exec-app .legend .ring{width:13px;height:13px;border-radius:50%;border:3px solid var(--good);background:var(--card);flex:none}
+.exec-app .legend .ring.j{border:2px dashed var(--warn)}
+
+.exec-app .pop-foot{margin-top:14px;font-size:11.5px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line-soft);padding-top:11px}
+.exec-app .pop-foot b{color:var(--sub);font-weight:600}
+
+.exec-app .tip{position:fixed;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(10,12,18,.22);padding:11px 13px;width:250px;pointer-events:none;display:none}
+.exec-app .tip .t-nm{font:700 12.5px/1.2 var(--body);color:var(--ink);display:flex;justify-content:space-between;gap:10px}
+.exec-app .tip .t-vd{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+.exec-app .tip .t-row{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--sub);margin-top:6px}
+.exec-app .tip .t-row b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+.exec-app .tip .t-jp{margin-top:8px;font-size:10.5px;color:var(--warn);line-height:1.4;border-top:1px solid var(--line-soft);padding-top:7px}
+.exec-app .tip .t-cta{margin-top:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="exec-app" id="app">
+  <div class="topbar">
+    <div class="tb-brand"><span class="tb-logo">S8E8</span><span class="tb-tag">Executive Report</span></div>
+    <button class="tb-theme" id="themeBtn" type="button">Theme: Auto</button>
+  </div>
+  <div class="rainbow"></div>
+  <div class="mockstrip">Mockup · Option C · Metro Map · sample data</div>
+
+  <div class="behind" aria-hidden="true">
+    <div class="bh-card"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
+    <div class="bh-card"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
+  </div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="pop" role="dialog" aria-modal="true" aria-label="SEO Critical Path">
+    <div class="pop-card">
+      <div class="pop-head">
+        <div>
+          <h2>SEO Critical Path</h2>
+          <div class="pop-sub">One line from intake to refinement. Every station is a report-card grade; the track between stations takes the color of the work feeding forward. A breach turns its track red, and every station downstream rides on a failing line.</div>
+        </div>
+        <button class="pop-x" type="button" title="In the app: closes back to the report">×</button>
+      </div>
+
+      <div class="pop-body">
+        <div class="ctl">
+          <div class="seg" id="scenarioSeg" role="tablist" aria-label="Demo scenario"></div>
+          <span class="seg-note">Demo scenarios · real version reads live grades</span>
+        </div>
+
+        <div class="health" id="healthStrip"></div>
+
+        <div class="map-wrap">
+          <div class="map" id="map">
+            <svg id="tracks" aria-hidden="true"></svg>
+            <div class="map-note" style="left:20px;top:16px">SEO line · intake → refinement</div>
+            <div class="map-note" style="left:20px;top:434px">Support line · independent</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="li"><span class="tk"></span> Track healthy</span>
+          <span class="li"><span class="tk w"></span> Track slowing</span>
+          <span class="li"><span class="tk b"></span> Track failing</span>
+          <span class="li"><span class="tk o"></span> Optional bypass</span>
+          <span class="li"><span class="ring j"></span> Station in jeopardy</span>
+        </div>
+
+        <div class="pop-foot">
+          <b>Reading the map:</b> station color is the category's existing grade, nothing is recalculated. The Migrations bypass between Onboarding and Strategy is optional: skipping it is normally fine since the dev team increasingly handles migrations themselves, so a slow bypass never fails the main line. Support runs as its own line at the bottom, off the path. A dashed ring means the station itself is fine but it is riding on a failing track. Hover a station for its numbers; clicking opens the Task Hub filtered to that category.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* stations: x,y = circle center. lp = label position (above|below|left lane) */
+  var NODES = [
+    {key:"onboarding", name:"Onboarding", x:96,  y:260, wt:2, lp:"below"},
+    {key:"migrations", name:"Migrations", x:201, y:128, wt:4, lp:"above", optional:true},
+    {key:"strategy",   name:"Strategy",   x:306, y:260, wt:4, lp:"below"},
+    {key:"calendars",  name:"Calendars",  x:451, y:260, wt:4, lp:"below"},
+    {key:"content_production", name:"Content Production", x:626, y:165, wt:5, lp:"above"},
+    {key:"service_pages", name:"Service Pages", x:626, y:355, wt:5, lp:"below"},
+    {key:"audits",     name:"Audits",     x:801, y:260, wt:3, lp:"below"},
+    {key:"on_page",    name:"On-page",    x:976, y:165, wt:3, lp:"above"},
+    {key:"listing_reviews", name:"Listing Reviews", x:976, y:355, wt:2, lp:"below"},
+    {key:"support",    name:"Support",    x:150, y:470, wt:1, lp:"right-of", aux:true}
+  ];
+  var EDGES = [
+    {from:"onboarding", to:"strategy"},
+    {from:"strategy",   to:"calendars"},
+    {from:"calendars",  to:"content_production"},
+    {from:"calendars",  to:"service_pages"},
+    {from:"content_production", to:"audits"},
+    {from:"service_pages",      to:"audits"},
+    {from:"audits", to:"on_page"},
+    {from:"audits", to:"listing_reviews"}
+  ];
+
+  function n(g,v,l,d,c,f){ return {grade:g, verdict:v, late:l, deep:d, court:c, fc:f}; }
+  var SCENARIOS = {
+    healthy:{label:"Healthy", data:{
+      onboarding:n(94,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(97,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(91,"good",1,"0.3","1 ours · 0 client","clears this week"), calendars:n(93,"good",0,"0.0","0 ours · 0 client","clear"),
+      content_production:n(90,"good",2,"0.4","1 ours · 1 client","keeping pace"), service_pages:n(92,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(95,"good",0,"0.0","0 ours · 0 client","clear"), on_page:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"),
+      listing_reviews:n(96,"good",0,"0.0","0 ours · 0 client","clear"), support:n(90,"good",1,"0.2","1 ours · 0 client","keeping pace")
+    }},
+    today:{label:"Today (sample)", data:{
+      onboarding:n(93,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(95,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(90,"good",1,"0.4","1 ours · 0 client","keeping pace"), calendars:n(58,"bad",14,"3.4","11 ours · 3 client","not keeping pace"),
+      content_production:n(88,"good",3,"0.6","2 ours · 1 client","keeping pace"), service_pages:n(91,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(72,"warn",9,"1.8","9 ours · 0 client","clears by Sep 12"), on_page:n(87,"good",2,"0.5","2 ours · 0 client","keeping pace"),
+      listing_reviews:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"), support:n(78,"warn",5,"1.1","5 ours · 0 client","clears by Sep 2")
+    }},
+    rough:{label:"Rough patch", data:{
+      onboarding:n(61,"bad",6,"2.6","6 ours · 0 client","not keeping pace"), migrations:n(82,"warn",2,"0.9","2 ours · 0 client","clears by Sep 10"),
+      strategy:n(63,"bad",8,"2.4","7 ours · 1 client","not keeping pace"), calendars:n(55,"bad",17,"3.9","13 ours · 4 client","not keeping pace"),
+      content_production:n(70,"warn",11,"1.9","8 ours · 3 client","clears by Oct 3"), service_pages:n(74,"warn",7,"1.5","5 ours · 2 client","clears by Sep 24"),
+      audits:n(60,"bad",13,"2.8","13 ours · 0 client","not keeping pace"), on_page:n(68,"warn",6,"1.7","6 ours · 0 client","clears by Sep 30"),
+      listing_reviews:n(77,"warn",4,"1.2","4 ours · 0 client","clears by Sep 18"), support:n(58,"bad",9,"2.7","9 ours · 0 client","not keeping pace")
+    }}
+  };
+  var WORD = {good:"On track", warn:"At risk", bad:"Behind"};
+  var VC = {good:"g", warn:"w", bad:"b"};
+
+  var map = document.getElementById("map");
+  var svg = document.getElementById("tracks");
+  var tip = document.getElementById("tip");
+  var current = "today";
+
+  function nodeByKey(k){ for (var i=0;i<NODES.length;i++) if (NODES[i].key===k) return NODES[i]; return null; }
+
+  function jeopardySet(data){
+    var out = {}, queue = [], seen = {};
+    NODES.forEach(function(nd){ if (!nd.optional && !nd.aux && data[nd.key].verdict==="bad") queue.push(nd.key); });
+    while (queue.length){
+      var k = queue.shift();
+      if (seen[k]) continue; seen[k] = true;
+      EDGES.forEach(function(e){ if (e.from===k){ out[e.to] = true; queue.push(e.to); } });
+    }
+    return out;
+  }
+
+  function trackPath(e){
+    var a = nodeByKey(e.from), b = nodeByKey(e.to);
+    if (a.y === b.y) return "M"+a.x+" "+a.y+" L "+b.x+" "+b.y;
+    /* metro-style 45-degree elbow */
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var run = Math.abs(dy); /* diagonal consumes |dy| horizontal */
+    var straight = dx - run;
+    var x1 = a.x + straight*0.5;
+    var x2 = x1 + run;
+    return "M"+a.x+" "+a.y+" L "+x1+" "+a.y+" L "+x2+" "+b.y+" L "+b.x+" "+b.y;
+  }
+
+  function render(){
+    var data = SCENARIOS[current].data;
+    var jeop = jeopardySet(data);
+
+    var s = "";
+    /* base track underlay */
+    EDGES.forEach(function(e){
+      s += '<path class="seg-track" style="stroke:var(--track)" d="'+trackPath(e)+'"/>';
+    });
+    /* colored track by source status */
+    EDGES.forEach(function(e){
+      var v = data[e.from].verdict;
+      s += '<path class="seg-track '+VC[v]+'" d="'+trackPath(e)+'"/>';
+      if (v==="bad") s += '<path class="seg-track b hot" style="stroke:var(--card);stroke-width:2.5" d="'+trackPath(e)+'"/>';
+    });
+    /* optional bypass loop: onboarding up over migrations down to strategy */
+    var ob = nodeByKey("onboarding"), mg = nodeByKey("migrations"), st = nodeByKey("strategy");
+    s += '<path class="seg-bypass" d="M'+ob.x+' '+ob.y+' L '+ob.x+' '+(mg.y+42)+' L '+(ob.x+42)+' '+mg.y+' L '+(st.x-42)+' '+mg.y+' L '+st.x+' '+(mg.y+42)+' L '+st.x+' '+st.y+'"/>';
+    /* support line: independent stub */
+    var sp = nodeByKey("support");
+    var sv = data.support.verdict;
+    s += '<path class="seg-track" style="stroke:var(--track)" d="M'+(sp.x-70)+' '+sp.y+' L '+(sp.x+120)+' '+sp.y+'"/>';
+    s += '<path class="seg-track '+VC[sv]+'" d="M'+(sp.x-70)+' '+sp.y+' L '+(sp.x+120)+' '+sp.y+'"/>';
+
+    /* stations */
+    NODES.forEach(function(nd){
+      var d = data[nd.key];
+      var vc = VC[d.verdict];
+      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      if (d.verdict==="bad") s += '<circle class="st-pulse" cx="'+nd.x+'" cy="'+nd.y+'" r="15" style="transform-origin:'+nd.x+'px '+nd.y+'px"/>';
+      s += '<circle class="st-ring '+vc+'" cx="'+nd.x+'" cy="'+nd.y+'" r="10"/>';
+      if (isJeop) s += '<circle class="st-jeop" cx="'+nd.x+'" cy="'+nd.y+'" r="16.5"/>';
+      /* status glyph inside the station */
+      var glyph = d.verdict==="good" ? "✓" : d.verdict==="warn" ? "!" : "✕";
+      s += '<text class="st-x '+vc+'" x="'+nd.x+'" y="'+(nd.y+4)+'" text-anchor="middle">'+glyph+'</text>';
+    });
+    svg.setAttribute("viewBox","0 0 1092 520");
+    svg.innerHTML = s;
+
+    /* labels */
+    map.querySelectorAll(".slab").forEach(function(el){ el.remove(); });
+    NODES.forEach(function(nd){
+      var d = data[nd.key];
+      var vc = VC[d.verdict];
+      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "slab";
+      el.setAttribute("aria-label", nd.name+": "+WORD[d.verdict]+", grade "+d.grade+(isJeop?", in jeopardy from upstream":""));
+      var sub = d.late>0 ? (d.late+" late") : "clear";
+      el.innerHTML =
+        '<span class="snm">'+nd.name+'</span>'+
+        '<span class="srow"><span class="sgr num">'+d.grade+'</span><span class="svd '+vc+'">'+WORD[d.verdict]+' · '+sub+'</span></span>'+
+        (isJeop ? '<span class="sjp">⚠ riding a failing track</span>' : '')+
+        (nd.optional ? '<span class="sopt">optional bypass · dev team covers</span>' : '')+
+        (nd.aux ? '<span class="sopt">independent line · off the path</span>' : '');
+      if (nd.lp==="above"){ el.style.left = (nd.x-75)+"px"; el.style.bottom = (520-nd.y+22)+"px"; el.style.textAlign = "center"; }
+      else if (nd.lp==="right-of"){ el.style.left = (nd.x+140)+"px"; el.style.top = (nd.y-18)+"px"; }
+      else { el.style.left = (nd.x-75)+"px"; el.style.top = (nd.y+22)+"px"; el.style.textAlign = "center"; }
+      el.addEventListener("mouseenter", function(ev){ showTip(nd, d, isJeop, ev); });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", hideTip);
+      map.appendChild(el);
+    });
+
+    renderHealth(data, jeop);
+    renderSeg();
+  }
+
+  function renderHealth(data, jeop){
+    var breaches = [], jl = [], risks = [];
+    NODES.forEach(function(nd){
+      if (nd.aux || nd.optional){ if (data[nd.key].verdict!=="good") risks.push(nd.name); return; }
+      var v = data[nd.key].verdict;
+      if (v==="bad") breaches.push(nd.name);
+      else if (jeop[nd.key]) jl.push(nd.name);
+      else if (v==="warn") risks.push(nd.name);
+    });
+    var strip = document.getElementById("healthStrip");
+    var badge, cls;
+    if (breaches.length===0 && risks.length===0){ badge = "ALL CLEAR"; cls = "ok"; }
+    else if (breaches.length===0){ badge = risks.length+" AT RISK"; cls = "warn"; }
+    else { badge = breaches.length+(breaches.length===1?" BREACH":" BREACHES"); cls = "bad"; }
+    var txt;
+    if (breaches.length){
+      txt = "<b>"+breaches.join(", ")+"</b> "+(breaches.length===1?"is":"are")+" behind";
+      if (jl.length) txt += ", so <b>"+jl.join(", ")+"</b> "+(jl.length===1?"is":"are")+" riding a failing line";
+      txt += ".";
+      if (risks.length) txt += " Watch on their own numbers: "+risks.join(", ")+".";
+    } else if (risks.length){
+      txt = "No breaches. Watch <b>"+risks.join(", ")+"</b>: at risk on their own numbers.";
+    } else {
+      txt = "Every station on the line is on track. This is what healthy looks like.";
+    }
+    strip.innerHTML = '<span class="hv '+cls+'">'+badge+'</span><span class="ht">'+txt+'</span>';
+  }
+
+  function renderSeg(){
+    var seg = document.getElementById("scenarioSeg");
+    var html = "";
+    Object.keys(SCENARIOS).forEach(function(k){
+      html += '<button type="button" role="tab" aria-selected="'+(k===current)+'" class="'+(k===current?"on":"")+'" data-s="'+k+'">'+SCENARIOS[k].label+'</button>';
+    });
+    seg.innerHTML = html;
+    seg.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){ current = b.getAttribute("data-s"); render(); });
+    });
+  }
+
+  function showTip(nd, d, isJeop, ev){
+    var col = d.verdict==="good" ? "var(--good)" : d.verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    tip.innerHTML =
+      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+d.grade+'</span></div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[d.verdict]+(nd.optional?" · optional bypass":"")+(nd.aux?" · independent line":"")+'</div>'+
+      '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
+      '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
+      '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
+      '<div class="t-row"><span>Forecast</span><b>'+d.fc+'</b></div>'+
+      (isJeop ? '<div class="t-jp">⚠ Riding a failing track: an upstream station is behind, so this one may run dry even though its numbers hold.</div>' : '')+
+      '<div class="t-cta">Click · open Task Hub filtered here</div>';
+    tip.style.display = "block";
+    moveTip(ev);
+  }
+  function moveTip(ev){
+    var pad=14, w=250, h=tip.offsetHeight||170;
+    var x=ev.clientX+pad, y=ev.clientY+pad;
+    if (x+w > window.innerWidth-8) x = ev.clientX-w-pad;
+    if (y+h > window.innerHeight-8) y = ev.clientY-h-pad;
+    tip.style.left=x+"px"; tip.style.top=y+"px";
+  }
+  function hideTip(){ tip.style.display="none"; }
+
+  var app = document.getElementById("app");
+  var themeBtn = document.getElementById("themeBtn");
+  var themes = ["auto","light","dark"], ti = 0;
+  themeBtn.addEventListener("click", function(){
+    ti = (ti+1)%3;
+    var t = themes[ti];
+    if (t==="auto") app.removeAttribute("data-theme"); else app.setAttribute("data-theme", t);
+    themeBtn.textContent = "Theme: "+t.charAt(0).toUpperCase()+t.slice(1);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Critical Path · Option B · Systems Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Option B: "Systems Console". The popup itself is a dark
+   instrument panel regardless of app theme, like ship diagnostics
+   in a game. Exec report chrome around it. Sample data only.
+   ================================================================ */
+html,body{margin:0;padding:0}
+.exec-app{
+  --rail:#0A0A0B; --rail-ink:#F4F5F7; --rail-dim:#7C8291;
+  --page:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --chip:#F2F4F8;
+  --blue:#1FA8E0;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Arial,sans-serif;
+  /* console palette (fixed dark, it is an instrument) */
+  --k-bg:#0B0E13; --k-panel:#10141B; --k-panel2:#141924; --k-line:#232B38; --k-line2:#1A2029;
+  --k-ink:#E8EBF1; --k-sub:#9AA3B5; --k-mut:#5D6678;
+  --k-good:#2BB984; --k-good-dim:#173428; --k-warn:#E8A23D; --k-warn-dim:#33270F; --k-bad:#F05B4F; --k-bad-dim:#391714;
+  background:var(--page); color:var(--ink); font-family:var(--body);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+.exec-app *{box-sizing:border-box}
+.exec-app .topbar{background:var(--rail);color:var(--rail-ink);display:flex;align-items:center;justify-content:space-between;padding:13px 30px;position:sticky;top:0;z-index:5}
+.exec-app .tb-brand{display:flex;align-items:center;gap:14px}
+.exec-app .tb-logo{font:800 15px/1 var(--disp);letter-spacing:.06em;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exec-app .tb-tag{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px;color:var(--rail-dim);border-left:1px solid #2a2a2e;padding-left:14px}
+.exec-app .rainbow{height:3px;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899)}
+.exec-app .mockstrip{background:var(--chip);color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:9px;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line)}
+.exec-app .behind{padding:26px 30px;max-width:1180px;margin:0 auto;width:100%;filter:blur(2px);opacity:.55;pointer-events:none}
+.exec-app .bh-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px}
+.exec-app .bh-line{height:12px;border-radius:4px;background:var(--chip);margin-top:10px}
+.exec-app .scrim{position:fixed;inset:0;background:rgba(10,10,12,.55);z-index:8}
+
+/* popup shell = the console */
+.exec-app .pop{position:fixed;inset:0;z-index:9;display:grid;place-items:center;padding:22px}
+.exec-app .pop-card{background:var(--k-bg);border:1px solid #2A3140;border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.6);width:min(1180px,100%);max-height:calc(100vh - 44px);display:flex;flex-direction:column;overflow:hidden;color:var(--k-ink)}
+.exec-app .con-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid var(--k-line2);background:linear-gradient(180deg,#121722,#0E1219)}
+.exec-app .con-title{display:flex;align-items:center;gap:12px}
+.exec-app .con-title .sig{width:9px;height:9px;border-radius:50%;background:var(--k-good);box-shadow:0 0 10px var(--k-good)}
+.exec-app .con-title h2{font:800 15px/1 var(--body);margin:0;letter-spacing:.14em;text-transform:uppercase}
+.exec-app .con-title .vv{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--k-mut);text-transform:uppercase;border:1px solid var(--k-line);padding:3px 8px;border-radius:4px}
+.exec-app .pop-x{border:1px solid var(--k-line);background:transparent;color:var(--k-sub);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1}
+.exec-app .pop-x:hover{color:var(--k-ink);border-color:var(--k-sub)}
+.exec-app .pop-body{overflow:auto;padding:18px 22px 22px}
+
+/* readout row: integrity gauge + scenario tabs */
+.exec-app .readout{display:flex;align-items:stretch;gap:14px;flex-wrap:wrap}
+.exec-app .gauge{flex:1;min-width:300px;background:var(--k-panel);border:1px solid var(--k-line2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:18px}
+.exec-app .gauge .pct{font:800 34px/1 var(--body);font-variant-numeric:tabular-nums}
+.exec-app .gauge .glab{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--k-mut);margin-bottom:6px}
+.exec-app .gauge .gbar{height:8px;border-radius:4px;background:var(--k-line2);overflow:hidden;width:100%}
+.exec-app .gauge .gbar i{display:block;height:100%;border-radius:4px;transition:width .4s}
+.exec-app .gauge .gmsg{font-size:12px;color:var(--k-sub);line-height:1.45;margin-top:8px}
+.exec-app .gauge .gmsg b{color:var(--k-ink);font-weight:700}
+.exec-app .gwrap{flex:1;min-width:0}
+.exec-app .tabs{display:flex;flex-direction:column;gap:6px;justify-content:center}
+.exec-app .tabs button{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:var(--k-panel);border:1px solid var(--k-line2);color:var(--k-sub);border-radius:7px;padding:8px 14px;cursor:pointer;text-align:left;white-space:nowrap}
+.exec-app .tabs button.on{color:var(--k-ink);border-color:var(--blue);box-shadow:inset 3px 0 0 var(--blue)}
+.exec-app .tabs button:hover:not(.on){color:var(--k-ink)}
+
+/* schematic panel */
+.exec-app .schem-wrap{margin-top:14px;overflow-x:auto;border:1px solid var(--k-line2);border-radius:12px;background:
+  linear-gradient(var(--k-line2) 1px, transparent 1px),
+  linear-gradient(90deg, var(--k-line2) 1px, transparent 1px),
+  var(--k-panel);
+  background-size:44px 44px, 44px 44px, auto}
+.exec-app .schem{position:relative;width:1092px;height:520px}
+.exec-app .schem svg{position:absolute;inset:0;width:100%;height:100%}
+.exec-app .lane-lab{position:absolute;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--k-mut)}
+.exec-app .wire{fill:none;stroke-width:2;opacity:.85}
+.exec-app .wire.g{stroke:var(--k-good);opacity:.45}
+.exec-app .wire.w{stroke:var(--k-warn);opacity:.6}
+.exec-app .wire.b{stroke:var(--k-bad);stroke-width:2.5;stroke-dasharray:7 5;animation:flow 1.1s linear infinite}
+.exec-app .wire.opt{stroke:var(--k-mut);stroke-dasharray:2 5;opacity:.7;stroke-width:1.5}
+@keyframes flow{to{stroke-dashoffset:-12}}
+@media (prefers-reduced-motion:reduce){.exec-app .wire.b{animation:none}.exec-app .md.v-bad{animation:none}}
+
+/* module cards */
+.exec-app .md{position:absolute;width:150px;height:96px;border-radius:9px;border:1px solid var(--k-line);background:linear-gradient(180deg,var(--k-panel2),var(--k-panel));padding:10px 12px;cursor:pointer;text-align:left;font-family:var(--body);color:var(--k-ink)}
+.exec-app .md:hover{border-color:var(--k-sub)}
+.exec-app .md:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.exec-app .md .led{position:absolute;top:11px;right:11px;width:8px;height:8px;border-radius:50%}
+.exec-app .md.v-good .led{background:var(--k-good);box-shadow:0 0 8px var(--k-good)}
+.exec-app .md.v-warn .led{background:var(--k-warn);box-shadow:0 0 8px var(--k-warn)}
+.exec-app .md.v-bad .led{background:var(--k-bad);box-shadow:0 0 10px var(--k-bad)}
+.exec-app .md.v-good{border-color:#1F4736}
+.exec-app .md.v-warn{border-color:#5C4318}
+.exec-app .md.v-bad{border-color:#6B2620;box-shadow:0 0 22px rgba(240,91,79,.22);animation:breach 2s ease-in-out infinite}
+@keyframes breach{0%,100%{box-shadow:0 0 14px rgba(240,91,79,.16)}50%{box-shadow:0 0 26px rgba(240,91,79,.34)}}
+.exec-app .md.jeop{border-style:dashed;border-color:var(--k-warn)}
+.exec-app .md .mnm{display:block;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--k-sub);padding-right:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exec-app .md .mrow{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:7px}
+.exec-app .md .mst{font-size:10.5px;font-weight:700}
+.exec-app .md.v-good .mst{color:var(--k-good)} .exec-app .md.v-warn .mst{color:var(--k-warn)} .exec-app .md.v-bad .mst{color:var(--k-bad)}
+.exec-app .md .mgr{font:800 24px/1 var(--body);font-variant-numeric:tabular-nums}
+.exec-app .md .msub{display:block;font-family:var(--mono);font-size:8.5px;color:var(--k-mut);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exec-app .md .mbar{display:block;height:3px;border-radius:2px;background:var(--k-line2);margin-top:7px;overflow:hidden}
+.exec-app .md .mbar i{display:block;height:100%;border-radius:2px}
+.exec-app .md.v-good .mbar i{background:var(--k-good)} .exec-app .md.v-warn .mbar i{background:var(--k-warn)} .exec-app .md.v-bad .mbar i{background:var(--k-bad)}
+.exec-app .md .jtag{position:absolute;top:-8px;left:10px;background:var(--k-warn-dim);color:var(--k-warn);border:1px solid var(--k-warn);font-family:var(--mono);font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:1.5px 6px;border-radius:4px}
+.exec-app .md .otag{position:absolute;top:-8px;left:10px;background:var(--k-panel);color:var(--k-mut);border:1px solid var(--k-line);font-family:var(--mono);font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:1.5px 6px;border-radius:4px}
+
+/* aux frame for support */
+.exec-app .aux{position:absolute;border:1px dashed var(--k-line);border-radius:11px;padding:26px 14px 14px}
+.exec-app .aux .aux-lab{position:absolute;top:8px;left:14px;font-family:var(--mono);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--k-mut)}
+.exec-app .aux .md{position:relative;left:0;top:0}
+
+/* legend + foot */
+.exec-app .legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--k-sub);font-size:11px;font-family:var(--mono)}
+.exec-app .legend .li{display:inline-flex;align-items:center;gap:7px}
+.exec-app .legend .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.exec-app .legend .dot.g{background:var(--k-good);box-shadow:0 0 6px var(--k-good)}
+.exec-app .legend .dot.w{background:var(--k-warn);box-shadow:0 0 6px var(--k-warn)}
+.exec-app .legend .dot.b{background:var(--k-bad);box-shadow:0 0 6px var(--k-bad)}
+.exec-app .legend .jsw{width:14px;height:14px;border:1.5px dashed var(--k-warn);border-radius:4px;flex:none}
+.exec-app .legend .osw{width:20px;height:0;border-top:1.5px dashed var(--k-mut);flex:none}
+.exec-app .con-foot{margin-top:12px;font-size:11.5px;color:var(--k-mut);line-height:1.6;border-top:1px solid var(--k-line2);padding-top:11px}
+.exec-app .con-foot b{color:var(--k-sub);font-weight:600}
+
+/* tooltip */
+.exec-app .tip{position:fixed;z-index:20;background:var(--k-panel2);border:1px solid var(--k-line);border-radius:9px;box-shadow:0 8px 30px rgba(0,0,0,.5);padding:11px 13px;width:250px;pointer-events:none;display:none;color:var(--k-ink)}
+.exec-app .tip .t-nm{font:700 12.5px/1.2 var(--body);display:flex;justify-content:space-between;gap:10px}
+.exec-app .tip .t-vd{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+.exec-app .tip .t-row{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--k-sub);margin-top:6px}
+.exec-app .tip .t-row b{color:var(--k-ink);font-variant-numeric:tabular-nums;font-weight:600}
+.exec-app .tip .t-jp{margin-top:8px;font-size:10.5px;color:var(--k-warn);line-height:1.4;border-top:1px solid var(--k-line2);padding-top:7px}
+.exec-app .tip .t-cta{margin-top:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--k-mut)}
+</style>
+</head>
+<body>
+<div class="exec-app" id="app">
+  <div class="topbar">
+    <div class="tb-brand"><span class="tb-logo">S8E8</span><span class="tb-tag">Executive Report</span></div>
+  </div>
+  <div class="rainbow"></div>
+  <div class="mockstrip">Mockup · Option B · Systems Console · sample data</div>
+
+  <div class="behind" aria-hidden="true">
+    <div class="bh-card"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
+    <div class="bh-card"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
+  </div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="pop" role="dialog" aria-modal="true" aria-label="SEO Critical Path">
+    <div class="pop-card">
+      <div class="con-head">
+        <div class="con-title">
+          <span class="sig" id="sig"></span>
+          <h2>SEO Critical Path</h2>
+          <span class="vv">Diagnostics</span>
+        </div>
+        <button class="pop-x" type="button" title="In the app: closes back to the report">×</button>
+      </div>
+
+      <div class="pop-body">
+        <div class="readout">
+          <div class="gauge">
+            <div class="pct num" id="pct">–</div>
+            <div class="gwrap">
+              <div class="glab">Path integrity · weighted</div>
+              <div class="gbar"><i id="gfill"></i></div>
+              <div class="gmsg" id="gmsg"></div>
+            </div>
+          </div>
+          <div class="tabs" id="scenarioSeg"></div>
+        </div>
+
+        <div class="schem-wrap">
+          <div class="schem" id="schem">
+            <svg id="wires" aria-hidden="true"></svg>
+            <div class="lane-lab" style="left:16px;top:14px">Critical path · intake to refinement</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="li"><span class="dot g"></span> On track</span>
+          <span class="li"><span class="dot w"></span> At risk</span>
+          <span class="li"><span class="dot b"></span> Breach</span>
+          <span class="li"><span class="jsw"></span> Jeopardy from upstream</span>
+          <span class="li"><span class="osw"></span> Optional leg</span>
+        </div>
+
+        <div class="con-foot">
+          <b>Reading the console:</b> module color is the category's existing grade, nothing is recalculated. A breached module pulses red and its feeds go hot; everything downstream switches to a dashed jeopardy border, meaning its supply line is failing even if its own numbers hold. Migrations sits on an optional bypass between Onboarding and Strategy: skipping it is normally fine, the dev team increasingly handles migrations themselves, so a stall there never puts the main path in jeopardy. Support runs as an independent system, off the path entirely. Hover any module for its numbers; clicking opens the Task Hub filtered to that category.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NW = 140, NH = 96;
+  var NODES = [
+    {key:"onboarding", name:"Onboarding", x:16,  y:212, wt:2},
+    {key:"migrations", name:"Migrations", x:106, y:60,  wt:4, optional:true},
+    {key:"strategy",   name:"Strategy",   x:196, y:212, wt:4},
+    {key:"calendars",  name:"Calendars",  x:376, y:212, wt:4},
+    {key:"content_production", name:"Content Prod.", x:556, y:92,  wt:5},
+    {key:"service_pages", name:"Service Pages", x:556, y:332, wt:5},
+    {key:"audits",     name:"Audits",     x:736, y:212, wt:3},
+    {key:"on_page",    name:"On-page",    x:916, y:92,  wt:3},
+    {key:"listing_reviews", name:"Listing Reviews", x:916, y:332, wt:2},
+    {key:"support",    name:"Support",    x:60, y:414, wt:1, aux:true}
+  ];
+  var EDGES = [
+    {from:"onboarding", to:"migrations", opt:true},
+    {from:"migrations", to:"strategy", opt:true},
+    {from:"onboarding", to:"strategy"},
+    {from:"strategy",   to:"calendars"},
+    {from:"calendars",  to:"content_production"},
+    {from:"calendars",  to:"service_pages"},
+    {from:"content_production", to:"audits"},
+    {from:"service_pages",      to:"audits"},
+    {from:"audits", to:"on_page"},
+    {from:"audits", to:"listing_reviews"}
+  ];
+
+  function n(g,v,l,d,c,f){ return {grade:g, verdict:v, late:l, deep:d, court:c, fc:f}; }
+  var SCENARIOS = {
+    healthy:{label:"Scenario · Healthy", data:{
+      onboarding:n(94,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(97,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(91,"good",1,"0.3","1 ours · 0 client","clears this week"), calendars:n(93,"good",0,"0.0","0 ours · 0 client","clear"),
+      content_production:n(90,"good",2,"0.4","1 ours · 1 client","keeping pace"), service_pages:n(92,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(95,"good",0,"0.0","0 ours · 0 client","clear"), on_page:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"),
+      listing_reviews:n(96,"good",0,"0.0","0 ours · 0 client","clear"), support:n(90,"good",1,"0.2","1 ours · 0 client","keeping pace")
+    }},
+    today:{label:"Scenario · Today (sample)", data:{
+      onboarding:n(93,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(95,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(90,"good",1,"0.4","1 ours · 0 client","keeping pace"), calendars:n(58,"bad",14,"3.4","11 ours · 3 client","not keeping pace"),
+      content_production:n(88,"good",3,"0.6","2 ours · 1 client","keeping pace"), service_pages:n(91,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(72,"warn",9,"1.8","9 ours · 0 client","clears by Sep 12"), on_page:n(87,"good",2,"0.5","2 ours · 0 client","keeping pace"),
+      listing_reviews:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"), support:n(78,"warn",5,"1.1","5 ours · 0 client","clears by Sep 2")
+    }},
+    rough:{label:"Scenario · Rough patch", data:{
+      onboarding:n(61,"bad",6,"2.6","6 ours · 0 client","not keeping pace"), migrations:n(82,"warn",2,"0.9","2 ours · 0 client","clears by Sep 10"),
+      strategy:n(63,"bad",8,"2.4","7 ours · 1 client","not keeping pace"), calendars:n(55,"bad",17,"3.9","13 ours · 4 client","not keeping pace"),
+      content_production:n(70,"warn",11,"1.9","8 ours · 3 client","clears by Oct 3"), service_pages:n(74,"warn",7,"1.5","5 ours · 2 client","clears by Sep 24"),
+      audits:n(60,"bad",13,"2.8","13 ours · 0 client","not keeping pace"), on_page:n(68,"warn",6,"1.7","6 ours · 0 client","clears by Sep 30"),
+      listing_reviews:n(77,"warn",4,"1.2","4 ours · 0 client","clears by Sep 18"), support:n(58,"bad",9,"2.7","9 ours · 0 client","not keeping pace")
+    }}
+  };
+  var WORD = {good:"On track", warn:"At risk", bad:"Breach"};
+
+  var schem = document.getElementById("schem");
+  var svg = document.getElementById("wires");
+  var tip = document.getElementById("tip");
+  var current = "today";
+
+  function nodeByKey(k){ for (var i=0;i<NODES.length;i++) if (NODES[i].key===k) return NODES[i]; return null; }
+
+  function jeopardySet(data){
+    var out = {}, queue = [], seen = {};
+    NODES.forEach(function(nd){ if (!nd.optional && !nd.aux && data[nd.key].verdict==="bad") queue.push(nd.key); });
+    while (queue.length){
+      var k = queue.shift();
+      if (seen[k]) continue; seen[k] = true;
+      EDGES.forEach(function(e){ if (e.from===k && !e.opt){ out[e.to] = true; queue.push(e.to); } });
+    }
+    return out;
+  }
+
+  function edgePath(e){
+    var a = nodeByKey(e.from), b = nodeByKey(e.to);
+    var x1,y1,x2,y2;
+    if (e.from==="onboarding" && e.to==="migrations"){
+      x1=a.x+NW/2; y1=a.y; x2=b.x; y2=b.y+NH/2;
+      return "M"+x1+" "+y1+" C "+x1+" "+(y2)+", "+(x1)+" "+y2+", "+x2+" "+y2;
+    }
+    if (e.from==="migrations" && e.to==="strategy"){
+      x1=a.x+NW; y1=a.y+NH/2; x2=b.x+NW/2; y2=b.y;
+      return "M"+x1+" "+y1+" C "+(x2)+" "+y1+", "+x2+" "+y1+", "+x2+" "+y2;
+    }
+    if (e.ret){ /* audits row down to return lane */
+      x1=a.x+NW/2; y1=a.y+NH; x2=b.x+NW; y2=b.y+NH/2;
+      var midY = (y1+y2)/2 + 40;
+      return "M"+x1+" "+y1+" C "+x1+" "+midY+", "+(x2+70)+" "+y2+", "+x2+" "+y2;
+    }
+    x1=a.x+NW; y1=a.y+NH/2; x2=b.x; y2=b.y+NH/2;
+    var mx=(x1+x2)/2;
+    return "M"+x1+" "+y1+" C "+mx+" "+y1+", "+mx+" "+y2+", "+x2+" "+y2;
+  }
+
+  function render(){
+    var data = SCENARIOS[current].data;
+    var jeop = jeopardySet(data);
+
+    var w = "";
+    EDGES.forEach(function(e){
+      var v = data[e.from].verdict;
+      var cls = e.opt ? "wire opt" : ("wire "+(v==="bad"?"b":v==="warn"?"w":"g"));
+      w += '<path class="'+cls+'" d="'+edgePath(e)+'"/>';
+    });
+    svg.setAttribute("viewBox","0 0 1092 520");
+    svg.innerHTML = w;
+
+    schem.querySelectorAll(".md,.aux").forEach(function(el){ el.remove(); });
+
+    NODES.forEach(function(nd){
+      var d = data[nd.key];
+      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "md v-"+d.verdict+(isJeop?" jeop":"");
+      el.setAttribute("aria-label", nd.name+": "+WORD[d.verdict]+", grade "+d.grade+(isJeop?", jeopardy from upstream":""));
+      var sub = d.late>0 ? (d.late+" LATE · "+d.deep+" WK") : "NOMINAL";
+      el.innerHTML =
+        '<span class="led"></span>'+
+        '<span class="mnm">'+nd.name+'</span>'+
+        '<span class="mrow"><span class="mst">'+WORD[d.verdict]+'</span><span class="mgr num">'+d.grade+'</span></span>'+
+        '<span class="msub">'+sub+'</span>'+
+        '<span class="mbar"><i style="width:'+d.grade+'%"></i></span>'+
+        (isJeop ? '<span class="jtag">Jeopardy</span>' : (nd.optional ? '<span class="otag">Optional</span>' : ''));
+      el.addEventListener("mouseenter", function(ev){ showTip(nd, d, isJeop, ev); });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", hideTip);
+
+      if (nd.aux){
+        var frame = document.createElement("div");
+        frame.className = "aux";
+        frame.style.left = (nd.x-16)+"px"; frame.style.top = (nd.y-30)+"px";
+        frame.innerHTML = '<span class="aux-lab">Independent system</span>';
+        frame.appendChild(el);
+        schem.appendChild(frame);
+      } else {
+        el.style.left = nd.x+"px"; el.style.top = nd.y+"px";
+        schem.appendChild(el);
+      }
+    });
+
+    /* integrity gauge: weighted mean of grades on the path (support + optional excluded) */
+    var tw=0, ts=0, breaches=[], jl=[];
+    NODES.forEach(function(nd){
+      if (nd.aux || nd.optional) return;
+      tw += nd.wt; ts += SCENARIOS[current].data[nd.key].grade * nd.wt;
+      var v = data[nd.key].verdict;
+      if (v==="bad") breaches.push(nd.name);
+      else if (jeop[nd.key]) jl.push(nd.name);
+    });
+    var pct = Math.round(ts/tw);
+    var col = breaches.length ? "var(--k-bad)" : (pct<85 ? "var(--k-warn)" : "var(--k-good)");
+    document.getElementById("pct").textContent = pct;
+    var gf = document.getElementById("gfill");
+    gf.style.width = pct+"%"; gf.style.background = col;
+    document.getElementById("pct").style.color = col;
+    document.getElementById("sig").style.background = col;
+    document.getElementById("sig").style.boxShadow = "0 0 10px "+col;
+    var msg;
+    if (breaches.length) msg = "<b>"+breaches.join(", ")+"</b> breached"+(jl.length? " · jeopardy: <b>"+jl.join(", ")+"</b>" : "")+".";
+    else msg = "No breaches on the path. All feeds nominal.";
+    document.getElementById("gmsg").innerHTML = msg;
+
+    renderSeg();
+  }
+
+  function renderSeg(){
+    var seg = document.getElementById("scenarioSeg");
+    var html = "";
+    Object.keys(SCENARIOS).forEach(function(k){
+      html += '<button type="button" class="'+(k===current?"on":"")+'" data-s="'+k+'">'+SCENARIOS[k].label+'</button>';
+    });
+    seg.innerHTML = html;
+    seg.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){ current = b.getAttribute("data-s"); render(); });
+    });
+  }
+
+  function showTip(nd, d, isJeop, ev){
+    var col = d.verdict==="good" ? "var(--k-good)" : d.verdict==="warn" ? "var(--k-warn)" : "var(--k-bad)";
+    tip.innerHTML =
+      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+d.grade+'</span></div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[d.verdict]+(nd.optional?" · optional leg":"")+(nd.aux?" · off the path":"")+'</div>'+
+      '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
+      '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
+      '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
+      '<div class="t-row"><span>Forecast</span><b>'+d.fc+'</b></div>'+
+      (isJeop ? '<div class="t-jp">Jeopardy: upstream feed is failing. This module may run dry even though its own numbers hold.</div>' : '')+
+      '<div class="t-cta">Click · open Task Hub filtered here</div>';
+    tip.style.display = "block";
+    moveTip(ev);
+  }
+  function moveTip(ev){
+    var pad=14, w=250, h=tip.offsetHeight||170;
+    var x=ev.clientX+pad, y=ev.clientY+pad;
+    if (x+w > window.innerWidth-8) x = ev.clientX-w-pad;
+    if (y+h > window.innerHeight-8) y = ev.clientY-h-pad;
+    tip.style.left=x+"px"; tip.style.top=y+"px";
+  }
+  function hideTip(){ tip.style.display="none"; }
+
+  render();
+})();
+</script>
+</body>
+</html>

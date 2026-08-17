@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Critical Path · Option D · Product Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Option D: "Product Panel". Polished SaaS treatment: named phase
+   columns, ring-gauge node cards, routed wires with arrowheads.
+   Exec report tokens, light + dark. Sample data only.
+   ================================================================ */
+html,body{margin:0;padding:0}
+.exec-app{
+  --rail:#0A0A0B; --rail-ink:#F4F5F7; --rail-dim:#7C8291;
+  --page:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --chip:#F2F4F8;
+  --blue:#1FA8E0;
+  --good:#0F9D6E; --good-bg:#E7F6EF;
+  --warn:#E0912F; --warn-bg:#FBF0DF;
+  --bad:#E4483F; --bad-bg:#FBE7E5;
+  --wire:#C6CBD8; --band:#F8F9FB; --shadow:0 1px 2px rgba(17,20,28,.05);
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Arial,sans-serif;
+  background:var(--page); color:var(--ink); font-family:var(--body);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+@media (prefers-color-scheme:dark){
+  .exec-app:not([data-theme="light"]){
+    --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+    --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+    --bad:#E4574D; --bad-bg:#2E1917; --wire:#454C5C; --band:#131720;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.exec-app[data-theme="dark"]{
+  --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+  --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+  --bad:#E4574D; --bad-bg:#2E1917; --wire:#454C5C; --band:#131720;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+.exec-app *{box-sizing:border-box}
+.exec-app .num{font-variant-numeric:tabular-nums}
+.exec-app .topbar{background:var(--rail);color:var(--rail-ink);display:flex;align-items:center;justify-content:space-between;padding:13px 30px;position:sticky;top:0;z-index:5}
+.exec-app .tb-brand{display:flex;align-items:center;gap:14px}
+.exec-app .tb-logo{font:800 15px/1 var(--disp);letter-spacing:.06em;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exec-app .tb-tag{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px;color:var(--rail-dim);border-left:1px solid #2a2a2e;padding-left:14px}
+.exec-app .tb-theme{border:0;background:transparent;cursor:pointer;color:var(--rail-dim);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding:4px}
+.exec-app .tb-theme:hover{color:var(--rail-ink)}
+.exec-app .rainbow{height:3px;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899)}
+.exec-app .mockstrip{background:var(--chip);color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:9px;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line)}
+.exec-app .behind{padding:26px 30px;max-width:1180px;margin:0 auto;width:100%;filter:blur(2px);opacity:.55;pointer-events:none}
+.exec-app .bh-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-top:18px}
+.exec-app .bh-line{height:12px;border-radius:4px;background:var(--chip);margin-top:10px}
+.exec-app .scrim{position:fixed;inset:0;background:rgba(10,10,12,.45);z-index:8}
+
+.exec-app .pop{position:fixed;inset:0;z-index:9;display:grid;place-items:center;padding:22px}
+.exec-app .pop-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(10,12,18,.35);width:min(1180px,100%);max-height:calc(100vh - 44px);display:flex;flex-direction:column;overflow:hidden}
+.exec-app .pop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 24px 0;flex-wrap:wrap}
+.exec-app .pop-head h2{font:800 17px/1.1 var(--body);margin:0;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.exec-app .pop-sub{color:var(--sub);font-size:12.5px;margin-top:6px;max-width:66ch;line-height:1.5}
+.exec-app .pop-x{border:0;background:var(--chip);color:var(--sub);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1;flex:none}
+.exec-app .pop-x:hover{color:var(--ink)}
+.exec-app .pop-body{overflow:auto;padding:0 24px 22px}
+
+.exec-app .ctl{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px}
+.exec-app .seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:4px;gap:2px}
+.exec-app .seg button{font-family:var(--body);font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:7px 13px;border-radius:8px;cursor:pointer}
+.exec-app .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.exec-app .seg-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.exec-app .health{display:flex;align-items:center;gap:16px;background:var(--chip);border-radius:12px;padding:13px 16px;margin-top:14px;flex-wrap:wrap}
+.exec-app .health .hv{font:800 21px/1 var(--body);white-space:nowrap}
+.exec-app .health .hv.ok{color:var(--good)} .exec-app .health .hv.warn{color:var(--warn)} .exec-app .health .hv.bad{color:var(--bad)}
+.exec-app .health .ht{font-size:12.5px;color:var(--sub);line-height:1.5;flex:1;min-width:260px}
+.exec-app .health .ht b{color:var(--ink)}
+
+/* panel */
+.exec-app .panel-wrap{margin-top:16px;overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--card)}
+.exec-app .panel{position:relative;width:1092px;height:560px}
+.exec-app .panel svg{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.exec-app .band{z-index:1;position:absolute;top:12px;bottom:104px;border-radius:10px;background:var(--band);border:1px solid var(--line-soft)}
+.exec-app .band .bl{position:absolute;top:10px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.exec-app .wired{fill:none;stroke:var(--wire);stroke-width:2}
+.exec-app .wired.hot{stroke:var(--bad);stroke-width:2.5;stroke-dasharray:7 5;animation:flow 1.1s linear infinite}
+.exec-app .wired.opt{stroke-dasharray:2 5;stroke-width:1.5}
+.exec-app .arrow{fill:var(--wire)} .exec-app .arrow.hot{fill:var(--bad)}
+@keyframes flow{to{stroke-dashoffset:-12}}
+@media (prefers-reduced-motion:reduce){.exec-app .wired.hot{animation:none}}
+
+/* node cards */
+.exec-app .nc{z-index:3;position:absolute;width:158px;height:112px;border-radius:12px;border:1px solid var(--line);background:var(--card);box-shadow:0 2px 8px rgba(17,20,28,.07);padding:0;cursor:pointer;text-align:left;font-family:var(--body);overflow:visible}
+.exec-app .nc:hover{box-shadow:0 4px 14px rgba(17,20,28,.12)}
+.exec-app .nc:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.exec-app .nc .rib{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 11px;border-radius:11px 11px 0 0}
+.exec-app .nc.v-good .rib{background:var(--good-bg);color:var(--good)}
+.exec-app .nc.v-warn .rib{background:var(--warn-bg);color:var(--warn)}
+.exec-app .nc.v-bad .rib{background:var(--bad-bg);color:var(--bad)}
+.exec-app .nc.jeop{border:1.5px dashed var(--warn)}
+.exec-app .nc .bodyrow{display:flex;align-items:center;gap:10px;padding:9px 11px 0}
+.exec-app .nc .ring{flex:none;width:46px;height:46px;position:relative}
+.exec-app .nc .ring svg{width:46px;height:46px;transform:rotate(-90deg)}
+.exec-app .nc .ring .rv{position:absolute;inset:0;display:grid;place-items:center;font:800 14px/1 var(--body);color:var(--ink)}
+.exec-app .nc .meta{min-width:0;flex:1}
+.exec-app .nc .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font:700 12px/1.15 var(--body);color:var(--ink);overflow:hidden}
+.exec-app .nc .ms{display:block;font-family:var(--mono);font-size:8.5px;color:var(--sub);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exec-app .nc .mf{display:block;font-family:var(--mono);font-size:8.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exec-app .nc .jchip{position:absolute;top:-9px;right:10px;background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px}
+.exec-app .nc .ochip{position:absolute;top:-9px;right:10px;background:var(--chip);color:var(--muted);border:1px solid var(--line);font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:5px}
+
+/* independent strip */
+.exec-app .indep{z-index:3;position:absolute;left:16px;right:16px;bottom:12px;height:80px;border:1px dashed var(--line);border-radius:10px;background:var(--band);display:flex;align-items:center;gap:18px;padding:0 18px}
+.exec-app .indep .il{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);width:120px;line-height:1.6}
+.exec-app .indep .nc{position:relative;height:64px;width:230px}
+.exec-app .indep .nc .rib{border-radius:11px 11px 0 0;padding:4px 11px}
+.exec-app .indep .nc .bodyrow{padding:5px 11px 0}
+.exec-app .indep .nc .ring{width:34px;height:34px}
+.exec-app .indep .nc .ring svg{width:34px;height:34px}
+.exec-app .indep .nc .ring .rv{font-size:11px}
+.exec-app .indep .note{font-size:11px;color:var(--muted);line-height:1.5;max-width:52ch}
+
+.exec-app .legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--sub);font-size:11.5px}
+.exec-app .legend .li{display:inline-flex;align-items:center;gap:7px}
+.exec-app .legend .sw{width:13px;height:13px;border-radius:4px;flex:none}
+.exec-app .legend .sw.g{background:var(--good-bg);border:1.5px solid var(--good)}
+.exec-app .legend .sw.w{background:var(--warn-bg);border:1.5px solid var(--warn)}
+.exec-app .legend .sw.b{background:var(--bad-bg);border:1.5px solid var(--bad)}
+.exec-app .legend .sw.j{border:2px dashed var(--warn);background:transparent}
+.exec-app .legend .wl{width:22px;height:0;border-top:2.5px dashed var(--bad);flex:none}
+.exec-app .legend .ol{width:22px;height:0;border-top:2px dotted var(--wire);flex:none}
+
+.exec-app .pop-foot{margin-top:14px;font-size:11.5px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line-soft);padding-top:11px}
+.exec-app .pop-foot b{color:var(--sub);font-weight:600}
+
+.exec-app .tip{position:fixed;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(10,12,18,.22);padding:11px 13px;width:250px;pointer-events:none;display:none}
+.exec-app .tip .t-nm{font:700 12.5px/1.2 var(--body);color:var(--ink);display:flex;justify-content:space-between;gap:10px}
+.exec-app .tip .t-vd{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+.exec-app .tip .t-row{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--sub);margin-top:6px}
+.exec-app .tip .t-row b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+.exec-app .tip .t-jp{margin-top:8px;font-size:10.5px;color:var(--warn);line-height:1.4;border-top:1px solid var(--line-soft);padding-top:7px}
+.exec-app .tip .t-cta{margin-top:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="exec-app" id="app">
+  <div class="topbar">
+    <div class="tb-brand"><span class="tb-logo">S8E8</span><span class="tb-tag">Executive Report</span></div>
+    <button class="tb-theme" id="themeBtn" type="button">Theme: Auto</button>
+  </div>
+  <div class="rainbow"></div>
+  <div class="mockstrip">Mockup · Option D · Product Panel · sample data</div>
+
+  <div class="behind" aria-hidden="true">
+    <div class="bh-card"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
+    <div class="bh-card"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
+  </div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="pop" role="dialog" aria-modal="true" aria-label="SEO Critical Path">
+    <div class="pop-card">
+      <div class="pop-head">
+        <div>
+          <h2>SEO Critical Path</h2>
+          <div class="pop-sub">The ten report-card grades arranged by phase, from intake to refinement. Wires show what feeds what; a failing feed runs red, and everything living off it is flagged before its own numbers ever slip.</div>
+        </div>
+        <button class="pop-x" type="button" title="In the app: closes back to the report">×</button>
+      </div>
+
+      <div class="pop-body">
+        <div class="ctl">
+          <div class="seg" id="scenarioSeg" role="tablist" aria-label="Demo scenario"></div>
+          <span class="seg-note">Demo scenarios · real version reads live grades</span>
+        </div>
+
+        <div class="health" id="healthStrip"></div>
+
+        <div class="panel-wrap">
+          <div class="panel" id="panel">
+            <svg id="wires" aria-hidden="true"></svg>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="li"><span class="sw g"></span> ✓ On track</span>
+          <span class="li"><span class="sw w"></span> ! At risk</span>
+          <span class="li"><span class="sw b"></span> ✕ Behind</span>
+          <span class="li"><span class="sw j"></span> ⚠ In jeopardy from upstream</span>
+          <span class="li"><span class="wl"></span> Failing feed</span>
+          <span class="li"><span class="ol"></span> Optional leg</span>
+        </div>
+
+        <div class="pop-foot">
+          <b>How to read it:</b> the ring is the category's existing grade, nothing is recalculated. Migrations sits on an optional leg between Onboarding and Strategy: skipping it is normally fine, the dev team increasingly handles migrations themselves, so a stall there never puts the path in jeopardy. Support runs beside the path, not on it. A dashed card means an upstream feed is failing: the risk is starvation, not lateness. Hover for numbers; clicking opens the Task Hub filtered to that category.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var NW = 158, NH = 112;
+  /* phase bands: label, x, width */
+  var BANDS = [
+    {label:"Intake",  x:16,  w:170},
+    {label:"Plan",    x:194, w:350},
+    {label:"Produce", x:552, w:170},
+    {label:"Verify",  x:730, w:170},
+    {label:"Refine",  x:908, w:168}
+  ];
+  /* main lane y = 246 (centered between bands top 12 and bottom 456) */
+  var NODES = [
+    {key:"onboarding", name:"Onboarding", x:22,  y:246, wt:2},
+    {key:"migrations", name:"Migrations", x:200, y:96,  wt:4, optional:true},
+    {key:"strategy",   name:"Strategy",   x:200, y:246, wt:4},
+    {key:"calendars",  name:"Calendars",  x:378, y:246, wt:4},
+    {key:"content_production", name:"Content Production", x:558, y:96,  wt:5},
+    {key:"service_pages", name:"Service Pages", x:558, y:330, wt:5},
+    {key:"audits",     name:"Audits",     x:736, y:246, wt:3},
+    {key:"on_page",    name:"On-page",    x:914, y:96,  wt:3},
+    {key:"listing_reviews", name:"Listing Reviews", x:914, y:330, wt:2},
+    {key:"support",    name:"Support",    x:0,   y:0,   wt:1, aux:true}
+  ];
+  var EDGES = [
+    {from:"onboarding", to:"migrations", opt:true},
+    {from:"migrations", to:"strategy", opt:true, vert:true},
+    {from:"onboarding", to:"strategy"},
+    {from:"strategy",   to:"calendars"},
+    {from:"calendars",  to:"content_production"},
+    {from:"calendars",  to:"service_pages"},
+    {from:"content_production", to:"audits"},
+    {from:"service_pages",      to:"audits"},
+    {from:"audits", to:"on_page"},
+    {from:"audits", to:"listing_reviews"}
+  ];
+
+  function n(g,v,l,d,c,f){ return {grade:g, verdict:v, late:l, deep:d, court:c, fc:f}; }
+  var SCENARIOS = {
+    healthy:{label:"Healthy", data:{
+      onboarding:n(94,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(97,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(91,"good",1,"0.3","1 ours · 0 client","clears this week"), calendars:n(93,"good",0,"0.0","0 ours · 0 client","clear"),
+      content_production:n(90,"good",2,"0.4","1 ours · 1 client","keeping pace"), service_pages:n(92,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(95,"good",0,"0.0","0 ours · 0 client","clear"), on_page:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"),
+      listing_reviews:n(96,"good",0,"0.0","0 ours · 0 client","clear"), support:n(90,"good",1,"0.2","1 ours · 0 client","keeping pace")
+    }},
+    today:{label:"Today (sample)", data:{
+      onboarding:n(93,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(95,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(90,"good",1,"0.4","1 ours · 0 client","keeping pace"), calendars:n(58,"bad",14,"3.4","11 ours · 3 client","not keeping pace"),
+      content_production:n(88,"good",3,"0.6","2 ours · 1 client","keeping pace"), service_pages:n(91,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(72,"warn",9,"1.8","9 ours · 0 client","clears by Sep 12"), on_page:n(87,"good",2,"0.5","2 ours · 0 client","keeping pace"),
+      listing_reviews:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"), support:n(78,"warn",5,"1.1","5 ours · 0 client","clears by Sep 2")
+    }},
+    rough:{label:"Rough patch", data:{
+      onboarding:n(61,"bad",6,"2.6","6 ours · 0 client","not keeping pace"), migrations:n(82,"warn",2,"0.9","2 ours · 0 client","clears by Sep 10"),
+      strategy:n(63,"bad",8,"2.4","7 ours · 1 client","not keeping pace"), calendars:n(55,"bad",17,"3.9","13 ours · 4 client","not keeping pace"),
+      content_production:n(70,"warn",11,"1.9","8 ours · 3 client","clears by Oct 3"), service_pages:n(74,"warn",7,"1.5","5 ours · 2 client","clears by Sep 24"),
+      audits:n(60,"bad",13,"2.8","13 ours · 0 client","not keeping pace"), on_page:n(68,"warn",6,"1.7","6 ours · 0 client","clears by Sep 30"),
+      listing_reviews:n(77,"warn",4,"1.2","4 ours · 0 client","clears by Sep 18"), support:n(58,"bad",9,"2.7","9 ours · 0 client","not keeping pace")
+    }}
+  };
+  var WORD = {good:"On track", warn:"At risk", bad:"Behind"};
+
+  var panel = document.getElementById("panel");
+  var svg = document.getElementById("wires");
+  var tip = document.getElementById("tip");
+  var current = "today";
+
+  function nodeByKey(k){ for (var i=0;i<NODES.length;i++) if (NODES[i].key===k) return NODES[i]; return null; }
+
+  function jeopardySet(data){
+    var out = {}, queue = [], seen = {};
+    NODES.forEach(function(nd){ if (!nd.optional && !nd.aux && data[nd.key].verdict==="bad") queue.push(nd.key); });
+    while (queue.length){
+      var k = queue.shift();
+      if (seen[k]) continue; seen[k] = true;
+      EDGES.forEach(function(e){ if (e.from===k && !e.opt){ out[e.to] = true; queue.push(e.to); } });
+    }
+    return out;
+  }
+
+  /* orthogonal route with rounded corner + arrowhead */
+  function edgeShape(e, hot){
+    var a = nodeByKey(e.from), b = nodeByKey(e.to);
+    var cls = e.opt ? "wired opt" : (hot ? "wired hot" : "wired");
+    var acls = hot && !e.opt ? "arrow hot" : "arrow";
+    var s = "";
+    if (e.from==="onboarding" && e.to==="migrations"){
+      var x1=a.x+NW/2, y1=a.y, x2=b.x, y2=b.y+NH/2;
+      s += '<path class="'+cls+'" d="M'+x1+' '+y1+' L '+x1+' '+(y2+12)+' Q '+x1+' '+y2+' '+(x1+12)+' '+y2+' L '+x2+' '+y2+'"/>';
+      s += '<path class="'+acls+'" d="M'+x2+' '+y2+' l -7 -4 v 8 z"/>';
+      return s;
+    }
+    if (e.vert){ /* migrations down to strategy top */
+      var x=b.x+NW/2, y1v=a.y+NH, y2v=b.y;
+      s += '<path class="'+cls+'" d="M'+x+' '+y1v+' L '+x+' '+y2v+'"/>';
+      s += '<path class="'+acls+'" d="M'+x+' '+y2v+' l -4 -7 h 8 z"/>';
+      return s;
+    }
+    var x1=a.x+NW, y1=a.y+NH/2, x2=b.x, y2=b.y+NH/2;
+    if (y1===y2){
+      s += '<path class="'+cls+'" d="M'+x1+' '+y1+' L '+x2+' '+y2+'"/>';
+    } else {
+      var mx=(x1+x2)/2, r=10, dir=(y2>y1?1:-1);
+      s += '<path class="'+cls+'" d="M'+x1+' '+y1+' L '+(mx-r)+' '+y1+' Q '+mx+' '+y1+' '+mx+' '+(y1+r*dir)+' L '+mx+' '+(y2-r*dir)+' Q '+mx+' '+y2+' '+(mx+r)+' '+y2+' L '+x2+' '+y2+'"/>';
+    }
+    s += '<path class="'+acls+'" d="M'+x2+' '+y2+' l -7 -4 v 8 z"/>';
+    return s;
+  }
+
+  function ringSvg(grade, verdict, size){
+    var r = (size-5)/2, c = 2*Math.PI*r;
+    var col = verdict==="good" ? "var(--good)" : verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    return '<svg viewBox="0 0 '+size+' '+size+'">'+
+      '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="var(--line-soft)" stroke-width="4"/>'+
+      '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="4" stroke-linecap="round" stroke-dasharray="'+(c*grade/100)+' '+c+'"/>'+
+      '</svg>';
+  }
+
+  function render(){
+    var data = SCENARIOS[current].data;
+    var jeop = jeopardySet(data);
+
+    var w = "";
+    EDGES.forEach(function(e){
+      w += edgeShape(e, data[e.from].verdict==="bad");
+    });
+    svg.setAttribute("viewBox","0 0 1092 560");
+    svg.innerHTML = w;
+
+    panel.querySelectorAll(".band,.nc,.indep").forEach(function(el){ el.remove(); });
+
+    BANDS.forEach(function(b){
+      var el = document.createElement("div");
+      el.className = "band";
+      el.style.left = b.x+"px"; el.style.width = b.w+"px";
+      el.innerHTML = '<span class="bl">'+b.label+'</span>';
+      panel.appendChild(el);
+    });
+
+    NODES.forEach(function(nd){
+      if (nd.aux) return;
+      var d = data[nd.key];
+      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "nc v-"+d.verdict+(isJeop?" jeop":"");
+      el.style.left = nd.x+"px"; el.style.top = nd.y+"px";
+      el.setAttribute("aria-label", nd.name+": "+WORD[d.verdict]+", grade "+d.grade+(isJeop?", in jeopardy from upstream":""));
+      var glyph = d.verdict==="good" ? "✓" : d.verdict==="warn" ? "!" : "✕";
+      var sub = d.late>0 ? (d.late+" late · "+d.deep+" wk deep") : "nothing late";
+      el.innerHTML =
+        '<span class="rib">'+glyph+' '+WORD[d.verdict]+'</span>'+
+        '<span class="bodyrow"><span class="ring">'+ringSvg(d.grade, d.verdict, 46)+'<span class="rv num">'+d.grade+'</span></span>'+
+        '<span class="meta"><span class="nm">'+nd.name+'</span><span class="ms">'+sub+'</span><span class="mf">'+d.fc+'</span></span></span>'+
+        (isJeop ? '<span class="jchip">⚠ upstream</span>' : (nd.optional ? '<span class="ochip">optional</span>' : ''));
+      el.addEventListener("mouseenter", function(ev){ showTip(nd, d, isJeop, ev); });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", hideTip);
+      panel.appendChild(el);
+    });
+
+    /* independent strip: support */
+    var sd = data.support;
+    var sglyph = sd.verdict==="good" ? "✓" : sd.verdict==="warn" ? "!" : "✕";
+    var strip = document.createElement("div");
+    strip.className = "indep";
+    strip.innerHTML =
+      '<span class="il">Beside the path</span>'+
+      '<button type="button" class="nc v-'+sd.verdict+'" id="supCard">'+
+        '<span class="rib">'+sglyph+' '+WORD[sd.verdict]+'</span>'+
+        '<span class="bodyrow"><span class="ring">'+ringSvg(sd.grade, sd.verdict, 34)+'<span class="rv num">'+sd.grade+'</span></span>'+
+        '<span class="meta"><span class="nm">Support</span><span class="ms">'+(sd.late>0 ? sd.late+" late · "+sd.deep+" wk deep" : "nothing late")+'</span></span></span>'+
+      '</button>'+
+      '<span class="note">Support is its own engine: it serves clients directly rather than feeding the path. It never puts other categories in jeopardy, but a deep pile here drains the same team.</span>';
+    panel.appendChild(strip);
+    var sup = nodeByKey("support");
+    var supCard = strip.querySelector("#supCard");
+    supCard.addEventListener("mouseenter", function(ev){ showTip(sup, sd, false, ev); });
+    supCard.addEventListener("mousemove", moveTip);
+    supCard.addEventListener("mouseleave", hideTip);
+
+    renderHealth(data, jeop);
+    renderSeg();
+  }
+
+  function renderHealth(data, jeop){
+    var breaches = [], jl = [], risks = [];
+    NODES.forEach(function(nd){
+      var v = data[nd.key].verdict;
+      if (nd.aux || nd.optional){ if (v!=="good") risks.push(nd.name); return; }
+      if (v==="bad") breaches.push(nd.name);
+      else if (jeop[nd.key]) jl.push(nd.name);
+      else if (v==="warn") risks.push(nd.name);
+    });
+    var strip = document.getElementById("healthStrip");
+    var badge, cls;
+    if (breaches.length===0 && risks.length===0){ badge = "ALL CLEAR"; cls = "ok"; }
+    else if (breaches.length===0){ badge = risks.length+" AT RISK"; cls = "warn"; }
+    else { badge = breaches.length+(breaches.length===1?" BREACH":" BREACHES"); cls = "bad"; }
+    var txt;
+    if (breaches.length){
+      txt = "<b>"+breaches.join(", ")+"</b> "+(breaches.length===1?"is":"are")+" behind";
+      if (jl.length) txt += ", putting <b>"+jl.join(", ")+"</b> in jeopardy";
+      txt += ".";
+      if (risks.length) txt += " Also at risk on their own numbers: "+risks.join(", ")+".";
+    } else if (risks.length){
+      txt = "No breaches. Watch <b>"+risks.join(", ")+"</b>: at risk on their own numbers.";
+    } else {
+      txt = "Every category on the path is on track. This is what healthy looks like.";
+    }
+    strip.innerHTML = '<span class="hv '+cls+'">'+badge+'</span><span class="ht">'+txt+'</span>';
+  }
+
+  function renderSeg(){
+    var seg = document.getElementById("scenarioSeg");
+    var html = "";
+    Object.keys(SCENARIOS).forEach(function(k){
+      html += '<button type="button" role="tab" aria-selected="'+(k===current)+'" class="'+(k===current?"on":"")+'" data-s="'+k+'">'+SCENARIOS[k].label+'</button>';
+    });
+    seg.innerHTML = html;
+    seg.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){ current = b.getAttribute("data-s"); render(); });
+    });
+  }
+
+  function showTip(nd, d, isJeop, ev){
+    var col = d.verdict==="good" ? "var(--good)" : d.verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    tip.innerHTML =
+      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+d.grade+'</span></div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[d.verdict]+(nd.optional?" · optional leg":"")+(nd.aux?" · beside the path":"")+'</div>'+
+      '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
+      '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
+      '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
+      '<div class="t-row"><span>Forecast</span><b>'+d.fc+'</b></div>'+
+      (isJeop ? '<div class="t-jp">⚠ Upstream feed is failing. This category may run dry even though its own numbers hold.</div>' : '')+
+      '<div class="t-cta">Click · open Task Hub filtered here</div>';
+    tip.style.display = "block";
+    moveTip(ev);
+  }
+  function moveTip(ev){
+    var pad=14, w=250, h=tip.offsetHeight||170;
+    var x=ev.clientX+pad, y=ev.clientY+pad;
+    if (x+w > window.innerWidth-8) x = ev.clientX-w-pad;
+    if (y+h > window.innerHeight-8) y = ev.clientY-h-pad;
+    tip.style.left=x+"px"; tip.style.top=y+"px";
+  }
+  function hideTip(){ tip.style.display="none"; }
+
+  var app = document.getElementById("app");
+  var themeBtn = document.getElementById("themeBtn");
+  var themes = ["auto","light","dark"], ti = 0;
+  themeBtn.addEventListener("click", function(){
+    ti = (ti+1)%3;
+    var t = themes[ti];
+    if (t==="auto") app.removeAttribute("data-theme"); else app.setAttribute("data-theme", t);
+    themeBtn.textContent = "Theme: "+t.charAt(0).toUpperCase()+t.slice(1);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
