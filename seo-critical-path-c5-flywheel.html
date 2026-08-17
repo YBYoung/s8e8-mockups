@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEO Critical Path · Option C5 · Flywheel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Option C5: "Flywheel". C3's ring cards + C2's thin editorial
+   tracks + the corrected topology: the production line feeds a
+   circular maintenance loop (audits, listing reviews, on-page,
+   support) that repeats. Exec tokens, light + dark. Sample data.
+   ================================================================ */
+html,body{margin:0;padding:0}
+.exec-app{
+  --rail:#0A0A0B; --rail-ink:#F4F5F7; --rail-dim:#7C8291;
+  --page:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --chip:#F2F4F8;
+  --blue:#1FA8E0;
+  --good:#0F9D6E; --good-bg:#E7F6EF;
+  --warn:#E0912F; --warn-bg:#FBF0DF;
+  --bad:#E4483F; --bad-bg:#FBE7E5;
+  --track:#DDE1E9; --shadow:0 1px 2px rgba(17,20,28,.05);
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Arial,sans-serif;
+  background:var(--page); color:var(--ink); font-family:var(--body);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+@media (prefers-color-scheme:dark){
+  .exec-app:not([data-theme="light"]){
+    --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+    --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+    --bad:#E4574D; --bad-bg:#2E1917; --track:#2E3542;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.exec-app[data-theme="dark"]{
+  --page:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --chip:#1E222A;
+  --good:#21A574; --good-bg:#13291F; --warn:#E0912F; --warn-bg:#2C2114;
+  --bad:#E4574D; --bad-bg:#2E1917; --track:#2E3542;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+.exec-app *{box-sizing:border-box}
+.exec-app .num{font-variant-numeric:tabular-nums}
+.exec-app .topbar{background:var(--rail);color:var(--rail-ink);display:flex;align-items:center;justify-content:space-between;padding:13px 30px;position:sticky;top:0;z-index:5}
+.exec-app .tb-brand{display:flex;align-items:center;gap:14px}
+.exec-app .tb-logo{font:800 15px/1 var(--disp);letter-spacing:.06em;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.exec-app .tb-tag{font-family:var(--mono);text-transform:uppercase;letter-spacing:.12em;font-size:9.5px;color:var(--rail-dim);border-left:1px solid #2a2a2e;padding-left:14px}
+.exec-app .tb-theme{border:0;background:transparent;cursor:pointer;color:var(--rail-dim);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:10px;padding:4px}
+.exec-app .tb-theme:hover{color:var(--rail-ink)}
+.exec-app .rainbow{height:3px;background:linear-gradient(90deg,#1FA8E0,#22C55E,#EAB308,#EC4899)}
+.exec-app .mockstrip{background:var(--chip);color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.09em;font-size:9px;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line)}
+.exec-app .behind{padding:26px 30px;max-width:1180px;margin:0 auto;width:100%;filter:blur(2px);opacity:.55;pointer-events:none}
+.exec-app .bh-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px;margin-top:18px}
+.exec-app .bh-line{height:12px;border-radius:4px;background:var(--chip);margin-top:10px}
+.exec-app .scrim{position:fixed;inset:0;background:rgba(10,10,12,.45);z-index:8}
+
+.exec-app .pop{position:fixed;inset:0;z-index:9;display:grid;place-items:center;padding:22px}
+.exec-app .pop-card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 60px rgba(10,12,18,.35);width:min(1180px,100%);max-height:calc(100vh - 44px);display:flex;flex-direction:column;overflow:hidden}
+.exec-app .pop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 24px 0;flex-wrap:wrap}
+.exec-app .pop-head h2{font:800 17px/1.1 var(--body);margin:0;color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+.exec-app .pop-sub{color:var(--sub);font-size:12.5px;margin-top:6px;max-width:66ch;line-height:1.5}
+.exec-app .pop-x{border:0;background:var(--chip);color:var(--sub);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;line-height:1;flex:none}
+.exec-app .pop-x:hover{color:var(--ink)}
+.exec-app .pop-body{overflow:auto;padding:0 24px 22px}
+
+.exec-app .ctl{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:16px}
+.exec-app .seg{display:inline-flex;background:var(--chip);border-radius:11px;padding:4px;gap:2px}
+.exec-app .seg button{font-family:var(--body);font-size:12.5px;font-weight:600;border:0;background:transparent;color:var(--sub);padding:7px 13px;border-radius:8px;cursor:pointer}
+.exec-app .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.exec-app .seg-note{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.exec-app .health{display:flex;align-items:center;gap:16px;background:var(--chip);border-radius:12px;padding:13px 16px;margin-top:14px;flex-wrap:wrap}
+.exec-app .health .hv{font:800 21px/1 var(--body);white-space:nowrap}
+.exec-app .health .hv.ok{color:var(--good)} .exec-app .health .hv.warn{color:var(--warn)} .exec-app .health .hv.bad{color:var(--bad)}
+.exec-app .health .ht{font-size:12.5px;color:var(--sub);line-height:1.5;flex:1;min-width:260px}
+.exec-app .health .ht b{color:var(--ink)}
+
+/* map */
+.exec-app .map-wrap{margin-top:16px;overflow-x:auto;border:1px solid var(--line-soft);border-radius:12px;background:var(--card)}
+.exec-app .map{position:relative;width:1092px;height:470px}
+.exec-app .map svg{position:absolute;inset:0;width:100%;height:100%}
+.exec-app .tk{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.exec-app .tk.base{stroke:var(--track)}
+.exec-app .tk.g{stroke:var(--good)} .exec-app .tk.w{stroke:var(--warn)} .exec-app .tk.b{stroke:var(--bad)}
+.exec-app .tk.hot{stroke-dasharray:1 9;animation:roll 1s linear infinite;stroke:var(--card)}
+@keyframes roll{to{stroke-dashoffset:-10}}
+@media (prefers-reduced-motion:reduce){.exec-app .tk.hot{animation:none}}
+.exec-app .tk.byp{stroke:var(--track);stroke-width:2;stroke-dasharray:1 7}
+.exec-app .rot{fill:var(--muted);opacity:.75}
+.exec-app .map-note{position:absolute;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.exec-app .fly-lab{position:absolute;text-align:center;pointer-events:none}
+.exec-app .fly-lab .f1{display:block;font:800 12px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.exec-app .fly-lab .f2{display:block;font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+
+/* station cards (line passes behind) */
+.exec-app .sc{position:absolute;width:142px;height:64px;border-radius:11px;border:1px solid var(--line);background:var(--card);box-shadow:0 2px 8px rgba(17,20,28,.08);padding:0 10px;cursor:pointer;text-align:left;font-family:var(--body);display:flex;align-items:center;gap:8px}
+.exec-app .sc:hover{box-shadow:0 4px 14px rgba(17,20,28,.14)}
+.exec-app .sc:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.exec-app .sc.v-bad{border-color:var(--bad);background:var(--bad-bg)}
+.exec-app .sc.jeop{border:1.5px dashed var(--warn)}
+.exec-app .sc .ring{flex:none;width:34px;height:34px;position:relative}
+.exec-app .sc .ring svg{width:34px;height:34px;transform:rotate(-90deg)}
+.exec-app .sc .ring .rv{position:absolute;inset:0;display:grid;place-items:center;font:800 11px/1 var(--body);color:var(--ink)}
+.exec-app .sc .meta{min-width:0;flex:1}
+.exec-app .sc .nm{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font:700 11px/1.15 var(--body);color:var(--ink);overflow:hidden}
+.exec-app .sc .ms{display:block;font-family:var(--mono);font-size:7.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:3px}
+.exec-app .sc .ms.g{color:var(--good)} .exec-app .sc .ms.w{color:var(--warn)} .exec-app .sc .ms.b{color:var(--bad)}
+.exec-app .sc .jline{display:block;font-family:var(--mono);font-size:7px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--warn);margin-top:2px}
+.exec-app .sc .oline{display:block;font-family:var(--mono);font-size:7px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+.exec-app .legend{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--sub);font-size:11.5px}
+.exec-app .legend .li{display:inline-flex;align-items:center;gap:7px}
+.exec-app .legend .tl{width:22px;height:0;border-top:3px solid var(--good);border-radius:2px;flex:none}
+.exec-app .legend .tl.w{border-color:var(--warn)} .exec-app .legend .tl.b{border-color:var(--bad)}
+.exec-app .legend .tl.o{border-top:2px dotted var(--track)}
+.exec-app .legend .sq{width:14px;height:11px;border-radius:3px;border:1.5px dashed var(--warn);flex:none}
+.exec-app .legend .cy{width:14px;height:14px;border-radius:50%;border:2.5px solid var(--track);flex:none}
+
+.exec-app .pop-foot{margin-top:14px;font-size:11.5px;color:var(--muted);line-height:1.6;border-top:1px solid var(--line-soft);padding-top:11px}
+.exec-app .pop-foot b{color:var(--sub);font-weight:600}
+
+.exec-app .tip{position:fixed;z-index:20;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 24px rgba(10,12,18,.22);padding:11px 13px;width:250px;pointer-events:none;display:none}
+.exec-app .tip .t-nm{font:700 12.5px/1.2 var(--body);color:var(--ink);display:flex;justify-content:space-between;gap:10px}
+.exec-app .tip .t-vd{font-family:var(--mono);font-size:8.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-top:3px}
+.exec-app .tip .t-row{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--sub);margin-top:6px}
+.exec-app .tip .t-row b{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+.exec-app .tip .t-jp{margin-top:8px;font-size:10.5px;color:var(--warn);line-height:1.4;border-top:1px solid var(--line-soft);padding-top:7px}
+.exec-app .tip .t-cta{margin-top:8px;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="exec-app" id="app">
+  <div class="topbar">
+    <div class="tb-brand"><span class="tb-logo">S8E8</span><span class="tb-tag">Executive Report</span></div>
+    <button class="tb-theme" id="themeBtn" type="button">Theme: Auto</button>
+  </div>
+  <div class="rainbow"></div>
+  <div class="mockstrip">Mockup · Option C5 · Flywheel · sample data</div>
+
+  <div class="behind" aria-hidden="true">
+    <div class="bh-card"><div class="bh-line" style="width:38%"></div><div class="bh-line" style="width:72%"></div><div class="bh-line" style="width:55%"></div></div>
+    <div class="bh-card"><div class="bh-line" style="width:64%"></div><div class="bh-line" style="width:81%"></div><div class="bh-line" style="width:47%"></div></div>
+  </div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="pop" role="dialog" aria-modal="true" aria-label="SEO Critical Path">
+    <div class="pop-card">
+      <div class="pop-head">
+        <div>
+          <h2>SEO Critical Path</h2>
+          <div class="pop-sub">The production line runs once per piece of work: intake, plan, produce. Then it feeds the flywheel, the loop of audits, listing reviews, on-page and support that repeats for every client, every cycle. Track color is the health of the work feeding forward.</div>
+        </div>
+        <button class="pop-x" type="button" title="In the app: closes back to the report">×</button>
+      </div>
+
+      <div class="pop-body">
+        <div class="ctl">
+          <div class="seg" id="scenarioSeg" role="tablist" aria-label="Demo scenario"></div>
+          <span class="seg-note">Demo scenarios · real version reads live grades</span>
+        </div>
+
+        <div class="health" id="healthStrip"></div>
+
+        <div class="map-wrap">
+          <div class="map" id="map">
+            <svg id="tracks" aria-hidden="true"></svg>
+            <div class="map-note" style="left:20px;top:16px">SEO line · intake → production → the flywheel</div>
+            <div class="fly-lab" style="left:825px;top:252px;width:140px"><span class="f1">Flywheel</span><span class="f2">repeats · every cycle</span></div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <span class="li"><span class="tl"></span> Track healthy</span>
+          <span class="li"><span class="tl w"></span> Track slowing</span>
+          <span class="li"><span class="tl b"></span> Track failing</span>
+          <span class="li"><span class="tl o"></span> Optional bypass</span>
+          <span class="li"><span class="sq"></span> Card in jeopardy</span>
+          <span class="li"><span class="cy"></span> Loop · repeats</span>
+        </div>
+
+        <div class="pop-foot">
+          <b>Reading the map:</b> the ring is the category's existing grade, nothing is recalculated. The Migrations bypass between Onboarding and Strategy is optional: skipping it is normally fine since the dev team increasingly handles migrations themselves, so a slow bypass never fails the main line. The circle on the right is the flywheel: content and service pages feed Audits and Listing Reviews, whose findings become On-page and Support work, which spins the wheel again. A jam anywhere on the wheel slows the whole cycle, so a breach there flags every station on the loop. A dashed card is riding a failing track: the risk is starvation, not lateness. Hover for numbers; clicking opens the Task Hub filtered to that category.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var CW = 142, CH = 64;
+  var CXC = 895, CYC = 270, R = 126;   /* flywheel circle */
+  var NODES = [
+    {key:"onboarding", name:"Onboarding", x:100, y:270, wt:2},
+    {key:"migrations", name:"Migrations", x:191, y:120, wt:4, optional:true},
+    {key:"strategy",   name:"Strategy",   x:282, y:270, wt:4},
+    {key:"calendars",  name:"Calendars",  x:464, y:270, wt:4},
+    {key:"content_production", name:"Content Production", x:646, y:180, wt:5},
+    {key:"service_pages", name:"Service Pages", x:646, y:360, wt:5},
+    {key:"audits",     name:"Audits",     x:807, y:180, wt:3, loop:true},
+    {key:"listing_reviews", name:"Listing Reviews", x:807, y:360, wt:2, loop:true},
+    {key:"on_page",    name:"On-page",    x:983, y:180, wt:3, loop:true},
+    {key:"support",    name:"Support",    x:983, y:360, wt:1, loop:true}
+  ];
+  var EDGES = [
+    {from:"onboarding", to:"strategy"},
+    {from:"strategy",   to:"calendars"},
+    {from:"calendars",  to:"content_production"},
+    {from:"calendars",  to:"service_pages"},
+    {from:"content_production", to:"audits"},
+    {from:"service_pages",      to:"listing_reviews"},
+    {from:"audits", to:"on_page", loop:true},
+    {from:"on_page", to:"support", loop:true},
+    {from:"support", to:"listing_reviews", loop:true},
+    {from:"listing_reviews", to:"audits", loop:true}
+  ];
+
+  function n(g,v,l,d,c,f){ return {grade:g, verdict:v, late:l, deep:d, court:c, fc:f}; }
+  var SCENARIOS = {
+    healthy:{label:"Healthy", data:{
+      onboarding:n(94,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(97,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(91,"good",1,"0.3","1 ours · 0 client","clears this week"), calendars:n(93,"good",0,"0.0","0 ours · 0 client","clear"),
+      content_production:n(90,"good",2,"0.4","1 ours · 1 client","keeping pace"), service_pages:n(92,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(95,"good",0,"0.0","0 ours · 0 client","clear"), on_page:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"),
+      listing_reviews:n(96,"good",0,"0.0","0 ours · 0 client","clear"), support:n(90,"good",1,"0.2","1 ours · 0 client","keeping pace")
+    }},
+    today:{label:"Today (sample)", data:{
+      onboarding:n(93,"good",0,"0.0","0 ours · 0 client","clear"), migrations:n(95,"good",0,"0.0","0 ours · 0 client","clear"),
+      strategy:n(90,"good",1,"0.4","1 ours · 0 client","keeping pace"), calendars:n(58,"bad",14,"3.4","11 ours · 3 client","not keeping pace"),
+      content_production:n(88,"good",3,"0.6","2 ours · 1 client","keeping pace"), service_pages:n(91,"good",1,"0.2","1 ours · 0 client","keeping pace"),
+      audits:n(72,"warn",9,"1.8","9 ours · 0 client","clears by Sep 12"), on_page:n(87,"good",2,"0.5","2 ours · 0 client","keeping pace"),
+      listing_reviews:n(89,"good",1,"0.3","1 ours · 0 client","keeping pace"), support:n(78,"warn",5,"1.1","5 ours · 0 client","clears by Sep 2")
+    }},
+    rough:{label:"Rough patch", data:{
+      onboarding:n(61,"bad",6,"2.6","6 ours · 0 client","not keeping pace"), migrations:n(82,"warn",2,"0.9","2 ours · 0 client","clears by Sep 10"),
+      strategy:n(63,"bad",8,"2.4","7 ours · 1 client","not keeping pace"), calendars:n(55,"bad",17,"3.9","13 ours · 4 client","not keeping pace"),
+      content_production:n(70,"warn",11,"1.9","8 ours · 3 client","clears by Oct 3"), service_pages:n(74,"warn",7,"1.5","5 ours · 2 client","clears by Sep 24"),
+      audits:n(60,"bad",13,"2.8","13 ours · 0 client","not keeping pace"), on_page:n(68,"warn",6,"1.7","6 ours · 0 client","clears by Sep 30"),
+      listing_reviews:n(77,"warn",4,"1.2","4 ours · 0 client","clears by Sep 18"), support:n(58,"bad",9,"2.7","9 ours · 0 client","not keeping pace")
+    }}
+  };
+  var WORD = {good:"On track", warn:"At risk", bad:"Behind"};
+  var VC = {good:"g", warn:"w", bad:"b"};
+
+  var map = document.getElementById("map");
+  var svg = document.getElementById("tracks");
+  var tip = document.getElementById("tip");
+  var current = "today";
+
+  function nodeByKey(k){ for (var i=0;i<NODES.length;i++) if (NODES[i].key===k) return NODES[i]; return null; }
+
+  function jeopardySet(data){
+    var out = {}, queue = [], seen = {};
+    NODES.forEach(function(nd){ if (!nd.optional && data[nd.key].verdict==="bad") queue.push(nd.key); });
+    while (queue.length){
+      var k = queue.shift();
+      if (seen[k]) continue; seen[k] = true;
+      EDGES.forEach(function(e){ if (e.from===k){ out[e.to] = true; queue.push(e.to); } });
+    }
+    return out;
+  }
+
+  function edgePath(e){
+    var a = nodeByKey(e.from), b = nodeByKey(e.to);
+    if (e.loop){
+      return "M"+a.x+" "+a.y+" A "+R+" "+R+" 0 0 1 "+b.x+" "+b.y;
+    }
+    if (Math.abs(a.y-b.y) <= 4) return "M"+a.x+" "+a.y+" L "+b.x+" "+b.y;
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var run = Math.abs(dy);
+    var straight = dx - run;
+    var x1 = a.x + straight*0.5;
+    var x2 = x1 + run;
+    return "M"+a.x+" "+a.y+" L "+x1+" "+a.y+" L "+x2+" "+b.y+" L "+b.x+" "+b.y;
+  }
+
+  /* small rotation arrows on the loop, clockwise */
+  function rotationArrows(){
+    var pts = [
+      {x:CXC, y:CYC-R, dx:1,  dy:0},   /* top: pointing right */
+      {x:CXC+R, y:CYC, dx:0,  dy:1},   /* right: pointing down */
+      {x:CXC, y:CYC+R, dx:-1, dy:0},   /* bottom: pointing left */
+      {x:CXC-R, y:CYC, dx:0,  dy:-1}   /* left: pointing up */
+    ];
+    var s = "";
+    pts.forEach(function(p){
+      var tipx = p.x + p.dx*6, tipy = p.y + p.dy*6;
+      var b1x = p.x - p.dx*4 + p.dy*4, b1y = p.y - p.dy*4 + p.dx*4;
+      var b2x = p.x - p.dx*4 - p.dy*4, b2y = p.y - p.dy*4 - p.dx*4;
+      s += '<path class="rot" d="M'+tipx+' '+tipy+' L '+b1x+' '+b1y+' L '+b2x+' '+b2y+' z"/>';
+    });
+    return s;
+  }
+
+  function render(){
+    var data = SCENARIOS[current].data;
+    var jeop = jeopardySet(data);
+
+    var s = "";
+    EDGES.forEach(function(e){ s += '<path class="tk base" d="'+edgePath(e)+'"/>'; });
+    EDGES.forEach(function(e){
+      var v = data[e.from].verdict;
+      s += '<path class="tk '+VC[v]+'" d="'+edgePath(e)+'"/>';
+      if (v==="bad") s += '<path class="tk hot" d="'+edgePath(e)+'"/>';
+    });
+    var ob = nodeByKey("onboarding"), mg = nodeByKey("migrations"), st = nodeByKey("strategy");
+    s += '<path class="tk byp" d="M'+ob.x+' '+ob.y+' L '+ob.x+' '+(mg.y+42)+' L '+(ob.x+42)+' '+mg.y+' L '+(st.x-42)+' '+mg.y+' L '+st.x+' '+(mg.y+42)+' L '+st.x+' '+st.y+'"/>';
+    s += rotationArrows();
+    svg.setAttribute("viewBox","0 0 1092 470");
+    svg.innerHTML = s;
+
+    map.querySelectorAll(".sc").forEach(function(el){ el.remove(); });
+    NODES.forEach(function(nd){
+      var d = data[nd.key];
+      var vc = VC[d.verdict];
+      var isJeop = jeop[nd.key] && d.verdict!=="bad";
+      var el = document.createElement("button");
+      el.type = "button";
+      el.className = "sc v-"+d.verdict+(isJeop?" jeop":"");
+      el.style.left = (nd.x-CW/2)+"px"; el.style.top = (nd.y-CH/2)+"px";
+      el.setAttribute("aria-label", nd.name+": "+WORD[d.verdict]+", grade "+d.grade+(isJeop?", in jeopardy from upstream":""));
+      var late = d.late>0 ? d.late+" late" : "clear";
+      el.innerHTML =
+        '<span class="ring">'+ringSvg(d.grade, d.verdict, 34)+'<span class="rv num">'+d.grade+'</span></span>'+
+        '<span class="meta"><span class="nm">'+nd.name+'</span>'+
+        '<span class="ms '+vc+'">'+WORD[d.verdict]+' · '+late+'</span>'+
+        (isJeop ? '<span class="jline">⚠ failing track</span>' : '')+
+        (nd.optional ? '<span class="oline">optional bypass</span>' : '')+
+        '</span>';
+      el.addEventListener("mouseenter", function(ev){ showTip(nd, d, isJeop, ev); });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", hideTip);
+      map.appendChild(el);
+    });
+
+    renderHealth(data, jeop);
+    renderSeg();
+  }
+
+  function ringSvg(grade, verdict, size){
+    var r = (size-5)/2, c = 2*Math.PI*r;
+    var col = verdict==="good" ? "var(--good)" : verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    return '<svg viewBox="0 0 '+size+' '+size+'">'+
+      '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="var(--line-soft)" stroke-width="3.5"/>'+
+      '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="'+(c*grade/100)+' '+c+'"/>'+
+      '</svg>';
+  }
+
+  function renderHealth(data, jeop){
+    var breaches = [], jl = [], risks = [];
+    NODES.forEach(function(nd){
+      if (nd.optional){ if (data[nd.key].verdict!=="good") risks.push(nd.name); return; }
+      var v = data[nd.key].verdict;
+      if (v==="bad") breaches.push(nd.name);
+      else if (jeop[nd.key]) jl.push(nd.name);
+      else if (v==="warn") risks.push(nd.name);
+    });
+    var strip = document.getElementById("healthStrip");
+    var badge, cls;
+    if (breaches.length===0 && risks.length===0){ badge = "ALL CLEAR"; cls = "ok"; }
+    else if (breaches.length===0){ badge = risks.length+" AT RISK"; cls = "warn"; }
+    else { badge = breaches.length+(breaches.length===1?" BREACH":" BREACHES"); cls = "bad"; }
+    var txt;
+    if (breaches.length){
+      txt = "<b>"+breaches.join(", ")+"</b> "+(breaches.length===1?"is":"are")+" behind";
+      if (jl.length) txt += ", so <b>"+jl.join(", ")+"</b> "+(jl.length===1?"is":"are")+" riding a failing line";
+      txt += ".";
+      if (risks.length) txt += " Watch on their own numbers: "+risks.join(", ")+".";
+    } else if (risks.length){
+      txt = "No breaches. Watch <b>"+risks.join(", ")+"</b>: at risk on their own numbers.";
+    } else {
+      txt = "The line and the flywheel are both on track. This is what healthy looks like.";
+    }
+    strip.innerHTML = '<span class="hv '+cls+'">'+badge+'</span><span class="ht">'+txt+'</span>';
+  }
+
+  function renderSeg(){
+    var seg = document.getElementById("scenarioSeg");
+    var html = "";
+    Object.keys(SCENARIOS).forEach(function(k){
+      html += '<button type="button" role="tab" aria-selected="'+(k===current)+'" class="'+(k===current?"on":"")+'" data-s="'+k+'">'+SCENARIOS[k].label+'</button>';
+    });
+    seg.innerHTML = html;
+    seg.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click", function(){ current = b.getAttribute("data-s"); render(); });
+    });
+  }
+
+  function showTip(nd, d, isJeop, ev){
+    var col = d.verdict==="good" ? "var(--good)" : d.verdict==="warn" ? "var(--warn)" : "var(--bad)";
+    tip.innerHTML =
+      '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+d.grade+'</span></div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[d.verdict]+(nd.optional?" · optional bypass":"")+(nd.loop?" · on the flywheel":"")+'</div>'+
+      '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
+      '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
+      '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
+      '<div class="t-row"><span>Forecast</span><b>'+d.fc+'</b></div>'+
+      (isJeop ? '<div class="t-jp">⚠ Riding a failing track: an upstream station is behind, so this one may run dry even though its numbers hold.</div>' : '')+
+      '<div class="t-cta">Click · open Task Hub filtered here</div>';
+    tip.style.display = "block";
+    moveTip(ev);
+  }
+  function moveTip(ev){
+    var pad=14, w=250, h=tip.offsetHeight||170;
+    var x=ev.clientX+pad, y=ev.clientY+pad;
+    if (x+w > window.innerWidth-8) x = ev.clientX-w-pad;
+    if (y+h > window.innerHeight-8) y = ev.clientY-h-pad;
+    tip.style.left=x+"px"; tip.style.top=y+"px";
+  }
+  function hideTip(){ tip.style.display="none"; }
+
+  var app = document.getElementById("app");
+  var themeBtn = document.getElementById("themeBtn");
+  var themes = ["auto","light","dark"], ti = 0;
+  themeBtn.addEventListener("click", function(){
+    ti = (ti+1)%3;
+    var t = themes[ti];
+    if (t==="auto") app.removeAttribute("data-theme"); else app.setAttribute("data-theme", t);
+    themeBtn.textContent = "Theme: "+t.charAt(0).toUpperCase()+t.slice(1);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
