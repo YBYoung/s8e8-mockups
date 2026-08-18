@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SEO Critical Path · Option C6 · Living Flywheel</title>
+<title>SEO Critical Path · Option C6 · Recurring Phase</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ================================================================
-   Option C6: "Living Flywheel". C5 decramped: the flywheel is its
-   own labeled phase panel; flow dots travel every healthy track;
+   Option C6: "Recurring Phase". C5 decramped: the recurring phase is its
+   own labeled panel; flow dots travel every healthy track;
    the wheel spins by health; hover lights the connected tracks;
    click opens a breakdown drawer. Sample data only.
    ================================================================ */
@@ -199,7 +199,7 @@ html,body{margin:0;padding:0}
     <button class="tb-theme" id="themeBtn" type="button">Theme: Auto</button>
   </div>
   <div class="rainbow"></div>
-  <div class="mockstrip">Mockup · Option C6 · Living Flywheel · sample data</div>
+  <div class="mockstrip">Mockup · Option C6 · Recurring Phase · sample data</div>
 
   <div class="behind">
     <h1 class="bh-t">Executive Report</h1>
@@ -221,7 +221,7 @@ html,body{margin:0;padding:0}
       <div class="pop-head">
         <div>
           <h2>SEO Critical Path</h2>
-          <div class="pop-sub">The line runs once per piece of work: intake, plan, produce. Then everything feeds the flywheel, the phase that repeats every cycle. Dots flow where work is moving; flow stops where it is not.</div>
+          <div class="pop-sub">The line runs once per piece of work: intake, plan, produce. Everything then feeds the Recurring Phase, which repeats every cycle. Dots flow where work is moving; flow stops where it is not.</div>
         </div>
         <button class="pop-x" type="button" title="Close · back to the report">×</button>
       </div>
@@ -239,9 +239,9 @@ html,body{margin:0;padding:0}
             <div class="phase-lab" style="left:26px;top:20px">Intake</div>
             <div class="phase-lab" style="left:250px;top:20px">Plan</div>
             <div class="phase-lab" style="left:530px;top:20px">Produce</div>
-            <div class="fly-panel"><span class="fp-lab">The Flywheel · the phase that repeats</span></div>
-            <div class="fly-lab" style="left:798px;top:224px;width:140px">
-              <span class="f1">Flywheel</span>
+            <div class="fly-panel"><span class="fp-lab">Recurring Phase</span></div>
+            <div class="fly-lab" style="left:778px;top:224px;width:180px">
+              <span class="f1">Recurring Phase</span>
               <span class="f2">every client · every cycle</span>
               <span class="f3" id="wheelState"></span>
             </div>
@@ -259,7 +259,7 @@ html,body{margin:0;padding:0}
         </div>
 
         <div class="pop-foot">
-          <b>Reading the map:</b> the ring is the category's existing grade, nothing is recalculated. Moving dots mean work is flowing; on an at-risk track they slow down, and on a failing track they stop entirely and the track pulses red. The flywheel spins while its four stations are healthy, slows when one is at risk, and jams when one is behind, because a jam anywhere on the wheel stalls the whole cycle. Migrations is an optional bypass: the dev team increasingly covers it, so it never fails the main line. Hover a card to isolate its connections; click it for the breakdown and a jump into the Task Hub.
+          <b>Reading the map:</b> the ring is the category's existing grade, nothing is recalculated. Moving dots mean work is flowing; on an at-risk track they slow down, and on a failing track they stop entirely and the track pulses red. The Recurring Phase turns while its four stations are healthy, slows when one is at risk, and stalls when one is behind, because a stall anywhere stops the whole cycle. Migrations is an optional bypass: the dev team increasingly covers it, so it never fails the main line. Hover a card to isolate its connections; click it for the breakdown and a jump into the Task Hub.
         </div>
       </div>
 
@@ -431,10 +431,10 @@ html,body{margin:0;padding:0}
     svg.innerHTML = s;
 
     var ws = document.getElementById("wheelState");
-    if (wheelBad){ ws.textContent = "jammed"; ws.className = "f3 b"; }
-    else if (wheelWarn){ ws.textContent = "turning slowly"; ws.className = "f3 w"; }
+    if (wheelBad){ ws.textContent = "stalled"; ws.className = "f3 b"; }
+    else if (wheelWarn){ ws.textContent = "slowed"; ws.className = "f3 w"; }
     else if (wheelNone){ ws.textContent = "partial read"; ws.className = "f3 n"; }
-    else { ws.textContent = "spinning"; ws.className = "f3 g"; }
+    else { ws.textContent = "running"; ws.className = "f3 g"; }
 
     /* cards */
     map.querySelectorAll(".sc").forEach(function(el){ el.remove(); });
@@ -506,7 +506,7 @@ html,body{margin:0;padding:0}
 
     document.getElementById("drName").textContent = nd.name;
     var vd = document.getElementById("drVerdict");
-    vd.textContent = WORD[verd(d)]+" · grade "+(d.grade==null?"none":d.grade)+(nd.loop?" · on the flywheel":"")+(nd.optional?" · optional bypass":"");
+    vd.textContent = WORD[verd(d)]+" · grade "+(d.grade==null?"none":d.grade)+(nd.loop?" · in the Recurring Phase":"")+(nd.optional?" · optional bypass":"");
     vd.className = "dh-s "+VC[verd(d)];
 
     var rows = d.late>0 ? (SAMPLE_TASKS[nd.key] || SAMPLE_TASKS.generic) : [];
@@ -560,7 +560,7 @@ html,body{margin:0;padding:0}
     } else if (risks.length){
       txt = "No breaches. Watch <b>"+risks.join(", ")+"</b>: at risk on their own numbers.";
     } else {
-      txt = "The line and the flywheel are both on track. This is what healthy looks like.";
+      txt = "The line and the Recurring Phase are both on track. This is what healthy looks like.";
     }
     if (unread.length) txt += " No honest read yet for: "+unread.join(", ")+".";
     strip.innerHTML = '<span class="hv '+cls+'">'+badge+'</span><span class="ht">'+txt+'</span>';
@@ -583,7 +583,7 @@ html,body{margin:0;padding:0}
     var col = dv==="good" ? "var(--good)" : dv==="warn" ? "var(--warn)" : dv==="bad" ? "var(--bad)" : "var(--muted)";
     tip.innerHTML =
       '<div class="t-nm"><span>'+nd.name+'</span><span class="num">'+(d.grade==null?"–":d.grade)+'</span></div>'+
-      '<div class="t-vd" style="color:'+col+'">'+WORD[dv]+(nd.optional?" · optional bypass":"")+(nd.loop?" · on the flywheel":"")+'</div>'+
+      '<div class="t-vd" style="color:'+col+'">'+WORD[dv]+(nd.optional?" · optional bypass":"")+(nd.loop?" · in the Recurring Phase":"")+'</div>'+
       '<div class="t-row"><span>Late pile</span><b>'+d.late+' task'+(d.late===1?"":"s")+'</b></div>'+
       '<div class="t-row"><span>Weeks deep</span><b>'+d.deep+'</b></div>'+
       '<div class="t-row"><span>Court</span><b>'+d.court+'</b></div>'+
