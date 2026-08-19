@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Type Switcher · Mockups</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #FAF9F7;
+    color: #292524;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 48px 24px 120px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .sub { color: #78716c; font-size: 13px; margin-top: 6px; max-width: 640px; }
+
+  .mock-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #a8a29e; margin: 48px 0 4px;
+  }
+  h2 { font-size: 15px; font-weight: 600; color: #1c1917; margin-bottom: 4px; }
+  .mock-desc { color: #78716c; font-size: 13px; margin-bottom: 16px; max-width: 680px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid rgba(231,229,228,0.7);
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    overflow: visible;
+  }
+
+  /* ---------- Hub table ---------- */
+  .hub-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; border-bottom: 1px solid rgba(231,229,228,0.7);
+  }
+  .hub-toolbar .spacer { flex: 1; }
+  .fake-filter {
+    font-size: 12px; color: #57534e; background: #fff;
+    border: 1px solid rgba(214,211,209,0.8); border-radius: 4px;
+    padding: 4px 10px; display: inline-flex; align-items: center; gap: 6px;
+    cursor: default;
+  }
+  .fake-filter svg { opacity: 0.5; }
+  .btn-primary {
+    background: #1c1917; color: #fff; font-size: 12px; font-weight: 500;
+    border: none; border-radius: 4px; padding: 6px 12px; cursor: default;
+  }
+
+  .client-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; background: #fafaf9;
+    border-bottom: 1px solid rgba(231,229,228,0.7);
+    font-size: 12px; font-weight: 600; color: #44403c;
+  }
+  .client-header .count { font-weight: 400; color: #a8a29e; }
+
+  .col-header, .hub-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 140px 130px 70px 150px 80px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+  }
+  .col-header {
+    height: 30px;
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: #a8a29e;
+    border-bottom: 1px solid rgba(231,229,228,0.7);
+  }
+  .hub-row {
+    height: 46px;
+    border-bottom: 1px solid rgba(245,245,244,1);
+    cursor: default;
+    transition: background 0.12s;
+  }
+  .hub-row:hover { background: rgba(250,250,249,0.7); }
+  .hub-row:last-child { border-bottom: none; }
+  .row-title { font-size: 13px; font-weight: 500; color: #1c1917; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-dim { font-size: 12px; color: #78716c; }
+  .row-check {
+    width: 14px; height: 14px; border: 1px solid #d6d3d1; border-radius: 3px; background: #fff;
+  }
+
+  /* ---------- Status chips (matches PieceStatusChip tones) ---------- */
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+    border-radius: 4px; padding: 2px 8px;
+    width: fit-content;
+  }
+  .st-neutral  { background: #f5f5f4; color: #57534e; }
+  .st-progress { background: #f0f9ff; color: #0369a1; }
+  .st-review   { background: #f5f3ff; color: #6d28d9; }
+  .st-ready    { background: #ecfdf5; color: #047857; }
+  .st-done     { background: #292524; color: #fff; }
+  .status-chip .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+
+  /* ---------- Type chip dropdown ---------- */
+  .dd { position: relative; width: fit-content; }
+  .dd-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+    border-radius: 4px; padding: 3px 7px 3px 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.15s ease;
+  }
+  .dd-btn .chev { opacity: 0; transition: opacity 0.15s, transform 0.18s ease; margin-left: -1px; }
+  .dd-btn:hover .chev, .dd.open .dd-btn .chev { opacity: 0.6; }
+  .dd.open .dd-btn .chev { transform: rotate(180deg); }
+  .dd-btn:hover { border-color: rgba(28,25,23,0.14); }
+  .dd.open .dd-btn { border-color: rgba(28,25,23,0.2); }
+  .dd-btn.pulse { animation: chipPulse 0.4s ease; }
+  @keyframes chipPulse {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  .ty-service { background: #ecfdf5; color: #047857; }
+  .ty-blog    { background: #f0f9ff; color: #0369a1; }
+  .ty-pillar  { background: #f5f3ff; color: #6d28d9; }
+
+  .dd-menu {
+    position: absolute; top: calc(100% + 5px); left: 0; z-index: 40;
+    width: 250px;
+    background: #fff;
+    border: 1px solid rgba(231,229,228,0.9);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+    padding: 4px;
+    transform-origin: top left;
+    animation: menuIn 0.13s ease-out;
+  }
+  .dd-menu.up { top: auto; bottom: calc(100% + 5px); transform-origin: bottom left; }
+  @keyframes menuIn {
+    from { opacity: 0; transform: scale(0.96) translateY(-3px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .dd-menu-label {
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+    color: #a8a29e; padding: 6px 8px 4px;
+  }
+  .dd-opt {
+    display: flex; align-items: flex-start; gap: 8px;
+    width: 100%; text-align: left;
+    background: none; border: none; cursor: pointer; font-family: inherit;
+    padding: 7px 8px; border-radius: 4px;
+    transition: background 0.1s;
+  }
+  .dd-opt:hover { background: rgba(250,250,249,1); }
+  .dd-opt .opt-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .dd-opt .opt-name { font-size: 12.5px; font-weight: 500; color: #1c1917; }
+  .dd-opt .opt-desc { font-size: 11px; color: #a8a29e; margin-top: 1px; }
+  .dd-opt .opt-check { margin-left: auto; margin-top: 3px; color: #1c1917; flex-shrink: 0; opacity: 0; }
+  .dd-opt.active .opt-check { opacity: 1; }
+  .dd-opt.active { background: rgba(250,250,249,0.8); }
+
+  /* ---------- Detail panel mock ---------- */
+  .panel-mock { width: 340px; padding: 16px; }
+  .panel-title { font-size: 13px; font-weight: 600; color: #1c1917; margin-bottom: 2px; }
+  .panel-sub { font-size: 11px; color: #a8a29e; margin-bottom: 14px; }
+  .meta-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid rgba(245,245,244,1);
+  }
+  .meta-row:last-child { border-bottom: none; }
+  .meta-label { font-size: 11px; font-weight: 500; color: #a8a29e; }
+  .meta-value { font-size: 12px; color: #44403c; }
+
+  /* ---------- Editor toolbar mock ---------- */
+  .editor-toolbar { padding: 12px 16px 10px; }
+  .tb-row1 { display: flex; align-items: center; gap: 10px; }
+  .tb-back { color: #a8a29e; display: flex; cursor: default; }
+  .tb-title { font-size: 15px; font-weight: 600; color: #1c1917; }
+  .tb-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: #78716c; }
+  .tb-status .dot { width: 6px; height: 6px; border-radius: 50%; background: #38bdf8; }
+  .tb-row2 { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .tb-btn {
+    font-size: 12px; color: #44403c; background: #fff;
+    border: 1px solid rgba(214,211,209,0.8); border-radius: 4px;
+    padding: 4px 10px; cursor: default; font-family: inherit;
+  }
+  .tb-cta {
+    margin-left: auto;
+    background: #1c1917; color: #fff; font-size: 12px; font-weight: 500;
+    border: none; border-radius: 4px; padding: 5px 12px; cursor: default;
+  }
+
+  .type-notice {
+    max-height: 0; opacity: 0; overflow: hidden;
+    transition: max-height 0.28s ease, opacity 0.28s ease, margin 0.28s ease;
+    margin: 0 16px;
+  }
+  .type-notice.show { max-height: 80px; opacity: 1; margin: 0 16px 12px; }
+  .type-notice-inner {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: #fafaf9; border: 1px solid rgba(231,229,228,0.8);
+    border-radius: 4px; padding: 8px 12px;
+    font-size: 12px; color: #57534e;
+  }
+  .type-notice-inner svg { flex-shrink: 0; margin-top: 2px; color: #a8a29e; }
+  .type-notice-dismiss {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    color: #a8a29e; font-size: 12px; font-family: inherit; padding: 0 2px;
+  }
+  .editor-body {
+    border-top: 1px solid rgba(231,229,228,0.7);
+    padding: 20px 24px; color: #d6d3d1;
+  }
+  .skeleton { background: #f5f5f4; border-radius: 3px; height: 10px; margin-bottom: 10px; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(28,25,23,0.28);
+    display: none; align-items: center; justify-content: center;
+    animation: fadeIn 0.15s ease-out;
+  }
+  .overlay.show { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    width: 440px; max-width: calc(100vw - 40px);
+    background: #fff; border-radius: 6px;
+    border: 1px solid rgba(231,229,228,0.9);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    animation: modalIn 0.18s cubic-bezier(0.2, 0.8, 0.3, 1);
+    padding: 20px;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal h3 { font-size: 14px; font-weight: 600; color: #1c1917; }
+  .modal .modal-sub { font-size: 12.5px; color: #78716c; margin-top: 4px; }
+  .effect-list { margin: 14px 0; display: flex; flex-direction: column; gap: 8px; }
+  .effect {
+    display: flex; gap: 9px; align-items: flex-start;
+    font-size: 12px; color: #57534e;
+    background: #fafaf9; border-radius: 4px; padding: 8px 10px;
+    animation: effectIn 0.25s ease-out backwards;
+  }
+  .effect:nth-child(1) { animation-delay: 0.03s; }
+  .effect:nth-child(2) { animation-delay: 0.08s; }
+  .effect:nth-child(3) { animation-delay: 0.13s; }
+  .effect:nth-child(4) { animation-delay: 0.18s; }
+  @keyframes effectIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .effect svg { flex-shrink: 0; margin-top: 1px; color: #a8a29e; }
+  .effect.warn { color: #9f1239; background: #fff1f2; }
+  .effect.warn svg { color: #e11d48; }
+  .effect b { font-weight: 600; color: inherit; }
+
+  .sync-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: #44403c;
+    padding: 10px 2px 2px;
+    border-top: 1px solid rgba(245,245,244,1);
+    cursor: pointer; user-select: none;
+  }
+  .sync-row input { accent-color: #1c1917; width: 14px; height: 14px; cursor: pointer; }
+  .sync-row .sync-note { color: #a8a29e; font-size: 11px; margin-left: auto; }
+
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  .btn-ghost {
+    background: #fff; color: #44403c; font-size: 12.5px; font-weight: 500;
+    border: 1px solid rgba(214,211,209,0.8); border-radius: 4px;
+    padding: 6px 14px; cursor: pointer; font-family: inherit;
+  }
+  .btn-ghost:hover { background: #fafaf9; }
+  .btn-confirm {
+    background: #1c1917; color: #fff; font-size: 12.5px; font-weight: 500;
+    border: none; border-radius: 4px; padding: 6px 14px; cursor: pointer; font-family: inherit;
+    transition: opacity 0.12s;
+  }
+  .btn-confirm:hover { opacity: 0.88; }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 100;
+    transform: translate(-50%, 16px);
+    background: #1c1917; color: #fff;
+    font-size: 12.5px;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    max-width: 90vw;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast .toast-check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #10b981; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .toast .toast-check svg path {
+    stroke-dasharray: 14; stroke-dashoffset: 14;
+    animation: drawCheck 0.35s 0.1s ease-out forwards;
+  }
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+  .toast .toast-sync { color: #a8a29e; }
+  .toast button {
+    background: none; border: none; color: #7dd3fc; font-weight: 600;
+    font-size: 12.5px; cursor: pointer; font-family: inherit; padding: 0;
+  }
+  .toast button:hover { color: #bae6fd; }
+
+  /* ---------- Spec cards ---------- */
+  .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 780px) { .spec-grid { grid-template-columns: 1fr; } .side-by-side { flex-direction: column; } }
+  .spec-card { padding: 16px; }
+  .spec-card h4 { font-size: 12.5px; font-weight: 600; color: #1c1917; margin-bottom: 8px; }
+  .spec-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .spec-card li { font-size: 12px; color: #57534e; padding-left: 14px; position: relative; }
+  .spec-card li::before {
+    content: ''; position: absolute; left: 0; top: 7px;
+    width: 4px; height: 4px; border-radius: 50%; background: #d6d3d1;
+  }
+  .spec-card li b { font-weight: 600; color: #292524; }
+
+  .side-by-side { display: flex; gap: 16px; align-items: flex-start; }
+  .hint {
+    font-size: 11.5px; color: #a8a29e; margin-top: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Content Type Switcher</h1>
+  <p class="sub">Let the team change whether a page is a <b>Service page</b>, <b>Blog article</b>, or <b>Pillar page</b> after it's been created. One control, same behavior, in three places: the hub table, the hub detail panel, and the editor toolbar. Everything below is clickable, try changing a few types.</p>
+
+  <!-- ============ MOCKUP 1: HUB TABLE ============ -->
+  <div class="mock-label">Mockup 1</div>
+  <h2>Production Hub: the type cell becomes the control</h2>
+  <p class="mock-desc">Today the Type column is plain gray text. In this design it becomes a colored chip; hover reveals a chevron, click opens a branded menu. Pieces that are still drafts change instantly with an undo toast. Pieces with generated content get a confirm step first (try the "Client review" or "Published" rows).</p>
+
+  <div class="card">
+    <div class="hub-toolbar">
+      <span class="fake-filter">All clients <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span class="fake-filter">All types <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span class="fake-filter">All statuses <svg width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span class="spacer"></span>
+      <button class="btn-primary">Add piece</button>
+    </div>
+
+    <div class="col-header">
+      <span></span><span>Page title</span><span>Client</span><span>Type</span><span>Month</span><span>Status</span><span>Created</span>
+    </div>
+
+    <div class="client-header">Hewett Family Dental <span class="count">· 3 pieces</span></div>
+    <div id="hub-rows-1"></div>
+
+    <div class="client-header">Falcon Dental Group <span class="count">· 2 pieces</span></div>
+    <div id="hub-rows-2"></div>
+  </div>
+  <p class="hint">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor"/><path d="M6 5.5V9M6 3.5v.5" stroke="currentColor" stroke-linecap="round"/></svg>
+    Hover a type chip to reveal the chevron. Draft rows switch instantly; rows in later stages open the confirm dialog.
+  </p>
+
+  <!-- ============ MOCKUP 2: DETAIL PANEL ============ -->
+  <div class="mock-label">Mockup 2</div>
+  <h2>Hub detail panel: same chip in the metadata block</h2>
+  <p class="mock-desc">When a row is selected, the right-side panel already shows Status, Content type, and Month. The Content type row swaps its plain text for the same chip control. One component, learned once.</p>
+
+  <div class="side-by-side">
+    <div class="card panel-mock">
+      <div class="panel-title">Dental Implants in Medford</div>
+      <div class="panel-sub">Hewett Family Dental · created Aug 12</div>
+      <div class="meta-row">
+        <span class="meta-label">Status</span>
+        <span class="status-chip st-neutral"><span class="dot"></span>Draft</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Content type</span>
+        <span id="panel-type-slot"></span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Month</span>
+        <span class="meta-value">August</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Meta description</span>
+        <span class="meta-value" style="color:#a8a29e;">Not set</span>
+      </div>
+    </div>
+    <div style="flex:1; font-size:12.5px; color:#78716c; padding-top:6px;">
+      <p style="margin-bottom:10px;"><b style="color:#44403c;">Why the panel too?</b> The panel is where the team already edits metadata (meta description, framing notes), so the type control belongs here for people who work row-by-row.</p>
+      <p>The menu opens upward when there's no room below, and closes on outside click. Only one menu can be open at a time anywhere on the page.</p>
+    </div>
+  </div>
+
+  <!-- ============ MOCKUP 3: EDITOR TOOLBAR ============ -->
+  <div class="mock-label">Mockup 3</div>
+  <h2>Content editor: the existing type chip becomes clickable</h2>
+  <p class="mock-desc">The editor toolbar already shows a static type chip next to the title. It becomes the same dropdown. After a change, a one-line notice slides in under the toolbar explaining what the new type means for this piece, so nobody is surprised when QA expectations shift.</p>
+
+  <div class="card">
+    <div class="editor-toolbar">
+      <div class="tb-row1">
+        <span class="tb-back"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="tb-title">Dental Implants in Medford</span>
+        <span id="editor-type-slot"></span>
+        <span class="tb-status"><span class="dot"></span>Writing</span>
+      </div>
+      <div class="tb-row2">
+        <button class="tb-btn">Optimizer</button>
+        <button class="tb-btn">Internal links</button>
+        <button class="tb-btn">Schema</button>
+        <button class="tb-btn">Preview</button>
+        <button class="tb-btn">Save</button>
+        <button class="tb-cta">Send for review</button>
+      </div>
+    </div>
+    <div class="type-notice" id="editor-notice">
+      <div class="type-notice-inner">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor"/><path d="M6.5 6v3.2M6.5 4v.6" stroke="currentColor" stroke-linecap="round"/></svg>
+        <span id="editor-notice-text"></span>
+        <button class="type-notice-dismiss" onclick="hideEditorNotice()">Dismiss</button>
+      </div>
+    </div>
+    <div class="editor-body">
+      <div class="skeleton" style="width: 45%; height: 14px; margin-bottom: 16px;"></div>
+      <div class="skeleton" style="width: 96%;"></div>
+      <div class="skeleton" style="width: 91%;"></div>
+      <div class="skeleton" style="width: 94%;"></div>
+      <div class="skeleton" style="width: 60%;"></div>
+    </div>
+  </div>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <div class="mock-label">Behavior</div>
+  <h2>How it works under the hood</h2>
+  <p class="mock-desc">The type is stored in two places: the calendar item (the plan) and the production piece (the draft). This control writes the piece, and offers to keep the calendar in sync.</p>
+
+  <div class="spec-grid">
+    <div class="card spec-card">
+      <h4>What it writes</h4>
+      <ul>
+        <li>Updates the <b>production piece's</b> type immediately (new backend endpoint, none exists today).</li>
+        <li>"Also update the calendar item" is <b>checked by default</b>, so plan and draft stay matched.</li>
+        <li>If the calendar is mid client-review, the sync option is disabled with a note (calendar edits are locked during review).</li>
+      </ul>
+    </div>
+    <div class="card spec-card">
+      <h4>Guardrails</h4>
+      <ul>
+        <li><b>Draft, not yet written:</b> instant change, undo toast. No friction.</li>
+        <li><b>Content already generated:</b> confirm dialog listing what shifts (word targets, required sections, QA rules).</li>
+        <li><b>Published to Webflow:</b> extra red line in the dialog, since the live item would sit in the wrong collection until republished.</li>
+      </ul>
+    </div>
+    <div class="card spec-card">
+      <h4>What a type change ripples into</h4>
+      <ul>
+        <li><b>QA rules:</b> service pages require FAQ + CTA; blogs don't. Word floors differ (1,250 / 1,600 / 2,800).</li>
+        <li><b>Optimizer + writer:</b> prompts, golden examples, and depth all key off type.</li>
+        <li><b>Webflow:</b> type picks the CMS collection at publish time.</li>
+        <li><b>Asana:</b> service pages sync to a different section with different phases.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">Change type on a generated piece?</h3>
+    <p class="modal-sub" id="modal-sub"></p>
+    <div class="effect-list" id="effect-list"></div>
+    <label class="sync-row" id="sync-row">
+      <input type="checkbox" id="sync-check" checked>
+      <span>Also update the calendar item</span>
+      <span class="sync-note">keeps plan + draft matched</span>
+    </label>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="modal-confirm">Change type</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast">
+  <span class="toast-check">
+    <svg width="9" height="8" viewBox="0 0 9 8" fill="none"><path d="M1 4.2L3.4 6.6 8 1.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+  <span id="toast-text"></span>
+  <span class="toast-sync" id="toast-sync"></span>
+  <button id="toast-undo">Undo</button>
+</div>
+
+<script>
+const TYPES = {
+  service_page: { key: 'service_page', label: 'Service page', chip: 'ty-service', dot: '#059669',
+    desc: '1,250+ words · FAQ and CTA required' },
+  blog_article: { key: 'blog_article', label: 'Blog article', chip: 'ty-blog', dot: '#0284c7',
+    desc: '1,600+ words · deep dive, no required sections' },
+  pillar_page:  { key: 'pillar_page',  label: 'Pillar page',  chip: 'ty-pillar', dot: '#7c3aed',
+    desc: '2,800+ words · broad coverage of the topic' },
+};
+
+const NOTICE_COPY = {
+  service_page: 'Now treated as a Service page. QA will expect 1,250+ words plus FAQ and CTA sections. Existing content keeps its shape until you regenerate or run the Optimizer.',
+  blog_article: 'Now treated as a Blog article. QA will expect 1,600+ words with deep coverage; the FAQ and CTA requirements no longer apply. Existing content keeps its shape until you regenerate or run the Optimizer.',
+  pillar_page:  'Now treated as a Pillar page. QA will expect 2,800+ words of broad coverage. Existing content keeps its shape until you regenerate or run the Optimizer.',
+};
+
+// tier: 'instant' | 'generated' | 'published'
+const ROWS = [
+  { id: 'r1', group: 1, title: 'Dental Implants in Medford', client: 'Hewett Family Dental', type: 'service_page', month: 'Aug', status: ['st-neutral', 'Draft'], created: 'Aug 12', tier: 'instant' },
+  { id: 'r2', group: 1, title: 'How Long Do Veneers Last?', client: 'Hewett Family Dental', type: 'blog_article', month: 'Aug', status: ['st-progress', 'Writing'], created: 'Aug 12', tier: 'generated' },
+  { id: 'r3', group: 1, title: 'Emergency Dentist in Medford', client: 'Hewett Family Dental', type: 'service_page', month: 'Sep', status: ['st-review', 'Client review'], created: 'Aug 14', tier: 'generated' },
+  { id: 'r4', group: 2, title: 'The Complete Guide to Dental Implants', client: 'Falcon Dental Group', type: 'pillar_page', month: 'Aug', status: ['st-ready', 'Ready'], created: 'Aug 9', tier: 'generated' },
+  { id: 'r5', group: 2, title: 'Invisalign vs Braces: Which Is Right for You?', client: 'Falcon Dental Group', type: 'blog_article', month: 'Sep', status: ['st-done', 'Published'], created: 'Aug 6', tier: 'published' },
+];
+
+let openMenu = null;
+let toastTimer = null;
+let pendingChange = null;
+
+function chevSvg() {
+  return '<svg class="chev" width="8" height="5" viewBox="0 0 8 5" fill="none"><path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+}
+function checkSvg() {
+  return '<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5 10 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+// Build a type chip dropdown. onPick(newTypeKey) is called when an option is chosen.
+function buildTypeDropdown(currentTypeKey, onPick, opts) {
+  opts = opts || {};
+  const dd = document.createElement('span');
+  dd.className = 'dd';
+  const btn = document.createElement('button');
+  btn.className = 'dd-btn ' + TYPES[currentTypeKey].chip;
+  btn.innerHTML = '<span class="lbl">' + TYPES[currentTypeKey].label + '</span>' + chevSvg();
+  dd.appendChild(btn);
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (dd.querySelector('.dd-menu')) { closeMenus(); return; }
+    closeMenus();
+    const menu = document.createElement('div');
+    menu.className = 'dd-menu' + (opts.openUp ? ' up' : '');
+    menu.innerHTML = '<div class="dd-menu-label">Content type</div>';
+    Object.values(TYPES).forEach(t => {
+      const o = document.createElement('button');
+      o.className = 'dd-opt' + (t.key === dd.dataset.type ? ' active' : '');
+      o.innerHTML =
+        '<span class="opt-dot" style="background:' + t.dot + '"></span>' +
+        '<span><span class="opt-name">' + t.label + '</span><br><span class="opt-desc">' + t.desc + '</span></span>' +
+        '<span class="opt-check">' + checkSvg() + '</span>';
+      o.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        closeMenus();
+        if (t.key !== dd.dataset.type) onPick(t.key);
+      });
+      menu.appendChild(o);
+    });
+    dd.appendChild(menu);
+    dd.classList.add('open');
+    openMenu = dd;
+  });
+
+  dd.dataset.type = currentTypeKey;
+  dd.setChip = function(typeKey, animate) {
+    dd.dataset.type = typeKey;
+    btn.className = 'dd-btn ' + TYPES[typeKey].chip;
+    btn.querySelector('.lbl').textContent = TYPES[typeKey].label;
+    if (animate) {
+      btn.classList.remove('pulse');
+      void btn.offsetWidth;
+      btn.classList.add('pulse');
+    }
+  };
+  return dd;
+}
+
+function closeMenus() {
+  document.querySelectorAll('.dd-menu').forEach(m => m.remove());
+  document.querySelectorAll('.dd.open').forEach(d => d.classList.remove('open'));
+  openMenu = null;
+}
+document.addEventListener('click', closeMenus);
+
+/* ---------- Hub rows ---------- */
+const rowDropdowns = {};
+
+function renderRows() {
+  document.getElementById('hub-rows-1').innerHTML = '';
+  document.getElementById('hub-rows-2').innerHTML = '';
+  ROWS.forEach(row => {
+    const el = document.createElement('div');
+    el.className = 'hub-row';
+    el.innerHTML =
+      '<span class="row-check"></span>' +
+      '<span class="row-title">' + row.title + '</span>' +
+      '<span class="row-dim">' + row.client + '</span>' +
+      '<span class="type-slot"></span>' +
+      '<span class="row-dim">' + row.month + '</span>' +
+      '<span><span class="status-chip ' + row.status[0] + '"><span class="dot"></span>' + row.status[1] + '</span></span>' +
+      '<span class="row-dim">' + row.created + '</span>';
+    const dd = buildTypeDropdown(row.type, (newType) => requestChange(row, newType, dd), {});
+    el.querySelector('.type-slot').appendChild(dd);
+    rowDropdowns[row.id] = dd;
+    document.getElementById('hub-rows-' + row.group).appendChild(el);
+  });
+}
+
+/* ---------- Change flow ---------- */
+function requestChange(row, newType, dd) {
+  if (row.tier === 'instant') {
+    applyChange(row, newType, dd, true);
+  } else {
+    showModal(row, newType, dd);
+  }
+}
+
+function applyChange(row, newType, dd, syncCalendar) {
+  const oldType = row.type;
+  row.type = newType;
+  dd.setChip(newType, true);
+  // Keep the panel mock in sync when it's the same piece
+  if (row.id === 'r1' && panelDD) panelDD.setChip(newType, true);
+  showToast(
+    '"' + row.title + '" is now a <b>' + TYPES[newType].label + '</b>',
+    syncCalendar ? 'calendar item synced' : 'piece only',
+    () => {
+      row.type = oldType;
+      dd.setChip(oldType, true);
+      if (row.id === 'r1' && panelDD) panelDD.setChip(oldType, true);
+    }
+  );
+}
+
+/* ---------- Modal ---------- */
+function effectHtml(icon, text, warn) {
+  return '<div class="effect' + (warn ? ' warn' : '') + '">' + icon + '<span>' + text + '</span></div>';
+}
+const IC_QA = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1l5 2v3.5c0 2.7-2 4.7-5 5.5-3-.8-5-2.8-5-5.5V3l5-2z" stroke="currentColor" stroke-linejoin="round"/></svg>';
+const IC_DOC = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M3 1.5h5L11 4.5v7a1 1 0 01-1 1H3a1 1 0 01-1-1v-9a1 1 0 011-1z" stroke="currentColor" stroke-linejoin="round"/><path d="M4.5 6.5h4M4.5 9h4" stroke="currentColor" stroke-linecap="round"/></svg>';
+const IC_GLOBE = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor"/><path d="M1 6.5h11M6.5 1c1.7 1.5 2.5 3.4 2.5 5.5S8.2 10.5 6.5 12C4.8 10.5 4 8.6 4 6.5S4.8 2.5 6.5 1z" stroke="currentColor"/></svg>';
+const IC_LIST = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.5 3h7M4.5 6.5h7M4.5 10h7" stroke="currentColor" stroke-linecap="round"/><circle cx="1.8" cy="3" r="0.9" fill="currentColor"/><circle cx="1.8" cy="6.5" r="0.9" fill="currentColor"/><circle cx="1.8" cy="10" r="0.9" fill="currentColor"/></svg>';
+
+function showModal(row, newType, dd) {
+  pendingChange = { row, newType, dd };
+  document.getElementById('modal-title').textContent =
+    'Change "' + row.title.slice(0, 34) + (row.title.length > 34 ? '…' : '') + '" to a ' + TYPES[newType].label.toLowerCase() + '?';
+  document.getElementById('modal-sub').textContent =
+    row.tier === 'published'
+      ? 'This piece is already published. Changing its type affects how it is judged and where it publishes.'
+      : 'This piece already has generated content. Its draft keeps its current shape, but expectations change:';
+
+  let fx = '';
+  fx += effectHtml(IC_QA, '<b>QA rules shift.</b> ' + TYPES[newType].desc + '. The current draft may start failing checks until regenerated or optimized.');
+  fx += effectHtml(IC_DOC, '<b>Writer and Optimizer prompts change.</b> Golden examples, structure, and depth now follow the new type.');
+  fx += effectHtml(IC_LIST, '<b>Asana section moves.</b> Service pages track in a different section with different phases.');
+  if (row.tier === 'published') {
+    fx += effectHtml(IC_GLOBE, '<b>Webflow collection mismatch.</b> The live item stays in its current collection until you republish. Republish after changing.', true);
+  }
+  document.getElementById('effect-list').innerHTML = fx;
+
+  document.getElementById('sync-check').checked = true;
+  document.getElementById('modal-confirm').textContent = 'Change to ' + TYPES[newType].label;
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  pendingChange = null;
+}
+document.getElementById('overlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('overlay')) closeModal();
+});
+document.getElementById('modal-confirm').addEventListener('click', () => {
+  if (!pendingChange) return;
+  const { row, newType, dd } = pendingChange;
+  const sync = document.getElementById('sync-check').checked;
+  closeModal();
+  applyChange(row, newType, dd, sync);
+});
+
+/* ---------- Toast ---------- */
+function showToast(html, syncNote, undoFn) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-text').innerHTML = html;
+  document.getElementById('toast-sync').textContent = syncNote ? '· ' + syncNote : '';
+  const undoBtn = document.getElementById('toast-undo');
+  undoBtn.onclick = () => {
+    if (undoFn) undoFn();
+    toast.classList.remove('show');
+    clearTimeout(toastTimer);
+  };
+  // restart the check-draw animation
+  const check = toast.querySelector('.toast-check');
+  const fresh = check.cloneNode(true);
+  check.replaceWith(fresh);
+  toast.classList.remove('show');
+  void toast.offsetWidth;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
+/* ---------- Panel mock ---------- */
+let panelDD = null;
+(function initPanel() {
+  const row = ROWS[0]; // same piece as row 1
+  panelDD = buildTypeDropdown(row.type, (newType) => requestChange(row, newType, panelDD), {});
+  document.getElementById('panel-type-slot').appendChild(panelDD);
+})();
+
+/* ---------- Editor mock ---------- */
+(function initEditor() {
+  const editorPiece = { id: 'ed1', title: 'Dental Implants in Medford', type: 'service_page', tier: 'instant' };
+  const dd = buildTypeDropdown(editorPiece.type, (newType) => {
+    const oldType = editorPiece.type;
+    editorPiece.type = newType;
+    dd.setChip(newType, true);
+    document.getElementById('editor-notice-text').textContent = NOTICE_COPY[newType];
+    document.getElementById('editor-notice').classList.add('show');
+    showToast('Type changed to <b>' + TYPES[newType].label + '</b>', 'calendar item synced', () => {
+      editorPiece.type = oldType;
+      dd.setChip(oldType, true);
+      hideEditorNotice();
+    });
+  }, {});
+  document.getElementById('editor-type-slot').appendChild(dd);
+})();
+
+function hideEditorNotice() {
+  document.getElementById('editor-notice').classList.remove('show');
+}
+
+renderRows();
+</script>
+</body>
+</html>
