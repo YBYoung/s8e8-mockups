@@ -112,11 +112,15 @@
 .audit-app .wk{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:6px}
 .audit-app .wk.redink{color:var(--red);font-weight:700}
 
-/* site glyph */
-.audit-app .siteflag{font-size:11px;white-space:nowrap}
-.audit-app .siteflag.live{color:var(--green)}
-.audit-app .siteflag.starter{color:var(--steady);font-weight:600}
-.audit-app .siteflag.none{color:var(--red);font-weight:600}
+/* website status chip: shape + color, never words alone
+   live = filled dot · starter = hollow ring · none = cross */
+.audit-app .sflag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;border-radius:4px;padding:2.5px 8px;white-space:nowrap;vertical-align:middle}
+.audit-app .sflag.live{color:var(--green);background:rgba(60,143,110,.11)}
+.audit-app .sflag.starter{color:var(--steady);background:rgba(37,110,156,.11)}
+.audit-app .sflag.none{color:var(--red);background:var(--red-soft)}
+.audit-app .sflag .sd{width:7px;height:7px;border-radius:50%;flex:none;background:currentColor}
+.audit-app .sflag .sd.ring{background:transparent;border:1.5px solid currentColor;width:8px;height:8px}
+.audit-app .sflag .sx{font-size:9px;line-height:1;flex:none}
 
 /* B. filters */
 .audit-app .fdemo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;padding:18px}
@@ -253,12 +257,12 @@
         <table class="ht">
           <thead><tr><th>Client</th><th>Tier</th><th>Status</th><th>Due</th><th>Data</th><th>Site</th></tr></thead>
           <tbody>
-            <tr class="taccent t-mrkt"><td><span class="cname">Bright Path Dental</span></td><td><span class="ttag mrkt">MRKT Leader</span></td><td><span class="st">Draft ready, unsent <b>6 days</b></span></td><td><span class="due">Sep 12</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">104w</span></td><td><span class="siteflag live">Live</span></td></tr>
-            <tr class="taccent t-performance sel"><td><span class="cname">Willoughby Smiles Dental</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st">Backfilling historical data</span></td><td><span class="due">Sep 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">9w</span></td><td><span class="siteflag live">Live</span></td></tr>
-            <tr class="taccent t-essential"><td><span class="cname">Lakeside Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st redink">GSC stopped returning data <b>9 days ago</b></span></td><td><span class="due redink">Aug 18 · 7 over</span></td><td><span class="dots"><span class="dot"></span><span class="dot broken"></span><span class="dot"></span></span><span class="wk">61w</span></td><td><span class="siteflag live">Live</span></td></tr>
-            <tr class="taccent t-essential"><td><span class="cname">Allen Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st">Site not launched, audits paused</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot off"></span><span class="dot off"></span><span class="dot off"></span></span></td><td><span class="siteflag starter">Starter only</span></td></tr>
-            <tr class="taccent t-support"><td><span class="cname">Starling Dental Group</span></td><td><span class="ttag support">Web Support</span></td><td><span class="st">Sent Jul 30, viewed</span></td><td><span class="due">Oct 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span></span><span class="wk">78w</span></td><td><span class="siteflag live">Live</span></td></tr>
-            <tr class="taccent t-performance"><td><span class="cname">Harborview Dental Arts</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st redink">No Webflow site found</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">32w</span></td><td><span class="siteflag none">No site</span></td></tr>
+            <tr class="taccent t-mrkt"><td><span class="cname">Bright Path Dental</span></td><td><span class="ttag mrkt">MRKT Leader</span></td><td><span class="st">Draft ready, unsent <b>6 days</b></span></td><td><span class="due">Sep 12</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">104w</span></td><td><span class="sflag live"><span class="sd"></span>Live</span></td></tr>
+            <tr class="taccent t-performance sel"><td><span class="cname">Willoughby Smiles Dental</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st">Backfilling historical data</span></td><td><span class="due">Sep 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">9w</span></td><td><span class="sflag live"><span class="sd"></span>Live</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Lakeside Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st redink">GSC stopped returning data <b>9 days ago</b></span></td><td><span class="due redink">Aug 18 · 7 over</span></td><td><span class="dots"><span class="dot"></span><span class="dot broken"></span><span class="dot"></span></span><span class="wk">61w</span></td><td><span class="sflag live"><span class="sd"></span>Live</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Allen Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st">Site not launched, audits paused</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot off"></span><span class="dot off"></span><span class="dot off"></span></span></td><td><span class="sflag starter"><span class="sd ring"></span>Starter only</span></td></tr>
+            <tr class="taccent t-support"><td><span class="cname">Starling Dental Group</span></td><td><span class="ttag support">Web Support</span></td><td><span class="st">Sent Jul 30, viewed</span></td><td><span class="due">Oct 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span></span><span class="wk">78w</span></td><td><span class="sflag live"><span class="sd"></span>Live</span></td></tr>
+            <tr class="taccent t-performance"><td><span class="cname">Harborview Dental Arts</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st redink">No Webflow site found</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">32w</span></td><td><span class="sflag none"><span class="sx">&#10005;</span>No site</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -354,17 +358,17 @@
         <div class="pane">
           <h3 style="font-size:14px">Willoughby Smiles <span class="ttag performance">Performance</span></h3>
           <div class="psec">Website</div>
-          <div class="srcline"><span class="sv"><b class="siteflag live">Live</b> · willoughbysmilesdental.ca<br><span class="dim">Published 3 days ago · checked nightly</span></span></div>
+          <div class="srcline"><span class="sv"><span class="sflag live"><span class="sd"></span>Live</span> willoughbysmilesdental.ca<br><span class="dim">Published 3 days ago · checked nightly</span></span></div>
         </div>
         <div class="pane">
           <h3 style="font-size:14px">Allen Family Dentistry <span class="ttag essential">Essential</span></h3>
           <div class="psec">Website</div>
-          <div class="srcline"><span class="sv"><b class="siteflag starter">Starter only — not launched</b> · allen-family-dentistry.webflow.io<br><span class="dim">No custom domain yet. Audits are paused until the full site goes live; the nightly check will announce it the morning after it launches.</span></span></div>
+          <div class="srcline"><span class="sv"><span class="sflag starter"><span class="sd ring"></span>Starter only, not launched</span> allen-family-dentistry.webflow.io<br><span class="dim">No custom domain yet. Audits are paused until the full site goes live; the nightly check will announce it the morning after it launches.</span></span></div>
         </div>
         <div class="pane">
           <h3 style="font-size:14px">Harborview Dental Arts <span class="ttag performance">Performance</span></h3>
           <div class="psec">Website</div>
-          <div class="srcline"><span class="sv"><b class="siteflag none">No Webflow site found</b><br><span class="dim">No site is linked to this client and no name match was found in the workspace. Link one in client settings, or confirm this client has no site — audits stay paused either way.</span></span><button class="btn ghost mini" type="button">Link a site</button></div>
+          <div class="srcline"><span class="sv"><span class="sflag none"><span class="sx">&#10005;</span>No Webflow site found</span><br><span class="dim">No site is linked to this client and no name match was found in the workspace. Link one in client settings, or confirm this client has no site — audits stay paused either way.</span></span><button class="btn ghost mini" type="button">Link a site</button></div>
         </div>
       </div>
       <p class="calloutnote" style="max-width:760px"><b>How "Starter" is detected:</b> Webflow's API does not expose the plan name directly, but a starter site is exactly one with <b>no custom domain</b> — it lives only at *.webflow.io. That is the signal, plus whether the site has real CMS collections. Paused clients drop out of the overdue count and get their own Website filter value (Section B), so "215 days over" stops appearing on clients we were never going to audit.</p>
