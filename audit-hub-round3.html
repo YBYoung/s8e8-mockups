@@ -193,7 +193,9 @@
 
 /* F. notifications */
 .audit-app .bellwrap{position:relative;display:inline-block}
-.audit-app .bellbtn{position:relative;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:5px;padding:6px 11px;font-size:14px;cursor:pointer}
+.audit-app .bellbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:5px;padding:7px 10px;cursor:pointer}
+.audit-app .bellbtn:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .bellbtn svg{display:block}
 .audit-app .bellbtn .bcount{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;border-radius:8px;padding:1px 5px;font-variant-numeric:tabular-nums}
 .audit-app .nfly{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 2px 6px rgba(17,20,28,.1);width:400px;max-width:100%}
 .audit-app .nfly .nhd{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
@@ -227,7 +229,7 @@
         <div class="meta">Six additions in one pass: <b>tier accents</b>, <b>exclude filters</b>, <b>broken-connection recovery</b>, <b>website status from Webflow</b>, a <b>connecting queue</b>, and <b>notifications</b>. Each section below is one feature; the final section says what powers it.</div>
       </div>
       <div class="hd-actions">
-        <span class="bellwrap"><button class="bellbtn" type="button">&#128276;<span class="bcount">3</span></button></span>
+        <span class="bellwrap"><button class="bellbtn" type="button" aria-label="Notifications"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="bcount">3</span></button></span>
         <button class="themebtn" id="themebtn" type="button">Theme</button>
       </div>
     </div>
