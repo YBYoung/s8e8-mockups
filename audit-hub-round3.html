@@ -1,0 +1,462 @@
+<!--
+  Audit Hub Round 3 mockup (2026-08-25).
+  Six requested features, each as a labeled section, in the shipped G design language:
+    A. Tier accents on rows + pane (Asana-true tag colors incl. Website Support)
+    B. Filters with include AND exclude (is / is not), Website Support filterable
+    C. Connection health: broken-vs-missing, Recheck + Reconnect without disconnecting
+    D. Website status from Webflow: Live / Starter (not launched) / No site
+    E. Connecting queue: every backfill in one place
+    F. Notifications: nightly announcements with per-person read state
+  Static demo. Data is fake but realistic. Palette: exec ink on neutral paper.
+-->
+<title>Audit Hub · Round 3 mockup</title>
+<style>
+.audit-app{
+  --paper:#F5F6F8; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --faint:#D3D7DF;
+  --red:#C25E55; --red-soft:#FBE7E5;
+  --green:#3C8F6E; --steady:#256E9C;
+  --chip:#F2F4F8;
+  /* Asana-true tier tags (from the owner's screenshot) */
+  --tier-support:#B9B9B9; --tier-essential:#A5E5DA; --tier-performance:#96D2A5; --tier-mrkt:#F2DE72;
+  --tier-ink:#20242B;
+  --shadow:0 1px 2px rgba(17,20,28,.05);
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,sans-serif;
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  min-height:100vh; margin:-8px; padding-bottom:80px;
+}
+.audit-app[data-theme="dark"]{
+  --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+  --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+  --red:#D0766B; --red-soft:#2E1917;
+  --green:#4DAE87; --steady:#7CC0E8;
+  --chip:#1E222A;
+  --tier-support:#8E8E8E; --tier-essential:#6FBDB1; --tier-performance:#6BAE7C; --tier-mrkt:#CDB94E;
+  --tier-ink:#14171C;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+@media (prefers-color-scheme:dark){
+  .audit-app:not([data-theme="light"]){
+    --paper:#0F1115; --card:#171A20; --line:#262A33; --line-soft:#20242C;
+    --ink:#EDEFF3; --sub:#AEB4C2; --muted:#767D8D; --faint:#3A4050;
+    --red:#D0766B; --red-soft:#2E1917;
+    --green:#4DAE87; --steady:#7CC0E8;
+    --chip:#1E222A;
+    --tier-support:#8E8E8E; --tier-essential:#6FBDB1; --tier-performance:#6BAE7C; --tier-mrkt:#CDB94E;
+    --tier-ink:#14171C;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+.audit-app *{box-sizing:border-box}
+.audit-app .num{font-variant-numeric:tabular-nums}
+.audit-app .col{max-width:1220px;margin:0 auto;width:100%;padding:0 30px}
+@media(max-width:880px){.audit-app .col{padding:0 16px}}
+
+.audit-app .mockstrip{display:flex;align-items:center;justify-content:center;gap:14px;background:var(--chip);color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:600;text-align:center;padding:6px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.audit-app .mockstrip a{color:var(--sub);text-decoration:none;padding:1px 6px;border-radius:4px}
+.audit-app .mockstrip a:hover{color:var(--ink);background:var(--card)}
+
+.audit-app .hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:26px 0 14px;border-bottom:2px solid var(--ink)}
+.audit-app .hd h1{font:600 20px/1.15 var(--body);letter-spacing:-.005em;margin:0}
+.audit-app .hd .meta{margin-top:6px;font-size:13px;color:var(--sub);max-width:720px;line-height:1.5}
+.audit-app .hd .meta b{color:var(--ink);font-weight:600}
+.audit-app .hd-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:relative}
+.audit-app .themebtn{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:5px;padding:6px 10px;cursor:pointer}
+.audit-app .themebtn:hover{color:var(--ink);border-color:var(--muted)}
+
+/* section nav */
+.audit-app .secnav{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0;position:sticky;top:0;background:var(--paper);z-index:40;border-bottom:1px solid var(--line)}
+.audit-app .secnav a{font-size:11.5px;font-weight:600;color:var(--sub);text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:5px;padding:5px 10px}
+.audit-app .secnav a:hover{color:var(--ink);border-color:var(--muted)}
+
+.audit-app .sec{margin-top:34px}
+.audit-app .sec .slab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.audit-app .sec h2{font:600 17px/1.25 var(--body);margin:4px 0 4px}
+.audit-app .sec .sdesc{font-size:13px;color:var(--sub);line-height:1.55;max-width:760px;margin:0 0 14px}
+.audit-app .sec .sdesc b{color:var(--ink);font-weight:600}
+
+.audit-app .tcard{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden}
+.audit-app .tscroll{overflow-x:auto}
+.audit-app table.ht{width:100%;border-collapse:collapse}
+.audit-app .ht thead th{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);text-align:left;padding:10px 9px;border-bottom:1px solid var(--ink);white-space:nowrap;background:var(--card)}
+.audit-app .ht thead th:first-child{padding-left:14px}
+.audit-app .ht tbody tr{border-bottom:1px solid var(--line-soft)}
+.audit-app .ht tbody tr:hover{background:var(--paper)}
+.audit-app .ht tbody tr.sel{background:var(--chip)}
+.audit-app .ht td{padding:10px 9px;font-size:12.5px;vertical-align:middle}
+.audit-app .ht td:first-child{padding-left:14px}
+.audit-app .cname{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
+.audit-app .st{font-size:12px;line-height:1.4;color:var(--sub)}
+.audit-app .st.redink{color:var(--red)}
+.audit-app .st b{color:var(--ink);font-weight:600}
+.audit-app td .due{font-size:12px;color:var(--sub);font-variant-numeric:tabular-nums;white-space:nowrap}
+.audit-app td .due.redink{color:var(--red);font-weight:600}
+.audit-app td .due.dim{color:var(--muted)}
+
+/* A. tier accents */
+.audit-app .ht tbody tr.taccent td:first-child{position:relative}
+.audit-app .ht tbody tr.taccent td:first-child::before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:var(--tc)}
+.audit-app tr.t-support{--tc:var(--tier-support)} .audit-app tr.t-essential{--tc:var(--tier-essential)}
+.audit-app tr.t-performance{--tc:var(--tier-performance)} .audit-app tr.t-mrkt{--tc:var(--tier-mrkt)}
+.audit-app .ttag{display:inline-block;font-size:10px;font-weight:600;color:var(--tier-ink);border-radius:4px;padding:1.5px 7px;white-space:nowrap;vertical-align:middle}
+.audit-app .ttag.support{background:var(--tier-support)} .audit-app .ttag.essential{background:var(--tier-essential)}
+.audit-app .ttag.performance{background:var(--tier-performance)} .audit-app .ttag.mrkt{background:var(--tier-mrkt)}
+.audit-app .variantnote{font-size:11px;color:var(--muted);padding:9px 14px;border-top:1px solid var(--line-soft)}
+.audit-app .variantnote b{color:var(--sub)}
+
+/* dots incl. new broken state */
+.audit-app .dots{display:inline-flex;gap:4px;align-items:center;vertical-align:middle}
+.audit-app .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.audit-app .dot.off{background:transparent;border:1.5px solid var(--red);width:6px;height:6px}
+.audit-app .dot.broken{background:var(--red)}
+.audit-app .wk{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:6px}
+.audit-app .wk.redink{color:var(--red);font-weight:700}
+
+/* site glyph */
+.audit-app .siteflag{font-size:11px;white-space:nowrap}
+.audit-app .siteflag.live{color:var(--green)}
+.audit-app .siteflag.starter{color:var(--steady);font-weight:600}
+.audit-app .siteflag.none{color:var(--red);font-weight:600}
+
+/* B. filters */
+.audit-app .fdemo{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;padding:18px}
+.audit-app .fpop{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 2px rgba(17,20,28,.08);padding:12px;width:280px;display:grid;gap:10px}
+.audit-app .frow{display:grid;gap:5px}
+.audit-app .frow .fl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+.audit-app .isnot{display:inline-flex;background:var(--chip);border-radius:4px;padding:2px;gap:1px}
+.audit-app .isnot button{font-family:var(--body);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border:0;background:transparent;color:var(--muted);padding:2px 7px;border-radius:3px;cursor:pointer}
+.audit-app .isnot button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.audit-app .isnot button.on.not{color:var(--red)}
+.audit-app .dd-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:5px;background:var(--card);color:var(--sub);padding:7px 10px;font:600 12px/1.2 var(--body);cursor:pointer;text-align:left}
+.audit-app .dd-btn.set{color:var(--ink)}
+.audit-app .dd-btn .chev{color:var(--muted);font-size:9px;flex:none}
+.audit-app .fchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.audit-app .fchip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);border-radius:4px;padding:4px 9px;font-size:11px;font-weight:600;color:var(--sub)}
+.audit-app .fchip.not{color:var(--red);background:var(--red-soft)}
+.audit-app .fchip .x{cursor:pointer;color:var(--muted);font-size:11px}
+.audit-app .fchip .x:hover{color:var(--ink)}
+.audit-app .fnote{font-size:12px;color:var(--sub);line-height:1.55;max-width:400px}
+.audit-app .fnote b{color:var(--ink)}
+
+/* C/D. pane */
+.audit-app .pane{background:var(--card);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);padding:20px 24px 22px}
+.audit-app .pane h3{font:600 16px/1.2 var(--body);margin:0;display:flex;align-items:center;gap:9px}
+.audit-app .psum{margin-top:5px;font-size:12.5px;color:var(--sub);line-height:1.5}
+.audit-app .psum b{color:var(--ink);font-weight:600}
+.audit-app .psec{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:18px 0 8px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.audit-app .srcline{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;flex-wrap:wrap}
+.audit-app .srcline:last-of-type{border-bottom:0}
+.audit-app .srcline .sk{width:36px;flex:none;font-size:11px;font-weight:700;color:var(--sub)}
+.audit-app .srcline .sv{color:var(--sub);flex:1;min-width:180px}
+.audit-app .srcline .sv b{color:var(--ink);font-weight:600}
+.audit-app .srcline .sv .redink{color:var(--red);font-weight:600}
+.audit-app .srcline .sv .okink{color:var(--green)}
+.audit-app .srcline .sv .dim{color:var(--muted);font-size:11px}
+.audit-app .btn{font-family:var(--body);font-size:12px;font-weight:600;border-radius:5px;padding:6px 12px;cursor:pointer;border:1px solid transparent;white-space:nowrap}
+.audit-app .btn.ghost{background:var(--card);border-color:var(--line);color:var(--sub)}
+.audit-app .btn.ghost:hover{color:var(--ink);border-color:var(--muted)}
+.audit-app .btn.dark{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.audit-app .btn.warn{background:var(--card);border-color:var(--red);color:var(--red)}
+.audit-app .btn.mini{font-size:11px;padding:4px 9px}
+.audit-app .twoup{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:980px){.audit-app .twoup{grid-template-columns:1fr}}
+.audit-app .threeup{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;align-items:start}
+@media(max-width:1080px){.audit-app .threeup{grid-template-columns:1fr}}
+.audit-app .calloutnote{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:10px}
+.audit-app .calloutnote b{color:var(--sub)}
+
+/* connected card (modal style) */
+.audit-app .ccard{border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--paper)}
+.audit-app .ccard .cdot{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none}
+.audit-app .ccard .cdot.bad{background:var(--red)}
+.audit-app .ccard .cbody{flex:1;min-width:200px}
+.audit-app .ccard .cttl{font-size:13.5px;font-weight:600;color:var(--ink)}
+.audit-app .ccard .csub{font-size:11.5px;color:var(--muted);margin-top:1px}
+.audit-app .ccard .csub .redink{color:var(--red);font-weight:600}
+.audit-app .ccard .cacts{display:flex;gap:8px;align-items:center}
+.audit-app .linka{color:var(--sub);text-decoration:underline;text-underline-offset:2px;font-size:12px;cursor:pointer;background:none;border:0;padding:0;font-family:var(--body)}
+.audit-app .linka:hover{color:var(--ink)}
+.audit-app .linka.danger{color:var(--red)}
+
+/* E. queue progress */
+.audit-app .qbar{position:relative;height:5px;border-radius:3px;background:var(--line);min-width:90px}
+.audit-app .qbar .qf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--ink)}
+.audit-app .qbar .qf.done{background:var(--green)}
+.audit-app .qbar .qf.stall{background:var(--red)}
+.audit-app .qpct{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-left:8px;white-space:nowrap}
+.audit-app .qstate{font-size:11.5px;white-space:nowrap;font-weight:600}
+.audit-app .qstate.run{color:var(--steady)} .audit-app .qstate.done{color:var(--green)} .audit-app .qstate.stall{color:var(--red)}
+.audit-app .lanes-demo{display:inline-flex;background:var(--chip);border-radius:6px;padding:3px;gap:2px;flex-wrap:wrap;margin-bottom:10px}
+.audit-app .lanes-demo span{font-size:12.5px;font-weight:600;color:var(--sub);padding:6px 12px;border-radius:5px}
+.audit-app .lanes-demo span.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.audit-app .lanes-demo .n{margin-left:5px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* F. notifications */
+.audit-app .bellwrap{position:relative;display:inline-block}
+.audit-app .bellbtn{position:relative;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:5px;padding:6px 11px;font-size:14px;cursor:pointer}
+.audit-app .bellbtn .bcount{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;border-radius:8px;padding:1px 5px;font-variant-numeric:tabular-nums}
+.audit-app .nfly{background:var(--card);border:1px solid var(--line);border-radius:6px;box-shadow:0 2px 6px rgba(17,20,28,.1);width:400px;max-width:100%}
+.audit-app .nfly .nhd{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
+.audit-app .nfly .nhd b{font-size:12.5px;color:var(--ink)}
+.audit-app .nitem{display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line-soft);font-size:12.5px;color:var(--sub);line-height:1.5;align-items:flex-start}
+.audit-app .nitem:last-child{border-bottom:0}
+.audit-app .nitem .ndot{width:7px;height:7px;border-radius:50%;background:var(--steady);margin-top:5px;flex:none}
+.audit-app .nitem.read .ndot{background:transparent}
+.audit-app .nitem.read{color:var(--muted)}
+.audit-app .nitem b{color:var(--ink);font-weight:600}
+.audit-app .nitem.read b{color:var(--sub)}
+.audit-app .nitem .ntime{font-size:10.5px;color:var(--muted);margin-top:2px}
+.audit-app .nitem .nact{font-size:11.5px;margin-top:3px}
+
+/* build notes */
+.audit-app .notes{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:18px 22px;font-size:12.5px;color:var(--sub);line-height:1.65}
+.audit-app .notes b{color:var(--ink);font-weight:600}
+.audit-app .notes li{margin-bottom:7px}
+</style>
+
+<div class="audit-app" id="app">
+  <div class="mockstrip">
+    <span>Mockup · Audit Hub Round 3 · not the shipped page</span>
+    <span><a href="./audit-hub-option-g.html">Reference: shipped G design</a> · <a href="./index.html">All mockups</a></span>
+  </div>
+
+  <div class="col">
+    <div class="hd">
+      <div>
+        <h1>Audit Hub · Round 3</h1>
+        <div class="meta">Six additions in one pass: <b>tier accents</b>, <b>exclude filters</b>, <b>broken-connection recovery</b>, <b>website status from Webflow</b>, a <b>connecting queue</b>, and <b>notifications</b>. Each section below is one feature; the final section says what powers it.</div>
+      </div>
+      <div class="hd-actions">
+        <span class="bellwrap"><button class="bellbtn" type="button">&#128276;<span class="bcount">3</span></button></span>
+        <button class="themebtn" id="themebtn" type="button">Theme</button>
+      </div>
+    </div>
+
+    <div class="secnav">
+      <a href="#sec-a">A · Tier accents</a>
+      <a href="#sec-b">B · Exclude filters</a>
+      <a href="#sec-c">C · Broken connections</a>
+      <a href="#sec-d">D · Website status</a>
+      <a href="#sec-e">E · Connecting queue</a>
+      <a href="#sec-f">F · Notifications</a>
+      <a href="#sec-notes">Build notes</a>
+    </div>
+
+    <!-- ============ A ============ -->
+    <div class="sec" id="sec-a">
+      <div class="slab">Section A</div>
+      <h2>Tier accents on every row and the pane</h2>
+      <p class="sdesc">Each row gets a thin edge accent plus a tier tag in the <b>Asana-true colors</b> from your screenshot: gray for Website Support, teal for Essential, green for Performance, yellow for MRKT Leader. The tag replaces the current muted tier text under the client name. Website Support finally reads as its own thing instead of masquerading as Essential.</p>
+      <div class="tcard"><div class="tscroll">
+        <table class="ht">
+          <thead><tr><th>Client</th><th>Tier</th><th>Status</th><th>Due</th><th>Data</th><th>Site</th></tr></thead>
+          <tbody>
+            <tr class="taccent t-mrkt"><td><span class="cname">Bright Path Dental</span></td><td><span class="ttag mrkt">MRKT Leader</span></td><td><span class="st">Draft ready, unsent <b>6 days</b></span></td><td><span class="due">Sep 12</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">104w</span></td><td><span class="siteflag live">Live</span></td></tr>
+            <tr class="taccent t-performance sel"><td><span class="cname">Willoughby Smiles Dental</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st">Backfilling historical data</span></td><td><span class="due">Sep 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">9w</span></td><td><span class="siteflag live">Live</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Lakeside Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st redink">GSC stopped returning data <b>9 days ago</b></span></td><td><span class="due redink">Aug 18 · 7 over</span></td><td><span class="dots"><span class="dot"></span><span class="dot broken"></span><span class="dot"></span></span><span class="wk">61w</span></td><td><span class="siteflag live">Live</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Allen Family Dentistry</span></td><td><span class="ttag essential">Essential</span></td><td><span class="st">Site not launched, audits paused</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot off"></span><span class="dot off"></span><span class="dot off"></span></span></td><td><span class="siteflag starter">Starter only</span></td></tr>
+            <tr class="taccent t-support"><td><span class="cname">Starling Dental Group</span></td><td><span class="ttag support">Web Support</span></td><td><span class="st">Sent Jul 30, viewed</span></td><td><span class="due">Oct 30</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span></span><span class="wk">78w</span></td><td><span class="siteflag live">Live</span></td></tr>
+            <tr class="taccent t-performance"><td><span class="cname">Harborview Dental Arts</span></td><td><span class="ttag performance">Performance</span></td><td><span class="st redink">No Webflow site found</span></td><td><span class="due dim">Paused</span></td><td><span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span><span class="wk">32w</span></td><td><span class="siteflag none">No site</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="variantnote"><b>Variant call for you:</b> this shows edge accent + colored tag together. If the edge stripes feel like too much color in a 260-row register, we ship <b>tag only</b> (drop the stripe) — say which. The pane header gets the same tag (see Section C). Support rows show only two dots because GBP is not required for Website Support.</div>
+      </div>
+    </div>
+
+    <!-- ============ B ============ -->
+    <div class="sec" id="sec-b">
+      <div class="slab">Section B</div>
+      <h2>Filters that can exclude, and Website Support is filterable</h2>
+      <p class="sdesc">Every filter dimension gets an <b>is / is not</b> toggle. "Tier is not Website Support" hides support clients; "Tier is Website Support" shows only them. Exclude chips render red with a "not" prefix so an active exclusion is impossible to miss. Two new dimensions ride along: <b>Data health</b> gains "Broken" (connected but no recent data, Section C) and <b>Website</b> arrives with Section D.</p>
+      <div class="tcard"><div class="fdemo">
+        <div class="fpop">
+          <div class="frow">
+            <div class="fl"><span>Tier</span><span class="isnot"><button type="button">is</button><button type="button" class="on not">is not</button></span></div>
+            <button class="dd-btn set" type="button"><span>Website Support</span><span class="chev">&#9662;</span></button>
+          </div>
+          <div class="frow">
+            <div class="fl"><span>Status</span><span class="isnot"><button type="button" class="on">is</button><button type="button">is not</button></span></div>
+            <button class="dd-btn" type="button"><span>Any</span><span class="chev">&#9662;</span></button>
+          </div>
+          <div class="frow">
+            <div class="fl"><span>Auto-audit</span><span class="isnot"><button type="button" class="on">is</button><button type="button">is not</button></span></div>
+            <button class="dd-btn" type="button"><span>Any</span><span class="chev">&#9662;</span></button>
+          </div>
+          <div class="frow">
+            <div class="fl"><span>Report</span><span class="isnot"><button type="button" class="on">is</button><button type="button">is not</button></span></div>
+            <button class="dd-btn" type="button"><span>Any</span><span class="chev">&#9662;</span></button>
+          </div>
+          <div class="frow">
+            <div class="fl"><span>Data</span><span class="isnot"><button type="button" class="on">is</button><button type="button">is not</button></span></div>
+            <button class="dd-btn set" type="button"><span>Broken (connected, no recent data)</span><span class="chev">&#9662;</span></button>
+          </div>
+          <div class="frow">
+            <div class="fl"><span>Website</span><span class="isnot"><button type="button" class="on">is</button><button type="button">is not</button></span></div>
+            <button class="dd-btn" type="button"><span>Any</span><span class="chev">&#9662;</span></button>
+          </div>
+        </div>
+        <div>
+          <div class="fchips" style="margin-bottom:12px">
+            <span class="fchip not">not · Website Support <span class="x">&#10005;</span></span>
+            <span class="fchip">Data: Broken <span class="x">&#10005;</span></span>
+            <span class="fchip" style="color:var(--muted)">Clear all</span>
+          </div>
+          <p class="fnote">The tier dropdown now lists <b>four</b> values: Essential, Performance, MRKT Leader, and Website Support. Today support clients fall back to "essential" and cannot be told apart; the backend already knows who they are (<b>is_web_support</b>), the filter just never used it.</p>
+          <p class="fnote" style="margin-top:10px">Chips: normal include chips stay as they are; exclude chips go red-tinted with a "not ·" prefix. Clicking the toggle on an already-set dimension flips it in place without reopening the dropdown. Saved to your browser like the current filters.</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ============ C ============ -->
+    <div class="sec" id="sec-c">
+      <div class="slab">Section C</div>
+      <h2>Broken connections: see them, recheck them, reconnect without disconnecting</h2>
+      <p class="sdesc">Today a dead Search Console connection still shows a <b>green dot</b>, and the only recovery is Disconnect &rarr; reconnect from scratch. Three changes: a third dot state (<b>solid red = connected but broken</b>, hollow red = never connected), the pane's Data section names the problem and offers <b>Recheck</b> and <b>Reconnect</b> directly, and the connect modal's connected cards get <b>Test</b> and <b>Change</b> so Disconnect stops being the only button.</p>
+      <div class="twoup">
+        <div class="pane">
+          <h3>Lakeside Family Dentistry <span class="ttag essential">Essential</span></h3>
+          <div class="psum">Overdue <b>7 days</b>. GSC has stopped returning data, so the next report would be missing search queries.</div>
+          <div class="psec">Data sources</div>
+          <div class="srcline"><span class="sk">GA4</span><span class="sv"><b>Connected</b> · 61w cached · <span class="okink">last data 14 hours ago</span></span><button class="btn ghost mini" type="button">Recheck</button></div>
+          <div class="srcline"><span class="sk">GSC</span><span class="sv"><span class="redink">Connected but broken</span> · last data <span class="redink">9 days ago</span><br><span class="dim">Recheck says: property access is now "Unverified", so Google returns nothing. Usually fixed by re-verifying the site or re-picking the property.</span></span><button class="btn warn mini" type="button">Reconnect</button><button class="btn ghost mini" type="button">Recheck</button></div>
+          <div class="srcline"><span class="sk">GBP</span><span class="sv"><b>Connected</b> · 61w cached · <span class="okink">last data 14 hours ago</span></span><button class="btn ghost mini" type="button">Recheck</button></div>
+          <div class="calloutnote"><b>Recheck</b> = a live call to Google for that one source, right now: confirms access, reports the permission level, and stamps the result. <b>Reconnect</b> opens the picker pre-filtered to that source with the current value shown — no destructive disconnect first.</div>
+        </div>
+        <div>
+          <div class="pane">
+            <div class="psec" style="margin-top:0;padding-top:0;border-top:0">Connect modal · connected card, healthy</div>
+            <div class="ccard">
+              <span class="cdot"></span>
+              <span class="cbody"><span class="cttl">Willoughby Smiles Dental</span><span class="csub">properties/401459030 · last data 14h ago · Full access</span></span>
+              <span class="cacts"><button class="linka" type="button">Test</button><button class="linka" type="button">Change</button><button class="linka danger" type="button">Disconnect</button></span>
+            </div>
+            <div class="psec">Connected card, broken</div>
+            <div class="ccard">
+              <span class="cdot bad"></span>
+              <span class="cbody"><span class="cttl">https://www.lakesidefamilydental.com/</span><span class="csub"><span class="redink">No data for 9 days · access is Unverified</span> · <a href="#" class="linka">Verify in Search Console &rarr;</a></span></span>
+              <span class="cacts"><button class="linka" type="button">Test</button><button class="linka" type="button">Change</button><button class="linka danger" type="button">Disconnect</button></span>
+            </div>
+            <div class="calloutnote">The "N days since data" number already exists in the nightly cache; the permission level comes back from the Recheck call and is remembered. The row dot, this card, and the pane all read the same signal, so they can never disagree.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ D ============ -->
+    <div class="sec" id="sec-d">
+      <div class="slab">Section D</div>
+      <h2>Website status: Live, Starter only, or no Webflow site</h2>
+      <p class="sdesc">A nightly check against Webflow classifies every client: <b>Live</b> (site published on its own domain), <b>Starter only</b> (a site exists but only on webflow.io — not launched, like Allen Family Dentistry), or <b>No site</b> (nothing in Webflow matched to this client). Starter and No-site clients show as <b>Paused — not auditable yet</b> instead of piling up as overdue. When a starter site graduates to a launched CMS site, the nightly check announces it (Section F).</p>
+      <div class="threeup">
+        <div class="pane">
+          <h3 style="font-size:14px">Willoughby Smiles <span class="ttag performance">Performance</span></h3>
+          <div class="psec">Website</div>
+          <div class="srcline"><span class="sv"><b class="siteflag live">Live</b> · willoughbysmilesdental.ca<br><span class="dim">Published 3 days ago · checked nightly</span></span></div>
+        </div>
+        <div class="pane">
+          <h3 style="font-size:14px">Allen Family Dentistry <span class="ttag essential">Essential</span></h3>
+          <div class="psec">Website</div>
+          <div class="srcline"><span class="sv"><b class="siteflag starter">Starter only — not launched</b> · allen-family-dentistry.webflow.io<br><span class="dim">No custom domain yet. Audits are paused until the full site goes live; the nightly check will announce it the morning after it launches.</span></span></div>
+        </div>
+        <div class="pane">
+          <h3 style="font-size:14px">Harborview Dental Arts <span class="ttag performance">Performance</span></h3>
+          <div class="psec">Website</div>
+          <div class="srcline"><span class="sv"><b class="siteflag none">No Webflow site found</b><br><span class="dim">No site is linked to this client and no name match was found in the workspace. Link one in client settings, or confirm this client has no site — audits stay paused either way.</span></span><button class="btn ghost mini" type="button">Link a site</button></div>
+        </div>
+      </div>
+      <p class="calloutnote" style="max-width:760px"><b>How "Starter" is detected:</b> Webflow's API does not expose the plan name directly, but a starter site is exactly one with <b>no custom domain</b> — it lives only at *.webflow.io. That is the signal, plus whether the site has real CMS collections. Paused clients drop out of the overdue count and get their own Website filter value (Section B), so "215 days over" stops appearing on clients we were never going to audit.</p>
+    </div>
+
+    <!-- ============ E ============ -->
+    <div class="sec" id="sec-e">
+      <div class="slab">Section E</div>
+      <h2>Connecting queue: every backfill in one place</h2>
+      <p class="sdesc">Today a backfill is only visible inside the connect modal of the one client you just connected, and only while it's open. This adds a <b>Connecting</b> lane next to Data health: every client currently backfilling, recently finished, or stalled — with per-source progress. Anyone on the team can see what's cooking without keeping it in their head.</p>
+      <div class="lanes-demo"><span>All <span class="n">263</span></span><span>Needs action <span class="n">118</span></span><span>Drafts <span class="n">41</span></span><span>Schedule <span class="n">263</span></span><span>Data health <span class="n">263</span></span><span class="on">Connecting <span class="n">5</span></span></div>
+      <div class="tcard"><div class="tscroll">
+        <table class="ht">
+          <thead><tr><th>Client</th><th>GA4</th><th>GSC</th><th>GBP</th><th>Started</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr class="taccent t-performance"><td><span class="cname">Willoughby Smiles Dental</span></td>
+              <td><span class="qbar"><span class="qf" style="width:34%"></span></span><span class="qpct">89/260w</span></td>
+              <td><span class="qbar"><span class="qf" style="width:31%"></span></span><span class="qpct">81/260w</span></td>
+              <td><span class="qbar"><span class="qf" style="width:28%"></span></span><span class="qpct">73/260w</span></td>
+              <td><span class="due">Today 9:12a</span></td><td><span class="qstate run">Backfilling</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Cedar Point Dental</span></td>
+              <td><span class="qbar"><span class="qf" style="width:76%"></span></span><span class="qpct">198/260w</span></td>
+              <td><span class="qbar"><span class="qf" style="width:71%"></span></span><span class="qpct">185/260w</span></td>
+              <td><span class="qpct">not connected</span></td>
+              <td><span class="due">Today 8:40a</span></td><td><span class="qstate run">Backfilling</span></td></tr>
+            <tr class="taccent t-mrkt"><td><span class="cname">Summit Ridge Dental</span></td>
+              <td><span class="qbar"><span class="qf stall" style="width:12%"></span></span><span class="qpct">31/260w</span></td>
+              <td><span class="qbar"><span class="qf stall" style="width:12%"></span></span><span class="qpct">31/260w</span></td>
+              <td><span class="qbar"><span class="qf stall" style="width:9%"></span></span><span class="qpct">23/260w</span></td>
+              <td><span class="due redink">Yesterday 4:55p</span></td><td><span class="qstate stall">Stalled · no progress 18h</span> <button class="btn ghost mini" type="button">Resume</button></td></tr>
+            <tr class="taccent t-support"><td><span class="cname">Starling Dental Group</span></td>
+              <td><span class="qbar"><span class="qf done" style="width:100%"></span></span><span class="qpct">260/260w</span></td>
+              <td><span class="qbar"><span class="qf done" style="width:100%"></span></span><span class="qpct">260/260w</span></td>
+              <td><span class="qpct">not needed</span></td>
+              <td><span class="due">Yesterday 2:03p</span></td><td><span class="qstate done">Completed 11:20p</span></td></tr>
+            <tr class="taccent t-essential"><td><span class="cname">Maple Grove Smiles</span></td>
+              <td><span class="qbar"><span class="qf done" style="width:100%"></span></span><span class="qpct">260/260w</span></td>
+              <td><span class="qbar"><span class="qf done" style="width:100%"></span></span><span class="qpct">241/260w</span></td>
+              <td><span class="qbar"><span class="qf done" style="width:100%"></span></span><span class="qpct">204/260w</span></td>
+              <td><span class="due">Aug 22</span></td><td><span class="qstate done">Completed Aug 23</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="variantnote">Rows: active backfills first, then stalled (red, with Resume — today a stalled backfill silently dies when the server restarts), then completed from the last 7 days, subdued. Completed counts can legitimately end under 260 weeks — a young practice simply has less history, that's not a failure. Selecting a row shows the same right-side pane as everywhere else.</div>
+      </div>
+    </div>
+
+    <!-- ============ F ============ -->
+    <div class="sec" id="sec-f">
+      <div class="slab">Section F</div>
+      <h2>Notifications: the hub tells you, you read it on your own time</h2>
+      <p class="sdesc">A bell in the hub header (shown at the top of this page). The nightly checks write announcements; each person has their own read/unread state, so Jonna reading one does not clear it for you. First feed sources: <b>site launches</b>, <b>backfills finishing or stalling</b>, and <b>connections going broken</b>.</p>
+      <div class="tcard" style="max-width:430px"><div class="nfly" style="border:0;box-shadow:none;width:100%">
+        <div class="nhd"><b>Notifications</b><button class="linka" type="button">Mark all read</button></div>
+        <div class="nitem"><span class="ndot"></span><div><b>Allen Family Dentistry's website is live.</b> allenfamilydentistry.com published yesterday; the site was Starter-only since March. Audits can start — the client is off Paused.<div class="ntime">Today 4:05 AM</div><div class="nact"><a href="#" class="linka">Open in hub &rarr;</a></div></div></div>
+        <div class="nitem"><span class="ndot"></span><div><b>GSC went quiet for Lakeside Family Dentistry.</b> Connected, but no data returned for 9 days. Recheck says access is Unverified.<div class="ntime">Today 4:05 AM</div><div class="nact"><a href="#" class="linka">Open in hub &rarr;</a></div></div></div>
+        <div class="nitem"><span class="ndot"></span><div><b>Backfill stalled for Summit Ridge Dental.</b> No progress for 18 hours, stopped at 31 of 260 weeks.<div class="ntime">Today 4:05 AM</div><div class="nact"><a href="#" class="linka">Open the connecting queue &rarr;</a></div></div></div>
+        <div class="nitem read"><span class="ndot"></span><div><b>Backfill completed for Starling Dental Group.</b> GA4 and GSC at full 260-week depth.<div class="ntime">Yesterday 11:20 PM</div></div></div>
+      </div></div>
+      <p class="calloutnote" style="max-width:760px"><b>Scope question for you:</b> this mockup puts the bell on the Audit Hub only. If you want it app-wide (top bar, next to your profile) so other tools can feed it later, say so now — it changes where we build it, not how it looks.</p>
+    </div>
+
+    <!-- ============ notes ============ -->
+    <div class="sec" id="sec-notes">
+      <div class="slab">Under the hood</div>
+      <h2>What each section needs, in plain terms</h2>
+      <div class="notes">
+        <ul>
+          <li><b>A · Tier accents</b> — frontend only. The hub rows already carry tier and the support flag; this is styling. Ships fast once you pick stripe+tag or tag-only.</li>
+          <li><b>B · Exclude filters</b> — frontend only. The filter system gains an is/is-not bit per dimension; saved filters carry it. The Website Support tier value uses the support flag the backend already sends.</li>
+          <li><b>C · Broken connections</b> — the "no data for N days" signal already exists in the hub (it currently only powers a hover tooltip). New: a Recheck endpoint that live-tests one source against Google and remembers the permission level, and connectors that can re-pick without disconnecting first. Also fixes the bug you hit today: the right-side card will refresh itself after the connect modal closes (found the cause — it's a one-line-class fix territory, listed separately in chat).</li>
+          <li><b>D · Website status</b> — a nightly job asks Webflow for the site list (one call for the whole agency), classifies each client (custom domain = live; webflow.io only = starter; nothing linked or matched = no site), and stores the result on the client. Needs two new columns on the clients table — <b>that's a protected table, so this waits for your explicit go-ahead</b>. "Paused" also changes what counts as overdue, which is a workflow rule change worth a sentence of your confirmation.</li>
+          <li><b>E · Connecting queue</b> — needs a small backfill-status record the server writes as it works (started, per-source progress, finished/stalled). This is the "backfill failures are invisible" gap from the 7/31 audit; the queue lane is its face. Resume = restart from where the cache actually is, which the backfill already knows how to do.</li>
+          <li><b>F · Notifications</b> — new small table (announcement + who read it), one endpoint pair (list, mark read), the bell. Fed by the Section C, D, E nightly checks. Greenfield but deliberately tiny.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  var app=document.getElementById('app');
+  var saved=null; try{saved=localStorage.getItem('oq_mock_theme')}catch(e){}
+  if(saved){app.setAttribute('data-theme',saved)}
+  document.getElementById('themebtn').addEventListener('click',function(){
+    var cur=app.getAttribute('data-theme');
+    var next=cur==='dark'?'light':'dark';
+    if(!cur){next=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'light':'dark'}
+    app.setAttribute('data-theme',next);
+    try{localStorage.setItem('oq_mock_theme',next)}catch(e){}
+  });
+})();
+</script>
+</content>
+</invoke>
