@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Little Peaks Pediatric Dentistry — Q1 2026 Performance Report | S8E8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:ital@1&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Montserrat', -apple-system, sans-serif; background: #fff; color: #1c1917; }
+  button { font-family: inherit; background: none; border: none; cursor: pointer; }
+  img { max-width: 100%; }
+
+  /* ---------- Welcome splash ---------- */
+  #splash {
+    position: fixed; inset: 0; z-index: 100; background: #0d0d0d;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    animation: welcomeFadeOut 2s ease-in-out forwards; cursor: pointer;
+  }
+  @keyframes welcomeFadeOut {
+    0%   { opacity: 1; }
+    60%  { opacity: 1; }
+    100% { opacity: 0; pointer-events: none; }
+  }
+  #splash .bar { width: 128px; height: 3px; margin-bottom: 40px;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff); }
+  #splash img { height: 32px; width: auto; margin-bottom: 40px; opacity: 0.7; }
+  #splash .eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.25em; color: #78716c; margin-bottom: 12px; }
+  #splash .name { font-size: 30px; font-weight: 700; color: #fff; text-align: center; padding: 0 32px; }
+  #splash .period { font-size: 14px; color: #a8a29e; margin-top: 12px; }
+
+  /* ---------- S8E8 header ---------- */
+  .s8-header { background: #0d0d0d; }
+  .s8-header .rainbow { height: 3px;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff); }
+  .s8-header .inner { max-width: 1152px; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between; }
+  .s8-header img { height: 32px; width: auto; flex-shrink: 0; }
+  .s8-header .client { text-align: right; }
+  .s8-header .client b { display: block; font-size: 14px; font-weight: 600; color: #fff; }
+  .s8-header .client span { display: block; font-size: 12px; color: #78716c; margin-top: 2px; }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: 1152px; margin: 0 auto; padding: 32px 24px 64px; }
+  @media (max-width: 640px) { .container { padding: 24px 16px 48px; } }
+
+  .title-block { margin-bottom: 20px; max-width: 672px; }
+  .title-block h1 { font-size: 20px; font-weight: 700; color: #1c1917; line-height: 1.3; }
+  .title-block p { font-size: 14px; color: #78716c; margin-top: 4px; }
+
+  /* ---------- Compact sticky metric bar ---------- */
+  #compactWrap {
+    position: sticky; top: 0; z-index: 20; background: #fff;
+    border-bottom: 1px solid #e7e5e4; height: 0; overflow: hidden;
+    transition: height 250ms cubic-bezier(0.4,0,0.2,1);
+  }
+  #compactWrap.compact { height: 64px; }
+  #compactInner {
+    transform: translateY(-100%); opacity: 0;
+    transition: transform 250ms cubic-bezier(0.4,0,0.2,1), opacity 180ms ease;
+  }
+  #compactWrap.compact #compactInner { transform: translateY(0); opacity: 1; }
+  .compact-bar { max-width: 1152px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: stretch; overflow-x: auto; height: 64px; }
+  .compact-group { display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    flex-shrink: 0; padding: 8px 12px; }
+  .compact-group + .compact-group { border-left: 1px solid #e7e5e4; }
+  .compact-group .src { font-size: 8px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #a8a29e; }
+  .compact-chips { display: flex; align-items: center; gap: 2px; }
+  .compact-chip { display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+    border-radius: 4px; border: 1px solid transparent; white-space: nowrap; transition: all 150ms; }
+  .compact-chip .lbl { font-size: 10px; font-weight: 600; }
+  .compact-chip .val { font-size: 12px; font-weight: 700; color: #1c1917; }
+  .compact-chip .dlt { font-size: 9px; font-weight: 600; }
+
+  /* ---------- Expanded metric groups ---------- */
+  .metric-strip { margin-bottom: 24px; }
+  .metric-groups { display: flex; border-radius: 8px; border: 1px solid #e7e5e4; overflow-x: auto; }
+  .metric-group { flex: 1; padding: 16px; min-width: 148px; }
+  .metric-group + .metric-group { border-left: 1px solid #e7e5e4; }
+  .metric-group .head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    padding-bottom: 10px; border-bottom: 1px solid #f5f5f4; }
+  .metric-group .head .dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; }
+  .metric-group .head span { font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; }
+  .metric-tiles { display: flex; flex-direction: column; gap: 8px; }
+  .metric-tile { width: 100%; display: flex; align-items: center; justify-content: space-between;
+    text-align: left; border-radius: 4px; padding: 10px 12px; transition: all 150ms; }
+  .metric-tile .lbl { font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.03em; margin-bottom: 4px; }
+  .metric-tile .val { font-size: 18px; font-weight: 700; color: #1c1917; line-height: 1; }
+  .metric-tile .dlt { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+
+  /* ---------- Methodology note ---------- */
+  .method-row { position: relative; display: flex; justify-content: flex-end; margin-top: 8px; }
+  .method-btn { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #a8a29e;
+    transition: color 150ms; }
+  .method-btn:hover { color: #57534e; }
+  .method-btn .chev { transition: transform 200ms; }
+  .method-pop { position: absolute; right: 0; top: 100%; margin-top: 8px; z-index: 30; width: 320px;
+    background: #fff; border: 1px solid #e7e5e4; border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); padding: 16px;
+    display: none; }
+  .method-pop.open { display: block; }
+  .method-pop .h { font-size: 11px; font-weight: 600; color: #44403c; margin-bottom: 8px; }
+  .method-pop p { font-size: 11px; color: #78716c; line-height: 1.6; margin-bottom: 12px; }
+  .method-pop .srcs { border-top: 1px solid #f5f5f4; padding-top: 12px;
+    display: flex; flex-direction: column; gap: 6px; }
+  .method-pop .src-row { display: flex; align-items: flex-start; gap: 8px; }
+  .method-pop .src-row .dot { width: 6px; height: 6px; border-radius: 99px; margin-top: 4px; flex-shrink: 0; }
+  .method-pop .src-row span { font-size: 10px; color: #a8a29e; line-height: 1.6; }
+  .method-pop .src-row b { font-weight: 600; color: #57534e; }
+
+  /* ---------- Two-column body ---------- */
+  .body-cols { display: flex; gap: 24px; }
+  .prose-col { flex: 1; min-width: 0; }
+  .chart-col { flex-shrink: 0; width: 420px; }
+  @media (max-width: 640px) { .chart-col { display: none; } }
+  .chart-sticky { position: sticky; top: 24px; max-height: calc(100vh - 3rem);
+    transition: top 250ms cubic-bezier(0.4,0,0.2,1); }
+  #compactWrap.compact ~ .body-cols .chart-sticky, body.bar-compact .chart-sticky { top: 80px; }
+
+  /* ---------- Report prose (mirrors ReportStyles) ---------- */
+  .report-prose p { font-size: 14px; line-height: 1.75; color: #44403c; margin-bottom: 14px; }
+  .report-prose h2 { font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #a8a29e; margin: 28px 0 12px; }
+  .report-prose ul { padding-left: 18px; margin-bottom: 14px; list-style: disc; }
+  .report-prose li { font-size: 14px; line-height: 1.7; color: #44403c; margin-bottom: 5px; }
+  .report-prose .executive-summary { font-size: 15px; font-style: italic;
+    font-family: 'Lora', Georgia, serif; color: #57534e; line-height: 1.8; }
+  @media (max-width: 640px) { .report-prose p { font-size: 15px; } }
+
+  .report-prose mark { background: transparent; cursor: pointer; font-weight: 500; }
+  .report-prose mark.hl-clicks          { color: #44403c; border-bottom: 2px solid #04785770; padding-bottom: 1px; }
+  .report-prose mark.hl-impressions     { color: #44403c; border-bottom: 2px solid #92400e70; padding-bottom: 1px; }
+  .report-prose mark.hl-sessions        { color: #44403c; border-bottom: 2px solid #0e749070; padding-bottom: 1px; }
+  .report-prose mark.hl-calls           { color: #44403c; border-bottom: 2px solid #6d28d970; padding-bottom: 1px; }
+  .report-prose mark.hl-new_users       { color: #44403c; border-bottom: 2px solid #0891b270; padding-bottom: 1px; }
+  .report-prose mark.hl-key_events      { color: #44403c; border-bottom: 2px solid #7c3aed70; padding-bottom: 1px; }
+  .report-prose mark.hl-website_clicks  { color: #44403c; border-bottom: 2px solid #be123c70; padding-bottom: 1px; }
+  .report-prose mark.hl-gbp_impressions { color: #44403c; border-bottom: 2px solid #0369a170; padding-bottom: 1px; }
+
+  /* ---------- Chart card ---------- */
+  .chart-card { background: #fff; border: 1px solid #e7e5e4; border-radius: 8px; padding: 12px; }
+  .seg { display: flex; background: #f5f5f4; border-radius: 4px; padding: 2px; margin-bottom: 12px;
+    width: fit-content; }
+  .seg button { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 4px;
+    color: #78716c; transition: all 150ms; }
+  .seg button:hover { color: #44403c; }
+  .seg button.on { background: #fff; color: #1c1917;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); }
+  .chart-area { height: 276px; transition: opacity 200ms ease-in-out; position: relative; }
+  .chart-legend { display: flex; align-items: center; justify-content: space-between;
+    min-height: 16px; margin-bottom: 4px; transition: opacity 100ms; }
+  .chart-legend .metric { font-size: 10px; font-weight: 500; }
+  .chart-legend .keys { font-size: 10px; color: #d6d3d1; }
+  #chartTip { position: absolute; z-index: 10; pointer-events: none; display: none;
+    background: #1c1917; border-radius: 6px; padding: 8px 12px; min-width: 120px; text-align: left;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+  #chartTip .wk { font-size: 10px; color: #a8a29e; margin-bottom: 4px; }
+  #chartTip .v { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #chartTip .d { font-size: 11px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  #chartTip .vs { font-size: 9px; color: #78716c; margin-top: 2px; }
+  .metric-pills { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 4px; }
+  .metric-pills button { font-size: 9px; padding: 1px 4px; border-radius: 4px;
+    border: 1px solid transparent; color: #a8a29e; font-weight: 400; transition: color 150ms; }
+
+  /* ---------- Tile explainer tooltip ---------- */
+  #tileTip { position: fixed; z-index: 50; pointer-events: none; width: 260px; display: none; }
+  #tileTip .box { background: #1c1917; color: #fff; border-radius: 6px; padding: 10px 12px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.25); }
+  #tileTip .h { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  #tileTip .h .dot { width: 8px; height: 8px; border-radius: 99px; flex-shrink: 0; }
+  #tileTip .h span { font-size: 11px; font-weight: 600; }
+  #tileTip p { font-size: 11px; color: #d6d3d1; line-height: 1.6; }
+
+  /* ---------- Footer ---------- */
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e7e5e4; text-align: center; }
+  .footer p { font-size: 12px; color: #a8a29e; }
+  .footer p + p { margin-top: 4px; }
+  .footer .sample-note { font-size: 10px; color: #d6d3d1; margin-top: 12px; }
+
+  /* ---------- Print ---------- */
+  @media print {
+    @page { margin: 1.2cm 1.5cm; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #splash, #compactWrap, .chart-col, .method-row, #tileTip { display: none !important; }
+    .report-prose mark { background: transparent !important; color: #44403c !important;
+      border-bottom: none !important; font-weight: inherit !important; cursor: default !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Welcome moment: auto-dismisses after 2s -->
+<div id="splash">
+  <div class="bar"></div>
+  <img src="./s8e8logo.png" alt="Studio Eighty Eight">
+  <p class="eyebrow">Performance Report</p>
+  <p class="name">Little Peaks Pediatric Dentistry</p>
+  <p class="period">Jan &ndash; Mar 2026</p>
+</div>
+
+<!-- S8E8 header -->
+<div class="s8-header">
+  <div class="rainbow"></div>
+  <div class="inner">
+    <img src="./s8e8logo.png" alt="Studio Eighty Eight">
+    <div class="client">
+      <b>Little Peaks Pediatric Dentistry</b>
+      <span>Jan &ndash; Mar 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Report title -->
+  <div class="title-block">
+    <h1>Q1 2026 Performance Report</h1>
+    <p>Jan &ndash; Mar 2026</p>
+  </div>
+
+  <!-- Compact sticky bar (fills when the expanded strip scrolls out) -->
+  <div id="compactWrap">
+    <div id="compactInner">
+      <div class="compact-bar" id="compactBar"></div>
+    </div>
+  </div>
+
+  <!-- Expanded metric strip -->
+  <div class="metric-strip" id="metricStrip">
+    <div class="metric-groups" id="metricGroups"></div>
+    <div class="method-row" id="methodRow">
+      <button class="method-btn" id="methodBtn">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        About this data
+        <svg class="chev" width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="method-pop" id="methodPop">
+        <p class="h">About this data</p>
+        <p>Every metric here is pulled directly from Google&rsquo;s own systems &mdash; the same data that powers Google Search Console, Google Business Profile, and Google Analytics.</p>
+        <p>You may notice small differences compared to those dashboards. This is expected and affects every reporting tool &mdash; Google withholds certain low-volume search queries from its API for privacy reasons, and date range boundaries can vary slightly between platforms. The trends and directional changes are fully reliable.</p>
+        <div class="srcs">
+          <div class="src-row"><div class="dot" style="background:#29ABE2"></div><span><b>Search visibility</b> &mdash; Google Search Console</span></div>
+          <div class="src-row"><div class="dot" style="background:#34d399"></div><span><b>Website traffic</b> &mdash; Google Analytics, organic search</span></div>
+          <div class="src-row"><div class="dot" style="background:#a78bfa"></div><span><b>Listing activity</b> &mdash; Google Business Profile</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-column body -->
+  <div class="body-cols">
+
+    <!-- Prose -->
+    <div class="prose-col">
+      <div class="report-prose" id="prose">
+        <p class="executive-summary">Q1 2026 delivered exceptional growth across search and website performance, with sessions up 96% and search clicks up 97% Quarter-over-Quarter. Call volume from your Google listing rose 35% Quarter-over-Quarter and 80% Year-over-Year, reflecting sustained momentum in patient acquisition across every channel we track.</p>
+        <h2>Brief Summary</h2>
+        <p>Q1 2026 was a standout quarter across nearly every channel we track. Website visitors from Google and search visibility both roughly doubled compared to the previous quarter, and the Year-over-Year picture is even stronger. The most meaningful signals this period are the surge in search clicks and the sustained growth in new visitors finding your practice for the first time.</p>
+        <h2>Website Traffic</h2>
+        <p>Your website drew <mark class="hl-sessions">1,536 sessions this quarter, up 96% Quarter-over-Quarter</mark> and 236% Year-over-Year. Of those visitors, <mark class="hl-new_users">1,187 were new users - up 105% Quarter-over-Quarter</mark> - which tells us that a large share of the audience arriving at your site had never visited before. That kind of new-visitor growth is a strong sign that your practice is reaching people earlier in their search, before they have already found you through other means. Those visitors completed <mark class="hl-key_events">57 key events, up 19% Quarter-over-Quarter</mark>. The conversion rate against a much larger visitor base holding steady and still growing is a healthy pattern; it means traffic quality came along with traffic volume.</p>
+        <h2>Search Visibility</h2>
+        <p>Search clicks reached <mark class="hl-clicks">1,258 this quarter, up 97% Quarter-over-Quarter</mark> and 414% Year-over-Year. The underlying impression volume climbed to <mark class="hl-impressions">292,850, up 54% Quarter-over-Quarter</mark> - but the click growth outpacing impression growth is the more important part of the story. When clicks grow nearly twice as fast as impressions, it suggests your listings are appearing for searches that are a stronger match for what families are looking for, and that the way your pages appear in results is earning more attention. From a patient acquisition standpoint, 1,258 people actively chose to visit your site from a search result this quarter - nearly double what we saw three months ago.</p>
+        <h2>Local Listing</h2>
+        <p>Your Google listing generated <mark class="hl-calls">92 calls this quarter, up 35% Quarter-over-Quarter</mark> and 80% Year-over-Year. That is the signal that matters most here - calls represent families who saw your listing and picked up the phone. Website clicks from the listing came in at <mark class="hl-website_clicks">115, up just 6% Quarter-over-Quarter</mark>, while listing views dipped to <mark class="hl-gbp_impressions">1,494, down 5% Quarter-over-Quarter</mark> and 28% Year-over-Year. The view decline is worth watching, though it has not yet affected call volume, which continues to climb. Adding to listing health, you earned 15 new reviews this period at a 5.0-star average - a strong trust signal for any parent researching pediatric dental care.</p>
+        <h2>Key Observations</h2>
+        <p>The most interesting pattern this quarter is the divergence between your Google listing and your website search performance. Listing views are down Year-over-Year while search clicks and website sessions are growing sharply. This suggests that more prospective patients are finding you through organic search results and going directly to your website, rather than interacting with your listing in the map pack. That shift does not indicate a listing problem - calls are still up strongly - but it does mean that your website is doing more of the acquisition work than it was a year ago, and that the investment in search visibility is increasingly the primary driver of new patient interest.</p>
+        <h2>Next Steps</h2>
+        <p>We'll continue with ongoing optimization of your existing content and monitoring technical SEO health.</p>
+        <h2>What We'll Do</h2>
+        <ul>
+          <li>Keep optimizing your highest-traffic service pages around the searches parents actually use</li>
+          <li>Publish new content for the topics gaining momentum in search this quarter</li>
+          <li>Refresh your Google listing with new photos and posts to support listing views</li>
+          <li>Continue monthly technical SEO health checks</li>
+        </ul>
+        <h2>What You Should Do</h2>
+        <ul>
+          <li>Keep inviting happy families to leave a Google review; the 5.0-star average is doing real work</li>
+          <li>Send us the questions parents ask most at the front desk. They make excellent content topics</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Sticky chart -->
+    <div class="chart-col">
+      <div class="chart-sticky" id="chartSticky">
+        <div class="chart-card" id="chartCard">
+          <div class="seg">
+            <button id="tabYoy">vs YoY</button>
+            <button id="tabQoq" class="on">vs QoQ</button>
+          </div>
+          <div class="chart-area" id="chartArea">
+            <div class="chart-legend" id="chartLegend"></div>
+            <div id="svgHolder"></div>
+            <div id="chartTip"></div>
+          </div>
+          <div class="metric-pills" id="metricPills"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Produced by Studio Eighty Eight&rsquo;s SEO Team &middot; April 2026</p>
+    <p>Questions? Reach out to your Marketing Strategist.</p>
+    <p class="sample-note">Sample report: real client results, shown under a fictional practice name.</p>
+  </div>
+
+</div>
+
+<!-- Tile explainer tooltip -->
+<div id="tileTip"><div class="box"><div class="h"><div class="dot"></div><span></span></div><p></p></div></div>
+
+<style id="activeMarkStyle"></style>
+
+<script>
+// ---------------------------------------------------------------------------
+// Data: 13 weekly points per period, exactly as the report API serves them
+// ---------------------------------------------------------------------------
+const CURRENT = [{"week_start":"2026-01-05","clicks":85,"impressions":22494,"sessions":94,"new_users":73,"key_events":5,"calls":14,"website_clicks":3,"gbp_impressions":140},{"week_start":"2026-01-12","clicks":68,"impressions":22259,"sessions":93,"new_users":72,"key_events":3,"calls":5,"website_clicks":6,"gbp_impressions":121},{"week_start":"2026-01-19","clicks":75,"impressions":19834,"sessions":101,"new_users":77,"key_events":5,"calls":5,"website_clicks":9,"gbp_impressions":119},{"week_start":"2026-01-26","clicks":86,"impressions":20271,"sessions":107,"new_users":83,"key_events":7,"calls":7,"website_clicks":10,"gbp_impressions":111},{"week_start":"2026-02-02","clicks":101,"impressions":21491,"sessions":123,"new_users":100,"key_events":2,"calls":2,"website_clicks":5,"gbp_impressions":105},{"week_start":"2026-02-09","clicks":99,"impressions":21599,"sessions":113,"new_users":85,"key_events":2,"calls":6,"website_clicks":9,"gbp_impressions":99},{"week_start":"2026-02-16","clicks":90,"impressions":22765,"sessions":121,"new_users":87,"key_events":2,"calls":5,"website_clicks":8,"gbp_impressions":98},{"week_start":"2026-02-23","clicks":76,"impressions":22615,"sessions":90,"new_users":70,"key_events":2,"calls":10,"website_clicks":8,"gbp_impressions":118},{"week_start":"2026-03-02","clicks":111,"impressions":23619,"sessions":141,"new_users":100,"key_events":7,"calls":6,"website_clicks":18,"gbp_impressions":113},{"week_start":"2026-03-09","clicks":128,"impressions":25609,"sessions":148,"new_users":116,"key_events":3,"calls":14,"website_clicks":9,"gbp_impressions":135},{"week_start":"2026-03-16","clicks":110,"impressions":23288,"sessions":127,"new_users":105,"key_events":5,"calls":7,"website_clicks":14,"gbp_impressions":125},{"week_start":"2026-03-23","clicks":106,"impressions":23714,"sessions":126,"new_users":103,"key_events":10,"calls":5,"website_clicks":11,"gbp_impressions":118},{"week_start":"2026-03-30","clicks":123,"impressions":23292,"sessions":152,"new_users":116,"key_events":4,"calls":6,"website_clicks":5,"gbp_impressions":92}];
+const QOQ = [{"week_start":"2025-10-06","clicks":36,"impressions":9017,"sessions":54,"new_users":34,"key_events":4,"calls":3,"website_clicks":8,"gbp_impressions":112},{"week_start":"2025-10-13","clicks":41,"impressions":12217,"sessions":56,"new_users":38,"key_events":7,"calls":4,"website_clicks":7,"gbp_impressions":128},{"week_start":"2025-10-20","clicks":67,"impressions":15856,"sessions":84,"new_users":61,"key_events":6,"calls":4,"website_clicks":24,"gbp_impressions":138},{"week_start":"2025-10-27","clicks":60,"impressions":14875,"sessions":74,"new_users":44,"key_events":7,"calls":6,"website_clicks":11,"gbp_impressions":138},{"week_start":"2025-11-03","clicks":77,"impressions":17286,"sessions":87,"new_users":69,"key_events":3,"calls":11,"website_clicks":8,"gbp_impressions":141},{"week_start":"2025-11-10","clicks":47,"impressions":16338,"sessions":61,"new_users":48,"key_events":2,"calls":5,"website_clicks":6,"gbp_impressions":155},{"week_start":"2025-11-17","clicks":60,"impressions":17158,"sessions":67,"new_users":52,"key_events":1,"calls":5,"website_clicks":8,"gbp_impressions":134},{"week_start":"2025-11-24","clicks":28,"impressions":11824,"sessions":32,"new_users":29,"key_events":1,"calls":5,"website_clicks":3,"gbp_impressions":105},{"week_start":"2025-12-01","clicks":55,"impressions":14273,"sessions":63,"new_users":50,"key_events":3,"calls":6,"website_clicks":10,"gbp_impressions":137},{"week_start":"2025-12-08","clicks":54,"impressions":14845,"sessions":70,"new_users":51,"key_events":6,"calls":5,"website_clicks":5,"gbp_impressions":113},{"week_start":"2025-12-15","clicks":47,"impressions":16083,"sessions":52,"new_users":40,"key_events":4,"calls":5,"website_clicks":6,"gbp_impressions":128},{"week_start":"2025-12-22","clicks":25,"impressions":13042,"sessions":33,"new_users":25,"key_events":3,"calls":3,"website_clicks":11,"gbp_impressions":50},{"week_start":"2025-12-29","clicks":42,"impressions":16774,"sessions":49,"new_users":38,"key_events":1,"calls":6,"website_clicks":1,"gbp_impressions":92}];
+const YOY = [{"week_start":"2025-01-06","clicks":23,"impressions":1544,"sessions":47,"new_users":29,"key_events":5,"calls":5,"website_clicks":16,"gbp_impressions":195},{"week_start":"2025-01-13","clicks":12,"impressions":1620,"sessions":41,"new_users":22,"key_events":1,"calls":6,"website_clicks":9,"gbp_impressions":155},{"week_start":"2025-01-20","clicks":14,"impressions":1866,"sessions":43,"new_users":22,"key_events":4,"calls":9,"website_clicks":13,"gbp_impressions":166},{"week_start":"2025-01-27","clicks":15,"impressions":2216,"sessions":23,"new_users":18,"key_events":5,"calls":4,"website_clicks":12,"gbp_impressions":160},{"week_start":"2025-02-03","clicks":23,"impressions":2467,"sessions":54,"new_users":24,"key_events":2,"calls":4,"website_clicks":12,"gbp_impressions":120},{"week_start":"2025-02-10","clicks":20,"impressions":2498,"sessions":33,"new_users":25,"key_events":3,"calls":4,"website_clicks":7,"gbp_impressions":181},{"week_start":"2025-02-17","clicks":14,"impressions":2499,"sessions":32,"new_users":16,"key_events":5,"calls":2,"website_clicks":9,"gbp_impressions":139},{"week_start":"2025-02-24","clicks":20,"impressions":4294,"sessions":24,"new_users":13,"key_events":2,"calls":2,"website_clicks":7,"gbp_impressions":152},{"week_start":"2025-03-03","clicks":19,"impressions":2567,"sessions":32,"new_users":25,"key_events":6,"calls":5,"website_clicks":18,"gbp_impressions":180},{"week_start":"2025-03-10","clicks":22,"impressions":2514,"sessions":32,"new_users":23,"key_events":5,"calls":3,"website_clicks":14,"gbp_impressions":183},{"week_start":"2025-03-17","clicks":18,"impressions":2707,"sessions":28,"new_users":14,"key_events":2,"calls":1,"website_clicks":8,"gbp_impressions":175},{"week_start":"2025-03-24","clicks":23,"impressions":2721,"sessions":36,"new_users":21,"key_events":4,"calls":null,"website_clicks":12,"gbp_impressions":133},{"week_start":"2025-03-31","clicks":22,"impressions":3138,"sessions":32,"new_users":18,"key_events":9,"calls":6,"website_clicks":10,"gbp_impressions":138}];
+
+const CHART_COLORS = { clicks:'#047857', impressions:'#92400e', sessions:'#0e7490', new_users:'#0891b2', key_events:'#7c3aed', calls:'#6d28d9', website_clicks:'#be123c', gbp_impressions:'#0369a1' };
+const CHART_LABELS = { clicks:'Clicks', impressions:'Impressions', sessions:'Sessions', new_users:'New Users', key_events:'Key Events', calls:'Calls', website_clicks:'Website Clicks', gbp_impressions:'Listing Views' };
+const METRIC_ORDER = ['clicks','impressions','sessions','new_users','key_events','calls','website_clicks','gbp_impressions'];
+const BAR_METRICS = ['calls','website_clicks','gbp_impressions'];
+const METRIC_GROUPS = [
+  { key:'gsc', label:'Google Search Console', dotColor:'#047857', metrics:['impressions','clicks'] },
+  { key:'gbp', label:'Google Business Profile', dotColor:'#0369a1', metrics:['gbp_impressions','website_clicks','calls'] },
+  { key:'ga4', label:'Google Analytics 4', dotColor:'#0e7490', metrics:['sessions','new_users','key_events'] },
+];
+const METRIC_TOOLTIPS = {
+  clicks: 'Times someone clicked your website from a Google search result.',
+  impressions: 'Times your website appeared in Google search results (whether clicked or not).',
+  sessions: 'Individual visits to your website. One visitor viewing multiple pages = one session.',
+  new_users: 'First-time visitors to your website during this period.',
+  key_events: 'Tracked actions on your website (form submissions, calls, appointment requests).',
+  calls: 'Phone calls placed directly from your Google listing.',
+  website_clicks: 'Clicks from your Google listing to your website.',
+  gbp_impressions: 'Times your Google listing appeared in Maps or Search results.',
+};
+const PERIOD_LABEL = 'Q1 2026', QOQ_LABEL = 'Q4 2025', YOY_LABEL = 'Q1 2025';
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+let activeMetric = 'clicks';
+let compTab = 'qoq';            // audit's comparison_type is the default tab
+let manualOverride = false;
+let manualOverrideTimer = null;
+let chartHovered = false;
+let hoveredIdx = null;
+
+const comparisonData  = () => compTab === 'qoq' ? QOQ : YOY;
+const comparisonLabel = () => compTab === 'qoq' ? QOQ_LABEL : YOY_LABEL;
+
+// ---------------------------------------------------------------------------
+// Helpers (mirror chartUtils.ts)
+// ---------------------------------------------------------------------------
+const sumMetric = (data, m) => data.reduce((s, d) => s + (d[m] ?? 0), 0);
+function fmtNum(n) {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
+  return n.toLocaleString();
+}
+function fmtDelta(cur, prior) {
+  if (!prior) return null;
+  const pct = Math.round(((cur - prior) / prior) * 100);
+  return { pct, positive: pct >= 0 };
+}
+function formatWeek(ds) {
+  const d = new Date(ds + 'T00:00:00');
+  return (d.getMonth() + 1) + '/' + d.getDate();
+}
+
+// ---------------------------------------------------------------------------
+// Metric tiles: expanded strip + compact bar
+// ---------------------------------------------------------------------------
+function renderTiles() {
+  const comp = comparisonData();
+  const groupsEl = document.getElementById('metricGroups');
+  const compactEl = document.getElementById('compactBar');
+  let gHtml = '', cHtml = '';
+
+  for (const group of METRIC_GROUPS) {
+    const metrics = group.metrics.filter(m => sumMetric(CURRENT, m) > 0 || sumMetric(comp, m) > 0);
+    if (!metrics.length) continue;
+
+    let tiles = '', chips = '';
+    for (const m of metrics) {
+      const cur = sumMetric(CURRENT, m);
+      const delta = fmtDelta(cur, sumMetric(comp, m));
+      const active = m === activeMetric;
+      const c = CHART_COLORS[m];
+      const dCol = delta && (delta.positive ? '#047857' : '#e11d48');
+      const dBg  = delta && (delta.positive ? '#f0fdf4' : '#fff1f2');
+      tiles += '<button class="metric-tile" data-metric="' + m + '" style="background:' +
+        (active ? c + '0d' : '#fafafa') + ';border:1px solid ' + (active ? c + '40' : '#f0f0f0') + '">' +
+        '<div><div class="lbl" style="color:' + c + '">' + CHART_LABELS[m] + '</div>' +
+        '<div class="val">' + fmtNum(cur) + '</div></div>' +
+        (delta ? '<div class="dlt" style="color:' + dCol + ';background:' + dBg + '">' +
+          (delta.positive ? '▲' : '▼') + ' ' + Math.abs(delta.pct) + '%</div>' : '') +
+        '</button>';
+      chips += '<button class="compact-chip" data-metric="' + m + '" style="' +
+        (active ? 'background:' + c + '12;border-color:' + c + '40' : '') + '">' +
+        '<span class="lbl" style="color:' + c + '">' + CHART_LABELS[m] + '</span>' +
+        '<span class="val">' + fmtNum(cur) + '</span>' +
+        (delta ? '<span class="dlt" style="color:' + dCol + '">' +
+          (delta.positive ? '▲' : '▼') + Math.abs(delta.pct) + '%</span>' : '') +
+        '</button>';
+    }
+    gHtml += '<div class="metric-group"><div class="head">' +
+      '<div class="dot" style="background:' + group.dotColor + '"></div>' +
+      '<span style="color:' + group.dotColor + '">' + group.label + '</span></div>' +
+      '<div class="metric-tiles">' + tiles + '</div></div>';
+    cHtml += '<div class="compact-group"><div class="src">' + group.label + '</div>' +
+      '<div class="compact-chips">' + chips + '</div></div>';
+  }
+  groupsEl.innerHTML = gHtml;
+  compactEl.innerHTML = cHtml;
+
+  const tip = document.getElementById('tileTip');
+  document.querySelectorAll('[data-metric]').forEach(btn => {
+    btn.addEventListener('click', () => setActiveMetric(btn.dataset.metric, true));
+    if (btn.classList.contains('metric-tile') || btn.classList.contains('compact-chip')) {
+      btn.addEventListener('mouseenter', e => {
+        const m = btn.dataset.metric;
+        const r = btn.getBoundingClientRect();
+        tip.querySelector('.dot').style.background = CHART_COLORS[m];
+        tip.querySelector('.h span').textContent = CHART_LABELS[m];
+        tip.querySelector('p').textContent = METRIC_TOOLTIPS[m];
+        tip.style.left = Math.min(r.left, window.innerWidth - 272) + 'px';
+        tip.style.top = (r.bottom + 8) + 'px';
+        tip.style.display = 'block';
+      });
+      btn.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+    }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Chart (static port of the Recharts ComposedChart, 374x240)
+// ---------------------------------------------------------------------------
+const W = 374, H = 240, X_AXIS_H = 30, M_TOP = 4, M_RIGHT = 4;
+
+function niceTicks(max) {
+  const ticks = [];
+  for (let i = 0; i <= 4; i++) ticks.push(Math.round((max * i) / 4));
+  return [...new Set(ticks)];
+}
+const fmtTick = v => v >= 1000 ? Math.round(v / 1000) + 'k' : String(v);
+
+function renderChart() {
+  const comp = comparisonData();
+  const m = activeMetric;
+  const c = CHART_COLORS[m];
+  const isBar = BAR_METRICS.includes(m);
+  const n = CURRENT.length;
+
+  const yAxisW = chartHovered ? 36 : 8;
+  const plotL = yAxisW, plotR = W - M_RIGHT, plotT = M_TOP, plotB = H - X_AXIS_H;
+  const plotW = plotR - plotL, plotH = plotB - plotT;
+
+  const maxCur = Math.max(0, ...CURRENT.map(d => d[m] ?? 0));
+  const yMax = maxCur > 0 ? Math.ceil(maxCur * 1.2) : Math.max(1, ...comp.map(d => d[m] ?? 0));
+  const yOf = v => plotB - (Math.min(v, yMax) / yMax) * plotH;
+  const step = plotW / n;
+  const xOf = i => plotL + step * (i + 0.5);
+
+  let s = '<svg id="chartSvg" width="' + W + '" height="' + H + '" style="display:block">';
+  s += '<defs><clipPath id="plotClip"><rect x="' + plotL + '" y="' + plotT + '" width="' + plotW + '" height="' + plotH + '"/></clipPath></defs>';
+
+  // grid
+  for (const t of niceTicks(yMax)) {
+    s += '<line x1="' + plotL + '" x2="' + plotR + '" y1="' + yOf(t) + '" y2="' + yOf(t) +
+      '" stroke="#f5f5f4" stroke-dasharray="3 3"/>';
+    if (chartHovered) s += '<text x="' + (plotL - 4) + '" y="' + (yOf(t) + 3) +
+      '" text-anchor="end" font-size="9" fill="#a8a29e">' + fmtTick(t) + '</text>';
+  }
+  for (let i = 0; i < n; i++) {
+    s += '<line x1="' + xOf(i) + '" x2="' + xOf(i) + '" y1="' + plotT + '" y2="' + plotB +
+      '" stroke="#f5f5f4" stroke-dasharray="3 3"/>';
+  }
+  // x axis line
+  s += '<line x1="' + plotL + '" x2="' + plotR + '" y1="' + plotB + '" y2="' + plotB + '" stroke="#e7e5e4"/>';
+  // x tick labels on hover (every other week)
+  if (chartHovered) {
+    for (let i = 0; i < n; i += 2) {
+      s += '<text x="' + xOf(i) + '" y="' + (plotB + 12) + '" text-anchor="middle" font-size="9" fill="#a8a29e">' +
+        formatWeek(CURRENT[i].week_start) + '</text>';
+    }
+  }
+
+  // hover cursor placeholder (positioned on mousemove)
+  s += '<g id="cursorG" clip-path="url(#plotClip)"></g>';
+
+  s += '<g clip-path="url(#plotClip)">';
+  if (isBar) {
+    const inner = step * 0.8, barW = (inner - 4) / 2;
+    for (let i = 0; i < n; i++) {
+      const cv = comp[i] ? (comp[i][m] ?? 0) : null;
+      const uv = CURRENT[i][m] ?? 0;
+      const cx = xOf(i);
+      if (cv !== null) {
+        const y = yOf(cv);
+        s += barRect(cx - barW - 2, y, barW, plotB - y, c, 0.2);
+      }
+      const y2 = yOf(uv);
+      s += barRect(cx + 2, y2, barW, plotB - y2, c, 0.75);
+    }
+  } else {
+    const compPts = comp.map((d, i) => ({ x: xOf(i), y: yOf(d[m] ?? 0) }));
+    const curPts = CURRENT.map((d, i) => ({ x: xOf(i), y: yOf(d[m] ?? 0) }));
+    if (compPts.length) s += '<path d="' + monotonePath(compPts) + '" fill="none" stroke="' + c +
+      '" stroke-width="1.5" stroke-dasharray="4 3" stroke-opacity="0.35"/>';
+    s += '<path d="' + monotonePath(curPts) + '" fill="none" stroke="' + c + '" stroke-width="2.5"/>';
+  }
+  s += '</g></svg>';
+
+  document.getElementById('svgHolder').innerHTML = s;
+
+  // legend
+  document.getElementById('chartLegend').innerHTML =
+    '<span class="metric" style="color:' + c + '">' + CHART_LABELS[m] + '</span>' +
+    '<span class="keys"><span style="color:' + c + '">▬</span> ' + PERIOD_LABEL +
+    '<span style="margin-left:8px">▬▬</span> ' + comparisonLabel() + '</span>';
+
+  // metric pills
+  document.getElementById('metricPills').innerHTML = METRIC_ORDER.map(mm => {
+    const on = mm === activeMetric;
+    return '<button data-pill="' + mm + '" style="' + (on ?
+      'background:' + CHART_COLORS[mm] + '18;color:' + CHART_COLORS[mm] +
+      ';font-weight:600;border-color:' + CHART_COLORS[mm] + '40' : '') + '">' + CHART_LABELS[mm] + '</button>';
+  }).join('');
+  document.querySelectorAll('[data-pill]').forEach(b =>
+    b.addEventListener('click', () => setActiveMetric(b.dataset.pill, true)));
+
+  // hover interactions
+  const svg = document.getElementById('chartSvg');
+  const tipEl = document.getElementById('chartTip');
+  svg.addEventListener('mousemove', e => {
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    let i = Math.floor((x - plotL) / step);
+    i = Math.max(0, Math.min(n - 1, i));
+    hoveredIdx = i;
+
+    const cursorG = document.getElementById('cursorG');
+    cursorG.innerHTML = isBar
+      ? '<rect x="' + (plotL + step * i) + '" y="' + plotT + '" width="' + step + '" height="' + plotH + '" fill="#f5f5f480"/>'
+      : '<line x1="' + xOf(i) + '" x2="' + xOf(i) + '" y1="' + plotT + '" y2="' + plotB + '" stroke="#d6d3d1" stroke-width="1"/>';
+
+    const cur = CURRENT[i][m] ?? 0;
+    const cv = comp[i] ? (comp[i][m] ?? 0) : 0;
+    const diff = cv ? cur - cv : null;
+    const pct = cv ? Math.round(((cur - cv) / cv) * 100) : null;
+    const pos = diff !== null && diff >= 0;
+    tipEl.innerHTML = '<div class="wk">' + formatWeek(CURRENT[i].week_start) + '</div>' +
+      '<div class="v" style="color:' + c + '">' + cur.toLocaleString() + '</div>' +
+      (diff !== null ? '<div class="d" style="color:' + (pos ? '#4ade80' : '#f87171') + '">' +
+        (pos ? '+' : '') + diff.toLocaleString() + ' (' + (pos ? '+' : '') + pct + '%)</div>' +
+        '<div class="vs">vs ' + comparisonLabel() + '</div>' : '');
+    tipEl.style.display = 'block';
+    tipEl.style.left = Math.min(x + 14, W - 134) + 'px';
+    tipEl.style.top = Math.max(20, Math.min(y - 20, H - 60)) + 'px';
+    document.getElementById('chartLegend').style.opacity = '0';
+  });
+  svg.addEventListener('mouseleave', () => {
+    hoveredIdx = null;
+    tipEl.style.display = 'none';
+    document.getElementById('cursorG').innerHTML = '';
+    document.getElementById('chartLegend').style.opacity = '1';
+  });
+}
+
+function barRect(x, y, w, h, fill, opacity) {
+  if (h <= 0) return '';
+  const r = Math.min(2, w / 2, h);
+  return '<path d="M' + x + ',' + (y + h) + ' L' + x + ',' + (y + r) +
+    ' Q' + x + ',' + y + ' ' + (x + r) + ',' + y +
+    ' L' + (x + w - r) + ',' + y +
+    ' Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) +
+    ' L' + (x + w) + ',' + (y + h) + ' Z" fill="' + fill + '" fill-opacity="' + opacity + '"/>';
+}
+
+// Monotone cubic interpolation (matches Recharts' type="monotone")
+function monotonePath(pts) {
+  const n = pts.length;
+  if (!n) return '';
+  if (n === 1) return 'M' + pts[0].x + ',' + pts[0].y;
+  const dx = [], mSlope = [], t = [];
+  for (let i = 0; i < n - 1; i++) {
+    dx[i] = pts[i + 1].x - pts[i].x;
+    mSlope[i] = (pts[i + 1].y - pts[i].y) / dx[i];
+  }
+  t[0] = mSlope[0]; t[n - 1] = mSlope[n - 2];
+  for (let i = 1; i < n - 1; i++) {
+    t[i] = mSlope[i - 1] * mSlope[i] <= 0 ? 0 : (mSlope[i - 1] + mSlope[i]) / 2;
+  }
+  for (let i = 0; i < n - 1; i++) {
+    if (mSlope[i] === 0) { t[i] = 0; t[i + 1] = 0; }
+    else {
+      const a = t[i] / mSlope[i], b = t[i + 1] / mSlope[i];
+      const s2 = a * a + b * b;
+      if (s2 > 9) { const tau = 3 / Math.sqrt(s2); t[i] = tau * a * mSlope[i]; t[i + 1] = tau * b * mSlope[i]; }
+    }
+  }
+  let d = 'M' + pts[0].x + ',' + pts[0].y;
+  for (let i = 0; i < n - 1; i++) {
+    const h = dx[i] / 3;
+    d += 'C' + (pts[i].x + h) + ',' + (pts[i].y + t[i] * h) + ',' +
+      (pts[i + 1].x - h) + ',' + (pts[i + 1].y - t[i + 1] * h) + ',' +
+      pts[i + 1].x + ',' + pts[i + 1].y;
+  }
+  return d;
+}
+
+// ---------------------------------------------------------------------------
+// Metric + tab switching
+// ---------------------------------------------------------------------------
+function setActiveMetric(m, manual) {
+  if (!METRIC_ORDER.includes(m)) return;
+  if (manual) {
+    manualOverride = true;
+    clearTimeout(manualOverrideTimer);
+    manualOverrideTimer = setTimeout(() => { manualOverride = false; }, 2000);
+  }
+  if (m === activeMetric) return;
+  const area = document.getElementById('chartArea');
+  if (manual) {
+    area.style.opacity = '0';
+    setTimeout(() => { activeMetric = m; refresh(); area.style.opacity = '1'; }, 200);
+  } else {
+    activeMetric = m; refresh();
+  }
+}
+
+function refresh() {
+  renderTiles();
+  renderChart();
+  document.getElementById('activeMarkStyle').textContent =
+    '.report-prose mark.hl-' + activeMetric + ' { color:' + CHART_COLORS[activeMetric] +
+    ' !important; border-bottom:2px solid ' + CHART_COLORS[activeMetric] +
+    ' !important; background:' + CHART_COLORS[activeMetric] + '18 !important; border-radius:2px; font-weight:600; }';
+}
+
+document.getElementById('tabQoq').addEventListener('click', () => setCompTab('qoq'));
+document.getElementById('tabYoy').addEventListener('click', () => setCompTab('yoy'));
+function setCompTab(tb) {
+  if (tb === compTab) return;
+  compTab = tb;
+  document.getElementById('tabQoq').classList.toggle('on', tb === 'qoq');
+  document.getElementById('tabYoy').classList.toggle('on', tb === 'yoy');
+  refresh();
+}
+
+// ---------------------------------------------------------------------------
+// Prose: click a highlight to switch the chart
+// ---------------------------------------------------------------------------
+document.getElementById('prose').addEventListener('click', e => {
+  const mark = e.target.closest('mark');
+  if (!mark) return;
+  for (const cls of mark.classList) {
+    if (cls.startsWith('hl-')) setActiveMetric(cls.slice(3), true);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Reading cursor: auto-switch chart to the mark being read (35%-50% band)
+// ---------------------------------------------------------------------------
+let rafId = null;
+window.addEventListener('scroll', () => {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(() => {
+    if (manualOverride) return;
+    const marks = Array.from(document.querySelectorAll('#prose mark[class*="hl-"]'));
+    if (!marks.length) return;
+    const upperLine = window.innerHeight * 0.35;
+    const lowerLine = window.innerHeight * 0.50;
+    const inBand = marks.filter(m => {
+      const r = m.getBoundingClientRect();
+      return r.top < lowerLine && r.bottom > upperLine;
+    });
+    let best = null;
+    if (inBand.length) {
+      inBand.sort((a, b) => {
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        const td = ra.top - rb.top;
+        return Math.abs(td) > 4 ? td : ra.left - rb.left;
+      });
+      best = inBand[0];
+    } else {
+      const above = marks.filter(m => m.getBoundingClientRect().bottom < upperLine);
+      if (!above.length) return;
+      above.sort((a, b) => {
+        const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+        const td = rb.top - ra.top;
+        return Math.abs(td) > 4 ? td : rb.left - ra.left;
+      });
+      best = above[0];
+    }
+    if (!best) return;
+    for (const cls of best.classList) {
+      if (cls.startsWith('hl-')) { setActiveMetric(cls.slice(3), false); break; }
+    }
+  });
+}, { passive: true });
+
+// ---------------------------------------------------------------------------
+// Compact bar: appears when the expanded strip scrolls out of view
+// ---------------------------------------------------------------------------
+const strip = document.getElementById('metricStrip');
+const compactWrap = document.getElementById('compactWrap');
+new IntersectionObserver(([entry]) => {
+  const compact = !entry.isIntersecting;
+  compactWrap.classList.toggle('compact', compact);
+  document.body.classList.toggle('bar-compact', compact);
+}, { threshold: 0, rootMargin: '-1px 0px 0px 0px' }).observe(strip);
+
+// ---------------------------------------------------------------------------
+// Methodology popover
+// ---------------------------------------------------------------------------
+const methodBtn = document.getElementById('methodBtn');
+const methodPop = document.getElementById('methodPop');
+methodBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = methodPop.classList.toggle('open');
+  methodBtn.querySelector('.chev').style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+});
+document.addEventListener('mousedown', e => {
+  if (!document.getElementById('methodRow').contains(e.target)) {
+    methodPop.classList.remove('open');
+    methodBtn.querySelector('.chev').style.transform = 'rotate(0deg)';
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Chart card hover: reveal axis labels
+// ---------------------------------------------------------------------------
+const chartCard = document.getElementById('chartCard');
+chartCard.addEventListener('mouseenter', () => { chartHovered = true; renderChart(); });
+chartCard.addEventListener('mouseleave', () => { chartHovered = false; renderChart(); });
+
+// ---------------------------------------------------------------------------
+// Welcome splash: fades after 2s, click to dismiss
+// ---------------------------------------------------------------------------
+const splash = document.getElementById('splash');
+splash.addEventListener('animationend', () => splash.remove());
+splash.addEventListener('click', () => splash.remove());
+
+// Init
+refresh();
+</script>
+</body>
+</html>
