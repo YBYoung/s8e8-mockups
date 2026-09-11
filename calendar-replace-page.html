@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Replace Page Flow</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html { color-scheme: light; }
+  body { background: #FAF9F7; color: #1c1917; margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .fade { animation: fade .22s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+  .pulse { animation: pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .spin, .fade, .pulse { animation: none; } }
+  textarea, input, select, button { font: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+  .scrollpanel { scrollbar-width: thin; }
+  h1, h2, h3 { text-wrap: balance; }
+  .prose-x p, .prose-x li { max-width: 68ch; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #a8a29e; outline-offset: 1px; }
+</style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto px-6 py-6">
+
+  <!-- Page header -->
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-5">
+    <div>
+      <p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 mb-1">OpenedQueries · Calendar · Team edit panel</p>
+      <h1 class="text-xl font-semibold text-stone-900">Replace page</h1>
+      <p class="text-sm text-stone-500 mt-1 max-w-2xl leading-relaxed">Why the current button feels broken, and two proposed flows. Click Replace inside the panel to walk each one. The real wait is 20 to 40 seconds; here it is about 3.</p>
+    </div>
+    <div class="flex flex-col items-end gap-2">
+      <div class="inline-flex bg-stone-200/50 rounded p-0.5" id="tabs">
+        <button data-tab="today" class="px-3 py-1 rounded text-xs font-semibold transition-colors">Today, as shipped</button>
+        <button data-tab="a" class="px-3 py-1 rounded text-xs font-semibold transition-colors">Proposal A</button>
+        <button data-tab="b" class="px-3 py-1 rounded text-xs font-semibold transition-colors">Proposal B · recommended</button>
+      </div>
+      <div class="flex items-center gap-4 text-[11px] text-stone-500">
+        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="tgl-readonly" class="w-3.5 h-3.5 rounded border-stone-300 text-stone-600"> Calendar locked for client review</label>
+        <label class="flex items-center gap-1.5 cursor-pointer"><input type="checkbox" id="tgl-fail" class="w-3.5 h-3.5 rounded border-stone-300 text-stone-600"> Next generation fails</label>
+        <button id="reset" class="text-[11px] font-medium text-stone-600 bg-white border border-stone-200 px-2 py-0.5 rounded hover:bg-stone-50">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- State-aware guide -->
+  <div id="guide" class="mb-4 px-4 py-3 bg-white border border-stone-200/60 rounded-md text-xs text-stone-600 leading-relaxed"></div>
+
+  <!-- Split view, mirrors the real calendar page -->
+  <div class="flex items-start">
+    <div id="list" style="width:52%"></div>
+    <div class="shrink-0 flex items-center justify-center" style="width:8px; height: 40px;"><div class="w-0.5 h-8 rounded bg-stone-200"></div></div>
+    <div id="panel" class="sticky top-4 self-start flex flex-col overflow-hidden" style="width:calc(48% - 8px); margin-left:8px; height:calc(100vh - 2rem); min-height:560px;"></div>
+  </div>
+
+  <!-- Write-up -->
+  <section class="mt-12 pt-8 border-t border-stone-200/60 prose-x">
+    <p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 mb-2">What the team is hitting</p>
+    <h2 class="text-base font-semibold text-stone-900 mb-3">Six things wrong with the shipped flow</h2>
+    <ol class="space-y-3 text-sm text-stone-700 leading-relaxed list-decimal pl-5">
+      <li><span class="font-medium text-stone-900">The replacement looks like it did not take, then gets undone.</span> The panel's fields only reload when you switch items or when the meta description changes. A normal Replace keeps the meta, so the Title and Strategic Angle boxes keep showing the old page. The next keystroke anywhere in the panel autosaves the old title back over the new one. This is the "it doesn't work" report.</li>
+      <li><span class="font-medium text-stone-900">Ticking "also regenerate the meta" hides the result.</span> That is the one case where the fields do reload, but the same trigger also resets the Replace section, so it snaps back to the plain link: no before and after, no Undo.</li>
+      <li><span class="font-medium text-stone-900">Undo is fragile.</span> The before-snapshot lives only in the panel's memory. Switching items or refreshing loses it for good. Nothing is stored on the server.</li>
+      <li><span class="font-medium text-stone-900">A 20 to 40 second wait with a fake percentage, at the bottom of a scrolling panel.</span> The bar is a timer, not progress. When the request runs long the proxy can give up first: you see a red "Request failed" while the backend still saves the replacement, and the item changes on your next reload.</li>
+      <li><span class="font-medium text-stone-900">It is discoverable only as 12px text under Strategy Notes,</span> and it stays clickable when the calendar is locked for review or on a sample project, where Undo then fails with a permissions error.</li>
+      <li><span class="font-medium text-stone-900">If the AI returns the same title,</span> the section drops back to the empty form as if nothing happened.</li>
+    </ol>
+
+    <p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 mt-10 mb-2">The proposal</p>
+    <h2 class="text-base font-semibold text-stone-900 mb-3">What both variants share</h2>
+    <ul class="space-y-2 text-sm text-stone-700 leading-relaxed list-disc pl-5">
+      <li>Replace becomes a real button in the panel header. It is hidden when the calendar is locked or the project is a sample, and the backend refuses it in those states too.</li>
+      <li>The flow runs in a card at the top of the panel, under the Google preview, where the eye already is. The bottom section goes away.</li>
+      <li>Reason is a click, not an essay: pick a reason chip, add optional direction. The reason is still logged on the item.</li>
+      <li>Progress is honest: the five real backend steps streamed as they happen, plus elapsed time, no percentage. Fields lock while it runs so nothing you type is lost.</li>
+      <li>The job belongs to the item, not the panel. Move to another item and back and it is still running, or still showing the result. The list row shows Replacing, then Replaced.</li>
+      <li>The done state shows Was and Now, refreshes every field, and offers Undo, Replace again, Done.</li>
+      <li>Undo survives a refresh because the before-snapshot is saved on the item. That is an open question below.</li>
+      <li>Errors are a card with Try again. The item is untouched until the backend succeeds.</li>
+    </ul>
+
+    <div class="grid md:grid-cols-2 gap-4 mt-6">
+      <div class="bg-white border border-stone-200/60 rounded-md px-4 py-3">
+        <p class="text-sm font-semibold text-stone-900">Proposal A: one shot, fixed</p>
+        <p class="text-xs text-stone-600 leading-relaxed mt-1">Same shape as today with the bugs removed. Cheapest to build. "Replace again" costs another 20 to 40 seconds each time.</p>
+      </div>
+      <div class="bg-white border border-stone-200/60 rounded-md px-4 py-3">
+        <p class="text-sm font-semibold text-stone-900">Proposal B: pick from three <span class="ml-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">recommended</span></p>
+        <p class="text-xs text-stone-600 leading-relaxed mt-1">One AI call drafts three complete candidates (same wait, roughly double the output tokens). Nothing is written until you pick one, and "try another" is instant. The team's real loop is "not that one, again", and this makes that loop free.</p>
+      </div>
+    </div>
+
+    <p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 mt-10 mb-2">For the build</p>
+    <h2 class="text-base font-semibold text-stone-900 mb-3">What it takes</h2>
+    <ul class="space-y-2 text-sm text-stone-700 leading-relaxed list-disc pl-5">
+      <li><span class="font-medium text-stone-900">Frontend.</span> Lift the replace state out of the panel into the calendar page's item-actions hook, keyed by item id. New ReplaceCard component at the top of the panel. The draft hook resets on a replace counter, not on the meta description. Pass the read-only flag through.</li>
+      <li><span class="font-medium text-stone-900">Backend.</span> Gate per-item replace the same way full regeneration is gated (sample projects, mid-review lock). Stream the regenerate endpoint the way bulk meta generation already streams. Proposal B adds a candidates call that returns three drafts and an apply call that writes the chosen one.</li>
+      <li><span class="font-medium text-stone-900">Tests.</span> A frontend test for the panel refresh after replace, since none exists today, and backend tests for the new gates.</li>
+    </ul>
+
+    <p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 mt-10 mb-2">Your call</p>
+    <h2 class="text-base font-semibold text-stone-900 mb-3">Open questions</h2>
+    <ol class="space-y-2 text-sm text-stone-700 leading-relaxed list-decimal pl-5">
+      <li>A or B?</li>
+      <li>Persist the Undo snapshot on the calendar item so it survives a refresh? That is a new column on a protected table, so I will ask properly before touching it. Without it, Undo lasts for the browser session only.</li>
+      <li>Should Replace also appear in the list row's hover actions, next to the angle pencil?</li>
+      <li>Are these the right reason chips: Client already has this page · Service not offered · Duplicate of another item · Off strategy · Other?</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+// ---------- Sample data (dental, fictional practice) ----------
+const ITEMS = [
+  { id: 1, rank: 1, type: 'service_page', funnel: 'bottom', month: 'Month 1', score: 82, cluster: 'Dental Implants',
+    title: 'Dental Implants in Kent, WA | Kent Station Family Dentistry',
+    meta: 'Missing a tooth? Kent Station Family Dentistry places dental implants in Kent, WA with same-week consults. See cost, timeline, and financing.',
+    angle: 'Kent adults comparing implants to bridges want the honest cost and timeline before they call. We lead with the full-mouth and single-tooth price ranges, walk the three-visit process, and address the "does it hurt" question that fills every forum thread on the topic.',
+    queries: ['dental implants kent wa', 'cost of dental implants', 'are implants worth it'] },
+  { id: 2, rank: 2, type: 'service_page', funnel: 'mid', month: 'Month 1', score: 76, cluster: 'Sedation',
+    title: 'Sedation Dentistry in Kent, WA',
+    meta: 'Nervous about the dentist? Kent Station Family Dentistry offers sedation dentistry in Kent, WA, from nitrous oxide to oral sedation. Book a comfortable visit.',
+    angle: 'Fear of the dentist keeps a surprising share of Kent adults away for years. We cover the comfort options from nitrous to oral sedation, who each one suits, and what a first sedation visit actually feels like, so anxious patients feel safe booking.',
+    queries: ['sedation dentistry kent wa', 'does sedation dentistry hurt', 'oral sedation vs nitrous'] },
+  { id: 3, rank: 3, type: 'blog_article', funnel: 'mid', month: 'Month 2', score: 71, cluster: 'Dental Implants',
+    title: 'Dental Implant Cost Guide: What Kent Patients Actually Pay',
+    meta: 'A plain-language breakdown of dental implant cost in Kent, WA: single tooth, full arch, insurance, and financing, from Kent Station Family Dentistry.',
+    angle: 'Cost is the first question and the one most practice sites dodge. We publish real ranges for single implants, bridges on implants, and full arches, explain what insurance usually covers, and show the financing math so readers can decide before they book.',
+    queries: ['dental implant cost', 'full mouth implants cost', 'does insurance cover implants'] },
+  { id: 4, rank: 4, type: 'pillar_page', funnel: 'top', month: 'Month 2', score: 68, cluster: 'Aesthetic Treatments',
+    title: 'The Complete Guide to Dental Veneers',
+    meta: 'Everything about dental veneers: porcelain vs composite, cost, how long they last, and whether they are right for you. From Kent Station Family Dentistry.',
+    angle: 'The pillar that the whitening, bonding, and smile design pages hang from. We cover porcelain against composite, longevity, what veneers cannot fix, and the consultation process, with links out to the treatment pages as they publish.',
+    queries: ['dental veneers', 'porcelain veneers cost', 'how long do veneers last'] },
+  { id: 5, rank: 5, type: 'blog_article', funnel: 'top', month: 'Month 3', score: 60, cluster: 'Patient Finance',
+    title: 'Dental Insurance 101: PPO, HMO, and What You Really Pay',
+    meta: 'Confused by dental insurance? We explain PPO vs HMO plans, deductibles, annual maximums, and how to get the most from your benefits before they reset.',
+    angle: 'Navigating PPO against HMO plans and how deductibles change out-of-pocket cost. Written for the patient who has a card in their wallet and no idea what it covers, with a year-end "use your benefits" push at the close.',
+    queries: ['ppo vs hmo dental', 'dental insurance annual maximum', 'use dental benefits before year end'] },
+];
+
+const CANDIDATE_SETS = [[
+  { title: 'Same-Day Dental Crowns in Kent, WA', cluster: 'Restorative Dentistry', score: 79,
+    meta: 'Get a permanent crown in one visit. Kent Station Family Dentistry offers same-day CEREC crowns in Kent, WA, with no temporary and no second appointment.',
+    angle: 'Kent patients searching for crowns want to know whether they can skip the two-visit process and the temporary. We lead with same-visit crowns, compare cost and durability against lab-made crowns, and answer the "are they as good" worry that comes up in every forum thread.',
+    queries: ['same day crowns kent wa', 'cerec crown cost', 'are same day crowns as good as lab crowns'] },
+  { title: 'Emergency Dentist in Kent, WA: Same-Day Appointments', cluster: 'Emergency Care', score: 74,
+    meta: 'Tooth pain or a broken tooth? Kent Station Family Dentistry sees dental emergencies in Kent, WA the same day. Call now for what to do in the first hour.',
+    angle: 'Nobody reads an emergency page calmly. Short, scannable, phone number first: what counts as an emergency, what to do in the first hour for a knocked-out tooth or a broken crown, and what a same-day visit costs with and without insurance.',
+    queries: ['emergency dentist kent wa', 'knocked out tooth what to do', 'same day dentist near me'] },
+  { title: 'Dental Bonding vs Veneers for Chipped Teeth', cluster: 'Aesthetic Treatments', score: 70,
+    meta: 'Chipped a front tooth? Compare dental bonding and veneers on cost, lifespan, and looks, and see which one Kent Station Family Dentistry recommends for you.',
+    angle: 'Patients in their 30s weighing veneers against bonding for a chipped front tooth. We walk the tradeoffs honestly: cost per tooth, how long each lasts, what can be undone, and which one the practice recommends for a single chip versus a full smile.',
+    queries: ['bonding vs veneers', 'dental bonding cost', 'fix chipped front tooth'] },
+], [
+  { title: 'Pediatric Dentist in Kent, WA: First Visits Made Easy', cluster: 'Pediatric Dentistry', score: 77,
+    meta: 'Looking for a kids dentist in Kent, WA? Kent Station Family Dentistry makes first visits calm and quick. See what to expect, ages, and how to prepare.',
+    angle: 'Parents search for a kids dentist the week before the first visit and want reassurance more than facts. We answer when to start, what happens in the chair, and how the practice handles a nervous four-year-old, in a voice a tired parent can skim.',
+    queries: ['pediatric dentist kent wa', 'when should kids first see a dentist', 'kids dentist near me'] },
+  { title: 'Invisalign in Kent, WA: Cost, Timeline, and Who It Suits', cluster: 'Orthodontics', score: 72,
+    meta: 'Thinking about Invisalign in Kent, WA? See real cost ranges, how long treatment takes, and whether clear aligners will work for your bite.',
+    angle: 'Adults who want straighter teeth without braces are ready to book once cost and timeline are clear. We give the ranges, explain the scan-to-first-tray process, and name the bite issues aligners cannot fix, so the consult starts with realistic expectations.',
+    queries: ['invisalign kent wa', 'invisalign cost', 'how long does invisalign take'] },
+  { title: 'Tooth Extraction Aftercare: The First 72 Hours', cluster: 'Oral Surgery', score: 66,
+    meta: 'Just had a tooth pulled? Here is exactly what to eat, what to avoid, and when to call Kent Station Family Dentistry in the first 72 hours after an extraction.',
+    angle: 'Patients search this at 9pm the night of an extraction. A checklist page: hour by hour for the first day, what dry socket feels like, and the short list of reasons to call. Supports the extraction service page and earns links from the post-op handout.',
+    queries: ['tooth extraction aftercare', 'dry socket symptoms', 'what to eat after tooth extraction'] },
+]];
+
+const REASONS = ['Client already has this page', 'Service not offered', 'Duplicate of another item', 'Off strategy', 'Other'];
+const PHASES = ['Gathering client context and research', 'Checking what the site already covers', 'Choosing a new topic for this slot', 'Writing the title and strategic angle', 'Saving'];
+const PHASES_B = ['Gathering client context and research', 'Checking what the site already covers', 'Drafting three candidate pages', 'Scoring fit against the calendar', 'Ready'];
+const TYPE_LABEL = { service_page: 'Service', blog_article: 'Blog', pillar_page: 'Pillar' };
+const TYPE_CHIP = { service_page: 'bg-emerald-50 text-emerald-700', blog_article: 'bg-sky-50 text-sky-700', pillar_page: 'bg-violet-50 text-violet-700' };
+const FUNNEL = { top: ['Top', 'bg-sky-50 text-sky-700'], mid: ['Mid', 'bg-stone-50 text-stone-600'], bottom: ['Bot', 'bg-emerald-50 text-emerald-700'] };
+const WORDS = { service_page: '1,200-2,000 words', blog_article: '1,000-1,500 words', pillar_page: '2,500-4,000 words' };
+
+// ---------- State ----------
+let tab = 'a';
+let readOnly = false, failNext = false;
+let selectedId = 2;
+let items = [];
+let jobs = {};      // Proposal A/B: itemId -> job (lifted, belongs to the item)
+let today = {};     // Today: panel-local state, reset on item switch (as shipped)
+let timers = [];
+let toast = null, toastTimer = null;
+let candidateSetIdx = 0;
+
+function snapshot(it) { return { title: it.title, cluster: it.cluster, angle: it.angle, meta: it.meta, queries: it.queries.slice(), regenerated: !!it.regenerated }; }
+function applyCandidate(it, c, clearMeta) { it.title = c.title; it.cluster = c.cluster; it.angle = c.angle; it.queries = c.queries.slice(); it.regenerated = true; if (clearMeta) it.meta = ''; }
+function restore(it, s) { Object.assign(it, { title: s.title, cluster: s.cluster, angle: s.angle, meta: s.meta, queries: s.queries.slice(), regenerated: s.regenerated }); }
+function clearTimers() { timers.forEach(t => clearInterval(t)); timers = []; }
+function resetAll() {
+  clearTimers();
+  items = ITEMS.map(i => ({ ...i, queries: i.queries.slice(), regenerated: false }));
+  jobs = {}; today = { view: 'idle', reason: '', guidance: '', meta: false, old: null, draftTitle: null, serverPrevious: null, note: null }; selectedId = 2; toast = null; candidateSetIdx = 0;
+  render();
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sel = () => items.find(i => i.id === selectedId);
+const spinner = (cls) => `<svg class="spin ${cls}" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>`;
+function showToast(text, undoable) { toast = { text, undoable }; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast = null; render(); }, 4000); }
+
+// ---------- Guide copy ----------
+function guideHtml() {
+  const it = sel(); const job = jobs[selectedId];
+  const b = (s) => `<span class="font-semibold text-stone-900">${s}</span>`;
+  if (tab === 'today') {
+    if (today.note === 'reverted') return `${b('Autosave just wrote the old title back over the replacement.')} The "Now" box flipped too. This is what the team reports as "it didn't work". Nothing you did was wrong.`;
+    if (today.note === 'meta-collapse') return `${b('Second bug.')} You ticked "also regenerate the meta", so the fields did update this time, but the Replace section reset itself to the plain link: no before and after, no Undo. Only the header title tells you anything happened.`;
+    if (today.note === 'switched') return `${b('Switching items wiped the replace state, including Undo.')} It is stored only in this panel's memory, and nothing is saved on the server.`;
+    if (today.view === 'idle') return `${b('As shipped.')} Replace lives at the very bottom of the panel as a 12px link, below Strategy Notes. Scroll the panel down and click it.${readOnly ? ' Notice the calendar is locked, yet the link is still there and still works.' : ''}`;
+    if (today.view === 'compose') return `Two textareas and a checkbox. The reason is mandatory even when it is obvious. Leave the meta box unticked first (that is the default) and generate.`;
+    if (today.view === 'working') return `A spinner with a percentage that is really a timer. In prod this sits at the bottom of a scrolled panel for 20 to 40 seconds. If the proxy gives up first you get a red "Request failed" while the backend still saves the replacement.`;
+    if (today.view === 'done') return `${b('Here is the bug.')} The header says the new title and the "Now" box says the new title, but the Title field and the Google preview still show the old page. Now type one character into the Title field.`;
+    return '';
+  }
+  const A = tab === 'a';
+  if (readOnly && !job) return `The calendar is locked for client review, so the Replace button is gone from the header and the backend would refuse the call too. Today's link stays clickable in this state.`;
+  if (!job || job.status === 'settled') {
+    if (job && job.status === 'settled') return `After Done the card folds away. Undo stays available under Strategy Notes for as long as the snapshot exists, including after a refresh.`;
+    return A ? `${b('Proposal A: one-shot replace, fixed.')} Replace is a real button in the panel header, hidden when the calendar is locked (try the toggle above). Click it.`
+             : `${b('Proposal B, recommended: pick from three.')} Same entry point as A. The difference is what comes back. Click Replace page in the header.`;
+  }
+  switch (job.status) {
+    case 'compose': return A ? `The flow opens at the top of the panel, under the Google preview, where you are already looking. Reason is one click, direction is optional, and your meta description is kept unless you say otherwise.`
+                             : `Same form as A. The button asks for three drafts instead of one.`;
+    case 'working': return A ? `Honest progress: the five real backend steps streamed as they happen, plus elapsed time, no fake percentage. The fields below are locked so nothing you type is lost. Try moving to another item and back: the job belongs to the item, and the list row shows it.`
+                             : `Same wait as today, one AI call, roughly double the output tokens. Move to another item and back if you like; the job belongs to the item.`;
+    case 'pick': return `Three complete candidates, best fit first. Nothing has been written yet, so there is nothing to undo. Pick one.`;
+    case 'done': return A ? `Was and Now side by side, every field refreshed, Undo one click away. The row in the list says Replaced. Undo survives a refresh because the before-snapshot is saved on the item.`
+                          : `Applied instantly. "Try another" goes back to the remaining candidates with no wait, which is the loop the team actually runs. Undo returns to the original page.`;
+    case 'error': return `Failures are a card with a retry, and the page is untouched until the backend succeeds. Untick "Next generation fails" and try again.`;
+  }
+  return '';
+}
+
+// ---------- List ----------
+function rowChip(job) {
+  if (!job) return '';
+  const base = 'text-[10px] font-medium px-1.5 py-0.5 rounded inline-flex items-center gap-1';
+  if (job.status === 'working') return `<span class="${base} bg-stone-100 text-stone-600">${spinner('w-2.5 h-2.5 text-stone-400')} Replacing</span>`;
+  if (job.status === 'pick') return `<span class="${base} bg-stone-100 text-stone-600">3 options ready</span>`;
+  if (job.status === 'done' || job.status === 'settled') return `<span class="${base} bg-violet-50 text-violet-700">Replaced</span>`;
+  if (job.status === 'error') return `<span class="${base} bg-red-50 text-red-600">Replace failed</span>`;
+  return '';
+}
+function renderList() {
+  const groups = [...new Set(items.map(i => i.month))];
+  document.getElementById('list').innerHTML = groups.map(m => `
+    <section class="mb-8">
+      <div class="flex items-baseline gap-2 mb-3"><h2 class="text-base font-bold text-stone-900">${m}</h2><span class="text-xs text-stone-400">${items.filter(i => i.month === m).length} topics</span></div>
+      <div class="space-y-3">${items.filter(i => i.month === m).map(it => {
+        const selected = it.id === selectedId;
+        const tint = selected ? 'bg-stone-200 text-stone-700 border-stone-300' : it.score >= 75 ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-stone-50 text-stone-600 border-stone-200';
+        const f = FUNNEL[it.funnel];
+        return `<div data-select="${it.id}" class="cursor-pointer select-none rounded-md transition-shadow ${selected ? 'ring-1 ring-stone-400' : ''}">
+          <article class="group bg-white border border-stone-200/60 rounded-md px-5 py-4 transition-colors">
+            <div class="flex items-start gap-3">
+              <div class="shrink-0 mt-0.5"><span class="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold num border ${tint}">${it.rank}</span></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between gap-2">
+                  <h3 class="text-base font-bold text-stone-900 leading-snug">${esc(it.title)}</h3>
+                  <div class="flex items-center gap-1.5 shrink-0 mt-0.5">
+                    ${tab !== 'today' ? rowChip(jobs[it.id]) : ''}
+                    <span class="text-[10px] font-medium px-1.5 py-0.5 rounded ${f[1]}">${f[0]}</span>
+                    <span class="w-2 h-2 rounded-sm ${it.meta ? 'bg-emerald-400' : 'bg-stone-200'} inline-block"></span>
+                  </div>
+                </div>
+                <p class="text-sm text-stone-600 leading-relaxed mt-1">${esc(it.angle)}</p>
+                <div class="flex flex-wrap items-center gap-2 mt-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-100 text-stone-700 border border-stone-200/60">${TYPE_LABEL[it.type]}</span>
+                  <span class="text-[10px] text-stone-400">${WORDS[it.type]}</span>
+                  <span class="text-[10px] text-stone-400">· ${esc(it.cluster)}</span>
+                </div>
+              </div>
+            </div>
+          </article></div>`; }).join('')}</div>
+    </section>`).join('');
+}
+
+// ---------- Panel ----------
+function serp(title, desc) {
+  return `<div class="max-w-[600px] rounded-md border border-stone-200 bg-white p-3.5">
+    <p class="text-[10px] uppercase tracking-wider text-stone-400 font-semibold mb-2">Google Preview</p>
+    <div class="flex items-center gap-2 mb-1"><div class="w-5 h-5 rounded-full bg-stone-100 shrink-0"></div><div class="text-xs text-stone-500 truncate">https://www.kentstationdentistry.com<span class="text-stone-400"> › ${esc(title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40))}</span></div></div>
+    <div class="text-lg leading-snug mb-0.5" style="font-family: Arial, sans-serif; color:#1a0dab; font-weight:400">${esc(title)}</div>
+    <div class="text-[13px] leading-relaxed text-stone-500" style="font-family: Arial, sans-serif">${desc ? esc(desc) : '<span class="text-stone-300 italic">Meta description will appear here...</span>'}</div>
+  </div>`;
+}
+function fieldBlock(label, inner, extra) {
+  return `<div class="border-b border-stone-100 px-5 py-4"><div class="flex items-center justify-between mb-1.5"><label class="text-[10px] uppercase tracking-wider text-stone-500 font-semibold">${label}</label>${extra || ''}</div>${inner}</div>`;
+}
+const genBtn = `<button class="flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md hover:bg-emerald-100">&#10022; Generate</button>`;
+function renderFields(it, titleValue, locked) {
+  const ro = readOnly ? 'bg-stone-50 opacity-60 cursor-not-allowed' : 'bg-white';
+  const dis = readOnly ? 'disabled' : '';
+  const inputCls = `w-full px-3 py-2 text-sm border border-stone-200 rounded-md text-stone-900 focus:outline-none ${ro}`;
+  return `<div class="${locked ? 'opacity-50 pointer-events-none select-none' : ''}">
+    ${fieldBlock('Page Title', `<input id="title-input" type="text" value="${esc(titleValue)}" ${dis} class="${inputCls}">`, `<div class="flex items-center gap-3"><span class="text-[10px] text-stone-400 num">${Math.round(titleValue.length * 8.2)}px</span>${genBtn}</div>`)}
+    ${fieldBlock('Meta Description', `<textarea rows="3" ${dis} class="${inputCls} resize-none" placeholder="120–160 characters for Google...">${esc(it.meta)}</textarea>`, `<div class="flex items-center gap-3"><span class="text-[10px] text-stone-400 num">${it.meta ? Math.round(it.meta.length * 6.1) + 'px' : ''}</span>${genBtn}</div>`)}
+    ${fieldBlock('Strategic Angle', `<textarea rows="5" ${dis} class="${inputCls} resize-y">${esc(it.angle)}</textarea>`)}
+    <div class="border-b border-stone-100 px-5 py-4">
+      <label class="text-[10px] uppercase tracking-wider text-stone-500 font-semibold block mb-3">Content Settings</label>
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div><label class="text-[10px] text-stone-500 block mb-1">Type</label><div class="px-2 py-1.5 border border-stone-200 rounded-md bg-white text-stone-900">${TYPE_LABEL[it.type]} Page</div></div>
+        <div><label class="text-[10px] text-stone-500 block mb-1">Funnel</label><div class="px-2 py-1.5 border border-stone-200 rounded-md bg-white text-stone-900">${{ top: 'Awareness', mid: 'Consideration', bottom: 'Decision' }[it.funnel]}</div></div>
+        <div><label class="text-[10px] text-stone-500 block mb-1">Word Count</label><div class="px-2 py-1.5 border border-stone-200 rounded-md bg-white text-stone-900 num">${it.type === 'pillar_page' ? 3000 : it.type === 'blog_article' ? 1200 : 1500}</div></div>
+        <div><label class="text-[10px] text-stone-500 block mb-1">Month</label><div class="px-2 py-1.5 border border-stone-200 rounded-md bg-white text-stone-900">${it.month}</div></div>
+      </div>
+    </div>
+    <div class="border-b border-stone-100 px-5 py-4">
+      <label class="text-[10px] uppercase tracking-wider text-stone-500 font-semibold block mb-2">Topics shown to the client</label>
+      <div class="flex flex-wrap gap-1.5">${it.queries.map(q => `<span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-md border border-stone-200/60">${esc(q)}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function strategyNotes(it, undoLink) {
+  return `<div class="border-b border-stone-100 px-5 py-4"><div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-stone-500 font-semibold">
+    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Strategy Notes
+    ${it.regenerated ? `<span class="ml-2 px-1.5 py-0.5 rounded text-[9px] font-medium bg-violet-50 text-violet-700 normal-case tracking-normal">Regenerated</span>` : `<span class="ml-2 px-1.5 py-0.5 rounded text-[9px] font-medium bg-emerald-50 text-emerald-700 normal-case tracking-normal">Confidence: High</span>`}
+    ${undoLink ? `<button data-action="undo" class="ml-auto text-[10px] font-medium text-stone-700 underline normal-case tracking-normal">Undo replace</button>` : ''}
+  </div></div>`;
+}
+const commentsRow = `<div class="border-b border-stone-100 px-5 py-4"><span class="text-[10px] uppercase tracking-wider font-semibold text-stone-500 flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Comments</span></div>`;
+const deleteRow = () => readOnly ? '' : `<div class="px-5 py-4"><button class="text-xs text-red-500 hover:text-red-700 font-medium">Delete this item</button></div>`;
+
+function panelHeader(it, showReplace) {
+  const arrow = (d, action, disabled) => `<button data-action="${action}" ${disabled ? 'disabled' : ''} class="p-1 rounded text-stone-400 hover:text-stone-600 disabled:opacity-30"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="${d}"/></svg></button>`;
+  const idx = items.findIndex(i => i.id === it.id);
+  return `<div class="shrink-0 border-b border-stone-200 px-5 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2 min-w-0">
+      <span class="text-xs font-bold text-stone-400 shrink-0">#${it.rank}</span>
+      <span class="text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0 ${TYPE_CHIP[it.type]}">${TYPE_LABEL[it.type]}</span>
+      <h2 class="text-sm font-semibold text-stone-900 truncate">${esc(it.title)}</h2>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      ${showReplace ? `<button data-action="open" class="text-[11px] font-medium text-stone-700 bg-white border border-stone-200 px-2.5 py-1 rounded-md hover:bg-stone-50 mr-1 whitespace-nowrap">Replace page…</button>` : ''}
+      ${arrow('M15 19l-7-7 7-7', 'prev', idx === 0)}
+      <span class="text-[10px] text-stone-400 num">${idx + 1}/${items.length}</span>
+      ${arrow('M9 5l7 7-7 7', 'next', idx === items.length - 1)}
+      <button class="ml-2 p-1 rounded text-stone-400 hover:text-stone-600"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+  </div>`;
+}
+const lockBanner = () => readOnly ? `<div class="mx-5 mt-3 px-3 py-2 bg-sky-50 border border-sky-200 rounded-md"><p class="text-xs font-medium text-sky-700">Editing disabled while pending client review</p></div>` : '';
+
+// ----- Proposal card (A/B) -----
+const secondaryBtn = 'text-xs font-medium text-stone-700 bg-white border border-stone-200 px-2.5 py-1.5 rounded-md hover:bg-stone-50';
+const primaryBtn = 'text-xs font-medium text-white bg-stone-900 px-3 py-1.5 rounded-md hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed';
+function replaceCard(it, job) {
+  const wrap = (border, inner) => `<div class="mx-5 mt-4 border ${border} rounded-md bg-white fade">${inner}</div>`;
+  const head = (label, cls, right) => `<div class="px-4 py-3 border-b border-stone-100 flex items-center justify-between"><span class="text-[10px] uppercase tracking-wider ${cls} font-semibold">${label}</span>${right || ''}</div>`;
+  const cancel = `<button data-action="cancel" class="text-[11px] text-stone-400 hover:text-stone-600">Cancel</button>`;
+  if (job.status === 'compose') {
+    return wrap('border-stone-200', head('Replace this page', 'text-violet-600', cancel) + `
+      <div class="px-4 py-3 space-y-3">
+        <p class="text-[11px] text-stone-500"><span class="font-medium text-stone-700">Replacing:</span> ${esc(it.title)}. Keeps its slot: ${it.month}, #${it.rank}.</p>
+        <div>
+          <p class="text-[10px] text-stone-500 mb-1.5">Why is this one wrong?</p>
+          <div class="flex flex-wrap gap-1.5">${REASONS.map(r => `<button data-action="reason" data-reason="${esc(r)}" class="text-[11px] font-medium px-2 py-1 rounded border transition-colors ${job.reason === r ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'}">${esc(r)}</button>`).join('')}</div>
+          ${job.reason === 'Other' ? `<input id="reason-other" type="text" value="${esc(job.reasonOther || '')}" placeholder="What is wrong with it?" class="mt-2 w-full px-3 py-2 text-xs border border-stone-200 rounded-md bg-white text-stone-900 focus:outline-none">` : ''}
+        </div>
+        <div>
+          <label class="text-[10px] text-stone-500 block mb-1">Direction for the new page <span class="text-stone-400">(optional)</span></label>
+          <input id="guidance" type="text" value="${esc(job.guidance || '')}" placeholder="e.g. Focus on pediatric dentistry instead" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-md bg-white text-stone-900 focus:outline-none">
+        </div>
+        <label class="flex items-center gap-2 text-[11px] text-stone-500 cursor-pointer"><input id="meta-box" type="checkbox" ${job.meta ? 'checked' : ''} class="w-3.5 h-3.5 rounded border-stone-300 text-stone-600"> Also rewrite the meta description <span class="text-stone-400">(off: your current meta is kept)</span></label>
+        <div class="flex items-center gap-3 pt-1">
+          <button data-action="generate" ${job.reason && (job.reason !== 'Other' || (job.reasonOther || '').trim()) ? '' : 'disabled'} class="${primaryBtn}">${tab === 'a' ? 'Generate replacement' : 'Suggest 3 replacements'}</button>
+          <span class="text-[11px] text-stone-400">Takes 20 to 40 seconds. You can move to other items while it runs.</span>
+        </div>
+      </div>`);
+  }
+  if (job.status === 'working') {
+    const phases = tab === 'a' ? PHASES : PHASES_B;
+    return wrap('border-stone-200', `
+      <div class="px-4 py-3 flex items-center gap-3">
+        ${spinner('w-4 h-4 text-stone-500 shrink-0')}
+        <div class="flex-1 min-w-0"><p class="text-xs font-medium text-stone-800 truncate">${tab === 'a' ? 'Replacing' : 'Drafting replacements for'} "${esc(it.title)}"</p><p class="text-[11px] text-stone-500 mt-0.5">${phases[job.phase]}</p></div>
+        <span class="text-[11px] text-stone-400 num shrink-0">${job.elapsed}s</span>
+      </div>
+      <div class="px-4 pb-3"><div class="flex gap-1">${phases.map((p, i) => `<div title="${p}" class="h-1 flex-1 rounded-sm ${i < job.phase ? 'bg-stone-700' : i === job.phase ? 'bg-stone-700 pulse' : 'bg-stone-200'}"></div>`).join('')}</div>
+      <p class="text-[10px] text-stone-400 mt-1.5">Step ${job.phase + 1} of ${phases.length}. Fields are locked until it finishes.</p></div>`);
+  }
+  if (job.status === 'error') {
+    return wrap('border-red-200', `<div class="px-4 py-3">
+      <p class="text-xs font-medium text-red-600">Couldn't generate a replacement</p>
+      <p class="text-[11px] text-stone-500 mt-0.5">The AI took too long to answer. Nothing on this page was changed.</p>
+      <div class="flex gap-2 mt-2.5"><button data-action="retry" class="${primaryBtn}">Try again</button><button data-action="cancel" class="${secondaryBtn}">Cancel</button></div>
+    </div>`);
+  }
+  if (job.status === 'pick') {
+    return wrap('border-stone-200', head('Pick a replacement', 'text-violet-600', cancel) + `
+      <p class="px-4 pt-3 text-[11px] text-stone-500">Three complete drafts for the ${it.month}, #${it.rank} slot. Nothing is saved until you pick one.</p>
+      <div class="px-4 py-3 space-y-2">${job.candidates.map((c, i) => `
+        <div class="border rounded-md px-3 py-2.5 transition-colors ${job.usedIdx === i ? 'border-stone-400 bg-stone-50/60' : 'border-stone-200/60 hover:bg-stone-50/50'}">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0"><p class="text-xs font-semibold text-stone-900">${esc(c.title)}</p><p class="text-[10px] text-stone-400 mt-0.5">${esc(c.cluster)} · fit <span class="num">${c.score}</span>/100${i === 0 ? ' · <span class="text-emerald-700 font-medium">Best fit</span>' : ''}</p></div>
+            <button data-action="pick" data-i="${i}" ${job.usedIdx === i ? 'disabled' : ''} class="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-md ${job.usedIdx === i ? 'text-stone-400 bg-stone-100' : i === 0 && job.usedIdx == null ? 'text-white bg-stone-900 hover:bg-stone-800' : 'text-stone-700 bg-white border border-stone-200 hover:bg-stone-50'}">${job.usedIdx === i ? 'Applied' : 'Use this'}</button>
+          </div>
+          <p class="text-[11px] text-stone-600 leading-relaxed mt-1.5">${esc(c.angle)}</p>
+          <div class="flex flex-wrap gap-1 mt-1.5">${c.queries.map(q => `<span class="text-[10px] bg-stone-100 text-stone-600 px-1.5 py-0.5 rounded border border-stone-200/60">${esc(q)}</span>`).join('')}</div>
+        </div>`).join('')}</div>
+      <div class="px-4 pb-3 flex items-center gap-3"><button data-action="more" class="${secondaryBtn}">Suggest 3 more</button><span class="text-[11px] text-stone-400">Another 20 to 40 seconds.</span></div>`);
+  }
+  if (job.status === 'done') {
+    const reason = job.reason === 'Other' ? job.reasonOther : job.reason;
+    return wrap('border-emerald-200', head('Page replaced', 'text-emerald-700', `<span class="text-[11px] text-stone-400 truncate max-w-[50%]">Reason logged: ${esc(reason)}</span>`) + `
+      <div class="px-4 py-3 space-y-2.5">
+        <div class="grid gap-x-3 gap-y-1 text-[11px]" style="grid-template-columns: 34px 1fr">
+          <span class="text-stone-400 font-medium">Was</span><span class="text-stone-500">${esc(job.previous.title)} <span class="text-stone-400">· ${esc(job.previous.cluster)}</span></span>
+          <span class="text-emerald-700 font-medium">Now</span><span class="text-stone-900 font-medium">${esc(it.title)} <span class="text-stone-400 font-normal">· ${esc(it.cluster)}</span></span>
+        </div>
+        <p class="text-[11px] text-stone-500">${job.meta ? 'Meta description cleared. <button class="text-emerald-700 font-medium">Generate a new one</button>.' : 'Meta description kept.'} Every field below is updated.</p>
+        <div class="flex items-center gap-2 pt-1">
+          <button data-action="undo" class="${secondaryBtn}">Undo</button>
+          <button data-action="again" class="${secondaryBtn}">${tab === 'a' ? 'Replace again' : 'Try another'}</button>
+          <button data-action="dismiss" class="${primaryBtn}">Done</button>
+        </div>
+      </div>`);
+  }
+  return '';
+}
+
+// ----- Today's bottom section (as shipped) -----
+function todaySection(it) {
+  const v = todayView(it);
+  const violetLabel = (t) => `<span class="text-[10px] uppercase tracking-wider text-violet-600 font-semibold">${t}</span>`;
+  if (v === 'idle') return `<div class="border-b border-stone-100 px-5 py-4"><button data-action="t-open" class="text-xs text-violet-600 hover:text-violet-800 font-medium">Replace with different page...</button></div>`;
+  if (v === 'working') return `<div class="border-b border-stone-100 px-5 py-4"><div class="py-5 flex flex-col items-center gap-3">
+      ${spinner('w-5 h-5 text-violet-500')}
+      <p class="text-xs text-violet-600 font-medium text-center">${today.phaseText}</p>
+      <div class="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden"><div class="h-full bg-violet-500 rounded-full transition-all duration-1000 ease-out" style="width:${today.progress}%"></div></div>
+      <div class="flex items-center gap-2 text-[10px] text-stone-400 num"><span>${Math.round(today.progress)}%</span><span>${today.elapsed}s elapsed</span></div>
+    </div></div>`;
+  if (v === 'done') return `<div class="border-b border-stone-100 px-5 py-4"><div class="space-y-3">
+      ${violetLabel('Item Replaced')}
+      <div class="bg-red-50/60 rounded-md px-3 py-2 text-[11px] border border-red-100"><p class="font-medium text-red-500 mb-0.5">Was:</p><p class="text-stone-700">${esc(today.old.title)}</p><p class="text-stone-400 text-[10px] mt-0.5">${esc(today.old.cluster)}</p></div>
+      <div class="bg-emerald-50/60 rounded-md px-3 py-2 text-[11px] border border-emerald-100"><p class="font-medium text-emerald-500 mb-0.5">Now:</p><p class="text-stone-700">${esc(it.title)}</p><p class="text-stone-400 text-[10px] mt-0.5">${esc(it.cluster)}</p></div>
+      <div class="flex items-center gap-2">
+        ${today.serverPrevious ? `<button data-action="t-undo" class="text-[10px] font-medium text-stone-700 hover:text-stone-900 underline">Undo replace</button>` : ''}
+        <button data-action="t-dismiss" class="text-[10px] text-stone-400 hover:text-stone-600">Dismiss</button>
+        <button data-action="t-again" class="text-[10px] text-violet-500 hover:text-violet-700">Replace again...</button>
+      </div>
+    </div></div>`;
+  // compose
+  return `<div class="border-b border-stone-100 px-5 py-4"><div class="space-y-3">
+      <div class="flex items-center justify-between">${violetLabel('Replace This Item')}<button data-action="t-cancel" class="text-[10px] text-stone-400 hover:text-stone-600">Cancel</button></div>
+      <div class="bg-stone-50 rounded-md px-3 py-2 text-[11px] text-stone-500"><span class="font-medium">Replacing:</span> ${esc(it.title)}</div>
+      <div><label class="text-[10px] text-stone-500 block mb-1">Why does this need replacing? <span class="text-red-400">*</span></label><textarea id="t-reason" rows="2" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-md bg-white text-stone-900 focus:outline-none resize-none" placeholder="e.g. Client already has this page, site crawl missed it">${esc(today.reason)}</textarea></div>
+      <div><label class="text-[10px] text-stone-500 block mb-1">Direction for replacement (optional)</label><textarea id="t-guidance" rows="2" class="w-full px-3 py-2 text-xs border border-stone-200 rounded-md bg-white text-stone-900 focus:outline-none resize-none" placeholder="e.g. Focus on pediatric dentistry instead">${esc(today.guidance)}</textarea></div>
+      <label class="flex items-center gap-2 text-[11px] text-stone-500 cursor-pointer"><input id="t-meta" type="checkbox" ${today.meta ? 'checked' : ''} class="w-3.5 h-3.5 rounded border-stone-300 text-stone-600"> Also regenerate the meta description (otherwise your current meta is kept)</label>
+      <button data-action="t-generate" ${today.reason.trim() ? '' : 'disabled'} class="w-full flex items-center justify-center gap-2 text-xs font-medium text-white bg-violet-600 px-3 py-2 rounded-md hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Generate Replacement</button>
+    </div></div>`;
+}
+// Mirrors the shipped ternary: regenerating -> loading; old && old.title !== item.title -> after view; else form.
+function todayView(it) {
+  if (today.view === 'idle') return 'idle';
+  if (today.view === 'working') return 'working';
+  if (today.old && today.old.title !== it.title) return 'done';
+  return 'compose';
+}
+
+function renderPanel() {
+  const it = sel(); const job = jobs[selectedId];
+  let inner;
+  if (tab === 'today') {
+    const titleValue = today.draftTitle ?? it.title;
+    inner = panelHeader(it, false) + `<div class="flex-1 overflow-y-auto scrollpanel">
+      ${lockBanner()}
+      <div class="sticky top-0 z-10 border-b border-stone-100 px-5 py-4 bg-white shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06)]">${serp(titleValue, it.meta)}</div>
+      ${renderFields(it, titleValue, false)}
+      ${strategyNotes(it, false)}
+      ${todaySection(it)}
+      ${commentsRow}${deleteRow()}
+    </div>`;
+  } else {
+    const active = job && job.status !== 'settled';
+    const showReplace = !readOnly && !active;
+    const locked = job && job.status === 'working';
+    inner = panelHeader(it, showReplace) + `<div class="flex-1 overflow-y-auto scrollpanel">
+      ${lockBanner()}
+      <div class="sticky top-0 z-10 border-b border-stone-100 px-5 py-4 bg-white shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06)]">${serp(it.title, it.meta)}</div>
+      ${active ? replaceCard(it, job) : ''}
+      ${renderFields(it, it.title, locked)}
+      ${strategyNotes(it, job && job.status === 'settled')}
+      ${commentsRow}${deleteRow()}
+    </div>`;
+  }
+  const toastHtml = toast ? `<div class="absolute bottom-4 right-4 z-20 bg-white border border-stone-200 rounded-md shadow-[0_1px_2px_rgba(0,0,0,0.06)] px-4 py-2.5 flex items-center gap-3 fade"><span class="text-xs text-stone-500">${esc(toast.text)}</span>${toast.undoable ? `<button class="text-xs font-medium text-emerald-700 px-2 py-0.5 rounded hover:bg-emerald-50">Undo</button>` : ''}</div>` : '';
+  document.getElementById('panel').innerHTML = `<div class="relative flex flex-col h-full border border-stone-200/60 rounded-md bg-white overflow-hidden">${inner}${toastHtml}</div>`;
+}
+
+function renderTabs() {
+  document.querySelectorAll('#tabs button').forEach(b => {
+    const on = b.dataset.tab === tab;
+    b.className = 'px-3 py-1 rounded text-xs font-semibold transition-colors ' + (on ? 'bg-white text-stone-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)]' : 'text-stone-500 hover:text-stone-700');
+  });
+}
+function render() { renderTabs(); document.getElementById('guide').innerHTML = guideHtml(); renderList(); renderPanel(); }
+
+// ---------- Behaviour: Proposal A/B ----------
+function startJob(id) {
+  const job = jobs[id];
+  job.status = 'working'; job.phase = 0; job.elapsed = 0;
+  const n = (tab === 'a' ? PHASES : PHASES_B).length;
+  const t0 = Date.now();
+  const timer = setInterval(() => {
+    const ms = Date.now() - t0;
+    job.elapsed = Math.floor(ms / 1000);
+    job.phase = Math.min(n - 1, Math.floor(ms / 680));
+    if (ms >= 3400) {
+      clearInterval(timer);
+      if (failNext) { failNext = false; document.getElementById('tgl-fail').checked = false; job.status = 'error'; }
+      else if (tab === 'a') { const it = items.find(i => i.id === id); job.previous = snapshot(it); applyCandidate(it, CANDIDATE_SETS[candidateSetIdx % 2][job.again ? 1 : 0], job.meta); job.status = 'done'; }
+      else { job.candidates = CANDIDATE_SETS[candidateSetIdx % 2]; candidateSetIdx++; job.usedIdx = null; job.status = 'pick'; }
+    }
+    render();
+  }, 250);
+  timers.push(timer);
+  render();
+}
+function handleAction(action, el) {
+  const it = sel(); const job = jobs[selectedId];
+  switch (action) {
+    case 'prev': { const i = items.findIndex(x => x.id === selectedId); if (i > 0) selectItem(items[i - 1].id); return; }
+    case 'next': { const i = items.findIndex(x => x.id === selectedId); if (i < items.length - 1) selectItem(items[i + 1].id); return; }
+    case 'open': jobs[selectedId] = { status: 'compose', reason: '', reasonOther: '', guidance: '', meta: false }; break;
+    case 'reason': job.reason = el.dataset.reason; break;
+    case 'cancel': delete jobs[selectedId]; break;
+    case 'generate': case 'retry': startJob(selectedId); return;
+    case 'pick': { const i = Number(el.dataset.i); if (!job.previous) job.previous = snapshot(it); restore(it, job.previous); applyCandidate(it, job.candidates[i], job.meta); job.usedIdx = i; job.status = 'done'; break; }
+    case 'more': startJob(selectedId); return;
+    case 'undo': restore(it, job.previous); delete jobs[selectedId]; showToast('Replacement undone', false); break;
+    case 'again': if (tab === 'a') { job.status = 'compose'; job.again = true; } else { job.status = 'pick'; } break;
+    case 'dismiss': job.status = 'settled'; break;
+    // ----- Today, as shipped -----
+    case 't-open': today.view = 'compose'; today.old = snapshot(it); today.reason = ''; today.guidance = ''; today.note = null; break;
+    case 't-cancel': today.view = 'idle'; today.note = null; break;
+    case 't-generate': startToday(it); return;
+    case 't-undo': restore(it, today.serverPrevious); today.view = 'idle'; today.old = null; today.serverPrevious = null; today.draftTitle = null; today.note = null; break;
+    case 't-dismiss': today.view = 'idle'; today.old = null; today.note = null; break;
+    case 't-again': today.old = snapshot(it); today.reason = ''; today.guidance = ''; today.note = null; break;
+  }
+  render();
+}
+function startToday(it) {
+  today.view = 'working'; today.progress = 0; today.elapsed = 0; today.phaseText = 'Analyzing calendar context...'; today.note = null;
+  const phases = [[0, 'Analyzing calendar context...'], [15, 'Reviewing topic assessment for gaps...'], [35, 'Selecting a new topic for this slot...'], [55, 'Generating title and framing...'], [75, 'Scoring priority from evidence...'], [90, 'Finalizing replacement...']];
+  const t0 = Date.now();
+  const timer = setInterval(() => {
+    const ms = Date.now() - t0;
+    today.elapsed = Math.floor(ms / 1000);
+    today.progress = Math.min(98, ms / 3400 * 100);
+    today.phaseText = phases.filter(p => p[0] <= today.progress).pop()[1];
+    if (ms >= 3400) {
+      clearInterval(timer);
+      const metaTicked = today.meta;
+      today.serverPrevious = snapshot(it);
+      applyCandidate(it, CANDIDATE_SETS[0][0], metaTicked);
+      if (metaTicked) {
+        // Shipped bug 2: meta changed -> the section's reset effect fires -> collapses to idle; fields do reload.
+        today.view = 'idle'; today.old = null; today.serverPrevious = null; today.draftTitle = null; today.note = 'meta-collapse';
+      } else {
+        // Shipped bug 1: meta unchanged -> draft hook does not reset -> title/angle inputs keep the old values.
+        today.view = 'done'; today.draftTitle = today.serverPrevious.title;
+      }
+    }
+    render();
+  }, 250);
+  timers.push(timer);
+  render();
+}
+function selectItem(id) {
+  if (id === selectedId) return;
+  if (tab === 'today' && today.view !== 'idle') {
+    // Shipped: the section resets on item switch; a running request is orphaned.
+    clearTimers(); today = { view: 'idle', reason: '', guidance: '', meta: false, old: null, draftTitle: null, serverPrevious: null, note: 'switched' };
+  } else if (tab === 'today') { today.note = null; today.draftTitle = null; }
+  selectedId = id; render();
+}
+
+// ---------- Wiring ----------
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-tab]'); if (t) { clearTimers(); tab = t.dataset.tab; resetAll(); return; }
+  const s = e.target.closest('[data-select]'); if (s) { selectItem(Number(s.dataset.select)); return; }
+  const a = e.target.closest('[data-action]'); if (a && !a.disabled) { handleAction(a.dataset.action, a); }
+});
+document.addEventListener('input', (e) => {
+  const id = e.target.id; const job = jobs[selectedId];
+  if (id === 'guidance' && job) job.guidance = e.target.value;
+  else if (id === 'reason-other' && job) { job.reasonOther = e.target.value; const g = document.querySelector('[data-action="generate"]'); if (g) g.disabled = !job.reasonOther.trim(); }
+  else if (id === 't-reason') { today.reason = e.target.value; const g = document.querySelector('[data-action="t-generate"]'); if (g) g.disabled = !today.reason.trim(); }
+  else if (id === 't-guidance') today.guidance = e.target.value;
+  else if (id === 'title-input' && tab === 'today') {
+    // Shipped autosave: 800ms debounce, then PATCH the whole draft, old title included.
+    today.draftTitle = e.target.value;
+    clearTimeout(today.saveTimer);
+    today.saveTimer = setTimeout(() => { const it = sel(); if (today.view === 'done' || today.old) { it.title = today.draftTitle; today.note = 'reverted'; } showToast('Saved', true); render(); }, 800);
+  }
+});
+document.addEventListener('change', (e) => {
+  if (e.target.id === 'meta-box' && jobs[selectedId]) jobs[selectedId].meta = e.target.checked;
+  if (e.target.id === 't-meta') today.meta = e.target.checked;
+  if (e.target.id === 'tgl-readonly') { readOnly = e.target.checked; render(); }
+  if (e.target.id === 'tgl-fail') failNext = e.target.checked;
+});
+document.getElementById('reset').addEventListener('click', () => { resetAll(); });
+resetAll();
+</script>
+</body>
+</html>
