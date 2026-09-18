@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light">
+<title>Kari Mann Dental Studio · Search Performance Review | S8E8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Lora:ital@1&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Montserrat', -apple-system, sans-serif; background: #fff; color: #1c1917; -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; }
+  a { color: #0f766e; text-decoration: underline; }
+
+  /* ---------- S8E8 header ---------- */
+  .s8-header { background: #0d0d0d; }
+  .s8-header .rainbow { height: 3px; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff); }
+  .s8-header .inner { max-width: 1152px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .s8-header img { height: 32px; width: auto; flex-shrink: 0; }
+  .s8-header .client { text-align: right; }
+  .s8-header .client b { display: block; font-size: 14px; font-weight: 600; color: #fff; }
+  .s8-header .client span { display: block; font-size: 12px; color: #78716c; margin-top: 2px; }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: 1152px; margin: 0 auto; padding: 32px 24px 64px; }
+  @media (max-width: 640px) { .container { padding: 24px 16px 48px; } }
+  .title-block { margin-bottom: 24px; max-width: 720px; }
+  .title-block h1 { font-size: 20px; font-weight: 700; color: #1c1917; line-height: 1.3; }
+  .title-block p { font-size: 14px; color: #78716c; margin-top: 4px; }
+  .prose { max-width: 720px; }
+  .prose p { font-size: 14px; line-height: 1.75; color: #44403c; margin-bottom: 14px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose ul { padding-left: 18px; margin-bottom: 14px; list-style: disc; }
+  .prose li { font-size: 14px; line-height: 1.7; color: #44403c; margin-bottom: 5px; }
+  .prose strong { font-weight: 600; color: #1c1917; }
+  .executive-summary { font-size: 15px; font-style: italic; font-family: 'Lora', Georgia, serif; color: #57534e; line-height: 1.8; max-width: 720px; margin-bottom: 8px; }
+  h2.sec { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; margin: 40px 0 12px; }
+  h3 { font-size: 14px; font-weight: 700; color: #1c1917; margin-bottom: 6px; }
+  .rule { border-top: 1px solid #e7e5e4; margin: 8px 0 0; }
+
+  /* ---------- Metric strip (matches the report tiles) ---------- */
+  .metric-groups { display: flex; border-radius: 8px; border: 1px solid #e7e5e4; overflow-x: auto; margin: 16px 0 8px; }
+  .metric-group { flex: 1; padding: 16px; min-width: 200px; }
+  .metric-group + .metric-group { border-left: 1px solid #e7e5e4; }
+  .metric-group .head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #f5f5f4; }
+  .metric-group .head .dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; }
+  .metric-group .head span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  .metric-tiles { display: flex; flex-direction: column; gap: 8px; }
+  .metric-tile { display: flex; align-items: center; justify-content: space-between; border-radius: 4px; padding: 10px 12px; background: #fafafa; border: 1px solid #f0f0f0; }
+  .metric-tile .lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+  .metric-tile .val { font-size: 18px; font-weight: 700; color: #1c1917; line-height: 1; }
+  .metric-tile .note { font-size: 10px; color: #a8a29e; text-align: right; max-width: 110px; line-height: 1.4; }
+  .metric-tile .dlt { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  .dlt.up { color: #047857; background: #f0fdf4; }
+  .dlt.down { color: #e11d48; background: #fff1f2; }
+
+  /* ---------- Claim cards ---------- */
+  .claims { display: flex; flex-direction: column; gap: 12px; margin: 12px 0 8px; }
+  .claim { border: 1px solid #e7e5e4; border-radius: 8px; display: grid; grid-template-columns: 260px 1fr; background: #fff; }
+  .claim .said { padding: 18px 20px; border-right: 1px solid #f5f5f4; background: #fafafa; border-radius: 8px 0 0 8px; }
+  .claim .lab { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #a8a29e; }
+  .claim .said .q { font-size: 17px; font-weight: 700; line-height: 1.3; color: #1c1917; margin-top: 6px; }
+  .claim .found { padding: 18px 20px; }
+  .claim .found .lab { color: #0369a1; }
+  .claim .found p { font-size: 14px; line-height: 1.7; color: #44403c; margin: 6px 0 8px; }
+  .claim .found p:last-child { margin-bottom: 0; }
+
+  /* ---------- Figures ---------- */
+  figure { border: 1px solid #e7e5e4; border-radius: 8px; padding: 16px 18px 12px; margin: 14px 0; background: #fff; }
+  .fig-title { font-size: 13px; font-weight: 700; color: #1c1917; }
+  .fig-sub { font-size: 12px; color: #78716c; margin: 2px 0 10px; }
+  figcaption { font-size: 12.5px; color: #57534e; margin-top: 10px; line-height: 1.6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: #57534e; margin-bottom: 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .legend i.line { height: 3px; width: 18px; border-radius: 2px; }
+  .chart { position: relative; overflow-x: auto; }
+  .chart svg { display: block; width: 100%; height: auto; font-family: inherit; }
+  .chart .tick { font-size: 11px; fill: #a8a29e; }
+  .chart .grid { stroke: #f5f5f4; stroke-width: 1; }
+  .chart .axis { stroke: #e7e5e4; stroke-width: 1; }
+  .chart .dlabel { font-size: 11px; font-weight: 600; fill: #44403c; }
+  .chart .marker { stroke: #57534e; stroke-width: 1; stroke-dasharray: 3 3; }
+  .chart .marker-text { font-size: 11px; font-weight: 600; fill: #57534e; }
+  .tip { position: absolute; pointer-events: none; background: #1c1917; color: #fff; font-size: 12px; padding: 7px 10px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); opacity: 0; transition: opacity .12s; z-index: 2; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
+  .tip b { font-weight: 600; }
+  .tip.show { opacity: 1; }
+  details.table { margin-top: 8px; font-size: 12px; }
+  details.table summary { cursor: pointer; color: #0f766e; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; font-variant-numeric: tabular-nums; font-size: 12px; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid #f5f5f4; color: #44403c; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 700; color: #a8a29e; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .table-wrap { overflow-x: auto; }
+
+  /* ---------- Map grids ---------- */
+  .grids { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 6px; }
+  .grid-card { border: 1px solid #e7e5e4; border-radius: 8px; padding: 16px 18px 14px; }
+  .grid-card .kw { font-size: 14px; font-weight: 700; color: #1c1917; }
+  .grid-card .kw small { font-weight: 500; color: #a8a29e; font-size: 12px; }
+  .grid-stats { display: flex; gap: 22px; margin: 8px 0 14px; }
+  .grid-stats div { font-size: 11px; color: #78716c; }
+  .grid-stats b { display: block; font-size: 18px; color: #1c1917; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
+  .heat { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; max-width: 340px; }
+  .heat span { aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; position: relative; }
+  .heat span.office::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #1c1917; }
+  .heat-note { font-size: 11.5px; color: #a8a29e; margin-top: 10px; }
+  .heat-key { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11.5px; color: #57534e; margin: 4px 0 14px; }
+  .heat-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .heat-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .scan-table { margin: 8px 0 16px; max-width: 860px; }
+
+  .callout { background: #fafafa; border: 1px solid #e7e5e4; border-radius: 8px; padding: 16px 20px; margin: 16px 0; max-width: 720px; }
+  .callout p { font-size: 14px; line-height: 1.7; color: #44403c; }
+
+  /* ---------- Plan / status ---------- */
+  .status { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 8px; }
+  .status .col { border: 1px solid #e7e5e4; border-radius: 8px; padding: 16px 18px; }
+  .status .col .head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f5f5f4; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+  .status .col .head .dot { width: 6px; height: 6px; border-radius: 99px; }
+  .status ul { list-style: none; padding: 0; }
+  .status li { font-size: 13.5px; line-height: 1.6; color: #44403c; padding: 6px 0; border-bottom: 1px solid #f5f5f4; }
+  .status li:last-child { border-bottom: 0; }
+  .status li b { font-weight: 600; color: #1c1917; }
+  .status li .when { font-size: 11px; color: #a8a29e; margin-left: 6px; white-space: nowrap; }
+  .plan { display: flex; flex-direction: column; gap: 10px; margin: 12px 0 8px; max-width: 860px; }
+  .plan div { border: 1px solid #e7e5e4; border-radius: 8px; padding: 14px 18px; }
+  .plan b { display: block; font-size: 14px; color: #1c1917; margin-bottom: 3px; }
+  .plan span { display: block; color: #44403c; font-size: 13.5px; line-height: 1.65; }
+
+  /* ---------- Methodology + footer ---------- */
+  .method { border-top: 1px solid #f5f5f4; padding-top: 12px; margin-top: 28px; max-width: 720px; }
+  .method .h { font-size: 11px; font-weight: 600; color: #44403c; margin-bottom: 8px; }
+  .method .src-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .method .src-row .dot { width: 6px; height: 6px; border-radius: 99px; margin-top: 6px; flex-shrink: 0; }
+  .method .src-row span { font-size: 11px; color: #a8a29e; line-height: 1.6; }
+  .method .src-row b { font-weight: 600; color: #57534e; }
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e7e5e4; text-align: center; }
+  .footer p { font-size: 12px; color: #a8a29e; }
+  .footer p + p { margin-top: 4px; }
+
+  @media (max-width: 720px) {
+    .claim { grid-template-columns: 1fr; }
+    .claim .said { border-right: 0; border-bottom: 1px solid #f5f5f4; border-radius: 8px 8px 0 0; }
+    .grids, .status { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+  @media print { .tip { display: none; } @page { margin: 1.2cm 1.5cm; } body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+
+<header class="s8-header">
+  <div class="rainbow"></div>
+  <div class="inner">
+    <img src="data:image/png;base64,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" alt="Studio Eighty Eight">
+    <div class="client"><b>Kari Mann Dental Studio</b><span>Search performance review · September 18, 2026</span></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="title-block">
+    <h1>Where the practice actually stands on Google</h1>
+    <p>What changed this year, what each number was measuring, and the numbers worth watching from here on. New website live May 29, 2026.</p>
+  </div>
+
+  <p class="executive-summary">We went back through every source we have: Google Business Profile, Search Console for both website addresses, Google Analytics, and six fresh scans of the mile around the office. Website traffic is genuinely lower than it was last fall. Most of that drop happened between January and April, before the new site went live, and nearly all of it is on two national blog articles rather than on the pages a Cape Coral patient would use. On the map, the practice is in the top 3 across most of the neighborhood, and nowhere near the position that was reported. The details are below, number by number.</p>
+
+  <h2 class="sec">The scoreboard, June through August 2026</h2>
+  <div class="metric-groups">
+    <div class="metric-group">
+      <div class="head"><span class="dot" style="background:#0369a1"></span><span style="color:#0369a1">Google Maps listing</span></div>
+      <div class="metric-tiles">
+        <div class="metric-tile"><div><div class="lbl" style="color:#6d28d9">Calls from the listing</div><div class="val">264</div></div><div class="note">all searchers</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#be123c">Clicks to the website</div><div class="val">454</div></div><div class="note">all searchers</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#0369a1">Rating and reviews</div><div class="val">5.0 · 892</div></div><div class="note">highest rating in the top group</div></div>
+      </div>
+    </div>
+    <div class="metric-group">
+      <div class="head"><span class="dot" style="background:#0e7490"></span><span style="color:#0e7490">Website visitors from Google search</span></div>
+      <div class="metric-tiles">
+        <div class="metric-tile"><div><div class="lbl" style="color:#7c3aed">Booking link clicks</div><div class="val">121</div></div><div class="note">new site only; old site did not track this</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#7c3aed">Click-to-call taps</div><div class="val">66</div></div><div class="note">new site only</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#7c3aed">Contact forms sent</div><div class="val">16</div></div><div class="note">new site only</div></div>
+      </div>
+    </div>
+    <div class="metric-group">
+      <div class="head"><span class="dot" style="background:#047857"></span><span style="color:#047857">Search Console, new address</span></div>
+      <div class="metric-tiles">
+        <div class="metric-tile"><div><div class="lbl" style="color:#047857">Clicks per month</div><div class="val">1,600 to 2,000</div></div><div class="note">June, July, August</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#92400e">Times shown in results</div><div class="val">1.05M</div></div><div class="note">June to August</div></div>
+        <div class="metric-tile"><div><div class="lbl" style="color:#047857">Average position</div><div class="val">8.5</div></div><div class="note">across every search the site appeared for</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="prose"><p>Counting every visitor, not only those arriving from Google search, the new site logged 256 booking clicks, 144 call taps, and 35 form submissions over the summer. The previous site was not set up to count any of these, so this is the first real baseline the practice has had. From here, each month can be compared honestly against the last.</p></div>
+
+  <h2 class="sec">Three numbers, and what they were really measuring</h2>
+  <div class="prose"><p>Each of these is a real thing someone saw. The question is what the tool behind it was counting.</p></div>
+  <div class="claims">
+
+    <div class="claim">
+      <div class="said"><div class="lab">What was seen</div><div class="q">"We went from #4 to #23 on Google Maps"</div></div>
+      <div class="found">
+        <div class="lab">What we found</div>
+        <p>A Maps position depends on where the phone is when the search happens. Google weights distance so heavily that the same search from the office, from a home in North Cape Coral, and from Fort Myers returns three different lists. A single check is a snapshot of one spot at one moment.</p>
+        <p>So we scanned a one mile grid of 65 points around the office for six different searches. Across all six, the listing appears at every point. For "dentist near me" and "local dentist" the average position is 4.4 and 4.5, and the practice is in the top 3 at more than 40% of the points. Nothing in any scan is near 23. The full grids are below.</p>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="said"><div class="lab">What was seen</div><div class="q">"Clicks fell from 4,000 to 5,000 a month to 100 to 200"</div></div>
+      <div class="found">
+        <div class="lab">What we found</div>
+        <p>Both halves of that sentence are true, and they come from two different Search Console properties. The old site lived at <strong>karimanndentalstudio.com</strong>. The new site lives at <strong>www.karimanndentalstudio.com</strong>, and Google keeps separate data for each address. The old property really did reach 4,400 to 5,200 clicks a month last fall, and it really does show 100 to 200 now, because it went dark the day the new site launched.</p>
+        <p>The new property tells the current story: 1,890 clicks in June, 2,013 in July, 1,603 in August. That is still well below last fall, and the traffic section below shows why.</p>
+      </div>
+    </div>
+
+    <div class="claim">
+      <div class="said"><div class="lab">What was seen</div><div class="q">"We no longer show up in ChatGPT"</div></div>
+      <div class="found">
+        <div class="lab">What we found</div>
+        <p>AI answers change with the exact wording of the question, with the location of the person asking, and from one day to the next, so a single check is not a trend. We are running a full AI visibility snapshot for the practice across ChatGPT, Google's AI Mode, and Perplexity, and will share it with you separately so there is a proper baseline to work from.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="sec">Where the practice shows up on the map</h2>
+  <div class="prose"><p>Each circle is one search run from that spot on September 18, 2026. The number is where Kari Mann Dental Studio appeared in Google Maps from there. The ringed circle is the office. Points are a quarter mile apart.</p></div>
+
+  <div class="grids">
+    <div class="grid-card">
+      <div class="kw">"dentist near me" <small>· Google Maps</small></div>
+      <div class="grid-stats"><div><b>4.4</b>average position</div><div><b>43%</b>of points in top 3</div><div><b>65 / 65</b>points found</div></div>
+      <div class="heat" data-grid="near"></div>
+      <div class="heat-note">Central 56 of the 65 scan points.</div>
+    </div>
+    <div class="grid-card">
+      <div class="kw">"dentist in cape coral fl" <small>· Google Maps</small></div>
+      <div class="grid-stats"><div><b>7.9</b>average position</div><div><b>11%</b>of points in top 3</div><div><b>65 / 65</b>points found</div></div>
+      <div class="heat" data-grid="cc"></div>
+      <div class="heat-note">Central 56 of the 65 scan points.</div>
+    </div>
+  </div>
+  <div class="heat-key">
+    <span><i style="background:#2F8F5B"></i>1 to 3</span>
+    <span><i style="background:#8FB13A"></i>4 to 6</span>
+    <span><i style="background:#E3B23C"></i>7 to 9</span>
+    <span><i style="background:#E07B39"></i>10 to 12</span>
+    <span><i style="background:#C94B3F"></i>13 and beyond</span>
+  </div>
+
+  <div class="prose"><p>The pattern is the same on every search: strongest right around the office, fading toward the edge of the mile. That fade is normal. Google's local results have been tightly tied to distance since a major update in late 2021, and every practice in Cape Coral has the same shape around its own address.</p></div>
+
+  <div class="table-wrap scan-table">
+    <table>
+      <thead><tr><th>Search</th><th>Avg position</th><th>Points in top 3</th><th>Found at</th><th>Rank among practices scanned</th></tr></thead>
+      <tbody>
+        <tr><td>dentist near me</td><td>4.4</td><td>43%</td><td>65 of 65</td><td>4th of 39</td></tr>
+        <tr><td>local dentist</td><td>4.5</td><td>42%</td><td>64 of 65</td><td>3rd of 45</td></tr>
+        <tr><td>dentist in cape coral</td><td>6.2</td><td>14%</td><td>65 of 65</td><td>7th of 41</td></tr>
+        <tr><td>dentist in cape coral fl</td><td>7.9</td><td>11%</td><td>65 of 65</td><td>8th of 29</td></tr>
+        <tr><td>cape coral dentist</td><td>8.3</td><td>8%</td><td>64 of 65</td><td>6th of 34</td></tr>
+        <tr><td>dentist cape coral</td><td>8.7</td><td>8%</td><td>65 of 65</td><td>6th of 33</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="prose">
+    <p>The searches with "Cape Coral" in them are where the practice sits further back, and there is a specific reason. Two of the practices ahead of you, Smile Cape Coral and Cape Dental Care, are on the same stretch of Del Prado and have "Cape Coral" in their business name. Google gives a measurable lift to words in the listing name itself. It is not something we would copy: adding words to a listing name breaks Google's rules and gets listings suspended. The service pages and content described below are how a practice competes on those searches legitimately.</p>
+    <p>One more thing the scans show: the practice has the strongest reputation of anyone in the top group. A 5.0 rating across 892 reviews. The listing that leads the "Cape Coral" searches has 1,201 reviews at 4.9.</p>
+  </div>
+
+  <div class="callout">
+    <h3>Why one search on one phone can say #23</h3>
+    <p>Three things stack up. Distance is now the single biggest factor in Maps, so results change block by block. Results are also shaped by the searcher's own history. And Google has shipped three broad core updates since December (December 11 to 29, March 27 to April 8, and May 21 to June 2), each one reshuffling results for a couple of weeks. The new site went live in the middle of that last rollout. A rank check taken during an update window will not match one taken a month earlier or later, which is why we measure the whole neighborhood at once and why calls, bookings, and clicks from the listing are the numbers we grade ourselves on.</p>
+  </div>
+
+  <h2 class="sec">Website traffic: what changed and what did not</h2>
+  <div class="prose"><p>Two charts. The first shows both Search Console properties together so the handoff on May 29 is visible. The second splits visits by what kind of page people landed on.</p></div>
+
+  <figure>
+    <div class="fig-title">Clicks from Google search, by website address</div>
+    <div class="fig-sub">Monthly clicks reported by Search Console. September shows the 1st through the 15th.</div>
+    <div class="legend"><span><i style="background:#a8a29e"></i>Old address (karimanndentalstudio.com)</span><span><i style="background:#047857"></i>New address (www.karimanndentalstudio.com)</span></div>
+    <div class="chart" id="chart-gsc"></div>
+    <figcaption>The old address peaked at 7,332 in August 2025 and was already down to 2,149 by April 2026, a month before the new site. Since launch the new address has run 1,600 to 2,000 a month.</figcaption>
+    <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-gsc"></table></div></details>
+  </figure>
+
+  <figure>
+    <div class="fig-title">Google search visits, by the kind of page they landed on</div>
+    <div class="fig-sub">Monthly organic sessions from Google Analytics, January 2025 through August 2026.</div>
+    <div class="legend"><span><i style="background:#0e7490"></i>Practice pages (home, services, team, contact)</span><span><i style="background:#b6dbe3"></i>Blog articles</span></div>
+    <div class="chart" id="chart-ga4"></div>
+    <figcaption>Visits to practice pages stepped down in January 2026 and have held steady since, including through the launch. The larger swings above them are blog readers.</figcaption>
+    <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-ga4"></table></div></details>
+  </figure>
+
+  <div class="prose">
+    <p><strong>Who those blog readers are.</strong> Two articles, one on when to stop using gauze after an extraction and one on tooth sensitivity after a crown, brought in more than 8 of every 10 search clicks over the last year. Readers came from every US state and from the UK, Canada, Australia, and India. They are useful to people and they make the site look active to Google, but they are not Cape Coral patients, and their ups and downs say nothing about whether the practice is getting found locally.</p>
+    <p><strong>What we watch instead.</strong> Visits to the practice pages, the ones a local patient would actually use. Those ran around 2,000 to 2,900 a month through 2025, dropped to about 800 to 1,100 between January and May 2026, and have stayed at roughly 900 a month since the new site went live. The drop is real and it predates the launch. It lines up with Google's December core update, and with Google's AI answers now sitting above the regular results on most health-related searches, which has cut clicks on informational searches sharply across the industry. The launch did not push it lower, which is what we look for in a migration.</p>
+    <p><strong>Google found the new site and shows it as often as the old one.</strong> The new address was shown in results 380,607 times in June, in line with the old site's strongest months. Indexing and redirects did their job.</p>
+  </div>
+
+  <figure>
+    <div class="fig-title">Calls placed from the Google Maps listing</div>
+    <div class="fig-sub">Monthly calls reported by Google Business Profile. January is left off because 2025 reporting starts mid-month.</div>
+    <div class="legend"><span><i class="line" style="background:#a8a29e"></i>2025</span><span><i class="line" style="background:#6d28d9"></i>2026</span></div>
+    <div class="chart" id="chart-gbp"></div>
+    <figcaption>Calls ran even with last year through spring and dipped over the summer. This is the number we are working to move.</figcaption>
+    <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-gbp"></table></div></details>
+  </figure>
+
+  <h2 class="sec">What has been done, and what is in motion</h2>
+  <div class="status">
+    <div class="col">
+      <div class="head"><span class="dot" style="background:#047857"></span><span style="color:#047857">Completed</span></div>
+      <ul>
+        <li><b>Google Business Profile reviewed and updated</b><span class="when">April, again in September</span><br>Listings reviewed twice, new photography added to the profile, and Facebook posts now flow to the profile automatically.</li>
+        <li><b>Post-launch site audit</b><span class="when">September 15</span><br>Redirects, indexing, and on-page checks after the migration.</li>
+        <li><b>Eleven Cape Coral service pages published</b><span class="when">September 15 to 16</span><br>All-on-X, All-on-4, TeethXPress implants, same-day crowns, sedation dentistry, fee-for-service dentistry, pediatric dentistry, gum contouring, gum grafting, frenectomy, and dental Botox, each written for Cape Coral.</li>
+        <li><b>Content calendar approved and first pieces live</b><span class="when">approved August 10, first two published September 18</span><br>A pillar page on overcoming dental anxiety and a blog on Pearl and Flossy, the therapy dogs.</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="head"><span class="dot" style="background:#0369a1"></span><span style="color:#0369a1">In progress</span></div>
+      <ul>
+        <li><b>Twenty-two more pieces in production</b><br>Written and scheduled through next summer: All-on-X candidacy and cost, same-day versus traditional crowns, after-hours emergency care in Cape Coral, choosing a dentist after 60, full mouth reconstruction, and more. Each one carries local signals in its title and body where it fits naturally.</li>
+        <li><b>The new pages need time to settle</b><br>Google typically takes several weeks to decide where new pages belong in its results, so the service pages published this week will not show their effect immediately. We will watch them from October on.</li>
+        <li><b>AI visibility snapshot</b><br>Being run now across ChatGPT, Google AI Mode, and Perplexity. Shared separately once complete.</li>
+        <li><b>Next scheduled SEO audit</b><span class="when">October</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="sec">Where the practice makes the biggest difference</h2>
+  <div class="prose"><p>Reviews are the one lever that sits entirely with the practice, and they are the second biggest factor in how Google ranks a listing after distance. Three things matter most.</p></div>
+  <div class="plan">
+    <div><b>Keep new reviews coming in every month</b><span>Google weighs recent reviews more than the lifetime total. A steady flow of new ones does more for the listing than the 892 already there, as strong as that number is.</span></div>
+    <div><b>Ask patients to write a sentence or two, not just stars</b><span>A written review carries more weight than a rating alone. When a patient mentions the treatment they had and the part of Cape Coral or nearby they came from, Google can show that sentence right under the listing when someone searches for the same thing. That is what turns a listing into a click.</span></div>
+    <div><b>Reply to every review, promptly</b><span>Responses signal an active, attentive practice to Google and to the next patient reading. Short and personal is enough.</span></div>
+  </div>
+
+  <div class="method">
+    <div class="h">About this data</div>
+    <div class="src-row"><span class="dot" style="background:#047857"></span><span><b>Google Search Console</b> · both website properties, May 7, 2025 through September 15, 2026. Google keeps separate data for karimanndentalstudio.com and www.karimanndentalstudio.com.</span></div>
+    <div class="src-row"><span class="dot" style="background:#0e7490"></span><span><b>Google Analytics 4</b> · organic search sessions and key events, January 2025 through August 2026. The old site did not track booking clicks, calls, or forms.</span></div>
+    <div class="src-row"><span class="dot" style="background:#0369a1"></span><span><b>Google Business Profile</b> · calls, website clicks, and reviews, January 2025 through August 2026.</span></div>
+    <div class="src-row"><span class="dot" style="background:#6d28d9"></span><span><b>Local Falcon</b> · six map scans, 9 by 9 grid, 1 mile radius, 65 points each, run September 18, 2026 at 3:38 PM.</span></div>
+  </div>
+
+  <div class="footer">
+    <p>Produced by Studio Eighty Eight's SEO Team · September 2026</p>
+    <p>Questions? Reach out to your Marketing Strategist.</p>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const fmt = (n) => n.toLocaleString('en-US');
+
+  // ---------- Heat grids: rows 2-8, columns 1-8 of the 9x9 scan ----------
+  const grids = {
+    near: [[6,5,4,3,3,3,3,4],[6,4,3,3,3,3,3,3],[5,4,3,2,2,2,3,3],[4,4,1,1,1,1,2,2],[5,5,2,3,3,1,1,3],[6,5,4,4,5,4,4,4],[9,9,7,5,6,4,4,4]],
+    cc:   [[13,11,8,7,7,7,7,8],[12,9,7,7,7,7,7,7],[11,7,7,6,2,6,7,7],[10,7,7,1,2,1,6,6],[10,9,8,2,2,2,6,7],[11,11,8,9,8,8,6,7],[12,11,9,10,10,9,9,9]]
+  };
+  const rankColor = (r) => r <= 3 ? '#2F8F5B' : r <= 6 ? '#8FB13A' : r <= 9 ? '#E3B23C' : r <= 12 ? '#E07B39' : '#C94B3F';
+  document.querySelectorAll('.heat').forEach((el) => {
+    grids[el.dataset.grid].forEach((row, ri) => row.forEach((r, ci) => {
+      const s = document.createElement('span');
+      s.textContent = r;
+      s.style.background = rankColor(r);
+      if (ri === 3 && ci === 4) { s.classList.add('office'); s.title = 'Office'; }
+      s.setAttribute('aria-label', 'Position ' + r);
+      el.appendChild(s);
+    }));
+  });
+
+  // ---------- SVG helpers ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+  const niceMax = (v) => { const p = Math.pow(10, Math.floor(Math.log10(v))); const f = v / p; const n = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10; return n * p; };
+  function tooltip(host) {
+    const t = document.createElement('div'); t.className = 'tip'; host.appendChild(t);
+    return { show(html, x, y) { t.innerHTML = html; t.style.left = x + 'px'; t.style.top = y + 'px'; t.classList.add('show'); }, hide() { t.classList.remove('show'); } };
+  }
+
+  function stackedColumns(hostId, labels, series, opts) {
+    const host = document.getElementById(hostId);
+    const W = 1080, H = 300, padL = 52, padR = 16, padT = 26, padB = 34;
+    const svg = mk('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': opts.aria }, host);
+    const totals = labels.map((_, i) => series.reduce((s, sr) => s + (sr.values[i] || 0), 0));
+    const yMax = niceMax(Math.max(...totals) * 1.08);
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const y = (v) => padT + plotH - (v / yMax) * plotH;
+    const band = plotW / labels.length;
+    const barW = Math.min(24, band * 0.62);
+    for (let i = 0; i <= 4; i++) {
+      const v = (yMax / 4) * i;
+      mk('line', { x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: i === 0 ? 'axis' : 'grid' }, svg);
+      mk('text', { x: padL - 8, y: y(v) + 4, 'text-anchor': 'end', class: 'tick' }, svg).textContent = fmt(v);
+    }
+    const tip = tooltip(host);
+    labels.forEach((lab, i) => {
+      const cx = padL + band * i + band / 2;
+      let acc = 0;
+      series.forEach((sr) => {
+        const v = sr.values[i] || 0; if (v <= 0) return;
+        const top = y(acc + v), bottom = y(acc);
+        const h = Math.max(0, bottom - top - (acc > 0 ? 2 : 0));
+        const r = mk('rect', { x: cx - barW / 2, y: top, width: barW, height: h, fill: sr.color }, svg);
+        if (opts.partial && opts.partial.has(i)) r.setAttribute('opacity', '0.45');
+        acc += v;
+      });
+      if (opts.labelTotals && opts.labelTotals.has(i)) mk('text', { x: cx, y: y(totals[i]) - 6, 'text-anchor': 'middle', class: 'dlabel' }, svg).textContent = fmt(totals[i]);
+      mk('text', { x: cx, y: H - padB + 18, 'text-anchor': 'middle', class: 'tick' }, svg).textContent = lab;
+      const hit = mk('rect', { x: padL + band * i, y: padT, width: band, height: plotH, fill: 'transparent' }, svg);
+      hit.addEventListener('mousemove', (e) => {
+        const rect = host.getBoundingClientRect();
+        const parts = series.map((sr) => sr.name + ': <b>' + fmt(sr.values[i] || 0) + '</b>');
+        tip.show('<b>' + opts.full[i] + '</b><br>' + parts.join('<br>') + '<br>Total: <b>' + fmt(totals[i]) + '</b>', e.clientX - rect.left, e.clientY - rect.top);
+      });
+      hit.addEventListener('mouseleave', tip.hide);
+    });
+    (opts.markers || []).forEach((m) => {
+      const x = padL + band * m.at;
+      mk('line', { x1: x, x2: x, y1: padT - 4, y2: padT + plotH, class: 'marker' }, svg);
+      mk('text', { x: x + 6, y: padT + 6, class: 'marker-text' }, svg).textContent = m.text;
+    });
+  }
+
+  function lines(hostId, labels, series, opts) {
+    const host = document.getElementById(hostId);
+    const W = 1080, H = 260, padL = 44, padR = 70, padT = 22, padB = 34;
+    const svg = mk('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': opts.aria }, host);
+    const all = series.flatMap((s) => s.values);
+    const yMax = niceMax(Math.max(...all) * 1.1);
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const y = (v) => padT + plotH - (v / yMax) * plotH;
+    const x = (i) => padL + (plotW / (labels.length - 1)) * i;
+    for (let i = 0; i <= 4; i++) {
+      const v = (yMax / 4) * i;
+      mk('line', { x1: padL, x2: W - padR, y1: y(v), y2: y(v), class: i === 0 ? 'axis' : 'grid' }, svg);
+      mk('text', { x: padL - 8, y: y(v) + 4, 'text-anchor': 'end', class: 'tick' }, svg).textContent = fmt(v);
+    }
+    labels.forEach((lab, i) => mk('text', { x: x(i), y: H - padB + 18, 'text-anchor': 'middle', class: 'tick' }, svg).textContent = lab);
+    series.forEach((sr) => {
+      const d = sr.values.map((v, i) => (i === 0 ? 'M' : 'L') + x(i) + ' ' + y(v)).join(' ');
+      mk('path', { d, fill: 'none', stroke: sr.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+      sr.values.forEach((v, i) => mk('circle', { cx: x(i), cy: y(v), r: 4.5, fill: sr.color, stroke: '#fff', 'stroke-width': 2 }, svg));
+      const last = sr.values.length - 1;
+      mk('text', { x: x(last) + 10, y: y(sr.values[last]) + 4, class: 'dlabel' }, svg).textContent = sr.name + ' · ' + fmt(sr.values[last]);
+    });
+    const tip = tooltip(host);
+    const band = plotW / (labels.length - 1);
+    labels.forEach((lab, i) => {
+      const hit = mk('rect', { x: x(i) - band / 2, y: padT, width: band, height: plotH, fill: 'transparent' }, svg);
+      hit.addEventListener('mousemove', (e) => {
+        const rect = host.getBoundingClientRect();
+        tip.show('<b>' + lab + '</b><br>' + series.map((s) => s.name + ': <b>' + fmt(s.values[i]) + '</b>').join('<br>'), e.clientX - rect.left, e.clientY - rect.top);
+      });
+      hit.addEventListener('mouseleave', tip.hide);
+    });
+  }
+
+  function table(id, head, rows) {
+    document.getElementById(id).innerHTML = '<thead><tr>' + head.map((h) => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>' +
+      rows.map((r) => '<tr>' + r.map((c, i) => '<td>' + (i === 0 ? c : fmt(c)) + '</td>').join('') + '</tr>').join('') + '</tbody>';
+  }
+
+  // ---------- Chart 1: Search Console clicks, two properties ----------
+  const gscLabels = ['Jun 25','Jul','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep 1-15'];
+  const gscFull = ['June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026','April 2026','May 2026','June 2026','July 2026','August 2026','September 1 to 15, 2026'];
+  const oldClicks = [3472,3760,7332,4631,5223,4414,4800,3891,3239,3026,2149,1848,164,137,153,63];
+  const newClicks = [0,0,0,0,0,0,0,0,0,0,0,35,1890,2013,1603,905];
+  stackedColumns('chart-gsc', gscLabels, [
+    { name: 'Old address', color: '#a8a29e', values: oldClicks },
+    { name: 'New address', color: '#047857', values: newClicks }
+  ], { full: gscFull, partial: new Set([15]), labelTotals: new Set([2, 10, 13]), markers: [{ at: 12, text: 'New site live May 29' }], aria: 'Monthly Google search clicks for the old and new website addresses, June 2025 to September 2026' });
+  table('table-gsc', ['Month', 'Old address', 'New address', 'Total'], gscFull.map((m, i) => [m, oldClicks[i], newClicks[i], oldClicks[i] + newClicks[i]]));
+
+  // ---------- Chart 2: GA4 organic sessions, practice pages vs blog ----------
+  const gaLabels = ['Jan 25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  const gaFull = ['January 2025','February 2025','March 2025','April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026','April 2026','May 2026','June 2026','July 2026','August 2026'];
+  const core = [1599,2981,2854,2192,1913,2372,2086,2093,2707,2427,2029,2120,907,776,1105,776,837,908,916,818];
+  const blog = [3133,3013,5036,3793,2829,3502,2896,6226,4894,4508,4022,4668,3166,2958,3002,1840,1572,2181,2181,1452];
+  stackedColumns('chart-ga4', gaLabels, [
+    { name: 'Practice pages', color: '#0e7490', values: core },
+    { name: 'Blog articles', color: '#b6dbe3', values: blog }
+  ], { full: gaFull, markers: [{ at: 17, text: 'New site live May 29' }], aria: 'Monthly Google search visits split between practice pages and blog articles, January 2025 to August 2026' });
+  table('table-ga4', ['Month', 'Practice pages', 'Blog articles', 'Total'], gaFull.map((m, i) => [m, core[i], blog[i], core[i] + blog[i]]));
+
+  // ---------- Chart 3: GBP calls, 2025 vs 2026 ----------
+  const gbpLabels = ['Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  const calls25 = [96,137,87,119,113,136,113];
+  const calls26 = [105,131,107,89,102,71,91];
+  lines('chart-gbp', gbpLabels, [
+    { name: '2025', color: '#a8a29e', values: calls25 },
+    { name: '2026', color: '#6d28d9', values: calls26 }
+  ], { aria: 'Monthly calls from the Google Maps listing, February to August, 2025 versus 2026' });
+  table('table-gbp', ['Month', '2025', '2026'], gbpLabels.map((m, i) => [m, calls25[i], calls26[i]]));
+})();
+</script>
+</body>
+</html>
