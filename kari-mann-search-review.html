@@ -140,9 +140,17 @@
   .conv-nums span { margin: 0 10px; color: #a8a29e; }
   .conv-rate { text-align: right; font-size: 12px; color: #57534e; }
   .conv-rate b { font-size: 20px; font-weight: 700; color: #7c3aed; margin-right: 4px; }
+  .peers { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .peer-row { display: grid; grid-template-columns: 220px 1fr 1fr; align-items: center; gap: 14px; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px; padding: 10px 14px; }
+  .peer-row.you { background: #f5f3ff; border-color: #ede9fe; }
+  .peer-lab { font-size: 12.5px; font-weight: 600; color: #1c1917; }
+  .peer-lab small { display: block; font-weight: 400; color: #a8a29e; font-size: 11px; }
+  .peer-num { font-size: 12px; color: #57534e; }
+  .peer-num b { font-size: 18px; font-weight: 700; color: #7c3aed; margin-right: 4px; }
+  .peer-num.local b { color: #0e7490; }
   @media (max-width: 720px) {
     .cities { grid-template-columns: 1fr; }
-    .geo-row, .conv-row { grid-template-columns: 1fr; gap: 6px; }
+    .geo-row, .conv-row, .peer-row { grid-template-columns: 1fr; gap: 6px; }
     .conv-rate { text-align: left; }
   }
 
@@ -201,7 +209,7 @@
     <p>What changed this year, what each number was measuring, and the numbers worth watching from here on. New website live May 29, 2026.</p>
   </div>
 
-  <p class="executive-summary">We went back through every source we have: Google Business Profile, Search Console for both website addresses, Google Analytics, and six fresh scans of the mile around the office. Website traffic is genuinely lower than it was last fall. Most of that drop happened between January and April, before the new site went live, and nearly all of it is on two national blog articles rather than on the pages a Cape Coral patient would use. On the map, the practice is in the top 3 across most of the neighborhood, and nowhere near the position that was reported. The details are below, number by number.</p>
+  <p class="executive-summary">We went back through every source we have: Google Business Profile, Search Console for both website addresses, Google Analytics, and six fresh scans of the mile around the office. Website traffic is genuinely lower than it was last fall. Most of that drop happened between January and April, before the new site went live, and nearly all of it is on two national blog articles rather than on the pages a Cape Coral patient would use. The clicks that fell were blog readers outside Florida, the same pattern on every dental site we manage. The visits that turn into patients held through the launch and are more local than at most practices we work with. On the map, the practice is in the top 3 across most of the neighborhood, and nowhere near the position that was reported. The details are below, number by number.</p>
 
   <h2 class="sec">The scoreboard, June through August 2026</h2>
   <div class="metric-groups">
@@ -381,8 +389,23 @@
     <figcaption>A visit that starts on a practice page is over a hundred times more likely to lead to a call, a booking click, or a form than a visit that starts on a blog article. Blog traffic can rise or fall by thousands without changing the number of patients who reach the front desk.</figcaption>
   </figure>
 
+  <figure>
+    <div class="fig-title">Five other practices we work with, same three months</div>
+    <div class="fig-sub">Blog article visits from search, June through August 2026: contact actions per 1,000 visits, and the share of readers who were in the practice's own state.</div>
+    <div class="peers">
+      <div class="peer-row"><div class="peer-lab">Practice A<small>South</small></div><div class="peer-num"><b>3</b> per 1,000 visits</div><div class="peer-num local"><b>5%</b> in state</div></div>
+      <div class="peer-row"><div class="peer-lab">Practice B<small>Midwest</small></div><div class="peer-num"><b>0</b> per 1,000 visits</div><div class="peer-num local"><b>2%</b> in state</div></div>
+      <div class="peer-row"><div class="peer-lab">Practice C<small>Midwest</small></div><div class="peer-num"><b>20</b> per 1,000 visits</div><div class="peer-num local"><b>5%</b> in state</div></div>
+      <div class="peer-row"><div class="peer-lab">Practice D<small>Midwest</small></div><div class="peer-num"><b>6</b> per 1,000 visits</div><div class="peer-num local"><b>2%</b> in state</div></div>
+      <div class="peer-row"><div class="peer-lab">Practice E<small>Southeast</small></div><div class="peer-num"><b>0</b> per 1,000 visits</div><div class="peer-num local"><b>1%</b> in state</div></div>
+      <div class="peer-row you"><div class="peer-lab">Kari Mann Dental Studio<small>Cape Coral, Florida</small></div><div class="peer-num"><b>1</b> per 1,000 visits</div><div class="peer-num local"><b>5%</b> in state</div></div>
+    </div>
+    <figcaption>This is not a Kari Mann problem. It is how blog traffic behaves on every dental site we manage, including practices whose phones are busy. Articles answer questions for people all over the country. The practice pages are what bring in patients, and on those you are already ahead: 68% of practice-page visitors were in Florida, against 31% to 54% for the practices above.</figcaption>
+  </figure>
+
   <div class="prose">
-    <p><strong>What we watch instead.</strong> Visits that start on the practice pages, the ones a local patient would actually use. Those ran around 1,500 to 2,200 a month through 2025, dropped to about 450 to 560 between January and May 2026, and have run 450 to 620 a month since the new site went live. The drop is real and it predates the launch. It lines up with Google's December core update, and with Google's AI answers now sitting above the regular results on most health-related searches, which has cut clicks on informational searches sharply across the industry. The launch did not push it lower, which is what we look for in a migration.</p>
+    <p><strong>What we watch instead, and where it stands.</strong> Visits that start on the practice pages, the ones a Cape Coral patient would actually use. Those ran around 1,500 to 2,200 a month through 2025, dropped to about 450 to 560 between January and May 2026, and have held at 450 to 620 a month since the new site went live. The drop is real, and it predates both the launch and our work. It lines up with Google's December core update, and with Google's AI answers now sitting above the regular results on most health-related searches. What matters for the migration is that the launch did not push it lower.</p>
+    <p><strong>Why the work is only now starting to count.</strong> Almost everything built to move that number is new. The eleven Cape Coral service pages went live on September 15 and 16. The content calendar you approved on August 10 has two pieces published as of September 18, with the rest scheduled through next summer. Google has not had time to rank any of it. The post-launch audit was completed September 15 and the next one is scheduled for October 2. The fair point to judge the new site is once those pages have had a few months in Google's index, and we will show you the same practice-page and call numbers then, on the same basis as this report.</p>
     <p><strong>Google found the new site and shows it as often as the old one.</strong> The new address was shown in results 380,607 times in June, in line with the old site's strongest months. Indexing and redirects did their job.</p>
   </div>
 
