@@ -114,6 +114,38 @@
   .heat-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
   .scan-table { margin: 8px 0 16px; max-width: 860px; }
 
+  /* ---------- Geography bars, city lists, conversion rows ---------- */
+  .geo-bars { display: flex; flex-direction: column; gap: 10px; margin: 6px 0 4px; }
+  .geo-row { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 14px; }
+  .geo-lab { font-size: 12.5px; font-weight: 600; color: #1c1917; }
+  .geo-lab small { display: block; font-weight: 400; color: #a8a29e; font-size: 11px; }
+  .geo-bar { display: flex; height: 28px; gap: 2px; }
+  .geo-bar span { display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 3px; min-width: 2px; }
+  .geo-bar em { font-style: normal; font-size: 11.5px; font-weight: 700; color: #fff; }
+  .geo-bar span[style*="#d6e8ec"] em { color: #1c1917; }
+  .cities { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cities figure { margin: 0; }
+  .citylist { list-style: none; margin-top: 6px; }
+  .citylist li { display: grid; grid-template-columns: 150px 1fr 56px; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #f5f5f4; font-size: 12.5px; }
+  .citylist li:last-child { border-bottom: 0; }
+  .citylist .cn { color: #44403c; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .citylist .cb { height: 10px; background: #f5f5f4; border-radius: 2px; overflow: hidden; }
+  .citylist .cb i { display: block; height: 100%; border-radius: 2px; }
+  .citylist .cv { text-align: right; font-variant-numeric: tabular-nums; color: #1c1917; font-weight: 600; }
+  .conv { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .conv-row { display: grid; grid-template-columns: 150px 1fr 170px; align-items: center; gap: 14px; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px; padding: 12px 14px; }
+  .conv-lab { font-size: 12.5px; font-weight: 600; color: #1c1917; }
+  .conv-nums { font-size: 13px; color: #57534e; }
+  .conv-nums b { font-size: 16px; font-weight: 700; color: #1c1917; }
+  .conv-nums span { margin: 0 10px; color: #a8a29e; }
+  .conv-rate { text-align: right; font-size: 12px; color: #57534e; }
+  .conv-rate b { font-size: 20px; font-weight: 700; color: #7c3aed; margin-right: 4px; }
+  @media (max-width: 720px) {
+    .cities { grid-template-columns: 1fr; }
+    .geo-row, .conv-row { grid-template-columns: 1fr; gap: 6px; }
+    .conv-rate { text-align: left; }
+  }
+
   .callout { background: #fafafa; border: 1px solid #e7e5e4; border-radius: 8px; padding: 16px 20px; margin: 16px 0; max-width: 720px; }
   .callout p { font-size: 14px; line-height: 1.7; color: #44403c; }
 
@@ -297,16 +329,60 @@
 
   <figure>
     <div class="fig-title">Google search visits, by the kind of page they landed on</div>
-    <div class="fig-sub">Monthly organic sessions from Google Analytics, January 2025 through August 2026.</div>
+    <div class="fig-sub">Monthly organic search sessions from Google Analytics, grouped by the page each visit started on. January 2025 through August 2026.</div>
     <div class="legend"><span><i style="background:#0e7490"></i>Practice pages (home, services, team, contact)</span><span><i style="background:#b6dbe3"></i>Blog articles</span></div>
     <div class="chart" id="chart-ga4"></div>
-    <figcaption>Visits to practice pages stepped down in January 2026 and have held steady since, including through the launch. The larger swings above them are blog readers.</figcaption>
+    <figcaption>Visits that started on a practice page stepped down in January 2026 and have held steady since, including through the launch. The larger swings above them are blog readers.</figcaption>
     <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-ga4"></table></div></details>
   </figure>
 
+  <h2 class="sec">Who the blog readers were</h2>
+  <div class="prose"><p>Two articles, one on when to stop using gauze after an extraction and one on tooth sensitivity after a crown, brought in more than 8 of every 10 search clicks over the last year. They are useful to people and they make the site look active to Google. They are not Cape Coral patients. Three views of the same Google Analytics data, June 2025 through August 2026, make the point.</p></div>
+
+  <figure>
+    <div class="fig-title">Where visitors were when they searched</div>
+    <div class="fig-sub">Organic search sessions by the visitor's location, grouped by the kind of page the visit started on. June 2025 through August 2026.</div>
+    <div class="legend"><span><i style="background:#0e7490"></i>Florida</span><span><i style="background:#7fb8c6"></i>Other US states</span><span><i style="background:#d6e8ec"></i>Outside the US</span></div>
+    <div class="geo-bars">
+      <div class="geo-row"><div class="geo-lab">Practice pages<small>16,997 visits</small></div><div class="geo-bar"><span style="width:68.2%;background:#0e7490"><em>68%</em></span><span style="width:26.8%;background:#7fb8c6"><em>27%</em></span><span style="width:5%;background:#d6e8ec"></span></div></div>
+      <div class="geo-row"><div class="geo-lab">Blog articles<small>54,500 visits</small></div><div class="geo-bar"><span style="width:5%;background:#0e7490"></span><span style="width:81.6%;background:#7fb8c6"><em>82%</em></span><span style="width:13.5%;background:#d6e8ec"><em>13%</em></span></div></div>
+    </div>
+    <figcaption>Only 5% of blog readers were in Florida at all, let alone in Cape Coral. Visits that started on a practice page were 68% Florida.</figcaption>
+  </figure>
+
+  <div class="cities">
+    <figure>
+      <div class="fig-title">Top cities, practice-page visits</div>
+      <div class="fig-sub">Organic search sessions, June 2025 through August 2026.</div>
+      <ol class="citylist" data-list="practice"></ol>
+    </figure>
+    <figure>
+      <div class="fig-title">Top cities, blog-article visits</div>
+      <div class="fig-sub">Organic search sessions, June 2025 through August 2026.</div>
+      <ol class="citylist" data-list="blog"></ol>
+    </figure>
+  </div>
+
+  <figure>
+    <div class="fig-title">What each kind of visit turned into, June through August 2026</div>
+    <div class="fig-sub">Booking link clicks, click-to-call taps, and contact form submissions from organic search visits on the new site.</div>
+    <div class="conv">
+      <div class="conv-row">
+        <div class="conv-lab">Practice pages</div>
+        <div class="conv-nums"><b>1,579</b> visits<span>&rarr;</span><b>197</b> contact actions</div>
+        <div class="conv-rate"><b>125</b> per 1,000 visits</div>
+      </div>
+      <div class="conv-row">
+        <div class="conv-lab">Blog articles</div>
+        <div class="conv-nums"><b>5,819</b> visits<span>&rarr;</span><b>6</b> contact actions</div>
+        <div class="conv-rate"><b>1</b> per 1,000 visits</div>
+      </div>
+    </div>
+    <figcaption>A visit that starts on a practice page is over a hundred times more likely to lead to a call, a booking click, or a form than a visit that starts on a blog article. Blog traffic can rise or fall by thousands without changing the number of patients who reach the front desk.</figcaption>
+  </figure>
+
   <div class="prose">
-    <p><strong>Who those blog readers are.</strong> Two articles, one on when to stop using gauze after an extraction and one on tooth sensitivity after a crown, brought in more than 8 of every 10 search clicks over the last year. Readers came from every US state and from the UK, Canada, Australia, and India. They are useful to people and they make the site look active to Google, but they are not Cape Coral patients, and their ups and downs say nothing about whether the practice is getting found locally.</p>
-    <p><strong>What we watch instead.</strong> Visits to the practice pages, the ones a local patient would actually use. Those ran around 2,000 to 2,900 a month through 2025, dropped to about 800 to 1,100 between January and May 2026, and have stayed at roughly 900 a month since the new site went live. The drop is real and it predates the launch. It lines up with Google's December core update, and with Google's AI answers now sitting above the regular results on most health-related searches, which has cut clicks on informational searches sharply across the industry. The launch did not push it lower, which is what we look for in a migration.</p>
+    <p><strong>What we watch instead.</strong> Visits that start on the practice pages, the ones a local patient would actually use. Those ran around 1,500 to 2,200 a month through 2025, dropped to about 450 to 560 between January and May 2026, and have run 450 to 620 a month since the new site went live. The drop is real and it predates the launch. It lines up with Google's December core update, and with Google's AI answers now sitting above the regular results on most health-related searches, which has cut clicks on informational searches sharply across the industry. The launch did not push it lower, which is what we look for in a migration.</p>
     <p><strong>Google found the new site and shows it as often as the old one.</strong> The new address was shown in results 380,607 times in June, in line with the old site's strongest months. Indexing and redirects did their job.</p>
   </div>
 
@@ -352,7 +428,7 @@
   <div class="method">
     <div class="h">About this data</div>
     <div class="src-row"><span class="dot" style="background:#047857"></span><span><b>Google Search Console</b> · both website properties, May 7, 2025 through September 15, 2026. Google keeps separate data for karimanndentalstudio.com and www.karimanndentalstudio.com.</span></div>
-    <div class="src-row"><span class="dot" style="background:#0e7490"></span><span><b>Google Analytics 4</b> · organic search sessions and key events, January 2025 through August 2026. The old site did not track booking clicks, calls, or forms.</span></div>
+    <div class="src-row"><span class="dot" style="background:#0e7490"></span><span><b>Google Analytics 4</b> · organic search sessions and key events, January 2025 through August 2026, grouped by landing page. Every figure here can be reproduced in Google Analytics under Reports, Engagement, Landing page, filtered to the Organic Search channel, with Region or City added as a secondary dimension. The old site did not track booking clicks, calls, or forms.</span></div>
     <div class="src-row"><span class="dot" style="background:#0369a1"></span><span><b>Google Business Profile</b> · calls, website clicks, and reviews, January 2025 through August 2026.</span></div>
     <div class="src-row"><span class="dot" style="background:#6d28d9"></span><span><b>Local Falcon</b> · six map scans, 9 by 9 grid, 1 mile radius, 65 points each, run September 18, 2026 at 3:38 PM.</span></div>
   </div>
@@ -491,8 +567,24 @@
   // ---------- Chart 2: GA4 organic sessions, practice pages vs blog ----------
   const gaLabels = ['Jan 25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar','Apr','May','Jun','Jul','Aug'];
   const gaFull = ['January 2025','February 2025','March 2025','April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026','April 2026','May 2026','June 2026','July 2026','August 2026'];
-  const core = [1599,2981,2854,2192,1913,2372,2086,2093,2707,2427,2029,2120,907,776,1105,776,837,908,916,818];
-  const blog = [3133,3013,5036,3793,2829,3502,2896,6226,4894,4508,4022,4668,3166,2958,3002,1840,1572,2181,2181,1452];
+  const core = [1123,2231,1749,1674,1570,1471,1736,1675,1747,1953,1611,1618,542,485,558,467,454,449,623,507];
+  const blog = [3369,2970,4255,4140,3206,3042,3124,6409,4267,4824,4167,4398,3336,2951,2732,1963,1682,1951,2321,1547];
+
+  // ---------- City lists ----------
+  const cityData = {
+    practice: [['Cape Coral, FL',4576],['Fort Myers, FL',1057],['Miami, FL',816],['North Fort Myers, FL',536],['Tampa, FL',399],['Lehigh Acres, FL',394],['Orlando, FL',297],['Villas, FL',194],['Cypress Lake, FL',194],['New York, NY',147]],
+    blog: [['Los Angeles, CA',1271],['New York, NY',1155],['Chicago, IL',674],['United Kingdom',618],['Dallas, TX',378],['Houston, TX',355],['Phoenix, AZ',342],['Seattle, WA',339],['Denver, CO',281],['Philadelphia, PA',268]]
+  };
+  document.querySelectorAll('.citylist').forEach((ol) => {
+    const rows = cityData[ol.dataset.list]; const max = rows[0][1];
+    const local = ol.dataset.list === 'practice';
+    rows.forEach(([name, n]) => {
+      const li = document.createElement('li');
+      const fl = /, FL$/.test(name);
+      li.innerHTML = '<span class="cn">' + name + '</span><span class="cb"><i style="width:' + (100 * n / max).toFixed(1) + '%;background:' + (fl ? '#0e7490' : '#7fb8c6') + '"></i></span><span class="cv">' + fmt(n) + '</span>';
+      ol.appendChild(li);
+    });
+  });
   stackedColumns('chart-ga4', gaLabels, [
     { name: 'Practice pages', color: '#0e7490', values: core },
     { name: 'Blog articles', color: '#b6dbe3', values: blog }
