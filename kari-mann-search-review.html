@@ -86,6 +86,18 @@
   .chart .dlabel { font-size: 11px; font-weight: 600; fill: #44403c; }
   .chart .marker { stroke: #57534e; stroke-width: 1; stroke-dasharray: 3 3; }
   .chart .marker-text { font-size: 11px; font-weight: 600; fill: #57534e; }
+  .chart .marker.update { stroke: #7c3aed; }
+  .chart .marker-text.update { fill: #7c3aed; }
+  /* Edit mode: open the page with ?edit=1 to change any text in place, then download the updated file. */
+  body.editing [contenteditable="true"] { outline: 1px dashed #c4b5fd; outline-offset: 2px; border-radius: 2px; }
+  body.editing [contenteditable="true"]:hover { background: #f5f3ff; }
+  body.editing [contenteditable="true"]:focus { outline: 2px solid #7c3aed; background: #fff; }
+  .editbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: 14px; padding: 12px 20px; background: #0d0d0d; color: #fff; font-family: 'Montserrat', sans-serif; font-size: 13px; box-shadow: 0 -1px 2px rgba(0,0,0,0.06); }
+  .editbar b { font-weight: 600; }
+  .editbar span { color: #d6d3d1; }
+  .editbar button { margin-left: auto; padding: 8px 14px; border: 0; border-radius: 4px; background: #fff; color: #0d0d0d; font: inherit; font-weight: 600; cursor: pointer; }
+  .editbar button:hover { background: #f5f5f4; }
+  body.editing { padding-bottom: 64px; }
   .tip { position: absolute; pointer-events: none; background: #1c1917; color: #fff; font-size: 12px; padding: 7px 10px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); opacity: 0; transition: opacity .12s; z-index: 2; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
   .tip b { font-weight: 600; }
   .tip.show { opacity: 1; }
@@ -256,7 +268,7 @@
       <div class="found">
         <div class="lab">What we found</div>
         <p>Both halves of that sentence are true, because Google counts the old website address and the new one separately. The old site lived at <strong>karimanndentalstudio.com</strong>. The new site lives at <strong>www.karimanndentalstudio.com</strong>. The old address really did reach 4,400 to 5,200 clicks a month last fall, and it really does show 100 to 200 now, because it went dark the day the new site launched.</p>
-        <p>The new address tells the current story: 1,890 clicks from Google search in June, 2,013 in July, 1,603 in August. That is still well below last fall, and the section on visits from Google search shows why.</p>
+        <p>The new address tells the current story: 1,890 clicks from Google search in June, 2,013 in July, 1,603 in August.</p>
       </div>
     </div>
 
@@ -271,7 +283,10 @@
   </div>
 
   <h2 class="sec">Where the practice shows up on the map</h2>
-  <div class="prose"><p>Each circle is one search run from that spot on September 18, 2026. The number is where Kari Mann Dental Studio appeared in Google Maps from there. The ringed circle is the office. Points are a quarter mile apart.</p></div>
+  <div class="prose">
+    <p><strong>How Google decides who shows up on the map.</strong> Google ranks map listings on three things: how well the listing matches what was typed, how far the person searching is from the practice, and how much Google trusts the business, which comes mostly from reviews and from how the practice is described across the web. Since a change in late 2021, distance carries the most weight of the three. The same search run from the office, from a home in North Cape Coral, and from Fort Myers returns three different lists. That is why one check on one phone can say #4 one day and #23 another, and why we measure the whole neighborhood at once instead.</p>
+    <p>Each circle is one search run from that spot on September 18, 2026. The number is where Kari Mann Dental Studio appeared in Google Maps from there. The ringed circle is the office. Points are a quarter mile apart.</p>
+  </div>
 
   <div class="grids">
     <div class="grid-card">
@@ -295,7 +310,7 @@
     <span><i style="background:#C94B3F"></i>13 and beyond</span>
   </div>
 
-  <div class="prose"><p>The pattern is the same on every search: strongest right around the office, fading toward the edge of the mile. That fade is normal. Google's local results have been tightly tied to distance since a major update in late 2021, and every practice in Cape Coral has the same shape around its own address.</p></div>
+  <div class="prose"><p>The pattern is the same on every search: strongest right around the office, fading toward the edge of the mile. That fade is normal, and every practice in Cape Coral has the same shape around its own address.</p></div>
 
   <div class="table-wrap scan-table">
     <table>
@@ -312,19 +327,18 @@
   </div>
 
   <div class="prose">
-    <p>The searches with "Cape Coral" in them are where the practice sits further back, and there is a specific reason. Two of the practices ahead of you, Smile Cape Coral and Cape Dental Care, are on the same stretch of Del Prado and have "Cape Coral" in their business name. Google gives a measurable lift to words in the listing name itself. It is not something we would copy: adding words to a listing name breaks Google's rules and gets listings suspended. The service pages and content described below are how a practice competes on those searches legitimately.</p>
-    <p>One more thing the scans show: the practice has the strongest reputation of anyone in the top group. A 5.0 rating across 892 reviews. The listing that leads the "Cape Coral" searches has 1,201 reviews at 4.9.</p>
+    <p>The searches with "Cape Coral" in them are where the practice sits further back, and there is a specific reason. Two of the practices ahead of you, Smile Cape Coral and Cape Dental Care, are on the same stretch of Del Prado and have "Cape Coral" in their business name. Google gives a measurable lift to words in the listing name itself. That is allowed only when the words are the business's real, public-facing name. Adding them to a listing when they are not is against Google's rules and gets listings suspended, and we would not suggest renaming the practice for the sake of a map ranking either. What turns a listing into a patient is trust, and on that the practice leads: a 5.0 rating across 892 reviews, the strongest reputation of anyone in the top group. The listing that leads the "Cape Coral" searches has 1,201 reviews at 4.9. The service pages and content described below are how a practice competes on those searches legitimately.</p>
   </div>
 
   <h2 class="sec">Visits from Google search: what changed and what did not</h2>
-  <div class="prose"><p>The chart shows clicks from Google search to the old address and to the new one, so the handoff on May 29 is visible.</p></div>
+  <div class="prose"><p>The chart shows clicks from Google search to the old website address and to the new one, with Google's three broad ranking updates marked. Clicks peaked in August 2025 and were sliding through the fall. They dropped further after the December update and again after the March update. By the time the new site went live on May 29, they were already at their low. The site launched into a decline that Google's changes had set in motion months earlier.</p></div>
 
   <figure>
     <div class="fig-title">Clicks from Google search, by website address</div>
     <div class="fig-sub">Monthly clicks from Google search results, as reported by Google Search Console. September shows the 1st through the 15th.</div>
     <div class="legend"><span><i style="background:#a8a29e"></i>Old address (karimanndentalstudio.com)</span><span><i style="background:#047857"></i>New address (www.karimanndentalstudio.com)</span></div>
     <div class="chart" id="chart-gsc"></div>
-    <figcaption>The old address peaked at 7,332 in August 2025 and was already down to 2,149 by April 2026, a month before the new site. Since launch the new address has run 1,600 to 2,000 a month.</figcaption>
+    <figcaption>The old address peaked at 7,332 in August 2025. It was 4,800 in December, 3,891 in January after the December update, and 2,149 in April after the March update, a month before the new site. Since launch the new address has run 1,600 to 2,000 a month.</figcaption>
     <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-gsc"></table></div></details>
   </figure>
 
@@ -461,8 +475,8 @@
     });
     (opts.markers || []).forEach((m) => {
       const x = padL + band * m.at;
-      mk('line', { x1: x, x2: x, y1: padT - 4, y2: padT + plotH, class: 'marker' }, svg);
-      mk('text', { x: x + 6, y: padT + 6, class: 'marker-text' }, svg).textContent = m.text;
+      mk('line', { x1: x, x2: x, y1: padT - 4 + (m.dy || 0), y2: padT + plotH, class: 'marker' + (m.cls ? ' ' + m.cls : '') }, svg);
+      mk('text', { x: x + 6, y: padT + 6 + (m.dy || 0), class: 'marker-text' + (m.cls ? ' ' + m.cls : '') }, svg).textContent = m.text;
     });
   }
 
@@ -513,9 +527,40 @@
   stackedColumns('chart-gsc', gscLabels, [
     { name: 'Old address', color: '#a8a29e', values: oldClicks },
     { name: 'New address', color: '#047857', values: newClicks }
-  ], { full: gscFull, partial: new Set([15]), labelTotals: new Set([2, 10, 13]), markers: [{ at: 12, text: 'New site live May 29' }], aria: 'Monthly Google search clicks for the old and new website addresses, June 2025 to September 2026' });
+  ], { full: gscFull, partial: new Set([15]), labelTotals: new Set([2, 10, 13]), markers: [
+    { at: 6 + 11 / 31, text: 'Google update Dec 11 to 29', cls: 'update' },
+    { at: 9 + 27 / 31, text: 'Google update Mar 27 to Apr 8', cls: 'update', dy: 16 },
+    { at: 11 + 21 / 31, text: 'Google update May 21 to Jun 2', cls: 'update', dy: 32 },
+    { at: 11 + 29 / 31, text: 'New site live May 29', dy: 48 }
+  ], aria: 'Monthly Google search clicks for the old and new website addresses, June 2025 to September 2026' });
   table('table-gsc', ['Month', 'Old address', 'New address', 'Total'], gscFull.map((m, i) => [m, oldClicks[i], newClicks[i], oldClicks[i] + newClicks[i]]));
 
+})();
+</script>
+<script>
+// Edit mode. Open the page with ?edit=1, click any text to change it, then download the updated file
+// and upload it to the s8e8-mockups repo on GitHub (Add file > Upload files). Pages redeploys in about a minute.
+(function () {
+  if (!/[?&]edit=1/.test(location.search)) return;
+  const EDITABLE = '.container h1, .container h2, .container h3, .container p, .container figcaption, .container li, .container .fig-title, .container .fig-sub, .container .lbl, .container .val, .container .note, .container .plan > div, .container .said > div, .container th, .container .scan-table td, .container .geo-lab, .container .legend span, .container .kw, .container .src-row > span:last-child, .container .footer p, header .client';
+  document.body.classList.add('editing');
+  document.querySelectorAll(EDITABLE).forEach((el) => { if (!el.closest('.chart') && !el.closest('.heat')) el.setAttribute('contenteditable', 'true'); });
+  const bar = document.createElement('div');
+  bar.className = 'editbar';
+  bar.innerHTML = '<b>Editing</b><span>Click any text on the page to change it. When you are done, download the page and upload it to the s8e8-mockups repo on GitHub, or send the file to Claude to push.</span><button type="button">Download updated page</button>';
+  document.body.appendChild(bar);
+  bar.querySelector('button').addEventListener('click', () => {
+    const clone = document.documentElement.cloneNode(true);
+    clone.querySelector('body').classList.remove('editing');
+    clone.querySelectorAll('[contenteditable]').forEach((el) => el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('.editbar').forEach((el) => el.remove());
+    clone.querySelectorAll('.chart, .heat, details.table table').forEach((el) => { el.innerHTML = ''; });
+    const html = '<!DOCTYPE html>\n' + clone.outerHTML + '\n';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+    a.download = 'kari-mann-search-review.html';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
 })();
 </script>
 </body>
