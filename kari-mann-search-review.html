@@ -346,14 +346,12 @@
   <div class="prose"><p>The clicks that fell came primarily from two articles, one on <b>when to stop using gauze after an extraction</b> and one on <b>tooth sensitivity after a crown</b>. Together they brought in more than 8 of every 10 search clicks, but from readers all over the country, rather than being specifically focused on local visibility. Their search visits started falling in January, months before the new site, when Google changed how it ranks health related articles and began putting its own AI answer above the results for questions like these (we call them "research" specific searches). Both articles are still live and still bring readers, just fewer.</p></div>
 
   <figure>
-    <div class="fig-title">Where visitors were when they searched</div>
-    <div class="fig-sub">Visits from Google search by where the visitor was, June 2025 through August 2026. Practice pages are the home, services, team, and contact pages, the ones a Cape Coral patient would actually take a conversion-action on.</div>
-    <div class="legend"><span><i style="background:#0e7490"></i>Florida</span><span><i style="background:#7fb8c6"></i>Other US states</span><span><i style="background:#d6e8ec"></i>Outside the US</span></div>
-    <div class="geo-bars">
-      <div class="geo-row"><div class="geo-lab">Practice pages<small>16,997 visits</small></div><div class="geo-bar"><span style="width:68.2%;background:#0e7490"><em>68%</em></span><span style="width:26.8%;background:#7fb8c6"><em>27%</em></span><span style="width:5%;background:#d6e8ec"></span></div></div>
-      <div class="geo-row"><div class="geo-lab">Blog articles<small>54,500 visits</small></div><div class="geo-bar"><span style="width:5%;background:#0e7490"></span><span style="width:81.6%;background:#7fb8c6"><em>82%</em></span><span style="width:13.5%;background:#d6e8ec"><em>13%</em></span></div></div>
-    </div>
-    <figcaption>Only 5% of blog readers were in Florida at all, let alone in Cape Coral. Visits that started on a practice page were 68% Florida.</figcaption>
+    <div class="fig-title">Monthly visits from Google search to the two articles</div>
+    <div class="fig-sub">Visits that started on each article, from Google search, January 2025 through August 2026, across the old and new website addresses. Google's ranking updates are marked.</div>
+    <div class="legend"><span><i class="line" style="background:#0e7490"></i>Gauze after an extraction</span><span><i class="line" style="background:#7fb8c6"></i>Sensitivity after a crown</span></div>
+    <div class="chart" id="chart-articles"></div>
+    <figcaption>The gauze article peaked at 4,937 visits in August 2025 and was down to 2,026 in January after the December update, then 719 by April after the March update. The crown article held near 1,000 to 1,500 a month until June, then eased. Over the fifteen months, only 5% of the two articles' readers were in Florida at all, let alone in Cape Coral.</figcaption>
+    <details class="table"><summary>Show the numbers</summary><div class="table-wrap"><table id="table-articles"></table></div></details>
   </figure>
 
   <div class="prose">
@@ -486,7 +484,7 @@
     const W = 1080, H = 260, padL = 44, padR = 70, padT = 22, padB = 34;
     const svg = mk('svg', { viewBox: '0 0 ' + W + ' ' + H, role: 'img', 'aria-label': opts.aria }, host);
     const all = series.flatMap((s) => s.values);
-    const yMax = niceMax(Math.max(...all) * 1.1);
+    const yMax = opts.yMax || niceMax(Math.max(...all) * 1.1);
     const plotW = W - padL - padR, plotH = H - padT - padB;
     const y = (v) => padT + plotH - (v / yMax) * plotH;
     const x = (i) => padL + (plotW / (labels.length - 1)) * i;
@@ -501,7 +499,12 @@
       mk('path', { d, fill: 'none', stroke: sr.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
       sr.values.forEach((v, i) => mk('circle', { cx: x(i), cy: y(v), r: 4.5, fill: sr.color, stroke: '#fff', 'stroke-width': 2 }, svg));
       const last = sr.values.length - 1;
-      mk('text', { x: x(last) + 10, y: y(sr.values[last]) + 4, class: 'dlabel' }, svg).textContent = sr.name + ' · ' + fmt(sr.values[last]);
+      mk('text', { x: x(last) + 10, y: y(sr.values[last]) + 4, class: 'dlabel' }, svg).textContent = (opts.endLabels === false ? '' : sr.name + ' · ' + fmt(sr.values[last]));
+    });
+    (opts.markers || []).forEach((m) => {
+      const mx = x(m.at);
+      mk('line', { x1: mx, x2: mx, y1: padT - 4 + (m.dy || 0), y2: padT + plotH, class: 'marker' + (m.cls ? ' ' + m.cls : '') }, svg);
+      mk('text', { x: mx + 6, y: padT + 6 + (m.dy || 0), class: 'marker-text' + (m.cls ? ' ' + m.cls : '') }, svg).textContent = m.text;
     });
     const tip = tooltip(host);
     const band = plotW / (labels.length - 1);
@@ -537,6 +540,24 @@
     { at: 11 + 29 / 31, text: 'New site live May 29', dy: 48 }
   ], aria: 'Monthly Google search clicks for the old and new website addresses, June 2025 to September 2026' });
   table('table-gsc', ['Month', 'Old address', 'New address', 'Total'], gscFull.map((m, i) => [m, oldClicks[i], newClicks[i], oldClicks[i] + newClicks[i]]));
+
+  // ---------- Chart 2: the two articles, GA4 organic sessions by landing page ----------
+  const artLabels = ['Jan 25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan 26','Feb','Mar','Apr','May','Jun','Jul','Aug'];
+  const artFull = ['January 2025','February 2025','March 2025','April 2025','May 2025','June 2025','July 2025','August 2025','September 2025','October 2025','November 2025','December 2025','January 2026','February 2026','March 2026','April 2026','May 2026','June 2026','July 2026','August 2026'];
+  const gauze = [1422,1268,2170,2113,1572,1438,1752,4937,2597,3055,2550,2927,2026,1090,950,719,485,963,1068,636];
+  const crown = [1101,1064,1386,1279,1100,1046,939,979,1300,1446,1297,1083,993,1500,1529,1018,1018,723,926,717];
+  lines('chart-articles', artLabels, [
+    { name: 'Gauze after an extraction', color: '#0e7490', values: gauze },
+    { name: 'Sensitivity after a crown', color: '#7fb8c6', values: crown }
+  ], { endLabels: false, yMax: 6000, markers: [
+    { at: 6 + 0 / 31, text: 'Core update Jun 30 to Jul 17', cls: 'update' },
+    { at: 7 + 26 / 31, text: 'Spam update Aug 26 to Sep 22', cls: 'update', dy: 16 },
+    { at: 11 + 11 / 31, text: 'Core update Dec 11 to 29', cls: 'update' },
+    { at: 14 + 27 / 31, text: 'Core update Mar 27 to Apr 8', cls: 'update', dy: 16 },
+    { at: 16 + 21 / 31, text: 'Core update May 21 to Jun 2', cls: 'update', dy: 32 },
+    { at: 16 + 29 / 31, text: 'New site live May 29', dy: 48 }
+  ], aria: 'Monthly Google search visits to the gauze article and the crown sensitivity article, January 2025 to August 2026' });
+  table('table-articles', ['Month', 'Gauze after an extraction', 'Sensitivity after a crown', 'Both'], artFull.map((m, i) => [m, gauze[i], crown[i], gauze[i] + crown[i]]));
 
 })();
 </script>
