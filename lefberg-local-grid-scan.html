@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Lefberg Dental · Local Grid Scan · Sep 24 2026 | S8E8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #F6F7F9; --card: #fff; --line: #e7e5e4; --line-soft: #f0efec;
+    --ink: #1c1917; --ink-2: #57534e; --ink-3: #78716c; --ink-4: #a8a29e;
+    --cyan: #29ABE2; --cyan-tint: #eaf7fd; --magenta: #FF2D8F; --magenta-tint: #fff0f6;
+    --r1: #083D52; --r2: #0B5270; --r3: #0E6A8F; --r4: #1485B3; --r5: #29ABE2;
+    --r7: #5FC1EA; --r10: #93D5F1; --r15: #C2E8F8; --r20: #E3F4FC; --rnf: #e7e5e4;
+  }
+  body { font-family: 'Montserrat', -apple-system, sans-serif; background: var(--bg); color: var(--ink); font-size: 14px; line-height: 1.55; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .s8-header { background: #0d0d0d; }
+  .s8-header .rainbow { height: 3px; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff); }
+  .s8-header .inner { max-width: 1152px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .s8-header img { height: 30px; width: auto; flex-shrink: 0; }
+  .s8-header .client { text-align: right; }
+  .s8-header .client b { display: block; font-size: 14px; font-weight: 600; color: #fff; }
+  .s8-header .client span { display: block; font-size: 11px; color: #a8a29e; margin-top: 2px; }
+  .container { max-width: 1152px; margin: 0 auto; padding: 32px 24px 64px; }
+  @media (max-width: 640px) { .container { padding: 24px 16px 48px; } }
+
+  .title-block { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 8px; }
+  .title-block svg { width: 34px; height: 34px; flex-shrink: 0; margin-top: 2px; }
+  .title-block h1 { font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.2; }
+  .title-block p { font-size: 13.5px; color: var(--ink-3); margin-top: 4px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 12px 0 24px; }
+  .meta span { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); background: #fff; border: 1px solid var(--line); border-radius: 4px; padding: 4px 8px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; }
+  .tile .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cyan); margin-bottom: 8px; }
+  .tile .val { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -0.01em; }
+  .tile .val small { font-size: 14px; font-weight: 600; color: var(--ink-3); letter-spacing: 0; margin-left: 4px; }
+  .tile .sub { font-size: 12px; color: var(--ink-3); margin-top: 8px; line-height: 1.45; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; margin-bottom: 20px; }
+  .card h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .card h2::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--cyan); }
+  .card p { color: var(--ink-2); max-width: 760px; }
+  .card p + p { margin-top: 8px; }
+  .read li { margin: 6px 0 6px 18px; color: var(--ink-2); max-width: 760px; }
+  .read li b { color: var(--ink); font-weight: 600; }
+
+  .kw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 900px) { .kw-grid { grid-template-columns: 1fr; } }
+  .kw { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+  .kw h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .kw h3 span { color: var(--ink-4); font-weight: 500; }
+  .kw .kstats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 12px 0 14px; }
+  .kw .kstats div { background: var(--bg); border-radius: 4px; padding: 8px 10px; }
+  .kw .kstats .l { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); }
+  .kw .kstats .v { font-size: 18px; font-weight: 800; line-height: 1.1; margin-top: 2px; }
+  .kw .kstats .v small { font-size: 11px; font-weight: 600; color: var(--ink-3); }
+  .heat { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; max-width: 320px; margin: 0 auto; }
+  .heat span { aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; position: relative; cursor: default; }
+  .heat span.lt { color: var(--ink); }
+  .heat span.office::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--ink); }
+  .heat span:hover { outline: 2px solid var(--magenta); outline-offset: 1px; }
+  .compass { display: flex; justify-content: space-between; max-width: 320px; margin: 8px auto 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.08em; }
+  .kw .dens { margin-top: 14px; border-top: 1px solid var(--line-soft); padding-top: 12px; font-size: 12.5px; color: var(--ink-2); }
+  .kw .dens b { color: var(--ink); font-weight: 700; }
+  .kw .readline { font-size: 12.5px; color: var(--ink-2); margin-top: 10px; line-height: 1.5; }
+  .heat-key { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); margin: 16px 0 4px; align-items: center; }
+  .heat-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .heat-key i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .heat-key .ring { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); display: inline-block; }
+
+  #tip { position: fixed; z-index: 50; pointer-events: none; background: #1c1917; color: #fff; border-radius: 6px; padding: 10px 12px; font-size: 12px; line-height: 1.45; display: none; max-width: 280px; box-shadow: 0 6px 16px rgba(0,0,0,0.18); }
+  #tip .h { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #a8a29e; margin-bottom: 6px; }
+  #tip ol { list-style: none; }
+  #tip li { display: flex; gap: 8px; }
+  #tip li b { font-weight: 700; min-width: 14px; color: var(--r7); }
+  #tip li.me { color: #fff; font-weight: 700; }
+  #tip li.me b { color: var(--magenta); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  tr.me td { background: var(--cyan-tint); font-weight: 700; }
+  tr.me td:first-child { box-shadow: inset 3px 0 0 var(--cyan); }
+  td .nm { font-weight: 600; color: var(--ink); }
+  td .rv { font-size: 11.5px; color: var(--ink-3); }
+  .bar { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  .bar i { display: inline-block; height: 8px; border-radius: 2px; background: var(--cyan); opacity: 0.85; }
+  tr.me .bar i { background: var(--magenta); opacity: 1; }
+  .tablewrap { overflow-x: auto; }
+  tr.hidden { display: none; }
+  .showmore { margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--magenta); background: var(--magenta-tint); border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-family: inherit; }
+  .note { font-size: 12px; color: var(--ink-3); margin-top: 12px; max-width: 760px; }
+
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px 22px; margin-bottom: 20px; }
+  summary { cursor: pointer; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; }
+  details dl { margin-top: 14px; display: grid; grid-template-columns: 200px 1fr; gap: 8px 16px; font-size: 13px; }
+  details dt { font-weight: 600; color: var(--ink); }
+  details dd { color: var(--ink-2); }
+  @media (max-width: 640px) { details dl { grid-template-columns: 1fr; } details dd { margin-bottom: 6px; } }
+  .foot { font-size: 11.5px; color: var(--ink-4); text-align: center; margin-top: 32px; }
+</style>
+</head>
+<body>
+<div class="s8-header">
+  <div class="rainbow"></div>
+  <div class="inner">
+    <img src="./s8e8logo.png" alt="Studio Eighty Eight">
+    <div class="client"><b>Lefberg Dental</b><span>2 Town Square Blvd #210, Asheville, NC 28803</span></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="title-block">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#29ABE2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+    <div>
+      <h1>Local Grid Scan</h1>
+      <p>Where Lefberg Dental ranks in the Google Maps pack at 81 points across a 1-mile radius, and who is ahead of them.</p>
+    </div>
+  </div>
+  <div class="meta">
+    <span>Scanned Sep 24, 2026</span><span>9 × 9 grid</span><span>1.0 mi radius</span><span>81 points × 3 keywords</span><span>Google Maps, top 20</span><span>Source: DataForSEO live SERP</span>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><div class="lbl">Average rank</div><div class="val">3.7</div><div class="sub">Across all 243 scan points (81 per keyword). Lefberg appears in the top 20 at every single point.</div></div>
+    <div class="tile"><div class="lbl">Share of local voice</div><div class="val">53.9<small>%</small></div><div class="sub">Top 3 (the visible Maps pack) at 131 of 243 points. 68% and 64% on the two Asheville keywords, 30% on "near me".</div></div>
+    <div class="tile"><div class="lbl">Position among competitors</div><div class="val">#4<small>of 46</small></div><div class="sub">Ranked by average position across the same 243 SERPs. Three practices are ahead, and the gap to #3 is a tenth of a rank.</div></div>
+    <div class="tile"><div class="lbl">Local density</div><div class="val">45</div><div class="sub">Distinct competing practices that show up in the top 20 somewhere in the 1-mile area. Only 7 of them ever reach the top 3.</div></div>
+  </div>
+
+  <div class="card">
+    <h2>What the scan says</h2>
+    <ul class="read">
+      <li><b>Lefberg holds the #3 pack spot across most of the area.</b> On "dentist in asheville nc" and "dentist in asheville" they rank 3rd at the office and everywhere west and north of it, and 1st in the six cells immediately around Biltmore Park Town Square.</li>
+      <li><b>Two practices own spots 1 and 2 nearly everywhere: Laurelwood Family Dentistry and CarolinasDentist.</b> They are in the top 3 at 99.6% and 97.5% of points. Both sit about 1.4 to 1.8 miles east on the Hendersonville Rd corridor, and both carry far more reviews (613 and 1,455 vs Lefberg's 193).</li>
+      <li><b>The real fight is for #3 with Family Dental Health of South Asheville.</b> Their average rank is 3.68 vs Lefberg's 3.70. Lefberg wins the west and center of the grid, they win the east.</li>
+      <li><b>The soft spot is the eastern third of the grid and "dentist near me".</b> Ranks slip to 4 and 5 along the east edge on the Asheville keywords, and to 6 to 11 in the southeast corner on "near me", where a searcher is physically closer to the Hendersonville Rd cluster.</li>
+      <li><b>Nobody else is close.</b> After the top 4, the next practice (Arden Dental Group) averages 7.5 and never reaches the top 3.</li>
+    </ul>
+  </div>
+
+  <div class="kw-grid" id="kwgrid"></div>
+  <div class="heat-key">
+    <span><i style="background:var(--r1)"></i> 1</span><span><i style="background:var(--r2)"></i> 2</span><span><i style="background:var(--r3)"></i> 3</span><span><i style="background:var(--r4)"></i> 4</span><span><i style="background:var(--r5)"></i> 5</span><span><i style="background:var(--r7)"></i> 6 to 7</span><span><i style="background:var(--r10)"></i> 8 to 10</span><span><i style="background:var(--r15)"></i> 11 to 15</span><span><i style="background:var(--r20)"></i> 16 to 20</span><span><i style="background:var(--rnf)"></i> not in top 20</span><span><i class="ring"></i> office</span><span style="color:var(--ink-4)">Hover a point to see who ranks there.</span>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h2>The competitive field</h2>
+    <p>Every practice that appeared in the top 20 at any of the 243 scan points, ranked by average position. A practice that is missing from a point counts as 21 there, so the average is comparable across the whole area. Lefberg's practitioner listing ("Dr. Heath Lefberg", 2 reviews, average 10.0) is left out of this table because it is the same office, not a competitor.</p>
+    <div class="tablewrap" style="margin-top:14px">
+    <table id="field">
+      <thead><tr><th>#</th><th>Practice</th><th>From office</th><th class="num">Reviews</th><th class="num">Avg rank</th><th class="num">"asheville nc"</th><th class="num">"asheville"</th><th class="num">"near me"</th><th class="num">Top 3</th><th class="num">In top 20</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <button class="showmore" id="more">Show all 46 practices</button>
+    <div class="note">"Top 3" is the share of the 243 points where the practice ranks 1 to 3. "In top 20" is the share of points where it appears at all. Distance and direction are from the Lefberg office.</div>
+  </div>
+
+  <details>
+    <summary>Method and how this compares to Local Falcon</summary>
+    <dl>
+      <dt>Why not Local Falcon</dt><dd>Local Falcon was down on Sep 24, 2026 with these three scans stuck at "Scan In Progress". This scan reproduces the same 9 × 9, 1.0-mile setup by querying Google Maps directly through DataForSEO's live SERP API, one query per grid point per keyword (243 queries, top 20 results each, map zoom 14).</dd>
+      <dt>Grid</dt><dd>Centered on the office at 35.4860, -82.5550. Points are 0.25 miles apart, running 1 mile north, south, east and west of the office. All 81 points were scanned; Local Falcon reports 75 data points for the same setup, so its edge handling differs slightly.</dd>
+      <dt>Average rank (ARP)</dt><dd>Mean of Lefberg's rank across the points, with a point where they are outside the top 20 counted as 21. Lefberg was in the top 20 at every point, so this equals Local Falcon's ATRP here.</dd>
+      <dt>Share of local voice (SoLV)</dt><dd>Share of points where the practice ranks in the top 3, the part of the results a searcher sees without expanding the map.</dd>
+      <dt>Position among competitors</dt><dd>Every listing's own average rank was computed from the same 243 SERPs, then sorted. No separate scans from competitor addresses are needed: each SERP already lists every practice at that point.</dd>
+      <dt>Local density</dt><dd>Count of distinct practices in the top 20 across the area, excluding Lefberg's two listings. Per keyword: 35, 33 and 42 in the top 20; 5, 5 and 6 ever reach the top 3.</dd>
+      <dt>Caveats</dt><dd>Maps results shift day to day and by device, so treat single-point differences of one rank as noise. Google personalises "near me" more heavily than the city keywords. Business categories, review counts and coordinates are as Google returned them on scan day.</dd>
+    </dl>
+  </details>
+
+  <div class="foot">Studio Eighty Eight · Internal report prepared Sep 24, 2026 · Not for search indexing</div>
+</div>
+<div id="tip"></div>
+
+<script>
+const DATA = {"keywords": ["dentist in asheville nc", "dentist in asheville", "dentist near me"], "n": 9, "grids": {"dentist in asheville nc": [[4, 3, 3, 3, 3, 3, 4, 4, 5], [3, 3, 3, 3, 3, 3, 3, 4, 5], [3, 3, 3, 3, 3, 3, 3, 4, 5], [3, 3, 3, 3, 1, 3, 3, 4, 4], [3, 3, 3, 1, 1, 1, 3, 4, 4], [3, 3, 3, 2, 1, 3, 4, 4, 4], [3, 3, 3, 3, 3, 3, 4, 4, 4], [3, 3, 3, 3, 3, 4, 4, 4, 4], [3, 3, 3, 3, 3, 4, 4, 4, 4]], "dentist in asheville": [[4, 3, 3, 3, 3, 3, 3, 5, 5], [3, 3, 3, 3, 3, 3, 3, 4, 5], [3, 3, 3, 3, 3, 3, 4, 4, 4], [3, 3, 3, 3, 1, 3, 3, 4, 4], [3, 3, 3, 1, 1, 1, 4, 4, 4], [3, 3, 3, 2, 1, 2, 4, 4, 4], [3, 3, 3, 3, 3, 4, 4, 4, 4], [3, 3, 3, 3, 3, 4, 4, 4, 4], [3, 3, 3, 3, 4, 4, 4, 4, 4]], "dentist near me": [[6, 6, 3, 3, 4, 4, 5, 7, 8], [6, 5, 3, 3, 3, 4, 4, 6, 7], [5, 4, 3, 2, 2, 3, 4, 6, 6], [6, 4, 3, 1, 1, 1, 4, 4, 6], [6, 4, 2, 1, 1, 1, 4, 5, 6], [6, 4, 3, 1, 1, 1, 4, 6, 6], [5, 5, 3, 3, 3, 4, 4, 6, 8], [5, 5, 5, 4, 4, 5, 7, 8, 9], [6, 6, 6, 6, 7, 8, 8, 9, 11]]}, "stats": {"dentist in asheville nc": {"arp": 3.22, "atrp": 3.22, "found_pct": 100.0, "solv_pct": 67.9, "top10_pct": 100.0, "best": 1, "worst": 5, "density": {"top20": 36, "top10": 18, "top3": 5}}, "dentist in asheville": {"arp": 3.25, "atrp": 3.25, "found_pct": 100.0, "solv_pct": 64.2, "top10_pct": 100.0, "best": 1, "worst": 5, "density": {"top20": 34, "top10": 20, "top3": 6}}, "dentist near me": {"arp": 4.62, "atrp": 4.62, "found_pct": 100.0, "solv_pct": 29.6, "top10_pct": 98.8, "best": 1, "worst": 11, "density": {"top20": 43, "top10": 21, "top3": 7}}}, "density": {"dentist in asheville nc": {"top20": 35, "top10": 17, "top3": 5}, "dentist in asheville": {"top20": 33, "top10": 19, "top3": 5}, "dentist near me": {"top20": 42, "top10": 20, "top3": 6}}, "hover": {"dentist in asheville nc": [[[[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [2, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [4, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [4, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [4, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [4, 4], [5, 5]], [[0, 1], [1, 2], [4, 3], [3, 4], [5, 5]], [[0, 1], [1, 2], [4, 3], [3, 4], [5, 5]], [[0, 1], [1, 2], [4, 3], [5, 4], [3, 5]]], [[[0, 1], [1, 2], [3, 3], [2, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [2, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [4, 3], [5, 4], [3, 5]]], [[[0, 1], [1, 2], [3, 3], [2, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [4, 4], [3, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [2, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [4, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[3, 1], [1, 2], [0, 3], [5, 4], [6, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [3, 2], [1, 3], [5, 4], [4, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [9, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [9, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [8, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]]], [[[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [10, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]]]], "dentist in asheville": [[[[0, 1], [1, 2], [2, 3], [3, 4], [5, 5]], [[1, 1], [0, 2], [3, 3], [2, 4], [5, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [4, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [4, 3], [5, 4], [3, 5]]], [[[1, 1], [0, 2], [3, 3], [2, 4], [5, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [4, 4], [3, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [2, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[3, 1], [1, 2], [0, 3], [5, 4], [6, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[3, 1], [1, 2], [0, 3], [5, 4], [6, 5]], [[3, 1], [1, 2], [6, 3], [0, 4], [5, 5]], [[3, 1], [1, 2], [0, 3], [6, 4], [5, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [9, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[1, 1], [3, 2], [0, 3], [5, 4], [6, 5]], [[3, 1], [1, 2], [0, 3], [5, 4], [6, 5]], [[1, 1], [3, 2], [0, 3], [5, 4], [6, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [4, 5]], [[1, 1], [5, 2], [0, 3], [3, 4], [4, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [6, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [6, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [9, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [9, 5]], [[1, 1], [5, 2], [0, 3], [3, 4], [8, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [8, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [8, 5]]], [[[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [7, 5]], [[1, 1], [0, 2], [3, 3], [5, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]], [[1, 1], [0, 2], [5, 3], [3, 4], [10, 5]]]], "dentist near me": [[[[0, 1], [1, 2], [2, 3], [7, 4], [5, 5]], [[0, 1], [1, 2], [2, 3], [7, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [4, 4], [3, 5]], [[0, 1], [1, 2], [5, 3], [4, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [4, 4], [8, 5]]], [[[0, 1], [1, 2], [7, 3], [5, 4], [2, 5]], [[0, 1], [1, 2], [7, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [4, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [11, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [8, 4], [11, 5]]], [[[0, 1], [7, 2], [1, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [7, 3], [3, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [3, 2], [1, 3], [5, 4], [7, 5]], [[0, 1], [3, 2], [1, 3], [5, 4], [6, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [11, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [11, 5]], [[0, 1], [1, 2], [5, 3], [11, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [8, 4], [11, 5]]], [[[7, 1], [0, 2], [1, 3], [12, 4], [5, 5]], [[0, 1], [1, 2], [7, 3], [3, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[3, 1], [0, 2], [6, 3], [1, 4], [5, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [11, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [8, 5]], [[0, 1], [1, 2], [5, 3], [8, 4], [11, 5]]], [[[7, 1], [0, 2], [12, 3], [1, 4], [5, 5]], [[0, 1], [1, 2], [7, 3], [3, 4], [5, 5]], [[0, 1], [3, 2], [1, 3], [5, 4], [7, 5]], [[3, 1], [0, 2], [1, 3], [6, 4], [5, 5]], [[3, 1], [6, 2], [0, 3], [1, 4], [5, 5]], [[3, 1], [6, 2], [0, 3], [1, 4], [5, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [11, 5]], [[5, 1], [0, 2], [1, 3], [8, 4], [3, 5]], [[5, 1], [1, 2], [0, 3], [8, 4], [11, 5]]], [[[7, 1], [0, 2], [12, 3], [1, 4], [5, 5]], [[0, 1], [1, 2], [7, 3], [3, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[3, 1], [0, 2], [6, 3], [1, 4], [5, 5]], [[3, 1], [0, 2], [1, 3], [5, 4], [6, 5]], [[5, 1], [0, 2], [1, 3], [3, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]]], [[[7, 1], [0, 2], [1, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [7, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [3, 3], [7, 4], [5, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [7, 5]], [[0, 1], [1, 2], [3, 3], [5, 4], [11, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [11, 5]], [[5, 1], [0, 2], [1, 3], [3, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]]], [[[0, 1], [1, 2], [7, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [7, 3], [5, 4], [3, 5]], [[0, 1], [1, 2], [5, 3], [7, 4], [3, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [7, 5]], [[0, 1], [1, 2], [5, 3], [3, 4], [13, 5]], [[1, 1], [0, 2], [5, 3], [11, 4], [3, 5]], [[1, 1], [5, 2], [0, 3], [11, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]], [[5, 1], [1, 2], [0, 3], [11, 4], [8, 5]]], [[[0, 1], [1, 2], [7, 3], [5, 4], [13, 5]], [[0, 1], [1, 2], [7, 3], [5, 4], [13, 5]], [[0, 1], [1, 2], [5, 3], [7, 4], [13, 5]], [[0, 1], [1, 2], [5, 3], [13, 4], [7, 5]], [[1, 1], [0, 2], [5, 3], [13, 4], [11, 5]], [[1, 1], [0, 2], [5, 3], [13, 4], [11, 5]], [[1, 1], [0, 2], [5, 3], [11, 4], [13, 5]], [[1, 1], [0, 2], [5, 3], [11, 4], [8, 5]], [[1, 1], [0, 2], [5, 3], [11, 4], [8, 5]]]]}, "names": ["Laurelwood Family Dentistry", "CarolinasDentist", "Biltmore Dental Group", "Lefberg Dental", "Summit Dental", "Family Dental Health of South Asheville", "Dr. Heath Lefberg", "Avery's Creek Family Dentistry", "Arden Dental Group", "Zachary S Holcombe DMD", "WNC Dental", "Arden Family Dentistry", "Dr. Melanie Casey", "Aspen Dental - Arden, NC"], "field": [{"pos": 1, "title": "Laurelwood Family Dentistry", "rating": 4.3, "reviews": 613, "miles": 1.8, "dir": "E", "arp": 1.56, "solv": 99.6, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 1.12, "dentist in asheville": 2.07, "dentist near me": 1.49}}, {"pos": 2, "title": "CarolinasDentist", "rating": 4.9, "reviews": 1455, "miles": 1.5, "dir": "E", "arp": 1.79, "solv": 97.5, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 2.01, "dentist in asheville": 1.11, "dentist near me": 2.23}}, {"pos": 3, "title": "Family Dental Health of South Asheville", "rating": 4.8, "reviews": 466, "miles": 1.0, "dir": "E", "arp": 3.68, "solv": 35.4, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 3.89, "dentist in asheville": 3.72, "dentist near me": 3.44}}, {"pos": 4, "title": "Lefberg Dental", "rating": 4.9, "reviews": 193, "miles": 0.0, "dir": "N", "arp": 3.7, "solv": 53.9, "found": 100.0, "is_target": true, "per": {"dentist in asheville nc": 3.22, "dentist in asheville": 3.25, "dentist near me": 4.62}}, {"pos": 5, "title": "Arden Dental Group", "rating": 4.9, "reviews": 641, "miles": 1.8, "dir": "E", "arp": 7.49, "solv": 0.0, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 7.83, "dentist in asheville": 8.01, "dentist near me": 6.62}}, {"pos": 6, "title": "Zachary S Holcombe DMD", "rating": 4.9, "reviews": 325, "miles": 1.9, "dir": "E", "arp": 9.97, "solv": 0.0, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 8.25, "dentist in asheville": 8.2, "dentist near me": 13.47}}, {"pos": 7, "title": "John White, DDS", "rating": 4.8, "reviews": 160, "miles": 1.9, "dir": "NE", "arp": 10.64, "solv": 0.0, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 8.43, "dentist in asheville": 11.09, "dentist near me": 12.4}}, {"pos": 8, "title": "Summit Dental", "rating": 4.9, "reviews": 241, "miles": 2.7, "dir": "NE", "arp": 11.09, "solv": 2.5, "found": 66.7, "is_target": false, "per": {"dentist in asheville nc": 10.26, "dentist in asheville": 10.64, "dentist near me": 12.37}}, {"pos": 9, "title": "Arden Family Dentistry", "rating": 4.8, "reviews": 213, "miles": 1.7, "dir": "E", "arp": 11.09, "solv": 0.0, "found": 100.0, "is_target": false, "per": {"dentist in asheville nc": 13.8, "dentist in asheville": 13.27, "dentist near me": 6.2}}, {"pos": 10, "title": "Avery's Creek Family Dentistry", "rating": 4.6, "reviews": 67, "miles": 1.5, "dir": "W", "arp": 11.19, "solv": 6.6, "found": 77.8, "is_target": false, "per": {"dentist in asheville nc": 12.59, "dentist in asheville": 11.63, "dentist near me": 9.36}}, {"pos": 11, "title": "Asheville Oral & Maxillofacial Surgery", "rating": 4.9, "reviews": 468, "miles": 1.8, "dir": "E", "arp": 12.1, "solv": 0.0, "found": 99.6, "is_target": false, "per": {"dentist in asheville nc": 10.54, "dentist in asheville": 10.31, "dentist near me": 15.46}}, {"pos": 12, "title": "WNC Dental", "rating": 4.4, "reviews": 281, "miles": 2.8, "dir": "SE", "arp": 13.69, "solv": 0.0, "found": 66.7, "is_target": false, "per": {"dentist in asheville nc": 12.84, "dentist in asheville": 12.88, "dentist near me": 15.35}}, {"pos": 13, "title": "Asheville Smiles Cosmetic & Family Dentistry - Arden", "rating": 4.8, "reviews": 284, "miles": 2.6, "dir": "SE", "arp": 15.76, "solv": 0.0, "found": 73.3, "is_target": false, "per": {"dentist in asheville nc": 17.33, "dentist in asheville": 17.26, "dentist near me": 12.69}}, {"pos": 14, "title": "Asheville Pediatric Dentistry", "rating": 4.9, "reviews": 541, "miles": 2.7, "dir": "NE", "arp": 16.61, "solv": 0.0, "found": 55.1, "is_target": false, "per": {"dentist in asheville nc": 15.89, "dentist in asheville": 16.22, "dentist near me": 17.73}}, {"pos": 15, "title": "Aspen Dental - Arden, NC", "rating": 4.4, "reviews": 1003, "miles": 2.9, "dir": "SE", "arp": 17.14, "solv": 0.0, "found": 42.4, "is_target": false, "per": {"dentist in asheville nc": 19.05, "dentist in asheville": 17.84, "dentist near me": 14.53}}, {"pos": 16, "title": "Jeffrey A. Loftin, DDS, PA", "rating": 5, "reviews": 30, "miles": 1.9, "dir": "E", "arp": 17.19, "solv": 0.0, "found": 76.1, "is_target": false, "per": {"dentist in asheville nc": 15.69, "dentist in asheville": 16.46, "dentist near me": 19.42}}, {"pos": 17, "title": "Dr. Melanie Casey", "rating": 5, "reviews": 2, "miles": 1.5, "dir": "W", "arp": 17.74, "solv": 0.8, "found": 45.7, "is_target": false, "per": {"dentist in asheville nc": 20.11, "dentist in asheville": 18.68, "dentist near me": 14.44}}, {"pos": 18, "title": "Blue Ridge Orthodontics - Asheville", "rating": 4.9, "reviews": 1178, "miles": 2.0, "dir": "E", "arp": 17.82, "solv": 0.0, "found": 80.2, "is_target": false, "per": {"dentist in asheville nc": 17.65, "dentist in asheville": 16.93, "dentist near me": 18.88}}, {"pos": 19, "title": "TS Orthodontics - Asheville", "rating": 4.9, "reviews": 356, "miles": 2.7, "dir": "NE", "arp": 18.04, "solv": 0.0, "found": 52.7, "is_target": false, "per": {"dentist in asheville nc": 16.19, "dentist in asheville": 17.7, "dentist near me": 20.23}}, {"pos": 20, "title": "Arden Family Dental", "rating": 4.9, "reviews": 238, "miles": 3.0, "dir": "S", "arp": 18.31, "solv": 0.0, "found": 22.2, "is_target": false, "per": {"dentist in asheville nc": 18.52, "dentist in asheville": 18.31, "dentist near me": 18.1}}, {"pos": 21, "title": "Biltmore Dental Group", "rating": 4.9, "reviews": 680, "miles": 3.4, "dir": "NW", "arp": 18.7, "solv": 1.6, "found": 14.8, "is_target": false, "per": {"dentist in asheville nc": 18.64, "dentist in asheville": 18.62, "dentist near me": 18.84}}, {"pos": 22, "title": "Blue Ridge Orthodontics - Oral Surgery Asheville", "rating": 4.6, "reviews": 18, "miles": 2.0, "dir": "E", "arp": 18.7, "solv": 0.0, "found": 60.9, "is_target": false, "per": {"dentist in asheville nc": 19.93, "dentist in asheville": 19.56, "dentist near me": 16.62}}, {"pos": 23, "title": "Asheville Periodontics", "rating": 5, "reviews": 528, "miles": 3.4, "dir": "NW", "arp": 19.42, "solv": 0.0, "found": 14.8, "is_target": false, "per": {"dentist in asheville nc": 18.96, "dentist in asheville": 19.14, "dentist near me": 20.16}}, {"pos": 24, "title": "Nicole Sullens DDS, Pa", "rating": 4.1, "reviews": 45, "miles": 1.7, "dir": "E", "arp": 19.48, "solv": 0.0, "found": 48.6, "is_target": false, "per": {"dentist in asheville nc": 20.01, "dentist in asheville": 19.05, "dentist near me": 19.38}}, {"pos": 25, "title": "Asheville Aesthetic Dental Partners", "rating": 4.9, "reviews": 181, "miles": 3.4, "dir": "NW", "arp": 19.52, "solv": 0.0, "found": 14.8, "is_target": false, "per": {"dentist in asheville nc": 19.2, "dentist in asheville": 19.7, "dentist near me": 19.65}}, {"pos": 26, "title": "Southern Dental Implants & Oral Surgery", "rating": 4.9, "reviews": 1307, "miles": 2.9, "dir": "S", "arp": 19.99, "solv": 0.0, "found": 21.4, "is_target": false, "per": {"dentist in asheville nc": 20.59, "dentist in asheville": 20.17, "dentist near me": 19.21}}, {"pos": 27, "title": "Meredith Clark, DDS", "rating": 5, "reviews": 28, "miles": 1.8, "dir": "E", "arp": 20.04, "solv": 0.0, "found": 32.9, "is_target": false, "per": {"dentist in asheville nc": 20.09, "dentist in asheville": 19.96, "dentist near me": 20.06}}, {"pos": 28, "title": "Michael Wasson, DMD", "rating": 4.5, "reviews": 55, "miles": 3.3, "dir": "SE", "arp": 20.13, "solv": 0.0, "found": 29.6, "is_target": false, "per": {"dentist in asheville nc": 19.74, "dentist in asheville": 20.81, "dentist near me": 19.84}}, {"pos": 29, "title": "Asheville Aesthetic Dental: Leahy A Paige DDS", "rating": 5, "reviews": 173, "miles": 3.4, "dir": "NW", "arp": 20.16, "solv": 0.0, "found": 13.2, "is_target": false, "per": {"dentist in asheville nc": 19.8, "dentist in asheville": 19.98, "dentist near me": 20.7}}, {"pos": 30, "title": "Webb Orthodontics", "rating": 5, "reviews": 481, "miles": 2.4, "dir": "NE", "arp": 20.23, "solv": 0.0, "found": 26.7, "is_target": false, "per": {"dentist in asheville nc": 19.58, "dentist in asheville": 20.46, "dentist near me": 20.65}}, {"pos": 31, "title": "Fletcher Family Dentistry", "rating": 4.9, "reviews": 209, "miles": 4.2, "dir": "SE", "arp": 20.34, "solv": 0.0, "found": 10.7, "is_target": false, "per": {"dentist in asheville nc": 20.36, "dentist in asheville": 20.73, "dentist near me": 19.93}}, {"pos": 32, "title": "Avery Creek Pet Hospital", "rating": 4.9, "reviews": 832, "miles": 1.3, "dir": "SW", "arp": 20.73, "solv": 0.0, "found": 7.4, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.19}}, {"pos": 33, "title": "Robert Huffman, DDS", "rating": 5, "reviews": 24, "miles": 1.8, "dir": "E", "arp": 20.74, "solv": 0.0, "found": 8.6, "is_target": false, "per": {"dentist in asheville nc": 20.98, "dentist in asheville": 21, "dentist near me": 20.23}}, {"pos": 34, "title": "Landon A. Poteat, DDS, PA", "rating": 5, "reviews": 22, "miles": 3.2, "dir": "NE", "arp": 20.83, "solv": 0.0, "found": 10.3, "is_target": false, "per": {"dentist in asheville nc": 20.74, "dentist in asheville": 20.8, "dentist near me": 20.94}}, {"pos": 35, "title": "Ertl Matthew T DMD", "rating": 5, "reviews": 1, "miles": 1.8, "dir": "E", "arp": 20.86, "solv": 0.0, "found": 7.8, "is_target": false, "per": {"dentist in asheville nc": 20.75, "dentist in asheville": 20.83, "dentist near me": 21}}, {"pos": 36, "title": "Asheville Hail and Dent Repair", "rating": 5, "reviews": 315, "miles": 1.6, "dir": "W", "arp": 20.88, "solv": 0.0, "found": 3.3, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.64}}, {"pos": 37, "title": "Dr. J. Chad Rinehart", "rating": 5, "reviews": 3, "miles": 2.7, "dir": "NE", "arp": 20.89, "solv": 0.0, "found": 6.2, "is_target": false, "per": {"dentist in asheville nc": 20.72, "dentist in asheville": 20.95, "dentist near me": 21}}, {"pos": 38, "title": "Soojin Lee, DDS", "rating": 4.8, "reviews": 25, "miles": 1.8, "dir": "E", "arp": 20.9, "solv": 0.0, "found": 3.7, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.69}}, {"pos": 39, "title": "Carolyn Sullens", "rating": 3, "reviews": 2, "miles": 1.8, "dir": "E", "arp": 20.97, "solv": 0.0, "found": 1.6, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.91}}, {"pos": 40, "title": "Clarity Eye and Face | Dr. Christina Choe, MD", "rating": 5, "reviews": 186, "miles": 0.1, "dir": "NE", "arp": 20.98, "solv": 0.0, "found": 0.4, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.93}}, {"pos": 41, "title": "Arden Endodontics", "rating": 5, "reviews": 144, "miles": 2.9, "dir": "S", "arp": 20.98, "solv": 0.0, "found": 1.6, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.94}}, {"pos": 42, "title": "Dr. James H. Maddox, DDS", "rating": 4.6, "reviews": 9, "miles": 3.4, "dir": "NW", "arp": 20.99, "solv": 0.0, "found": 0.4, "is_target": false, "per": {"dentist in asheville nc": 20.98, "dentist in asheville": 21, "dentist near me": 21}}, {"pos": 43, "title": "Dentist's Choice", "rating": null, "reviews": null, "miles": 2.0, "dir": "NE", "arp": 20.99, "solv": 0.0, "found": 0.8, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.96}}, {"pos": 44, "title": "Creative Dental Solutions", "rating": 5, "reviews": 7, "miles": 3.5, "dir": "NW", "arp": 21.0, "solv": 0.0, "found": 0.4, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.99}}, {"pos": 45, "title": "Everyday Orthodontics", "rating": 5, "reviews": 67, "miles": 3.0, "dir": "NE", "arp": 21.0, "solv": 0.0, "found": 0.4, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.99}}, {"pos": 46, "title": "Casey Cho", "rating": 4.7, "reviews": 55, "miles": 2.9, "dir": "SE", "arp": 21.0, "solv": 0.0, "found": 0.4, "is_target": false, "per": {"dentist in asheville nc": 21, "dentist in asheville": 21, "dentist near me": 20.99}}]};
+const READ = {"dentist in asheville nc": "Rank 3 almost everywhere, rank 1 in the six cells around the office, and rank 4 to 5 only along the eastern edge of the grid, where Laurelwood and CarolinasDentist are closer.", "dentist in asheville": "Same shape as the first keyword: a solid 3 across the west and center, 1 at the office, 4 across the east third, 5 in the northeast corner.", "dentist near me": "Proximity-driven, so it falls off with distance. Rank 1 in the nine cells nearest the office, 3 to 4 in the middle band, and 6 to 11 at the south and east edges, where a searcher is nearer to the Hendersonville Rd practices."};
+const SHORT = {"dentist in asheville nc": '"dentist in asheville nc"', "dentist in asheville": '"dentist in asheville"', "dentist near me": '"dentist near me"'};
+function color(r) {
+  if (r >= 21) return ['var(--rnf)', true];
+  if (r === 1) return ['var(--r1)', false];
+  if (r === 2) return ['var(--r2)', false];
+  if (r === 3) return ['var(--r3)', false];
+  if (r === 4) return ['var(--r4)', false];
+  if (r === 5) return ['var(--r5)', false];
+  if (r <= 7) return ['var(--r7)', true];
+  if (r <= 10) return ['var(--r10)', true];
+  if (r <= 15) return ['var(--r15)', true];
+  return ['var(--r20)', true];
+}
+const wrap = document.getElementById('kwgrid');
+const mid = Math.floor(DATA.n / 2);
+DATA.keywords.forEach((kw, ki) => {
+  const s = DATA.stats[kw], d = DATA.density[kw];
+  const card = document.createElement('div'); card.className = 'kw';
+  card.innerHTML = `<h3>${SHORT[kw]}</h3>
+    <div class="kstats">
+      <div><div class="l">Avg rank</div><div class="v">${s.arp}</div></div>
+      <div><div class="l">Top 3</div><div class="v">${s.solv_pct}<small>%</small></div></div>
+      <div><div class="l">Best / worst</div><div class="v">${s.best}<small> / </small>${s.worst}</div></div>
+    </div>
+    <div class="heat"></div>
+    <div class="compass"><span>West</span><span>North is up</span><span>East</span></div>
+    <div class="dens">Density: <b>${d.top20}</b> competitors in the top 20 · <b>${d.top10}</b> in the top 10 · <b>${d.top3}</b> ever in the top 3</div>
+    <div class="readline">${READ[kw]}</div>`;
+  const heat = card.querySelector('.heat');
+  DATA.grids[kw].forEach((row, r) => row.forEach((v, c) => {
+    const el = document.createElement('span');
+    const [bg, light] = color(v);
+    el.style.background = bg; el.textContent = v >= 21 ? '' : v;
+    if (light) el.classList.add('lt');
+    if (r === mid && c === mid) el.classList.add('office');
+    el.dataset.kw = kw; el.dataset.r = r; el.dataset.c = c;
+    heat.appendChild(el);
+  }));
+  wrap.appendChild(card);
+});
+
+const tip = document.getElementById('tip');
+document.querySelectorAll('.heat span').forEach(el => {
+  el.addEventListener('mouseenter', (e) => {
+    const kw = el.dataset.kw, r = +el.dataset.r, c = +el.dataset.c;
+    const top = DATA.hover[kw][r][c];
+    const dy = (mid - r) * 0.25, dx = (c - mid) * 0.25;
+    const where = (dy === 0 && dx === 0) ? 'at the office' : `${Math.abs(dy) ? Math.abs(dy) + ' mi ' + (dy > 0 ? 'N' : 'S') : ''}${Math.abs(dy) && Math.abs(dx) ? ', ' : ''}${Math.abs(dx) ? Math.abs(dx) + ' mi ' + (dx > 0 ? 'E' : 'W') : ''}`;
+    const me = DATA.grids[kw][r][c];
+    let rows = top.map(([i, rk]) => `<li class="${DATA.names[i] === 'Lefberg Dental' ? 'me' : ''}"><b>${rk}</b><span>${DATA.names[i]}</span></li>`).join('');
+    if (me > 5) rows += `<li class="me"><b>${me >= 21 ? '20+' : me}</b><span>Lefberg Dental</span></li>`;
+    tip.innerHTML = `<div class="h">${SHORT[kw]} · ${where}</div><ol>${rows}</ol>`;
+    tip.style.display = 'block';
+  });
+  el.addEventListener('mousemove', (e) => {
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = e.clientX + 14, y = e.clientY + 14;
+    if (x + w > window.innerWidth - 8) x = e.clientX - w - 14;
+    if (y + h > window.innerHeight - 8) y = e.clientY - h - 14;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  });
+  el.addEventListener('mouseleave', () => tip.style.display = 'none');
+});
+
+const tbody = document.querySelector('#field tbody');
+const SHOW = 12;
+DATA.field.forEach((f, i) => {
+  const tr = document.createElement('tr');
+  if (f.is_target) tr.className = 'me';
+  else if (i >= SHOW) tr.className = 'hidden';
+  const w = Math.max(2, Math.round((21 - f.arp) / 20 * 90));
+  const dist = f.is_target ? 'office' : (f.miles == null ? '' : `${f.miles.toFixed(1)} mi ${f.dir}`);
+  tr.innerHTML = `<td class="mono">${f.pos}</td>
+    <td><div class="nm">${f.title}</div><div class="rv">${f.rating ?? ''} ★</div></td>
+    <td class="mono" style="font-size:12px;color:var(--ink-2)">${dist}</td>
+    <td class="num">${(f.reviews ?? 0).toLocaleString()}</td>
+    <td class="num"><span class="bar"><i style="width:${w}px"></i>${f.arp.toFixed(2)}</span></td>
+    <td class="num">${f.per[DATA.keywords[0]].toFixed(1)}</td>
+    <td class="num">${f.per[DATA.keywords[1]].toFixed(1)}</td>
+    <td class="num">${f.per[DATA.keywords[2]].toFixed(1)}</td>
+    <td class="num">${f.solv}%</td>
+    <td class="num">${f.found}%</td>`;
+  tbody.appendChild(tr);
+});
+const btn = document.getElementById('more');
+btn.addEventListener('click', () => {
+  const hidden = tbody.querySelectorAll('tr.hidden');
+  if (hidden.length) { hidden.forEach(tr => tr.classList.remove('hidden')); btn.textContent = 'Show top 12 only'; }
+  else { tbody.querySelectorAll('tr').forEach((tr, i) => { if (i >= SHOW && !tr.classList.contains('me')) tr.classList.add('hidden'); }); btn.textContent = 'Show all 46 practices'; }
+});
+</script>
+</body>
+</html>
