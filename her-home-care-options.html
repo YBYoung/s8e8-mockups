@@ -156,6 +156,24 @@ body.hidedone .todo:not(:has(li:not(.on)))::after{content:"All done here."; disp
   .log select{width:100%}
   .totop{right:.6rem}
 }
+.sync{display:flex; flex-wrap:wrap; gap:.5rem .8rem; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:.6rem .9rem; margin:.6rem 0 1rem; font-size:.95rem; color:var(--muted)}
+.pill{display:inline-block; font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:.2rem .55rem; border-radius:6px; background:var(--note-bg); color:var(--note-ink)}
+.pill.ok{background:var(--done-soft); color:var(--done)}
+.pill.off{background:var(--warn-bg); color:var(--warn-ink)}
+.sync form{display:flex; gap:.4rem; flex:1 1 14rem}
+.sync input,.vault input,.vault textarea{font:inherit; font-size:1rem; color:var(--ink); background:var(--bg); border:1.5px solid var(--line-strong); border-radius:8px; padding:.45rem .6rem; min-width:0; flex:1 1 auto}
+.sync .btn{margin:0}
+.sync a{color:var(--accent)}
+.vault .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(15rem,1fr)); gap:.6rem .9rem}
+.vault label{display:flex; flex-direction:column; gap:.2rem; font-size:.9rem; color:var(--muted)}
+.vault .row{display:flex; gap:.4rem; align-items:center}
+.vault .row input{flex:1 1 auto}
+.vault .mini{font:inherit; font-size:.85rem; font-weight:700; padding:.4rem .6rem; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--paper); color:var(--accent); cursor:pointer}
+.vault .locked{background:var(--say-bg); border-radius:12px; padding:.8rem 1rem}
+.vault .locked form{display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; margin-top:.4rem}
+.vault .locked label.chk{flex-direction:row; align-items:center; gap:.4rem; flex:1 1 100%}
+.vault .locked input[type=checkbox]{width:1.3rem; height:1.3rem; flex:0 0 auto}
+.vault .err{color:var(--warn-ink); font-weight:700}
 .totop{position:fixed; right:.8rem; bottom:calc(env(safe-area-inset-bottom,0px) + .8rem); z-index:5; background:var(--accent); color:var(--accent-ink); text-decoration:none; font-weight:700; padding:.55rem .8rem; border-radius:10px; font-size:.9rem; box-shadow:0 2px 8px rgba(0,0,0,.18)}
 @media (max-width:400px){ body{font-size:18px} h1{font-size:1.8rem} }
 @media print{
@@ -180,7 +198,7 @@ body.hidedone .todo:not(:has(li:not(.on)))::after{content:"All done here."; disp
 <main>
 
 <nav class="topnav" aria-label="Sections">
-  <a href="#plan">Plan</a><a href="#pays">What pays</a><a href="#medicaid">Medicaid</a><a href="#doctor">Doctor</a><a href="#ssi">SSI</a><a href="#aides">Aides</a><a href="#now">This week</a><a href="#charity">Charities</a><a href="#kit">Messages</a><a href="#backstop">Backstop</a><a href="#safety">Safety</a><a href="#phones">Phones</a>
+  <a href="#plan">Plan</a><a href="#vault">Key details</a><a href="#pays">What pays</a><a href="#medicaid">Medicaid</a><a href="#doctor">Doctor</a><a href="#ssi">SSI</a><a href="#aides">Aides</a><a href="#now">This week</a><a href="#charity">Charities</a><a href="#kit">Messages</a><a href="#backstop">Backstop</a><a href="#safety">Safety</a><a href="#phones">Phones</a>
 </nav>
 
 <h1>Getting in-home care for Theresa</h1>
@@ -197,9 +215,16 @@ body.hidedone .todo:not(:has(li:not(.on)))::after{content:"All done here."; disp
   <p class="next" id="pnext"></p>
   <button class="btn quiet" type="button" id="hidedone">Hide what's done</button>
 </div>
+<div class="sync" id="sync">
+  <span class="pill" id="syncpill">Not shared yet</span>
+  <span id="synctext">Enter the family code so everyone's ticks, call log and notes stay in step on every phone.</span>
+  <form id="codeform"><input id="codein" placeholder="family code" autocomplete="off" autocapitalize="none" aria-label="Family code"><button class="btn" type="submit">Connect</button></form>
+  <a href="#" id="codechange" hidden>Change code</a>
+</div>
 
 <ul class="jump">
   <li><a href="#plan"><span class="n">1</span><span class="t">The plan: what you do, in order</span></a></li>
+  <li><a href="#vault"><span class="n">🔒</span><span class="t">Key details: her Social Security number and case numbers, kept locked</span></a></li>
   <li><a href="#pays"><span class="n">2</span><span class="t">What pays for caregivers, and what doesn't</span></a></li>
   <li><a href="#medicaid"><span class="n">3</span><span class="t">Step 1: get her Medicaid started this week</span></a></li>
   <li><a href="#doctor"><span class="n">4</span><span class="t">Step 2: one clinician who has seen her</span></a></li>
@@ -245,6 +270,13 @@ body.hidedone .todo:not(:has(li:not(.on)))::after{content:"All done here."; disp
     <li><input type="checkbox" id="p15" data-key="p15"><label for="p15"><b>Send the note</b> to Social Security, the county, Patient Advocate Foundation, Jewish Family Services and Help Hope Live in one go. Open the STABLE account. Apply to AMMES. (<a href="#charity">Section 8</a>)</label></li>
   </ul>
   <p><small>Who does what: you coordinate and make the calls; your mother signs and sits in on visits; your brother is the bedside person who writes her care sheet and fills in the hospital pack. Nobody new becomes the caregiver.</small></p>
+</section>
+
+<!-- vault -->
+<section class="phase vault" id="vault">
+  <div class="phase-head"><div class="num">🔒</div><div><h2>Key details, kept locked</h2><div class="when">The one place for her Social Security number, date of birth and the case numbers every call asks for. Scrambled on this phone with a vault passphrase before it is saved, so the shared copy is unreadable without it. The passphrase itself is never sent anywhere.</div></div></div>
+  <div id="vaultbody"></div>
+  <p><small>The vault passphrase is separate from the family code. Write it somewhere safe: if it is lost, the saved details cannot be recovered and you would re-enter them. Lock the vault before handing your phone to anyone.</small></p>
 </section>
 
 <!-- 2 -->
@@ -726,17 +758,71 @@ What the money buys: about 20 hours a week of a trained aide for three months (a
 
 <script>
 (function(){
-  var KEY='theresa-kit-v2', PLAN='theresa-plan-v1', LOG='theresa-calls-v1';
-  function get(k){ try{ return JSON.parse(localStorage.getItem(k)||'{}'); }catch(e){ return {}; } }
-  function set(k,o){ try{ localStorage.setItem(k,JSON.stringify(o)); }catch(e){} }
+  var API='https://care-page-sync.vercel.app/api/state';
+  var LS={kit:'theresa-kit-v2', code:'care-family-code', state:'care-state-v1', queue:'care-queue-v1', hide:'care-hide-done', vaultpw:'care-vault-pw'};
+  function lsGet(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+  function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function $(id){ return document.getElementById(id); }
 
-  /* --- message kit --- */
+  /* ================= shared state ================= */
+  // Shape: plan{key:{v,t}} calls{key:{s,d,n,t}} notes{v,t} vault{ct,iv,salt,t}. t = ms since epoch; newer wins.
+  var state=lsGet(LS.state,{}), queue=lsGet(LS.queue,[]), code=lsGet(LS.code,''), pulling=false, flushTimer=null;
+  function isObj(x){ return x && typeof x==='object' && !Array.isArray(x); }
+  function mergeDoc(a,b){
+    if(!isObj(b)) return b;
+    var out=isObj(a)?Object.assign({},a):{};
+    Object.keys(b).forEach(function(k){
+      var nv=b[k], ov=out[k];
+      if(isObj(nv)){ if(typeof nv.t==='number'&&isObj(ov)&&typeof ov.t==='number'&&ov.t>nv.t) return; out[k]=mergeDoc(ov,nv); }
+      else out[k]=nv;
+    });
+    return out;
+  }
+  function setPill(cls,txt,hint){ var p=$('syncpill'); p.className='pill'+(cls?' '+cls:''); p.textContent=txt; if(hint!=null) $('synctext').textContent=hint; }
+  function showCodeForm(show){ $('codeform').hidden=!show; $('codechange').hidden=show; }
+  function stamp(){ var d=new Date(); return d.getHours()+':'+('0'+d.getMinutes()).slice(-2); }
+  function applyServer(doc){ delete doc.v; delete doc.updatedAt; state=mergeDoc(state,doc); lsSet(LS.state,state); renderAll(); }
+  function badCode(){ setPill('off','Code not accepted','That family code did not match. Check it and try again.'); showCodeForm(true); }
+  function pull(){
+    if(!code||pulling) return Promise.resolve();
+    pulling=true;
+    return fetch(API,{headers:{'x-family-code':code},cache:'no-store'}).then(function(r){
+      if(r.status===401){ badCode(); return; }
+      if(!r.ok) throw new Error(r.status);
+      return r.json().then(function(doc){ applyServer(doc); setPill('ok','Shared, synced '+stamp(),'Everyone with the family code sees the same ticks, call log, notes and vault.'); showCodeForm(false); });
+    }).catch(function(){ setPill('off','Offline, saved on this phone','Changes are kept here and sent when the connection is back.'); }).then(function(){ pulling=false; if(queue.length) flush(); });
+  }
+  function flush(){
+    if(!code||!queue.length) return;
+    var patch=queue.reduce(function(acc,p){ return mergeDoc(acc,p); },{}), sent=queue.length;
+    fetch(API,{method:'PATCH',headers:{'x-family-code':code,'content-type':'application/json'},body:JSON.stringify(patch)}).then(function(r){
+      if(r.status===401){ badCode(); return; }
+      if(!r.ok) throw new Error(r.status);
+      return r.json().then(function(doc){ queue=queue.slice(sent); lsSet(LS.queue,queue); applyServer(doc); setPill('ok','Shared, synced '+stamp()); });
+    }).catch(function(){ setPill('off','Offline, saved on this phone','Changes are kept here and sent when the connection is back.'); });
+  }
+  function setField(path,value){
+    var patch={}, cur=patch; path.forEach(function(k,i){ cur[k]=(i===path.length-1)?value:{}; cur=cur[k]; });
+    state=mergeDoc(state,patch); lsSet(LS.state,state);
+    queue.push(patch); lsSet(LS.queue,queue);
+    clearTimeout(flushTimer); flushTimer=setTimeout(flush,500);
+  }
+  function get(path){ var c=state; for(var i=0;i<path.length;i++){ if(!isObj(c)) return undefined; c=c[path[i]]; } return c; }
+  $('codeform').addEventListener('submit',function(e){ e.preventDefault(); var v=$('codein').value.trim().toLowerCase(); if(!v) return; code=v; lsSet(LS.code,code); setPill('','Connecting'); pull(); });
+  $('codechange').addEventListener('click',function(e){ e.preventDefault(); showCodeForm(true); $('codein').value=code; $('codein').focus(); });
+  if(code){ showCodeForm(false); setPill('','Connecting'); } else { showCodeForm(true); }
+  setInterval(function(){ if(document.visibilityState==='visible') pull(); },20000);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') pull(); });
+  window.addEventListener('focus',pull); window.addEventListener('online',pull);
+
+  /* ================= message kit (this phone only) ================= */
   var ids=['herfull','dob','city','since','you','rel','phone','email','mcd','ssi','doc'];
   var raw={};
   document.querySelectorAll('.tpl .msg').forEach(function(m){ raw[m.closest('.tpl').id]=m.textContent; });
-  function val(id){ var e=document.getElementById('f-'+id); return e? e.value.trim():''; }
+  function val(id){ var e=$('f-'+id); return e? e.value.trim():''; }
   function ph(id,label){ var v=val(id); return v||('['+label+']'); }
-  function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function vars(){
     var herfull=ph('herfull','her full name'), dob=val('dob'), city=ph('city','city'), since=ph('since','how long');
     var you=ph('you','your name'), rel=ph('rel','relationship'), phone=ph('phone','phone'), email=ph('email','email');
@@ -748,7 +834,7 @@ What the money buys: about 20 hours a week of a trained aide for three months (a
     return v;
   }
   function fill(t,v){ return t.replace(/\{(\w+)\}/g,function(_,k){ return (k in v)? v[k] : '{'+k+'}'; }); }
-  function render(){
+  function renderKit(){
     var v=vars();
     document.querySelectorAll('.tpl').forEach(function(t){
       var m=t.querySelector('.msg'); if(!m) return;
@@ -756,98 +842,154 @@ What the money buys: about 20 hours a week of a trained aide for three months (a
       m.innerHTML=esc(txt).replace(/\[([^\]]+)\]/g,'<mark>[$1]</mark>');
     });
   }
-  function saveKit(){ var o={}; ids.forEach(function(i){o[i]=val(i);}); set(KEY,o); }
-  function loadKit(){ var o=get(KEY); ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e&&o[i]) e.value=o[i]; }); }
-  ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e){ ['input','change'].forEach(function(ev){ e.addEventListener(ev,function(){render();saveKit();}); }); } });
+  function saveKit(){ var o={}; ids.forEach(function(i){o[i]=val(i);}); lsSet(LS.kit,o); }
+  (function(){ var o=lsGet(LS.kit,{}); ids.forEach(function(i){ var e=$('f-'+i); if(e&&o[i]) e.value=o[i]; }); })();
+  ids.forEach(function(i){ var e=$('f-'+i); if(e){ ['input','change'].forEach(function(ev){ e.addEventListener(ev,function(){renderKit();saveKit();}); }); } });
   function copyText(txt,b,label){
     function ok(){ b.textContent='Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent=label; b.classList.remove('done'); },1800); }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,function(){ b.textContent='Select and copy by hand'; }); }
     else { b.textContent='Select and copy by hand'; }
   }
-  document.querySelectorAll('.copy').forEach(function(b){
-    b.addEventListener('click',function(){ var m=b.parentNode.querySelector('.msg'); copyText(m.dataset.plain||m.textContent,b,'Copy'); });
-  });
-  loadKit(); render();
+  document.querySelectorAll('.copy').forEach(function(b){ b.addEventListener('click',function(){ var m=b.parentNode.querySelector('.msg'); copyText(m.dataset.plain||m.textContent,b,'Copy'); }); });
+  renderKit();
 
-  /* --- plan checklist, synced across the page --- */
-  var plan=get(PLAN);
+  /* ================= plan checklist ================= */
   var boxes=Array.prototype.slice.call(document.querySelectorAll('.todo input[type=checkbox][data-key]'));
   var master=boxes.filter(function(c){ return c.closest('[data-list="plan"]'); });
   var CHIPS={medicaid:['p1','p3'],doctor:['p2','p6','p7','p8'],ssi:['p4'],aides:['p11','p12','p13','p14'],now:['p5','p9'],charity:['p10','p15']};
-  function paintBoxes(){
-    boxes.forEach(function(c){ c.checked=!!plan[c.dataset.key]; c.closest('li').classList.toggle('on',c.checked); });
+  function planOn(k){ var x=get(['plan',k]); return !!(x&&x.v); }
+  function renderPlan(){
+    boxes.forEach(function(c){ c.checked=planOn(c.dataset.key); c.closest('li').classList.toggle('on',c.checked); });
     var done=master.filter(function(c){return c.checked;}).length, total=master.length;
-    document.getElementById('pcount').textContent=done+' of '+total+' steps done';
-    document.getElementById('pbar').style.width=(total?Math.round(done/total*100):0)+'%';
-    var nx=master.filter(function(c){return !c.checked;})[0], pn=document.getElementById('pnext');
+    $('pcount').textContent=done+' of '+total+' steps done';
+    $('pbar').style.width=(total?Math.round(done/total*100):0)+'%';
+    var nx=master.filter(function(c){return !c.checked;})[0], pn=$('pnext');
     if(nx){ var lab=nx.parentNode.querySelector('label'); var b=lab.querySelector('b'); pn.innerHTML='Next up: <a href="#'+nx.id+'">'+esc(b?b.textContent:lab.textContent.slice(0,80))+'</a>'; }
     else { pn.textContent='Everything on the plan is ticked. Keep the log going.'; }
     Object.keys(CHIPS).forEach(function(k){ var el=document.querySelector('[data-chip="'+k+'"]'); if(!el) return;
-      var n=CHIPS[k].filter(function(id){return plan[id];}).length, t=CHIPS[k].length;
+      var n=CHIPS[k].filter(planOn).length, t=CHIPS[k].length;
       el.className='chip'+(n===t?' done':(n?' part':'')); el.textContent=n===t?'done':(n?n+' of '+t+' done':'not started'); });
   }
-  boxes.forEach(function(c){ c.addEventListener('change',function(){ plan[c.dataset.key]=c.checked; set(PLAN,plan); paintBoxes(); }); });
-  paintBoxes();
-  var hd=document.getElementById('hidedone');
-  function paintHide(){ document.body.classList.toggle('hidedone',!!plan._hide); hd.textContent=plan._hide?"Show what's done":"Hide what's done"; }
-  hd.addEventListener('click',function(){ plan._hide=!plan._hide; set(PLAN,plan); paintHide(); }); paintHide();
+  boxes.forEach(function(c){ c.addEventListener('change',function(){ setField(['plan',c.dataset.key],{v:c.checked,t:Date.now()}); renderPlan(); }); });
+  var hd=$('hidedone'), hide=lsGet(LS.hide,false);
+  function paintHide(){ document.body.classList.toggle('hidedone',!!hide); hd.textContent=hide?"Show what's done":"Hide what's done"; }
+  hd.addEventListener('click',function(){ hide=!hide; lsSet(LS.hide,hide); paintHide(); }); paintHide();
 
-  /* --- mobile table labels --- */
-  document.querySelectorAll('.wide table').forEach(function(t){
-    var hs=Array.prototype.map.call(t.querySelectorAll('tr:first-child th'),function(h){return h.textContent;});
-    t.querySelectorAll('tr').forEach(function(r){ r.querySelectorAll('td').forEach(function(td,i){ if(hs[i]) td.setAttribute('data-label',hs[i]); }); });
-  });
-
-  /* --- call tracker --- */
-  var log=get(LOG);
+  /* ================= call log ================= */
   var STATUS=[['0','Not called'],['1','Left message'],['2','Spoke to them'],['3','Done']];
-  var rows=document.querySelectorAll('#calllog tr[data-k]');
+  var rows=document.querySelectorAll('#calllog tr[data-k]'), rowEls={};
   rows.forEach(function(tr){
-    var k=tr.dataset.k, r=log[k]||{};
-    var cells=tr.querySelectorAll('td');
+    var k=tr.dataset.k, cells=tr.querySelectorAll('td');
     var sel=document.createElement('select'); STATUS.forEach(function(s){ var o=document.createElement('option'); o.value=s[0]; o.textContent=s[1]; sel.appendChild(o); });
     var date=document.createElement('input'); date.type='date';
     var note=document.createElement('input'); note.type='text'; note.className='n'; note.placeholder='who you spoke to, ref #';
-    sel.value=r.s||'0'; date.value=r.d||''; note.value=r.n||'';
     cells[2].appendChild(sel); cells[3].appendChild(date); cells[4].appendChild(note);
-    function paint(){ tr.className='s'+sel.value; }
-    function save(){ log[k]={s:sel.value,d:date.value,n:note.value}; set(LOG,log); paint(); }
+    rowEls[k]={tr:tr,sel:sel,date:date,note:note};
+    function save(){ setField(['calls',k],{s:sel.value,d:date.value,n:note.value,t:Date.now()}); tr.className='s'+sel.value; }
     sel.addEventListener('change',function(){ if(sel.value!=='0'&&!date.value){ date.value=new Date().toISOString().slice(0,10); } save(); });
     date.addEventListener('change',save); note.addEventListener('input',save);
-    paint();
   });
-  var free=document.getElementById('freelog'); free.value=log._free||'';
-  free.addEventListener('input',function(){ log._free=free.value; set(LOG,log); });
-  document.getElementById('copylog').addEventListener('click',function(){
+  function renderCalls(){
+    Object.keys(rowEls).forEach(function(k){ var r=get(['calls',k])||{}, e=rowEls[k], a=document.activeElement;
+      if(a!==e.sel) e.sel.value=r.s||'0'; if(a!==e.date) e.date.value=r.d||''; if(a!==e.note) e.note.value=r.n||''; e.tr.className='s'+(r.s||'0'); });
+    var free=$('freelog'); if(document.activeElement!==free) free.value=(get(['notes'])||{}).v||'';
+  }
+  $('freelog').addEventListener('input',function(){ setField(['notes'],{v:this.value,t:Date.now()}); });
+  $('copylog').addEventListener('click',function(){
     var lines=['Call log for Theresa, '+new Date().toLocaleDateString()];
-    rows.forEach(function(tr){ var k=tr.dataset.k, r=log[k]; if(!r||r.s==='0'&&!r.n) return;
+    rows.forEach(function(tr){ var k=tr.dataset.k, r=get(['calls',k]); if(!r||(r.s||'0')==='0'&&!r.n) return;
       var who=tr.querySelector('td.who').childNodes[0].textContent, num=tr.querySelector('a.tel').textContent;
-      var st=STATUS.filter(function(s){return s[0]===r.s;})[0][1];
+      var st=(STATUS.filter(function(s){return s[0]===(r.s||'0');})[0]||STATUS[0])[1];
       lines.push(who+' ('+num+'): '+st+(r.d?' on '+r.d:'')+(r.n?'. '+r.n:'')); });
-    if(log._free) lines.push('', log._free);
+    var notes=(get(['notes'])||{}).v; if(notes) lines.push('',notes);
     copyText(lines.join('\n'),this,'Copy the call log');
   });
-  document.getElementById('clearlog').addEventListener('click',function(){
-    if(this.dataset.armed){ log={}; set(LOG,log); rows.forEach(function(tr){ tr.querySelector('select').value='0'; tr.querySelector('input[type=date]').value=''; tr.querySelector('input.n').value=''; tr.className='s0'; }); free.value=''; this.textContent='Clear log'; delete this.dataset.armed; }
+  $('clearlog').addEventListener('click',function(){
+    if(this.dataset.armed){ var t=Date.now(), patch={calls:{},notes:{v:'',t:t}}; Object.keys(rowEls).forEach(function(k){ patch.calls[k]={s:'0',d:'',n:'',t:t}; });
+      state=mergeDoc(state,patch); lsSet(LS.state,state); queue.push(patch); lsSet(LS.queue,queue); flush(); renderCalls(); this.textContent='Clear log'; delete this.dataset.armed; }
     else { this.dataset.armed='1'; this.textContent='Tap again to clear everything'; var b=this; setTimeout(function(){ b.textContent='Clear log'; delete b.dataset.armed; },4000); }
   });
 
-  /* --- contacts file --- */
+  /* ================= contacts file ================= */
   var cards=[];
   rows.forEach(function(tr){
     var who=tr.querySelector('td.who').childNodes[0].textContent, small=tr.querySelector('td.who small'), tel=tr.querySelector('a.tel').getAttribute('href').replace('tel:','');
     cards.push('BEGIN:VCARD\r\nVERSION:3.0\r\nN:;Theresa: '+who+';;;\r\nFN:Theresa: '+who+'\r\nTEL;TYPE=WORK,VOICE:'+tel+(small?'\r\nNOTE:'+small.textContent.replace(/[\r\n]+/g,' '):'')+'\r\nEND:VCARD');
   });
-  document.getElementById('vcf').href='data:text/vcard;charset=utf-8,'+encodeURIComponent(cards.join('\r\n'));
+  $('vcf').href='data:text/vcard;charset=utf-8,'+encodeURIComponent(cards.join('\r\n'));
 
-  /* --- section nav highlight --- */
+  /* ================= vault (encrypted on this phone) ================= */
+  var VF=[['ssn','Social Security number','password'],['dob','Date of birth','text'],['mcdcase','Medicaid case number','text'],['mcdid','Medicaid billing / member ID','text'],['ssiclaim','SSI claim or protective filing date','text'],['waiver','Waiver / CareStar / PPL IDs','text'],['other','Anything else (passwords for portals, plan ID, doctor portal login)','textarea']];
+  var vaultPw=lsGet(LS.vaultpw,''), vaultOpen=null, vaultBase={}, vaultSeen=null, subtle=window.crypto&&crypto.subtle, enc=new TextEncoder(), dec=new TextDecoder();
+  function b64(buf){ var s='',a=new Uint8Array(buf); for(var i=0;i<a.length;i++) s+=String.fromCharCode(a[i]); return btoa(s); }
+  function unb64(s){ var b=atob(s),a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+  function key(pw,salt){ return subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']).then(function(km){ return subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:250000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }); }
+  function encrypt(obj,pw){ var salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12));
+    return key(pw,salt).then(function(k){ return subtle.encrypt({name:'AES-GCM',iv:iv},k,enc.encode(JSON.stringify(obj))); }).then(function(ct){ return {ct:b64(ct),iv:b64(iv),salt:b64(salt),t:Date.now()}; }); }
+  function decrypt(v,pw){ return key(pw,unb64(v.salt)).then(function(k){ return subtle.decrypt({name:'AES-GCM',iv:unb64(v.iv)},k,unb64(v.ct)); }).then(function(pt){ return JSON.parse(dec.decode(pt)); }); }
+  function vaultHtml(){
+    var v=get(['vault']), box=$('vaultbody');
+    if(!subtle){ box.innerHTML='<p class="err">This browser cannot lock the vault (needs a current browser over https).</p>'; return; }
+    if(!v||!v.ct){
+      box.innerHTML='<div class="locked"><p><b>Nothing saved yet.</b> Choose a vault passphrase to start. Everyone who needs the details will use this same passphrase.</p><form id="vsetup"><input type="password" id="vpw1" placeholder="vault passphrase" autocomplete="new-password"><input type="password" id="vpw2" placeholder="again" autocomplete="new-password"><button class="btn" type="submit">Create vault</button><label class="chk"><input type="checkbox" id="vrem1"> Remember the passphrase on this phone</label><span class="err" id="verr"></span></form></div>';
+      $('vsetup').addEventListener('submit',function(e){ e.preventDefault(); var a=$('vpw1').value, b=$('vpw2').value; if(a.length<6){ $('verr').textContent='Use at least 6 characters.'; return; } if(a!==b){ $('verr').textContent='The two entries differ.'; return; }
+        encrypt({},a).then(function(enc){ vaultPw=a; if($('vrem1').checked) lsSet(LS.vaultpw,a); vaultOpen={}; vaultSeen=enc.t; vaultMode='open'; setField(['vault'],enc); vaultHtml(); }); });
+      return;
+    }
+    if(vaultOpen===null){
+      box.innerHTML='<div class="locked"><p><b>Locked.</b> Enter the vault passphrase to see or edit the details.</p><form id="vunlock"><input type="password" id="vpw" placeholder="vault passphrase" autocomplete="current-password"><button class="btn" type="submit">Unlock</button><label class="chk"><input type="checkbox" id="vrem"> Remember the passphrase on this phone</label><span class="err" id="verr"></span></form><p><small><a href="#" id="vreset">Lost the passphrase? Start the vault over</a> (erases the saved details for everyone).</small></p></div>';
+      $('vunlock').addEventListener('submit',function(e){ e.preventDefault(); var pw=$('vpw').value; pull().then(function(){ return decrypt(get(['vault']),pw); }).then(function(o){ vaultPw=pw; if($('vrem').checked) lsSet(LS.vaultpw,pw); vaultOpen=o; vaultSeen=get(['vault']).t; vaultMode='open'; vaultHtml(); }).catch(function(){ $('verr').textContent='That passphrase did not open it.'; }); });
+      $('vreset').addEventListener('click',function(e){ e.preventDefault(); if(this.dataset.armed){ lsDel(LS.vaultpw); vaultPw=''; vaultOpen=null; vaultMode='none'; setField(['vault'],{ct:null,iv:null,salt:null,t:Date.now()}); vaultHtml(); } else { this.dataset.armed='1'; this.textContent='Tap again to erase the vault for everyone'; } });
+      if(vaultPw){ decrypt(v,vaultPw).then(function(o){ vaultOpen=o; vaultSeen=v.t; vaultMode='open'; vaultHtml(); }).catch(function(){ lsDel(LS.vaultpw); vaultPw=''; }); }
+      return;
+    }
+    vaultBase=Object.assign({},vaultOpen);
+    var h='<div class="grid">';
+    VF.forEach(function(f){ var id='v-'+f[0], val=esc(vaultOpen[f[0]]||'');
+      if(f[2]==='textarea') h+='<label style="grid-column:1/-1">'+f[1]+'<textarea id="'+id+'" rows="3">'+val+'</textarea></label>';
+      else h+='<label>'+f[1]+'<span class="row"><input id="'+id+'" type="'+f[2]+'" value="'+val+'" autocomplete="off">'+(f[2]==='password'?'<button type="button" class="mini" data-show="'+id+'">Show</button>':'')+'<button type="button" class="mini" data-copy="'+id+'">Copy</button></span></label>'; });
+    h+='</div><div class="toolbar"><button class="btn" type="button" id="vsave">Save to the vault</button><button class="btn quiet" type="button" id="vlock">Lock</button><span id="vmsg" style="font-size:.9rem;color:var(--muted)"></span></div>';
+    box.innerHTML=h;
+    box.querySelectorAll('[data-show]').forEach(function(b){ b.addEventListener('click',function(){ var i=$(b.dataset.show); i.type=i.type==='password'?'text':'password'; b.textContent=i.type==='password'?'Show':'Hide'; }); });
+    box.querySelectorAll('[data-copy]').forEach(function(b){ b.addEventListener('click',function(){ copyText($(b.dataset.copy).value,b,'Copy'); }); });
+    $('vsave').addEventListener('click',function(){ var btn=this, cur={}, changed={};
+      VF.forEach(function(f){ cur[f[0]]=$('v-'+f[0]).value; if((cur[f[0]]||'')!==(vaultBase[f[0]]||'')) changed[f[0]]=cur[f[0]]; });
+      btn.disabled=true; btn.textContent='Saving';
+      // Fetch the newest shared copy first, then lay only the fields changed here on top of it.
+      pull().then(function(){ var v=get(['vault']); if(v&&v.ct&&v.t!==vaultSeen) return decrypt(v,vaultPw).catch(function(){ return vaultBase; }); return vaultBase; })
+      .then(function(latest){ var o=Object.assign({},latest||{},changed); return encrypt(o,vaultPw).then(function(enc){ vaultOpen=o; vaultBase=Object.assign({},o); vaultSeen=enc.t; setField(['vault'],enc);
+        VF.forEach(function(f){ var el=$('v-'+f[0]); if(el&&el!==document.activeElement) el.value=o[f[0]]||''; });
+        btn.textContent='Saved'; btn.classList.add('done'); setTimeout(function(){ btn.textContent='Save to the vault'; btn.classList.remove('done'); },1800); }); })
+      .catch(function(){ btn.textContent='Could not save, try again'; }).then(function(){ btn.disabled=false; }); });
+    $('vlock').addEventListener('click',function(){ lsDel(LS.vaultpw); vaultPw=''; vaultOpen=null; vaultMode='locked'; vaultHtml(); });
+  }
+  var vaultMode='';
+  function renderVault(){
+    var v=get(['vault']), has=!!(v&&v.ct);
+    if(vaultOpen!==null&&!has){ vaultOpen=null; }
+    var want=vaultOpen!==null?'open':(has?'locked':'none');
+    if(want==='open'&&has&&v.t!==vaultSeen&&vaultPw){ decrypt(v,vaultPw).then(function(o){ var ae=document.activeElement, typing=ae&&$('vaultbody').contains(ae)&&/^(INPUT|TEXTAREA)$/.test(ae.tagName); if(!typing){ vaultOpen=o; vaultSeen=v.t; vaultMode='open'; vaultHtml(); } }).catch(function(){}); return; }
+    if(want!==vaultMode||!$('vaultbody').children.length){ vaultMode=want; vaultHtml(); }
+  }
+
+  /* ================= mobile table labels ================= */
+  document.querySelectorAll('.wide table').forEach(function(t){
+    var hs=Array.prototype.map.call(t.querySelectorAll('tr:first-child th'),function(h){return h.textContent;});
+    t.querySelectorAll('tr').forEach(function(r){ r.querySelectorAll('td').forEach(function(td,i){ if(hs[i]) td.setAttribute('data-label',hs[i]); }); });
+  });
+
+  /* ================= section nav highlight ================= */
   var links=Array.prototype.slice.call(document.querySelectorAll('.topnav a'));
   var secs=links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
   var nav=document.querySelector('.topnav'), last=-1;
   function hl(){ var y=window.scrollY+80, cur=0; secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) cur=i; }); if(cur===last) return; last=cur;
     links.forEach(function(a,i){ a.classList.toggle('now',i===cur); }); var a=links[cur];
     if(a){ nav.scrollLeft=Math.max(0, a.offsetLeft - nav.clientWidth/2 + a.offsetWidth/2); } }
-  window.addEventListener('scroll',hl,{passive:true}); hl();
+  window.addEventListener('scroll',hl,{passive:true});
+
+  function renderAll(){ renderPlan(); renderCalls(); renderVault(); }
+  renderAll(); hl();
+  if(code) pull();
 })();
 </script>
 </main>
