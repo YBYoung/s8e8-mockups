@@ -93,6 +93,27 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 .foot{margin-top:2rem; font-size:.95rem; color:var(--muted)}
 .foot ul{padding-left:1.1rem}
 :focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.fill{background:var(--paper); border:2px solid var(--line-strong); border-radius:14px; padding:.9rem 1rem; margin:.8rem 0}
+.fill .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(14rem,1fr)); gap:.6rem .9rem}
+.fill label{display:flex; flex-direction:column; gap:.2rem; font-size:.9rem; color:var(--muted)}
+.fill input,.fill select{font:inherit; font-size:1rem; color:var(--ink); background:var(--bg); border:1.5px solid var(--line-strong); border-radius:8px; padding:.45rem .6rem; min-width:0}
+.tpl{border:1px solid var(--line); border-radius:14px; margin:1rem 0; background:var(--paper); overflow:hidden}
+.tpl-head{padding:.75rem 1rem .5rem; border-bottom:1px solid var(--line)}
+.tpl-head h4{margin:0 0 .2rem}
+.tpl-head .how{font-size:.95rem; color:var(--muted)}
+.tpl-head .how b{color:var(--ink)}
+.tpl .ask{margin:.4rem 0 0; padding-left:1.1rem; font-size:.95rem; color:var(--muted)}
+.tpl .ask li{margin:.15rem 0}
+.msgwrap{position:relative; padding:.75rem 1rem 1rem}
+.msg{white-space:pre-wrap; font-size:1rem; line-height:1.5; margin:0; font-family:inherit; user-select:text}
+.msg mark{background:var(--note-bg); color:var(--note-ink); border-radius:4px; padding:0 .15em}
+.copy{font:inherit; font-size:.95rem; font-weight:700; padding:.5rem .9rem; border-radius:10px; border:0; background:var(--accent); color:var(--accent-ink); cursor:pointer; margin:.6rem 0 0}
+.copy.done{background:var(--done)}
+.order{counter-reset:o; list-style:none; padding:0}
+.order li{display:flex; gap:.6rem; align-items:flex-start; margin:.4rem 0}
+.order li::before{counter-increment:o; content:counter(o); flex:0 0 1.6rem; height:1.6rem; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:.9rem; display:flex; align-items:center; justify-content:center; margin-top:.15rem}
+@media print{ .fill,.copy{display:none} .tpl{border:1px solid #999; border-radius:0; break-inside:avoid} .msg{font-size:8.5pt} }
+
 @media (max-width:400px){ body{font-size:18px} h1{font-size:1.8rem} }
 @media print{
   @page{margin:.5in .55in}
@@ -125,9 +146,10 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
   <li><a href="#aides"><span class="n">6</span><span class="t">Getting the right aides in the door</span></a></li>
   <li><a href="#now"><span class="n">7</span><span class="t">Help that needs no approval: this week</span></a></li>
   <li><a href="#charity"><span class="n">8</span><span class="t">Charities, foundations and fundraising</span></a></li>
-  <li><a href="#backstop"><span class="n">9</span><span class="t">If home stops being possible</span></a></li>
-  <li><a href="#safety"><span class="n">10</span><span class="t">Safety, the diagnosis question, and the family</span></a></li>
-  <li><a href="#plan"><span class="n">11</span><span class="t">The two-week plan, and who does what</span></a></li>
+  <li><a href="#kit"><span class="n">9</span><span class="t">Charity outreach kit: fill in once, copy, send</span></a></li>
+  <li><a href="#backstop"><span class="n">10</span><span class="t">If home stops being possible</span></a></li>
+  <li><a href="#safety"><span class="n">11</span><span class="t">Safety, the diagnosis question, and the family</span></a></li>
+  <li><a href="#plan"><span class="n">12</span><span class="t">The two-week plan, and who does what</span></a></li>
   <li><a href="#phones"><span class="n">☎</span><span class="t">Every phone number on one screen</span></a></li>
 </ul>
 
@@ -145,7 +167,7 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 
   <p><b>Being in Westerville, Dublin or anywhere else in the county changes nothing.</b> Every program here is countywide or statewide, and the home-visit providers cover the metro. Private-pay agencies (Comfort Keepers, Home Helpers and the like) charge by the hour, commonly somewhere around $30, and are not the route for this family.</p>
 
-  <div class="note"><p><b>The honest part about time.</b> Presumptive Medicaid can be same-day. A full Medicaid decision takes up to 45 days. Home health can start the week Medicaid is active if a doctor has ordered it. The waiver adds roughly a month for the assessment and plan. So the realistic picture is: some paid help in the house within about 3 to 6 weeks if the family moves this week, and a fuller plan in 2 to 3 months. The waiver funds hours, not round-the-clock shifts. Nothing in Ohio funds 24-hour care at home; the only 24-hour option Medicaid pays for is a facility (section 9).</p></div>
+  <div class="note"><p><b>The honest part about time.</b> Presumptive Medicaid can be same-day. A full Medicaid decision takes up to 45 days. Home health can start the week Medicaid is active if a doctor has ordered it. The waiver adds roughly a month for the assessment and plan. So the realistic picture is: some paid help in the house within about 3 to 6 weeks if the family moves this week, and a fuller plan in 2 to 3 months. The waiver funds hours, not round-the-clock shifts. Nothing in Ohio funds 24-hour care at home; the only 24-hour option Medicaid pays for is a facility (section 11).</p></div>
 </section>
 
 <!-- 2 -->
@@ -216,7 +238,7 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 <section class="phase" id="doctor">
   <div class="phase-head"><div class="num">5</div><div><h2>A doctor who comes to her, and why that unlocks everything</h2><div class="when">Video or house call. Gentle, short, dim room. No ER.</div></div></div>
 
-  <p>One clinician who has seen her, even by video, is what the waiver assessor, the home health agency, Social Security, the 2027 Medicaid rules, and every charity all ask for. It is also the only way to know whether the thing she has is the thing she believes she has (section 10). Here are the providers that will see a new, uninsured, bedbound patient without moving her, in the order I'd call them.</p>
+  <p>One clinician who has seen her, even by video, is what the waiver assessor, the home health agency, Social Security, the 2027 Medicaid rules, and every charity all ask for. It is also the only way to know whether the thing she has is the thing she believes she has (section 11). Here are the providers that will see a new, uninsured, bedbound patient without moving her, in the order I'd call them.</p>
 
   <h3>Free, and built for exactly this</h3>
   <div class="call"><span class="tel">612-440-9699</span><span><b>ME/CFS Clinic MN.</b> A nonprofit free clinic run by Dr. Ruby Tam. Free video visits for uninsured and under-insured people with ME/CFS or Long COVID in nine states, <b>Ohio included</b>. Register at mecfsclinicmn.org/registration-form or email care@mecfsclinicmn.org. Ask whether they will see someone without a prior diagnosis, and what the wait is. Their note carries weight with everyone else on this page because they are a specialist clinic.</span></div>
@@ -332,8 +354,186 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 </section>
 
 <!-- 9 -->
+<section class="phase" id="kit">
+  <div class="phase-head"><div class="num">9</div><div><h2>Charity outreach kit: fill in once, copy, send</h2><div class="when">Type the family's details once below. Every message on this page fills itself in. Tap Copy, paste into the form, email or text, send. She is never involved.</div></div></div>
+
+  <div class="fill">
+    <p style="margin:0 0 .5rem"><b>Her details and yours.</b> Saved only on this phone. Leave anything blank and the message keeps a bracketed reminder in that spot.</p>
+    <div class="grid">
+      <label>Her first name <input id="f-her" placeholder="e.g. Sarah"></label>
+      <label>Her full legal name <input id="f-herfull" placeholder="as on her ID"></label>
+      <label>Her date of birth <input id="f-dob" placeholder="MM/DD/YYYY"></label>
+      <label>Her city and zip <input id="f-city" placeholder="e.g. Westerville 43081"></label>
+      <label>How long she has been bedbound <input id="f-since" placeholder="e.g. about 8 months"></label>
+      <label>Your name <input id="f-you" placeholder="who is sending this"></label>
+      <label>You are her <select id="f-rel"><option value="">choose</option><option>brother</option><option>sister</option><option>mother</option><option>father</option><option>sibling</option></select></label>
+      <label>Your phone <input id="f-phone" placeholder="614-555-0100"></label>
+      <label>Your email <input id="f-email" placeholder="you@example.com"></label>
+      <label>Date Medicaid was applied for <input id="f-mcd" placeholder="or 'this week'"></label>
+      <label>Date SSI was applied for <input id="f-ssi" placeholder="or 'this week'"></label>
+      <label>Doctor who has seen her (if any) <input id="f-doc" placeholder="name and clinic, or leave blank"></label>
+    </div>
+  </div>
+
+  <h3>The order that wastes the least effort</h3>
+  <ol class="order">
+    <li><span><b>Today, no doctor needed:</b> Patient Advocate Foundation, Jewish Family Services, two loan closets, LifeCare Alliance, and (if Mom is 55 or older) the Office on Aging. Five sends.</span></li>
+    <li><span><b>Today, one question only:</b> ask Help Hope Live whether a working diagnosis is enough to open a campaign. One email.</span></li>
+    <li><span><b>The day the doctor's note exists:</b> AMMES, the Help Hope Live application, the STABLE account, and the message to friends and family. The note is the key to all four, so the doctor request below goes out first.</span></li>
+  </ol>
+  <p>Everything below is written in your voice as her representative. If Mom is the one sending, change "You are her" above to mother and the wording adjusts. Nothing here calls her "broke" or "in debt." It describes what she needs and what it costs.</p>
+
+  <div class="tpl" id="t-about">
+    <div class="tpl-head"><h4>The one paragraph about her</h4><div class="how">Paste this anywhere a form asks "tell us about the situation." Every template below reuses it.</div></div>
+    <div class="msgwrap"><p class="msg">My {rel_poss} {her} ({age_dob}) lives in {city}, Ohio, and has been completely bedbound for {since}. She cannot sit up, stand or walk, has to be carried to the toilet, takes only liquids through a straw, and can speak only a word or two at a time. She is extremely sensitive to light and sound and sleeps only in short stretches. Her working diagnosis is severe myalgic encephalomyelitis / chronic fatigue syndrome (ME/CFS); a formal medical evaluation is under way{doc_clause}. She has no income, no assets and no health insurance. Ohio Medicaid ({mcd}) and SSI ({ssi}) applications have been filed. Her mother and brother are her only caregivers and are exhausted. I am her {rel} and I handle all paperwork and calls for her, because she cannot. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-doc">
+    <div class="tpl-head"><h4>To the doctor, after the first visit: the note that opens every fund</h4><div class="how"><b>Send by:</b> the clinic's patient portal message, or email to the clinic, or hand it over at the video visit. <b>Why first:</b> AMMES, Help Hope Live, the STABLE account and Social Security all want these exact sentences.</div>
+    <ul class="ask"><li>Ask for it on letterhead, signed and dated, as a PDF.</li><li>If the clinic will only write what it has observed, that is fine; the functional sentences are what matter.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Dear {doc_or_team},
+
+Thank you for seeing my {rel_poss} {her} ({age_dob}). To get her the in-home care she needs, several programs require a short signed statement from a clinician who has examined her. Could you please provide a letter, on letterhead and dated, that includes as many of the following as you can confirm:
+
+1. That she is confined to bed by a long-standing condition, not a recent accident or surgery, and has been for {since}. (Social Security's presumptive disability rule uses these exact words.)
+2. Her functional limits in plain terms: unable to sit up, stand, walk or transfer without being lifted; unable to toilet without hands-on help; taking only liquids by straw; unable to speak more than a word or two; unable to tolerate normal light or sound; needing help with all activities of daily living.
+3. Her working diagnosis (severe ME/CFS, or whatever you judge appropriate) and the fact that evaluation is ongoing, with any findings you recorded.
+4. That in your opinion her condition results in marked and severe functional limitations expected to last 12 months or more. (This sentence is what the ABLE Act and the ME/CFS charity fund need.)
+5. Orders for home health nursing and aide services, a hospital bed with pressure-relief mattress, and a bedside commode.
+
+Please send it to me, her {rel} and representative: {you}, {phone}, {email}. I will forward it to Medicaid, Social Security and the charities. Thank you for caring for her.
+
+{you}</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-paf">
+    <div class="tpl-head"><h4>Patient Advocate Foundation: free case manager</h4><div class="how"><b>Send by:</b> the online form at patientadvocate.org/request-paf-assistance, or call 800-532-5274 and press 2 (weekdays 8:30 to 5 Eastern). <b>No doctor needed</b>: their rules cover people "seeking screening services related to symptoms or suspicion of" a debilitating illness.</div>
+    <ul class="ask"><li>They will ask: patient name, date of birth, state, insurance status (uninsured), household income (zero), diagnosis or suspected diagnosis, what you need help with.</li><li>Put yourself down as the contact. Say she cannot take calls.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Request for case management, on behalf of my {rel_poss}.
+
+{about}
+
+What we need help with: (1) getting her Ohio Medicaid application processed, including presumptive eligibility and her authorized representative designation, since she cannot sign; (2) her SSI claim, including a presumptive disability finding for bed confinement; (3) getting her enrolled in the Ohio Home Care Waiver for in-home aide hours; (4) any financial assistance available to an uninsured patient with a suspected chronic debilitating illness. Her income is $0 and she has no assets. Please assign a case manager and contact me directly.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-jfs">
+    <div class="tpl-head"><h4>Jewish Family Services Columbus: navigator, emergency help, caregiver support</h4><div class="how"><b>Send by:</b> the online intake at wayfynder.org, or call 614-237-9675 and read the message aloud. All faiths, all of central Ohio.</div>
+    <ul class="ask"><li>They will ask: who you are, who the client is, address, household, income, what you need. Say the client is your sister or daughter and that you are the contact.</li></ul></div>
+    <div class="msgwrap"><p class="msg">I am asking for help for my {rel_poss}, who cannot make this request herself.
+
+{about}
+
+We are asking for three things: (1) a service navigator who can help us get in-home care started through Medicaid and the Ohio Home Care Waiver while her applications are pending; (2) any emergency financial assistance available for her basic needs or medical supplies; (3) caregiver support for her mother, who is carrying most of her physical care alone. If JFS cannot help with something, a referral to whoever can would be very welcome.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-hhl-q">
+    <div class="tpl-head"><h4>Help Hope Live: the one question to ask today</h4><div class="how"><b>Send by:</b> email through the contact form at helphopelive.org, or call 800-642-8399. Before you build a campaign, find out whether they will open one on a working diagnosis.</div></div>
+    <div class="msgwrap"><p class="msg">Subject: Eligibility question before applying, severe chronic illness, Ohio
+
+Hello,
+
+I am considering applying to open a Help Hope Live campaign for my {rel_poss}, and I have one question before I do. She is completely bedbound, unable to speak more than a few words, fed only liquids, and dependent on her mother and brother for all care, for {since}. Her working diagnosis is severe ME/CFS; a formal evaluation is under way and a clinician's letter describing her functional limits is expected soon. She has no income and no insurance; Medicaid and SSI are pending. Her fundraising need is in-home caregiver hours, a hospital bed and supplies while Medicaid processes.
+
+Can a campaign be opened, or verified by her clinician, on a working diagnosis and documented functional limits, or do you require a confirmed named diagnosis first? And would in-home caregiver wages paid to an agency or an individual qualify as a payable expense?
+
+Thank you. I handle everything on her behalf: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-hhl-app">
+    <div class="tpl-head"><h4>Help Hope Live: the campaign application, once the doctor's note exists</h4><div class="how"><b>Send by:</b> "Get started" on helphopelive.org. <b>They will need:</b> her name and address, your contact details as the campaign lead, the clinician's name and email so they can log in and verify, and an expected-expenses list. Money raised goes to vendors, never to her, so it does not touch SSI or Medicaid.</div>
+    <ul class="ask"><li>Give the clinic a heads-up that Help Hope Live will email them a verification link.</li><li>Fees are about 3% on cheques and 5.65% online; donations are tax-deductible.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Patient: {herfull}, {age_dob}, {city}, Ohio. Campaign contact: {you} ({rel}), {phone}, {email}. Verifying clinician: {doc_or_blank}.
+
+Situation: {about}
+
+Expected expenses over the next 6 months, all payable to vendors:
+• In-home personal care aide, 20 hours a week at roughly $30 an hour through a licensed agency, until Medicaid waiver hours begin: about $2,400 a month, 3 months: $7,200
+• Hospital bed with pressure-relief mattress, bedside commode, slide sheets, incontinence supplies: about $1,500
+• Home blood draws and telehealth visit fees while uninsured: about $500
+• Mobile phlebotomy, medications and medical supplies not yet covered: about $600
+Total ask: about $9,800
+
+Why this matters: she has no income and no insurance. Medicaid and SSI have been applied for and, once active, will pay for ongoing care at no cost. This campaign covers the gap between now and then, and the equipment that stops her mother from having to lift and carry her.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-ammes">
+    <div class="tpl-head"><h4>AMMES Financial Crisis Fund: once the doctor's note exists</h4><div class="how"><b>Send by:</b> the form at ammes.org/ammes-financial-crisis-fund, problems to finaid@ammes.org. Grants are "in the hundreds of dollars," one-time, and can pay for home care, equipment or a bill.</div>
+    <ul class="ask"><li>Attach three things: proof of need (a benefits notice, or a signed statement that she has $0 income), the doctor's letter naming ME/CFS, and a bill or quote for what the money is for.</li><li>Ask for one specific thing. A quote from a home care agency for a block of hours, or a receipt for a bed, is ideal.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Application on behalf of my {rel_poss}, who cannot complete this herself.
+
+{about}
+
+Specific need: [one item, with the quote or bill attached: e.g. "20 hours of personal care aide time from an agency at $30 an hour, $600, to relieve her mother while Medicaid processes" or "a pressure-relief mattress overlay, $ amount"]. Attached: the clinician's letter documenting her diagnosis and functional limits, a statement of her $0 income, and the quote. Any grant can be paid directly to the vendor. Thank you for what this fund does.
+
+{you}, {rel}, {phone}, {email}</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-closet">
+    <div class="tpl-head"><h4>Loan closets: 30-second phone script</h4><div class="how"><b>Call:</b> MOBILE Equipment Loan Program 614-443-5936 · Peace Church Helping Hands, Pickerington 614-837-4568 · Church of the Ascension, Johnstown 614-581-5286 · First Presbyterian Church of Westerville (ask for the MAP loan program) · or 211. Say it as written; they hear this every day.</div></div>
+    <div class="msgwrap"><p class="msg">Hi, I'm calling about borrowing medical equipment. My {rel_poss} in {city} is completely bedbound and her mother is having to lift and carry her. We have no insurance yet. Do you have a hospital bed, a pressure-relief mattress, a bedside commode, and a wheelchair we could borrow for a few months? We can pick up with a truck, or if you deliver that would help enormously. My name is {you}, my number is {phone}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-lca">
+    <div class="tpl-head"><h4>LifeCare Alliance: meals and Help-at-Home</h4><div class="how"><b>Send by:</b> the referral form at lifecarealliance.org/referral (choose "family member" as referrer), or call 614-278-3130.</div>
+    <ul class="ask"><li>They will ask: her name, date of birth, address, phone (give yours), why she cannot prepare meals, dietary needs (liquids only), payer (none yet; Medicaid pending), and emergency contact.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Referral for my {rel_poss} {herfull}, {age_dob}, {city}. She is completely bedbound and takes only liquids by straw, so she needs nutrition that can be drunk (shakes, soups, high-calorie liquids) rather than solid meals. She has no income and no insurance; Ohio Medicaid is pending ({mcd}). I am asking for (1) home-delivered meals or liquid nutrition with hardship pricing until Medicaid is active, and (2) a quote and start date for Help-at-Home personal care hours so her mother, who is her only daily caregiver, can get relief. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-fcoa">
+    <div class="tpl-head"><h4>Franklin County Office on Aging: only if Mom is 55 or older</h4><div class="how"><b>Call:</b> 614-525-6200, ask for the Caregiver Support Program. Their rule covers "non-paid relatives aged 55+ caring for an adult with a disability," which is Mom. Respite, counselling and equipment, up to three months a year.</div></div>
+    <div class="msgwrap"><p class="msg">I'm calling about the Caregiver Support Program for a relative aged 55 or older who is caring for an adult with a disability. The caregiver is my mother, [Mom's name], age [age], in {city}. She is the unpaid full-time caregiver for my sister {her}, who is under 60, completely bedbound, cannot speak, and needs help with everything. There is no insurance yet; Medicaid is pending. We are asking for in-home respite hours so my mother can rest, and for any equipment help, such as a hospital bed. I handle the paperwork for the family: {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-svdp">
+    <div class="tpl-head"><h4>St. Vincent de Paul or IMPACT Community Action: a bill, not care</h4><div class="how"><b>Call:</b> St. Vincent de Paul Columbus 614-376-3604 (Monday, Tuesday, Thursday) for the parish conference covering her address; IMPACT Community Action for utilities and emergency needs. Use only if there is a specific overdue bill in her mother's household.</div></div>
+    <div class="msgwrap"><p class="msg">I'm asking for help with a specific bill on behalf of my mother's household in {city}. She is the full-time unpaid caregiver for my sister, who is completely bedbound and uninsured, with Medicaid pending. The bill is [what, amount, due date]. Paying it directly to [the utility / landlord] would keep the household stable while my sister's benefits process. My name is {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-church">
+    <div class="tpl-head"><h4>A congregation or community group: sitters, meals, a small fund</h4><div class="how"><b>Send by:</b> email to a clergy member or the care-team lead. Works for any congregation the family has ever belonged to, and for large churches with care teams (several in Westerville and Dublin run the equipment closets above).</div></div>
+    <div class="msgwrap"><p class="msg">Subject: A family in your area that needs a few hands
+
+Hello,
+
+I'm writing on behalf of my family in {city}. {about}
+
+We are not asking for money to be sent to her; that would actually cost her the benefits she is waiting on. We are asking for hands: a few people who could take a two-hour sitting shift once a week so her mother can leave the house, help moving a borrowed hospital bed in, and, if your community has a meal train, liquid nutrition (shakes, broths, soups) since she can only drink. If there is a benevolence fund that pays vendors directly, an agency caregiver for a few hours a week is the single most useful thing. I coordinate everything for the family and can give any volunteer a one-page sheet on how to be in her room quietly. Thank you for reading this.
+
+{you}, {phone}, {email}</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-clinic">
+    <div class="tpl-head"><h4>ME/CFS Clinic MN registration: what to put in the form</h4><div class="how"><b>Send by:</b> mecfsclinicmn.org/registration-form, or email care@mecfsclinicmn.org, or 612-440-9699. Not a charity, but the free clinic whose note unlocks the rest, so it goes out today.</div>
+    <ul class="ask"><li>The form asks for the patient's details; enter hers, with your phone and email as contact and a note that a family member must be on the call.</li></ul></div>
+    <div class="msgwrap"><p class="msg">Registration on behalf of my {rel_poss} {herfull}, {age_dob}, {city}, Ohio, who cannot complete this herself.
+
+{about}
+
+She has not yet had a formal evaluation and has no established doctor. We are asking for a free telehealth visit with her mother in the room, in a dark room with the camera on her, as short as possible. From that visit we need, if you are able, a signed letter describing her functional limits and working diagnosis, and orders for home health and a hospital bed, so that Medicaid, Social Security and the charities can act. Please contact me: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-friends">
+    <div class="tpl-head"><h4>To friends and family who want to help: the benefit-safe version</h4><div class="how"><b>Send by:</b> text, email or a group chat, once a Help Hope Live campaign or STABLE account exists. This replaces the GoFundMe. It asks for specific things and keeps money out of her name.</div></div>
+    <div class="msgwrap"><p class="msg">Many of you have asked how to help {her}. Here is the honest picture and the one way to help that doesn't backfire.
+
+{her} has been completely bedbound for {since}: she can't sit up, can't speak more than a word or two, takes only liquids, and is cared for entirely by Mom and [brother's name]. She has no income or insurance. Medicaid and SSI are applied for and will cover her care once approved, but that takes weeks to months, and the rules are strict: any money in her own name over $2,000 cancels those benefits. So please don't send her cash.
+
+Instead: [Option A: Donate through her Help Hope Live page (link). It's a nonprofit, donations are tax-deductible, and the money pays her caregivers and equipment directly.] [Option B: Contribute to her STABLE account (details), which is protected for people with disabilities.] [Option C: Pay a vendor directly: a block of agency caregiver hours, or the mattress on this list (link).]
+
+What the money buys: about 20 hours a week of a trained aide for three months (about $7,200), a hospital bed and supplies (about $1,500), and home blood draws and visit fees (about $1,000). Every dollar shortens the time Mom is doing this alone. Thank you. I'm handling all of it: {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
+  </div>
+
+  <div class="tpl" id="t-stable">
+    <div class="tpl-head"><h4>STABLE account: not a message, a 15-minute form</h4><div class="how"><b>Where:</b> stableaccount.com, "Open an account," choose "Authorized Legal Representative." Once the doctor's letter includes sentence 4 from the doctor template above, you qualify to open it for her (siblings and parents are on the allowed list).</div>
+    <ul class="ask"><li>You will need: her full name, date of birth, Social Security number and address; yours; and a bank account to fund it (can be $0 to start).</li><li>Keep the doctor's letter in the folder; you certify you have it, you don't upload it.</li><li>Then give the account details to anyone who wants to give money, instead of her bank account.</li></ul></div>
+  </div>
+
+  <div class="note"><p><b>Keep one folder.</b> Save every sent message and every reply in one place with the date. When the doctor's note arrives, forward it to Patient Advocate Foundation, Jewish Family Services and Help Hope Live in one go, with a single line: "Attached is the clinician's letter you'll need for {her}'s file."</p></div>
+</section>
+
+<!-- 10 -->
 <section class="phase" id="backstop">
-  <div class="phase-head"><div class="num">9</div><div><h2>If home stops being possible</h2><div class="when">Nobody wants this. Knowing it exists is what lets the family keep going.</div></div></div>
+  <div class="phase-head"><div class="num">10</div><div><h2>If home stops being possible</h2><div class="when">Nobody wants this. Knowing it exists is what lets the family keep going.</div></div></div>
 
   <p>Medicaid's only 24-hour option is a facility. Both routes below need Medicaid and the same nursing-facility "level of care" finding the waiver uses, so everything in sections 3 to 5 still comes first.</p>
   <ul>
@@ -342,12 +542,12 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
     <li><b>Respite in a facility</b> is a waiver service. Once she's enrolled, a few days a quarter in a facility to let the house breathe is a legitimate ask.</li>
     <li><b>Adult family homes</b> (small licensed homes with a state supplement) are for people who need supervision, not nursing, and require an SSA disability award first. Probably not a fit; noted so you don't chase it.</li>
   </ul>
-  <p>If she were ever admitted to a hospital for three days or more, two things open up: Medicaid home health jumps to 28 hours a week for 60 days after discharge, and the hospital's own social workers can start the waiver or a facility placement from the bed. The ME community has written guides on making an admission survivable; section 10 lists them.</p>
+  <p>If she were ever admitted to a hospital for three days or more, two things open up: Medicaid home health jumps to 28 hours a week for 60 days after discharge, and the hospital's own social workers can start the waiver or a facility placement from the bed. The ME community has written guides on making an admission survivable; section 11 lists them.</p>
 </section>
 
-<!-- 10 -->
+<!-- 11 -->
 <section class="phase" id="safety">
-  <div class="phase-head"><div class="num">10</div><div><h2>Safety, the diagnosis question, and the family</h2><div class="when">Written carefully, because this is where families split.</div></div></div>
+  <div class="phase-head"><div class="num">11</div><div><h2>Safety, the diagnosis question, and the family</h2><div class="when">Written carefully, because this is where families split.</div></div></div>
 
   <h3>Call 911 regardless of what anyone believes she has</h3>
   <div class="warn"><p>No fluids kept down for 24 hours, or no urine in 12. Fever. Chest pain or trouble breathing. A new open sore over a bone. A swollen, warm or painful calf. New confusion, or she stops responding to her yes/no signal. These are the complications of lying still and living on liquids, and they kill people with any diagnosis. Severe ME/CFS specialists say the same thing: the 2026 expert statement on home care says tube feeding should never be "withheld or delayed," and a 2021 case series by ME clinicians (Baxter, Speight and Weir) documents five patients whose feeding was delayed into life-threatening malnutrition. Maeve Boothby O'Neill, 27, died of malnutrition from severe ME in England in 2021; the coroner's 2024 report faults the absence of any care pathway, not the fact of hospital care. The ME world's own hospital packs (linked below) exist because sometimes admission is the safe choice, and they make it less harmful.</p></div>
@@ -378,9 +578,9 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
   </ul>
 </section>
 
-<!-- 11 -->
+<!-- 12 -->
 <section class="phase" id="plan">
-  <div class="phase-head"><div class="num">11</div><div><h2>The two-week plan, and who does what</h2><div class="when">You coordinate. Mom signs. Ethan is the bedside person. Nobody new becomes the caregiver.</div></div></div>
+  <div class="phase-head"><div class="num">12</div><div><h2>The two-week plan, and who does what</h2><div class="when">You coordinate. Mom signs. Ethan is the bedside person. Nobody new becomes the caregiver.</div></div></div>
 
   <h3>Days 1 to 3</h3>
   <ol>
@@ -450,6 +650,54 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
   <p><b>Main sources.</b> Ohio Administrative Code 5160-46-02 (Ohio Home Care Waiver eligibility), 5160-3-08 (level of care), 5160-12-01 (home health, 14-hour rule), 5160-45-03.2 and 5160-44-32 (paid relatives under self-direction), 5160-44-33 (Structured Family Caregiving), 5160:1-2-01 and 5160:1-2-08 (application, representatives, signatures), 5160:1-2-13 (presumptive eligibility); Ohio Medicaid's Ohio Home Care Waiver Handbook (July 2026); ODM moratorium notice effective May 14, 2026 to November 14, 2026; PPL's Ohio self-direction page; ODM Group VIII partner packet (August 13, 2026); 42 CFR 435.907, 435.910 and 435.923 (who may apply, Social Security number, representatives); 20 CFR 416.315 and 416.934 and SSA POMS DI 11055.231, DI 11055.240, DI 23535.001, DI 23020.030, SI 02004.005 (presumptive disability, dire need, emergency advance); SSA 2026 COLA fact sheet ($994); SSR 14-1p; Ohio Revised Code 5101.60 (adult protective services age), 2111.02 (emergency guardianship), 1337.12 (health care power of attorney), 5122.01 and 5122.10 (emergency psychiatric hold); Franklin County PRC plan FFY 2026-27; Franklin County Probate Court guardianship information; CDC "ME/CFS Clinical Care for Severely Affected Patients"; NICE NG206; Hermisson et al. 2026 (Wien Med Wochenschr, doi 10.1007/s10354-026-01182-3); Baxter, Speight and Weir 2021 (Healthcare 9:459); Montoya et al. 2021 (Healthcare 9:1331); UK Prevention of Future Deaths report 2024-0530; Solve M.E. Severe ME Medical Panel Resource Guide (January 2025); provider pages for each organisation named above.</p>
 </div>
 
+
+<script>
+(function(){
+  var KEY='her-outreach-kit-v1';
+  var ids=['her','herfull','dob','city','since','you','rel','phone','email','mcd','ssi','doc'];
+  var raw={};
+  document.querySelectorAll('.tpl .msg').forEach(function(m){ raw[m.closest('.tpl').id]=m.textContent; });
+  function val(id){ var e=document.getElementById('f-'+id); return e? e.value.trim():''; }
+  function ph(id,label){ var v=val(id); return v||('['+label+']'); }
+  function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function vars(){
+    var her=ph('her','her name'), herfull=ph('herfull','her full name'), dob=val('dob'), city=ph('city','city'), since=ph('since','how long');
+    var you=ph('you','your name'), rel=ph('rel','relationship'), phone=ph('phone','phone'), email=ph('email','email');
+    var mcd=val('mcd')||'[date applied]', ssi=val('ssi')||'[date applied]', doc=val('doc');
+    var rel_poss = (rel==='mother'||rel==='father') ? 'daughter' : 'sister';
+    var age_dob = dob ? ('born '+dob) : '[date of birth]';
+    var doc_clause = doc ? (' with '+doc) : '';
+    var doc_or_team = doc ? doc : 'Doctor';
+    var doc_or_blank = doc ? doc : '[clinician name, clinic, email]';
+    var v={her:her,herfull:herfull,city:city,since:since,you:you,rel:rel,phone:phone,email:email,mcd:mcd,ssi:ssi,
+      rel_poss:rel_poss,age_dob:age_dob,doc_clause:doc_clause,doc_or_team:doc_or_team,doc_or_blank:doc_or_blank};
+    v.about = fill(raw['t-about'],v);
+    return v;
+  }
+  function fill(t,v){ return t.replace(/\{(\w+)\}/g,function(_,k){ return (k in v)? v[k] : '{'+k+'}'; }); }
+  function render(){
+    var v=vars();
+    document.querySelectorAll('.tpl').forEach(function(t){
+      var m=t.querySelector('.msg'); if(!m) return;
+      var txt=fill(raw[t.id],v);
+      m.dataset.plain=txt;
+      m.innerHTML=esc(txt).replace(/\[([^\]]+)\]/g,'<mark>[$1]</mark>');
+    });
+  }
+  function save(){ var o={}; ids.forEach(function(i){o[i]=val(i);}); try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
+  function load(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e&&o[i]) e.value=o[i]; }); }catch(e){} }
+  ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e){ e.addEventListener('input',function(){render();save();}); e.addEventListener('change',function(){render();save();}); } });
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var m=b.parentNode.querySelector('.msg'); var txt=m.dataset.plain||m.textContent;
+      function ok(){ b.textContent='Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent='Copy'; b.classList.remove('done'); },1800); }
+      function fallback(){ try{ var r=document.createRange(); r.selectNodeContents(m); var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent='Selected, now copy'; }catch(e){} }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fallback); } else { fallback(); }
+    });
+  });
+  load(); render();
+})();
+</script>
 </main>
 </body>
 </html>
