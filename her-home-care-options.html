@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Getting paid care into her room</title>
-<meta name="description" content="What actually pays for in-home caregivers in Franklin County when she has no money, no insurance and no diagnosis, what the family can start this week, and who to call.">
+<meta name="robots" content="noindex">
+<title>Getting in-home care for Theresa</title>
+<meta name="description" content="What pays for in-home caregivers for Theresa in Franklin County, what you have to do to make it happen, in what order, and who to call.">
 <style>
 :root{
   box-sizing:border-box;
@@ -35,14 +36,10 @@
   --done:#72CC9C; --done-soft:#1C3328;
   --note-bg:#3A2F12; --note-ink:#F5DFA2; --warn-bg:#3E2320; --warn-ink:#F2B8AE; --say-bg:#262E2C;
 }
-html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 1rem); scroll-behavior:smooth}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 3.6rem); scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
 *{box-sizing:inherit}
-body{
-  margin:0; background:var(--bg); color:var(--ink);
-  font-family:"Atkinson Hyperlegible","Verdana",system-ui,sans-serif;
-  font-size:19px; line-height:1.5; -webkit-text-size-adjust:100%;
-}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:"Atkinson Hyperlegible","Verdana",system-ui,sans-serif; font-size:19px; line-height:1.5; -webkit-text-size-adjust:100%}
 main{max-width:42rem; margin:0 auto; padding:0 1rem 4rem}
 h1{font-size:2rem; line-height:1.12; margin:1.25rem 0 .6rem; letter-spacing:-.01em; text-wrap:balance}
 h2{font-size:1.45rem; line-height:1.2; margin:0; text-wrap:balance}
@@ -52,6 +49,10 @@ p{margin:.55rem 0}
 b{font-weight:700}
 a{color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px; word-break:break-word}
 .lead{font-size:1.1rem; color:var(--muted); margin:0 0 1.1rem}
+.topnav{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--paper); border-bottom:1px solid var(--line); margin:0 -1rem; padding:.35rem .6rem; display:flex; gap:.35rem; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+.topnav::-webkit-scrollbar{display:none}
+.topnav a{flex:0 0 auto; font-size:.85rem; font-weight:700; text-decoration:none; color:var(--ink); background:var(--accent-soft); padding:.45rem .7rem; border-radius:8px; white-space:nowrap}
+.topnav a.now{background:var(--accent); color:var(--accent-ink)}
 .jump{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:.35rem .5rem; margin:1rem 0 1.5rem; list-style:none}
 .jump li{margin:0}
 .jump a{display:flex; align-items:center; gap:.75rem; padding:.6rem .5rem; min-height:3rem; text-decoration:none; color:var(--ink); border-top:1px solid var(--line)}
@@ -75,7 +76,7 @@ a{color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px;
 .num{flex:0 0 auto; width:2.5rem; height:2.5rem; border-radius:50%; background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:1.25rem; display:flex; align-items:center; justify-content:center; margin-top:.1rem}
 .when{color:var(--muted); font-size:.98rem; margin-top:.2rem}
 .call{display:flex; flex-wrap:wrap; gap:.4rem .8rem; align-items:center; background:var(--accent-soft); border-radius:12px; padding:.6rem .75rem; margin:.55rem 0}
-.call .tel{display:inline-block; background:var(--accent); color:var(--accent-ink); font-weight:700; padding:.6rem .9rem; border-radius:10px; font-size:1.05rem; white-space:nowrap; user-select:all}
+.call .tel{display:inline-block; background:var(--accent); color:var(--accent-ink); font-weight:700; padding:.6rem .9rem; border-radius:10px; font-size:1.05rem; white-space:nowrap; text-decoration:none}
 .call span{color:var(--muted); font-size:.98rem; flex:1 1 10rem}
 .call span b{color:var(--ink)}
 ul,ol{padding-left:1.2rem; margin:.4rem 0}
@@ -91,12 +92,11 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 .tag.later{background:var(--note-bg); color:var(--note-ink)}
 .tag.no{background:var(--warn-bg); color:var(--warn-ink)}
 .foot{margin-top:2rem; font-size:.95rem; color:var(--muted)}
-.foot ul{padding-left:1.1rem}
 :focus-visible{outline:3px solid var(--accent); outline-offset:2px}
 .fill{background:var(--paper); border:2px solid var(--line-strong); border-radius:14px; padding:.9rem 1rem; margin:.8rem 0}
 .fill .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(14rem,1fr)); gap:.6rem .9rem}
 .fill label{display:flex; flex-direction:column; gap:.2rem; font-size:.9rem; color:var(--muted)}
-.fill input,.fill select{font:inherit; font-size:1rem; color:var(--ink); background:var(--bg); border:1.5px solid var(--line-strong); border-radius:8px; padding:.45rem .6rem; min-width:0}
+.fill input,.fill select,.log input,.log select,.log textarea{font:inherit; font-size:1rem; color:var(--ink); background:var(--bg); border:1.5px solid var(--line-strong); border-radius:8px; padding:.45rem .6rem; min-width:0}
 .tpl{border:1px solid var(--line); border-radius:14px; margin:1rem 0; background:var(--paper); overflow:hidden}
 .tpl-head{padding:.75rem 1rem .5rem; border-bottom:1px solid var(--line)}
 .tpl-head h4{margin:0 0 .2rem}
@@ -107,20 +107,63 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 .msgwrap{position:relative; padding:.75rem 1rem 1rem}
 .msg{white-space:pre-wrap; font-size:1rem; line-height:1.5; margin:0; font-family:inherit; user-select:text}
 .msg mark{background:var(--note-bg); color:var(--note-ink); border-radius:4px; padding:0 .15em}
-.copy{font:inherit; font-size:.95rem; font-weight:700; padding:.5rem .9rem; border-radius:10px; border:0; background:var(--accent); color:var(--accent-ink); cursor:pointer; margin:.6rem 0 0}
-.copy.done{background:var(--done)}
+.btn,.copy{font:inherit; font-size:.95rem; font-weight:700; padding:.5rem .9rem; border-radius:10px; border:0; background:var(--accent); color:var(--accent-ink); cursor:pointer; margin:.6rem .4rem 0 0; text-decoration:none; display:inline-block}
+.btn.quiet{background:var(--accent-soft); color:var(--accent)}
+.copy.done,.btn.done{background:var(--done)}
 .order{counter-reset:o; list-style:none; padding:0}
 .order li{display:flex; gap:.6rem; align-items:flex-start; margin:.4rem 0}
 .order li::before{counter-increment:o; content:counter(o); flex:0 0 1.6rem; height:1.6rem; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-weight:700; font-size:.9rem; display:flex; align-items:center; justify-content:center; margin-top:.15rem}
-@media print{ .fill,.copy{display:none} .tpl{border:1px solid #999; border-radius:0; break-inside:avoid} .msg{font-size:8.5pt} }
-
+.todo{list-style:none; padding:0; margin:.5rem 0}
+.todo li{display:flex; gap:.7rem; align-items:flex-start; padding:.55rem .2rem; border-top:1px solid var(--line)}
+.todo li:first-child{border-top:0}
+.todo input{width:1.5rem; height:1.5rem; flex:0 0 auto; margin-top:.15rem; accent-color:var(--done)}
+.todo label{flex:1 1 auto; cursor:pointer}
+.todo li.on label{color:var(--muted); text-decoration:line-through; text-decoration-thickness:1px}
+table.log{width:100%; border-collapse:collapse; font-size:.92rem; min-width:40rem}
+.log th,.log td{padding:.4rem .35rem; vertical-align:middle}
+.log td.who{font-weight:700; min-width:11rem}
+.log td.who small{display:block; font-weight:400; color:var(--muted)}
+.log a.tel{white-space:nowrap; font-weight:700}
+.log select{padding:.3rem .4rem; font-size:.9rem}
+.log input[type=date]{padding:.3rem .4rem; font-size:.9rem; width:9.5rem}
+.log input.n{width:100%; font-size:.9rem; padding:.3rem .45rem}
+.log tr.s2 td.who,.log tr.s3 td.who{color:var(--done)}
+.log tr.s1 td.who{color:var(--note-ink)}
+.toolbar{display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; margin:.4rem 0 .8rem}
+.progress{background:var(--paper); border:2px solid var(--line-strong); border-radius:14px; padding:.8rem 1rem; margin:1rem 0}
+.progress .bar{height:.7rem; background:var(--accent-soft); border-radius:999px; overflow:hidden; margin:.35rem 0 .5rem}
+.progress .bar span{display:block; height:100%; width:0; background:var(--done); transition:width .3s}
+.progress p{margin:.3rem 0}
+.progress .next{display:block; margin-top:.3rem}
+.progress .next a{font-weight:700}
+.chip{display:inline-block; font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; padding:.15rem .5rem; border-radius:6px; background:var(--accent-soft); color:var(--accent); font-weight:700; vertical-align:middle; margin-left:.4rem}
+.chip.part{background:var(--note-bg); color:var(--note-ink)}
+.chip.done{background:var(--done-soft); color:var(--done)}
+.donewhen{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:.5rem .8rem; margin:.8rem 0 .4rem}
+.donewhen h4{margin:.2rem 0 .1rem; font-size:.9rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted)}
+body.hidedone .todo li.on{display:none}
+body.hidedone .todo:not(:has(li:not(.on)))::after{content:"All done here."; display:block; color:var(--muted); padding:.4rem .2rem}
+@media (max-width:640px){
+  .wide{margin:.5rem 0; padding:0; overflow:visible}
+  .wide table{min-width:0; display:block; font-size:.95rem}
+  .wide thead, .wide tr:first-child:has(th){display:none}
+  .wide tr{display:block; border:1px solid var(--line); border-radius:12px; padding:.5rem .7rem; margin:.6rem 0; background:var(--paper)}
+  .wide td{display:block; border:0; padding:.2rem 0}
+  .wide td[data-label]:not(:first-child)::before{content:attr(data-label); display:block; font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-top:.35rem}
+  .wide td:empty{display:none}
+  .log td.who{min-width:0}
+  .log input[type=date]{width:100%}
+  .log select{width:100%}
+  .totop{right:.6rem}
+}
+.totop{position:fixed; right:.8rem; bottom:calc(env(safe-area-inset-bottom,0px) + .8rem); z-index:5; background:var(--accent); color:var(--accent-ink); text-decoration:none; font-weight:700; padding:.55rem .8rem; border-radius:10px; font-size:.9rem; box-shadow:0 2px 8px rgba(0,0,0,.18)}
 @media (max-width:400px){ body{font-size:18px} h1{font-size:1.8rem} }
 @media print{
   @page{margin:.5in .55in}
   html{padding:0}
   body{background:#fff; color:#000; font-size:9.5pt; line-height:1.25}
   main{max-width:none; padding:0}
-  .jump{display:none}
+  .jump,.topnav,.totop,.fill,.copy,.btn,.toolbar{display:none}
   .phase{border:0; border-top:1.5px solid #000; border-radius:0; padding:.08in 0 .04in; margin:.06in 0 0; background:none}
   .num{width:.28in; height:.28in; font-size:10pt; background:#000; color:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact}
   .note,.warn,.say,.doc{border:1px solid #999; background:none; color:#000; border-radius:0; padding:.05in .08in; margin:.06in 0}
@@ -128,261 +171,290 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
   .call .tel{background:none; color:#000; padding:0}
   a{color:#000; text-decoration:none}
   table{font-size:8.5pt; min-width:0}
+  .tpl{border:1px solid #999; border-radius:0; break-inside:avoid}
+  .msg{font-size:8.5pt}
 }
 </style>
 </head>
 <body>
 <main>
 
-<h1>Getting paid care into her room</h1>
-<p class="lead">What actually pays for in-home caregivers in Franklin County when she has no money, no insurance and no diagnosis. What the family can start this week. Who to call, in what order. Researched September 27, 2026. This builds on the earlier "Getting her care covered" checklist; where the two overlap, this page is the more current one.</p>
+<nav class="topnav" aria-label="Sections">
+  <a href="#plan">Plan</a><a href="#pays">What pays</a><a href="#medicaid">Medicaid</a><a href="#doctor">Doctor</a><a href="#ssi">SSI</a><a href="#aides">Aides</a><a href="#now">This week</a><a href="#charity">Charities</a><a href="#kit">Messages</a><a href="#backstop">Backstop</a><a href="#safety">Safety</a><a href="#phones">Phones</a>
+</nav>
+
+<h1>Getting in-home care for Theresa</h1>
+<p class="lead">Theresa is bedbound, has no income, no insurance and no diagnosis. This page is for the person handling it for her: you. It says what pays for in-home caregivers in Franklin County, what has to happen for that to start, in what order, and who to call. Every rule and number was read at its source on September 27, 2026. Check the boxes and log the calls; the page saves them on this phone.</p>
 
 <div class="warn">
-  <p><b>Read this before you rely on anything below.</b> On September 27, 2026, every rule, phone number and source on this page was read directly at its primary source (the Social Security manual and regulations, the Ohio Administrative Code, the state's own notices and handbooks, each provider's and charity's own site) through a real browser, and the page was corrected wherever the source disagreed with it. Rules change and phone trees change, so treat it as a well-sourced map, not a guarantee. On every call, confirm the number, the rule and the name of the person you spoke to, and write it in the log.</p>
-  <p><b>Items that still could not be confirmed, marked "confirm" where they appear:</b> whether presumptive Medicaid pays for home health visits before the full approval; whether OhioHealth at Home will take a new uninsured patient on charity care while Medicaid is pending (its charity policy does cover home health patients); whether Gentiva's Columbus office provides non-hospice palliative care; whether the free ME/CFS clinic will see someone with no prior diagnosis, and its current wait; PrimaryOne's separate telehealth number; Getlabs' visit fee; whether LifeCare Alliance's Help-at-Home aides will serve someone under 60, and the fee; the STABLE annual contribution figure; the assisted-living room-and-board figure; the Ohio CareLine number. The full list and all sources are at the bottom of the page.</p>
+  <p><b>The short version.</b> Only Ohio Medicaid pays for ongoing in-home caregivers: regular home health (a nurse and an aide, up to 14 hours a week) and the Ohio Home Care Waiver (aide hours set by an assessment, for people under 60 who need nursing-home-level help). With no income the cost to the family is $0. No charity does this. Everything on this page is either the path to Medicaid, the one clinician visit that unlocks every program, or help around the edges while you wait.</p>
+  <p><b>What still needs confirming</b> is marked "confirm" where it appears and listed at the bottom. On every call, note the number, the rule and the name of the person you spoke to in the log.</p>
+</div>
+
+<div class="progress" id="progress">
+  <p><b id="pcount">0 of 15 steps done</b></p>
+  <div class="bar"><span id="pbar"></span></div>
+  <p class="next" id="pnext"></p>
+  <button class="btn quiet" type="button" id="hidedone">Hide what's done</button>
 </div>
 
 <ul class="jump">
-  <li><a href="#answer"><span class="n">1</span><span class="t">The short answer</span></a></li>
-  <li><a href="#money"><span class="n">2</span><span class="t">What pays for paid caregivers, and what doesn't</span></a></li>
-  <li><a href="#apply"><span class="n">3</span><span class="t">Applying when she can't give you the details</span></a></li>
-  <li><a href="#cash"><span class="n">4</span><span class="t">Cash within weeks: Social Security's presumptive disability</span></a></li>
-  <li><a href="#doctor"><span class="n">5</span><span class="t">A doctor who comes to her, and why that unlocks everything</span></a></li>
-  <li><a href="#aides"><span class="n">6</span><span class="t">Getting the right aides in the door</span></a></li>
-  <li><a href="#now"><span class="n">7</span><span class="t">Help that needs no approval: this week</span></a></li>
-  <li><a href="#charity"><span class="n">8</span><span class="t">Charities, foundations and fundraising</span></a></li>
-  <li><a href="#kit"><span class="n">9</span><span class="t">Charity outreach kit: fill in once, copy, send</span></a></li>
+  <li><a href="#plan"><span class="n">1</span><span class="t">The plan: what you do, in order</span></a></li>
+  <li><a href="#pays"><span class="n">2</span><span class="t">What pays for caregivers, and what doesn't</span></a></li>
+  <li><a href="#medicaid"><span class="n">3</span><span class="t">Step 1: get her Medicaid started this week</span></a></li>
+  <li><a href="#doctor"><span class="n">4</span><span class="t">Step 2: one clinician who has seen her</span></a></li>
+  <li><a href="#ssi"><span class="n">5</span><span class="t">Step 3: SSI cash within weeks</span></a></li>
+  <li><a href="#aides"><span class="n">6</span><span class="t">Step 4: getting aides in the door</span></a></li>
+  <li><a href="#now"><span class="n">7</span><span class="t">Help that needs no approval</span></a></li>
+  <li><a href="#charity"><span class="n">8</span><span class="t">Charities and fundraising</span></a></li>
+  <li><a href="#kit"><span class="n">9</span><span class="t">Messages: fill in once, copy, send</span></a></li>
   <li><a href="#backstop"><span class="n">10</span><span class="t">If home stops being possible</span></a></li>
-  <li><a href="#safety"><span class="n">11</span><span class="t">Safety, the diagnosis question, and the family</span></a></li>
-  <li><a href="#plan"><span class="n">12</span><span class="t">The two-week plan, and who does what</span></a></li>
-  <li><a href="#phones"><span class="n">☎</span><span class="t">Every phone number on one screen</span></a></li>
+  <li><a href="#safety"><span class="n">11</span><span class="t">Safety, the diagnosis question, the family</span></a></li>
+  <li><a href="#phones"><span class="n">☎</span><span class="t">Every phone number, with a call tracker</span></a></li>
 </ul>
 
 <!-- 1 -->
-<section class="phase" id="answer">
-  <div class="phase-head"><div class="num">1</div><div><h2>The short answer</h2><div class="when">Read this part first. The rest is the how.</div></div></div>
+<section class="phase" id="plan">
+  <div class="phase-head"><div class="num">1</div><div><h2>The plan: what you do, in order</h2><div class="when">Tick each one as it's done; the page remembers on this phone, and each step section below shows the same ticks. Realistic timing: some paid help in the house in 3 to 6 weeks if you start this week; a fuller plan in 2 to 3 months.</div></div></div>
 
-  <p><b>No charity or foundation in Ohio pays for ongoing in-home caregivers for an adult with no diagnosis.</b> I looked. The only thing that does is Ohio Medicaid, and specifically two Medicaid programs: regular home health (a nurse and an aide, up to 14 hours a week) and the Ohio Home Care Waiver (aide hours set by an assessment, for people under 60 who need nursing-home-level help). Both cost the family nothing. With zero income she has no copay, no spend-down and no "patient liability." That is the answer to "we can't afford it": on Medicaid, the price is zero. Everything else on this page is either a bridge to get there faster, or help around the edges.</p>
-
-  <p><b>You can apply for her without her.</b> Ohio's rules let a family member act for an adult who can't act for herself, and the county is required to help appoint a representative when someone is too incapacitated to name one. The application needs her Social Security number, her date of birth, and the fact that she has no income. Citizenship and identity are usually verified electronically from the number. Section 3 has where to find the number if she can't tell you.</p>
-
-  <p><b>Two fast tracks exist, and neither needs a diagnosis.</b> A community health center or hospital can grant "presumptive" Medicaid the same day, on the family's word about income. And Social Security has a rule that lets the local office start paying SSI, up to $994 a month for up to six months, for someone "confined to bed" by a long-standing condition, before any medical decision and without medical records, as long as someone outside the family can back up what you say. Section 4.</p>
-
-  <p><b>The bottleneck is one clinician who has actually examined her.</b> Not for the label. For the paperwork: the waiver assessment wants a clinical note, home health needs a doctor's order and a face-to-face visit, the final SSI decision needs documented findings over time, and Ohio's new 2027 Medicaid rules will want proof she's "medically frail." One home visit, or one video visit, feeds all of those. There is a free ME/CFS telehealth clinic that serves Ohio, two Columbus community health centers that take new uninsured patients by video, and two palliative teams that come to the house. Section 5.</p>
-
-  <p><b>Being in Westerville, Dublin or anywhere else in the county changes nothing.</b> Every program here is countywide or statewide, and the home-visit providers cover the metro. Private-pay agencies (Comfort Keepers, Home Helpers and the like) charge by the hour, roughly $29 to $33 in Columbus by 2024 to 2026 surveys, and are not the route for this family.</p>
-
-  <div class="note"><p><b>The honest part about time.</b> Presumptive Medicaid can be same-day. A full Medicaid decision takes up to 45 days. Home health can start the week Medicaid is active if a doctor has ordered it. The waiver adds roughly a month for the assessment and plan. So the realistic picture is: some paid help in the house within about 3 to 6 weeks if the family moves this week, and a fuller plan in 2 to 3 months. The waiver funds hours, not round-the-clock shifts. Nothing in Ohio funds 24-hour care at home; the only 24-hour option Medicaid pays for is a facility (section 11).</p></div>
+  <h3>Days 1 to 3</h3>
+  <ul class="todo" data-list="plan">
+    <li><input type="checkbox" id="p1" data-key="p1"><label for="p1"><b>Find her Social Security number.</b> Old tax return, W-2, pay stub, insurance card, financial aid letter, car title, a parent's return if she was ever claimed. (<a href="#medicaid">Step 1</a>)</label></li>
+    <li><input type="checkbox" id="p2" data-key="p2"><label for="p2"><b>Get a video visit booked.</b> Call the free ME/CFS clinic and Lower Lights the same day; ask both about a same-day presumptive Medicaid determination. (<a href="#doctor">Step 2</a>)</label></li>
+    <li><input type="checkbox" id="p3" data-key="p3"><label for="p3"><b>File the Medicaid application by phone</b> as the person acting responsibly for her; ask for the three months back. (<a href="#medicaid">Step 1</a>)</label></li>
+    <li><input type="checkbox" id="p4" data-key="p4"><label for="p4"><b>File the SSI claim</b> and ask for presumptive disability (bed confinement), a dire-need flag and an emergency advance. (<a href="#ssi">Step 3</a>)</label></li>
+    <li><input type="checkbox" id="p5" data-key="p5"><label for="p5"><b>Call two loan closets</b> for a hospital bed, pressure mattress and commode. (<a href="#now">Section 7</a>)</label></li>
+  </ul>
+  <h3>Days 4 to 10</h3>
+  <ul class="todo" data-list="plan">
+    <li><input type="checkbox" id="p6" data-key="p6"><label for="p6"><b>The video visit happens.</b> Come out with the functional note, the home health order, the palliative referral and a labs order. Have a one-page description of what she can't do written beforehand. (<a href="#doctor">Step 2</a>)</label></li>
+    <li><input type="checkbox" id="p7" data-key="p7"><label for="p7"><b>Book a mobile blood draw.</b></label></li>
+    <li><input type="checkbox" id="p8" data-key="p8"><label for="p8"><b>Send the palliative referral</b> to Mount Carmel and ask Gentiva about non-hospice palliative care.</label></li>
+    <li><input type="checkbox" id="p9" data-key="p9"><label for="p9"><b>LifeCare Alliance referral</b> for meals. If your mother is 55 or older, call the Office on Aging caregiver program.</label></li>
+    <li><input type="checkbox" id="p10" data-key="p10"><label for="p10"><b>Send the no-doctor-needed messages:</b> Patient Advocate Foundation, Jewish Family Services, the Help Hope Live question. (<a href="#kit">Section 9</a>)</label></li>
+  </ul>
+  <h3>The day Medicaid is approved (presumptive or full)</h3>
+  <ul class="todo" data-list="plan">
+    <li><input type="checkbox" id="p11" data-key="p11"><label for="p11"><b>Home health order to an agency;</b> screen agencies with the six questions. (<a href="#aides">Step 4</a>)</label></li>
+    <li><input type="checkbox" id="p12" data-key="p12"><label for="p12"><b>Call the long-term care line for the waiver assessment</b> and say "self-directed." (<a href="#aides">Step 4</a>)</label></li>
+    <li><input type="checkbox" id="p13" data-key="p13"><label for="p13"><b>Start looking for a self-directed caregiver</b> through the ME community and the palliative social worker.</label></li>
+    <li><input type="checkbox" id="p14" data-key="p14"><label for="p14"><b>Call her managed care plan</b> and ask for a care manager for a bedbound member.</label></li>
+  </ul>
+  <h3>The day the doctor's note exists</h3>
+  <ul class="todo" data-list="plan">
+    <li><input type="checkbox" id="p15" data-key="p15"><label for="p15"><b>Send the note</b> to Social Security, the county, Patient Advocate Foundation, Jewish Family Services and Help Hope Live in one go. Open the STABLE account. Apply to AMMES. (<a href="#charity">Section 8</a>)</label></li>
+  </ul>
+  <p><small>Who does what: you coordinate and make the calls; your mother signs and sits in on visits; your brother is the bedside person who writes her care sheet and fills in the hospital pack. Nobody new becomes the caregiver.</small></p>
 </section>
 
 <!-- 2 -->
-<section class="phase" id="money">
-  <div class="phase-head"><div class="num">2</div><div><h2>What pays for paid caregivers, and what doesn't</h2><div class="when">Every source I checked, ranked by how much it can actually do.</div></div></div>
+<section class="phase" id="pays">
+  <div class="phase-head"><div class="num">2</div><div><h2>What pays for caregivers, and what doesn't</h2><div class="when">Ranked by how much it can actually do.</div></div></div>
 
   <div class="wide"><table>
-    <tr><th>Source</th><th>What it gives</th><th>Needs</th><th>Cost to family</th></tr>
-    <tr><td><b>Ohio Home Care Waiver</b> <span class="tag free">the main one</span></td><td>Personal care aide hours, waiver nursing, supplies, home changes, respite in a facility, emergency button. Hours come from CareStar's in-home assessment of need, not a fixed weekly number; the rule caps waiver services at $14,700 a month per person (rule 5160-46-02), which is far more than aide hours ever reach.</td><td>Medicaid active; under 60; needs help with 2 or more daily activities (she needs help with all of them). No diagnosis required by the rule.</td><td>$0 with no income</td></tr>
-    <tr><td><b>Medicaid home health</b> <span class="tag free">starts sooner</span></td><td>A nurse plus a home health aide for bathing, toileting, repositioning, feeding. Up to 14 hours a week combined (visits of up to 4 hours, up to 8 hours a day); 28 hours a week for 60 days after a hospital stay of 3+ days; more only with the state's prior authorization (the rule's built-in path to extra hours is for people under 21).</td><td>Medicaid active; a doctor's, nurse practitioner's or PA's order; a face-to-face visit within 90 days before care starts (video counts).</td><td>$0</td></tr>
+    <tr><th>Source</th><th>What it gives</th><th>Needs</th><th>Cost</th></tr>
+    <tr><td><b>Ohio Home Care Waiver</b> <span class="tag free">the main one</span></td><td>Personal care aide hours, waiver nursing, supplies, home changes, respite in a facility, emergency button. Hours come from CareStar's in-home assessment of need; the rule caps waiver services at $14,700 a month (rule 5160-46-02), far more than aide hours reach.</td><td>Medicaid active; under 60; needs help with 2 or more daily activities. No diagnosis required by the rule.</td><td>$0 with no income</td></tr>
+    <tr><td><b>Medicaid home health</b> <span class="tag free">starts sooner</span></td><td>A nurse plus a home health aide for bathing, toileting, repositioning, feeding. Up to 14 hours a week combined (visits up to 4 hours, up to 8 hours a day); 28 hours a week for 60 days after a hospital stay of 3+ days; more only with the state's prior authorization (the rule's built-in extra-hours path is for people under 21).</td><td>Medicaid active; a doctor's, nurse practitioner's or PA's order; a face-to-face visit within 90 days before care starts (video counts).</td><td>$0</td></tr>
     <tr><td><b>SSI cash</b> <span class="tag free">cash, not services</span></td><td>Up to $994 a month (2026). Can start within weeks under "presumptive disability" for bed confinement. Brings Medicaid automatically in Ohio once approved.</td><td>An SSI claim filed by a family member; the local office agreeing she is bed-confined.</td><td>$0</td></tr>
-    <tr><td><b>Self-directed waiver care</b> <span class="tag free">you choose the person</span></td><td>Under the waiver, she (through her representative) hires her own aides. Friends, neighbours, a caregiver the ME community recommends. Her mother or brother can be paid too, as a fallback, not the plan. Ohio's rule (5160-44-32) lets a parent or sibling of an adult be paid even while holding her power of attorney or acting as her authorized representative, up to 40 hours a week each; a court-appointed guardian needs the court's permission first. The one role that cannot also be a paid worker is the person who signs as her employer representative in the state payroll system (PPL), so give that role to whoever will not be paid.</td><td>Waiver enrolment. Ohio has frozen new independent-provider enrolment until at least November 14, 2026, but self-directed hiring is explicitly still open.</td><td>$0</td></tr>
-    <tr><td><b>Structured Family Caregiving</b> <span class="tag later">fallback</span></td><td>A daily tax-free stipend to a live-in family caregiver, through an agency, with coaching. Medicaid pays the agency at most $102.68 a day, about $3,100 a month (rule 5160-46-06, 2026 rate); the caregiver's share is set by the agency, so get it in writing.</td><td>Waiver enrolment; caregiver lives with her.</td><td>$0, but it pays family, it doesn't replace them</td></tr>
-    <tr><td><b>Retroactive Medicaid</b></td><td>Pays bills from up to 3 months before the application month if she was eligible then. Drops to 1 month for applications filed from January 2027, so filing in 2026 is worth real money.</td><td>Ask for it on the application.</td><td>$0</td></tr>
-    <tr><td><b>LifeCare Alliance</b></td><td>Home-delivered meals for "older adult or medically challenged" Franklin County residents; a Help-at-Home aide program that its site describes as for older adults, so ask whether it can take someone under 60.</td><td>A referral; no Medicaid needed.</td><td>Meals free if funder-supported, otherwise self-pay; aide fee unverified, ask</td></tr>
-    <tr><td><b>Charities and foundations</b> <span class="tag no">not for ongoing care</span></td><td>One-time grants for equipment or a bill. The ME-specific fund needs a diagnosis. Details in section 8.</td><td>Varies</td><td>$0</td></tr>
-    <tr><td><b>Franklin County PRC emergency cash</b> <span class="tag no">she's not eligible</span></td><td>Rent, utilities, up to about $2,000. Household must include a minor child or a pregnant person.</td><td></td><td></td></tr>
+    <tr><td><b>Self-directed waiver care</b> <span class="tag free">you choose the person</span></td><td>Under the waiver she (through her representative) hires her own aides. Her mother or a sibling can be paid too, even while holding her power of attorney, up to 40 hours a week each (rule 5160-44-32); a court-appointed guardian needs the court's permission. The one role that cannot be paid is whoever signs as her employer representative in the PPL payroll system, so give that role to whoever will not be paid.</td><td>Waiver enrolment. Ohio has frozen new independent-provider enrolment until at least November 14, 2026, but self-directed hiring is still open.</td><td>$0</td></tr>
+    <tr><td><b>Structured Family Caregiving</b> <span class="tag later">fallback</span></td><td>A daily tax-free stipend to a live-in family caregiver, through an agency, with coaching. Medicaid pays the agency at most $102.68 a day, about $3,100 a month (rule 5160-46-06); the caregiver's share is set by the agency. It pays family, it doesn't add hands.</td><td>Waiver enrolment; caregiver lives with her.</td><td>$0</td></tr>
+    <tr><td><b>Retroactive Medicaid</b></td><td>Pays bills from up to 3 months before the application month. Drops to 1 month for applications filed from January 2027, so filing in 2026 is worth real money.</td><td>Ask for it on the application.</td><td>$0</td></tr>
+    <tr><td><b>LifeCare Alliance</b></td><td>Home-delivered meals for "older adult or medically challenged" residents; a Help-at-Home aide program its site describes as for older adults (ask whether it can take someone under 60).</td><td>A referral; no Medicaid needed.</td><td>Meals free if funder-supported, else self-pay; aide fee: ask</td></tr>
+    <tr><td><b>Charities and foundations</b> <span class="tag no">not for ongoing care</span></td><td>One-time grants for equipment or a bill. The ME-specific fund needs a diagnosis. Section 8.</td><td>Varies</td><td>$0</td></tr>
+    <tr><td><b>Franklin County PRC emergency cash</b> <span class="tag no">not eligible</span></td><td>Household must include a minor child or a pregnant person.</td><td></td><td></td></tr>
     <tr><td><b>Ohio Disability Financial Assistance</b> <span class="tag no">gone</span></td><td>Ended December 2017.</td><td></td><td></td></tr>
-    <tr><td><b>Private-pay agencies</b> <span class="tag no">too expensive</span></td><td>Comfort Keepers, Home Helpers, Visiting Angels and similar. Roughly $29 to $33 an hour.</td><td>Money</td><td>Thousands a month</td></tr>
+    <tr><td><b>Private-pay agencies</b> <span class="tag no">too expensive</span></td><td>Comfort Keepers, Home Helpers, Visiting Angels and similar, roughly $29 to $33 an hour.</td><td>Money</td><td>Thousands a month</td></tr>
   </table></div>
 
-  <p>Two eligibility notes that matter for a family. First, the Medicaid group she'll be in (adults 19 to 64 with income under about $1,835 a month, no asset test) counts <b>the tax household</b>. If her mother claims her as a dependent on her taxes, the county counts her mother's income. If mom's income is also low that's fine; if not, do not claim her as a dependent for 2026, and say on the application that no one claims her. (Same-day presumptive coverage uses a simpler household, just her, so it is not affected either way.) Second, starting January 2027 that group gets a work requirement with an exemption for people who are "medically frail," and Ohio says it will want documentation for new applicants rather than taking their word. A doctor's note describing her function is that documentation. Applying on the basis of disability (or getting SSI) takes her out of that group entirely.</p>
+  <p><b>Two eligibility points.</b> The Medicaid group she'll be in (adults 19 to 64, income under about $1,835 a month, no asset test) counts the tax household: if your mother claims Theresa as a dependent, the county counts your mother's income. If that income isn't low, don't claim her for 2026 and say on the application that no one claims her. (Same-day presumptive coverage uses a simpler household, just her, so it is not affected.) From January 2027 that group has a work requirement with a "medically frail" exemption, and Ohio will want a clinician's documentation for new applicants rather than their word. The doctor's note in Step 2 is that documentation. Applying on the basis of disability, or getting SSI, takes her out of that group entirely.</p>
+  <p><b>Being in Westerville, Dublin or anywhere else in the county changes nothing.</b> Every program here is countywide or statewide and the home-visit providers cover the metro. Nothing in Ohio funds 24-hour care at home; the only 24-hour option Medicaid pays for is a facility (Section 10).</p>
 </section>
 
 <!-- 3 -->
-<section class="phase" id="apply">
-  <div class="phase-head"><div class="num">3</div><div><h2>Applying when she can't give you the details</h2><div class="when">Most of what Medicaid and Social Security need can come from the family, not from her.</div></div></div>
+<section class="phase" id="medicaid">
+  <div class="phase-head"><div class="num">3</div><div><h2>Step 1: get her Medicaid started this week <span class="chip" data-chip="medicaid">not started</span></h2><div class="when">You can apply for her without her. Most of what the application needs comes from the family.</div></div></div>
 
-  <h3>What the application actually needs from her</h3>
+  <h3>What the application needs from Theresa</h3>
   <ul>
-    <li><b>Her Social Security number.</b> This is the one thing that is close to essential, because Ohio verifies citizenship and identity electronically from it. Where to find it without asking her: any old tax return or W-2, a pay stub, an old health insurance card or explanation of benefits, a college financial aid letter, a car title or loan paperwork, an old passport application, a 1099 from any bank or gig job. If a parent ever claimed her as a dependent, it's on the parent's return. And if you truly can't find it, federal rule 42 CFR 435.910 says the county must "request SSA to furnish the number" and must "not deny or delay services to an otherwise eligible individual pending issuance or verification" of it. Say that sentence if a caseworker stalls.</li>
-    <li><b>Date of birth, address, and "no income."</b> The family knows these.</li>
-    <li><b>A signature.</b> Ohio accepts a written, electronic or telephone signature. An "X" or a mark counts. If she can't make any mark, say so; the county's own rules say that when someone is "unable to identify an authorized representative because of incapacity or incompetence, the administrative agency will assist the individual with appointing an authorized representative." Federal rules add that "someone acting responsibly for the applicant" may apply for an incapacitated adult. Use those phrases on the phone.</li>
+    <li><b>Her Social Security number.</b> Ohio verifies citizenship and identity electronically from it. Look in any old tax return or W-2, a pay stub, an old health insurance card, a college financial aid letter, a car title, a 1099, or a parent's return if she was ever claimed. If you truly can't find it, federal rule 42 CFR 435.910 says the county must "request SSA to furnish the number" and must "not deny or delay services to an otherwise eligible individual pending issuance or verification" of it. Say that sentence if a caseworker stalls.</li>
+    <li><b>Date of birth, address, and "no income."</b> You know these.</li>
+    <li><b>A signature.</b> Ohio accepts a written, electronic or telephone signature; an "X" or a mark counts (rule 5160:1-2-01). If she can't make any mark: rule 5160:1-2-08 says that when someone is "unable to identify an authorized representative because of incapacity or incompetence, the administrative agency will assist the individual with appointing an authorized representative." Federal rule 435.907 lets "someone acting responsibly for the applicant" apply for an incapacitated adult. Use those phrases.</li>
   </ul>
 
   <h3>The fastest route, in order</h3>
   <ol>
-    <li><b>Same-day presumptive Medicaid through a community health center.</b> Hospitals, federally qualified health centers, county JFS, and the health department can all grant temporary Medicaid on the spot, based on what the family states about income. It needs no signature from her and no documents that day. It does not reach back in time, it can be used once in 12 months, it likely does not cover waiver services, and the full application has to be filed by the last day of the following month or the coverage ends, but it makes her "covered" for a doctor visit and starts the clock. Ask Lower Lights, PrimaryOne or Heart of Ohio (section 5) whether they can do a presumptive determination for a new patient being seen by video. If one says no, ask the next.</li>
-    <li><b>The full application by phone, the same week.</b> Ohio Benefits at 1-844-640-6446, or Franklin County JFS at 614-233-2000. Say: "I'm applying for Medicaid for my adult sister, who is bedbound and cannot speak or handle paperwork. I'm acting responsibly on her behalf and I need the county to help appoint me as her authorized representative. She has no income and no one claims her as a dependent. Please include the three months before this application, and note that she is disabled and will need long-term in-home care." Write down the case number.</li>
-    <li><b>The SSI claim, the same week.</b> Section 4. Social Security's rule 20 CFR 416.315 says that if the claimant "is physically unable to sign the application," then "a person who is responsible for the care of the claimant, including a relative, may sign."</li>
+    <li><b>Same-day presumptive Medicaid through a community health center.</b> Hospitals, federally qualified health centers, county JFS and the health department can grant temporary Medicaid on the spot, on what the family states about income. No signature from her, no documents that day. It doesn't reach back in time, it can be used once in 12 months, it likely doesn't cover waiver services, and the full application must be filed by the last day of the following month or it ends. But it makes her covered for a doctor visit and starts the clock. PrimaryOne confirms it does these determinations; ask Lower Lights and Heart of Ohio too (Step 2).</li>
+    <li><b>The full application by phone, the same week.</b> Ohio Benefits 1-844-640-6446, or Franklin County JFS 614-233-2000. Say: "I'm applying for Medicaid for my adult sister, Theresa, who is bedbound and cannot speak or handle paperwork. I'm acting responsibly on her behalf and I need the county to help appoint me as her authorized representative. She has no income and no one claims her as a dependent. Please include the three months before this application, and note that she is disabled and will need long-term in-home care." Write down the case number.</li>
+    <li><b>The SSI claim, the same week.</b> Step 3. Social Security's rule 20 CFR 416.315: if the claimant "is physically unable to sign the application," then "a person who is responsible for the care of the claimant, including a relative, may sign."</li>
   </ol>
 
-  <div class="say"><span class="k">If the county says she has to sign</span><p><q>She is physically unable to sign or make a mark. Your rule 5160:1-2-08 says that when an individual is unable to identify an authorized representative because of incapacity, the agency will assist with appointing one, under rule 5160:1-2-01. What is your process for that?</q> If they still refuse, call the Medicaid Consumer Hotline at 1-800-324-8680 and, if needed, Legal Aid of Southeast and Central Ohio (formerly the Legal Aid Society of Columbus) at 1-888-246-4420.</p></div>
+  <div class="say"><span class="k">If the county says she has to sign</span><p><q>She is physically unable to sign or make a mark. Your rule 5160:1-2-08 says that when an individual is unable to identify an authorized representative because of incapacity, the agency will assist with appointing one, under rule 5160:1-2-01. What is your process for that?</q> If they still refuse, call the Medicaid Consumer Hotline at 1-800-324-8680 and, if needed, Legal Aid at 1-888-246-4420.</p></div>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p1" id="p1-m"><label for="p1-m">Her Social Security number is found</label></li><li><input type="checkbox" data-key="p3" id="p3-m"><label for="p3-m">The Medicaid application is filed by phone and you have a case number</label></li></ul></div>
 </section>
 
 <!-- 4 -->
-<section class="phase" id="cash">
-  <div class="phase-head"><div class="num">4</div><div><h2>Cash within weeks: Social Security's presumptive disability</h2><div class="when">The single most useful thing in this research. Most families never hear of it.</div></div></div>
-
-  <p>SSI is the federal cash benefit for disabled people with no work history and no money. A normal SSI disability decision takes months. But Social Security has a short list of conditions where the <b>local field office can start paying immediately</b>, before any medical review and "without obtaining any medical evidence." One of the categories is bed confinement. The wording on Social Security's own list is:</p>
-
-  <div class="doc"><h4>Presumptive disability category</h4><p>"Allegation of bed confinement or immobility without a wheelchair, walker, or crutches, due to a longstanding condition, excluding recent accident and recent surgery."</p><p class="src">20 CFR 416.934(d), word for word. The field-office chart (POMS DI 11055.231, row 5) says the same thing in slightly different words: "Allegation of bed confinement and immobility without a wheelchair, walker, or crutches due to a longstanding condition. Exclude a recent accident or recent surgery." Payments can run up to 6 months while the real decision is made. They do not have to be paid back if she is later found not disabled, only if she turns out to have been financially ineligible (DI 11055.230).</p></div>
-
-  <p>She fits that sentence exactly. What to do:</p>
-  <ol>
-    <li>Call Social Security at 1-800-772-1213 (weekdays 8 to 7). Say: "I'm calling to file an SSI claim for my adult sister. She is confined to bed by a long-standing condition and cannot come to the phone. I'm a family member caring for her. Please note today as her protective filing date." They will set a phone appointment.</li>
-    <li>At the appointment, ask for three things by name: <b>"a presumptive disability finding under the bed confinement category,"</b> <b>"a dire need flag"</b> (their rule DI 23020.030: no money for food, medicine or medical care; it moves the case to the front), and <b>"an emergency advance payment"</b> (a one-time advance of up to one month's SSI, $994, for someone presumptively eligible with a financial emergency; it is taken back out of her back pay, or in six instalments from her checks). Since February 2026 the office issues it in person on a U.S. Debit Card, to her or to her representative payee, so ask about the payee appointment in the same call.</li>
-    <li>Have ready: her Social Security number, date and place of birth, the address, a plain one-page description of what she can't do and since when, and a statement from anyone outside the family who has seen her (a neighbour, a clergy member, a former doctor). The rule says the office can make the finding "without obtaining any medical evidence." What it does need, for this category, is something consistent with the family's word: the interviewer's own observation, evidence you submit, or a third party who can confirm it (their procedure names clergy, social agencies and "other members of the community having knowledge of the claimant's condition based on frequent contacts or a long-term association"). It also says "unsubstantiated allegations do not constitute a fact," so give them a named person and a phone number to call. A one-line note from the video doctor in section 5 saying "confined to bed by a long-standing condition" settles it outright, so try to have the visit done first, or send the note the day it exists. One caution from the same procedure: if medical records arrive that are incomplete, inconclusive or conflicting, the office must hold the payments, so send only records that plainly support the claim.</li>
-    <li>File form SSA-1696 (Appointment of Representative) so they can talk to you, and ask about representative payee (SSA-11) so the money can be managed for her.</li>
-  </ol>
-
-  <div class="warn"><p><b>What SSI money does to Medicaid: nothing bad.</b> Ohio gives Medicaid automatically to anyone on SSI. But money sitting in her name over $2,000 ends SSI, and with it the disability-based Medicaid that protects her from the 2027 work rule. (Income-based Medicaid has no asset test, but it's the group the work rule hits.) SSI back pay gets a grace period; donations and fundraising do not. Section 8 covers where donated money has to go.</p></div>
-
-  <p><b>The catch to plan around.</b> The final SSI decision, months from now, will need a doctor's documented findings. Social Security's chronic fatigue syndrome ruling (SSR 14-1p) wants a licensed physician's diagnosis plus clinical signs documented over at least six consecutive months, or specified lab findings; symptoms alone don't count. If her condition turns out to have another name, that name's own evidence rules apply instead. Either way, the doctor visit in section 5 is what turns six months of presumptive payments into a permanent award. If the claim is denied, appeal within 60 days; do not start over.</p>
-</section>
-
-<!-- 5 -->
 <section class="phase" id="doctor">
-  <div class="phase-head"><div class="num">5</div><div><h2>A doctor who comes to her, and why that unlocks everything</h2><div class="when">Video or house call. Gentle, short, dim room. No ER.</div></div></div>
+  <div class="phase-head"><div class="num">4</div><div><h2>Step 2: one clinician who has seen her <span class="chip" data-chip="doctor">not started</span></h2><div class="when">Video or house call. Gentle, short, dim room. No ER. This visit unlocks everything else.</div></div></div>
 
-  <p>One clinician who has seen her, even by video, is what the waiver assessor, the home health agency, Social Security, the 2027 Medicaid rules, and every charity all ask for. It is also the only way to know whether the thing she has is the thing she believes she has (section 11). Here are the providers that will see a new, uninsured, bedbound patient without moving her, in the order I'd call them.</p>
+  <p>The waiver assessor wants a clinical note, home health needs a doctor's order and a face-to-face visit, the final SSI decision needs documented findings, the 2027 Medicaid rules want proof she's medically frail, and every charity wants a diagnosis. One visit, even by video, feeds all of them. It is also the only way to know whether what she has is what she believes she has (Section 11). Call in this order.</p>
 
   <h3>Free, and built for exactly this</h3>
-  <div class="call"><span class="tel">612-440-9699</span><span><b>ME/CFS Clinic MN.</b> A nonprofit free clinic run by Dr. Ruby Tam. Free video visits for uninsured and under-insured people with ME/CFS or Long COVID in nine states, <b>Ohio included</b> (its own site lists Ohio, and it is taking registrations for a November 2026 clinician conference, so it is active). There is no patient sign-up form on the site (the "registration form" there is for clinicians): call 612-440-9699 and leave a brief voicemail, or email care@mecfsclinicmn.org, and they call back. Their contact page asks you not to put health details in the email. Ask whether they will see someone without a prior diagnosis, and what the wait is. Their note carries weight with everyone else on this page because they are a specialist clinic.</span></div>
+  <div class="call"><a class="tel" href="tel:+16124409699">612-440-9699</a><span><b>ME/CFS Clinic MN.</b> A nonprofit free clinic. Free video visits for uninsured and under-insured people with ME/CFS or Long COVID in nine states, <b>Ohio included</b>; active (it is taking registrations for a November 2026 clinician conference). No patient sign-up form on the site (its "registration form" is for clinicians): call and leave a brief voicemail, or email care@mecfsclinicmn.org, and they call back. Don't put health details in the email. Ask whether they'll see someone without a prior diagnosis, and the wait (confirm). Their note carries weight with everyone else on this page.</span></div>
 
-  <h3>Community health centers that take new uninsured patients by video</h3>
-  <p>All three charge on a sliding scale (Lower Lights' 2026 schedule puts a medical visit at $25 at her income, labs included; Heart of Ohio has a $25 minimum co-payment for uninsured patients; PrimaryOne's is income-based), take Medicaid, and PrimaryOne confirms it does presumptive Medicaid determinations; Lower Lights says it helps people apply for Medicaid, so ask it and Heart of Ohio about a presumptive determination. Ask each: "Can a new patient who is bedbound and cannot speak be seen by video, with her mother in the room? Can you do a presumptive Medicaid determination?"</p>
-  <div class="call"><span class="tel">614-274-1455</span><span><b>Lower Lights Health</b> (formerly Lower Lights Christian Health Center), press 1. Their site says telehealth is open to insured, uninsured and new patients ("Yes, in most cases" for a first visit), by phone or video, weekdays 8 to 5, later on Thursdays. Bring proof of income for the discount.</span></div>
-  <div class="call"><span class="tel">614-645-5500</span><span><b>PrimaryOne Health.</b> Sliding fee; its site confirms it does presumptive (temporary) Medicaid determinations. Directories list a telehealth line, 614-859-1851, which is not on its own site; confirm.</span></div>
-  <div class="call"><span class="tel">614-235-5555</span><span><b>Heart of Ohio Family Health</b>, 5000 E Main St, with a Westerville office at Mount Carmel St. Ann's, 495 Cooper Rd (380-898-4055). Video visits by Zoom or phone; accepts uninsured patients on a sliding fee.</span></div>
+  <h3>Community health centers that see new uninsured patients by video</h3>
+  <p>All three take Medicaid and charge on a sliding scale: Lower Lights' 2026 schedule puts a medical visit at $25 at her income, labs included; Heart of Ohio has a $25 minimum for uninsured patients; PrimaryOne's is income-based. Ask each: "Can a new patient who is bedbound and cannot speak be seen by video, with her mother in the room? Can you do a presumptive Medicaid determination?"</p>
+  <div class="call"><a class="tel" href="tel:+16142741455">614-274-1455</a><span><b>Lower Lights Health</b>, press 1. Telehealth is open to insured, uninsured and new patients ("Yes, in most cases" for a first visit), by phone or video, weekdays 8 to 5, later on Thursdays. Bring proof of income for the discount. It says it helps people apply for Medicaid.</span></div>
+  <div class="call"><a class="tel" href="tel:+16146455500">614-645-5500</a><span><b>PrimaryOne Health.</b> Confirms it does presumptive Medicaid determinations. Directories list a telehealth line, 614-859-1851, that is not on its own site (confirm).</span></div>
+  <div class="call"><a class="tel" href="tel:+16142355555">614-235-5555</a><span><b>Heart of Ohio Family Health</b>, 5000 E Main St; Westerville office at Mount Carmel St. Ann's, 495 Cooper Rd, 380-898-4055. Video by Zoom or phone; accepts uninsured patients on a sliding fee.</span></div>
 
   <h3>Teams that come to the house</h3>
-  <p>Palliative care is symptom care for serious illness at any stage. It is not hospice and not end-of-life care. These teams are the people in Columbus most used to fragile, frightened, sensory-sensitive patients, and they bring a social worker who does Medicaid and waiver paperwork for a living. Any doctor can refer, including a video doctor from the list above.</p>
-  <div class="call"><span class="tel">614-234-0200</span><span><b>Mount Carmel Community Based Palliative Care.</b> Ask for it by name (their page says exactly that). Doctors, nurse practitioners, nurse case managers and social workers who visit at home; referrals come from a treating clinician, so the video doctor makes the call. Ask whether they will take a patient with no diagnosis yet and Medicaid pending.</span></div>
-  <div class="call"><span class="tel">614-414-0500</span><span><b>Gentiva</b>, 2 Easton Oval, Columbus. Directories list this office as Gentiva Hospice; Gentiva's national palliative program offers nurse practitioner home visits "as often as medically necessary" and says Medicaid may cover it, but its site does not say which offices provide it. Ask whether the Columbus office provides non-hospice palliative care; the national line is 1-888-436-8482 (a nurse answers 24/7).</span></div>
-  <div class="call"><span class="tel">740-788-1400</span><span><b>Ohio's Hospice of Central Ohio</b> (Newark office; the Columbus unit at OSU Wexner is 614-685-0001) serves Franklin County, holds Joint Commission certification for its community-based palliative care program, and its palliative care is "based on need, not prognosis," provided at home or by telehealth. Referrals for the whole Ohio's Hospice system go to 888-449-4121; 800-653-4490 is the system's general line in Dayton. Ask whether they will take an undiagnosed patient with Medicaid pending.</span></div>
-  <div class="call"><span class="tel">614-840-1688</span><span><b>HarmonyCares</b>, 355 Campus View Blvd, Suite 180. A house-call medical group (in-home primary care, labs and mobile X-ray) that markets itself to health plans; its Ohio pages do not say whether it takes Medicaid or younger adults. Ask whether it will see a younger uninsured or Medicaid-pending adult before counting on it.</span></div>
-  <div class="call"><span class="tel">614-284-4114</span><span><b>At Your Door Visiting Healthcare Services</b>, 314 Agler Rd. A visiting nurse practitioner and physician assistant group whose site is written for senior-living communities, so ask whether they visit a private home. Accepts "nearly all insurance" in Ohio; self-pay is full price at the time of the visit, so this fits once Medicaid is active.</span></div>
+  <p>Palliative care is symptom care for serious illness at any stage, not hospice. These teams are used to fragile, sensory-sensitive patients and bring a social worker who does Medicaid and waiver paperwork for a living. Any clinician can refer, including the video doctor.</p>
+  <div class="call"><a class="tel" href="tel:+16142340200">614-234-0200</a><span><b>Mount Carmel Community Based Palliative Care.</b> Ask for it by name. Doctors, nurse practitioners, nurse case managers and social workers who visit at home; referral comes from a treating clinician. Ask whether they take a patient with no diagnosis yet and Medicaid pending (confirm).</span></div>
+  <div class="call"><a class="tel" href="tel:+16144140500">614-414-0500</a><span><b>Gentiva</b>, 2 Easton Oval. Directories list this office as hospice; Gentiva's national palliative program offers nurse practitioner home visits and says Medicaid may cover it, but doesn't say which offices provide it. Ask whether Columbus does (confirm). National line 1-888-436-8482, a nurse answers 24/7.</span></div>
+  <div class="call"><a class="tel" href="tel:+17407881400">740-788-1400</a><span><b>Ohio's Hospice of Central Ohio</b> (Newark office; Columbus unit at OSU Wexner 614-685-0001) serves Franklin County and holds Joint Commission certification for its community palliative program, "based on need, not prognosis," provided at home or by telehealth. Referrals for the whole system: 888-449-4121. Ask whether they take an undiagnosed patient with Medicaid pending.</span></div>
+  <div class="call"><a class="tel" href="tel:+16148401688">614-840-1688</a><span><b>HarmonyCares</b>, 355 Campus View Blvd, Suite 180. House-call medical group (in-home primary care, labs, mobile X-ray) that markets to health plans; its Ohio pages don't say whether it takes Medicaid or younger adults. Ask before counting on it.</span></div>
+  <div class="call"><a class="tel" href="tel:+16142844114">614-284-4114</a><span><b>At Your Door Visiting Healthcare</b>, 314 Agler Rd. Visiting nurse practitioners and PAs; its site is written for senior-living communities, so ask whether they visit a private home. Accepts "nearly all insurance" in Ohio; self-pay is full price at the visit, so this fits once Medicaid is active.</span></div>
 
   <h3>Blood work without leaving the bed</h3>
-  <p>Mobile phlebotomists operate in Columbus and the suburbs: Getlabs (delivers to Labcorp and Quest; its fee is not on its Columbus page, confirm), Saffold Mobile Medical Service (service@saffoldmedical.com), TruBlood (614-367-6578; its site does not mention insurance, so assume self-pay) and Speedy Sticks (from $150, typically $150 to $250 in Columbus in 2026, not billed to insurance). The visit fee is the family's; the lab work itself is billed to Medicaid once she has it, or to a community health center's sliding scale (Lower Lights includes labs in its visit fee). Ohio Medicaid's lab rule (5160-11-11) pays nothing for "travel associated with the collection of specimens," so budget for the fee. This is how the video doctor gets the basic labs that rule things in or out.</p>
+  <p>Mobile phlebotomists cover Columbus and the suburbs: Speedy Sticks (from $150, typically $150 to $250, not billed to insurance), Getlabs (delivers to Labcorp and Quest; fee not on its Columbus page, confirm), TruBlood (614-367-6578; assume self-pay), Saffold Mobile Medical (service@saffoldmedical.com). The visit fee is the family's; the lab work is billed to Medicaid once she has it, or to a health center's sliding scale (Lower Lights includes labs in its $25). Ohio Medicaid's lab rule pays nothing for "travel associated with the collection of specimens," so budget for the fee.</p>
 
   <h3>What to ask the doctor for, in one visit</h3>
   <ol>
     <li>A written note describing her function in plain terms: cannot sit up, stand, walk, transfer, toilet, speak, tolerate light or sound; needs help eating and drinking; how long this has been so. Dated and signed. This one page goes to the waiver assessor, Social Security and the county.</li>
-    <li>An order for home health: nursing, aide, and an occupational therapist (for the toileting and repositioning setup).</li>
+    <li>An order for home health: nursing, aide, and an occupational therapist for the toileting and repositioning setup.</li>
     <li>A referral to home palliative care.</li>
-    <li>Basic labs by mobile draw: blood count, metabolic panel, thyroid, B12, vitamin D, and whatever else they choose. Cheap, gentle, and they answer the questions in section 10.</li>
-    <li>Orders for a hospital bed with a pressure-relief mattress and a bedside commode (Medicaid pays once active; loan closets in section 7 until then).</li>
-    <li>If they haven't treated ME/CFS: hand them the two-page box at the bottom of the earlier "Getting her care covered" page, plus the 2026 expert statement on home-based care for severe ME/CFS listed in the sources.</li>
+    <li>Basic labs by mobile draw: blood count, metabolic panel, thyroid, B12, vitamin D, and whatever else they choose.</li>
+    <li>Orders for a hospital bed with a pressure-relief mattress and a bedside commode (Medicaid pays once active; loan closets until then).</li>
+    <li>If they haven't treated ME/CFS: hand them the 2026 expert statement on home-based care for severe ME/CFS (Section 11) and the Bateman Horne clinical care guide.</li>
+  </ol>
+  <div class="say"><span class="k">How to put it to Theresa</span><p><q>A doctor coming here, on video, for fifteen minutes, in the dark, is how we keep you out of the hospital. It's the paperwork that pays for someone to help Mom, and it's the person who can say no to an ER.</q></p></div>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p2" id="p2-d"><label for="p2-d">A video visit is booked (ME/CFS clinic or a health center)</label></li><li><input type="checkbox" data-key="p6" id="p6-d"><label for="p6-d">The visit happened: functional note, home health order, palliative referral, labs order in hand</label></li><li><input type="checkbox" data-key="p7" id="p7-d"><label for="p7-d">Mobile blood draw booked</label></li><li><input type="checkbox" data-key="p8" id="p8-d"><label for="p8-d">Palliative referral sent to Mount Carmel; Gentiva asked</label></li></ul></div>
+</section>
+
+<!-- 5 -->
+<section class="phase" id="ssi">
+  <div class="phase-head"><div class="num">5</div><div><h2>Step 3: SSI cash within weeks <span class="chip" data-chip="ssi">not started</span></h2><div class="when">Presumptive disability for bed confinement. Most families never hear of it.</div></div></div>
+
+  <p>A normal SSI disability decision takes months. But Social Security's local office can start paying immediately for a short list of conditions, "without obtaining any medical evidence." Bed confinement is one:</p>
+  <div class="doc"><h4>Presumptive disability category</h4><p>"Allegation of bed confinement or immobility without a wheelchair, walker, or crutches, due to a longstanding condition, excluding recent accident and recent surgery."</p><p class="src">20 CFR 416.934(d), word for word. The field-office chart (POMS DI 11055.231, row 5) says the same. Payments can run up to 6 months while the real decision is made and do not have to be paid back if she is later found not disabled, only if she turns out to have been financially ineligible (DI 11055.230).</p></div>
+
+  <ol>
+    <li><b>Call Social Security</b> at 1-800-772-1213 (weekdays 8 to 7). Say: "I'm calling to file an SSI claim for my adult sister, Theresa. She is confined to bed by a long-standing condition and cannot come to the phone. I'm a family member caring for her. Please note today as her protective filing date." They will set a phone appointment.</li>
+    <li><b>At the appointment, ask for three things by name:</b> <b>"a presumptive disability finding under the bed confinement category,"</b> <b>"a dire need flag"</b> (rule DI 23020.030: no money for food, medicine or medical care; the office is told to accept the claimant's word on this), and <b>"an emergency advance payment"</b> (a one-time advance of up to one month's SSI, $994, taken back out of her back pay or in six instalments; since February 2026 it is issued in person on a U.S. Debit Card to her or her representative payee, so ask about the payee appointment in the same call).</li>
+    <li><b>Have ready:</b> her Social Security number, date and place of birth, the address, a one-page description of what she can't do and since when, and a named person outside the family who has seen her (a neighbour, clergy, a former doctor) with their phone number. The office needs something consistent with the family's word: its own observation, evidence you submit, or a third party; its procedure names "the clergy, or other members of the community having knowledge of the claimant's condition." It also says "unsubstantiated allegations do not constitute a fact." A one-line note from the video doctor saying "confined to bed by a long-standing condition" settles it outright, so send it the day it exists. Send only records that plainly support the claim; incomplete or conflicting records make the office hold payment.</li>
+    <li><b>File form SSA-1696</b> (Appointment of Representative) so they can talk to you, and ask about representative payee (SSA-11) so the money can be managed for her.</li>
   </ol>
 
-  <div class="say"><span class="k">How to put it to her</span><p><q>A doctor coming here, on video, for fifteen minutes, in the dark, is how we keep you out of the hospital. It's the paperwork that pays for someone to help Mom, and it's the person who can say no to an ER.</q></p></div>
+  <div class="warn"><p><b>SSI and Medicaid together.</b> Ohio gives Medicaid automatically to anyone on SSI. But money in her name over $2,000 ends SSI and the disability-based Medicaid that protects her from the 2027 work rule. SSI back pay gets a grace period; donations do not. Section 8 says where donated money has to go.</p></div>
+
+  <p><b>The catch to plan around.</b> The final SSI decision will need a doctor's documented findings. Social Security's chronic fatigue syndrome ruling (SSR 14-1p) requires a licensed physician's diagnosis plus clinical signs documented over at least six consecutive months, or specified lab findings; symptoms alone don't count. If her condition turns out to have another name, that name's own rules apply. Either way the Step 2 visit is what turns six months of presumptive payments into a permanent award. If the claim is denied, appeal within 60 days; don't start over.</p>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p4" id="p4-s"><label for="p4-s">SSI claim filed with presumptive disability, dire need and the advance requested</label></li></ul></div>
 </section>
 
 <!-- 6 -->
 <section class="phase" id="aides">
-  <div class="phase-head"><div class="num">6</div><div><h2>Getting the right aides in the door</h2><div class="when">Two routes once Medicaid is active. One of them lets you pick the person.</div></div></div>
+  <div class="phase-head"><div class="num">6</div><div><h2>Step 4: getting aides in the door <span class="chip" data-chip="aides">not started</span></h2><div class="when">Two routes once Medicaid is active. One of them lets you pick the person.</div></div></div>
 
   <h3>Route A: an agency (starts first)</h3>
-  <p>The day Medicaid is approved, the doctor's home health order goes to a Medicare-certified home health agency, which sends a nurse to assess and then an aide on a schedule. Up to 14 hours a week. Her managed care plan's care manager can name agencies with openings; so can the palliative team's social worker. Because Ohio has frozen <em>new</em> agencies from joining Medicaid until at least November 14, 2026, the existing ones are busy: call several. Location doesn't matter; agencies serve the whole county and beyond.</p>
-  <p>Screen every agency with the same six questions. The answers tell you whether they're used to someone like her.</p>
+  <p>The day Medicaid is approved, the doctor's home health order goes to a Medicare-certified home health agency, which sends a nurse to assess and then an aide on a schedule, up to 14 hours a week. Her managed care plan's care manager can name agencies with openings; so can the palliative team's social worker. Ohio has frozen new agencies until at least November 14, 2026, so the existing ones are busy: call several. Screen each with the same six questions:</p>
   <ol>
     <li>"Do you have aides who have worked hospice or with severe chronic illness, and can we request the same one or two aides every time?"</li>
     <li>"Can visits happen in a dim, quiet room, with the aide speaking only when needed, no fragrance, no radio, no phone?"</li>
     <li>"Will your aide follow a written care sheet from the family about how she communicates (hand squeeze, blink) and what makes her worse?"</li>
-    <li>"Have you cared for anyone with ME/CFS, Long COVID, or a patient who crashes for days after exertion? Are you willing to read a two-page guide before the first visit?"</li>
+    <li>"Have you cared for anyone with ME/CFS, Long COVID, or a patient who crashes for days after exertion? Will you read a two-page guide before the first visit?"</li>
     <li>"Can your nurse check skin, hydration, weight and swallowing each visit and call the doctor if something changes?"</li>
     <li>"How fast can you start once you have the order?"</li>
   </ol>
+  <div class="note"><p><b>A bridge worth one phone call.</b> OhioHealth's charity policy gives free care below 200% of the poverty line and its guide for home health patients confirms it covers OhioHealth at Home (private-pay aide rate $22.52 per 15 minutes, so about $90 an hour without it). Whether they'll admit an uninsured new patient with a doctor's order on charity care while Medicaid is pending is the one thing the guide doesn't say (confirm). Ask the home health financial-assistance line, 614-566-1505. If yes, it's the earliest paid aide in the house.</p></div>
 
-  <div class="note"><p><b>A bridge worth one phone call.</b> OhioHealth's charity-care policy gives free care at or below 200% of the poverty line, and its financial-assistance guide for home health patients confirms the policy applies to OhioHealth at Home (its private-pay aide rate is $22.52 per 15 minutes, so without it an aide is about $90 an hour). Whether they will admit an uninsured new patient with a doctor's order on charity care while Medicaid is pending is the one thing the guide does not say. Ask the home health financial-assistance line at 614-566-1505 (general financial assistance 614-566-5594), then OhioHealth at Home. If yes, it's the earliest paid aide in the house.</p></div>
-
-  <h3>Route B: she hires her own aides through the waiver (the fit for "someone who understands her")</h3>
-  <p>Since October 2024 the Ohio Home Care Waiver includes <b>self-direction</b>: she is the employer, her representative (you or your mother) does the hiring, and a state payroll company, PPL, handles pay and taxes. You can hire a friend, a neighbour, someone from a church, someone the local ME community recommends, or a caregiver who left agency work. Ohio's rule lets parents and siblings be paid too. The moratorium on new Medicaid providers does not block this; PPL's Ohio page says plainly, "you can still hire new self-directed caregivers," and that the care manager sends the referral to PPL, which checks the person is enrolled and eligible (PPL customer service 1-833-202-6174, weekdays 7 to 6). This is the only route where the family chooses the person and trains them to her.</p>
-  <p>How to start: the day Medicaid is approved, call the state's long-term care front door and ask for a waiver assessment. Timing note: the state is replacing this intake system. Its notice says requests must be in before 4 p.m. on Thursday, October 1, 2026, the old system is then closed for normal processing, and the new "S-AGE" intake and screening system is due to open Monday, October 5, 2026. If you land in that gap, wait for the fifth and call the same number, or file the paper request (form ODM 02399) with the county.</p>
-  <div class="call"><span class="tel">1-844-644-6582</span><span><b>Ohio Benefits Long-Term Services and Supports.</b> "My sister is on Medicaid, under 60, completely bedbound, and needs an Ohio Home Care Waiver assessment. I'm her representative. We want self-directed services." Weekdays 9 to 5. You can also text a zip code to 844-668-6582.</span></div>
-  <div class="call"><span class="tel">1-800-324-8680</span><span><b>Medicaid Consumer Hotline</b>, which the state names as the contact for Ohio Home Care Waiver questions. The assessment itself is done by <b>CareStar</b>, the waiver's care management agency since July 1, 2025; the state's July 2026 waiver handbook lists CareStar at 1-800-616-3718, and CareStar's own site also lists a navigator line, 1-833-496-1288, for requesting an assessment. CareStar does the in-home assessment and sets the monthly hours; ask for the resulting hours in writing.</span></div>
-  <p>At the assessment, describe her worst days, not her best. She qualifies if she needs hands-on help with two daily activities; she needs help with all of them. Ask for: personal care aide hours, waiver nursing visits, incontinence supplies, a personal emergency response button, and out-of-home respite. Ask about Structured Family Caregiving only as a fallback that pays your mother a stipend for care she is already giving; it does not add hands.</p>
-
-  <div class="note"><p><b>Where to find a self-directed caregiver who "gets it."</b> The ME/CFS world in Ohio is small but real. Post in the #MEAction Ohio group and the Solve M.E. community asking for a caregiver referral in central Ohio. Ask the palliative team's social worker for former hospice aides doing private work. Ask the free ME/CFS clinic. Any of those people can be paid through PPL once she's on the waiver.</p></div>
+  <h3>Route B: she hires her own aides through the waiver</h3>
+  <p>Since October 2024 the Ohio Home Care Waiver includes self-direction: Theresa is the employer, her representative (you or your mother) does the hiring, and a state payroll company, PPL, handles pay and taxes. You can hire a friend, a neighbour, someone from a church, someone the ME community recommends, or a caregiver who left agency work. Parents and siblings can be paid too (Section 2 has the one rule about who signs as employer representative). The provider freeze doesn't block this: PPL's Ohio page says "you can still hire new self-directed caregivers"; the care manager sends the referral to PPL (customer service 1-833-202-6174, weekdays 7 to 6).</p>
+  <p><b>How to start:</b> the day Medicaid is approved, call the state's long-term care front door and ask for a waiver assessment. Timing: the state is replacing this intake system. Requests must be in before 4 p.m. on Thursday, October 1, 2026; the old system is then closed for normal processing and the new S-AGE intake system opens Monday, October 5, 2026. If you land in that gap, wait for the fifth and call the same number, or file the paper request (form ODM 02399) with the county.</p>
+  <div class="call"><a class="tel" href="tel:+18446446582">1-844-644-6582</a><span><b>Ohio Benefits Long-Term Services and Supports</b>, weekdays 9 to 5. "My sister Theresa is on Medicaid, under 60, completely bedbound, and needs an Ohio Home Care Waiver assessment. I'm her representative. We want self-directed services." Or text a zip code to 844-668-6582.</span></div>
+  <div class="call"><a class="tel" href="tel:+18003248680">1-800-324-8680</a><span><b>Medicaid Consumer Hotline</b>, the state's contact for waiver questions. The assessment is done by <b>CareStar</b>, the waiver's care management agency since July 2025: 1-800-616-3718 (July 2026 handbook), or its navigator line 1-833-496-1288 to request an assessment. CareStar does the in-home assessment and sets the monthly hours; ask for the hours in writing.</span></div>
+  <p>At the assessment, describe her worst days, not her best. She qualifies with hands-on help needed for two daily activities; she needs help with all of them. Ask for personal care aide hours, waiver nursing visits, incontinence supplies, a personal emergency response button, and out-of-home respite. Ask about Structured Family Caregiving only as a fallback that pays your mother for care she already gives.</p>
+  <div class="note"><p><b>Where to find a self-directed caregiver who gets it.</b> Post in the #MEAction Ohio group and the Solve M.E. community asking for a caregiver referral in central Ohio. Ask the palliative social worker for former hospice aides doing private work. Ask the free ME/CFS clinic. Any of them can be paid through PPL once she's on the waiver.</p></div>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p11" id="p11-a"><label for="p11-a">Home health order sent to an agency that passed the six questions</label></li><li><input type="checkbox" data-key="p12" id="p12-a"><label for="p12-a">Waiver assessment requested, "self-directed" said</label></li><li><input type="checkbox" data-key="p13" id="p13-a"><label for="p13-a">Self-directed caregiver search started</label></li><li><input type="checkbox" data-key="p14" id="p14-a"><label for="p14-a">Managed care plan care manager assigned</label></li></ul></div>
 
   <h3>What other families did</h3>
-  <p>Reddit blocks readers who are not logged in, so these threads were read through a public archive (Arctic Shift) on September 27, 2026; quotes are as archived, usernames left out, and everything is from September 2024 or later. None of it is advice from a professional. It is what people in the same spot say worked.</p>
+  <p>Threads read on September 27, 2026 through a public archive (Reddit blocks readers who aren't logged in); all from September 2024 or later; usernames left out. Not professional advice, just what people in the same spot say worked.</p>
   <ul>
-    <li><b>Tell the doctor what to write.</b> Letters that spell out specific limits ("cannot sit up more than X minutes," "needs help with all daily activities") help a claim; a bare "my patient cannot work" carries no weight with Social Security. <small>r/SSDI, August 2025: <a href="https://www.reddit.com/r/SSDI/comments/1mowjdw/how_much_influence_do_doctors_letters_have/">"If your doctor provides precise description of your impairment and how it impacts your day to day life, it can be helpful"</a>.</small></li>
-    <li><b>Forms beat binders.</b> Someone with Long COVID and ME/CFS was denied after sending 500 pages of records, then had four specialists fill in residual functional capacity forms at reconsideration and was approved within three months, with no lawyer. <small>r/SSDI, February 2026: <a href="https://www.reddit.com/r/SSDI/comments/1rair9o/approved_for_ssdi_with_long_covid_no_lawyer/">"Strategy matters more than volume of paperwork"</a>.</small></li>
-    <li><b>Bring your own evidence to the Social Security exam.</b> If they send her for a consultative exam, the examiner may have none of her records; one person brought every abnormal test and a one-page summary of diagnoses, medications and symptoms, described a bad day, and brought a witness. <small>r/SSDI, April 2026: <a href="https://www.reddit.com/r/SSDI/comments/1sszis5/i_got_approved_during_reconsideration_what_i_did/">"So bring everything important in yourself"</a>.</small></li>
-    <li><b>Appeal, don't restart.</b> A person in their mid-30s with Long COVID and ME/CFS applied in November 2024, was denied twice, won at a hearing in February 2026 and was paid in March 2026, without a lawyer. <small>r/SSDI, April 2026: <a href="https://www.reddit.com/r/SSDI/comments/1sbful2/approved/">"After one year, 2 denials and then a hearing, I have been found fully favorable"</a>.</small></li>
-    <li><b>The advance comes from the local office, on paper.</b> Copy the overdue bills, write a short hardship letter by hand, fax it or drop it off; when the local office stalled, the district office above it knew the procedure. <small>r/SSDI, October 2025: <a href="https://www.reddit.com/r/SSDI/comments/1o3htvn/dire_need_request_after_approval/">"your local office has the permission to grant an advance on your benefits while you're waiting"</a>.</small></li>
-    <li><b>A congressional inquiry is a nudge, not a lever.</b> One person's stuck case moved about three weeks after their congressperson asked; a claims worker replied that most claims now carry a dire-need flag, so it only helps a true emergency. <small>r/SSDI, June 2026: <a href="https://www.reddit.com/r/SSDI/comments/1u6yj6p/question/">"it bumped my case out of purgatory to finished I think about 3 weeks later"</a>.</small></li>
-    <li><b>With no work history it's SSI, and it can be backdated.</b> Commenters told a 23-year-old with severe ME/CFS that SSI can start from the protective filing date and that savings over $2,000 belong in an ABLE (STABLE) account. <small>r/SSDI, March 2026: <a href="https://www.reddit.com/r/SSDI/comments/1rv9qd0/should_i_try_to_get_on_ssdi_now_while_i_still/">"SSI could be backdated to your protective filing date"</a>.</small></li>
-    <li><b>Self-direction in Ohio is real but thinly travelled.</b> An Ohio Home Care Waiver member hiring her own aide was pointed to the state's self-direction pages and her plan's care manager, and nobody could tell her the going hourly rate, which is why the ME community and the palliative social worker are the better sources for a person. <small>r/Ohio, September 2025: <a href="https://www.reddit.com/r/Ohio/comments/1nfwm0p/anyone_have_experience_working_ashiring_a_home/">"I'm looking into hiring my own aide, through the self-direction option"</a>.</small></li>
-    <li><b>"Patient liability $0.00" is what the waiver notice says at low income.</b> An Ohio Home Care Waiver member's September 2026 notice showed a monthly patient liability of $0 and a personal-needs allowance of $1,939; commenters explained liability is only income above that figure. <small>r/Medicaid, September 2026: <a href="https://www.reddit.com/r/Medicaid/comments/1wekw9x/what_does_this_mean_good_or_bad_news/">"You are responsible for a monthly patient liability of $0.00"</a>.</small></li>
-    <li><b>Get a social worker on the case.</b> The most upvoted answer to a Columbus family drowning in a parent's care was to get a social worker involved and call the Central Ohio Area Agency on Aging, which navigated Medicaid and placement for them. <small>r/Columbus, June 2026: <a href="https://www.reddit.com/r/Columbus/comments/1ucwzhh/hospice_help/">"I highly recommend you get a social worker involved to help with navigating this"</a>.</small></li>
-    <li><b>Ask whether the agency is nonprofit.</b> In a 78-comment Columbus thread on choosing a home team, the first screening question suggested was nonprofit or private-equity owned; a former home health and hospice nurse recommended Capital City, and families were split on the big systems. <small>r/Columbus, September 2026: <a href="https://www.reddit.com/r/Columbus/comments/1wfg3bv/hospice_recommendation/">"Number one question is to find out if the hospice agency is or nonprofit"</a>.</small></li>
-    <li><b>Feeding gets decided in hospital, not at home.</b> Someone who had been at the very severe stage said the feeding tube they needed after rapid weight loss could only be placed as an inpatient; in another thread, a person losing nine pounds a month on 30 ounces of fluid a day was told to get tube feeding and IV fluids within a day, and to hand the doctor what they had typed up rather than explain. <small>r/cfs, July 2026: <a href="https://www.reddit.com/r/cfs/comments/1ur0jgl/advice_for_recovering_very_severe_mecfs/">"They wouldn't do it at home"</a>; r/cfs, March 2026: <a href="https://www.reddit.com/r/cfs/comments/1roleqa/feeding_tubefinal_straw/">"you need tube feeding and IV hydration in the next day"</a>.</small></li>
+    <li><b>Tell the doctor what to write.</b> Letters that spell out specific limits help; a bare "my patient cannot work" carries no weight. <small>r/SSDI, August 2025: <a href="https://www.reddit.com/r/SSDI/comments/1mowjdw/how_much_influence_do_doctors_letters_have/">"If your doctor provides precise description of your impairment and how it impacts your day to day life, it can be helpful"</a>.</small></li>
+    <li><b>Forms beat binders.</b> Denied after 500 pages of records; approved within three months of reconsideration after four specialists filled in residual functional capacity forms, no lawyer. <small>r/SSDI, February 2026: <a href="https://www.reddit.com/r/SSDI/comments/1rair9o/approved_for_ssdi_with_long_covid_no_lawyer/">"Strategy matters more than volume of paperwork"</a>.</small></li>
+    <li><b>Bring your own evidence to the Social Security exam.</b> The examiner may have none of her records; bring every abnormal test and a one-page summary, describe a bad day, bring a witness. <small>r/SSDI, April 2026: <a href="https://www.reddit.com/r/SSDI/comments/1sszis5/i_got_approved_during_reconsideration_what_i_did/">"So bring everything important in yourself"</a>.</small></li>
+    <li><b>Appeal, don't restart.</b> Long COVID and ME/CFS, applied November 2024, denied twice, won at hearing February 2026, paid March 2026, no lawyer. <small>r/SSDI, April 2026: <a href="https://www.reddit.com/r/SSDI/comments/1sbful2/approved/">"After one year, 2 denials and then a hearing, I have been found fully favorable"</a>.</small></li>
+    <li><b>The advance is a local-office, paper process.</b> Copy the overdue bills, hand-write a hardship letter, fax or drop off; when the local office stalled, the district office above it knew the procedure. <small>r/SSDI, October 2025: <a href="https://www.reddit.com/r/SSDI/comments/1o3htvn/dire_need_request_after_approval/">"your local office has the permission to grant an advance on your benefits while you're waiting"</a>.</small></li>
+    <li><b>A congressional inquiry is a nudge, not a lever.</b> Moved one stuck case in about three weeks; a claims worker replied that most claims now carry a dire-need flag. <small>r/SSDI, June 2026: <a href="https://www.reddit.com/r/SSDI/comments/1u6yj6p/question/">"it bumped my case out of purgatory to finished I think about 3 weeks later"</a>.</small></li>
+    <li><b>With no work history it's SSI, and it backdates.</b> SSI can start from the protective filing date; savings over $2,000 belong in an ABLE (STABLE) account. <small>r/SSDI, March 2026: <a href="https://www.reddit.com/r/SSDI/comments/1rv9qd0/should_i_try_to_get_on_ssdi_now_while_i_still/">"SSI could be backdated to your protective filing date"</a>.</small></li>
+    <li><b>Self-direction in Ohio is real but thinly travelled.</b> A waiver member hiring her own aide was pointed to the state's self-direction pages and her plan's care manager; nobody could name the going hourly rate. <small>r/Ohio, September 2025: <a href="https://www.reddit.com/r/Ohio/comments/1nfwm0p/anyone_have_experience_working_ashiring_a_home/">"I'm looking into hiring my own aide, through the self-direction option"</a>.</small></li>
+    <li><b>"Patient liability $0.00" is what the waiver notice says at low income.</b> A September 2026 Ohio Home Care Waiver notice showed $0 liability and a $1,939 personal-needs allowance. <small>r/Medicaid, September 2026: <a href="https://www.reddit.com/r/Medicaid/comments/1wekw9x/what_does_this_mean_good_or_bad_news/">"You are responsible for a monthly patient liability of $0.00"</a>.</small></li>
+    <li><b>Get a social worker on the case.</b> The most upvoted answer to a Columbus family drowning in a parent's care: get a social worker and call the Central Ohio Area Agency on Aging. <small>r/Columbus, June 2026: <a href="https://www.reddit.com/r/Columbus/comments/1ucwzhh/hospice_help/">"I highly recommend you get a social worker involved to help with navigating this"</a>.</small></li>
+    <li><b>Ask whether the agency is nonprofit.</b> First screening question in a 78-comment Columbus thread; a former home health and hospice nurse recommended Capital City. <small>r/Columbus, September 2026: <a href="https://www.reddit.com/r/Columbus/comments/1wfg3bv/hospice_recommendation/">"Number one question is to find out if the hospice agency is or nonprofit"</a>.</small></li>
+    <li><b>Feeding gets decided in hospital, not at home.</b> A feeding tube after rapid weight loss could only be placed as an inpatient; someone losing nine pounds a month on 30 ounces of fluid a day was told to get tube feeding and IV fluids within a day. <small>r/cfs, July 2026: <a href="https://www.reddit.com/r/cfs/comments/1ur0jgl/advice_for_recovering_very_severe_mecfs/">"They wouldn't do it at home"</a>; r/cfs, March 2026: <a href="https://www.reddit.com/r/cfs/comments/1roleqa/feeding_tubefinal_straw/">"you need tube feeding and IV hydration in the next day"</a>.</small></li>
   </ul>
 </section>
 
 <!-- 7 -->
 <section class="phase" id="now">
-  <div class="phase-head"><div class="num">7</div><div><h2>Help that needs no approval: this week</h2><div class="when">Small things that take real weight off your mother before any letter arrives.</div></div></div>
+  <div class="phase-head"><div class="num">7</div><div><h2>Help that needs no approval <span class="chip" data-chip="now">not started</span></h2><div class="when">Takes real weight off your mother before any letter arrives.</div></div></div>
 
   <h3>Free equipment that removes the carrying</h3>
-  <p>A hospital bed, a bedside commode, slide sheets and a wheelchair change the daily physics of her care, and the lifting that is wearing your mother and Ethan down. Loan closets lend them free, usually for months. Call and say the exact items, and whether you can pick up.</p>
+  <p>A hospital bed, a bedside commode, slide sheets and a wheelchair change the daily physics of her care. Loan closets lend them free, usually for months. Say the exact items and whether you can pick up.</p>
   <ul>
-    <li><b>MOBILE Equipment Loan Program</b>, 1829 E Long St, Columbus: 614-443-5936. Wheelchairs, walkers, canes and assistive devices "on a loan basis"; its own site lists the program as current (September 2026).</li>
     <li><b>Peace Church Helping Hands</b>, 235 Diley Rd, Pickerington: 614-837-4568. Hospital beds, commodes, wheelchairs, walkers.</li>
-    <li><b>MAP at First Presbyterian Church of Westerville</b>, 41 W College Ave: 614-882-3155 (office hours Monday to Thursday 9 to 3:30). Free loans, for as long as needed, of wheelchairs, walkers, transport chairs, shower chairs, tub benches and, when donated, bedside commodes and bed rails; hospital beds are not among its usual items. Appointment needed and someone picks up at the church; "limited delivery may be available in special circumstances."</li>
-    <li><b>Church of the Ascension Medical Loan Closet</b>, Andrews Center, 151 Woodgate Dr (rear entrance), Johnstown: 614-581-5286 or 740-390-8048. Beds and wheelchairs, to anyone.</li>
-    <li><b>2-1-1</b> keeps a current list of closets; say "durable medical equipment loan closet, Franklin County." (Ohio's Hospice's medical-donations page is a guide to where to donate, not a lending closet, but it names partner organizations that lend.)</li>
+    <li><b>Church of the Ascension Medical Loan Closet</b>, 151 Woodgate Dr, Johnstown: 614-581-5286 or 740-390-8048. Beds and wheelchairs, to anyone.</li>
+    <li><b>MAP at First Presbyterian Church of Westerville</b>, 41 W College Ave: 614-882-3155 (office Monday to Thursday 9 to 3:30). Wheelchairs, walkers, transport chairs, shower chairs, tub benches and, when donated, commodes and bed rails; no hospital beds. Appointment needed; pick up at the church; limited delivery in special circumstances.</li>
+    <li><b>MOBILE Equipment Loan Program</b>, 1829 E Long St, Columbus: 614-443-5936. Wheelchairs, walkers, canes and assistive devices on loan; listed as current on its site.</li>
+    <li><b>2-1-1</b> keeps a current list; say "durable medical equipment loan closet, Franklin County."</li>
   </ul>
 
-  <h3>Food and an aide, sliding scale, any age</h3>
-  <div class="call"><span class="tel">614-278-3130</span><span><b>LifeCare Alliance.</b> Home-delivered meals for "any older adult or medically challenged individual" in Franklin County "unable to safely prepare and access meals"; clients without a funded case manager are either "funder-supported" (free) or self-pay, billed monthly, so ask which she qualifies for. Its Help-at-Home program (homemakers and personal care aides) is described on its site as for older adults, so ask whether it can take someone under 60 and what it costs. Online referral form at lifecarealliance.org/referral; meals also at 614-278-3152, option 2, or hdm@lifecarealliance.org.</span></div>
+  <h3>Food, sliding scale, any age</h3>
+  <div class="call"><a class="tel" href="tel:+16142783130">614-278-3130</a><span><b>LifeCare Alliance.</b> Home-delivered meals for "any older adult or medically challenged individual" in Franklin County unable to safely prepare meals; clients without a funded case manager are either "funder-supported" (free) or self-pay billed monthly, so ask which. Its Help-at-Home aides are described as for older adults; ask whether they take someone under 60 and the cost. Online referral at lifecarealliance.org/referral; meals 614-278-3152 option 2 or hdm@lifecarealliance.org.</span></div>
 
-  <h3>For your mother specifically</h3>
+  <h3>For your mother</h3>
   <ul>
-    <li><b>If your mother is 55 or older</b>, the Franklin County Office on Aging's Caregiver Support Program covers "an adult aged 55 & older who's caring for an adult child (ages 18-59) with a disability" with "a need for in-home care assistance." It is free, short-term, and can be used once a calendar year; the list includes homemaker, personal care and respite services, institutional respite, medical equipment, incontinence and nutrition supplies, a mattress and box spring, counselling, and rent or utility help, "based on funding available." Call 614-525-6200, weekdays 9 to 4:30, for the phone assessment, or use the county's online referral form. Ask for the caregiver program and say her daughter is under 60.</li>
-    <li><b>Ohio CareLine</b>, 1-800-720-9616, 24 hours, free, staffed by behavioral health professionals for "personal or family crisis." For Mom and Ethan, not for her.</li>
-    <li><b>988</b> for either of them on a bad night. In Franklin County it reaches a local crisis center (Netcare is the backup answer point), and the county's mobile crisis teams, a clinician plus a peer, are dispatched through it for a mental health crisis without police.</li>
-    <li><b>NAMI Franklin County</b> family support group, 614-501-6264: second and fourth Wednesdays, 5:30 to 7, in person (1225 Dublin Rd, then 1455 S 4th St) and on Zoom; a parents' group the first Wednesday, 6 to 7:30, on Zoom; the group contact is 614-530-4554. It's for families of people with mental illness; Mom may or may not feel it fits, but the room is full of people carrying the same weight.</li>
-    <li><b>Franklin County Crisis Care Center</b>, 465 Harmon Ave, 614-222-3737. "24/7 walk-in services" for adults, "without the need for an appointment or referral"; now open (2025). If either of them reaches a breaking point.</li>
-    <li><b>Caregiver community that speaks this language:</b> Bateman Horne Center's care partner materials and "Crash Care Survival Guide" (batemanhornecenter.org), #MEAction's handouts, and Solve M.E.'s Severe ME Medical Panel Resource Guide (January 2025). These are the documents to hand an aide, a doctor, or a sceptical relative.</li>
+    <li><b>If she is 55 or older:</b> the Franklin County Office on Aging's Caregiver Support Program covers "an adult aged 55 & older who's caring for an adult child (ages 18-59) with a disability." Free, short-term, once a calendar year: homemaker, personal care and respite hours, institutional respite, medical equipment, incontinence and nutrition supplies, a mattress and box spring, counselling, rent or utility help, "based on funding available." Call 614-525-6200, weekdays 9 to 4:30, for the phone assessment. Say her daughter is under 60.</li>
+    <li><b>Ohio CareLine</b>, 1-800-720-9616 (confirm), 24 hours, free, behavioral health professionals for "personal or family crisis." For your mother and brother, not for Theresa.</li>
+    <li><b>988</b> for either of them on a bad night. In Franklin County it reaches a local crisis center (Netcare, 614-276-2273, is the backup) and the county's Community Mobile Team, a clinician plus a peer, is dispatched through it without police.</li>
+    <li><b>NAMI Franklin County</b> family support group, 614-501-6264: second and fourth Wednesdays 5:30 to 7, in person and on Zoom; a parents' group the first Wednesday 6 to 7:30; group contact 614-530-4554. It's for families of people with mental illness; the room is full of people carrying the same weight.</li>
+    <li><b>Franklin County Crisis Care Center</b>, 465 Harmon Ave, 614-222-3737. 24/7 walk-in for adults, no appointment or referral. If either of them reaches a breaking point.</li>
+    <li><b>Reading that speaks this language:</b> Bateman Horne Center's care partner materials and Crash Care Survival Guide (batemanhornecenter.org), #MEAction's handouts, Solve M.E.'s Severe ME Medical Panel Resource Guide (January 2025). These are what you hand an aide, a doctor, or a sceptical relative.</li>
   </ul>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p5" id="p5-n"><label for="p5-n">Two loan closets called; bed and commode on the way</label></li><li><input type="checkbox" data-key="p9" id="p9-n"><label for="p9-n">LifeCare referral sent; Office on Aging called if your mother is 55+</label></li></ul></div>
 </section>
 
 <!-- 8 -->
 <section class="phase" id="charity">
-  <div class="phase-head"><div class="num">8</div><div><h2>Charities, foundations and fundraising</h2><div class="when">What exists, what it needs, and how to raise money without losing her benefits.</div></div></div>
-  <p><b>The plain finding:</b> no foundation funds ongoing in-home care for an adult with no diagnosis. The big medical-aid foundations (HealthWell, PAN, The Assistance Fund, Good Days) pay copays for insured people with named diagnoses, so they're out. The county's emergency cash needs a child in the house. What's left is smaller, but three of the things below are worth doing this month, and one of them fixes why the GoFundMe failed.</p>
+  <div class="phase-head"><div class="num">8</div><div><h2>Charities and fundraising <span class="chip" data-chip="charity">not started</span></h2><div class="when">What exists, what it needs, and how to raise money without losing her benefits.</div></div></div>
+  <p>No foundation funds ongoing in-home care for an adult with no diagnosis. The big medical-aid foundations (HealthWell, PAN, The Assistance Fund, Good Days) pay copays for insured people with named diagnoses. The county's emergency cash needs a child in the house. What's left is smaller, but four things below are worth doing this month, and one fixes why the GoFundMe failed.</p>
 
   <h3>Worth applying to</h3>
   <ul>
-    <li><b>Patient Advocate Foundation case management.</b> <span class="tag free">free, no insurance needed</span> A national nonprofit that assigns a professional case manager to people with "a confirmed diagnosis of a serious health condition. Or the patient must be getting testing for the condition." That second sentence is her. They also require that the person "be in active treatment for the health condition or starting treatment in the next 60 days," or have finished treatment in the last 6 months, so book the video doctor visit first and give them that date. They work Medicaid applications, disability claims and medical debt for a living, and their list of things they help with includes "your options if you don't have insurance." patientadvocate.org, or 1-800-532-5274, weekdays 8:30 to 5 Eastern. Ask for a case manager for a bedbound adult in Ohio with Medicaid and SSI pending. (Their grant arm, TotalAssist, pays copays, coinsurance and premiums, which presumes an insurance plan, so skip it for now.)</li>
-    <li><b>Jewish Family Services Columbus.</b> "Jewish and non-Jewish, from every zip code in Central Ohio." Case management, caregiver support, and a service navigator who knows the county's programs and, in its words, helps clients "access community programs, financial assistance, and other supports." Its Family Stabilization page is explicit that "JFS does not have general rent or utility assistance at this time" and points housing emergencies to the Homeless Hotline, 614-278-0080, so ask the navigator for connections, not cash. Online intake at wayfynder.org or 614-237-9675; main office 614-231-1890.</li>
-    <li><b>AMMES Financial Crisis Fund</b> (American ME and CFS Society). Small grants, "generally in the hundreds, not thousands, of dollars," for "any need which is vital to well-being," one type of expense per grant (a rent payment, a utility bill, a medical bill, a piece of equipment), never ongoing and never for something already paid. The fund page is live and requires three documents: proof of financial need (the first page of a tax return, or proof of any government assistance such as Medicaid or SSI, so it becomes easier once either is approved), "documentation of a diagnosis of Chronic Fatigue Syndrome (CFS) or Myalgic Encephalomyelitis (ME) from a medical professional," and a bill or written estimate for the item. Two cautions: "AMMES does not accept applications from households in which there is a working adult member," so if she lives with someone who works, ask before applying; and the page carries no dates, so a one-line email to finaid@ammes.org confirming the fund is giving is still worth sending first. ammes.org.</li>
-    <li><b>Franklin County's referral for adults without children</b> is IMPACT Community Action (614-252-2799, weekdays 8 to 5; utility help through HEAP, with appointments "posted daily at 10:00 AM for the next business day," plus housing stability services), and St. Vincent de Paul's parish conferences (614-376-3604, phones answered Monday, Tuesday and Thursday; St. Paul is the Westerville conference) help with bills through the conference for her address. Neither funds care, but either can take a bill off your mother's desk.</li>
-    <li><b>Her own faith community or yours, if there is one.</b> The Westerville and Dublin congregations that lend medical equipment (section 7) do it because they have care teams. A congregation will often organise a meal train, a rota of sitters so Mom can leave the house, and a modest fund. Ask a clergy member directly; that's what the teams are for.</li>
+    <li><b>Patient Advocate Foundation case management.</b> <span class="tag free">free, no insurance needed</span> A professional case manager for people with "a confirmed diagnosis of a serious health condition. Or the patient must be getting testing for the condition." They also require active treatment, or treatment starting within 60 days, so book the video visit first and give them that date. They work Medicaid applications, disability claims and medical debt for a living. patientadvocate.org or 1-800-532-5274, weekdays 8:30 to 5 Eastern. Ask for a case manager for a bedbound adult in Ohio with Medicaid and SSI pending. (Their grant arm, TotalAssist, pays copays and premiums, so it presumes insurance.)</li>
+    <li><b>Jewish Family Services Columbus.</b> All backgrounds, every zip code in central Ohio. Case management, caregiver support, and a navigator who helps clients "access community programs, financial assistance, and other supports." It states it has no general rent or utility aid and points housing emergencies to the Homeless Hotline, 614-278-0080, so ask for connections, not cash. Intake at wayfynder.org or 614-237-9675; main office 614-231-1890.</li>
+    <li><b>AMMES Financial Crisis Fund</b> (American ME and CFS Society). Grants "generally in the hundreds, not thousands, of dollars," one expense type per grant, never ongoing, never for something already paid. Needs proof of financial need (a tax return's first page, or proof of Medicaid or SSI), a diagnosis of ME or CFS "from a medical professional," and a bill or estimate. Two cautions: "AMMES does not accept applications from households in which there is a working adult member," so if Theresa lives with someone who works, ask first; and the page carries no dates, so email finaid@ammes.org to confirm the fund is giving before assembling paperwork. ammes.org.</li>
+    <li><b>For a specific bill in your mother's household:</b> IMPACT Community Action (614-252-2799, weekdays 8 to 5; utility help through HEAP, appointments posted at 10 a.m. for the next business day) and St. Vincent de Paul (614-376-3604, phones answered Monday, Tuesday and Thursday; St. Paul is the Westerville conference). Neither funds care.</li>
+    <li><b>A congregation, hers or yours.</b> Care teams organise meal trains, sitter rotas so your mother can leave the house, and modest funds that pay vendors. Ask a clergy member directly.</li>
   </ul>
 
-  <h3>Why the GoFundMe didn't work, and how to raise money without losing her benefits</h3>
-  <p>Two problems, one of them dangerous. First, the pitch: a page that reads "she's broke and in debt" asks strangers to pay off a stranger. A page that reads "$4,800 pays a trained aide 20 hours a week for three months while Medicaid processes, here's the doctor's note" asks them to buy something specific and medical. Wait for the doctor's note, then relaunch with a specific, itemised ask. Second, and worse: <b>any money that lands in her name over $2,000 ends her SSI and her Medicaid.</b> A successful campaign into her bank account would have cost her the very care it was meant to buy. Use one of these instead:</p>
+  <h3>Why the GoFundMe didn't work, and what to do instead</h3>
+  <p>Two problems. The pitch: "she's broke and in debt" asks strangers to pay off a stranger; "$4,800 pays a trained aide 20 hours a week for three months while Medicaid processes, here's the doctor's note" asks them to buy something specific and medical. Relaunch only with the note and an itemised ask. The dangerous one: <b>any money in her name over $2,000 ends her SSI and her Medicaid.</b> Use one of these instead:</p>
   <ul>
-    <li><b>Help Hope Live</b> (helphopelive.org, 800-642-8399). A nonprofit that runs medical fundraising campaigns for "catastrophic injuries and illnesses," chronic illness included. Donations are tax-deductible, the charity holds the money and pays vendors directly for in-home care, home modification and medical costs, and because the funds never belong to her, Help Hope Live says they "likely won't jeopardize eligibility for asset-based assistance programs like Medicaid" (their words; "always check with your state's Medicaid/benefits office to be sure"). Fees are 3% on cheques and 5.65% online. "Having no health insurance does not instantly disqualify you." At application, "a medical professional who can log into our website and confirm their medical diagnosis and their anticipated associated expenses" is required, and "until a medical professional confirms their diagnosis, the client cannot request funds," so this too waits for the doctor visit. ME/CFS isn't on their example list (cancer, MS, cerebral palsy, muscular dystrophy, transverse myelitis, stroke, ALS) and an undiagnosed illness may not pass, so ask their intake now whether a working diagnosis is enough. Phone hours weekdays 9 to 6 Eastern. They also coach the campaign, which is the part the family didn't have.</li>
-    <li><b>An Ohio STABLE account</b> (stableaccount.com, run by the Ohio Treasurer). As of January 1, 2026, anyone whose disability began before age 46 can open one (the site confirms the age change). Money can go in from anyone, family and friends included, up to an annual limit (STABLE's site does not print the 2026 figure; the usual number is $20,000, so confirm it at 1-800-439-1653), and none of it counts toward the $2,000 SSI and Medicaid limit. It needs either SSI or SSDI eligibility "because of a disability" or the ability to "produce a signed diagnosis form by a licensed physician if requested"; you don't upload the diagnosis, you certify you have it. Once the doctor's note exists, this is the account fundraising should point at.</li>
-    <li><b>A pooled special needs trust</b> for larger sums. Community Fund Ohio (communityfundohio.org) has run them since 1993. Money from other people (its "Master Trust," a third-party trust) has no Medicaid payback; money that was hers first (its "Pooled Medicaid Payback Trust") does. Relevant if a relative wants to give a meaningful amount, or if SSI back pay arrives in a lump.</li>
+    <li><b>Help Hope Live</b> (helphopelive.org, 800-642-8399, weekdays 9 to 6 Eastern). A nonprofit that runs medical fundraising for catastrophic and chronic illness. Donations are tax-deductible, the charity holds the money and pays vendors directly for in-home care, equipment and medical costs, and because the funds never belong to her it says they "likely won't jeopardize eligibility for asset-based assistance programs like Medicaid" (check with the benefits office once she's approved). Fees 3% on cheques, 5.65% online. "Having no health insurance does not instantly disqualify you." A medical professional must log in and confirm the diagnosis and expected expenses before any funds can be requested, so this waits for the doctor visit. ME/CFS isn't on their example list, so ask intake now whether a working diagnosis is enough (Section 9 has the message).</li>
+    <li><b>An Ohio STABLE account</b> (stableaccount.com, run by the Ohio Treasurer). Since January 1, 2026, anyone whose disability began before 46 can open one. Money can go in from anyone up to an annual limit (usually $20,000; the site doesn't print the 2026 figure, confirm at 1-800-439-1653) and none of it counts toward the $2,000 limit. It needs SSI or SSDI eligibility, or the ability to "produce a signed diagnosis form by a licensed physician if requested"; you certify you have it, you don't upload it. A parent or sibling can open it as her Authorized Legal Representative. Once the note exists, this is where fundraising points.</li>
+    <li><b>A pooled special needs trust</b> for larger sums: Community Fund Ohio (communityfundohio.org), since 1993. Money from other people (its Master Trust) has no Medicaid payback; money that was hers first (its Pooled Medicaid Payback Trust) does. Relevant if a relative wants to give a meaningful amount or SSI back pay arrives in a lump.</li>
   </ul>
-  <div class="note"><p><b>One rule for anyone who wants to help with money right now:</b> pay the provider, the pharmacy, or the equipment vendor directly. Never send cash to her account. A gift paid straight to a vendor for care is not income to her; the same dollars in her checking account are.</p></div>
+  <div class="note"><p><b>One rule for anyone who wants to help with money now:</b> pay the provider, the pharmacy or the equipment vendor directly. Never send cash to her account. A gift paid straight to a vendor for care is not income to her; the same dollars in her checking account are.</p></div>
+  <div class="donewhen"><h4>This step is done when</h4><ul class="todo"><li><input type="checkbox" data-key="p10" id="p10-c"><label for="p10-c">No-doctor-needed messages sent: Patient Advocate Foundation, JFS, the Help Hope Live question</label></li><li><input type="checkbox" data-key="p15" id="p15-c"><label for="p15-c">Doctor's note forwarded to everyone; STABLE opened; AMMES applied</label></li></ul></div>
 </section>
 
 <!-- 9 -->
 <section class="phase" id="kit">
-  <div class="phase-head"><div class="num">9</div><div><h2>Charity outreach kit: fill in once, copy, send</h2><div class="when">Type the family's details once below. Every message on this page fills itself in. Tap Copy, paste into the form, email or text, send. She is never involved.</div></div></div>
+  <div class="phase-head"><div class="num">9</div><div><h2>Messages: fill in once, copy, send</h2><div class="when">Type the details once. Every message fills itself in. Tap Copy, paste, send. Theresa is never involved.</div></div></div>
 
   <div class="fill">
     <p style="margin:0 0 .5rem"><b>Her details and yours.</b> Saved only on this phone. Leave anything blank and the message keeps a bracketed reminder in that spot.</p>
     <div class="grid">
-      <label>Her first name <input id="f-her" placeholder="e.g. Sarah"></label>
       <label>Her full legal name <input id="f-herfull" placeholder="as on her ID"></label>
       <label>Her date of birth <input id="f-dob" placeholder="MM/DD/YYYY"></label>
       <label>Her city and zip <input id="f-city" placeholder="e.g. Westerville 43081"></label>
@@ -399,23 +471,22 @@ td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
 
   <h3>The order that wastes the least effort</h3>
   <ol class="order">
-    <li><span><b>Today, no doctor needed:</b> Patient Advocate Foundation, Jewish Family Services, two loan closets, LifeCare Alliance, and (if Mom is 55 or older) the Office on Aging. Five sends.</span></li>
-    <li><span><b>Today, one question only:</b> ask Help Hope Live whether a working diagnosis is enough to open a campaign. One email.</span></li>
-    <li><span><b>The day the doctor's note exists:</b> AMMES (after emailing to confirm the fund is active), the Help Hope Live application, the STABLE account, and the message to friends and family. The note is the key to all four, so the doctor request below goes out first.</span></li>
+    <li><span><b>Today, no doctor needed:</b> Patient Advocate Foundation, Jewish Family Services, two loan closets, LifeCare Alliance, and (if your mother is 55 or older) the Office on Aging.</span></li>
+    <li><span><b>Today, one question only:</b> ask Help Hope Live whether a working diagnosis is enough.</span></li>
+    <li><span><b>The day the doctor's note exists:</b> AMMES, the Help Hope Live application, the STABLE account, and the message to friends and family.</span></li>
   </ol>
-  <p>Everything below is written in your voice as her representative. If Mom is the one sending, change "You are her" above to mother and the wording adjusts. Nothing here calls her "broke" or "in debt." It describes what she needs and what it costs.</p>
 
   <div class="tpl" id="t-about">
-    <div class="tpl-head"><h4>The one paragraph about her</h4><div class="how">Paste this anywhere a form asks "tell us about the situation." Every template below reuses it.</div></div>
-    <div class="msgwrap"><p class="msg">My {rel_poss} {her} ({age_dob}) lives in {city}, Ohio, and has been completely bedbound for {since}. She cannot sit up, stand or walk, has to be carried to the toilet, takes only liquids through a straw, and can speak only a word or two at a time. She is extremely sensitive to light and sound and sleeps only in short stretches. Her working diagnosis is severe myalgic encephalomyelitis / chronic fatigue syndrome (ME/CFS); a formal medical evaluation is under way{doc_clause}. She has no income, no assets and no health insurance. Ohio Medicaid ({mcd}) and SSI ({ssi}) applications have been filed. Her mother and brother are her only caregivers and are exhausted. I am her {rel} and I handle all paperwork and calls for her, because she cannot. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+    <div class="tpl-head"><h4>The one paragraph about Theresa</h4><div class="how">Paste this anywhere a form asks "tell us about the situation." Every message below reuses it.</div></div>
+    <div class="msgwrap"><p class="msg">My {rel_poss} Theresa ({age_dob}) lives in {city}, Ohio, and has been completely bedbound for {since}. She cannot sit up, stand or walk, has to be carried to the toilet, takes only liquids through a straw, and can speak only a word or two at a time. She is extremely sensitive to light and sound and sleeps only in short stretches. Her working diagnosis is severe myalgic encephalomyelitis / chronic fatigue syndrome (ME/CFS); a formal medical evaluation is under way{doc_clause}. She has no income, no assets and no health insurance. Ohio Medicaid ({mcd}) and SSI ({ssi}) applications have been filed. Her mother and brother are her only caregivers and are exhausted. I am her {rel} and I handle all paperwork and calls for her, because she cannot. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-doc">
-    <div class="tpl-head"><h4>To the doctor, after the first visit: the note that opens every fund</h4><div class="how"><b>Send by:</b> the clinic's patient portal message, or email to the clinic, or hand it over at the video visit. <b>Why first:</b> AMMES, Help Hope Live, the STABLE account and Social Security all want these exact sentences.</div>
+    <div class="tpl-head"><h4>To the doctor, after the first visit: the note that opens every fund</h4><div class="how"><b>Send by:</b> the clinic's patient portal, email to the clinic, or hand it over at the video visit. <b>Why first:</b> AMMES, Help Hope Live, the STABLE account and Social Security all want these exact sentences.</div>
     <ul class="ask"><li>Ask for it on letterhead, signed and dated, as a PDF.</li><li>If the clinic will only write what it has observed, that is fine; the functional sentences are what matter.</li></ul></div>
     <div class="msgwrap"><p class="msg">Dear {doc_or_team},
 
-Thank you for seeing my {rel_poss} {her} ({age_dob}). To get her the in-home care she needs, several programs require a short signed statement from a clinician who has examined her. Could you please provide a letter, on letterhead and dated, that includes as many of the following as you can confirm:
+Thank you for seeing my {rel_poss} Theresa ({age_dob}). To get her the in-home care she needs, several programs require a short signed statement from a clinician who has examined her. Could you please provide a letter, on letterhead and dated, that includes as many of the following as you can confirm:
 
 1. That she is confined to bed by a long-standing condition, not a recent accident or surgery, and has been for {since}. (Social Security's presumptive disability rule uses these exact words.)
 2. Her functional limits in plain terms: unable to sit up, stand, walk or transfer without being lifted; unable to toilet without hands-on help; taking only liquids by straw; unable to speak more than a word or two; unable to tolerate normal light or sound; needing help with all activities of daily living.
@@ -439,17 +510,17 @@ What we need help with: (1) getting her Ohio Medicaid application processed, inc
   </div>
 
   <div class="tpl" id="t-jfs">
-    <div class="tpl-head"><h4>Jewish Family Services Columbus: navigator, emergency help, caregiver support</h4><div class="how"><b>Send by:</b> the online intake at wayfynder.org, or call 614-237-9675 and read the message aloud. All faiths, all of central Ohio.</div>
+    <div class="tpl-head"><h4>Jewish Family Services Columbus: navigator and caregiver support</h4><div class="how"><b>Send by:</b> the online intake at wayfynder.org, or call 614-237-9675 and read the message aloud.</div>
     <ul class="ask"><li>They will ask: who you are, who the client is, address, household, income, what you need. Say the client is your sister or daughter and that you are the contact.</li></ul></div>
     <div class="msgwrap"><p class="msg">I am asking for help for my {rel_poss}, who cannot make this request herself.
 
 {about}
 
-We are asking for three things: (1) a service navigator who can help us get in-home care started through Medicaid and the Ohio Home Care Waiver while her applications are pending; (2) any emergency financial assistance available for her basic needs or medical supplies; (3) caregiver support for her mother, who is carrying most of her physical care alone. If JFS cannot help with something, a referral to whoever can would be very welcome.</p><button class="copy" type="button">Copy</button></div>
+We are asking for three things: (1) a service navigator who can help us get in-home care started through Medicaid and the Ohio Home Care Waiver while her applications are pending; (2) connections to any financial assistance for her basic needs or medical supplies; (3) caregiver support for her mother, who is carrying most of her physical care alone. If JFS cannot help with something, a referral to whoever can would be very welcome.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-hhl-q">
-    <div class="tpl-head"><h4>Help Hope Live: the one question to ask today</h4><div class="how"><b>Send by:</b> email through the contact form at helphopelive.org, or call 800-642-8399. Before you build a campaign, find out whether they will open one on a working diagnosis.</div></div>
+    <div class="tpl-head"><h4>Help Hope Live: the one question to ask today</h4><div class="how"><b>Send by:</b> the contact form at helphopelive.org, or call 800-642-8399.</div></div>
     <div class="msgwrap"><p class="msg">Subject: Eligibility question before applying, severe chronic illness, Ohio
 
 Hello,
@@ -462,8 +533,8 @@ Thank you. I handle everything on her behalf: {you}, {phone}, {email}.</p><butto
   </div>
 
   <div class="tpl" id="t-hhl-app">
-    <div class="tpl-head"><h4>Help Hope Live: the campaign application, once the doctor's note exists</h4><div class="how"><b>Send by:</b> "Get started" on helphopelive.org. <b>They will need:</b> her name and address, your contact details as the campaign lead, the clinician's name and email so they can log in and verify, and an expected-expenses list. Money raised goes to vendors, never to her, so it does not touch SSI or Medicaid.</div>
-    <ul class="ask"><li>Give the clinic a heads-up that Help Hope Live will email them a verification link.</li><li>Fees are about 3% on cheques and 5.65% online; donations are tax-deductible.</li></ul></div>
+    <div class="tpl-head"><h4>Help Hope Live: the campaign application, once the doctor's note exists</h4><div class="how"><b>Send by:</b> "Get started" on helphopelive.org. <b>They will need:</b> her name and address, your contact details as campaign lead, the clinician's name and email so they can log in and verify, and an expected-expenses list.</div>
+    <ul class="ask"><li>Tell the clinic that Help Hope Live will email them a verification link.</li></ul></div>
     <div class="msgwrap"><p class="msg">Patient: {herfull}, {age_dob}, {city}, Ohio. Campaign contact: {you} ({rel}), {phone}, {email}. Verifying clinician: {doc_or_blank}.
 
 Situation: {about}
@@ -479,8 +550,7 @@ Why this matters: she has no income and no insurance. Medicaid and SSI have been
   </div>
 
   <div class="tpl" id="t-ammes">
-    <div class="tpl-head"><h4>AMMES Financial Crisis Fund: once the doctor's note exists</h4><div class="how"><b>Send by:</b> first a one-line email to finaid@ammes.org asking whether the fund is currently accepting applications; then the form at ammes.org/ammes-financial-crisis-fund. Grants are "in the hundreds of dollars" and can pay for home care or a bill.</div>
-    <ul class="ask"><li>Attach three things: proof of need (a benefits notice, or a signed statement that she has $0 income), the doctor's letter naming ME/CFS, and a bill or quote for what the money is for.</li><li>Ask for one specific thing. A quote from a home care agency for a block of hours, or a receipt for a bed, is ideal.</li></ul></div>
+    <div class="tpl-head"><h4>AMMES Financial Crisis Fund: once the doctor's note exists</h4><div class="how"><b>Send by:</b> a one-line email to finaid@ammes.org asking whether the fund is currently accepting applications; then the form at ammes.org/ammes-financial-crisis-fund. Attach proof of need, the doctor's letter naming ME/CFS, and a bill or quote for one specific item.</div></div>
     <div class="msgwrap"><p class="msg">Application on behalf of my {rel_poss}, who cannot complete this herself.
 
 {about}
@@ -491,42 +561,40 @@ Specific need: [one item, with the quote or bill attached: e.g. "20 hours of per
   </div>
 
   <div class="tpl" id="t-closet">
-    <div class="tpl-head"><h4>Loan closets: 30-second phone script</h4><div class="how"><b>Call:</b> Peace Church Helping Hands, Pickerington 614-837-4568 (has hospital beds) · Church of the Ascension, Johnstown 614-581-5286 (beds) · MAP at First Presbyterian Westerville 614-882-3155 (commodes, wheelchairs) · MOBILE Equipment Loan Program 614-443-5936 · or 211. Say it as written; they hear this every day.</div></div>
-    <div class="msgwrap"><p class="msg">Hi, I'm calling about borrowing medical equipment. My {rel_poss} in {city} is completely bedbound and her mother is having to lift and carry her. We have no insurance yet. Do you have a hospital bed, a pressure-relief mattress, a bedside commode, and a wheelchair we could borrow for a few months? We can pick up with a truck, or if you deliver that would help enormously. My name is {you}, my number is {phone}.</p><button class="copy" type="button">Copy</button></div>
+    <div class="tpl-head"><h4>Loan closets: 30-second phone script</h4><div class="how"><b>Call:</b> Peace Church Helping Hands 614-837-4568 (has hospital beds) · Church of the Ascension 614-581-5286 (beds) · MAP Westerville 614-882-3155 (commodes, wheelchairs) · MOBILE 614-443-5936 · or 211.</div></div>
+    <div class="msgwrap"><p class="msg">Hi, I'm calling about borrowing medical equipment. My {rel_poss} Theresa in {city} is completely bedbound and her mother is having to lift and carry her. We have no insurance yet. Do you have a hospital bed, a pressure-relief mattress, a bedside commode, and a wheelchair we could borrow for a few months? We can pick up with a truck, or if you deliver that would help enormously. My name is {you}, my number is {phone}.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-lca">
-    <div class="tpl-head"><h4>LifeCare Alliance: meals and Help-at-Home</h4><div class="how"><b>Send by:</b> the online referral form at lifecarealliance.org/referral, or call 614-278-3130 (meals: 614-278-3152, option 2, or hdm@lifecarealliance.org).</div>
-    <ul class="ask"><li>They will ask: her name, date of birth, address, phone (give yours), why she cannot prepare meals, dietary needs (liquids only), payer (none yet; Medicaid pending), and emergency contact.</li></ul></div>
-    <div class="msgwrap"><p class="msg">Referral for my {rel_poss} {herfull}, {age_dob}, {city}. She is completely bedbound and takes only liquids by straw, so she needs nutrition that can be drunk (shakes, soups, high-calorie liquids) rather than solid meals. She has no income and no insurance; Ohio Medicaid is pending ({mcd}). I am asking for (1) home-delivered meals or liquid nutrition with hardship pricing until Medicaid is active, and (2) a quote and start date for Help-at-Home personal care hours so her mother, who is her only daily caregiver, can get relief. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
+    <div class="tpl-head"><h4>LifeCare Alliance: meals and Help-at-Home</h4><div class="how"><b>Send by:</b> the online referral form at lifecarealliance.org/referral, or call 614-278-3130 (meals: 614-278-3152 option 2, or hdm@lifecarealliance.org).</div></div>
+    <div class="msgwrap"><p class="msg">Referral for my {rel_poss} {herfull}, {age_dob}, {city}. She is completely bedbound and takes only liquids by straw, so she needs nutrition that can be drunk (shakes, soups, high-calorie liquids) rather than solid meals. She has no income and no insurance; Ohio Medicaid is pending ({mcd}). I am asking for (1) home-delivered meals or liquid nutrition with hardship pricing until Medicaid is active, and (2) whether Help-at-Home can take someone under 60, with a quote and start date, so her mother can get relief. Please contact me, not her: {you}, {phone}, {email}.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-fcoa">
-    <div class="tpl-head"><h4>Franklin County Office on Aging: only if Mom is 55 or older</h4><div class="how"><b>Call:</b> 614-525-6200, weekdays 9 to 4:30, ask for the Caregiver Support Program. Their rule covers "an adult aged 55 & older who's caring for an adult child (ages 18-59) with a disability," which is Mom. Free short-term help once a calendar year: respite and personal care hours, counselling, equipment, a mattress, rent or utility help.</div></div>
-    <div class="msgwrap"><p class="msg">I'm calling about the Caregiver Support Program for a relative aged 55 or older who is caring for an adult with a disability. The caregiver is my mother, [Mom's name], age [age], in {city}. She is the unpaid full-time caregiver for my sister {her}, who is under 60, completely bedbound, cannot speak, and needs help with everything. There is no insurance yet; Medicaid is pending. We are asking for in-home respite hours so my mother can rest, and for any equipment help, such as a hospital bed. I handle the paperwork for the family: {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
+    <div class="tpl-head"><h4>Franklin County Office on Aging: only if your mother is 55 or older</h4><div class="how"><b>Call:</b> 614-525-6200, weekdays 9 to 4:30, ask for the Caregiver Support Program. Their rule covers "an adult aged 55 & older who's caring for an adult child (ages 18-59) with a disability."</div></div>
+    <div class="msgwrap"><p class="msg">I'm calling about the Caregiver Support Program for a relative aged 55 or older who is caring for an adult with a disability. The caregiver is my mother, [Mom's name], age [age], in {city}. She is the unpaid full-time caregiver for my sister Theresa, who is under 60, completely bedbound, cannot speak, and needs help with everything. There is no insurance yet; Medicaid is pending. We are asking for in-home respite hours so my mother can rest, and for any equipment help, such as a hospital bed. I handle the paperwork for the family: {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-svdp">
-    <div class="tpl-head"><h4>St. Vincent de Paul or IMPACT Community Action: a bill, not care</h4><div class="how"><b>Call:</b> St. Vincent de Paul Columbus 614-376-3604 (phones answered Monday, Tuesday and Thursday) for the parish conference covering her address; IMPACT Community Action 614-252-2799 (weekdays 8 to 5; appointments posted at 10 a.m. for the next business day) for utilities and housing help. Use only if there is a specific overdue bill in her mother's household.</div></div>
+    <div class="tpl-head"><h4>St. Vincent de Paul or IMPACT Community Action: a bill, not care</h4><div class="how"><b>Call:</b> St. Vincent de Paul 614-376-3604 (Monday, Tuesday, Thursday) for the parish conference covering her address; IMPACT 614-252-2799 (weekdays 8 to 5; appointments posted at 10 a.m. for the next business day). Only if there is a specific overdue bill in your mother's household.</div></div>
     <div class="msgwrap"><p class="msg">I'm asking for help with a specific bill on behalf of my mother's household in {city}. She is the full-time unpaid caregiver for my sister, who is completely bedbound and uninsured, with Medicaid pending. The bill is [what, amount, due date]. Paying it directly to [the utility / landlord] would keep the household stable while my sister's benefits process. My name is {you}, {phone}.</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-church">
-    <div class="tpl-head"><h4>A congregation or community group: sitters, meals, a small fund</h4><div class="how"><b>Send by:</b> email to a clergy member or the care-team lead. Works for any congregation the family has ever belonged to, and for large churches with care teams (several in Westerville and Dublin run the equipment closets above).</div></div>
+    <div class="tpl-head"><h4>A congregation or community group: sitters, meals, a small fund</h4><div class="how"><b>Send by:</b> email to a clergy member or care-team lead, for any congregation the family has belonged to or a large church with a care team.</div></div>
     <div class="msgwrap"><p class="msg">Subject: A family in your area that needs a few hands
 
 Hello,
 
 I'm writing on behalf of my family in {city}. {about}
 
-We are not asking for money to be sent to her; that would actually cost her the benefits she is waiting on. We are asking for hands: a few people who could take a two-hour sitting shift once a week so her mother can leave the house, help moving a borrowed hospital bed in, and, if your community has a meal train, liquid nutrition (shakes, broths, soups) since she can only drink. If there is a benevolence fund that pays vendors directly, an agency caregiver for a few hours a week is the single most useful thing. I coordinate everything for the family and can give any volunteer a one-page sheet on how to be in her room quietly. Thank you for reading this.
+We are not asking for money to be sent to her; that would cost her the benefits she is waiting on. We are asking for hands: a few people who could take a two-hour sitting shift once a week so her mother can leave the house, help moving a borrowed hospital bed in, and, if your community has a meal train, liquid nutrition (shakes, broths, soups) since she can only drink. If there is a benevolence fund that pays vendors directly, an agency caregiver for a few hours a week is the single most useful thing. I coordinate everything for the family and can give any volunteer a one-page sheet on how to be in her room quietly. Thank you for reading this.
 
 {you}, {phone}, {email}</p><button class="copy" type="button">Copy</button></div>
   </div>
 
   <div class="tpl" id="t-clinic">
-    <div class="tpl-head"><h4>ME/CFS Clinic MN registration: what to put in the form</h4><div class="how"><b>Send by:</b> call 612-440-9699 and leave a brief voicemail, or email care@mecfsclinicmn.org (the site's "registration form" is for clinicians, not patients). Not a charity, but the free clinic whose note unlocks the rest, so it goes out today.</div>
-    <ul class="ask"><li>Their contact page asks you not to put health details in an email; say who you are, that she is in Ohio and uninsured, and give your phone. Save the paragraph below for the call back or their portal.</li></ul></div>
+    <div class="tpl-head"><h4>ME/CFS Clinic MN: what to say</h4><div class="how"><b>Send by:</b> call 612-440-9699 and leave a brief voicemail, or email care@mecfsclinicmn.org (no health details in the email; keep the paragraph below for the call back or their portal).</div></div>
     <div class="msgwrap"><p class="msg">Registration on behalf of my {rel_poss} {herfull}, {age_dob}, {city}, Ohio, who cannot complete this herself.
 
 {about}
@@ -535,10 +603,10 @@ She has not yet had a formal evaluation and has no established doctor. We are as
   </div>
 
   <div class="tpl" id="t-friends">
-    <div class="tpl-head"><h4>To friends and family who want to help: the benefit-safe version</h4><div class="how"><b>Send by:</b> text, email or a group chat, once a Help Hope Live campaign or STABLE account exists. This replaces the GoFundMe. It asks for specific things and keeps money out of her name.</div></div>
-    <div class="msgwrap"><p class="msg">Many of you have asked how to help {her}. Here is the honest picture and the one way to help that doesn't backfire.
+    <div class="tpl-head"><h4>To friends and family who want to help: the benefit-safe version</h4><div class="how"><b>Send by:</b> text, email or a group chat, once a Help Hope Live campaign or STABLE account exists. This replaces the GoFundMe.</div></div>
+    <div class="msgwrap"><p class="msg">Many of you have asked how to help Theresa. Here is the honest picture and the one way to help that doesn't backfire.
 
-{her} has been completely bedbound for {since}: she can't sit up, can't speak more than a word or two, takes only liquids, and is cared for entirely by Mom and [brother's name]. She has no income or insurance. Medicaid and SSI are applied for and will cover her care once approved, but that takes weeks to months, and the rules are strict: any money in her own name over $2,000 cancels those benefits. So please don't send her cash.
+Theresa has been completely bedbound for {since}: she can't sit up, can't speak more than a word or two, takes only liquids, and is cared for entirely by Mom and her brother. She has no income or insurance. Medicaid and SSI are applied for and will cover her care once approved, but that takes weeks to months, and the rules are strict: any money in her own name over $2,000 cancels those benefits. So please don't send her cash.
 
 Instead: [Option A: Donate through her Help Hope Live page (link). It's a nonprofit, donations are tax-deductible, and the money pays her caregivers and equipment directly.] [Option B: Contribute to her STABLE account (details), which is protected for people with disabilities.] [Option C: Pay a vendor directly: a block of agency caregiver hours, or the mattress on this list (link).]
 
@@ -546,164 +614,137 @@ What the money buys: about 20 hours a week of a trained aide for three months (a
   </div>
 
   <div class="tpl" id="t-stable">
-    <div class="tpl-head"><h4>STABLE account: not a message, a 15-minute form</h4><div class="how"><b>Where:</b> stableaccount.com, "Open an account," choose "Authorized Legal Representative." Once the doctor's letter includes sentence 4 from the doctor template above, you qualify to open it for her (siblings and parents are on the allowed list).</div>
+    <div class="tpl-head"><h4>STABLE account: not a message, a 15-minute form</h4><div class="how"><b>Where:</b> stableaccount.com, "Open an account," choose "Authorized Legal Representative." Once the doctor's letter includes sentence 4 from the doctor template, you qualify to open it for her (parents and siblings are on the list).</div>
     <ul class="ask"><li>You will need: her full name, date of birth, Social Security number and address; yours; and a bank account to fund it (can be $0 to start).</li><li>Keep the doctor's letter in the folder; you certify you have it, you don't upload it.</li><li>Then give the account details to anyone who wants to give money, instead of her bank account.</li></ul></div>
   </div>
 
-  <div class="note"><p><b>Keep one folder.</b> Save every sent message and every reply in one place with the date. When the doctor's note arrives, forward it to Patient Advocate Foundation, Jewish Family Services and Help Hope Live in one go, with a single line: "Attached is the clinician's letter you'll need for {her}'s file."</p></div>
+  <div class="note"><p><b>Keep one folder.</b> Save every sent message and every reply with the date. When the doctor's note arrives, forward it to Patient Advocate Foundation, Jewish Family Services and Help Hope Live in one go: "Attached is the clinician's letter you'll need for Theresa's file."</p></div>
 </section>
 
 <!-- 10 -->
 <section class="phase" id="backstop">
-  <div class="phase-head"><div class="num">10</div><div><h2>If home stops being possible</h2><div class="when">Nobody wants this. Knowing it exists is what lets the family keep going.</div></div></div>
-
-  <p>Medicaid's only 24-hour option is a facility. Both routes below need Medicaid and the same nursing-facility "level of care" finding the waiver uses, so everything in sections 3 to 5 still comes first.</p>
+  <div class="phase-head"><div class="num">10</div><div><h2>If home stops being possible</h2><div class="when">Knowing it exists is what lets the family keep going.</div></div></div>
+  <p>Medicaid's only 24-hour option is a facility. Both routes need Medicaid and the same nursing-facility level-of-care finding the waiver uses, so Steps 1 to 3 still come first.</p>
   <ul>
-    <li><b>Medicaid nursing facility.</b> No age minimum. Every admission needs a pre-admission screen (PASRR) and a level-of-care check, which can be done by phone or desk review. From a hospital, the discharge planner starts it. From home, the Central Ohio Area Agency on Aging does the screen: 614-645-7250 or 800-589-7277. Ask a nursing home whether it has cared for younger adults and for anyone with severe light and sound sensitivity; a private room is the first thing to negotiate.</li>
-    <li><b>Assisted Living Waiver.</b> Age 21 and up, nursing-home level of care, Medicaid pays the care and "the consumer is responsible for room and board" (a fixed monthly figure sized to SSI; confirm the current amount). Referrals by calling the same agency's intake, 614-645-7250, and choosing the Screening option. A facility may say her needs are beyond assisted living; ask anyway.</li>
-    <li><b>Respite in a facility</b> is a waiver service. Once she's enrolled, a few days a quarter in a facility to let the house breathe is a legitimate ask.</li>
-    <li><b>Adult family homes</b> (small licensed homes with a state supplement) are for people who need supervision, not nursing, and require an SSA disability award first. Probably not a fit; noted so you don't chase it.</li>
+    <li><b>Medicaid nursing facility.</b> No age minimum. Every admission needs a pre-admission screen (PASRR) and a level-of-care check, by phone or desk review. From a hospital, the discharge planner starts it. From home, the Central Ohio Area Agency on Aging does the screen: 614-645-7250 or 800-589-7277. Ask a nursing home whether it has cared for younger adults and for anyone with severe light and sound sensitivity; a private room is the first thing to negotiate.</li>
+    <li><b>Assisted Living Waiver.</b> Age 21 and up, nursing-home level of care; Medicaid pays the care, the resident pays room and board (a fixed monthly figure sized to SSI; confirm the current amount). Referrals by calling the same agency's intake, 614-645-7250, Screening option. A facility may say her needs are beyond assisted living; ask anyway.</li>
+    <li><b>Respite in a facility</b> is a waiver service. Once she's enrolled, a few days a quarter to let the house breathe is a legitimate ask.</li>
+    <li><b>Adult family homes</b> need supervision-level needs and an SSA disability award first. Probably not a fit; noted so you don't chase it.</li>
   </ul>
-  <p>If she were ever admitted to a hospital for three days or more, two things open up: Medicaid home health jumps to 28 hours a week for 60 days after discharge, and the hospital's own social workers can start the waiver or a facility placement from the bed. The ME community has written guides on making an admission survivable; section 11 lists them.</p>
+  <p>If she were ever admitted to a hospital for three days or more, two things open up: Medicaid home health jumps to 28 hours a week for 60 days after discharge, and the hospital's social workers can start the waiver or a placement from the bed. Section 11 lists the hospital packs that make an admission survivable.</p>
 </section>
 
 <!-- 11 -->
 <section class="phase" id="safety">
-  <div class="phase-head"><div class="num">11</div><div><h2>Safety, the diagnosis question, and the family</h2><div class="when">Written carefully, because this is where families split.</div></div></div>
+  <div class="phase-head"><div class="num">11</div><div><h2>Safety, the diagnosis question, the family</h2><div class="when">Written carefully, because this is where families split.</div></div></div>
 
   <h3>Call 911 regardless of what anyone believes she has</h3>
-  <div class="warn"><p>No fluids kept down for 24 hours, or no urine in 12. Fever. Chest pain or trouble breathing. A new open sore over a bone. A swollen, warm or painful calf. New confusion, or she stops responding to her yes/no signal. These are the complications of lying still and living on liquids, and they kill people with any diagnosis. Severe ME/CFS specialists say the same thing: the 2026 expert statement on home care says that "under no circumstances should tube feeding be withheld or delayed in an attempt to motivate individuals to eat independently," and a 2021 case series by ME clinicians (Baxter, Speight and Weir) documents five patients whose feeding was delayed into life-threatening malnutrition. Maeve Boothby O'Neill, 27, died of malnutrition from severe ME in England in 2021; the coroner's 2024 report faults the absence of any care pathway, not the fact of hospital care. The ME world's own hospital packs (linked below) exist because sometimes admission is the safe choice, and they make it less harmful.</p></div>
+  <div class="warn"><p>No fluids kept down for 24 hours, or no urine in 12. Fever. Chest pain or trouble breathing. A new open sore over a bone. A swollen, warm or painful calf. New confusion, or she stops responding to her yes/no signal. These are the complications of lying still and living on liquids, and they kill people with any diagnosis. Severe ME/CFS specialists say the same: the 2026 expert statement on home care says "under no circumstances should tube feeding be withheld or delayed in an attempt to motivate individuals to eat independently," and a 2021 case series by ME clinicians documents five patients whose feeding was delayed into life-threatening malnutrition. A 27-year-old with severe ME died of malnutrition in England in 2021; the coroner's 2024 report faults the absence of a care pathway, not hospital care itself. The hospital packs below exist because sometimes admission is the safe choice.</p></div>
 
   <h3>The diagnosis question, handled so it doesn't split the family</h3>
-  <p>Nothing in the money path needs the words "ME/CFS." The waiver, home health, and presumptive SSI all run on what she can and can't do. So the family doesn't have to win an argument with her or with Ethan to get help. What everyone does need, including her, is one knowledgeable clinician who has examined her. Here is why that serves her under every version of the story:</p>
+  <p>Nothing in the money path needs the words "ME/CFS." The waiver, home health and presumptive SSI all run on what she can and can't do, so nobody has to win an argument to get help. What everyone does need, including Theresa, is one knowledgeable clinician who has examined her:</p>
   <ul>
-    <li><b>If it is severe ME/CFS,</b> then everything she and Ethan have read says the same thing this page says: severe patients need in-home medical care, monitoring for pressure sores and nutrition, and a documented record. CDC, NICE, the 2026 expert statement, and Solve M.E.'s severe-ME panel all say it. The free ME/CFS clinic is her clinic. A doctor's note is what protects her from being sent to an ER and from a graded-exercise program.</li>
-    <li><b>If it is something else,</b> several conditions look exactly like this in a young adult and some are very treatable. Catatonia presents as immobility, mutism, refusal or inability to eat, poor sleep and fear; most cases respond to a test dose of lorazepam within minutes to hours, and the malignant form is fatal if untreated. Autoimmune (anti-NMDA receptor) encephalitis, which mostly strikes children and young adults, commonly causes mutism, stupor and catatonia and is treated with immune therapy, with better outcomes the earlier it starts. Severe depression with psychomotor slowing, thyroid disease and malnutrition itself can all produce this picture. A bedside exam and a home blood draw can point toward or away from each of these without a hospital. If they're negative, nothing is lost and the ME record is stronger. If one is positive, she gets better.</li>
+    <li><b>If it is severe ME/CFS,</b> everything she and your brother have read says the same as this page: severe patients need in-home medical care, monitoring for pressure sores and nutrition, and a documented record. CDC, NICE, the 2026 expert statement and Solve M.E.'s severe-ME panel all say it. The free ME/CFS clinic is her clinic. A doctor's note is what protects her from an ER and from a graded-exercise program.</li>
+    <li><b>If it is something else,</b> several conditions look exactly like this in a young adult and some are very treatable: catatonia (immobility, mutism, not eating, poor sleep, fear; most cases respond to a test dose of lorazepam within hours, and the malignant form is fatal untreated), autoimmune (anti-NMDA receptor) encephalitis (mutism, stupor, catatonia; treated with immune therapy, better the earlier it starts), severe depression with psychomotor slowing, thyroid disease, malnutrition itself. A bedside exam and a home blood draw point toward or away from each without a hospital. If negative, nothing is lost and the ME record is stronger. If positive, she gets better.</li>
   </ul>
-  <p>The way to say this to Ethan is not "we don't believe her." It's: "The severe-ME guidelines themselves say she needs a doctor at home. Let's get her the ME-literate one, and let that doctor decide what to check." Then give him the job that uses what he's read: building her care sheet (how she signals yes and no, what light and sound she tolerates, her crash pattern) and reading the hospital pack so that if the worst day comes, he is the one who makes the admission survivable.</p>
+  <p>The way to say it to your brother is not "we don't believe her." It's: "The severe-ME guidelines themselves say she needs a doctor at home. Let's get her the ME-literate one, and let that doctor decide what to check." Then give him the job that uses what he's read: her care sheet (how she signals yes and no, what light and sound she tolerates, her crash pattern) and the hospital pack.</p>
 
   <h3>Her right to say no, and what the family can and can't do</h3>
   <ul>
-    <li>A competent adult can refuse hospital care. If she can signal yes and no, she is making her own decisions, and nobody here can override that without a court.</li>
-    <li>Ohio's adult protective services covers people 60 and over only. There is no equivalent agency for a vulnerable adult of 18 to 59 in Franklin County. What exists: 911 for immediate danger; a police welfare check (non-emergency 614-645-4545; the city's Right Response Unit puts a social worker in the 911 center to steer non-police situations, reached through 911 or 614-645-4545, option 3, weekdays 8:30 a.m. to midnight); Disability Rights Ohio, 1-800-282-9181, which investigates neglect of people with disabilities; and Netcare or 988 for a mental health crisis (which can lead to an involuntary evaluation only if a mental illness is suspected and she's at substantial risk from not meeting basic needs).</li>
-    <li>If she can still signal assent, a power of attorney is the light-touch option. Ohio law (ORC 1337.25) lets a power of attorney be "signed by the principal or in the principal's conscious presence by another individual directed by the principal to sign the principal's name," with a notary. A notarised power of attorney counts as her written designation of a representative for Medicaid, Social Security, the bank and a STABLE account, all at once. Ohio's waiver rule lets a parent or sibling be paid as her caregiver while holding her power of attorney (up to 40 hours a week), so this no longer forces a choice; the one role that cannot be paid is the employer representative in the PPL payroll system, so give that to whoever will not be a paid caregiver (section 6). A health care power of attorney (two non-relative witnesses or a notary) does the same for medical decisions if a doctor later finds she can't make them.</li>
-    <li>Guardianship through Franklin County Probate Court costs $189 to file (plus a $40 hearing fee), needs a clinician's Statement of Expert Evaluation on the court's form, and applies only if she is mentally unable to make decisions, not merely physically unable. The court runs a 24-hour guardianship information line, 614-525-3894. An emergency guardianship can be granted in days when "immediate action is required to prevent significant injury." Legal Aid of Southeast and Central Ohio (intake 1-888-246-4420, weekdays, "most availability in the mornings," or apply online any time at lasco.org; Columbus office 614-221-7201) helps with this.</li>
+    <li>A competent adult can refuse hospital care. If she can signal yes and no, she is making her own decisions, and nobody can override that without a court.</li>
+    <li>Ohio's adult protective services covers people 60 and over only; there is no equivalent for a vulnerable adult of 18 to 59. What exists: 911 for immediate danger; a police welfare check (614-645-4545; option 3, weekdays 8:30 a.m. to midnight, reaches the Right Response Unit social workers who steer non-police situations); Disability Rights Ohio, 1-800-282-9181, which investigates neglect of people with disabilities; and Netcare or 988 for a mental health crisis (an involuntary evaluation only if a mental illness is suspected and she's at substantial risk).</li>
+    <li>If she can still signal assent, a power of attorney is the light-touch option. Ohio law (ORC 1337.25) lets one be "signed by the principal or in the principal's conscious presence by another individual directed by the principal to sign the principal's name," with a notary. A notarised power of attorney counts as her written designation of a representative for Medicaid, Social Security, the bank and a STABLE account at once. Ohio's waiver rule lets a parent or sibling be paid as her caregiver while holding it (Section 2), so this doesn't force a choice; only the PPL employer representative cannot be paid. A health care power of attorney (two non-relative witnesses or a notary) does the same for medical decisions.</li>
+    <li>Guardianship through Franklin County Probate Court costs $189 to file plus a $40 hearing fee, needs a clinician's Statement of Expert Evaluation on the court's form, and applies only if she is mentally unable to make decisions, not merely physically unable. The court's 24-hour guardianship information line is 614-525-3894. An emergency guardianship can be granted in days when "immediate action is required to prevent significant injury." Legal Aid (intake 1-888-246-4420, weekdays, mornings best, or apply online at lasco.org; Columbus office 614-221-7201) helps with this.</li>
   </ul>
 
   <h3>Documents to keep printed by her bed</h3>
   <ul>
-    <li>"Supporting people with ME/CFS in hospital," the hospital support pack from the ME Association, the 25% ME Group, Action for M.E. and BRAME (latest version posted October 2025): meassociation.org.uk, search "hospital support pack." Fill in the patient sections now.</li>
+    <li>"Supporting people with ME/CFS in hospital," the hospital support pack from the ME Association, the 25% ME Group, Action for M.E. and BRAME (October 2025): meassociation.org.uk, search "hospital support pack." Fill in the patient sections now.</li>
     <li>#MEAction hospital checklist: meaction.net/handouts-and-tools.</li>
     <li>Bateman Horne Center, "ER and Urgent Care Considerations for ME/CFS" and the 2025 Clinical Care Guide.</li>
-    <li>CDC, "ME/CFS Clinical Care for Severely Affected Patients" (cdc.gov/me-cfs; a mirror copy is kept at restoredcdc.org if the CDC page moves).</li>
-    <li>Hermisson et al., "Guidance on Home-Based Care for People with Severe ME/CFS: A Transdisciplinary Expert Statement," Wiener Medizinische Wochenschrift 2026;176(Suppl 1):28–51, published July 29, 2026, open access at the publisher (doi 10.1007/s10354-026-01182-3) and at PubMed Central (PMC13447341). Written by the Austrian Society for ME/CFS and the Medical University of Vienna with patients and family caregivers; covers communication, hygiene, nutrition, and when to escalate.</li>
+    <li>CDC, "ME/CFS Clinical Care for Severely Affected Patients" (cdc.gov/me-cfs, dated May 13, 2024; a mirror is at restoredcdc.org if it moves).</li>
+    <li>Hermisson et al., "Guidance on Home-Based Care for People with Severe ME/CFS: A Transdisciplinary Expert Statement," Wiener Medizinische Wochenschrift 2026;176(Suppl 1):28–51, published July 29, 2026, open access at the publisher (doi 10.1007/s10354-026-01182-3) and PubMed Central (PMC13447341). Written with patients and family caregivers; covers communication, light and sound, hygiene, nutrition and when to escalate. Hand this to every aide.</li>
   </ul>
-</section>
-
-<!-- 12 -->
-<section class="phase" id="plan">
-  <div class="phase-head"><div class="num">12</div><div><h2>The two-week plan, and who does what</h2><div class="when">You coordinate. Mom signs. Ethan is the bedside person. Nobody new becomes the caregiver.</div></div></div>
-
-  <h3>Days 1 to 3</h3>
-  <ol>
-    <li>Find her Social Security number (section 3). <small>You.</small></li>
-    <li>Register with the ME/CFS Clinic MN and call Lower Lights for a video new-patient visit; ask both about presumptive Medicaid. <small>You call; Mom is in the room for the visit.</small></li>
-    <li>Call Social Security, file the SSI claim, ask for presumptive disability, dire need, and an emergency advance. <small>You, with Mom on the line as the caregiver.</small></li>
-    <li>Call Ohio Benefits and file the Medicaid application by phone as the person acting responsibly for her. <small>You.</small></li>
-    <li>Call two loan closets for a hospital bed and a commode. <small>Ethan, plus a friend with a truck.</small></li>
-  </ol>
-  <h3>Days 4 to 10</h3>
-  <ol start="6">
-    <li>First doctor visit by video. Come out with the functional note, the home health order, the palliative referral, the labs order. <small>Ethan writes the one-page description beforehand; Mom sits in.</small></li>
-    <li>Book a mobile blood draw. <small>You.</small></li>
-    <li>Call Mount Carmel palliative and Gentiva with the referral. <small>You.</small></li>
-    <li>LifeCare Alliance referral for meals and a Help-at-Home quote. <small>You.</small></li>
-    <li>If Mom is 55+, call the Office on Aging caregiver program. <small>Mom, or you for her.</small></li>
-    <li>Ethan builds her care sheet and fills in the hospital pack. <small>Ethan.</small></li>
-  </ol>
-  <h3>The day Medicaid is approved (presumptive or full)</h3>
-  <ol start="12">
-    <li>Doctor's office sends the home health order to an agency; screen agencies with the six questions. <small>You.</small></li>
-    <li>Call the long-term care line for the waiver assessment and say "self-directed." <small>You.</small></li>
-    <li>Start asking the ME community and the palliative social worker for a self-directed caregiver. <small>You and Ethan.</small></li>
-    <li>Call her managed care plan and ask for a care manager for a bedbound member. <small>You.</small></li>
-  </ol>
-  <h3>Every call</h3>
-  <p>Date, name, what they said, reference number. The earlier page has a call log that saves on the phone. Use it; it is what wins appeals.</p>
 </section>
 
 <!-- phones -->
 <section class="phase" id="phones">
-  <div class="phase-head"><div class="num">☎</div><div><h2>Every phone number on one screen</h2><div class="when">Confirm hours when you call; several were taken from directory listings.</div></div></div>
-  <div class="wide"><table>
-    <tr><th>Who</th><th>Number</th><th>For</th></tr>
-    <tr><td>Ohio Benefits (county application line)</td><td class="num">1-844-640-6446</td><td>Medicaid application by phone</td></tr>
-    <tr><td>Franklin County Job &amp; Family Services</td><td class="num">614-233-2000</td><td>Same; case questions</td></tr>
-    <tr><td>Ohio Medicaid Consumer Hotline</td><td class="num">1-800-324-8680</td><td>Problems, plan choice, escalation</td></tr>
-    <tr><td>Social Security</td><td class="num">1-800-772-1213</td><td>SSI claim, presumptive disability</td></tr>
-    <tr><td>Ohio Benefits Long-Term Services &amp; Supports</td><td class="num">1-844-644-6582</td><td>Waiver assessment request</td></tr>
-    <tr><td>CareStar (waiver case management)</td><td class="num">1-800-616-3718</td><td>From the July 2026 waiver handbook; navigator line 1-833-496-1288; or go through the Consumer Hotline</td></tr>
-    <tr><td>PPL (self-direction payroll)</td><td class="num">1-833-202-6174</td><td>Enrolling a self-directed caregiver, weekdays 7 to 6</td></tr>
-    <tr><td>ME/CFS Clinic MN</td><td class="num">612-440-9699</td><td>Free ME/CFS video visits, serves Ohio</td></tr>
-    <tr><td>Lower Lights Health</td><td class="num">614-274-1455</td><td>Video visit, new uninsured patients; presumptive Medicaid</td></tr>
-    <tr><td>PrimaryOne Health</td><td class="num">614-645-5500</td><td>Same; confirms presumptive Medicaid (telehealth line 614-859-1851 unconfirmed)</td></tr>
-    <tr><td>Heart of Ohio Family Health</td><td class="num">614-235-5555</td><td>Same; Westerville office 380-898-4055</td></tr>
-    <tr><td>Mount Carmel Community Based Palliative Care</td><td class="num">614-234-0200</td><td>Home palliative team with social worker</td></tr>
-    <tr><td>Gentiva (Columbus)</td><td class="num">614-414-0500</td><td>Ask about non-hospice palliative NP home visits</td></tr>
-    <tr><td>Ohio's Hospice of Central Ohio</td><td class="num">740-788-1400</td><td>Newark office serving Franklin County; referrals 888-449-4121; system line 800-653-4490</td></tr>
-    <tr><td>OhioHealth home health financial assistance</td><td class="num">614-566-1505</td><td>Charity care for OhioHealth at Home; general line 614-566-5594</td></tr>
-    <tr><td>HarmonyCares</td><td class="num">614-840-1688</td><td>House-call primary care (Medicare-focused; ask)</td></tr>
-    <tr><td>At Your Door Visiting Healthcare</td><td class="num">614-284-4114</td><td>Visiting NP/PA group; insurance or full self-pay</td></tr>
-    <tr><td>Franklin County Crisis Care Center</td><td class="num">614-222-3737</td><td>Walk-in adult crisis center, 465 Harmon Ave, 24 hours</td></tr>
-    <tr><td>IMPACT Community Action</td><td class="num">614-252-2799</td><td>Emergency help for adults without children</td></tr>
-    <tr><td>Patient Advocate Foundation</td><td class="num">1-800-532-5274</td><td>Free case manager, weekdays 8:30 to 5 Eastern</td></tr>
-    <tr><td>Jewish Family Services navigator</td><td class="num">614-237-9675</td><td>Intake; main office 614-231-1890</td></tr>
-    <tr><td>Help Hope Live</td><td class="num">800-642-8399</td><td>Benefit-safe medical fundraising</td></tr>
-    <tr><td>LifeCare Alliance</td><td class="num">614-278-3130</td><td>Meals, Help-at-Home aides</td></tr>
-    <tr><td>MOBILE Equipment Loan Program</td><td class="num">614-443-5936</td><td>Free equipment loan, Columbus (program listed as current, September 2026)</td></tr>
-    <tr><td>MAP, First Presbyterian Church of Westerville</td><td class="num">614-882-3155</td><td>Free equipment loan, Westerville area</td></tr>
-    <tr><td>Peace Church Helping Hands, Pickerington</td><td class="num">614-837-4568</td><td>Free hospital beds, commodes</td></tr>
-    <tr><td>Church of the Ascension loan closet, Johnstown</td><td class="num">614-581-5286</td><td>Free beds, wheelchairs</td></tr>
-    <tr><td>Franklin County Office on Aging</td><td class="num">614-525-6200</td><td>Caregiver support if Mom is 55+</td></tr>
-    <tr><td>Central Ohio Area Agency on Aging</td><td class="num">614-645-7250</td><td>Assisted living waiver, facility screening</td></tr>
-    <tr><td>Ohio CareLine</td><td class="num">1-800-720-9616</td><td>24-hour support for Mom and Ethan</td></tr>
-    <tr><td>Netcare Access</td><td class="num">614-276-2273</td><td>Mental health crisis line, 24 hours; or dial 988</td></tr>
-    <tr><td>NAMI Franklin County</td><td class="num">614-501-6264</td><td>Family support group</td></tr>
-    <tr><td>Legal Aid of Southeast and Central Ohio (formerly Legal Aid Society of Columbus)</td><td class="num">1-888-246-4420</td><td>Intake line, weekdays, mornings best; apply online any time; Columbus office 614-221-7201</td></tr>
-    <tr><td>Franklin County Probate Court guardianship line</td><td class="num">614-525-3894</td><td>24-hour guardianship information</td></tr>
-    <tr><td>Disability Rights Ohio</td><td class="num">1-800-282-9181</td><td>Waiver or Medicaid rights problems</td></tr>
-    <tr><td>Columbus Police non-emergency</td><td class="num">614-645-4545</td><td>Welfare check; option 3 reaches the Right Response Unit social workers, weekdays 8:30 a.m. to midnight</td></tr>
-    <tr><td>2-1-1</td><td class="num">211</td><td>Current loan closets and local aid</td></tr>
+  <div class="phase-head"><div class="num">☎</div><div><h2>Every phone number, with a call tracker</h2><div class="when">Tap a number to call. Set the status, date and a note after each call; it's saved on this phone. "Save contacts" downloads them all into your phone's contacts, prefixed "Theresa:".</div></div></div>
+  <div class="toolbar"><a class="btn" id="vcf" href="#" download="theresa-care-contacts.vcf">Save contacts (.vcf)</a><button class="btn quiet" type="button" id="copylog">Copy the call log</button><button class="btn quiet" type="button" id="clearlog">Clear log</button></div>
+  <div class="wide"><table class="log" id="calllog">
+    <tr><th>Who</th><th>Number</th><th>Status</th><th>Date</th><th>Note (name, reference number)</th></tr>
+    <tr data-k="obenefits"><td class="who">Ohio Benefits<small>Medicaid application by phone</small></td><td><a class="tel" href="tel:+18446406446">1-844-640-6446</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="fcjfs"><td class="who">Franklin County JFS<small>Same; case questions</small></td><td><a class="tel" href="tel:+16142332000">614-233-2000</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="hotline"><td class="who">Ohio Medicaid Consumer Hotline<small>Problems, plan choice, waiver questions</small></td><td><a class="tel" href="tel:+18003248680">1-800-324-8680</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="ssa"><td class="who">Social Security<small>SSI claim, presumptive disability; weekdays 8 to 7</small></td><td><a class="tel" href="tel:+18007721213">1-800-772-1213</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="obltss"><td class="who">Ohio Benefits Long-Term Services and Supports<small>Waiver assessment request; weekdays 9 to 5; text zip to 844-668-6582</small></td><td><a class="tel" href="tel:+18446446582">1-844-644-6582</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="carestar"><td class="who">CareStar<small>Waiver case management; navigator 1-833-496-1288</small></td><td><a class="tel" href="tel:+18006163718">1-800-616-3718</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="ppl"><td class="who">PPL<small>Self-direction payroll; weekdays 7 to 6</small></td><td><a class="tel" href="tel:+18332026174">1-833-202-6174</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="mecfs"><td class="who">ME/CFS Clinic MN<small>Free video visits; leave a voicemail</small></td><td><a class="tel" href="tel:+16124409699">612-440-9699</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="llchc"><td class="who">Lower Lights Health<small>Video visit, new uninsured patients; press 1</small></td><td><a class="tel" href="tel:+16142741455">614-274-1455</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="p1"><td class="who">PrimaryOne Health<small>Presumptive Medicaid; telehealth 614-859-1851 (confirm)</small></td><td><a class="tel" href="tel:+16146455500">614-645-5500</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="hoh"><td class="who">Heart of Ohio Family Health<small>Video visits; Westerville 380-898-4055</small></td><td><a class="tel" href="tel:+16142355555">614-235-5555</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="mtc"><td class="who">Mount Carmel Community Based Palliative Care<small>Home palliative team with social worker</small></td><td><a class="tel" href="tel:+16142340200">614-234-0200</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="gentiva"><td class="who">Gentiva (Columbus)<small>Ask about non-hospice palliative; national 1-888-436-8482</small></td><td><a class="tel" href="tel:+16144140500">614-414-0500</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="ohc"><td class="who">Ohio's Hospice of Central Ohio<small>Newark office; referrals 888-449-4121; OSU unit 614-685-0001</small></td><td><a class="tel" href="tel:+17407881400">740-788-1400</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="harmony"><td class="who">HarmonyCares<small>House-call primary care (ask about Medicaid, age)</small></td><td><a class="tel" href="tel:+16148401688">614-840-1688</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="ayd"><td class="who">At Your Door Visiting Healthcare<small>Visiting NP/PA; insurance or full self-pay</small></td><td><a class="tel" href="tel:+16142844114">614-284-4114</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="ohh"><td class="who">OhioHealth home health financial assistance<small>Charity care for OhioHealth at Home; general 614-566-5594</small></td><td><a class="tel" href="tel:+16145661505">614-566-1505</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="lca"><td class="who">LifeCare Alliance<small>Meals, Help-at-Home; meals 614-278-3152 opt 2</small></td><td><a class="tel" href="tel:+16142783130">614-278-3130</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="peace"><td class="who">Peace Church Helping Hands, Pickerington<small>Free hospital beds, commodes</small></td><td><a class="tel" href="tel:+16148374568">614-837-4568</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="cotaj"><td class="who">Church of the Ascension loan closet, Johnstown<small>Free beds, wheelchairs; also 740-390-8048</small></td><td><a class="tel" href="tel:+16145815286">614-581-5286</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="map"><td class="who">MAP, First Presbyterian Westerville<small>Free equipment loan; appointment; Mon to Thu 9 to 3:30</small></td><td><a class="tel" href="tel:+16148823155">614-882-3155</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="mobile"><td class="who">MOBILE Equipment Loan Program<small>Free equipment loan, Columbus</small></td><td><a class="tel" href="tel:+16144435936">614-443-5936</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="fcoa"><td class="who">Franklin County Office on Aging<small>Caregiver support if your mother is 55+; weekdays 9 to 4:30</small></td><td><a class="tel" href="tel:+16145256200">614-525-6200</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="coaaa"><td class="who">Central Ohio Area Agency on Aging<small>Assisted living waiver, facility screening; 800-589-7277</small></td><td><a class="tel" href="tel:+16146457250">614-645-7250</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="paf"><td class="who">Patient Advocate Foundation<small>Free case manager; weekdays 8:30 to 5 Eastern</small></td><td><a class="tel" href="tel:+18005325274">1-800-532-5274</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="jfs"><td class="who">Jewish Family Services navigator<small>Intake; main office 614-231-1890</small></td><td><a class="tel" href="tel:+16142379675">614-237-9675</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="hhl"><td class="who">Help Hope Live<small>Benefit-safe fundraising; weekdays 9 to 6 Eastern</small></td><td><a class="tel" href="tel:+18006428399">800-642-8399</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="stable"><td class="who">STABLE account<small>Confirm the annual limit; weekdays 9 to 8 Eastern</small></td><td><a class="tel" href="tel:+18004391653">1-800-439-1653</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="impact"><td class="who">IMPACT Community Action<small>Utility help (HEAP); weekdays 8 to 5</small></td><td><a class="tel" href="tel:+16142522799">614-252-2799</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="svdp"><td class="who">St. Vincent de Paul Columbus<small>Parish conference; Mon, Tue, Thu</small></td><td><a class="tel" href="tel:+16143763604">614-376-3604</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="careline"><td class="who">Ohio CareLine<small>24-hour support for the family (confirm)</small></td><td><a class="tel" href="tel:+18007209616">1-800-720-9616</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="netcare"><td class="who">Netcare Access<small>Mental health crisis, 24 hours; or dial 988</small></td><td><a class="tel" href="tel:+16142762273">614-276-2273</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="crisis"><td class="who">Franklin County Crisis Care Center<small>Walk-in, 465 Harmon Ave, 24 hours</small></td><td><a class="tel" href="tel:+16142223737">614-222-3737</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="nami"><td class="who">NAMI Franklin County<small>Family support group; group contact 614-530-4554</small></td><td><a class="tel" href="tel:+16145016264">614-501-6264</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="lasco"><td class="who">Legal Aid of Southeast and Central Ohio<small>Intake, weekdays, mornings best; Columbus office 614-221-7201</small></td><td><a class="tel" href="tel:+18882464420">1-888-246-4420</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="probate"><td class="who">Franklin County Probate Court<small>24-hour guardianship information</small></td><td><a class="tel" href="tel:+16145253894">614-525-3894</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="dro"><td class="who">Disability Rights Ohio<small>Waiver or Medicaid rights problems, neglect</small></td><td><a class="tel" href="tel:+18002829181">1-800-282-9181</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="cpd"><td class="who">Columbus Police non-emergency<small>Welfare check; option 3 = Right Response Unit, weekdays 8:30 a.m. to midnight</small></td><td><a class="tel" href="tel:+16146454545">614-645-4545</a></td><td></td><td></td><td></td></tr>
+    <tr data-k="211"><td class="who">2-1-1<small>Current loan closets and local aid</small></td><td><a class="tel" href="tel:211">211</a></td><td></td><td></td><td></td></tr>
   </table></div>
+  <div class="log" style="margin-top:.8rem"><label for="freelog" style="font-size:.9rem;color:var(--muted)">Anything else (case numbers, who said what)</label><textarea id="freelog" rows="4" style="width:100%;margin-top:.3rem" placeholder="Date, who, what they said, reference number"></textarea></div>
 </section>
 
 <div class="foot">
-  <p><b>How this was researched, and what is not verified.</b> First drafted September 27, 2026 from web search results. Later the same day, every rule, notice, provider page and charity page cited below was opened directly at its source in a real browser and read in full; quotations were checked word for word and the page was corrected wherever the source disagreed (the corrections that mattered most: the field-office chart and its procedure, the paid-relative rule, the waiver cost limit and Structured Family Caregiving rate, CareStar's and Legal Aid's numbers, the ME/CFS clinic's sign-up route, Lower Lights' fees, the Office on Aging program, JFS's cash help, AMMES's household rule, the guardianship fee). Reddit itself blocks readers who are not logged in, so the "What other families did" threads in section 6 were read through the Arctic Shift public archive; their comments are as archived. Still not verified: whether presumptive Medicaid covers home health visits before the full approval (it should, as the adult group's normal benefits, but no Ohio source says so); whether OhioHealth at Home will admit a new uninsured patient on charity care while Medicaid is pending; whether Gentiva's Columbus office provides non-hospice palliative care; whether the ME/CFS clinic sees people without a prior diagnosis, and its wait; PrimaryOne's separate telehealth number; Getlabs' visit fee and TruBlood's payment terms; whether LifeCare's Help-at-Home serves under-60s, and its fee; the STABLE annual contribution figure; the assisted-living room-and-board figure; the Ohio CareLine number; whether every provider above accepts Medicaid-pending patients.</p>
-  <p><b>Main sources.</b> Ohio Administrative Code 5160-46-02 (Ohio Home Care Waiver eligibility and the $14,700 monthly cost limit, effective September 22, 2025), 5160-46-06 (waiver rates, including Structured Family Caregiving), 5160-3-08 (level of care, July 1, 2025), 5160-12-01 (home health, 14-hour rule, March 7, 2021), 5160-45-03.2 (self-direction, October 1, 2024) and 5160-44-32 (paid relatives and legal representatives, January 1, 2024), 5160-44-33 (Structured Family Caregiving, August 12, 2025), 5160-11-11 (laboratory services), 5160:1-2-01 (application, signatures, January 26, 2024), 5160:1-2-08 (representatives and incapacity, November 1, 2023), 5160-1-33 (authorized representatives), 5160:1-2-13 (presumptive eligibility, September 1, 2023), 5160:1-4-01 (household composition); Ohio Medicaid's Ohio Home Care Waiver Handbook (July 2026); ODM moratorium notice effective May 14, 2026 to November 14, 2026; ODM's Ohio Benefits Long-Term Services and Supports page and the OBLTSS system notice on the S-AGE cutover; PCG's June 2025 notice on CareStar; PPL's Ohio self-direction page; ODM Group VIII partner packet (August 13, 2026) and webinar Q&amp;A; HHS 2026 poverty guidelines ($15,960); 42 CFR 435.907, 435.910 and 435.923 (who may apply, Social Security number, representatives); 20 CFR 416.315 and 416.934 and SSA POMS DI 11055.230, DI 11055.231, DI 11055.240, DI 11055.245, DI 23535.001, DI 23020.030, SI 02004.001 and SI 02004.010 (presumptive disability, dire need, emergency advance); SSA 2026 SSI federal payment amounts ($994); SSR 14-1p; Ohio Revised Code 5101.60 (adult protective services age), 2111.02 (emergency guardianship), 1337.12 (health care power of attorney), 5122.01 and 5122.10 (emergency psychiatric hold); Franklin County PRC plan FFY 2026-27; Franklin County Probate Court guardianship information; CDC "ME/CFS Clinical Care for Severely Affected Patients"; NICE NG206; Hermisson et al. 2026 (Wien Med Wochenschr, doi 10.1007/s10354-026-01182-3); Baxter, Speight and Weir 2021 (Healthcare 9:459); Montoya, Dowell, Mooney, Dimmock and Chu 2021 (Healthcare 9:1331); UK Prevention of Future Deaths report 2024-0530; Solve M.E. Severe ME Medical Panel Resource Guide (January 2025); provider pages for each organisation named above.</p>
+  <p><b>Still not verified</b> (marked "confirm" above): whether presumptive Medicaid covers home health visits before the full approval; whether OhioHealth at Home will admit a new uninsured patient on charity care while Medicaid is pending; whether Gentiva's Columbus office provides non-hospice palliative care; whether the ME/CFS clinic sees people without a prior diagnosis, and its wait; PrimaryOne's telehealth number; Getlabs' fee and TruBlood's payment terms; whether LifeCare's Help-at-Home serves under-60s, and its fee; the STABLE annual figure; the assisted-living room-and-board figure; the Ohio CareLine number; whether every provider above accepts Medicaid-pending patients.</p>
+  <p><b>How this was researched.</b> Drafted September 27, 2026. The same day, every rule, notice, provider page and charity page below was opened directly at its source in a real browser and read in full; quotations were checked word for word. Reddit blocks readers who aren't logged in, so the threads in Section 6 were read through the Arctic Shift public archive.</p>
+  <p><b>Sources.</b> Ohio Administrative Code 5160-46-02 (waiver eligibility and the $14,700 monthly cost limit, effective September 22, 2025), 5160-46-06 (waiver rates), 5160-3-08 (level of care), 5160-12-01 (home health), 5160-45-03.2 (self-direction) and 5160-44-32 (paid relatives and legal representatives), 5160-44-33 (Structured Family Caregiving), 5160-11-11 (laboratory services), 5160:1-2-01 (application, signatures), 5160:1-2-08 (representatives and incapacity), 5160-1-33 (authorized representatives), 5160:1-2-13 (presumptive eligibility), 5160:1-4-01 (household composition); Ohio Medicaid's Ohio Home Care Waiver Handbook (July 2026); ODM moratorium notice May 14 to November 14, 2026; ODM's Ohio Benefits Long-Term Services and Supports page and the OBLTSS notice on the S-AGE cutover; PCG's June 2025 notice on CareStar; PPL's Ohio self-direction page; ODM Group VIII partner packet (August 13, 2026) and webinar Q&amp;A; HHS 2026 poverty guidelines; 42 CFR 435.907, 435.910 and 435.923; 20 CFR 416.315 and 416.934; SSA POMS DI 11055.230, DI 11055.231, DI 11055.240, DI 11055.245, DI 23535.001, DI 23020.030, SI 02004.001 and SI 02004.010; SSA 2026 SSI federal payment amounts; SSR 14-1p; Ohio Revised Code 5101.60, 2111.02, 1337.12, 1337.25, 5122.01 and 5122.10; Franklin County PRC plan FFY 2026-27; Franklin County Probate Court guardianship pages; CDC "ME/CFS Clinical Care for Severely Affected Patients"; NICE NG206; Hermisson et al. 2026; Baxter, Speight and Weir 2021 (Healthcare 9:459); UK Prevention of Future Deaths report 2024-0530; Solve M.E. Severe ME Medical Panel Resource Guide (January 2025); each organisation's own contact page.</p>
 </div>
 
+<a class="totop" href="#plan" aria-label="Back to the plan">↑ Plan</a>
 
 <script>
 (function(){
-  var KEY='her-outreach-kit-v1';
-  var ids=['her','herfull','dob','city','since','you','rel','phone','email','mcd','ssi','doc'];
+  var KEY='theresa-kit-v2', PLAN='theresa-plan-v1', LOG='theresa-calls-v1';
+  function get(k){ try{ return JSON.parse(localStorage.getItem(k)||'{}'); }catch(e){ return {}; } }
+  function set(k,o){ try{ localStorage.setItem(k,JSON.stringify(o)); }catch(e){} }
+
+  /* --- message kit --- */
+  var ids=['herfull','dob','city','since','you','rel','phone','email','mcd','ssi','doc'];
   var raw={};
   document.querySelectorAll('.tpl .msg').forEach(function(m){ raw[m.closest('.tpl').id]=m.textContent; });
   function val(id){ var e=document.getElementById('f-'+id); return e? e.value.trim():''; }
   function ph(id,label){ var v=val(id); return v||('['+label+']'); }
   function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function vars(){
-    var her=ph('her','her name'), herfull=ph('herfull','her full name'), dob=val('dob'), city=ph('city','city'), since=ph('since','how long');
+    var herfull=ph('herfull','her full name'), dob=val('dob'), city=ph('city','city'), since=ph('since','how long');
     var you=ph('you','your name'), rel=ph('rel','relationship'), phone=ph('phone','phone'), email=ph('email','email');
     var mcd=val('mcd')||'[date applied]', ssi=val('ssi')||'[date applied]', doc=val('doc');
-    var rel_poss = (rel==='mother'||rel==='father') ? 'daughter' : 'sister';
-    var age_dob = dob ? ('born '+dob) : '[date of birth]';
-    var doc_clause = doc ? (' with '+doc) : '';
-    var doc_or_team = doc ? doc : 'Doctor';
-    var doc_or_blank = doc ? doc : '[clinician name, clinic, email]';
-    var v={her:her,herfull:herfull,city:city,since:since,you:you,rel:rel,phone:phone,email:email,mcd:mcd,ssi:ssi,
-      rel_poss:rel_poss,age_dob:age_dob,doc_clause:doc_clause,doc_or_team:doc_or_team,doc_or_blank:doc_or_blank};
-    v.about = fill(raw['t-about'],v);
+    var rel_poss=(rel==='mother'||rel==='father')?'daughter':'sister';
+    var v={herfull:herfull,city:city,since:since,you:you,rel:rel,phone:phone,email:email,mcd:mcd,ssi:ssi,rel_poss:rel_poss,
+      age_dob:dob?('born '+dob):'[date of birth]', doc_clause:doc?(' with '+doc):'', doc_or_team:doc||'Doctor', doc_or_blank:doc||'[clinician name, clinic, email]'};
+    v.about=fill(raw['t-about'],v);
     return v;
   }
   function fill(t,v){ return t.replace(/\{(\w+)\}/g,function(_,k){ return (k in v)? v[k] : '{'+k+'}'; }); }
@@ -711,23 +752,102 @@ What the money buys: about 20 hours a week of a trained aide for three months (a
     var v=vars();
     document.querySelectorAll('.tpl').forEach(function(t){
       var m=t.querySelector('.msg'); if(!m) return;
-      var txt=fill(raw[t.id],v);
-      m.dataset.plain=txt;
+      var txt=fill(raw[t.id],v); m.dataset.plain=txt;
       m.innerHTML=esc(txt).replace(/\[([^\]]+)\]/g,'<mark>[$1]</mark>');
     });
   }
-  function save(){ var o={}; ids.forEach(function(i){o[i]=val(i);}); try{ localStorage.setItem(KEY,JSON.stringify(o)); }catch(e){} }
-  function load(){ try{ var o=JSON.parse(localStorage.getItem(KEY)||'{}'); ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e&&o[i]) e.value=o[i]; }); }catch(e){} }
-  ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e){ e.addEventListener('input',function(){render();save();}); e.addEventListener('change',function(){render();save();}); } });
+  function saveKit(){ var o={}; ids.forEach(function(i){o[i]=val(i);}); set(KEY,o); }
+  function loadKit(){ var o=get(KEY); ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e&&o[i]) e.value=o[i]; }); }
+  ids.forEach(function(i){ var e=document.getElementById('f-'+i); if(e){ ['input','change'].forEach(function(ev){ e.addEventListener(ev,function(){render();saveKit();}); }); } });
+  function copyText(txt,b,label){
+    function ok(){ b.textContent='Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent=label; b.classList.remove('done'); },1800); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,function(){ b.textContent='Select and copy by hand'; }); }
+    else { b.textContent='Select and copy by hand'; }
+  }
   document.querySelectorAll('.copy').forEach(function(b){
-    b.addEventListener('click',function(){
-      var m=b.parentNode.querySelector('.msg'); var txt=m.dataset.plain||m.textContent;
-      function ok(){ b.textContent='Copied'; b.classList.add('done'); setTimeout(function(){ b.textContent='Copy'; b.classList.remove('done'); },1800); }
-      function fallback(){ try{ var r=document.createRange(); r.selectNodeContents(m); var sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(r); b.textContent='Selected, now copy'; }catch(e){} }
-      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,fallback); } else { fallback(); }
-    });
+    b.addEventListener('click',function(){ var m=b.parentNode.querySelector('.msg'); copyText(m.dataset.plain||m.textContent,b,'Copy'); });
   });
-  load(); render();
+  loadKit(); render();
+
+  /* --- plan checklist, synced across the page --- */
+  var plan=get(PLAN);
+  var boxes=Array.prototype.slice.call(document.querySelectorAll('.todo input[type=checkbox][data-key]'));
+  var master=boxes.filter(function(c){ return c.closest('[data-list="plan"]'); });
+  var CHIPS={medicaid:['p1','p3'],doctor:['p2','p6','p7','p8'],ssi:['p4'],aides:['p11','p12','p13','p14'],now:['p5','p9'],charity:['p10','p15']};
+  function paintBoxes(){
+    boxes.forEach(function(c){ c.checked=!!plan[c.dataset.key]; c.closest('li').classList.toggle('on',c.checked); });
+    var done=master.filter(function(c){return c.checked;}).length, total=master.length;
+    document.getElementById('pcount').textContent=done+' of '+total+' steps done';
+    document.getElementById('pbar').style.width=(total?Math.round(done/total*100):0)+'%';
+    var nx=master.filter(function(c){return !c.checked;})[0], pn=document.getElementById('pnext');
+    if(nx){ var lab=nx.parentNode.querySelector('label'); var b=lab.querySelector('b'); pn.innerHTML='Next up: <a href="#'+nx.id+'">'+esc(b?b.textContent:lab.textContent.slice(0,80))+'</a>'; }
+    else { pn.textContent='Everything on the plan is ticked. Keep the log going.'; }
+    Object.keys(CHIPS).forEach(function(k){ var el=document.querySelector('[data-chip="'+k+'"]'); if(!el) return;
+      var n=CHIPS[k].filter(function(id){return plan[id];}).length, t=CHIPS[k].length;
+      el.className='chip'+(n===t?' done':(n?' part':'')); el.textContent=n===t?'done':(n?n+' of '+t+' done':'not started'); });
+  }
+  boxes.forEach(function(c){ c.addEventListener('change',function(){ plan[c.dataset.key]=c.checked; set(PLAN,plan); paintBoxes(); }); });
+  paintBoxes();
+  var hd=document.getElementById('hidedone');
+  function paintHide(){ document.body.classList.toggle('hidedone',!!plan._hide); hd.textContent=plan._hide?"Show what's done":"Hide what's done"; }
+  hd.addEventListener('click',function(){ plan._hide=!plan._hide; set(PLAN,plan); paintHide(); }); paintHide();
+
+  /* --- mobile table labels --- */
+  document.querySelectorAll('.wide table').forEach(function(t){
+    var hs=Array.prototype.map.call(t.querySelectorAll('tr:first-child th'),function(h){return h.textContent;});
+    t.querySelectorAll('tr').forEach(function(r){ r.querySelectorAll('td').forEach(function(td,i){ if(hs[i]) td.setAttribute('data-label',hs[i]); }); });
+  });
+
+  /* --- call tracker --- */
+  var log=get(LOG);
+  var STATUS=[['0','Not called'],['1','Left message'],['2','Spoke to them'],['3','Done']];
+  var rows=document.querySelectorAll('#calllog tr[data-k]');
+  rows.forEach(function(tr){
+    var k=tr.dataset.k, r=log[k]||{};
+    var cells=tr.querySelectorAll('td');
+    var sel=document.createElement('select'); STATUS.forEach(function(s){ var o=document.createElement('option'); o.value=s[0]; o.textContent=s[1]; sel.appendChild(o); });
+    var date=document.createElement('input'); date.type='date';
+    var note=document.createElement('input'); note.type='text'; note.className='n'; note.placeholder='who you spoke to, ref #';
+    sel.value=r.s||'0'; date.value=r.d||''; note.value=r.n||'';
+    cells[2].appendChild(sel); cells[3].appendChild(date); cells[4].appendChild(note);
+    function paint(){ tr.className='s'+sel.value; }
+    function save(){ log[k]={s:sel.value,d:date.value,n:note.value}; set(LOG,log); paint(); }
+    sel.addEventListener('change',function(){ if(sel.value!=='0'&&!date.value){ date.value=new Date().toISOString().slice(0,10); } save(); });
+    date.addEventListener('change',save); note.addEventListener('input',save);
+    paint();
+  });
+  var free=document.getElementById('freelog'); free.value=log._free||'';
+  free.addEventListener('input',function(){ log._free=free.value; set(LOG,log); });
+  document.getElementById('copylog').addEventListener('click',function(){
+    var lines=['Call log for Theresa, '+new Date().toLocaleDateString()];
+    rows.forEach(function(tr){ var k=tr.dataset.k, r=log[k]; if(!r||r.s==='0'&&!r.n) return;
+      var who=tr.querySelector('td.who').childNodes[0].textContent, num=tr.querySelector('a.tel').textContent;
+      var st=STATUS.filter(function(s){return s[0]===r.s;})[0][1];
+      lines.push(who+' ('+num+'): '+st+(r.d?' on '+r.d:'')+(r.n?'. '+r.n:'')); });
+    if(log._free) lines.push('', log._free);
+    copyText(lines.join('\n'),this,'Copy the call log');
+  });
+  document.getElementById('clearlog').addEventListener('click',function(){
+    if(this.dataset.armed){ log={}; set(LOG,log); rows.forEach(function(tr){ tr.querySelector('select').value='0'; tr.querySelector('input[type=date]').value=''; tr.querySelector('input.n').value=''; tr.className='s0'; }); free.value=''; this.textContent='Clear log'; delete this.dataset.armed; }
+    else { this.dataset.armed='1'; this.textContent='Tap again to clear everything'; var b=this; setTimeout(function(){ b.textContent='Clear log'; delete b.dataset.armed; },4000); }
+  });
+
+  /* --- contacts file --- */
+  var cards=[];
+  rows.forEach(function(tr){
+    var who=tr.querySelector('td.who').childNodes[0].textContent, small=tr.querySelector('td.who small'), tel=tr.querySelector('a.tel').getAttribute('href').replace('tel:','');
+    cards.push('BEGIN:VCARD\r\nVERSION:3.0\r\nN:;Theresa: '+who+';;;\r\nFN:Theresa: '+who+'\r\nTEL;TYPE=WORK,VOICE:'+tel+(small?'\r\nNOTE:'+small.textContent.replace(/[\r\n]+/g,' '):'')+'\r\nEND:VCARD');
+  });
+  document.getElementById('vcf').href='data:text/vcard;charset=utf-8,'+encodeURIComponent(cards.join('\r\n'));
+
+  /* --- section nav highlight --- */
+  var links=Array.prototype.slice.call(document.querySelectorAll('.topnav a'));
+  var secs=links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var nav=document.querySelector('.topnav'), last=-1;
+  function hl(){ var y=window.scrollY+80, cur=0; secs.forEach(function(s,i){ if(s&&s.offsetTop<=y) cur=i; }); if(cur===last) return; last=cur;
+    links.forEach(function(a,i){ a.classList.toggle('now',i===cur); }); var a=links[cur];
+    if(a){ nav.scrollLeft=Math.max(0, a.offsetLeft - nav.clientWidth/2 + a.offsetWidth/2); } }
+  window.addEventListener('scroll',hl,{passive:true}); hl();
 })();
 </script>
 </main>
