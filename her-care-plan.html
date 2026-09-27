@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Getting her care covered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+  --bg:#F3F5F4;
+  --paper:#FFFFFF;
+  --ink:#16252A;
+  --muted:#556468;
+  --line:#D6DEDC;
+  --line-strong:#B9C6C3;
+  --accent:#176973;
+  --accent-soft:#E3F0EF;
+  --accent-ink:#FFFFFF;
+  --done:#2A7A57;
+  --done-soft:#E4F2EA;
+  --note-bg:#FFF6E0;
+  --note-ink:#5A4300;
+  --warn-bg:#FCEBE8;
+  --warn-ink:#7A2E23;
+  --say-bg:#F4F1EA;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#111A1C; --paper:#1B2528; --ink:#EEF3F2; --muted:#A5B4B1; --line:#30423F; --line-strong:#47605C;
+    --accent:#63B9C0; --accent-soft:#1D3336; --accent-ink:#0D1A1C;
+    --done:#72CC9C; --done-soft:#1C3328;
+    --note-bg:#3A2F12; --note-ink:#F5DFA2; --warn-bg:#3E2320; --warn-ink:#F2B8AE; --say-bg:#262E2C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111A1C; --paper:#1B2528; --ink:#EEF3F2; --muted:#A5B4B1; --line:#30423F; --line-strong:#47605C;
+  --accent:#63B9C0; --accent-soft:#1D3336; --accent-ink:#0D1A1C;
+  --done:#72CC9C; --done-soft:#1C3328;
+  --note-bg:#3A2F12; --note-ink:#F5DFA2; --warn-bg:#3E2320; --warn-ink:#F2B8AE; --say-bg:#262E2C;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 3.6rem); scroll-behavior:smooth}
+*{box-sizing:inherit}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Atkinson Hyperlegible","Verdana",system-ui,sans-serif;
+  font-size:19px; line-height:1.5;
+  -webkit-text-size-adjust:100%;
+}
+img{max-width:100%}
+main{max-width:42rem; margin:0 auto; padding:0 1rem 4rem}
+h1{font-size:2rem; line-height:1.12; margin:1.25rem 0 .6rem; letter-spacing:-.01em}
+h2{font-size:1.45rem; line-height:1.2; margin:0}
+h3{font-size:1.05rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:1.5rem 0 .25rem}
+p{margin:.55rem 0}
+b{font-weight:700}
+a{color:var(--accent); text-decoration-thickness:2px; text-underline-offset:3px; word-break:break-word}
+.lead{font-size:1.1rem; color:var(--muted); margin:0 0 1.1rem}
+
+/* sticky progress */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:5;
+  background:var(--paper); border-bottom:1px solid var(--line);
+  margin:0 -1rem; padding:.55rem 1rem .6rem;
+}
+.topbar .row{display:flex; justify-content:space-between; align-items:baseline; gap:1rem; font-size:1rem}
+.topbar strong{font-size:1.1rem}
+.topbar .now{color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.bar{height:8px; background:var(--line); border-radius:4px; overflow:hidden; margin-top:.4rem}
+.bar > i{display:block; height:100%; width:0; background:var(--done); transition:width .3s}
+
+/* jump list */
+.jump{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:.35rem .5rem; margin:1rem 0 1.5rem; list-style:none}
+.jump li{margin:0}
+.jump a{
+  display:flex; align-items:center; gap:.75rem; padding:.6rem .5rem; min-height:3rem;
+  text-decoration:none; color:var(--ink); border-top:1px solid var(--line);
+}
+.jump li:first-child a{border-top:0}
+.jump .n{flex:0 0 2rem; height:2rem; border-radius:50%; background:var(--accent); color:var(--accent-ink); font-weight:700; display:flex; align-items:center; justify-content:center; font-size:1rem}
+.jump .n.is-done{background:var(--done)}
+.jump .t{flex:1 1 auto; line-height:1.25}
+.jump .c{flex:0 0 auto; color:var(--muted); font-size:.95rem; font-variant-numeric:tabular-nums}
+
+/* callouts */
+.note,.warn,.say,.doc{border-radius:12px; padding:.8rem 1rem; margin:.9rem 0}
+.note{background:var(--note-bg); color:var(--note-ink)}
+.warn{background:var(--warn-bg); color:var(--warn-ink)}
+.note b,.warn b{color:inherit}
+.note p,.warn p,.say p,.doc p{margin:.35rem 0}
+.say{background:var(--say-bg)}
+.say .k{display:block; font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:.2rem}
+.say q{quotes:"\201C" "\201D"; font-style:italic}
+.doc{background:var(--paper); border:2px solid var(--line-strong)}
+.doc h4{margin:0 0 .4rem; font-size:1.1rem}
+.doc .src{font-size:.9rem; color:var(--muted)}
+
+/* phases */
+.phase{
+  background:var(--paper); border:1px solid var(--line); border-radius:16px;
+  padding:1.1rem 1rem 1.2rem; margin:1.25rem 0;
+}
+.phase.is-done{border-color:var(--done); background:var(--done-soft)}
+.phase-head{display:flex; align-items:flex-start; gap:.85rem; margin-bottom:.4rem}
+.num{
+  flex:0 0 auto; width:2.5rem; height:2.5rem; border-radius:50%;
+  background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:1.25rem;
+  display:flex; align-items:center; justify-content:center; margin-top:.1rem;
+}
+.phase.is-done .num{background:var(--done)}
+.when{color:var(--muted); font-size:.98rem; margin-top:.2rem}
+
+.task{
+  display:flex; gap:.7rem; align-items:flex-start; margin:0 -.35rem;
+  padding:.6rem .35rem; border-top:1px solid var(--line); min-height:3rem;
+  cursor:pointer; border-radius:8px;
+}
+.task:first-of-type{border-top:0}
+.task:active{background:var(--accent-soft)}
+.task input{
+  flex:0 0 auto; width:1.75rem; height:1.75rem; margin:.05rem 0 0; accent-color:var(--done); cursor:pointer;
+}
+.task span{flex:1 1 auto}
+.task small{display:block; color:var(--muted); font-size:.95rem; line-height:1.45; margin-top:.15rem}
+.task:has(input:checked) > span{color:var(--muted); text-decoration:line-through; text-decoration-thickness:1.5px}
+.task:has(input:checked) small{text-decoration:none}
+
+.call{
+  display:flex; flex-wrap:wrap; gap:.4rem .8rem; align-items:center;
+  background:var(--accent-soft); border-radius:12px; padding:.6rem .75rem; margin:.55rem 0;
+}
+.call a.tel{
+  display:inline-block; background:var(--accent); color:var(--accent-ink); text-decoration:none;
+  font-weight:700; padding:.6rem .9rem; border-radius:10px; font-size:1.05rem; white-space:nowrap;
+}
+.call span{color:var(--muted); font-size:.98rem; flex:1 1 10rem}
+.call span b{color:var(--ink)}
+
+.where{margin:.5rem 0 0; padding-left:1.1rem}
+.where li{margin:.35rem 0}
+ul.plain{padding-left:1.2rem; margin:.4rem 0}
+ul.plain li{margin:.3rem 0}
+.next{margin:1.1rem 0 0; font-size:1rem}
+.next a{font-weight:700}
+
+.wide{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:.98rem; margin:.5rem 0}
+th,td{text-align:left; padding:.5rem .5rem; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-weight:700; color:var(--muted); font-size:.85rem; text-transform:uppercase; letter-spacing:.05em}
+td a{white-space:nowrap}
+.log textarea{
+  width:100%; min-height:10rem; font:inherit; font-size:1rem; color:var(--ink);
+  background:var(--paper); border:2px solid var(--line-strong); border-radius:12px; padding:.75rem;
+}
+.foot{margin-top:2rem; font-size:.95rem; color:var(--muted)}
+.foot button{font:inherit; font-size:.95rem; padding:.5rem .9rem; border-radius:8px; border:1.5px solid var(--line-strong); background:var(--paper); color:var(--ink); cursor:pointer}
+.confirm{display:none; margin-top:.6rem; gap:.5rem; flex-wrap:wrap; align-items:center}
+.confirm.is-open{display:flex}
+.confirm .danger{background:var(--warn-bg); color:var(--warn-ink); border-color:transparent}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+@media (max-width:400px){ body{font-size:18px} h1{font-size:1.8rem} }
+
+@media print{
+  @page{margin:.5in .55in}
+  html{padding:0}
+  body{background:#fff; color:#000; font-size:9.5pt; line-height:1.25}
+  main{max-width:none; padding:0; column-count:2; column-gap:.35in; column-fill:auto}
+  h1{font-size:16pt; margin:0 0 .1in; column-span:all}
+  .lead{font-size:9.5pt; margin:0 0 .1in; column-span:all}
+  h2{font-size:12pt}
+  h3{font-size:8.5pt; margin:.12in 0 .04in; color:#333}
+  .topbar,.jump,.foot,.next,.bar,.log textarea{display:none}
+  .phase{border:0; border-top:1.5px solid #000; border-radius:0; padding:.08in 0 .04in; margin:.06in 0 0; background:none; break-inside:auto}
+  .phase-head{margin-bottom:.03in; break-after:avoid}
+  .num{width:.28in; height:.28in; font-size:10pt; background:#000; color:#fff; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .when{font-size:8.5pt; color:#333}
+  .task{padding:.03in 0; margin:0; min-height:0; border-top:1px solid #ccc; break-inside:avoid; gap:.35rem}
+  .task input{width:.16in; height:.16in; margin-top:.03in}
+  .task small{font-size:8.5pt; color:#222; line-height:1.22}
+  .note,.warn,.say,.doc{border:1px solid #999; background:none; color:#000; border-radius:0; padding:.05in .08in; margin:.06in 0; break-inside:avoid}
+  .say .k{color:#333}
+  .call{background:none; padding:.02in 0; margin:.02in 0; gap:.3rem}
+  .call a.tel{background:none; color:#000; padding:0; text-decoration:none; font-size:9.5pt}
+  .call span{color:#222}
+  a{color:#000; text-decoration:none}
+  table{font-size:8.5pt}
+  th,td{padding:.025in .03in; border-bottom:1px solid #ccc}
+  .phase.log{border-top:2px solid #000}
+  .phase.log p:first-of-type{display:none}
+  .phase.log table{break-inside:auto}
+  .phase.log tr{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>Getting her care covered</h1>
+<p class="lead">A step-by-step plan for Franklin County, Ohio. Work through it in order. Every box you check is saved on this phone, so you can come back to it any time. Updated September 2026.</p>
+
+<div class="topbar" aria-live="polite">
+  <div class="row"><strong><span id="doneCount">0</span> of <span id="totalCount">0</span> done</strong><span class="now" id="nowLabel"></span></div>
+  <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barWrap"><i id="bar"></i></div>
+</div>
+
+<ol class="jump" id="jump" aria-label="Jump to a step">
+  <li><a href="#p1"><span class="n">1</span><span class="t">Gather the paperwork</span><span class="c" data-count="p1"></span></a></li>
+  <li><a href="#p2"><span class="n">2</span><span class="t">Become her official representative</span><span class="c" data-count="p2"></span></a></li>
+  <li><a href="#p3"><span class="n">3</span><span class="t">Apply for Ohio Medicaid</span><span class="c" data-count="p3"></span></a></li>
+  <li><a href="#p4"><span class="n">4</span><span class="t">Apply for Social Security disability</span><span class="c" data-count="p4"></span></a></li>
+  <li><a href="#p5"><span class="n">5</span><span class="t">Request the Ohio Home Care Waiver</span><span class="c" data-count="p5"></span></a></li>
+  <li><a href="#p6"><span class="n">6</span><span class="t">Get medical care started now</span><span class="c" data-count="p6"></span></a></li>
+  <li><a href="#p7"><span class="n">✎</span><span class="t">Call log and phone numbers</span><span class="c"></span></a></li>
+</ol>
+
+<div class="note">
+  <p><b>Medicaid, not Medicare.</b> Medicare is for people 65 and older, or people who have been on Social Security Disability for two years. What she can get now is <b>Ohio Medicaid</b>, which pays for doctors, medications, equipment, and in-home nursing and aides. Social Security Disability (step 4) is the road that eventually leads to Medicare.</p>
+</div>
+
+<div class="warn">
+  <p><b>One rule that makes everything faster:</b> keep one folder (paper or on your phone) with every form, every confirmation number, and the name of every person you talk to. Write the date on everything. The log at the bottom of this page is for that.</p>
+</div>
+
+<!-- ============ PHASE 1 ============ -->
+<section class="phase" id="p1" data-title="Step 1: Gather the paperwork">
+  <div class="phase-head">
+    <div class="num">1</div>
+    <div><h2>Gather what every application will ask for</h2><div class="when">Do this first. It takes an afternoon.</div></div>
+  </div>
+  <p>Get these together once and you won't have to hunt for them three times. Photos on a phone are fine for uploading.</p>
+
+  <h3>About her</h3>
+  <label class="task"><input type="checkbox" id="t1a"><span>Her Social Security number<small>The card if you can find it; the number itself is what matters.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1b"><span>Proof she's a U.S. citizen<small>Birth certificate or U.S. passport. If neither can be found, the county can usually verify citizenship electronically with her Social Security number, so don't let this stop you from applying.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1c"><span>Photo ID<small>Ohio driver's license or state ID, even if expired.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1d"><span>Proof she lives in Columbus<small>A lease, a piece of mail addressed to her, or a signed statement from whoever owns the home saying she lives there.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1e"><span>Her income: write down that it's zero<small>If she gets any money at all (a gift, an old paycheck, unemployment), note it. Applications ask, and "none" is a fine answer.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1f"><span>Bank accounts<small>Most recent statement for any account in her name, even if it's nearly empty. Medicaid checks these.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1g"><span>Ask her: did she ever work and pay into Social Security?<small>Yes or no is enough. Any jobs in the last 10 years, roughly when. This decides which Social Security program she gets in step 4. If she can't answer, Social Security can look up her earnings record.</small></span></label>
+
+  <h3>About her health</h3>
+  <label class="task"><input type="checkbox" id="t1h"><span>Names of every doctor, clinic, or hospital she's seen in the last few years<small>Even one visit counts. Include the ER if she's been.</small></span></label>
+  <label class="task"><input type="checkbox" id="t1i"><span>Any diagnosis paperwork, test results, or medication lists you can find</span></label>
+  <label class="task"><input type="checkbox" id="t1j"><span>Write a one-page description of what she can and can't do<small>Plain language, dated. Example: "Cannot sit up, walk, or stand. Must be carried to the toilet. Cannot control her bowels. Cannot speak more than a few words. Cannot tolerate light or sound. Needs help eating." Describe a typical bad day, and say how many days a week are like that. This exact page will be used by Medicaid, the waiver assessor, and Social Security.</small></span></label>
+
+  <h3>About you (the person filing)</h3>
+  <label class="task"><input type="checkbox" id="t1k"><span>Your own photo ID, address, and phone number</span></label>
+  <p class="next">Next: <a href="#p2">step 2, become her representative</a></p>
+</section>
+
+<!-- ============ PHASE 2 ============ -->
+<section class="phase" id="p2" data-title="Step 2: Become her representative">
+  <div class="phase-head">
+    <div class="num">2</div>
+    <div><h2>Make yourself her official representative</h2><div class="when">Same day as step 3, or the day before.</div></div>
+  </div>
+  <p>Because she can't fill out forms or talk to caseworkers, Ohio needs a signed form saying you can act for her. Without it, the county can't legally discuss her case with you.</p>
+
+  <label class="task"><input type="checkbox" id="t2a"><span>Print form ODM 06723, "Authorized Representative"<small>Get it at <a href="https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Resources/Publications/Forms/ODM06723fillx.pdf">medicaid.ohio.gov (ODM 06723, 3 pages)</a>. You can also ask the county to mail it, or pick it up at the Northland office (address in step 3).</small></span></label>
+  <label class="task"><input type="checkbox" id="t2b"><span>Fill in her information and yours, and check the box that lets you act on her behalf in all matters<small>Where it asks how long the authority lasts, leave the date blank. The form then stays in force until she cancels it in writing.</small></span></label>
+  <label class="task"><input type="checkbox" id="t2c"><span>Also fill out ODM 10221, the medical-privacy release<small>The 06723 form says to. It lets the county and her Medicaid plan share her health information with you. Get it at <a href="https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Resources/Publications/Forms/ODM10221fillx.pdf">medicaid.ohio.gov (ODM 10221)</a>.</small></span></label>
+  <label class="task"><input type="checkbox" id="t2d"><span>Get her signature on both forms<small>A shaky signature or an "X" is fine. Ohio's Medicaid rules say an "X" counts as a valid signature when someone can't sign their name. If she signs with a mark, it helps to have one other adult write "witnessed by," sign next to it, and date it. Do it in a dim room when she has the most energy; it takes ten seconds.</small></span></label>
+  <label class="task"><input type="checkbox" id="t2e"><span>Sign both forms yourself and date them<small>The form has no effect unless both of you sign.</small></span></label>
+  <label class="task"><input type="checkbox" id="t2f"><span>Keep a photo of each signed page<small>You'll submit these with the Medicaid application in step 3.</small></span></label>
+
+  <div class="note"><p>If she truly cannot make any mark at all, tell the county when you apply. Federal Medicaid rules let someone acting responsibly for an incapacitated adult apply for them, and the county has a process for it that usually involves a doctor's statement. That's one more reason a doctor who has seen her (step 6) matters.</p></div>
+  <p class="next">Next: <a href="#p3">step 3, apply for Medicaid</a></p>
+</section>
+
+<!-- ============ PHASE 3 ============ -->
+<section class="phase" id="p3" data-title="Step 3: Apply for Ohio Medicaid">
+  <div class="phase-head">
+    <div class="num">3</div>
+    <div><h2>Apply for Ohio Medicaid</h2><div class="when">This week. The county has 45 days to decide, or 90 days if you tell them she is disabled. Most cases finish sooner.</div></div>
+  </div>
+  <p>Apply as an adult under 65 with no income. That's the fastest track, and she qualifies on income alone. You'll still describe her disability in the application; it matters later.</p>
+
+  <h3>Pick one way to apply</h3>
+  <label class="task"><input type="checkbox" id="t3a"><span>By phone (easiest if forms are hard)<small>A person walks you through the whole application and enters it for you. Have the step 1 items in front of you. Either number works.</small></span></label>
+  <div class="call"><a class="tel" href="tel:18446406446">1-844-640-6446</a><span><b>Ohio Benefits</b> (the county's application line). Weekdays, daytime.</span></div>
+  <div class="call"><a class="tel" href="tel:18003248680">1-800-324-8680</a><span><b>Ohio Medicaid Consumer Hotline.</b> Mon to Fri 7am to 8pm, Sat 8am to 5pm. Also takes applications.</span></div>
+  <label class="task"><input type="checkbox" id="t3b"><span>Or online at benefits.ohio.gov<small>Create an "OH|ID" account in your own name (it will make you set up two ways to confirm your identity, such as text and email). Then choose "Apply for Benefits" and say you're applying as an authorized representative. Go to <a href="https://benefits.ohio.gov">benefits.ohio.gov</a>. Stuck on the account? Call 1-844-640-6446 and press 5.</small></span></label>
+  <label class="task"><input type="checkbox" id="t3c"><span>Or on paper with form JFS 07200<small>Ohio's combined application (about 24 pages; you only fill in what applies). Print it from <a href="https://www.odjfs.state.oh.us/forms/num/JFS07200/pdf/">odjfs.state.oh.us</a>, sign as her authorized representative, and drop it at the Northland office below.</small></span></label>
+
+  <h3>What to say and ask for</h3>
+  <div class="say"><span class="k">When you start</span><p><q>I'm applying for Medicaid on behalf of my adult daughter as her authorized representative. She is bedbound with a serious illness, has no income, and cannot communicate right now. I have her Social Security number and documents.</q></p></div>
+  <label class="task"><input type="checkbox" id="t3d"><span>Ask for retroactive coverage<small>Say: "Please include the three months before this application." Ohio Medicaid can pay medical bills from up to three months back if she was eligible then.</small></span></label>
+  <label class="task"><input type="checkbox" id="t3e"><span>Tell them she is disabled and needs long-term in-home care<small>Ask them to note it on the case. It helps when you request the waiver in step 5, and it will matter in 2027 (see the note below).</small></span></label>
+  <label class="task"><input type="checkbox" id="t3j"><span>Ask for food assistance (SNAP) on the same application<small>It's the same form and the same phone call. With no income she qualifies. One less thing to apply for later.</small></span></label>
+  <label class="task"><input type="checkbox" id="t3f"><span>Write down the case number and the date you applied</span></label>
+
+  <h3>Send in your documents</h3>
+  <p>After you apply, a caseworker mails a checklist of what they still need. The sooner you send it, the sooner she's approved. Include the two representative forms from step 2 with your first batch. Write her name and case number on every page.</p>
+  <ul class="where">
+    <li><b>Upload:</b> in your benefits.ohio.gov account, or the county's upload page at <a href="https://www.franklincountyohio.gov/Agency-Directory/Job-and-Family-Services/JFS-Document-Upload">franklincountyohio.gov</a> (one file at a time, PDF or JPG)</li>
+    <li><b>Email photos to:</b> <a href="mailto:FRANKLIN-CDJFS-Verifications@jfs.ohio.gov">FRANKLIN-CDJFS-Verifications@jfs.ohio.gov</a> (put her full name and case number in the subject)</li>
+    <li><b>Fax:</b> 614-233-2398</li>
+    <li><b>Drop box, any time, day or night:</b> Northland Opportunity Center, 1721 Northland Park Ave, Columbus 43229 (outside the main entrance)</li>
+    <li><b>In person, weekdays 8 to 5:</b> Northland (above) · East Opportunity Center, 1055 Mt. Vernon Ave, 43203 · West Opportunity Center, 314 N. Wilson Rd, 43204</li>
+  </ul>
+  <label class="task"><input type="checkbox" id="t3g"><span>Documents and representative forms submitted</span></label>
+  <label class="task"><input type="checkbox" id="t3h"><span>If nothing arrives in 2 weeks, call the county to check the case<small>Ask: "Is anything missing to complete my daughter's Medicaid case?" Be polite and specific; ask for the caseworker's name.</small></span></label>
+  <label class="task"><input type="checkbox" id="t3k"><span>If 45 days pass with no decision, or she's denied, ask for a state hearing<small>You have 90 days from the date on the notice, and a delay with no decision counts too. Request it online at <a href="https://hearings.jfs.ohio.gov/SHARE">hearings.jfs.ohio.gov/SHARE</a>, by phone at 1-866-635-3748, by email to <a href="mailto:bsh@jfs.ohio.gov">bsh@jfs.ohio.gov</a> with the subject "State Hearing Request," or by fax to 614-728-9574. Then call legal aid (numbers in step 4). Most denials are for missing paperwork and get fixed before the hearing.</small></span></label>
+  <label class="task"><input type="checkbox" id="t3i"><span>Approved: choose a managed care plan<small>Ohio mails a letter asking you to pick a plan: AmeriHealth Caritas, Anthem, Buckeye, CareSource, Humana, Molina, or UnitedHealthcare. Any is fine, and if you don't choose, Ohio picks one for you (you get 90 days to switch). Choose at <a href="https://members.ohiomh.com">members.ohiomh.com</a> or by calling 1-800-324-8680. Then call the plan the same week and ask for a care manager for a bedbound member. See step 6.</small></span></label>
+
+  <div class="note"><p><b>Coming in January 2027:</b> Ohio adds a work requirement and six-month renewals for this Medicaid group. People who are disabled are exempt, but new applicants have to show paperwork for it, such as a doctor's statement or a Social Security disability decision. Steps 4 and 6 give you both.</p></div>
+  <p class="next">Next: <a href="#p4">step 4, Social Security</a> (start it the same week)</p>
+</section>
+
+<!-- ============ PHASE 4 ============ -->
+<section class="phase" id="p4" data-title="Step 4: Social Security disability">
+  <div class="phase-head">
+    <div class="num">4</div>
+    <div><h2>Apply for Social Security disability</h2><div class="when">Start the same week as Medicaid. First decisions take about 6 months on average.</div></div>
+  </div>
+  <p>Two programs, one application. <b>SSDI</b> is for people who worked and paid in; it pays more and leads to Medicare two years after payments begin. <b>SSI</b> is for people with little or no work history; it pays up to $994 a month (2026) and keeps her Medicaid going automatically. Social Security checks her record and puts her in the right one, so you don't have to decide.</p>
+
+  <h3>Start the claim</h3>
+  <label class="task"><input type="checkbox" id="t4a"><span>Call Social Security and say you're helping a family member who cannot apply herself<small>They'll set a phone appointment and do the application with you. Social Security's own rules let a relative who is caring for someone file and sign for an adult who physically can't. No special paperwork is needed to start.</small></span></label>
+  <div class="call"><a class="tel" href="tel:18007721213">1-800-772-1213</a><span><b>Social Security.</b> Mon to Fri 8am to 7pm.</span></div>
+  <label class="task"><input type="checkbox" id="t4b"><span>Ask them to note the date of your first call<small>That date becomes her "protective filing date." Benefits can be paid back to it, so calling now, even before you have everything, is worth money. The appointment must happen within a few months of that call or the date is lost.</small></span></label>
+  <label class="task"><input type="checkbox" id="t4c"><span>Fill out the Adult Disability Report (SSA-3368) with them<small>They'll ask when she stopped being able to work, every doctor she's seen, medications, and what she can't do. Use your one-page description from step 1.</small></span></label>
+  <label class="task"><input type="checkbox" id="t4h"><span>Ask them to flag the claim as "dire need"<small>Say: "She has no income and cannot get medical care. Please flag this as a dire need critical case." Social Security's rules say that qualifies, that they should take your word for it, and that flagged cases go to the front of the line.</small></span></label>
+
+  <h3>Give yourself the right to speak for her</h3>
+  <label class="task"><input type="checkbox" id="t4d"><span>Form SSA-1696, "Claimant's Appointment of a Representative"<small>This is Social Security's version of step 2. Both of you sign it. It lets you talk to them about her claim, get copies of her notices, and file appeals. In the fee section check "I waive the right to a fee." Print it from <a href="https://www.ssa.gov/forms/ssa-1696.pdf">ssa.gov/forms/ssa-1696.pdf</a>, or the phone agent can mail it. Fax or mail it to the local office, then call a few days later to confirm it's on her record. (If you only want them to answer questions and not act for her, the lighter form is SSA-3288, "Consent for Release of Information.")</small></span></label>
+  <label class="task"><input type="checkbox" id="t4e"><span>Ask about becoming her "representative payee"<small>If she's approved and Social Security decides she can't manage the money herself, this lets you receive and manage it for her (form SSA-11). If she can manage money and just can't get to a bank, direct deposit into her account plus you having access to it is simpler. Ask which fits.</small></span></label>
+
+  <h3>The forms that come in the mail</h3>
+  <label class="task"><input type="checkbox" id="t4i"><span>Function Report (SSA-3373) and Third Party Function Report (SSA-3380)<small>A few weeks after you apply, the state disability office usually mails these. The 3373 is "her" answers (you can write them for her). The 3380 is yours, as the person who sees her every day. Both ask what she does in a typical day, and what she can't do. Tips from disability advocates: describe her bad days, say how many days a week are like that, say how long she can do something before she has to stop and how long she needs to recover, and don't skip a question. Copy from your one-page description so every form tells the same story. Photos of the signed pages go in your folder.</small></span></label>
+
+  <h3>Give the claim its best chance</h3>
+  <div class="note"><p>ME/CFS claims are winnable but often denied the first time, because Social Security relies on medical records and she may have few. Two things fix that: a doctor who has actually examined her (step 6), and a written statement from that doctor describing her limits. There's a box in step 6 with exactly what that doctor needs to write down. Don't wait to apply, but get a doctor involved fast.</p></div>
+  <label class="task"><input type="checkbox" id="t4f"><span>If the claim is denied, appeal within 60 days. Don't start over.<small>The 60 days run from 5 days after the date on the letter. Most approvals come at the appeal stage. Free help: Legal Aid of Southeast and Central Ohio (1-888-246-4420, weekday mornings are best), or <a href="https://www.ohiolegalhelp.org">ohiolegalhelp.org</a>. Private disability lawyers charge nothing up front; if she wins they're paid from her back pay only, capped by law at 25 percent or $9,200, whichever is less.</small></span></label>
+  <label class="task"><input type="checkbox" id="t4g"><span>Approved for SSDI: Medicare starts automatically 24 months after payments begin<small>Medicaid keeps covering her in the meantime, and afterward as a second insurance.</small></span></label>
+  <p class="next">Next: <a href="#p5">step 5, the waiver</a> (the day her Medicaid is approved)</p>
+</section>
+
+<!-- ============ PHASE 5 ============ -->
+<section class="phase" id="p5" data-title="Step 5: Ohio Home Care Waiver">
+  <div class="phase-head">
+    <div class="num">5</div>
+    <div><h2>Request the Ohio Home Care Waiver</h2><div class="when">The day her Medicaid is approved. Assessment within about 30 days, enrollment targeted within 45.</div></div>
+  </div>
+  <p>Medicaid pays her doctors and a limited amount of home nursing (see step 6). The <b>Ohio Home Care Waiver</b> is what pays for aide hours, nursing hours, supplies, and a case manager in the home, for Ohioans under 60 with a physical disability. She has to be on Medicaid first, which is why this is step 5. There is no waiting list.</p>
+
+  <label class="task"><input type="checkbox" id="t5a"><span>Call to request the waiver<small>This is the simplest route. Say: "My daughter is on Medicaid, under 60, completely bedbound, and needs an assessment for the Ohio Home Care Waiver. I'm her authorized representative." Have her Medicaid number ready.</small></span></label>
+  <div class="call"><a class="tel" href="tel:18446446582">1-844-644-6582</a><span><b>Ohio Benefits Long-Term Services and Supports.</b> Mon to Fri 9am to 5pm.</span></div>
+  <div class="warn"><p><b>Timing:</b> Ohio is replacing this intake system in early October 2026. The state's site says requests go in before 4pm Thursday, October 1, and the new system opens Monday, October 5. If you call in between and get nowhere, wait until October 5 and call the same number again, or use the paper form below.</p></div>
+  <label class="task"><input type="checkbox" id="t5b"><span>Or submit form ODM 02399, the waiver request<small>Print it from <a href="https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Resources/Publications/Forms/ODM02399fillx.pdf">medicaid.ohio.gov (ODM 02399)</a>, check "Ohio Home Care Waiver," fill in the authorized representative section, and turn it in to the county the same ways as step 3.</small></span></label>
+  <label class="task"><input type="checkbox" id="t5c"><span>Prepare for the home assessment<small>A nurse or social worker from <b>CareStar</b>, the state's case management agency (1-800-616-3718), comes to the house. It's a conversation about what she can and can't do, plus a look at where she lives. She qualifies if she needs help with at least two everyday activities (getting around or transferring, bathing, grooming, toileting, dressing, eating), or one activity plus help with medications, or a nursing need. Someone who can't sit up or be toileted without hands-on help is well past that line. Be plain and complete about her worst days, not her best. Have your one-page description and the towel-and-carrying routine ready to describe.</small></span></label>
+  <label class="task"><input type="checkbox" id="t5d"><span>Enrolled: work with the case manager to build the care plan<small>Ask for personal care aide hours, waiver nursing visits, incontinence supplies, a personal emergency response button, home modifications if needed, and "out-of-home respite" (the waiver's only respite is a short stay in a facility, not an aide at home). A hospital bed with a pressure-relief mattress usually comes through regular Medicaid with a doctor's order, so ask the step 6 doctor for that.</small></span></label>
+
+  <div class="note"><p><b>You can be paid to care for her.</b> Because you're her authorized representative, Ohio's rules let a parent of an adult be paid as her personal care aide, up to 40 hours a week. Two ways: get hired by a home care agency that serves her, or through "self-direction," where she is the employer and a state payroll company (PPL) pays you. Ask the case manager for self-directed services. One catch: if you're the paid caregiver, someone else has to be her self-direction "representative," or she has to sign as employer herself. There's also a daily-rate program called Structured Family Caregiving; ask, but it can't replace nursing for someone medically complex.</p></div>
+  <div class="warn"><p><b>Heads up:</b> Ohio has paused enrolling <i>new</i> home health agencies and independent aides into Medicaid through November 14, 2026, and it may be extended. Existing agencies are fine, but you may need to call several before one has an opening. The pause does not stop you from being hired as a self-directed caregiver. The case manager and her managed care plan can help you find an agency.</p></div>
+  <p class="next">Next: <a href="#p6">step 6, medical care</a> (don't wait for the waiver)</p>
+</section>
+
+<!-- ============ PHASE 6 ============ -->
+<section class="phase" id="p6" data-title="Step 6: Get medical care started now">
+  <div class="phase-head">
+    <div class="num">6</div>
+    <div><h2>Get medical care started now, while paperwork runs</h2><div class="when">Don't wait for approvals.</div></div>
+  </div>
+  <p>Every application above works better when a doctor has examined her. And she is in pain now.</p>
+
+  <label class="task"><input type="checkbox" id="t6a"><span>Call PrimaryOne Health and ask for a new-patient visit, by video if she can't travel<small>Columbus's community health center. It charges on a sliding scale that drops to almost nothing with no income, and its staff can sign her up for <b>temporary Medicaid on the spot</b> ("presumptive eligibility") and help with the full application. Call 614-645-5500, weekdays 7:15 to 5. Ask: "Can the visit be by video, or can a provider come to the house? She is bedbound." Bring your one-page description.</small></span></label>
+  <div class="call"><a class="tel" href="tel:16146455500">614-645-5500</a><span><b>PrimaryOne Health.</b> Mon to Fri 7:15am to 5pm.</span></div>
+  <label class="task"><input type="checkbox" id="t6f"><span>Ask for home-based palliative care<small>This is comfort and symptom care for serious illness at any stage, not end-of-life care, and it's the team most likely to treat her pain properly and to come to the house. Mount Carmel's Community Based Palliative Care program sends doctors, nurse practitioners, and nurses to patients' homes. Call 614-234-0200 and ask for Community Based Palliative Care; any doctor can refer her, including PrimaryOne.</small></span></label>
+  <div class="call"><a class="tel" href="tel:16142340200">614-234-0200</a><span><b>Mount Carmel,</b> ask for Community Based Palliative Care.</span></div>
+  <label class="task"><input type="checkbox" id="t6b"><span>Ask whichever doctor sees her for three things<small>(1) An order for <b>home health</b>: nursing, an aide, and an occupational therapist. (2) A referral to <b>palliative care</b> if you haven't already called. (3) A signed letter describing her functional limits, for Social Security and for the 2027 Medicaid rule. Hand the doctor the box below.</small></span></label>
+  <label class="task"><input type="checkbox" id="t6g"><span>Once Medicaid is approved, home nursing and an aide can start before the waiver<small>Regular Medicaid covers a Medicare-certified home health agency: a nurse, a home health aide for bathing, toileting, repositioning and feeding, and therapy. The limit is about 14 hours a week combined and 8 hours a day. It needs a doctor, nurse practitioner, or physician assistant to have seen her (in person or by video) within 90 days before the care starts. Ask the doctor's office to send the order to an agency; her managed care plan's care manager can name agencies with openings.</small></span></label>
+  <label class="task"><input type="checkbox" id="t6c"><span>Once she has a Medicaid plan, call it and ask for a care manager<small>Say she's a bedbound member with complex needs. The plan can arrange home health, a hospital bed and supplies, and transportation while the waiver is pending. For rides to appointments, the plan provides wheelchair vans and non-emergency ambulance with a doctor's note; the county also runs Medicaid transportation at 614-233-2381 (weekdays 7 to 5, book a day ahead).</small></span></label>
+  <label class="task"><input type="checkbox" id="t6d"><span>If she needs a hospital before Medicaid is approved, go<small>Ohio hospitals must give free care to Ohio residents with income at or below the poverty line through the Hospital Care Assurance Program. Ask for "financial assistance" or "HCAP" at registration; the hospital has its own form, and she doesn't have to be able to sign it. Bring her Medicaid case number so they can bill it once approved, and remember the three-month retroactive coverage from step 3.</small></span></label>
+  <label class="task"><input type="checkbox" id="t6e"><span>Share these with any doctor who hasn't treated ME/CFS before<small>The CDC's page <a href="https://www.cdc.gov/me-cfs/hcp/clinical-care/me-cfs-clinical-care-for-severely-affected-patients.html">"ME/CFS Clinical Care for Severely Affected Patients"</a>, and the Bateman Horne Center's free <a href="https://batemanhornecenter.org/clinical_roadmap/">Clinical Care Guide</a> for clinicians, patients, and caregivers. Bateman Horne does virtual visits but has very limited room for new patients; the guides are free to anyone.</small></span></label>
+
+  <div class="doc">
+    <h4>For the doctor: two things this patient needs from you</h4>
+    <p><b>1. Do not prescribe exercise or a "build up gradually" program.</b> The defining feature of ME/CFS is post-exertional malaise: exertion beyond the patient's limit causes a delayed crash lasting days or weeks, and in severe patients can be permanent. The CDC states: "Standard exercise recommendations for healthy people can substantially harm patients with ME/CFS," and that the harm is prevented by activity management (pacing) within the patient's "energy envelope." The UK's NICE guideline (NG206, 2021) says: "Do not offer people with ME/CFS ... any programme that ... uses fixed incremental increases in physical activity or exercise, for example, graded exercise therapy." For completely bedbound patients the CDC advises in-home visits, phone or video check-ups, and a modified approach to activity, along with screening for pressure sores, deconditioning, and nutrition. Sound, light and touch sensitivity are part of the illness; dim the room and keep visits short.</p>
+    <p><b>2. Document the illness the way Social Security needs it.</b> Under Social Security Ruling 14-1p, ME/CFS counts as a medically determinable impairment when a physician records clinical signs or lab findings over at least six consecutive months, not symptoms alone. Signs the ruling lists: palpably swollen or tender lymph nodes, non-exudative pharyngitis, persistent reproducible muscle tenderness on repeated exams, and any other signs consistent with accepted clinical practice. Findings it lists: neurally mediated hypotension on tilt-table or another accepted test, abnormal brain MRI, abnormal sleep study or exercise test, and documented cognitive deficits on mental status exam. Please record whichever of these are present, describe her functional limits in concrete terms (sitting, standing, speaking, tolerating light and sound, toileting, eating), and note how long she has been this way.</p>
+    <p class="src">Sources: CDC, "Strategies to Prevent Worsening of Symptoms" and "ME/CFS Clinical Care for Severely Affected Patients" (cdc.gov/me-cfs); NICE NG206 (2021); National Academies, "Beyond ME/CFS: Redefining an Illness" (2015); SSA, SSR 14-1p.</p>
+  </div>
+  <p class="next">Then: <a href="#p7">keep the call log</a> below up to date</p>
+</section>
+
+<!-- ============ LOG ============ -->
+<section class="phase log" id="p7" data-title="Call log">
+  <div class="phase-head">
+    <div class="num">✎</div>
+    <div><h2>Call log and phone numbers</h2><div class="when">Saved on this phone only.</div></div>
+  </div>
+  <p>Every call: date, who you spoke to, what they said, any reference number.</p>
+  <textarea id="logBox" aria-label="Call log" placeholder="Sept 26: called 1-844-640-6446, spoke to Maria, application started, case # ..."></textarea>
+
+  <h3>Quick reference</h3>
+  <div class="wide">
+  <table>
+    <tr><th>Who</th><th>Number</th><th>For</th></tr>
+    <tr><td>Ohio Benefits (county line)</td><td><a href="tel:18446406446">1-844-640-6446</a></td><td>Apply for Medicaid and SNAP by phone; check the case</td></tr>
+    <tr><td>Medicaid Consumer Hotline</td><td><a href="tel:18003248680">1-800-324-8680</a></td><td>Questions, applications, plan choice</td></tr>
+    <tr><td>Long-Term Services and Supports</td><td><a href="tel:18446446582">1-844-644-6582</a></td><td>Request the Home Care Waiver</td></tr>
+    <tr><td>CareStar</td><td><a href="tel:18006163718">1-800-616-3718</a></td><td>Waiver case management and assessment</td></tr>
+    <tr><td>Social Security</td><td><a href="tel:18007721213">1-800-772-1213</a></td><td>SSI / SSDI claim</td></tr>
+    <tr><td>State hearings (Medicaid appeals)</td><td><a href="tel:18666353748">1-866-635-3748</a></td><td>Denied or no decision in 45 days</td></tr>
+    <tr><td>Legal Aid of Southeast and Central Ohio</td><td><a href="tel:18882464420">1-888-246-4420</a></td><td>Free help with denials and appeals</td></tr>
+    <tr><td>Disability Rights Ohio</td><td><a href="tel:18002829181">1-800-282-9181</a></td><td>Waiver, home care, or Medicaid problems</td></tr>
+    <tr><td>PrimaryOne Health</td><td><a href="tel:16146455500">614-645-5500</a></td><td>Doctor now, temporary Medicaid</td></tr>
+    <tr><td>Mount Carmel palliative care</td><td><a href="tel:16142340200">614-234-0200</a></td><td>Home-based pain and symptom care</td></tr>
+    <tr><td>Franklin County Medicaid rides</td><td><a href="tel:16142332381">614-233-2381</a></td><td>Transportation to appointments</td></tr>
+    <tr><td>Franklin County JFS fax</td><td>614-233-2398</td><td>Sending documents</td></tr>
+  </table>
+  </div>
+</section>
+
+<p class="foot">Checkmarks and the log are stored only in this phone's browser. Nothing on this page is sent anywhere.
+  <button type="button" id="clearBtn">Clear everything</button>
+  <span class="confirm" id="confirmBox">Really clear every checkmark and the call log? <button type="button" class="danger" id="confirmYes">Yes, clear it</button> <button type="button" id="confirmNo">Keep it</button></span>
+</p>
+
+</main>
+
+<script>
+(function(){
+  var KEY = 'her-care-plan-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.task input[type=checkbox]'));
+  var logBox = document.getElementById('logBox');
+  var phases = Array.prototype.slice.call(document.querySelectorAll('.phase'));
+  var state = {checks:{}, log:''};
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(KEY);
+      if(raw){ var s = JSON.parse(raw); if(s && typeof s==='object'){ state = {checks: s.checks||{}, log: s.log||''}; } }
+    }catch(e){ state = {checks:{}, log:''}; }
+    boxes.forEach(function(b){ b.checked = !!state.checks[b.id]; });
+    logBox.value = state.log || '';
+  }
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function render(){
+    var done = boxes.filter(function(b){return b.checked;}).length;
+    document.getElementById('doneCount').textContent = done;
+    document.getElementById('totalCount').textContent = boxes.length;
+    var pct = boxes.length ? Math.round(done/boxes.length*100) : 0;
+    document.getElementById('bar').style.width = pct + '%';
+    document.getElementById('barWrap').setAttribute('aria-valuenow', pct);
+    var firstOpen = null;
+    phases.forEach(function(p){
+      var ins = p.querySelectorAll('.task input');
+      if(!ins.length) return;
+      var d = Array.prototype.filter.call(ins, function(i){return i.checked;}).length;
+      var all = d === ins.length;
+      p.classList.toggle('is-done', all);
+      if(!all && !firstOpen) firstOpen = p;
+      var c = document.querySelector('.jump [data-count="'+p.id+'"]');
+      if(c){ c.textContent = d + '/' + ins.length; c.previousElementSibling.previousElementSibling.classList.toggle('is-done', all); }
+    });
+    var now = document.getElementById('nowLabel');
+    now.textContent = firstOpen ? ('Now on ' + (firstOpen.getAttribute('data-title')||'').replace(/:.*$/,'').toLowerCase()) : 'All steps done';
+  }
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){ state.checks[b.id] = b.checked; save(); render(); });
+  });
+  var t;
+  logBox.addEventListener('input', function(){
+    state.log = logBox.value; clearTimeout(t); t = setTimeout(save, 300);
+  });
+  var confirmBox = document.getElementById('confirmBox');
+  document.getElementById('clearBtn').addEventListener('click', function(){ confirmBox.classList.add('is-open'); });
+  document.getElementById('confirmNo').addEventListener('click', function(){ confirmBox.classList.remove('is-open'); });
+  document.getElementById('confirmYes').addEventListener('click', function(){
+    state = {checks:{}, log:''}; save();
+    boxes.forEach(function(b){ b.checked=false; }); logBox.value=''; render();
+    confirmBox.classList.remove('is-open');
+  });
+  load(); render();
+})();
+</script>
+
+</body>
+</html>
