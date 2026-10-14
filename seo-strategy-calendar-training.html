@@ -625,7 +625,13 @@ p{line-height:1.6}
   .months{grid-template-columns:repeat(6,1fr)}
   .handoff{grid-template-columns:1fr}.flowarrow{display:none}
   .vrow{grid-template-columns:1fr}.vrow .arr{display:none}
-  .sortgame,.spotwrap,.qwrap,.duel,.bins3{grid-template-columns:1fr}.patient{display:none}
+  .sortgame,.spotwrap,.qwrap,.duel,.bins3{grid-template-columns:1fr}
+  .vchart{gap:12px}.longtail{gap:2px}.longtail i{width:4px}.vlabel{max-width:90px;font-size:11px}.vbar{width:48px}
+  .sieve{height:auto;padding:14px;display:flex;flex-direction:column;gap:8px}.sieve .mesh,.sieve .mlabel{display:none}
+  .qchip{position:static!important;max-width:none;opacity:1!important;animation:none!important;transform:none!important;font-size:12.5px}
+  .qchip.fail{opacity:.4!important;text-decoration:line-through}
+  .lanes{min-height:0}.mover{position:static;width:auto;opacity:1;animation:none!important;transform:none;margin-bottom:6px}
+  .nope{position:static;display:block;opacity:1;animation:none!important;margin:0 0 12px}.patient{display:none}
   .fan{aspect-ratio:auto}.fan svg{display:none}.fcenter{position:static;transform:none;width:auto;margin-bottom:8px}
   .fnode{position:static;transform:none;width:auto;margin-top:6px}.shown .fnode{animation:rise .5s var(--ease) forwards}.poolcol{order:-1}.binz{min-height:0}
   .results{grid-template-columns:1fr;justify-items:center;text-align:center}.revisit{justify-content:center}
@@ -938,7 +944,7 @@ p{line-height:1.6}
     </div>
     <div class="split">
       <div class="card" data-b="1">
-        <svg class="vsvg" id="vspace" viewBox="0 0 460 300" role="img" aria-label="Passages plotted as arrows; the patient question as a pink arrow"></svg>
+        <svg class="vsvg" id="vspace" viewBox="-34 0 528 300" role="img" aria-label="Passages plotted as arrows; the patient question as a pink arrow"></svg>
         <div class="vlegend"><span style="--c:var(--mag)">Patient question</span><span style="--c:#9AA6B6">Passages from practice pages</span><span style="--c:var(--blue)">Closest passage</span></div>
         <p class="small" style="margin:8px 0 0">Illustration. Real vectors have hundreds or thousands of dimensions; this flattens them to two so you can see the idea.</p>
       </div>
@@ -2045,7 +2051,8 @@ p{line-height:1.6}
       const a1=Math.min(a,b.a),a2=Math.max(a,b.a),[x1,y1]=vpt(O,80,a1,1),[x2,y2]=vpt(O,80,a2,1);
       arc.setAttribute('d',`M${O[0]} ${O[1]} L${x1} ${y1} A80 80 0 0 0 ${x2} ${y2} Z`);
       PASS.forEach((p,k)=>{p.dot.classList.toggle('hot',k===order[0]);p.line.classList.toggle('hot',k===order[0])});
-      order.forEach((k,pos)=>{const row=rows[k];row.style.top=(pos*50)+'px';row.classList.toggle('top',pos===0);row.querySelector('.rk').textContent=pos+1;
+      const rowH=rank.clientWidth<480?74:50;rank.style.height=(rowH*6)+'px';
+      order.forEach((k,pos)=>{const row=rows[k];row.style.top=(pos*rowH)+'px';row.style.height=(rowH-4)+'px';row.classList.toggle('top',pos===0);row.querySelector('.rk').textContent=pos+1;
         row.querySelector('.bar i').style.width=(Math.max(0,sc[k])*100)+'%';row.querySelector('.sc').textContent=sc[k].toFixed(2)});
     }
     let cur=VQ[0].a;draw(cur);
