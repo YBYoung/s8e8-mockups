@@ -498,6 +498,92 @@ p{line-height:1.6}
 .confetti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;animation:fall var(--t) cubic-bezier(.3,.6,.5,1) forwards}
 @keyframes fall{to{transform:translate(var(--x),105vh) rotate(var(--r))}}
 
+/* ---------- AI search ---------- */
+.vfield{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.vfield{animation:pan 26s ease-in-out infinite alternate}
+.vfield i{position:absolute;border-radius:50%;opacity:.2;animation:twinkle var(--t) ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.6}}
+@keyframes pan{from{transform:translate(-14px,-8px) scale(1.02)}to{transform:translate(14px,8px) scale(1.04)}}
+.vfield svg{position:absolute;inset:0;width:100%;height:100%}
+.vfield line{stroke:#C9D3DE;stroke-width:1;opacity:.5}
+.hero{position:relative;z-index:1}
+.fan{position:relative;aspect-ratio:10/9;max-width:560px;margin:0 auto}
+.fan svg{position:absolute;inset:0;width:100%;height:100%}
+.fan path{stroke:#C9D3DE;stroke-width:.35;fill:none}
+.fan circle{fill:var(--blue)}
+.fnode{position:absolute;transform:translate(-50%,-50%) scale(.6);opacity:0;width:27%;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:11.5px;line-height:1.35;box-shadow:0 2px 8px rgba(17,20,28,.06)}
+.shown .fnode{animation:fnodeIn .55s var(--ease) forwards;animation-delay:var(--d)}
+@keyframes fnodeIn{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.fnode em{display:block;font:600 8.5px var(--mono);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-ink);margin-bottom:2px}
+.fcenter{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#111317;color:#fff;border-radius:8px;padding:12px 14px;font-size:13.5px;font-weight:600;width:32%;text-align:center;z-index:2;animation:pulse 2.4s infinite}
+.fcenter small{display:block;font:600 9px var(--mono);letter-spacing:.12em;color:var(--blue);text-transform:uppercase;margin-bottom:4px}
+.vsvg{width:100%;height:auto;display:block}
+.vsvg .axis{stroke:#E1E5EC;stroke-width:1}
+.vsvg .grid{stroke:#EEF0F4;fill:none}
+.vsvg .pv{stroke:#B8C2CF;stroke-width:1.6;fill:none;transition:stroke .4s}
+.vsvg .pv.hot{stroke:var(--blue);stroke-width:2.4}
+.vsvg .pdot,.vsvg .pg{fill:#9AA6B6;transition:fill .4s}
+.vsvg .pdot.hot{fill:var(--blue)}
+.vsvg text{font:600 10.5px Montserrat,system-ui,sans-serif;fill:#4A5163}
+.vsvg .lbl-s{font-size:9.5px;fill:#6B7383}
+.vsvg .pop{transform-box:fill-box;transform-origin:center}
+.vsvg .qv{stroke:var(--mag);stroke-width:3}
+.vsvg .arc{fill:rgba(255,45,143,.12);stroke:var(--mag);stroke-width:1}
+.vsvg .qgrp{opacity:0;transition:opacity .5s}
+.vsvg.q-on .qgrp{opacity:1}
+.vsvg .cone{fill:rgba(22,163,74,.08);stroke:rgba(22,163,74,.4);stroke-dasharray:4 4;opacity:0;transition:opacity .6s}
+.vsvg.cone-on .cone{opacity:1}
+.vsvg.cone-on .pg.in{fill:var(--green)}
+.vsvg .tq{fill:var(--mag)}
+.vsvg .tl{stroke:rgba(255,45,143,.45);stroke-width:1.2;fill:none}
+.vsvg .cent{fill:#0E1116;stroke:#fff;stroke-width:2}
+.vsvg .np{fill:var(--mag);stroke:#fff;stroke-width:1.5;opacity:0;transform:translate(170px,-70px);transition:transform .9s var(--ease),opacity .5s}
+.vsvg.cal-on .np{opacity:1;transform:none}
+.vlegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:11.5px;color:var(--sub);margin-top:8px}
+.vlegend span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.lbl2{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:10px}
+.vrank{position:relative;height:300px;margin-top:16px}
+.vrow2{position:absolute;left:0;right:0;height:46px;display:grid;grid-template-columns:18px 1fr 80px 40px;gap:10px;align-items:center;font-size:12.5px;line-height:1.3;transition:top .6s var(--ease)}
+.vrow2 .rk{font:700 11px var(--mono);color:var(--muted)}
+.vrow2 .bar{height:8px;background:var(--chip);border-radius:4px;overflow:hidden}
+.vrow2 .bar i{display:block;height:100%;background:#B8C2CF;border-radius:4px;transition:width .6s var(--ease),background .3s}
+.vrow2.top{font-weight:700}.vrow2.top .bar i{background:var(--blue)}.vrow2.top .rk{color:var(--blue-ink)}
+.vrow2 .sc{font:600 12px var(--mono);text-align:right}
+.bigscore{font:800 58px/1 var(--disp);margin:6px 0 8px}
+.qbanner{text-align:center;background:#111317;color:#fff;border-radius:8px;padding:12px 16px;font-weight:600;max-width:520px;margin:0 auto 18px}
+.qbanner small{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;color:var(--blue);text-transform:uppercase;margin-bottom:4px}
+.duel{display:grid;grid-template-columns:1fr 60px 1fr;gap:12px;align-items:center}
+.pas{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 18px 16px;font-size:14px;line-height:1.55;position:relative;transition:transform .6s var(--ease),opacity .6s,box-shadow .6s}
+.pas .src{font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.duel .pas.l{opacity:0;transform:translateX(-70px)}.duel .pas.r{opacity:0;transform:translateX(70px)}
+.duel.shown .pas{opacity:1;transform:none}
+.vs{width:52px;height:52px;border-radius:50%;background:var(--mag);color:#fff;display:grid;place-items:center;font:800 15px var(--disp);transform:scale(0);margin:0 auto;transition:background .4s}
+.duel.shown .vs{animation:pop .5s var(--ease) .5s forwards}
+.duel.judged .vs{background:var(--green)}
+.duel.judged .pas.win{transform:translateY(-8px);box-shadow:0 12px 30px rgba(22,163,74,.18)}
+.duel.judged .pas.lose{opacity:.42;transform:scale(.97)}
+.stamp{position:absolute;top:-12px;right:14px;background:var(--green);color:#fff;font:700 10px var(--mono);letter-spacing:.14em;padding:5px 9px;border-radius:4px;transform:scale(0) rotate(-8deg)}
+.duel.judged .stamp{animation:stampIn .45s var(--ease) .2s forwards}
+@keyframes stampIn{60%{transform:scale(1.25) rotate(-8deg)}100%{transform:scale(1) rotate(-8deg)}}
+.verdict{text-align:center;margin-top:18px;font-size:15px;color:var(--sub)}
+.verdict b{color:var(--green)}
+.qwrap{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center}
+.patient{position:relative;height:330px;margin-top:40px}
+.pav{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:116px;height:116px;border-radius:50%;background:var(--rainbow);display:grid;place-items:center;box-shadow:0 10px 30px rgba(41,171,226,.2)}
+.pav svg{width:60px;height:60px;stroke:#fff;fill:none;stroke-width:1.4}
+.bub{position:absolute;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.4;box-shadow:0 4px 14px rgba(17,20,28,.07);max-width:210px}
+.bub::after{content:"";position:absolute;bottom:-6px;left:24px;width:10px;height:10px;background:var(--card);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
+.inputbox{position:relative;overflow:hidden}
+.cutline{position:absolute;left:0;right:0;top:58%;border-top:2px dashed var(--red);transform-origin:left;transform:scaleX(0);z-index:2}
+.shown .cutline{animation:growX 1s var(--ease) .4s forwards}
+.cutter{position:absolute;top:calc(58% - 13px);left:-10px;width:26px;height:26px;stroke:var(--red);fill:var(--card);stroke-width:2;opacity:0;z-index:3}
+.shown .cutter{animation:cut 1s var(--ease) .4s forwards}
+@keyframes cut{0%{opacity:1;left:-10px}90%{opacity:1}100%{opacity:0;left:calc(100% - 16px)}}
+.scanwrap{position:relative;overflow:hidden}
+.scan{position:absolute;left:0;right:0;height:70px;top:-70px;background:linear-gradient(180deg,transparent,rgba(41,171,226,.28),transparent);pointer-events:none;z-index:1}
+.shown .scan{animation:scan 1.8s var(--ease) .1s forwards}
+@keyframes scan{to{top:100%}}
+
 /* ---------- responsive ---------- */
 @media (max-width:1000px){
   .flowmap{grid-template-columns:repeat(3,1fr);row-gap:26px}.flowmap .track{display:none}
@@ -511,7 +597,9 @@ p{line-height:1.6}
   .months{grid-template-columns:repeat(6,1fr)}
   .handoff{grid-template-columns:1fr}.flowarrow{display:none}
   .vrow{grid-template-columns:1fr}.vrow .arr{display:none}
-  .sortgame,.spotwrap{grid-template-columns:1fr}.poolcol{order:-1}.binz{min-height:0}
+  .sortgame,.spotwrap,.qwrap,.duel{grid-template-columns:1fr}.patient{display:none}
+  .fan{aspect-ratio:auto}.fan svg{display:none}.fcenter{position:static;transform:none;width:auto;margin-bottom:8px}
+  .fnode{position:static;transform:none;width:auto;margin-top:6px}.shown .fnode{animation:rise .5s var(--ease) forwards}.poolcol{order:-1}.binz{min-height:0}
   .results{grid-template-columns:1fr;justify-items:center;text-align:center}.revisit{justify-content:center}
   .mover{width:80%}
   .controls{padding:10px 16px}
@@ -555,6 +643,7 @@ p{line-height:1.6}
 
 <!-- ================= 00 INTRO ================= -->
 <section class="scene" data-chap="Intro">
+  <div class="vfield" id="vfield"></div>
   <div class="hero">
     <div data-b="0" class="stg">
       <div class="eyebrow">S8E8 Training · SEO strategy and the content calendar</div>
@@ -562,7 +651,7 @@ p{line-height:1.6}
       <p class="lede">How we think through an SEO strategy for a dental practice and turn it into a content calendar the client will approve, and what OpenedQueries does for you along the way.</p>
       <div class="search"><svg><use href="#i-search"/></svg><span id="typed"></span><i class="caret"></i></div>
       <div class="hero-note">Every one of these is a real person typing a real worry. The strategy starts with them, not with a keyword list.</div>
-      <div class="hero-meta">About 45 minutes, with checks along the way · Right arrow or Space to advance</div>
+      <div class="hero-meta">About 55 minutes, with checks along the way · Right arrow or Space to advance</div>
     </div>
   </div>
 </section>
@@ -679,11 +768,20 @@ p{line-height:1.6}
       <div class="ttl"><svg><use href="#i-search"/></svg><h2>Four questions, in this order</h2></div>
       <p class="subt">Answer these in plain sentences before you trust any output. If you can't, the strategy isn't ready, no matter how good the data looks.</p>
     </div>
+    <div class="qwrap">
     <div class="qlist">
       <div class="qitem" data-b="1"><div class="n">1</div><div><h3>Who are we trying to reach?</h3><p>The patient, not the practice. OQ's audience step is told the data "represents the TARGET AUDIENCE (patients/customers), NOT the business itself." Hold yourself to the same rule.</p></div></div>
       <div class="qitem" data-b="2"><div class="n">2</div><div><h3>What do they need to know before they book?</h3><p>Fear, cost, recovery, "will it hurt", "is this dentist good with someone like me". Those are pages.</p></div></div>
       <div class="qitem" data-b="3"><div class="n">3</div><div><h3>What can this practice say that nobody else can?</h3><p>The doctor's real experience, the technology they actually use, how they handle anxious patients. This is the first E in E-E-A-T, and it is how we escape the sea of sameness.</p></div></div>
       <div class="qitem" data-b="4"><div class="n">4</div><div><h3>What does success look like for this practice?</h3><p>More of the cases they want: calls, bookings, the services they want to grow. Traffic alone is not the goal.</p></div></div>
+    </div>
+    <div class="patient" aria-hidden="true">
+      <div class="bub" data-b="1" style="left:0;top:150px">I'm 44 and honestly scared of the dentist.</div>
+      <div class="bub" data-b="2" style="right:0;top:90px">Will it hurt? What will it really cost?</div>
+      <div class="bub" data-b="3" style="left:4%;top:20px">Does this dentist get people like me?</div>
+      <div class="bub" data-b="4" style="right:4%;top:-30px">I just want to eat normally again.</div>
+      <div class="pav"><svg><use href="#i-person"/></svg></div>
+    </div>
     </div>
   </div>
 </section>
@@ -761,10 +859,125 @@ p{line-height:1.6}
   </div>
 </section>
 
+<!-- ================= AI SEARCH ================= -->
+<section class="scene" data-chap="AI search">
+  <div class="divider" data-b="0">
+    <div class="big">02</div>
+    <h2>How AI search reads a page</h2>
+    <div class="bar grow"></div>
+    <p>Before we build anything: how Google's AI Mode and other answer engines decide which pages to quote. It's the reason every calendar piece is written the way it is.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search" data-id="fanout">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">AI search, step 1 · Fan-out</div>
+      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>One question becomes dozens</h2></div>
+      <p class="subt">Mike King of iPullRank, reading Google's patents: AI Mode quietly turns one patient question into many related searches, then gathers passages for each one. The patient never sees them.</p>
+    </div>
+    <div class="split">
+      <div data-b="1"><div class="fan" id="fan"></div><span class="ex">Example searches</span></div>
+      <div>
+        <div class="card think" data-b="2"><div class="lbl">How to think</div><h3>A page can win on a question nobody typed.</h3><ul>
+          <li>A practice can be quoted because one section answers one of these hidden follow-ups, even if the page doesn't rank for the original question.</li>
+          <li>In King's words, "ranking for the original query no longer guarantees visibility."</li>
+          <li>So each calendar piece should answer the likely follow-up questions too, not just the headline one.</li></ul></div>
+        <div class="card oq" data-b="3" style="margin-top:14px"><div class="lbl">What OQ automates</div><p style="margin:0;font-size:14px">When a calendar item moves into production, OQ runs this same kind of fan-out for it, expanding the item's searches into the follow-up questions the draft should cover. There's also a standalone Query Fan-Out tool.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search" data-id="vector">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">AI search, step 2 · Vector space</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Every passage is a point</h2></div>
+      <p class="subt">Search systems turn every query and every passage of text into a vector: a long list of numbers that works like an arrow pointing somewhere in "meaning space". Passages pointing the same way as the question are the relevant ones.</p>
+    </div>
+    <div class="split">
+      <div class="card" data-b="1">
+        <svg class="vsvg" id="vspace" viewBox="0 0 460 300" role="img" aria-label="Passages plotted as arrows; the patient question as a pink arrow"></svg>
+        <div class="vlegend"><span style="--c:var(--mag)">Patient question</span><span style="--c:#9AA6B6">Passages from practice pages</span><span style="--c:var(--blue)">Closest passage</span></div>
+        <p class="small" style="margin:8px 0 0">Illustration. Real vectors have hundreds or thousands of dimensions; this flattens them to two so you can see the idea.</p>
+      </div>
+      <div>
+        <div class="card" data-b="2"><div class="lbl2">Pick a patient question</div><div class="seg" id="vq"></div><div class="vrank" id="vrank"></div></div>
+        <div class="callout" data-b="3" style="margin-top:14px"><b>Only the angle counts.</b> The score is the cosine of the angle between two arrows: 1.00 means pointing the same way, around 0 means unrelated. That's why a focused section that answers one question beats a page that touches on everything.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search" data-id="analyzer">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">In OQ · Relevance Analyzer</div>
+      <div class="ttl"><svg><use href="#i-eye"/></svg><h2>How close is the whole site?</h2></div>
+      <p class="subt">The same math, one level up. OQ's Relevance Analyzer turns every page on the site and a set of target searches into vectors, finds the center of those searches, and measures how closely each page points at it.</p>
+    </div>
+    <div class="split">
+      <div class="card" data-b="1">
+        <svg class="vsvg" id="rspace" viewBox="0 0 460 300" role="img" aria-label="Site pages plotted around the center of the target searches"></svg>
+        <div class="vlegend"><span style="--c:var(--mag)">Target searches</span><span style="--c:#0E1116">Their center</span><span style="--c:var(--green)">Pages inside the 0.70 line</span><span style="--c:#9AA6B6">Pages outside it</span></div>
+        <p class="small" style="margin:8px 0 0">Illustration with example pages. The real tool plots in 3D.</p>
+      </div>
+      <div>
+        <div class="card" data-b="2">
+          <div class="lbl2">Site relevance · target: implant patients</div>
+          <div class="bigscore num" id="rScore">0.00</div>
+          <div class="small" id="rInside" style="color:var(--sub);font-size:13px"></div>
+          <p class="small" style="margin:8px 0 14px">The average closeness of every page to the center. The shaded cone is the 0.70 line.</p>
+          <button class="btn primary" id="rAdd" data-b="3">Add this year's calendar</button>
+        </div>
+        <div class="card oq" data-b="3" style="margin-top:14px"><div class="lbl">What OQ automates</div><p style="margin:0;font-size:14px">Takes page vectors from a site crawl, turns your target searches into vectors with Google's Gemini embedding model, scores every page against the center of those searches, and plots the whole site in 3D.</p></div>
+        <div class="card think" data-b="4" style="margin-top:14px"><div class="lbl">How to think</div><p style="margin:0;font-size:14px">Pages outside the cone aren't bad pages; they're about something else. The real question is whether the topics patients search for are covered at all. <b>New calendar pages are how the site moves toward them.</b></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search" data-id="pairwise">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">AI search, step 3 · Head to head</div>
+      <div class="ttl"><svg><use href="#i-layers"/></svg><h2>Two passages in, one gets cited</h2></div>
+      <p class="subt">From Mike King's reading of Google's pairwise ranking patent: the AI compares candidate passages two at a time and keeps the one that better answers the question. The winner gets cited, wherever its page ranks.</p>
+    </div>
+    <div class="qbanner" data-b="0"><small>A hidden follow-up search</small>implant or bridge for a back tooth?</div>
+    <div class="duel" data-b="1">
+      <div class="pas l lose"><div class="src">Passage A · a services page</div>We offer a full range of restorative dentistry services, including dental implants and bridges. Our friendly team is here to help you smile with confidence! Call today to schedule your visit.</div>
+      <div class="vs">VS</div>
+      <div class="pas r win"><span class="stamp">CITED</span><div class="src">Passage B · a calendar blog article</div>For a single missing back molar, we usually recommend an implant when the teeth on either side are healthy. A bridge means filing down those two teeth to anchor it; an implant leaves them alone. Dr. Lee walks through both options at your consult.</div>
+    </div>
+    <div class="verdict" data-b="2">The AI asks: which of these two better answers the search? <b>B, easily.</b> <span class="ex">Example passages</span></div>
+    <div class="grid2" data-b="3" style="margin-top:16px">
+      <div class="card"><span class="tag green">Why B wins</span><ul class="stg" style="margin:12px 0 0;padding-left:18px;font-size:14px;line-height:1.55">
+        <li>Answers the question in its first sentence.</li><li>Makes sense on its own, pulled out of the page.</li><li>Specific: names the tradeoff, not just the services.</li><li>Shows who's talking: a named dentist and real experience.</li></ul></div>
+      <div class="card think"><div class="lbl">What we write for</div><p style="margin:0;font-size:14.5px">Every calendar piece should be built from sections like B: one question per section, the answer first, specific, and in the dentist's voice. <b>E-E-A-T and AI search are asking for the same thing.</b></p></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Check yourself · Chapter 2</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: AI search</h2></div>
+      <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
+    </div>
+    <div class="mcqs" data-b="0">
+      <div class="mcq" data-q="c5a"></div>
+      <div class="mcq" data-q="c5b"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 02 THE STRATEGY ================= -->
 <section class="scene" data-chap="The strategy">
   <div class="divider" data-b="0">
-    <div class="big">02</div>
+    <div class="big">03</div>
     <h2>Build the strategy</h2>
     <div class="bar grow"></div>
     <p>Each step has two halves: how you should think about it, and what OQ automates. OQ does the gathering. You do the judging.</p>
@@ -960,7 +1173,8 @@ p{line-height:1.6}
       <p class="subt">OQ crawls the site, you accept the crawl, then it deep-reads the 15 to 40 pages that matter most and gives each a verdict.</p>
     </div>
     <div class="split">
-      <div class="card oq" data-b="1">
+      <div class="card oq scanwrap" data-b="1">
+        <div class="scan"></div>
         <div class="lbl">What OQ automates</div>
         <table class="inv">
           <tr><th>Page</th><th>Words</th><th>Verdict</th><th>Action</th></tr>
@@ -1046,7 +1260,7 @@ p{line-height:1.6}
 <section class="scene" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
-      <div class="eyebrow">Check yourself · Chapter 2</div>
+      <div class="eyebrow">Check yourself · Chapter 3</div>
       <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: the strategy</h2></div>
       <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
     </div>
@@ -1061,7 +1275,7 @@ p{line-height:1.6}
 <!-- ================= 03 THE CALENDAR ================= -->
 <section class="scene" data-chap="The calendar">
   <div class="divider" data-b="0">
-    <div class="big">03</div>
+    <div class="big">04</div>
     <h2>Build the calendar</h2>
     <div class="bar grow"></div>
     <p>The calendar is the client-approved plan of new pages, month by month. One rule above all, then the mix, the inputs that matter, and how to read what comes back.</p>
@@ -1140,6 +1354,7 @@ p{line-height:1.6}
     <div class="grid2">
       <div data-b="1">
         <div class="inputbox fade-out">
+          <i class="cutline"></i><svg class="cutter"><use href="#i-scissors"/></svg>
           <label>Additional guidance</label>
           <div class="val">Make sure we include a sedation dentistry page, the doctor is pushing it this year.</div>
         </div>
@@ -1250,7 +1465,7 @@ p{line-height:1.6}
 <section class="scene" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
-      <div class="eyebrow">Check yourself · Chapter 3</div>
+      <div class="eyebrow">Check yourself · Chapter 4</div>
       <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: the calendar</h2></div>
       <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
     </div>
@@ -1264,7 +1479,7 @@ p{line-height:1.6}
 <!-- ================= 04 APPROVAL ================= -->
 <section class="scene" data-chap="Approval + handoff">
   <div class="divider" data-b="0">
-    <div class="big">04</div>
+    <div class="big">05</div>
     <h2>Approval + handoff</h2>
     <div class="bar grow"></div>
     <p>How the client says yes, what OQ does while you wait, and how an approved calendar becomes production work.</p>
@@ -1324,7 +1539,7 @@ p{line-height:1.6}
 <section class="scene" data-chap="Approval + handoff">
   <div class="inner">
     <div data-b="0" class="stg">
-      <div class="eyebrow">Check yourself · Chapter 4</div>
+      <div class="eyebrow">Check yourself · Chapter 5</div>
       <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: approval + handoff</h2></div>
       <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
     </div>
@@ -1396,6 +1611,7 @@ p{line-height:1.6}
         <li><a href="https://builtin.com/articles/product-led-seo-eli-schwartz" target="_blank" rel="noopener">Eli Schwartz Talks SEO Misconceptions</a> (Built In): product-led SEO, the top-down questions.</li>
         <li>Eli Schwartz, <i>Product-Led SEO</i> (book).</li>
         <li><a href="https://lilyray.nyc/e-a-t-expertise-authoritativeness-trustworthiness/" target="_blank" rel="noopener">E-E-A-T: Experience, Expertise, Authoritativeness, and Trustworthiness</a> (Lily Ray).</li>
+        <li><a href="https://ipullrank.com/how-ai-mode-works" target="_blank" rel="noopener">How AI Mode Works</a> (Mike King, iPullRank): fan-out, vector embeddings, passage-level retrieval, pairwise ranking. His reading of Google patents, not confirmed internals.</li>
         <li><i>The Search Experience We Deserve</i>: our internal doc, linked in SEO 101 Lesson 2.</li>
       </ul></div>
       <div class="card srcs" data-b="2"><span class="tag mag">In our training</span><ul>
@@ -1471,6 +1687,7 @@ p{line-height:1.6}
       const p=i>ch.last?1:i<ch.first?0:(i-ch.first+1)/(ch.last-ch.first+1);
       ch.bar.style.width=(p*100)+'%';
     });
+    document.dispatchEvent(new CustomEvent('build',{detail:{id:scenes[i].dataset.id,b}}));
     if(scenes[i].querySelector('#typed'))startTyping();else stopTyping();
     try{history.replaceState(null,'','#'+(i+1))}catch(e){}
   }
@@ -1544,7 +1761,7 @@ p{line-height:1.6}
   const goRef=id=>{const k=sceneIdx(id);if(k>=0)go(k,maxB(scenes[k]))};
   const LABEL={keyword:'Keyword-led vs audience-led',eeat:'E-E-A-T',setup:'Setup Wizard',forum:'Forum research',synth:'Topic Opportunity Assessment',
     named:'Name the topics',pipeline:'What happens after you click',review:'Two review rounds',newonly:'New content only',audience:'Audience research',
-    map:'Who does what',voice:'Calendar voice',handoff:'Push to Production',spot:'Spot the problem'};
+    map:'Who does what',fanout:'Query fan-out',vector:'Points in vector space',analyzer:'Relevance Analyzer',pairwise:'Head to head',voice:'Calendar voice',handoff:'Push to Production',spot:'Spot the problem'};
   const Q={
     c1a:{q:'A practice wants more implant patients. Where does your strategy start?',
       o:['Pull the highest-volume implant keywords and plan a page for each.','Who is the patient weighing an implant, and what do they need to know before they book?','Copy the structure of the top-ranking competitor\'s implant page.'],a:1,
@@ -1572,6 +1789,12 @@ p{line-height:1.6}
     c4b:{q:'The calendar is out for review and you want to regenerate it. What do you need to know?',
       o:['Just regenerate; the client\'s feedback carries over.','Regenerating is blocked during review, and cancelling the review deletes the client\'s feedback. Think first.','Send yourself a test email first.'],a:1,
       w:['Regenerating is blocked while the calendar is out for review.','Right. Usually it\'s better to work the feedback queue than to start over.','There\'s no test send for calendars: a "test" would go to the real client.'],ref:'review'},
+    c5a:{q:'An AI answer quotes a practice\'s page, but that page doesn\'t rank for the patient\'s question. How?',
+      o:['Luck; AI answers are random.','One section of the page best answered one of the hidden follow-up searches the AI ran.','The practice paid for the placement.'],a:1,
+      w:['Not random. The AI quotes the passage that best supports each part of its answer.','Right. That\'s fan-out: the original ranking matters less than answering the follow-ups well.','AI answers don\'t sell citations.'],ref:'fanout'},
+    c5b:{q:'In vector space, what makes a passage relevant to a question?',
+      o:['It repeats the keyword many times.','It points in nearly the same direction as the question (high cosine similarity).','It\'s the longest passage on the page.'],a:1,
+      w:['Repetition doesn\'t change what a passage means. Meaning is what gets measured.','Right. The smaller the angle, the higher the score.','Length doesn\'t matter; only the direction does.'],ref:'vector'},
     f1:{q:'What are Eli Schwartz\'s two top-down questions?',
       o:['What has the most volume? What\'s easiest to rank for?','Who am I trying to reach? What am I creating?','What are competitors doing? How do we do more of it?'],a:1,
       w:['That\'s the keyword-first trap he argues against.','Right. Answer these before you trust any keyword list.','Copying competitors leads straight to the sea of sameness.'],ref:'keyword'},
@@ -1708,6 +1931,108 @@ p{line-height:1.6}
     if(score===8)setTimeout(confetti,500);
   }
   renderFinal();
+
+  // ---------- AI search visuals ----------
+  const NS='http://www.w3.org/2000/svg',rad=d=>d*Math.PI/180;
+  const mk=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e};
+  const vpt=(O,R,ang,len)=>[O[0]+R*len*Math.cos(rad(ang)),O[1]-R*len*Math.sin(rad(ang))];
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  function tween(from,to,dur,fn){const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/dur);fn(from+(to-from)*ease(p));if(p<1)requestAnimationFrame(f)})(t0)}
+  function backdrop(svg,O,R){
+    [0.33,0.66,1].forEach(f=>mk('path',{d:`M${O[0]-R*f} ${O[1]} A${R*f} ${R*f} 0 0 1 ${O[0]+R*f} ${O[1]}`,class:'grid'},svg));
+    mk('line',{x1:O[0]-R-10,y1:O[1],x2:O[0]+R+10,y2:O[1],class:'axis'},svg);
+  }
+
+  // title backdrop: drifting points in "meaning space"
+  const vf=document.getElementById('vfield');
+  if(vf){const cols=['#29ABE2','#22C55E','#EAB308','#FF2D8F'];let html='',pts=[];
+    for(let k=0;k<34;k++){const x=Math.random()*100,y=Math.random()*100,sz=3+Math.random()*5;pts.push([x,y]);
+      html+=`<i style="left:${x}%;top:${y}%;width:${sz}px;height:${sz}px;background:${cols[k%4]};--t:${2+Math.random()*4}s;--dx:${(Math.random()*60-30).toFixed(0)}px;--dy:${(Math.random()*60-30).toFixed(0)}px"></i>`}
+    let lines='<svg preserveAspectRatio="none" viewBox="0 0 100 100">';
+    pts.forEach((a,k)=>pts.slice(k+1).forEach(b=>{const d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(d<13)lines+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" vector-effect="non-scaling-stroke"/>`}));
+    vf.innerHTML=lines+'</svg>'+html;}
+
+  // fan-out
+  const fan=document.getElementById('fan');
+  if(fan){const kids=[['Comparative','implant vs bridge for a back tooth'],['Implicit','how long do dental implants last'],['Related','implant cost without insurance'],['Personalized','implant dentist near Springfield'],['Entity','titanium vs zirconia implants'],['Reformulation','is a tooth implant worth the money'],['Recent','newest implant options this year']];
+    let svg='<svg viewBox="0 0 100 90" preserveAspectRatio="none">',html='';
+    kids.forEach((k,n)=>{const a=-90+n*360/kids.length,x=(50+35*Math.cos(rad(a))).toFixed(1),y=(45+36*Math.sin(rad(a))).toFixed(1);
+      svg+=`<path class="draw" pathLength="1" d="M50 45 L${x} ${y}" style="--d:${(.15+n*.1).toFixed(2)}s"/><circle r=".9"><animateMotion dur="2.4s" begin="${(n*.35).toFixed(2)}s" repeatCount="indefinite" path="M50 45 L${x} ${y}"/></circle>`;
+      html+=`<div class="fnode" style="left:${x}%;top:${(y/90*100).toFixed(1)}%;--d:${(.45+n*.1).toFixed(2)}s"><em>${k[0]}</em>${k[1]}</div>`});
+    fan.innerHTML=svg+'</svg><div class="fcenter"><small>The patient types</small>is a dental implant worth it?</div>'+html;}
+
+  // passages in vector space
+  const vsvg=document.getElementById('vspace');
+  if(vsvg){const O=[230,282],R=198;
+    const PASS=[{s:'Implant or bridge?',t:'Implant or bridge for a back molar: when we recommend each',a:95,l:.92},
+      {s:'How long implants last',t:'How long implants last, and what shortens their life',a:75,l:.8},
+      {s:'Implant cost, itemized',t:'What an implant costs without insurance, line by line',a:116,l:.86},
+      {s:'Meet Dr. Lee',t:'Meet Dr. Lee: 15 years placing implants',a:135,l:.66},
+      {s:'Whitening options',t:'Teeth whitening options compared',a:25,l:.82},
+      {s:'Hours + parking',t:'Our office hours and parking',a:165,l:.75}];
+    const VQ=[{b:'Implant or bridge?',a:98},{b:'How long do they last?',a:72},{b:'Cost without insurance',a:119}];
+    const defs=mk('defs',{},vsvg),m=mk('marker',{id:'qarrow',viewBox:'0 0 10 10',refX:'7',refY:'5',markerWidth:'4',markerHeight:'4',orient:'auto'},defs);mk('path',{d:'M0 0L10 5L0 10z',fill:'#FF2D8F'},m);
+    backdrop(vsvg,O,R);
+    const qg=mk('g',{class:'qgrp'},vsvg),arc=mk('path',{class:'arc'},qg);
+    PASS.forEach((p,k)=>{const [x,y]=vpt(O,R,p.a,p.l);
+      p.line=mk('path',{d:`M${O[0]} ${O[1]} L${x} ${y}`,class:'pv draw',pathLength:1,style:`--d:${k*.12}s`},vsvg);
+      p.dot=mk('circle',{cx:x,cy:y,r:6,class:'pdot pop',style:`--d:${.5+k*.12}s`},vsvg);
+      const left=p.a>90;mk('text',{x:x+(left?-10:10),y:y-6,'text-anchor':left?'end':'start',class:'pop',style:`--d:${.6+k*.12}s`},vsvg).textContent=p.s});
+    const qline=mk('line',{x1:O[0],y1:O[1],class:'qv','marker-end':'url(#qarrow)'},qg);
+    mk('circle',{cx:O[0],cy:O[1],r:4,fill:'#0E1116'},vsvg);
+    const rank=document.getElementById('vrank');
+    const rows=PASS.map(p=>{const r=document.createElement('div');r.className='vrow2';r.innerHTML='<span class="rk"></span><span>'+p.t+'</span><span class="bar"><i></i></span><span class="sc num"></span>';rank.appendChild(r);return r});
+    function draw(a){
+      const [x,y]=vpt(O,R,a,1.05);qline.setAttribute('x2',x);qline.setAttribute('y2',y);
+      const sc=PASS.map(p=>Math.cos(rad(p.a-a))),order=sc.map((v,k)=>k).sort((m,n)=>sc[n]-sc[m]),b=PASS[order[0]];
+      const a1=Math.min(a,b.a),a2=Math.max(a,b.a),[x1,y1]=vpt(O,80,a1,1),[x2,y2]=vpt(O,80,a2,1);
+      arc.setAttribute('d',`M${O[0]} ${O[1]} L${x1} ${y1} A80 80 0 0 0 ${x2} ${y2} Z`);
+      PASS.forEach((p,k)=>{p.dot.classList.toggle('hot',k===order[0]);p.line.classList.toggle('hot',k===order[0])});
+      order.forEach((k,pos)=>{const row=rows[k];row.style.top=(pos*50)+'px';row.classList.toggle('top',pos===0);row.querySelector('.rk').textContent=pos+1;
+        row.querySelector('.bar i').style.width=(Math.max(0,sc[k])*100)+'%';row.querySelector('.sc').textContent=sc[k].toFixed(2)});
+    }
+    let cur=VQ[0].a;draw(cur);
+    const seg=document.getElementById('vq');
+    VQ.forEach((q,k)=>{const b=document.createElement('button');b.textContent=q.b;if(!k)b.className='on';
+      b.onclick=()=>{seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));const from=cur;cur=q.a;tween(from,q.a,800,draw)};seg.appendChild(b)});
+  }
+
+  // relevance analyzer: site pages vs the center of the target searches
+  const rsvg=document.getElementById('rspace');let rShown=false,calOn=false,rVal=0;
+  if(rsvg){const O=[230,282],R=225,TH=Math.acos(.7)*180/Math.PI;
+    const TQ=[{a:84,l:1.04},{a:92,l:1.08},{a:101,l:1.02},{a:108,l:1.06},{a:88,l:1.0}];
+    const C=TQ.reduce((t,q)=>t+q.a,0)/TQ.length;
+    const PAGES=[{s:'Home',a:45,l:.7},{s:'Implants',a:100,l:.85},{s:'Crowns',a:62,l:.75},{s:'Insurance',a:125,l:.65},{s:'Meet the team',a:146,l:.55},
+      {s:'Emergency',a:30,l:.9},{s:'Whitening',a:22,l:.75},{s:'Invisalign',a:155,l:.85},{s:'Cleanings',a:160,l:.68},{s:'Holiday hours',a:172,l:.6}];
+    const NEWP=[{a:93,l:.62},{a:83,l:.74},{a:106,l:.7},{a:98,l:.48},{a:112,l:.56}];
+    const [c1x,c1y]=vpt(O,R*1.12,C-TH,1),[c2x,c2y]=vpt(O,R*1.12,C+TH,1);
+    mk('path',{class:'cone',d:`M${O[0]} ${O[1]} L${c1x} ${c1y} A${R*1.12} ${R*1.12} 0 0 0 ${c2x} ${c2y} Z`},rsvg);
+    backdrop(rsvg,O,R);
+    const [cx,cy]=vpt(O,R,C,1.03);
+    TQ.forEach((q,k)=>{const [x,y]=vpt(O,R,q.a,q.l);
+      mk('path',{class:'tl draw',pathLength:1,d:`M${x} ${y} L${cx} ${cy}`,style:`--d:${.9+k*.08}s`},rsvg);
+      mk('path',{class:'tq pop',d:`M${x} ${y-6}L${x+6} ${y}L${x} ${y+6}L${x-6} ${y}Z`,style:`--d:${.1+k*.1}s`},rsvg)});
+    mk('circle',{class:'cent pop',cx,cy,r:7,style:'--d:1.5s'},rsvg);
+    PAGES.forEach((p,k)=>{const [x,y]=vpt(O,R,p.a,p.l);const inC=Math.cos(rad(p.a-C))>=.7;
+      mk('circle',{class:'pg pop'+(inC?' in':''),cx:x,cy:y,r:5.5,style:`--d:${.3+k*.07}s`},rsvg);
+      mk('text',{class:'lbl-s pop',x,y:y-10,'text-anchor':'middle',style:`--d:${.4+k*.07}s`},rsvg).textContent=p.s});
+    NEWP.forEach((p,k)=>{const [x,y]=vpt(O,R,p.a,p.l);mk('circle',{class:'np',cx:x,cy:y,r:6,style:`transition-delay:${k*.12}s`},rsvg)});
+    mk('circle',{cx:O[0],cy:O[1],r:4,fill:'#0E1116'},rsvg);
+    const stats=withNew=>{const list=PAGES.concat(withNew?NEWP:[]),v=list.map(p=>Math.cos(rad(p.a-C)));return{mean:v.reduce((t,x)=>t+x,0)/v.length,inside:v.filter(x=>x>=.7).length,total:list.length}};
+    window.__updateR=()=>{const st=stats(calOn),el=document.getElementById('rScore');
+      tween(rVal,st.mean,1100,v=>{el.textContent=v.toFixed(2)});rVal=st.mean;
+      document.getElementById('rInside').textContent=st.inside+' of '+st.total+' pages inside the 0.70 line'+(calOn?' (5 new calendar pages added)':'');};
+    document.getElementById('rAdd').onclick=()=>{calOn=!calOn;rsvg.classList.toggle('cal-on',calOn);
+      document.getElementById('rAdd').textContent=calOn?'Remove the calendar':'Add this year\'s calendar';setTimeout(window.__updateR,calOn?500:0)};
+  }
+
+  document.addEventListener('build',e=>{const {id,b}=e.detail;
+    if(vsvg)vsvg.classList.toggle('q-on',id==='vector'&&b>=2);
+    if(rsvg){rsvg.classList.toggle('cone-on',id==='analyzer'&&b>=2);
+      if(id==='analyzer'&&b>=2&&!rShown){rShown=true;rVal=0;window.__updateR()}
+      if(id!=='analyzer'||b<2)rShown=false;}
+    const d=document.querySelector('.duel');if(d)d.classList.toggle('judged',id==='pairwise'&&b>=2);
+  });
 
   const h=parseInt(location.hash.slice(1),10);
   go(isNaN(h)?0:h-1,0);
