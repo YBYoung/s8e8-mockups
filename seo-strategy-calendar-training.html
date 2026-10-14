@@ -410,15 +410,93 @@ p{line-height:1.6}
 .got h4{margin:8px 0 6px;font-size:14.5px;line-height:1.35}
 .got p{margin:0;font-size:13px;color:var(--sub);line-height:1.5}
 .recap li{margin:7px 0;font-size:14px;line-height:1.45}
-.quiz{display:flex;flex-direction:column;gap:10px}
-.qz{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.qz button{width:100%;text-align:left;border:0;background:none;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:12px;color:var(--ink)}
-.qz button span{font:600 10px var(--mono);letter-spacing:.12em;color:var(--mag-ink);text-transform:uppercase;white-space:nowrap}
-.qz .a{max-height:0;overflow:hidden;transition:max-height .5s var(--ease)}
-.qz .a p{margin:0;padding:0 18px 16px;font-size:14px;color:var(--sub)}
-.qz.open .a{max-height:240px}
 .srcs a{color:var(--blue-ink)}
 .srcs li{margin:8px 0;font-size:14px;line-height:1.5}
+
+/* ---------- knowledge checks ---------- */
+.mcqs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
+.mcq{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 22px}
+.mcq .mk{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mag-ink)}
+.mcq h3{font-size:17px;line-height:1.4;margin:8px 0 14px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:grid;grid-template-columns:28px 1fr 20px;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:#FBFBFC;border-radius:6px;padding:11px 12px;font-size:14px;line-height:1.45;cursor:pointer;color:var(--ink);transition:background .2s,border-color .2s,transform .15s,opacity .3s}
+.opt:hover:not(:disabled){background:var(--blue-bg);transform:translateX(3px)}
+.opt .ol{width:26px;height:26px;border-radius:5px;background:var(--chip);display:grid;place-items:center;font:700 11px var(--mono);color:var(--sub);transition:background .2s,color .2s}
+.opt svg{width:18px;height:18px;fill:none;stroke-width:2.5;opacity:0}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--green-bg);border-color:#9FD9B8}.opt.right .ol{background:var(--green);color:#fff}
+.opt.right svg{stroke:var(--green);opacity:1;animation:pop .4s var(--ease)}
+.opt.wrong{background:var(--red-bg);border-color:#F2B8B3;animation:shake .45s}.opt.wrong .ol{background:var(--red);color:#fff}
+.opt.wrong svg{stroke:var(--red);opacity:1}
+.opt.dim{opacity:.45}
+.why{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.why>div{overflow:hidden}
+.why.open{grid-template-rows:1fr}
+.why p{margin:12px 0 0;padding:12px 14px;border-radius:6px;font-size:13.5px;line-height:1.5}
+.why.ok p{background:var(--green-bg);color:#0E4A2A}.why.no p{background:var(--red-bg);color:#7A1F1A}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+/* ---------- sorting game ---------- */
+.sortgame{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:16px;align-items:start}
+.sortmeta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:10px;text-align:center}
+.pool{display:flex;flex-direction:column;gap:10px}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px;line-height:1.45;transition:opacity .3s,transform .3s;box-shadow:0 2px 8px rgba(17,20,28,.05)}
+.scard .acts{display:flex;gap:6px;margin-top:10px}
+.scard .acts button{flex:1;border:1px solid var(--line);background:#FBFBFC;border-radius:5px;padding:7px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink);transition:background .2s}
+.scard .acts button:hover{background:var(--blue-bg)}
+.scard .acts button:first-child::before{content:"\2190  "}.scard .acts button:last-child::after{content:"  \2192"}
+.scard.wrong{animation:shake .45s}
+.scard .fb{font-size:12.5px;color:var(--red);line-height:1.45}
+.scard .fb:not(:empty){margin-top:8px}
+.scard.gone{opacity:0;transform:scale(.92)}
+.binz{background:var(--card);border:1.5px dashed var(--line);border-radius:8px;padding:14px;min-height:300px}
+.binz h4{margin:0 0 4px;font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.binz .in{border-radius:6px;padding:9px 11px;font-size:13px;line-height:1.4;margin-top:8px;animation:pop .45s var(--ease) both}
+#binCal .in{background:var(--blue-bg)}#binOpt .in{background:var(--chip)}
+.binz .in small{display:block;color:var(--sub);font-size:11.5px;margin-top:4px}
+#sortDone{margin-top:12px;animation:rise .5s var(--ease)}
+
+/* ---------- spot the problem ---------- */
+.spotwrap{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
+.spot{position:relative;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px;font-size:16px;line-height:1.8;cursor:crosshair;overflow:hidden;user-select:none;-webkit-user-select:none}
+.spot .row{display:flex;gap:8px}
+.spot h4{font-size:19px;margin:12px 0 8px;line-height:1.4}
+.spot p{margin:0}
+.flaw{border-radius:3px;padding:0 1px;transition:background .3s,box-shadow .3s}
+.flaw.found{background:var(--red-bg);color:#7A1F1A;box-shadow:inset 0 -2px 0 var(--red)}
+.flaw sup{font:700 10px var(--mono);color:#fff;background:var(--red);border-radius:3px;padding:1px 4px;margin-left:3px;display:inline-block;animation:pop .4s var(--ease)}
+.ripple{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2px solid #B8BEC9;pointer-events:none;animation:ripple .6s forwards}
+@keyframes ripple{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+.spotbar{display:flex;align-items:center;gap:14px;margin-top:12px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sub)}
+.spotbar .btn{margin-left:auto}
+.spotlist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.spotlist li{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:13.5px;line-height:1.45;animation:rise .45s var(--ease)}
+.spotlist li b{width:22px;height:22px;border-radius:4px;background:var(--red);color:#fff;font:700 11px var(--mono);display:grid;place-items:center}
+.fixed{margin-top:14px;background:var(--green-bg);border-radius:8px;padding:16px 18px;animation:rise .6s var(--ease)}
+.fixed h4{margin:8px 0 6px;font-size:16px}.fixed p{margin:0;font-size:14px;color:#0E4A2A}
+
+/* ---------- final quiz + results ---------- */
+.fq-top{display:flex;gap:6px;margin-bottom:16px;max-width:720px}
+.fq-top i{flex:1;height:6px;border-radius:3px;background:var(--chip);transition:background .4s}
+.fq-top i.cur{background:var(--blue)}.fq-top i.ok{background:var(--green)}.fq-top i.no{background:var(--red)}
+.fq-card{max-width:720px;animation:rise .5s var(--ease)}
+.fq-nav{margin-top:14px;min-height:42px;max-width:720px;display:flex;justify-content:flex-end}
+.results{display:grid;grid-template-columns:190px 1fr;gap:32px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:28px;animation:rise .6s var(--ease)}
+.ring2{position:relative;width:180px;height:180px}
+.ring2 svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring2 circle{fill:none;stroke-width:10}
+.ring2 .bg{stroke:var(--chip)}.ring2 .fg{stroke-linecap:round;transition:stroke-dashoffset 1.4s var(--ease)}
+.ring2 .sc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring2 .sc b{font:800 52px/1 var(--disp)}
+.ring2 .sc span{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.results h3{font-size:21px;margin:0 0 12px;line-height:1.35}
+.tally{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--sub);margin-bottom:14px}
+.tally b{color:var(--ink)}
+.revisit{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 6px}
+.rlabel{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mag-ink);margin-top:6px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti i{position:absolute;top:-14px;width:8px;height:12px;border-radius:2px;animation:fall var(--t) cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes fall{to{transform:translate(var(--x),105vh) rotate(var(--r))}}
 
 /* ---------- responsive ---------- */
 @media (max-width:1000px){
@@ -433,6 +511,8 @@ p{line-height:1.6}
   .months{grid-template-columns:repeat(6,1fr)}
   .handoff{grid-template-columns:1fr}.flowarrow{display:none}
   .vrow{grid-template-columns:1fr}.vrow .arr{display:none}
+  .sortgame,.spotwrap{grid-template-columns:1fr}.poolcol{order:-1}.binz{min-height:0}
+  .results{grid-template-columns:1fr;justify-items:center;text-align:center}.revisit{justify-content:center}
   .mover{width:80%}
   .controls{padding:10px 16px}
 }
@@ -482,12 +562,12 @@ p{line-height:1.6}
       <p class="lede">How we think through an SEO strategy for a dental practice and turn it into a content calendar the client will approve, and what OpenedQueries does for you along the way.</p>
       <div class="search"><svg><use href="#i-search"/></svg><span id="typed"></span><i class="caret"></i></div>
       <div class="hero-note">Every one of these is a real person typing a real worry. The strategy starts with them, not with a keyword list.</div>
-      <div class="hero-meta">About 35 minutes · Right arrow or Space to advance</div>
+      <div class="hero-meta">About 45 minutes, with checks along the way · Right arrow or Space to advance</div>
     </div>
   </div>
 </section>
 
-<section class="scene" data-chap="Intro">
+<section class="scene" data-id="map" data-chap="Intro">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">The map</div>
@@ -549,7 +629,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Think first">
+<section class="scene" data-id="keyword" data-chap="Think first">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Eli Schwartz, applied</div>
@@ -592,7 +672,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Think first">
+<section class="scene" data-id="questions" data-chap="Think first">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Top-down</div>
@@ -608,12 +688,12 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Think first">
+<section class="scene" data-id="eeat" data-chap="Think first">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Lily Ray, applied</div>
       <div class="ttl"><svg><use href="#i-shield"/></svg><h2>E-E-A-T, with trust at the center</h2></div>
-      <p class="subt">Dental is YMYL: bad information can hurt someone, so Google and the AI engines hold it to their strictest bar. OQ's own SEO principles open with "E-E-A-T is non-negotiable for dental content."</p>
+      <p class="subt">Google calls health topics YMYL ("Your Money or Your Life"): bad information can hurt someone, so Google and the AI engines hold it to their strictest bar. OQ's own SEO principles open with "E-E-A-T is non-negotiable for dental content."</p>
     </div>
     <div class="split">
       <div data-b="1">
@@ -640,7 +720,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Think first">
+<section class="scene" data-id="volume" data-chap="Think first">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Volume is not value</div>
@@ -667,6 +747,20 @@ p{line-height:1.6}
   </div>
 </section>
 
+<section class="scene" data-chap="Think first">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Check yourself · Chapter 1</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: think first</h2></div>
+      <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
+    </div>
+    <div class="mcqs" data-b="0">
+      <div class="mcq" data-q="c1a"></div>
+      <div class="mcq" data-q="c1b"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 02 THE STRATEGY ================= -->
 <section class="scene" data-chap="The strategy">
   <div class="divider" data-b="0">
@@ -677,7 +771,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The strategy">
+<section class="scene" data-id="setup" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Step 1 · Setup Wizard</div>
@@ -689,8 +783,8 @@ p{line-height:1.6}
         <div class="lbl">How to think</div>
         <h3>What do we know, and what are we guessing?</h3>
         <ul>
-          <li>No Search Console? Priority scoring "will use estimated volume only."</li>
-          <li>No GA4? "Traffic trends will be unavailable."</li>
+          <li>No Search Console (the searches the site already shows up for)? Priority scoring "will use estimated volume only."</li>
+          <li>No GA4 (Google Analytics)? "Traffic trends will be unavailable."</li>
           <li>No crawl? You can't tell new topics from existing pages, so you can't build a clean calendar.</li>
           <li>Write down what's missing. You'll weigh the output differently because of it.</li>
         </ul>
@@ -708,7 +802,7 @@ p{line-height:1.6}
         <div class="meter">
           <i style="width:25%;background:#29ABE2"></i><i style="width:20%;background:#22C55E;animation-delay:.25s!important"></i><i style="width:20%;background:#7DD3FC;animation-delay:.5s!important"></i><i style="width:15%;background:#FF2D8F;animation-delay:.75s!important"></i><i style="width:10%;background:#EAB308;animation-delay:1s!important"></i><i style="width:5%;background:#A78BFA;animation-delay:1.2s!important"></i><i style="width:5%;background:#9BA1AE;animation-delay:1.35s!important"></i>
         </div>
-        <div class="meterkey"><span style="--c:#29ABE2">SparkToro 25</span><span style="--c:#22C55E">Crawl 20</span><span style="--c:#7DD3FC">GSC 20</span><span style="--c:#FF2D8F">GA4 15</span><span style="--c:#EAB308">GBP 10</span><span style="--c:#A78BFA">Profile 5</span><span style="--c:#9BA1AE">Asana 5</span></div>
+        <div class="meterkey"><span style="--c:#29ABE2">SparkToro 25</span><span style="--c:#22C55E">Crawl 20</span><span style="--c:#7DD3FC">Search Console 20</span><span style="--c:#FF2D8F">GA4 15</span><span style="--c:#EAB308">GBP 10</span><span style="--c:#A78BFA">Profile 5</span><span style="--c:#9BA1AE">Asana 5</span></div>
         <p class="dim" style="font-size:12.5px;margin:10px 0 0">The confidence meter is weighted by how much each source tells the strategy.</p>
       </div>
     </div>
@@ -728,7 +822,7 @@ p{line-height:1.6}
         <h3>The best content ideas are what the dentist explains over and over.</h3>
         <ul>
           <li>That is pure Experience: no competitor can copy it.</li>
-          <li>Strategy Notes are the client's priorities. Matching topics get a scoring boost.</li>
+          <li>Strategy Notes, on the strategy's Overview page, hold the client's priorities. Topics that match them get a scoring boost.</li>
           <li>If the data doesn't back a priority, OQ must "flag this honestly but still include the topic." Then it's your conversation to have.</li>
         </ul>
       </div>
@@ -763,31 +857,31 @@ p{line-height:1.6}
         <h3>While it runs, your job isn't to wait.</h3>
         <ul>
           <li>Read each output as it lands and ask: do I believe this?</li>
-          <li>The calendar is left out on purpose. In the code's words, it "requires a manual trigger after reviewing data quality." That review is you.</li>
+          <li>The calendar is left out on purpose. OQ's own notes say it "requires a manual trigger after reviewing data quality." That review is you.</li>
         </ul>
       </div>
       <div class="card oq" data-b="1">
         <div class="lbl">What OQ automates</div>
         <div class="phases">
-          <div class="ph"><i class="fill"></i><span class="k">01</span><span>Audience profile</span><span class="t">Persona + head queries</span></div>
-          <div class="ph par"><i class="fill" style="animation-delay:.2s"></i><span class="k">||</span><span>Forum research</span><span class="t">In parallel</span></div>
-          <div class="ph"><i class="fill" style="animation-delay:.6s"></i><span class="k">02</span><span>Performance data</span><span class="t">GSC + GA4</span></div>
-          <div class="ph"><i class="fill" style="animation-delay:1s"></i><span class="k">03</span><span>Topic clustering</span><span class="t">8 to 15 clusters</span></div>
-          <div class="ph"><i class="fill" style="animation-delay:1.4s"></i><span class="k">04</span><span>Page grouping</span><span class="t">GA4 pages</span></div>
-          <div class="ph"><i class="fill" style="animation-delay:1.8s"></i><span class="k">05</span><span>Site content analysis</span><span class="t">Page verdicts</span></div>
-          <div class="ph"><i class="fill" style="animation-delay:2.4s"></i><span class="k">06</span><span>Synthesis</span><span class="t">Waits for forums</span></div>
+          <div class="ph"><i class="fill"></i><span class="k">01</span><span>Audience profile</span><span class="t">Persona + core searches</span></div>
+          <div class="ph par"><i class="fill" style="animation-delay:.2s"></i><span class="k">||</span><span>Forum research</span><span class="t">Runs at the same time</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:.6s"></i><span class="k">02</span><span>Performance data</span><span class="t">Search Console + Analytics</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1s"></i><span class="k">03</span><span>Topic clustering</span><span class="t">Searches into 8 to 15 themes</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1.4s"></i><span class="k">04</span><span>Page grouping</span><span class="t">Site pages by theme</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1.8s"></i><span class="k">05</span><span>Site content analysis</span><span class="t">Grades key pages</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:2.4s"></i><span class="k">06</span><span>Synthesis</span><span class="t">Ranks every topic</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="scene" data-chap="The strategy">
+<section class="scene" data-id="audience" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Step 4 · Audience research</div>
       <div class="ttl"><svg><use href="#i-users"/></svg><h2>A person, and how they actually search</h2></div>
-      <p class="subt">The Research tab: an archetype persona, their drivers and fears, and fifteen head queries across the funnel.</p>
+      <p class="subt">The Research tab: a persona for the typical patient, what drives and worries them, and fifteen core searches ("head queries") from early research to ready-to-book.</p>
     </div>
     <div class="split">
       <div class="card think" data-b="3">
@@ -796,7 +890,7 @@ p{line-height:1.6}
         <ul>
           <li>If the persona feels generic, the strategy will be too. Fix the Strategy Notes and rerun.</li>
           <li>If the practice specializes, at least half the queries should be about those services. Check that they are.</li>
-          <li>The location should "appear naturally in 2-3 queries", never in all of them, and never the practice's name.</li>
+          <li>The city should "appear naturally in 2-3 queries", not in all of them. The practice's own name never appears.</li>
         </ul>
       </div>
       <div class="card oq" data-b="1">
@@ -807,7 +901,7 @@ p{line-height:1.6}
             <div class="chips"><span>Fears cost surprises</span><span>Reads reviews twice</span><span>Wants to be talked to, not sold</span></div></div>
         </div>
         <p class="dim" style="font-size:12px;margin:8px 0 0">An archetype label, never a made-up first name.</p>
-        <div class="funnel"><div><span>Top of funnel</span><b>5</b></div><div><span>Middle</span><b>5</b></div><div><span>Bottom</span><b>5</b></div></div>
+        <div class="funnel"><div><span>Just researching</span><b>5</b></div><div><span>Comparing options</span><b>5</b></div><div><span>Ready to book</span><b>5</b></div></div>
       </div>
     </div>
     <div class="card oq" data-b="2" style="margin-top:16px">
@@ -820,7 +914,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The strategy">
+<section class="scene" data-id="forum" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Step 5 · Forum research</div>
@@ -858,7 +952,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The strategy">
+<section class="scene" data-id="site" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Step 6 · Site content</div>
@@ -891,7 +985,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The strategy">
+<section class="scene" data-id="synth" data-chap="The strategy">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Step 7 · Synthesis</div>
@@ -909,7 +1003,7 @@ p{line-height:1.6}
           <div class="dot" style="left:28%;top:74%;--c:#9BA1AE;--d:.95s">Tooth gems</div>
           <div class="dot" style="left:70%;top:72%;--c:#9BA1AE;--d:1.2s">Cleanings</div>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="small mono">Demand up · Site coverage right</span><span class="ex">Example topics</span></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="small mono">Higher = more patient demand · Further right = better site coverage</span><span class="ex">Example topics</span></div>
       </div>
       <div>
         <div class="card oq" data-b="2">
@@ -949,6 +1043,21 @@ p{line-height:1.6}
   </div>
 </section>
 
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Check yourself · Chapter 2</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: the strategy</h2></div>
+      <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
+    </div>
+    <div class="mcqs" data-b="0">
+      <div class="mcq" data-q="c2a"></div>
+      <div class="mcq" data-q="c2b"></div>
+      <div class="mcq" data-q="c2c"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 03 THE CALENDAR ================= -->
 <section class="scene" data-chap="The calendar">
   <div class="divider" data-b="0">
@@ -959,7 +1068,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-id="newonly" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">The hard rule</div>
@@ -982,7 +1091,23 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-chap="The calendar" data-id="sort">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Try it · Sorting</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Calendar or Optimization?</h2></div>
+      <p class="subt">Six pieces of work. Send each one where it belongs. One of them is a trick.</p>
+    </div>
+    <div class="sortgame" data-b="0">
+      <div class="binz" id="binCal"><h4>Content calendar · new pages</h4></div>
+      <div class="poolcol"><div class="sortmeta mono" id="sortCount">0 of 6 sorted</div><div class="pool" id="pool"></div>
+        <div class="callout" id="sortDone" hidden><b>All sorted.</b> If a page on the topic already exists, in any shape, it's Optimization. Every time.</div></div>
+      <div class="binz" id="binOpt"><h4>Optimization · existing pages</h4></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-id="mix" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">The mix + the pacing</div>
@@ -1005,7 +1130,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-id="named" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">The input that protects a topic</div>
@@ -1028,38 +1153,38 @@ p{line-height:1.6}
         <div class="fate"><svg class="lock"><use href="#i-lock"/></svg><span><b>Pinned.</b> The prompt treats named topics as "non-negotiable human decisions." They skip the duplicate check and get placed first.</span></div>
       </div>
     </div>
-    <div class="callout" data-b="3" style="margin-top:20px">If a named topic has no research behind it, OQ leaves its queries and quotes empty rather than inventing them ("Do NOT invent a query or a quote"). <b>That's expected</b>, and the reviewer may note "weak evidence". You're the evidence.</div>
+    <div class="callout" data-b="3" style="margin-top:20px">Sometimes you'll name a topic the research never turned up, like a service the doctor just added. That's fine. OQ won't make up searches or patient quotes to support it, so that item's "Topics we'll cover" list will be empty, and OQ's automatic quality check may label it "weak evidence". <b>Ignore that label.</b> Your knowledge of the practice is the evidence.</div>
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-id="pipeline" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Under the hood</div>
       <div class="ttl"><svg><use href="#i-flow"/></svg><h2>What happens after you click</h2></div>
-      <p class="subt">Eight steps, each with one job. <span class="ex">Example run: asked for 12</span></p>
+      <p class="subt">Eight steps, each with one job. Some use AI, some are plain rules. <span class="ex">Example run: asked for 12</span></p>
     </div>
     <div class="pipe">
-      <div class="pst" data-b="1"><span class="model">Sonnet</span><div class="n num" data-count="18">0</div><span class="u">candidates</span><h4>Draft 1.5x</h4><p>Asks for 1.5 times what you want, so there are spares to cut.</p></div>
-      <div class="pst" data-b="2"><span class="model">Haiku</span><div class="n num" data-count="13">0</div><span class="u">survive</span><h4>Duplicate check</h4><p>"A different angle, title, or city variation on the same core topic is still a duplicate."</p></div>
-      <div class="pst warn" data-b="3"><span class="model">Code</span><div class="n num" data-count="11">0</div><span class="u">of 12 filled</span><h4>Fill each type</h4><p>Highest priority first, named topics pinned. Never pads, never swaps one type for another.</p></div>
-      <div class="pst warn" data-b="4"><span class="model">Sonnet</span><div class="n num" data-count="11">0</div><span class="u">still 11</span><h4>Top-up round</h4><p>One more round with every used title off limits. Here nothing new survived, so it reports the shortfall instead of padding.</p></div>
-      <div class="pst" data-b="5"><span class="model">Code</span><div class="n">Months</div><h4>Placement</h4><p>Named topics first, then by priority, from your start month at your pacing.</p></div>
-      <div class="pst" data-b="6"><span class="model">Opus</span><div class="n num" data-count="2">0</div><span class="u">flagged</span><h4>Quality review</h4><p>Marks each item approved or flagged; suggests misses. Internal notes only, nothing auto-added.</p></div>
-      <div class="pst" data-b="7"><span class="model">Haiku</span><div class="n">Meta</div><h4>Descriptions</h4><p>A meta description for every item. Forum quotes get matched to topics.</p></div>
+      <div class="pst" data-b="1"><span class="model">AI writer</span><div class="n num" data-count="18">0</div><span class="u">candidates</span><h4>Draft extra ideas</h4><p>Writes 18 ideas when you asked for 12, so there are spares if some get cut.</p></div>
+      <div class="pst" data-b="2"><span class="model">AI checker</span><div class="n num" data-count="13">0</div><span class="u">survive</span><h4>Duplicate check</h4><p>Cuts any idea too close to an existing page or a piece already planned. Even a new angle or city on the same topic counts as a duplicate.</p></div>
+      <div class="pst warn" data-b="3"><span class="model">Rules, no AI</span><div class="n num" data-count="11">0</div><span class="u">of 12 filled</span><h4>Fill each type</h4><p>Keeps the strongest ideas for each page type, plus every topic you named. It won't fill a gap with a weak idea or swap a blog in for a missing service page.</p></div>
+      <div class="pst warn" data-b="4"><span class="model">AI writer</span><div class="n num" data-count="11">0</div><span class="u">still 11</span><h4>Top-up round</h4><p>If a page type comes up short, the AI gets one more try at fresh ideas. Here nothing new got through, so it tells you it's short instead of padding.</p></div>
+      <div class="pst" data-b="5"><span class="model">Rules, no AI</span><div class="n">Months</div><h4>Placement</h4><p>Your named topics go in the earliest months, then the rest by priority, from your start month at your chosen pacing.</p></div>
+      <div class="pst" data-b="6"><span class="model">AI reviewer</span><div class="n num" data-count="2">0</div><span class="u">flagged</span><h4>Quality review</h4><p>A second AI reads the whole plan and marks each item approved or flagged for you to look at. Its notes are for the team only; it never adds pieces itself.</p></div>
+      <div class="pst" data-b="7"><span class="model">AI writer</span><div class="n">Meta</div><h4>Descriptions</h4><p>Writes the short summary Google shows under each page title, and links forum quotes to the items they support.</p></div>
       <div class="pst done" data-b="8"><span class="model">Saved</span><div class="n">Draft</div><h4>Ready for you</h4><p>Saved as a draft, and the Asana calendar task is created or notified.</p></div>
     </div>
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-id="reading" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Reading the result</div>
       <div class="ttl"><svg><use href="#i-eye"/></svg><h2>Review it like the dentist will</h2></div>
       <p class="subt">Start with the finish message, then work item by item.</p>
     </div>
-    <div class="banner" data-b="0"><svg><use href="#i-alert"/></svg><span><b>"Calendar generated with 11 of 12 pieces you asked for…"</b> Always read the X of Y. Short means the duplicate check and top-up couldn't find enough new topics.</span></div>
+    <div class="banner" data-b="0"><svg><use href="#i-alert"/></svg><span><b>"Calendar generated with 11 of 12 pieces you asked for…"</b> Always compare the two numbers. Fewer than you asked for means OQ cut ideas that overlapped existing pages and couldn't find enough fresh ones.</span></div>
     <div class="anno">
       <div class="ci" data-b="0">
         <div class="row"><span class="tag">March</span><span class="tag blue">Service page</span><span class="tag mark" id="m4">Priority 88</span><span class="tag green mark" id="m5">Review: approved</span></div>
@@ -1072,15 +1197,15 @@ p{line-height:1.6}
       <div class="notes">
         <div class="note" data-b="1" data-hl="m1"><span class="n">1</span><span><b>Title format.</b> Service pages carry the city and state. No "Month 3" or "Blog" in a title, ever.</span></div>
         <div class="note" data-b="2" data-hl="m2"><span class="n">2</span><span><b>The angle is your strategic plan</b>, in two to four sentences. Edit it freely: it carries straight into production and shapes the draft.</span></div>
-        <div class="note" data-b="3" data-hl="m3"><span class="n">3</span><span><b>Queries come from real data</b>, never invented. The client sees them as "Topics we'll cover", and you can hide any.</span></div>
-        <div class="note" data-b="4" data-hl="m4"><span class="n">4</span><span><b>Priority 85 to 100</b> means high opportunity with no coverage or declining performance. The reasoning must cite evidence; check it does.</span></div>
-        <div class="note" data-b="5" data-hl="m5"><span class="n">5</span><span><b>Read every flagged item.</b> Fix it in the edit panel, swap it with Replace with different page, or drag it to another month.</span></div>
+        <div class="note" data-b="3" data-hl="m3"><span class="n">3</span><span><b>The searches listed come from the research</b>, never made up. The client sees them as "Topics we'll cover", and you can hide any.</span></div>
+        <div class="note" data-b="4" data-hl="m4"><span class="n">4</span><span><b>Priority score.</b> 85 to 100 means a big opportunity: patients want it and the site has nothing on it, or existing traffic on it is slipping. Each score comes with a reason; check that the reason points to real data.</span></div>
+        <div class="note" data-b="5" data-hl="m5"><span class="n">5</span><span><b>Read every flagged item.</b> OQ's AI review marks each piece approved or flagged. Fix flagged ones in the edit panel, swap it with Replace with different page, or drag it to another month.</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="scene" data-chap="The calendar">
+<section class="scene" data-id="voice" data-chap="The calendar">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Voice</div>
@@ -1094,6 +1219,48 @@ p{line-height:1.6}
   </div>
 </section>
 
+<section class="scene" data-chap="The calendar" data-id="spot">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Try it · Spot the problem</div>
+      <div class="ttl"><svg><use href="#i-eye"/></svg><h2>Find the five mistakes</h2></div>
+      <p class="subt">This draft calendar item breaks five of our rules. Click each mistake. Clicking somewhere that's fine counts as a miss.</p>
+    </div>
+    <div class="spotwrap" data-b="0">
+      <div>
+        <div class="spot" id="spotText">
+          <div class="row"><span class="tag">March</span><span class="tag blue">Service page</span></div>
+          <h4><span class="flaw" data-why="Never put &quot;Month N&quot; in a title. Service pages use [Service] in [City], [State] | [Client Name].">Month 3:</span> Sedation Dentistry in Springfield, IL</h4>
+          <p><span class="flaw" data-why="Third person. Write to the client: &quot;You told us...&quot;">The client mentioned</span> that anxious patients put treatment off the longest. <span class="flaw" data-why="An invented number. Only cite numbers that exist in the data.">Over 10,000 people search this every month</span>, so this page will <span class="flaw" data-why="We say &quot;earn visibility&quot;, never &quot;rank for&quot;.">help us rank for</span> sedation dentistry. We'll cover what it feels like<span class="flaw" data-why="An em dash. Never use them; a colon or comma does the job."> &mdash; </span>and who it's safe for.</p>
+        </div>
+        <div class="spotbar"><span id="spotCount">0 of 5 found</span><span id="spotMiss">0 misses</span><button class="btn" id="spotShow">Show me</button></div>
+      </div>
+      <div>
+        <ol class="spotlist" id="spotList"></ol>
+        <div class="fixed" id="spotFixed" hidden>
+          <div class="mono small" style="text-transform:uppercase;letter-spacing:.12em;color:var(--green)">Fixed</div>
+          <h4>Sedation Dentistry in Springfield, IL | Example Dental</h4>
+          <p>You told us anxious patients put treatment off the longest. This page will help you earn visibility for sedation dentistry by answering what they ask before booking: what it feels like and who it's safe for.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Check yourself · Chapter 3</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: the calendar</h2></div>
+      <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
+    </div>
+    <div class="mcqs" data-b="0">
+      <div class="mcq" data-q="c3a"></div>
+      <div class="mcq" data-q="c3b"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 04 APPROVAL ================= -->
 <section class="scene" data-chap="Approval + handoff">
   <div class="divider" data-b="0">
@@ -1104,7 +1271,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Approval + handoff">
+<section class="scene" data-id="review" data-chap="Approval + handoff">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Client review</div>
@@ -1128,7 +1295,7 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Approval + handoff">
+<section class="scene" data-id="handoff" data-chap="Approval + handoff">
   <div class="inner">
     <div data-b="0" class="stg">
       <div class="eyebrow">Handoff</div>
@@ -1154,6 +1321,20 @@ p{line-height:1.6}
   </div>
 </section>
 
+<section class="scene" data-chap="Approval + handoff">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Check yourself · Chapter 4</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Quick check: approval + handoff</h2></div>
+      <p class="subt">Pick an answer. A wrong answer explains itself and you can try again. Your first try counts toward your results at the end.</p>
+    </div>
+    <div class="mcqs" data-b="0">
+      <div class="mcq" data-q="c4a"></div>
+      <div class="mcq" data-q="c4b"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 05 WRAP UP ================= -->
 <section class="scene" data-chap="Wrap up">
   <div class="inner">
@@ -1170,8 +1351,8 @@ p{line-height:1.6}
       <div class="got"><span class="tag yellow">Replace</span><h4>Undo is short-lived</h4><p>Replace with different page can be undone only until you refresh.</p></div>
       <div class="got"><span class="tag yellow">Duplicates</span><h4>Old calendars still count</h4><p>Rejected and stale calendars count as "planned", so a topic may be blocked by an old plan.</p></div>
       <div class="got"><span class="tag red">Email</span><h4>No test send for calendars</h4><p>A calendar "test" would go to the real client. Preview inside OQ instead.</p></div>
-      <div class="got"><span class="tag">Evidence</span><h4>Empty evidence on named topics</h4><p>Expected. The reviewer may flag "weak evidence"; that note is cosmetic.</p></div>
-      <div class="got"><span class="tag">Data</span><h4>Missing sources, weaker scores</h4><p>Without GSC, priorities rely on estimated volume. Say so when you present.</p></div>
+      <div class="got"><span class="tag">Evidence</span><h4>"Weak evidence" on your own topics</h4><p>A topic you named yourself may list no supporting searches and get a "weak evidence" note from the quality check. That's expected; ignore the note.</p></div>
+      <div class="got"><span class="tag">Data</span><h4>Missing sources, weaker scores</h4><p>Without Search Console, priorities rely on estimated search volume. Say so when you present.</p></div>
     </div>
   </div>
 </section>
@@ -1192,20 +1373,14 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-chap="Wrap up">
+<section class="scene" data-chap="Wrap up" data-id="final">
   <div class="inner">
     <div data-b="0" class="stg">
-      <div class="eyebrow">Quick check</div>
-      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Five questions</h2></div>
-      <p class="subt">Answer out loud, then click to check.</p>
+      <div class="eyebrow">Final quiz</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Eight questions, scored</h2></div>
+      <p class="subt">One try per question this time. At the end you'll see your score, how you did on the checks along the way, and what to revisit.</p>
     </div>
-    <div class="quiz stg" data-b="0" id="quiz">
-      <div class="qz"><button>The practice has a 290-word veneers page. Should "Veneers" be a calendar item? <span>Reveal</span></button><div class="a"><p>No. An existing page on the topic, however thin, means it's not new content. It goes to Optimization.</p></div></div>
-      <div class="qz"><button>The dentist insists on a sedation page this year. Where do you put it? <span>Reveal</span></button><div class="a"><p>In a "Name the topics" slot. The guidance box doesn't protect a topic from the duplicate check; named slots are pinned.</p></div></div>
-      <div class="qz"><button>The finish message says "11 of 12 pieces". What happened, and what do you do? <span>Reveal</span></button><div class="a"><p>The duplicate check removed candidates and the top-up round couldn't find enough new topics. Review the gap; name a topic and regenerate, or add one by hand.</p></div></div>
-      <div class="qz"><button>Why is dental content held to a higher bar than a travel blog? <span>Reveal</span></button><div class="a"><p>It's YMYL health content, so E-E-A-T matters most, and trust most of all: real dentist authorship, first-hand experience, sourced claims.</p></div></div>
-      <div class="qz"><button>What are Eli Schwartz's two top-down questions? <span>Reveal</span></button><div class="a"><p>"Who am I trying to reach? What am I creating?" Answer them before you trust any keyword list.</p></div></div>
-    </div>
+    <div id="final" data-b="0"></div>
   </div>
 </section>
 
@@ -1361,9 +1536,178 @@ p{line-height:1.6}
     document.getElementById('genMsg').textContent=n<checks.length?n+' of '+checks.length+' ready':'Ready. Now generate it in OQ.'});
   document.getElementById('genBtn').onclick=()=>next();
 
-  // quiz
-  document.querySelectorAll('#quiz .qz button').forEach(btn=>btn.onclick=()=>{
-    const q=btn.parentElement;q.classList.toggle('open');btn.querySelector('span').textContent=q.classList.contains('open')?'Hide':'Reveal'});
+
+  // ---------- knowledge checks ----------
+  const first={};   // question id -> answered right on the first try
+  const record=(id,ok)=>{if(!(id in first))first[id]=ok};
+  const sceneIdx=id=>scenes.findIndex(s=>s.dataset.id===id);
+  const goRef=id=>{const k=sceneIdx(id);if(k>=0)go(k,maxB(scenes[k]))};
+  const LABEL={keyword:'Keyword-led vs audience-led',eeat:'E-E-A-T',setup:'Setup Wizard',forum:'Forum research',synth:'Topic Opportunity Assessment',
+    named:'Name the topics',pipeline:'What happens after you click',review:'Two review rounds',newonly:'New content only',audience:'Audience research',
+    map:'Who does what',voice:'Calendar voice',handoff:'Push to Production',spot:'Spot the problem'};
+  const Q={
+    c1a:{q:'A practice wants more implant patients. Where does your strategy start?',
+      o:['Pull the highest-volume implant keywords and plan a page for each.','Who is the patient weighing an implant, and what do they need to know before they book?','Copy the structure of the top-ranking competitor\'s implant page.'],a:1,
+      w:['Keyword-first planning can bring traffic without bookings. Volume tells you how people phrase things, not who they are or what they\'re deciding.','Right. Start top-down: who are we trying to reach, and what are we creating for them? Keywords come after, to check the patient\'s language.','That\'s how you end up in the sea of sameness. The page needs what only this practice can say.'],ref:'keyword'},
+    c1b:{q:'On a dental page, which part of E-E-A-T matters most?',o:['Experience','Expertise','Trust'],a:2,
+      w:['Experience matters, and it\'s how we stand out, but it isn\'t the center.','Expertise matters, but Google says one letter matters more.','Right. Google says trust is the most important part, and dental is YMYL content, so it\'s held to the strictest bar.'],ref:'eeat'},
+    c2a:{q:'The client has no Search Console connected. What changes?',
+      o:['Nothing; OQ fills in the gaps.','Priority scoring falls back to estimated volume only, so weigh the priorities with that in mind.','You can\'t run the strategy at all.'],a:1,
+      w:['OQ can\'t invent Search Console data. A missing source weakens the evidence.','Right. Note what\'s missing, and say so when you present.','Search Console is optional in the wizard. You can run the strategy, with weaker evidence.'],ref:'setup'},
+    c2b:{q:'Forum research turns up this quote: "My cousin is a dentist lol." Keep it or discard it?',
+      o:['Keep it: it\'s from a real person.','Discard it: you couldn\'t hand it to a writer and say "write a page about this concern".','Keep it, but only if it mentions the client\'s city.'],a:1,
+      w:['Being real isn\'t enough. It has to be a patient concern a page could address.','Right. That\'s the writer test, and it\'s the bar OQ\'s quality pass uses.','OQ deliberately doesn\'t penalize quotes for not naming the city. Usefulness is the test, not location.'],ref:'forum'},
+    c2c:{q:'Demand for emergency care is strong, and the site has an outdated Emergency Care page. What\'s the move?',
+      o:['Add a new Emergency Care page to the calendar.','Update the existing page through Optimization.','Deprioritize it; the page already exists.'],a:1,
+      w:['An existing page on the topic means no new calendar piece, however weak it is. A new one would be a duplicate.','Right. The demand is real, the coverage is weak, and the fix is improving what\'s there.','Strong demand plus weak coverage is an opportunity. Don\'t drop it; fix the page.'],ref:'synth'},
+    c3a:{q:'The dentist insists on a sedation page this year. Where do you put it?',
+      o:['In the Additional guidance box.','In a Name the topics slot.','Add it by hand after the client approves.'],a:1,
+      w:['Today the guidance box doesn\'t protect a topic. The duplicate check can still cut it.','Right. Named topics are pinned: they skip the duplicate check and get placed first.','Then the client approves a plan without it. Must-haves go in before you generate.'],ref:'named'},
+    c3b:{q:'Generation finishes with "Calendar generated with 10 of 12 pieces you asked for." What does it mean?',
+      o:['Something crashed. Regenerate right away.','OQ cut ideas that overlapped existing pages and couldn\'t find enough fresh ones. Review the gap, then name topics or add some by hand.','Two pieces stay hidden until the client approves.'],a:1,
+      w:['Nothing crashed. OQ reports a shortfall instead of padding the plan with weak or duplicate topics.','Right. Read the X of Y every time.','Nothing is hidden. The calendar has 10 pieces.'],ref:'pipeline'},
+    c4a:{q:'The client never opens the review link. What happens?',
+      o:['The calendar stays stuck in review until someone notices.','A reminder goes out at day 7. If the deadline passes with no feedback, the calendar auto-approves.','OQ deletes the calendar at the deadline.'],a:1,
+      w:['Deadlines are built in. Nothing sits forever.','Right. You can also extend the deadline if the client needs more time.','Calendars are never deleted for missing a deadline.'],ref:'review'},
+    c4b:{q:'The calendar is out for review and you want to regenerate it. What do you need to know?',
+      o:['Just regenerate; the client\'s feedback carries over.','Regenerating is blocked during review, and cancelling the review deletes the client\'s feedback. Think first.','Send yourself a test email first.'],a:1,
+      w:['Regenerating is blocked while the calendar is out for review.','Right. Usually it\'s better to work the feedback queue than to start over.','There\'s no test send for calendars: a "test" would go to the real client.'],ref:'review'},
+    f1:{q:'What are Eli Schwartz\'s two top-down questions?',
+      o:['What has the most volume? What\'s easiest to rank for?','Who am I trying to reach? What am I creating?','What are competitors doing? How do we do more of it?'],a:1,
+      w:['That\'s the keyword-first trap he argues against.','Right. Answer these before you trust any keyword list.','Copying competitors leads straight to the sea of sameness.'],ref:'keyword'},
+    f2:{q:'The practice has a 290-word veneers page. Should "Veneers" be a calendar item?',
+      o:['Yes. It\'s thin, so it needs a new page.','No. An existing page means Optimization, however thin it is.','Yes, if the client asks for it.'],a:1,
+      w:['Thin or not, it exists. A new page would duplicate it.','Right. The calendar is new content only.','Even then, an existing topic gets fixed through Optimization, not added to the calendar.'],ref:'newonly'},
+    f3:{q:'Which persona label follows OQ\'s rules?',o:['Sarah, 42, mom of two','The Cautious Comparer','Dental implant searchers'],a:1,
+      w:['OQ never gives a persona a made-up first name.','Right. A descriptive archetype label.','That\'s a keyword segment, not a person.'],ref:'audience'},
+    f4:{q:'Which head query is written the way OQ wants?',
+      o:['dental implants cost','best dentist near me','how much is one implant if my insurance won\'t cover it'],a:2,
+      w:['That\'s keyword-tool phrasing.','Too generic, and it reads like a tool output.','Right. Exactly how a real patient types it.'],ref:'audience'},
+    f5:{q:'In the Topic Opportunity Assessment, HIGH opportunity means:',
+      o:['The topic has the highest search volume.','Strong audience demand plus weak or no site coverage.','The client asked for it.'],a:1,
+      w:['Volume alone isn\'t opportunity if the site already covers the topic well.','Right. Demand the site isn\'t serving yet.','Client priorities get a scoring boost, but that\'s not the definition.'],ref:'synth'},
+    f6:{q:'Who sends the calendar to the client?',o:['The Marketing Strategist','The SEO Specialist','OQ, automatically when it\'s generated'],a:1,
+      w:['The MS owns the relationship but doesn\'t send calendars.','Right.','Generation saves a draft. Nothing reaches the client until you send it.'],ref:'map'},
+    f7:{q:'Which line follows our calendar voice?',
+      o:['The client mentioned fillings as a priority.','This page will help us rank for dental implants.','You named fillings as a priority service.'],a:2,
+      w:['Never talk about the client in the third person.','We say "earn visibility", never "rank for".','Right. You and we, written to the client.'],ref:'voice'},
+    f8:{q:'After approval, what does Push to Production create?',
+      o:['A new draft calendar for next year.','One production piece per item, each with an Asana task, keeping the item\'s month and angle.','Published pages on the client\'s site.'],a:1,
+      w:['Production works from the approved calendar; it doesn\'t make a new one.','Right. And it never duplicates a piece that already exists.','Publishing comes much later, after drafting and client review.'],ref:'handoff'},
+  };
+  const TICK='<svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>',CROSS='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  function renderMCQ(el,id,final,onDone){
+    const d=Q[id];
+    el.innerHTML='<div class="mk">'+(el.dataset.kicker||'Question')+'</div><h3>'+d.q+'</h3><div class="opts">'+
+      d.o.map((t,k)=>'<button class="opt" data-k="'+k+'"><span class="ol">'+'ABC'[k]+'</span><span>'+t+'</span>'+(k===d.a?TICK:CROSS)+'</button>').join('')+
+      '</div><div class="why"><div><p></p></div></div>';
+    const opts=[...el.querySelectorAll('.opt')],why=el.querySelector('.why'),p=why.querySelector('p');
+    opts.forEach(b=>b.onclick=()=>{
+      const k=+b.dataset.k,ok=k===d.a;
+      record(id,ok);
+      b.classList.add(ok?'right':'wrong');b.disabled=true;
+      p.textContent=d.w[k]+(!ok&&final?' The answer: '+d.o[d.a]:'');
+      why.className='why open '+(ok?'ok':'no');
+      if(ok||final){
+        opts.forEach(x=>{x.disabled=true;if(final&&+x.dataset.k===d.a)x.classList.add('right');else if(x!==b)x.classList.add('dim')});
+        if(onDone)onDone(ok);
+      }
+    });
+  }
+  document.querySelectorAll('.mcq[data-q]').forEach(el=>renderMCQ(el,el.dataset.q,false));
+
+  function confetti(){
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const c=document.createElement('div');c.className='confetti';const cols=['#29ABE2','#22C55E','#EAB308','#FF2D8F'];
+    for(let k=0;k<80;k++){const i=document.createElement('i');i.style.left=Math.random()*100+'%';i.style.background=cols[k%4];
+      i.style.setProperty('--x',(Math.random()*240-120)+'px');i.style.setProperty('--r',(Math.random()*900-450)+'deg');
+      i.style.setProperty('--t',(1.6+Math.random()*1.6)+'s');i.style.animationDelay=(Math.random()*.5)+'s';c.appendChild(i)}
+    document.body.appendChild(c);setTimeout(()=>c.remove(),4000);
+  }
+
+  // ---------- sorting game ----------
+  const SORT=[
+    {t:'Veneers: our 290-word page needs a rewrite',a:'opt',w:'It already exists. However thin, that\'s Optimization.'},
+    {t:'Sedation dentistry: high demand, nothing on the site yet',a:'cal',w:'No existing page and real demand: a new service page.'},
+    {t:'The Emergency Care page has outdated hours and prices',a:'opt',w:'Fix the existing page. It\'s an update, not new content.'},
+    {t:'"Implant or bridge for a back tooth?" A forum question no page on the site answers',a:'cal',w:'A specific patient question with no page: a new blog article.'},
+    {t:'"Invisalign in Springfield": a fresh angle on the Invisalign page we already have',a:'opt',w:'The trick card. A different angle, title or city on the same core topic is still a duplicate. Improve the existing page.'},
+    {t:'A complete guide to replacing a missing tooth; nothing on the site covers it end to end',a:'cal',w:'A broad topic the site doesn\'t cover yet: a new pillar page.'},
+  ];
+  const pool=document.getElementById('pool');let sorted=0;
+  [3,0,1,4,2,5].forEach(k=>{const c=SORT[k];const el=document.createElement('div');el.className='scard';
+    el.innerHTML='<div>'+c.t+'</div><div class="acts"><button data-to="cal">Calendar</button><button data-to="opt">Optimization</button></div><div class="fb"></div>';
+    el.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      const ok=b.dataset.to===c.a;record('sort'+k,ok);
+      if(!ok){el.classList.remove('wrong');void el.offsetWidth;el.classList.add('wrong');el.querySelector('.fb').textContent='Not quite. '+c.w;return}
+      el.classList.add('gone');
+      setTimeout(()=>{el.remove();const d=document.createElement('div');d.className='in';d.innerHTML=c.t+'<small>'+c.w+'</small>';
+        document.getElementById(c.a==='cal'?'binCal':'binOpt').appendChild(d);
+        sorted++;document.getElementById('sortCount').textContent=sorted+' of 6 sorted';
+        if(sorted===6){document.getElementById('sortDone').hidden=false;confetti()}},280);
+    });
+    pool.appendChild(el)});
+
+  // ---------- spot the problem ----------
+  const spot=document.getElementById('spotText'),flaws=[...spot.querySelectorAll('.flaw')];let found=0,miss=0;
+  function markFlaw(f){
+    if(f.classList.contains('found'))return;
+    f.classList.add('found');found++;
+    f.insertAdjacentHTML('beforeend','<sup>'+found+'</sup>');
+    const li=document.createElement('li');li.innerHTML='<b>'+found+'</b><span>'+f.dataset.why+'</span>';document.getElementById('spotList').appendChild(li);
+    document.getElementById('spotCount').textContent=found+' of 5 found';
+    if(found===flaws.length){document.getElementById('spotFixed').hidden=false;document.getElementById('spotShow').hidden=true;if(miss===0)confetti()}
+  }
+  spot.addEventListener('click',e=>{
+    const f=e.target.closest('.flaw');
+    if(f)return markFlaw(f);
+    if(found===flaws.length)return;
+    miss++;document.getElementById('spotMiss').textContent=miss+(miss===1?' miss':' misses');
+    const r=spot.getBoundingClientRect(),rp=document.createElement('span');rp.className='ripple';
+    rp.style.left=(e.clientX-r.left)+'px';rp.style.top=(e.clientY-r.top)+'px';spot.appendChild(rp);setTimeout(()=>rp.remove(),650);
+  });
+  document.getElementById('spotShow').onclick=()=>{flaws.forEach((f,k)=>setTimeout(()=>markFlaw(f),k*350))};
+
+  // ---------- final quiz ----------
+  const FQ=['f1','f2','f3','f4','f5','f6','f7','f8'];let fi=0;
+  const fbox=document.getElementById('final');
+  function renderFinal(){
+    if(fi>=FQ.length)return renderResults();
+    fbox.innerHTML='<div class="fq-top">'+FQ.map((id,k)=>'<i class="'+(k<fi?(first[id]?'ok':'no'):k===fi?'cur':'')+'"></i>').join('')+'</div>'+
+      '<div class="mcq fq-card" data-kicker="Question '+(fi+1)+' of '+FQ.length+'"></div>'+
+      '<div class="fq-nav"><button class="btn primary" id="fqNext" hidden>'+(fi===FQ.length-1?'See my results':'Next question')+' &rarr;</button></div>';
+    renderMCQ(fbox.querySelector('.fq-card'),FQ[fi],true,ok=>{
+      fbox.querySelector('.fq-top i.cur').className=ok?'ok':'no';
+      const n=document.getElementById('fqNext');n.hidden=false;n.focus({preventScroll:true});
+    });
+    document.getElementById('fqNext').onclick=()=>{fi++;renderFinal()};
+  }
+  function renderResults(){
+    const score=FQ.filter(id=>first[id]).length;
+    const checks=Object.keys(Q).filter(id=>id[0]==='c'),done=checks.filter(id=>id in first),cRight=done.filter(id=>first[id]).length;
+    const sortIds=SORT.map((c,k)=>'sort'+k),sortRight=sortIds.filter(id=>first[id]).length,sortDone=sortIds.filter(id=>id in first).length;
+    const refs=[];
+    Object.keys(first).forEach(id=>{if(first[id])return;const r=Q[id]?Q[id].ref:'newonly';if(!refs.includes(r))refs.push(r)});
+    if(found===flaws.length&&miss>2&&!refs.includes('voice'))refs.push('voice');
+    const msg=score===8?'Perfect score. You\'re ready to run a strategy.':score>=6?'Solid. Revisit the sections below before your first solo strategy.':'Worth another pass. Revisit the sections below, then retake the quiz.';
+    const C=2*Math.PI*52,col=score>=6?'var(--green)':'var(--mag)';
+    fbox.innerHTML='<div class="results"><div class="ring2"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="bg"/><circle cx="60" cy="60" r="52" class="fg" style="stroke:'+col+';stroke-dasharray:'+C+';stroke-dashoffset:'+C+'"/></svg>'+
+      '<div class="sc"><b class="num" id="scN">0</b><span>of 8</span></div></div><div><div class="eyebrow">Your results</div><h3>'+msg+'</h3><div class="tally">'+
+      '<span>Final quiz: <b>'+score+' of 8</b></span>'+
+      '<span>Chapter checks, right on the first try: <b>'+cRight+' of '+checks.length+'</b>'+(done.length<checks.length?' ('+(checks.length-done.length)+' skipped)':'')+'</span>'+
+      '<span>Sorting game, right on the first try: <b>'+(sortDone?sortRight+' of 6'+(sortDone<6?' ('+(6-sortDone)+' not sorted)':''):'not played')+'</b></span>'+
+      '<span>Spot the problem: <b>'+(found===flaws.length?'all 5 found, '+miss+(miss===1?' miss':' misses'):found+' of 5 found')+'</b></span></div>'+
+      (refs.length?'<div class="rlabel">Worth revisiting</div><div class="revisit">'+refs.map(r=>'<button class="btn" data-go="'+r+'">'+(LABEL[r]||r)+' &rarr;</button>').join('')+'</div>':'')+
+      '<div class="gen"><button class="btn" id="retake">Retake the quiz</button><button class="btn primary" id="toSources">Sources + further reading &rarr;</button></div>'+
+      '<p class="small" style="margin:12px 0 0">Your score stays in this browser only. Screenshot this screen to share it with the team.</p></div></div>';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{fbox.querySelector('.fg').style.strokeDashoffset=C*(1-score/8)}));
+    const n=document.getElementById('scN');n.dataset.count=score;countUp(n);
+    fbox.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>goRef(b.dataset.go));
+    document.getElementById('retake').onclick=()=>{FQ.forEach(id=>delete first[id]);fi=0;renderFinal()};
+    document.getElementById('toSources').onclick=()=>next();
+    if(score===8)setTimeout(confetti,500);
+  }
+  renderFinal();
 
   const h=parseInt(location.hash.slice(1),10);
   go(isNaN(h)?0:h-1,0);
