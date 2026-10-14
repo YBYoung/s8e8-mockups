@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>From Search to Schedule · S8E8 Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   S8E8 training: how to think through an SEO strategy and build a
+   content calendar, and what OpenedQueries automates. A step-through
+   motion deck: each scene reveals in builds (Right arrow / Space).
+   ================================================================ */
+:root{
+  --rail:#0A0A0B; --rail-dim:#7C8291;
+  --page:#F6F7F9; --card:#FFFFFF; --line:#E6E8EE; --line-soft:#EEF0F4;
+  --ink:#0E1116; --sub:#4A5163; --muted:#8A91A2; --chip:#F2F4F8;
+  --blue:#29ABE2; --blue-bg:#E6F5FC; --blue-ink:#0B7DB0;
+  --mag:#FF2D8F; --mag-bg:#FFE9F3; --mag-ink:#C8136A;
+  --green:#16A34A; --green-bg:#E7F6EF;
+  --red:#E4483F; --red-bg:#FBE7E5;
+  --yellow:#CA9A04; --yellow-bg:#FCF5D7;
+  --rainbow:linear-gradient(90deg,#29ABE2,#22C55E,#EAB308,#FF2D8F);
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--page);color:var(--ink);font-family:var(--body)}
+button{font-family:inherit}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-columns:236px 1fr;height:100vh;height:100dvh}
+.rail{background:var(--rail);color:#F4F5F7;display:flex;flex-direction:column;padding:24px 16px 18px;overflow-y:auto}
+.wordmark{font:800 12.5px/1.25 var(--disp);letter-spacing:.2em;color:#fff;padding:0 8px}
+.rule{height:2px;background:var(--rainbow);margin:12px 8px 22px;transform-origin:left;animation:growX 1.4s var(--ease) both}
+.rail-tag{font:500 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--rail-dim);padding:0 8px 14px}
+.chap{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;background:none;border:0;cursor:pointer;color:var(--rail-dim);
+  font:500 10.5px/1.4 var(--mono);letter-spacing:.11em;text-transform:uppercase;padding:9px 8px;border-radius:6px;transition:color .2s,background .2s}
+.chap b{font-weight:500;opacity:.6;min-width:18px}
+.chap:hover{color:#fff;background:#16171A}
+.chap.on{color:var(--blue);background:#121416}
+.chap-bar{height:2px;background:#1E2024;margin:4px 8px 0 36px;border-radius:2px;overflow:hidden}
+.chap-bar i{display:block;height:100%;width:0;background:var(--blue);transition:width .5s var(--ease)}
+.rail-foot{margin-top:auto;font:500 9.5px/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#4E5360;padding:16px 8px 0}
+.rail-foot kbd{font:inherit;color:#9AA0AD;background:#16171A;border:1px solid #26282E;border-radius:4px;padding:1px 5px}
+
+.main{display:flex;flex-direction:column;min-width:0;height:100vh;height:100dvh}
+.stage{flex:1;position:relative;overflow:hidden}
+.scene{display:none;position:absolute;inset:0;overflow-y:auto;padding:44px 60px 36px}
+.scene.on{display:block;animation:sceneIn .7s var(--ease)}
+.inner{max-width:1120px;margin:0 auto}
+
+.controls{display:flex;align-items:center;gap:14px;padding:12px 24px;background:var(--card);border-top:1px solid var(--line)}
+.prog{flex:1;height:4px;background:var(--chip);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--rainbow);transition:width .5s var(--ease)}
+.count{font:500 11px var(--mono);letter-spacing:.08em;color:var(--muted);min-width:64px;text-align:right}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;transition:transform .1s,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--mag);border-color:var(--mag);color:#fff}
+.btn.primary:hover{background:#E81F7E}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* ---------- builds + motion primitives ---------- */
+[data-b]{opacity:0;transform:translateY(14px);transition:opacity .55s var(--ease),transform .65s var(--ease)}
+[data-b].shown{opacity:1;transform:none}
+.stg>*{opacity:0}
+.shown .stg>*,.shown.stg>*{animation:rise .6s var(--ease) forwards}
+.stg>*:nth-child(2){animation-delay:.08s!important}.stg>*:nth-child(3){animation-delay:.16s!important}
+.stg>*:nth-child(4){animation-delay:.24s!important}.stg>*:nth-child(5){animation-delay:.32s!important}
+.stg>*:nth-child(6){animation-delay:.40s!important}.stg>*:nth-child(7){animation-delay:.48s!important}
+.stg>*:nth-child(8){animation-delay:.56s!important}.stg>*:nth-child(9){animation-delay:.64s!important}
+.stg>*:nth-child(10){animation-delay:.72s!important}.stg>*:nth-child(11){animation-delay:.80s!important}
+.stg>.growy,.stg>.grow{opacity:1}
+.grow{transform-origin:left;transform:scaleX(0)}
+.shown .grow{animation:growX 1.1s var(--ease) forwards;animation-delay:var(--d,0s)}
+.growy{transform-origin:bottom;transform:scaleY(0)}
+.shown .growy{animation:growY 1s var(--ease) forwards;animation-delay:var(--d,0s)}
+.draw{stroke-dasharray:1;stroke-dashoffset:1}
+.shown .draw{animation:draw 1.4s var(--ease) forwards;animation-delay:var(--d,0s)}
+.pop{opacity:0;transform:scale(.6)}
+.shown .pop{animation:pop .5s var(--ease) forwards;animation-delay:var(--d,0s)}
+@keyframes sceneIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes growY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}70%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes flow{from{left:-2%}to{left:100%}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(41,171,226,.35)}50%{box-shadow:0 0 0 8px rgba(41,171,226,0)}}
+@keyframes strike{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}
+}
+
+/* ---------- type ---------- */
+.eyebrow{font:500 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--blue-ink);margin-bottom:12px}
+.ttl{display:flex;align-items:center;gap:14px;margin:0}
+.ttl svg{width:30px;height:30px;flex:none;stroke:var(--blue);fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.ttl h2{font:800 clamp(24px,3vw,34px)/1.05 var(--disp);text-transform:uppercase;letter-spacing:.01em;margin:0}
+.subt{color:var(--sub);font-size:14.5px;margin:10px 0 26px;max-width:760px;line-height:1.55}
+p{line-height:1.6}
+.small{font-size:12.5px;color:var(--muted)}
+.mono{font-family:var(--mono)}
+.tag{display:inline-block;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--chip);color:var(--sub)}
+.tag.blue{background:var(--blue-bg);color:var(--blue-ink)}.tag.mag{background:var(--mag-bg);color:var(--mag-ink)}
+.tag.green{background:var(--green-bg);color:var(--green)}.tag.red{background:var(--red-bg);color:var(--red)}
+.tag.yellow{background:var(--yellow-bg);color:#8A6A00}
+.ex{font:600 9px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px dashed var(--line);padding:3px 7px;border-radius:4px;display:inline-block}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 22px;box-shadow:0 1px 2px rgba(17,20,28,.04)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.split{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;align-items:start}
+.think .lbl,.oq .lbl{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.think .lbl{color:var(--mag-ink)}
+.think .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mag)}
+.think h3{font-size:19px;line-height:1.35;margin:0 0 10px}
+.think ul,.oq ul{margin:0;padding-left:18px}
+.think li,.oq li{margin:7px 0;line-height:1.5;font-size:14px}
+.oq{background:#111317;color:#E8EAEE;border-color:#111317}
+.oq .lbl{color:var(--blue)}
+.oq .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--blue);animation:pulse 2s infinite}
+.oq .dim{color:#9BA1AE}
+.oq .q{color:#fff;font-style:italic}
+.quote{font-size:17px;line-height:1.5;margin:0}
+.quote::before{content:"\201C"}.quote::after{content:"\201D"}
+.who{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.callout{background:var(--blue-bg);border-radius:8px;padding:16px 20px;font-size:15px;line-height:1.5;color:#0D3C52}
+.callout.mag{background:var(--mag-bg);color:#5C0B33}
+.callout b{font-weight:700}
+
+/* ---------- title scene ---------- */
+.hero{max-width:900px;margin:6vh auto 0}
+.hero h1{font:800 clamp(44px,7.4vw,96px)/.92 var(--disp);text-transform:uppercase;letter-spacing:-.01em;margin:0}
+.hero h1 span{background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:17px;color:var(--sub);max-width:640px;margin:22px 0 30px;line-height:1.6}
+.search{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 20px;max-width:620px;font-size:18px;box-shadow:0 6px 24px rgba(17,20,28,.06)}
+.search svg{width:20px;height:20px;stroke:var(--muted);fill:none;stroke-width:2;flex:none}
+.caret{display:inline-block;width:2px;height:22px;background:var(--blue);animation:blink 1s steps(1) infinite;vertical-align:middle;margin-left:2px}
+.hero-note{margin-top:18px;color:var(--sub);font-size:14px}
+.hero-meta{margin-top:36px;font:500 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- chapter divider ---------- */
+.divider{height:100%;display:flex;flex-direction:column;justify-content:center;max-width:900px;margin:0 auto}
+.divider .big{font:800 clamp(90px,15vw,180px)/.85 var(--disp);color:transparent;-webkit-text-stroke:1.5px var(--ink);opacity:.9}
+.divider h2{font:800 clamp(30px,4.6vw,56px)/1 var(--disp);text-transform:uppercase;margin:18px 0 12px}
+.divider .bar{height:3px;width:240px;background:var(--rainbow)}
+.divider p{color:var(--sub);font-size:16px;max-width:620px}
+
+/* ---------- map ---------- */
+.flowmap{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:8px}
+.flowmap .track{position:absolute;left:4%;right:4%;top:28px;height:2px;background:var(--line);overflow:hidden}
+.flowmap .track i{position:absolute;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--blue);animation:flow 4.5s linear infinite}
+.flowmap .track i:nth-child(2){animation-delay:1.5s;background:var(--mag)}.flowmap .track i:nth-child(3){animation-delay:3s;background:var(--green)}
+.node{position:relative;text-align:center}
+.node .ic{width:56px;height:56px;margin:0 auto 12px;border-radius:8px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;position:relative;z-index:1}
+.node .ic svg{width:26px;height:26px;stroke:var(--blue);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.node b{display:block;font-size:13.5px}
+.node span{display:block;font-size:12px;color:var(--sub);margin-top:4px;line-height:1.4}
+.node .who2{margin-top:10px;display:flex;flex-direction:column;gap:4px;align-items:center}
+
+/* ---------- lane compare ---------- */
+.kwrow{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;font-size:13px;margin:9px 0}
+.kwbar{height:10px;background:var(--muted);border-radius:3px;opacity:.55}
+.chain{display:flex;flex-direction:column;gap:6px}
+.chain .step{display:flex;gap:12px;align-items:flex-start;background:var(--chip);border-radius:6px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.chain .step em{font:600 9.5px var(--mono);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-ink);min-width:58px;padding-top:2px}
+.chain .arrow{height:14px;width:2px;background:var(--blue);margin-left:30px;transform-origin:top}
+.chain .step.goal{background:var(--green-bg)}
+.chain .step.goal em{color:var(--green)}
+
+/* ---------- questions ---------- */
+.qlist{display:flex;flex-direction:column;gap:14px}
+.qitem{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start}
+.qitem .n{font:800 34px/1 var(--disp);color:var(--blue)}
+.qitem h3{margin:2px 0 4px;font-size:21px}
+.qitem p{margin:0;color:var(--sub);font-size:14px}
+
+/* ---------- eeat ---------- */
+.rings{position:relative;width:min(340px,80vw);aspect-ratio:1;margin:0 auto}
+.ring{position:absolute;border-radius:50%;display:flex;justify-content:center;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding-top:12px}
+.ring.r1{inset:0;background:#F0F8FD;color:var(--blue-ink)}
+.ring.r2{inset:13%;background:#DFF1FB;color:var(--blue-ink)}
+.ring.r3{inset:26%;background:#C6E8F8;color:#085C82}
+.ring.r4{inset:39%;background:var(--blue);color:#fff;align-items:center;padding:0;font:800 15px var(--disp);letter-spacing:.06em}
+
+/* ---------- volume chart ---------- */
+.vchart{display:flex;align-items:flex-end;gap:28px;height:220px;padding:0 6px;border-bottom:1px solid var(--line)}
+.vcol{display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+.vbar{width:64px;border-radius:4px 4px 0 0}
+.vstack{display:flex;flex-direction:column-reverse;gap:2px;width:64px}
+.vstack i{display:block;height:7px;background:var(--mag);border-radius:2px;opacity:0}
+.shown .vstack i{animation:rise .35s var(--ease) forwards}
+.vlabel{font-size:12px;color:var(--sub);text-align:center;max-width:140px;line-height:1.35}
+.longtail{display:flex;align-items:flex-end;gap:3px;height:100%}
+.longtail i{display:block;width:7px;background:var(--mag);border-radius:2px 2px 0 0;transform-origin:bottom;transform:scaleY(0)}
+.shown .longtail i{animation:growY .7s var(--ease) forwards}
+
+/* ---------- wizard + meter ---------- */
+.wiz{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.wiz div{display:grid;grid-template-columns:20px 1fr auto;gap:10px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid #1F2229}
+.wiz svg{width:16px;height:16px;stroke:var(--blue);fill:none;stroke-width:2}
+.wiz .req{font:600 9px var(--mono);letter-spacing:.1em;color:#9BA1AE;text-transform:uppercase}
+.meter{display:flex;height:16px;border-radius:4px;overflow:hidden;background:#1E2128;margin:16px 0 8px}
+.meter i{display:block;height:100%;transform-origin:left;transform:scaleX(0)}
+.shown .meter i{animation:growX .55s var(--ease) forwards}
+.meterkey{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:#9BA1AE}
+.meterkey span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;background:var(--c)}
+
+/* ---------- swap cards (bad -> good) ---------- */
+.swap{display:flex;flex-direction:column;gap:10px}
+.swap .bad,.swap .good{border-radius:6px;padding:12px 14px;font-size:14px;position:relative}
+.swap .bad{background:#1B1E24;color:#9BA1AE}
+.swap .bad s{text-decoration:none;position:relative}
+.swap .bad s::after{content:"";position:absolute;left:0;right:0;top:52%;height:2px;background:var(--red);transform-origin:left;transform:scaleX(0)}
+.shown .swap .bad s::after{animation:strike .6s var(--ease) .5s forwards}
+.swap .good{background:#0E2A38;color:#fff;opacity:0}
+.shown .swap .good{animation:rise .6s var(--ease) 1.1s forwards}
+.swap .why{font:600 9px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#9BA1AE;display:block;margin-bottom:4px}
+
+/* ---------- run strategy track ---------- */
+.phases{display:flex;flex-direction:column;gap:7px}
+.ph{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;font-size:13.5px;padding:9px 12px;border-radius:6px;background:#1A1D23;position:relative;overflow:hidden}
+.ph .fill{position:absolute;inset:0;background:linear-gradient(90deg,rgba(41,171,226,.22),rgba(41,171,226,.08));transform-origin:left;transform:scaleX(0)}
+.shown .ph .fill{animation:growX .8s var(--ease) forwards}
+.ph *{position:relative}
+.ph .k{font:600 10px var(--mono);color:var(--blue)}
+.ph .t{font:500 9.5px var(--mono);color:#9BA1AE;letter-spacing:.08em;text-transform:uppercase}
+.ph.par{margin-left:26px;background:#1E1A22}
+.ph.par .fill{background:linear-gradient(90deg,rgba(255,45,143,.22),rgba(255,45,143,.06))}
+.ph.par .k{color:var(--mag)}
+
+/* ---------- persona + funnel ---------- */
+.persona{display:flex;gap:14px;align-items:center;background:#1A1D23;border-radius:8px;padding:14px}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--rainbow);flex:none;display:grid;place-items:center}
+.avatar svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{font-size:11px;background:#262A33;color:#C9CDD6;padding:3px 8px;border-radius:4px}
+.funnel{display:flex;flex-direction:column;align-items:center;gap:5px;margin:14px 0}
+.funnel div{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-radius:4px;font-size:12.5px;color:#fff;transform-origin:center;transform:scaleX(0)}
+.shown .funnel div{animation:growX .6s var(--ease) forwards}
+.funnel div:nth-child(1){width:100%;background:#1A6F96}.funnel div:nth-child(2){width:80%;background:#1F8DBE;animation-delay:.15s!important}
+.funnel div:nth-child(3){width:60%;background:var(--blue);animation-delay:.3s!important}
+
+/* ---------- sieve ---------- */
+.sieve{position:relative;height:340px;border-radius:8px;background:#15171C;overflow:hidden}
+.sieve .mesh{position:absolute;left:8%;right:8%;top:47%;height:3px;background:repeating-linear-gradient(90deg,#9BA1AE 0 10px,transparent 10px 18px)}
+.sieve .mlabel{position:absolute;right:8%;top:calc(47% + 8px);font:600 9.5px var(--mono);letter-spacing:.12em;color:#9BA1AE;text-transform:uppercase}
+.qchip{position:absolute;top:-40px;font-size:11.5px;background:#262A33;color:#DDE0E6;padding:6px 9px;border-radius:5px;max-width:46%;line-height:1.35;opacity:0}
+.qchip b{font:700 10px var(--mono);margin-right:6px}
+.qchip.pass b{color:#4ADE80}.qchip.fail b{color:#F87171}
+.shown .qchip.pass{animation:fallPass 2.4s var(--ease) forwards}
+.shown .qchip.fail{animation:fallFail 2.4s var(--ease) forwards}
+@keyframes fallPass{0%{opacity:0;transform:translateY(0)}15%{opacity:1}55%{transform:translateY(170px)}100%{opacity:1;transform:translateY(var(--end,250px))}}
+@keyframes fallFail{0%{opacity:0;transform:translateY(0)}15%{opacity:1}55%{opacity:1;transform:translateY(165px)}70%{transform:translateY(150px)}100%{opacity:.18;transform:translateY(150px)}}
+
+/* ---------- inventory table ---------- */
+.inv{width:100%;border-collapse:collapse;font-size:13px}
+.inv th{font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#9BA1AE;text-align:left;padding:0 8px 8px}
+.inv td{padding:9px 8px;border-top:1px solid #23262E;vertical-align:middle}
+.inv .wc{display:flex;align-items:center;gap:8px}
+.inv .wc i{display:block;height:6px;border-radius:3px;background:var(--blue)}
+.inv .v{font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:4px}
+.v.ok{background:#12301F;color:#4ADE80}.v.mid{background:#1A2A33;color:#7DD3FC}.v.thin{background:#3A1A1A;color:#FCA5A5}.v.old{background:#332B10;color:#FDE047}
+.inv tr{opacity:0}
+.shown .inv tr{animation:rise .5s var(--ease) forwards}
+
+/* ---------- matrix ---------- */
+.matrix{position:relative;aspect-ratio:1.25;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.matrix .q{position:absolute;width:50%;height:50%;padding:12px;font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.matrix .q.tl{left:0;top:0;background:var(--mag-bg);color:var(--mag-ink)}
+.matrix .q.tr{right:0;top:0}.matrix .q.bl{left:0;bottom:0}.matrix .q.br{right:0;bottom:0}
+.matrix .q.tr,.matrix .q.br{text-align:right}
+.matrix .q.bl,.matrix .q.br{display:flex;align-items:flex-end}
+.matrix .q.br{justify-content:flex-end}
+.matrix .ax{position:absolute;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.dot{position:absolute;transform:translate(-50%,-50%) scale(0);display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:12px;font-weight:600}
+.dot::before{content:"";width:13px;height:13px;border-radius:50%;background:var(--c,var(--blue));box-shadow:0 0 0 4px rgba(255,255,255,.8)}
+.shown .dot{animation:dotIn .6s var(--ease) forwards;animation-delay:var(--d,0s)}
+@keyframes dotIn{0%{transform:translate(-50%,-50%) scale(0)}70%{transform:translate(-50%,-50%) scale(1.15)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* ---------- checklist ---------- */
+.checks{display:flex;flex-direction:column;gap:8px}
+.chk{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px 16px;font-size:14.5px;line-height:1.45;cursor:pointer;transition:background .2s,border-color .2s;color:var(--ink)}
+.chk:hover{border-color:#C9CED8}
+.chk .box{width:20px;height:20px;border-radius:4px;border:1.5px solid #B8BEC9;display:grid;place-items:center;transition:background .2s,border-color .2s}
+.chk .box svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:3;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ease)}
+.chk.on{background:var(--green-bg);border-color:#BFE6D1}
+.chk.on .box{background:var(--green);border-color:var(--green)}
+.chk.on .box svg{stroke-dashoffset:0}
+.gen{display:flex;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap}
+
+/* ---------- new-only rule ---------- */
+.lanes{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:20px;min-height:260px}
+.bin{border:1.5px dashed var(--line);border-radius:8px;padding:16px;background:var(--card)}
+.bin h4{margin:0 0 12px;font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.piece{background:var(--chip);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.mover{position:absolute;left:50%;top:-6px;width:min(300px,44%);background:#111317;color:#fff;border-radius:6px;padding:12px 14px;font-size:13px;opacity:0;z-index:2}
+.mover small{display:block;color:#9BA1AE;font-size:11px;margin-top:3px}
+.shown .mover{animation:reroute 3.4s var(--ease) forwards}
+@keyframes reroute{
+  0%{opacity:0;transform:translate(-50%,0)}
+  12%{opacity:1;transform:translate(-50%,0)}
+  38%{transform:translate(-112%,70px) rotate(-2deg)}
+  46%{transform:translate(-104%,62px) rotate(2deg)}
+  52%{transform:translate(-110%,66px) rotate(-1deg)}
+  100%{opacity:1;transform:translate(6%,150px) rotate(0)}
+}
+.nope{position:absolute;left:22%;top:96px;font:800 12px var(--mono);letter-spacing:.14em;color:var(--red);opacity:0;z-index:3}
+.shown .nope{animation:nope 3.4s forwards}
+@keyframes nope{0%,36%{opacity:0;transform:scale(.6)}44%{opacity:1;transform:scale(1.1)}70%{opacity:1;transform:scale(1)}100%{opacity:0}}
+
+/* ---------- mix + pacing ---------- */
+.types .card h4{margin:6px 0 6px;font-size:16px}
+.types .fmt{font:500 11.5px var(--mono);background:var(--chip);border-radius:4px;padding:8px 10px;margin-top:10px;color:var(--sub);line-height:1.45}
+.types .defn{font:800 34px/1 var(--disp)}
+.seg{display:inline-flex;background:var(--chip);border-radius:8px;padding:4px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:6px;font-weight:600;font-size:13px;color:var(--sub);cursor:pointer}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;margin-top:16px}
+.mo{background:var(--card);border:1px solid var(--line);border-radius:6px;min-height:92px;padding:6px;display:flex;flex-direction:column;gap:4px}
+.mo span{font:600 9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mo i{display:block;height:20px;border-radius:3px;animation:pop .45s var(--ease) both}
+.k-s{background:var(--blue)}.k-b{background:var(--green)}.k-p{background:var(--mag)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--sub);margin-top:10px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+
+/* ---------- guidance vs named ---------- */
+.inputbox{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.inputbox label{display:block;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+.inputbox .val{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:14px;background:#FBFBFC}
+.fate{margin-top:14px;display:flex;align-items:center;gap:10px;font-size:13.5px}
+.fate svg{width:22px;height:22px;fill:none;stroke-width:2}
+.lock{stroke:var(--green)}.risk{stroke:var(--red)}
+.shown .fade-out{animation:fadeOut 1s var(--ease) 1.4s forwards}
+@keyframes fadeOut{to{opacity:.25;filter:blur(1px)}}
+
+/* ---------- pipeline counters ---------- */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pst{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px;position:relative}
+.pst .n{font:800 38px/1 var(--disp);display:inline-block}
+.pst .u{font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-left:8px}
+.pst h4{margin:8px 0 4px;font-size:14px}
+.pst p{margin:0;font-size:12.5px;color:var(--sub);line-height:1.45}
+.pst .model{position:absolute;right:12px;top:12px;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pst.warn{background:var(--yellow-bg);border-color:#F1E3A8}
+.pst.done{background:var(--green-bg);border-color:#C8E9D6}
+
+/* ---------- annotated calendar item ---------- */
+.anno{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}
+.ci{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px}
+.ci .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ci h4{font-size:18px;margin:12px 0;line-height:1.35}
+.ci .angle{font-size:14px;line-height:1.55;color:var(--sub);margin:0 0 14px}
+.ci .topics{display:flex;flex-direction:column;gap:6px}
+.ci .topics span{font-size:12.5px;background:var(--chip);border-radius:4px;padding:6px 9px}
+.mark{position:relative;transition:background .4s,box-shadow .4s;border-radius:4px}
+.mark.hl{background:var(--blue-bg);box-shadow:0 0 0 4px var(--blue-bg)}
+.notes{display:flex;flex-direction:column;gap:10px}
+.note{display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:14px;line-height:1.5}
+.note .n{width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font:700 11px var(--mono);display:grid;place-items:center}
+.banner{display:flex;gap:12px;align-items:center;background:var(--yellow-bg);border-radius:8px;padding:12px 16px;font-size:14px;margin-bottom:16px}
+.banner svg{width:20px;height:20px;stroke:#8A6A00;fill:none;stroke-width:2;flex:none}
+
+/* ---------- voice rows ---------- */
+.vrow{display:grid;grid-template-columns:1fr 34px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.vrow .bad{background:var(--red-bg);border-radius:6px;padding:12px 14px;font-size:14.5px;color:#7A1F1A;position:relative}
+.vrow .bad::after{content:"";position:absolute;left:12px;right:12px;top:50%;height:2px;background:var(--red);transform-origin:left;transform:scaleX(0)}
+.shown .vrow .bad::after,.vrow.shown .bad::after{animation:strike .5s var(--ease) .5s forwards}
+.vrow .arr{color:var(--muted);text-align:center;font-size:20px}
+.vrow .good{background:var(--green-bg);border-radius:6px;padding:12px 14px;font-size:14.5px;color:#0E4A2A;opacity:0}
+.vrow.shown .good{animation:rise .5s var(--ease) .9s forwards}
+.vrow .rule2{grid-column:1/-1;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:-4px}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;padding:26px 0 0}
+.tl .line{position:absolute;left:0;right:0;top:44px;height:3px;background:var(--line);border-radius:2px}
+.tl .line i{display:block;height:100%;background:var(--rainbow);transform-origin:left;transform:scaleX(0);border-radius:2px}
+.tl.shown .line i,.shown .tl .line i{animation:growX 2.6s var(--ease) forwards}
+.tsteps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative}
+.ts{padding-top:34px;position:relative}
+.ts::before{content:"";position:absolute;top:10px;left:0;width:16px;height:16px;border-radius:50%;background:var(--card);border:3px solid var(--blue)}
+.ts.end::before{border-color:var(--green);background:var(--green)}
+.ts .d{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--blue-ink)}
+.ts h4{margin:4px 0 6px;font-size:14.5px}
+.ts p{margin:0;font-size:12.5px;color:var(--sub);line-height:1.45}
+
+/* ---------- handoff ---------- */
+.handoff{display:grid;grid-template-columns:1fr 60px 1fr;gap:14px;align-items:start}
+.col h4{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin:0 0 10px}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.prod{background:#111317;color:#fff;border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:8px;opacity:0;transform:translateX(-40px)}
+.prod small{display:flex;gap:8px;margin-top:6px;font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#9BA1AE}
+.prod small span{background:#262A33;padding:2px 6px;border-radius:3px}
+.prod small .asana{background:#3A1A2A;color:#FFB3D3}
+.shown .prod{animation:slideIn .7s var(--ease) forwards;animation-delay:var(--d,0s)}
+@keyframes slideIn{to{opacity:1;transform:none}}
+.flowarrow{height:100%;display:flex;align-items:center;justify-content:center;padding-top:40px}
+.flowarrow svg{width:46px;height:46px;stroke:var(--mag);fill:none;stroke-width:1.6}
+
+/* ---------- gotchas / recap / quiz ---------- */
+.got{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+.got h4{margin:8px 0 6px;font-size:14.5px;line-height:1.35}
+.got p{margin:0;font-size:13px;color:var(--sub);line-height:1.5}
+.recap li{margin:7px 0;font-size:14px;line-height:1.45}
+.quiz{display:flex;flex-direction:column;gap:10px}
+.qz{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.qz button{width:100%;text-align:left;border:0;background:none;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:12px;color:var(--ink)}
+.qz button span{font:600 10px var(--mono);letter-spacing:.12em;color:var(--mag-ink);text-transform:uppercase;white-space:nowrap}
+.qz .a{max-height:0;overflow:hidden;transition:max-height .5s var(--ease)}
+.qz .a p{margin:0;padding:0 18px 16px;font-size:14px;color:var(--sub)}
+.qz.open .a{max-height:240px}
+.srcs a{color:var(--blue-ink)}
+.srcs li{margin:8px 0;font-size:14px;line-height:1.5}
+
+/* ---------- responsive ---------- */
+@media (max-width:1000px){
+  .flowmap{grid-template-columns:repeat(3,1fr);row-gap:26px}.flowmap .track{display:none}
+  .pipe{grid-template-columns:repeat(2,1fr)}
+  .tsteps{grid-template-columns:1fr 1fr}.tl .line{display:none}
+}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}.rail{display:none}
+  .scene{padding:26px 18px 28px}
+  .grid2,.grid3,.split,.anno,.lanes{grid-template-columns:1fr}
+  .months{grid-template-columns:repeat(6,1fr)}
+  .handoff{grid-template-columns:1fr}.flowarrow{display:none}
+  .vrow{grid-template-columns:1fr}.vrow .arr{display:none}
+  .mover{width:80%}
+  .controls{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17 14.6c2.3.2 4 1.8 4.5 4.4"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-flow" viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M7.5 6H14a3 3 0 0 1 3 3v6.5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3"/><path d="M20 4v14h-7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M3 12h17M14 6l6 6-6 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.5 7.5L20 18M8.5 16.5L20 6"/></symbol>
+  <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.2-7 8-7s7 2.5 8 7"/></symbol>
+</svg>
+
+<div class="app">
+  <nav class="rail" aria-label="Chapters">
+    <div class="wordmark">STUDIO<br>EIGHTY EIGHT</div>
+    <div class="rule"></div>
+    <div class="rail-tag">SEO Training · Module 2</div>
+    <div id="chapters"></div>
+    <div class="rail-foot"><kbd>&rarr;</kbd> <kbd>Space</kbd> next<br><kbd>&larr;</kbd> back</div>
+  </nav>
+
+  <main class="main">
+    <div class="stage" id="stage">
+
+<!-- ================= 00 INTRO ================= -->
+<section class="scene" data-chap="Intro">
+  <div class="hero">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">S8E8 Training · SEO strategy and the content calendar</div>
+      <h1>From search<br>to <span>schedule</span></h1>
+      <p class="lede">How we think through an SEO strategy for a dental practice and turn it into a content calendar the client will approve, and what OpenedQueries does for you along the way.</p>
+      <div class="search"><svg><use href="#i-search"/></svg><span id="typed"></span><i class="caret"></i></div>
+      <div class="hero-note">Every one of these is a real person typing a real worry. The strategy starts with them, not with a keyword list.</div>
+      <div class="hero-meta">About 35 minutes · Right arrow or Space to advance</div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Intro">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">The map</div>
+      <div class="ttl"><svg><use href="#i-map"/></svg><h2>Six stations, one line</h2></div>
+      <p class="subt">Every strategy in OQ moves through the same stations. The Overview page always shows the next action: Start Audience Research, then Generate Content Calendar, then Review Calendar, then Start Production.</p>
+    </div>
+    <div data-b="0" class="flowmap stg">
+      <div class="track"><i></i><i></i><i></i></div>
+      <div class="node"><div class="ic"><svg><use href="#i-plug"/></svg></div><b>Setup + intake</b><span>Connect the data, send the client form</span></div>
+      <div class="node"><div class="ic"><svg><use href="#i-users"/></svg></div><b>Research</b><span>Audience, forum voices, site crawl, performance</span></div>
+      <div class="node"><div class="ic"><svg><use href="#i-layers"/></svg></div><b>Synthesis</b><span>The Topic Opportunity Assessment</span></div>
+      <div class="node"><div class="ic"><svg><use href="#i-cal"/></svg></div><b>Calendar</b><span>New pages, the mix, the months</span></div>
+      <div class="node"><div class="ic"><svg><use href="#i-send"/></svg></div><b>Client approval</b><span>Two review rounds</span></div>
+      <div class="node"><div class="ic"><svg><use href="#i-flow"/></svg></div><b>Production</b><span>Pieces plus Asana tasks</span></div>
+    </div>
+    <div class="grid2" style="margin-top:34px">
+      <div class="card" data-b="1"><span class="tag blue">SEO Specialist</span><p style="margin:10px 0 0;font-size:14.5px">Configures the research inputs, reviews the AI-generated calendar, refines the drafts, and owns search quality. <b>Sends the calendar.</b></p></div>
+      <div class="card" data-b="2"><span class="tag mag">Marketing Strategist</span><p style="margin:10px 0 0;font-size:14.5px">Owns the client relationship and keeps track of where everything is in the process. Brings the client's priorities in; does not send calendars or run production.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Intro">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Two lenses we borrow</div>
+      <div class="ttl"><svg><use href="#i-eye"/></svg><h2>Think like these two</h2></div>
+      <p class="subt">OQ does the heavy lifting on data. These two ways of thinking are what you bring to it.</p>
+    </div>
+    <div class="grid2">
+      <div class="card" data-b="1">
+        <span class="tag blue">Eli Schwartz · Product-Led SEO</span>
+        <h3 style="margin:14px 0 8px;font-size:20px">Strategy before keywords</h3>
+        <p class="quote">Product-led SEO is thinking about your SEO effort as if it's an entire product.</p>
+        <p class="quote" style="margin-top:12px;font-weight:700">Who am I trying to reach? What am I creating?</p>
+        <div class="who">Built In interview</div>
+        <p class="small" style="margin-top:10px">For us: start with the patient and the business outcome, then let keywords describe how that patient talks.</p>
+      </div>
+      <div class="card" data-b="2">
+        <span class="tag mag">Lily Ray · E-E-A-T</span>
+        <h3 style="margin:14px 0 8px;font-size:20px">Trust is the whole game in health</h3>
+        <p class="quote">E-E-A-T is more important for websites that are classified as YMYL.</p>
+        <p style="margin:12px 0 0;font-size:15px">She points to Google's own line: of Experience, Expertise, Authoritativeness and Trust, <b>trust is the most important.</b></p>
+        <div class="who">lilyray.nyc, E-E-A-T explainer</div>
+        <p class="small" style="margin-top:10px">For us: dental content is "Your Money or Your Life" content. Who says it matters as much as what is said.</p>
+      </div>
+    </div>
+    <div class="callout mag" data-b="3" style="margin-top:20px">And our own line, from <b>The Search Experience We Deserve</b>: "At its heart, SEO is about humans in search of something."</div>
+  </div>
+</section>
+
+<!-- ================= 01 THINK FIRST ================= -->
+<section class="scene" data-chap="Think first">
+  <div class="divider" data-b="0">
+    <div class="big">01</div>
+    <h2>Think first</h2>
+    <div class="bar grow"></div>
+    <p>Before you open a single tab in OQ: what a strategy actually is, and why we start with people instead of a keyword list.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="Think first">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Eli Schwartz, applied</div>
+      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>Keyword-led vs audience-led</h2></div>
+      <p class="subt">Two ways to plan the same twelve pages. One fills a spreadsheet. The other fills a schedule book.</p>
+    </div>
+    <div class="grid2">
+      <div class="card" data-b="1">
+        <span class="tag">Keyword-led</span>
+        <p class="small" style="margin:10px 0 6px">Sort a tool's list by volume, write a page per row.</p>
+        <div class="kwrow"><span>dental implants</span><i class="kwbar grow" style="width:96%"></i></div>
+        <div class="kwrow"><span>teeth whitening</span><i class="kwbar grow" style="width:78%;--d:.12s"></i></div>
+        <div class="kwrow"><span>dentist near me</span><i class="kwbar grow" style="width:70%;--d:.24s"></i></div>
+        <div class="kwrow"><span>invisalign cost</span><i class="kwbar grow" style="width:52%;--d:.36s"></i></div>
+        <svg viewBox="0 0 300 90" style="width:100%;margin-top:12px">
+          <path class="draw" pathLength="1" d="M10 78 C 80 70, 140 40, 290 12" stroke="#29ABE2" stroke-width="2.5" fill="none" style="--d:.6s"/>
+          <path class="draw" pathLength="1" d="M10 72 L 290 70" stroke="#E4483F" stroke-width="2.5" fill="none" style="--d:.9s"/>
+          <text x="210" y="28" font-size="10" fill="#0B7DB0" font-family="Menlo, monospace">TRAFFIC</text>
+          <text x="210" y="62" font-size="10" fill="#E4483F" font-family="Menlo, monospace">BOOKINGS</text>
+        </svg>
+        <p class="quote" style="font-size:14px;margin-top:6px">It actually generated a ton of traffic, but it didn't drive any conversions.</p>
+        <div class="who">Eli Schwartz, on a site built keyword-first</div>
+      </div>
+      <div class="card" data-b="2">
+        <span class="tag blue">Audience-led</span>
+        <p class="small" style="margin:10px 0 6px">Start from a person and a decision they are trying to make.</p>
+        <div class="chain stg">
+          <div class="step"><em>Person</em><span>Adult in their 40s, cracked back molar, worried about cost</span></div>
+          <div class="arrow growy"></div>
+          <div class="step"><em>Need</em><span>"Is an implant worth it, or is a bridge fine for a back tooth?"</span></div>
+          <div class="arrow growy"></div>
+          <div class="step"><em>Page</em><span>Implant vs bridge: how we help patients choose, from the chair</span></div>
+          <div class="arrow growy"></div>
+          <div class="step goal"><em>Outcome</em><span>Books a consult, because the page answered the real question</span></div>
+        </div>
+        <span class="ex" style="margin-top:12px">Example</span>
+      </div>
+    </div>
+    <div class="callout" data-b="3" style="margin-top:20px"><b>Keywords are how people phrase a need.</b> Start with the need; use keywords to check you are speaking the patient's language.</div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Think first">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Top-down</div>
+      <div class="ttl"><svg><use href="#i-search"/></svg><h2>Four questions, in this order</h2></div>
+      <p class="subt">Answer these in plain sentences before you trust any output. If you can't, the strategy isn't ready, no matter how good the data looks.</p>
+    </div>
+    <div class="qlist">
+      <div class="qitem" data-b="1"><div class="n">1</div><div><h3>Who are we trying to reach?</h3><p>The patient, not the practice. OQ's audience step is told the data "represents the TARGET AUDIENCE (patients/customers), NOT the business itself." Hold yourself to the same rule.</p></div></div>
+      <div class="qitem" data-b="2"><div class="n">2</div><div><h3>What do they need to know before they book?</h3><p>Fear, cost, recovery, "will it hurt", "is this dentist good with someone like me". Those are pages.</p></div></div>
+      <div class="qitem" data-b="3"><div class="n">3</div><div><h3>What can this practice say that nobody else can?</h3><p>The doctor's real experience, the technology they actually use, how they handle anxious patients. This is the first E in E-E-A-T, and it is how we escape the sea of sameness.</p></div></div>
+      <div class="qitem" data-b="4"><div class="n">4</div><div><h3>What does success look like for this practice?</h3><p>More of the cases they want: calls, bookings, the services they want to grow. Traffic alone is not the goal.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Think first">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Lily Ray, applied</div>
+      <div class="ttl"><svg><use href="#i-shield"/></svg><h2>E-E-A-T, with trust at the center</h2></div>
+      <p class="subt">Dental is YMYL: bad information can hurt someone, so Google and the AI engines hold it to their strictest bar. OQ's own SEO principles open with "E-E-A-T is non-negotiable for dental content."</p>
+    </div>
+    <div class="split">
+      <div data-b="1">
+        <div class="rings">
+          <div class="ring r1 pop">Experience</div>
+          <div class="ring r2 pop" style="--d:.2s">Expertise</div>
+          <div class="ring r3 pop" style="--d:.4s">Authority</div>
+          <div class="ring r4 pop" style="--d:.65s">TRUST</div>
+        </div>
+      </div>
+      <div>
+        <div class="card" data-b="2">
+          <h3 style="margin:0 0 10px;font-size:17px">On a dental page, that looks like:</h3>
+          <ul class="stg" style="margin:0;padding-left:18px;font-size:14.5px;line-height:1.55">
+            <li>A named dentist who wrote or reviewed it, with real credentials and a bio page.</li>
+            <li>First-hand detail: what the doctor actually sees in the chair and how this practice handles it.</li>
+            <li>Only claims we can source. Nothing medical we can't back up.</li>
+            <li>Transparency. In Lily's words, make it clear "who your experts are, who your company is."</li>
+          </ul>
+        </div>
+        <div class="callout" data-b="3" style="margin-top:14px">A bio box is not a magic ranking factor on its own, a point Lily makes often. <b>The content itself has to earn the trust</b>; the signals just make it visible.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Think first">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Volume is not value</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>The user is king</h2></div>
+      <p class="subt">Tools show the big head terms well and the specific questions badly. The specific questions are where the ready-to-book patient lives.</p>
+    </div>
+    <div class="split">
+      <div class="card" data-b="1">
+        <span class="ex">Illustration, not real data</span>
+        <div class="vchart" style="margin-top:14px">
+          <div class="vcol"><div class="vbar growy" style="height:170px;background:#B8BEC9"></div><div class="vlabel">One head term everyone fights over</div></div>
+          <div class="vcol" style="flex:1"><div class="longtail" id="longtail"></div><div class="vlabel" style="max-width:none">Dozens of specific patient questions, each "low volume"</div></div>
+          <div class="vcol"><div class="vbar growy" style="height:205px;background:var(--mag);--d:1.7s"></div><div class="vlabel"><b>All of them together</b></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" data-b="2">
+          <p class="quote" style="font-size:16px">I'm not going to focus all of my effort around this one keyword because it has a ton of search volume.</p>
+          <div class="who">Eli Schwartz</div>
+        </div>
+        <div class="callout mag" data-b="3" style="margin-top:14px"><b>Where the specific questions come from:</b> the client intake form, forum research, and what the dentist explains over and over. Low or zero volume in a tool does not mean zero patients.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 THE STRATEGY ================= -->
+<section class="scene" data-chap="The strategy">
+  <div class="divider" data-b="0">
+    <div class="big">02</div>
+    <h2>Build the strategy</h2>
+    <div class="bar grow"></div>
+    <p>Each step has two halves: how you should think about it, and what OQ automates. OQ does the gathering. You do the judging.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 1 · Setup Wizard</div>
+      <div class="ttl"><svg><use href="#i-plug"/></svg><h2>Connect the evidence</h2></div>
+      <p class="subt">Nine steps on a new strategy. Some are required, some can be skipped, and every skip costs you something later.</p>
+    </div>
+    <div class="split">
+      <div class="card think" data-b="1">
+        <div class="lbl">How to think</div>
+        <h3>What do we know, and what are we guessing?</h3>
+        <ul>
+          <li>No Search Console? Priority scoring "will use estimated volume only."</li>
+          <li>No GA4? "Traffic trends will be unavailable."</li>
+          <li>No crawl? You can't tell new topics from existing pages, so you can't build a clean calendar.</li>
+          <li>Write down what's missing. You'll weigh the output differently because of it.</li>
+        </ul>
+      </div>
+      <div class="card oq" data-b="2">
+        <div class="lbl">What OQ automates</div>
+        <div class="wiz stg">
+          <div><svg><use href="#i-check"/></svg>Client profile<span class="req">Required</span></div>
+          <div><svg><use href="#i-check"/></svg>Locations from Google Business Profile<span class="req">Optional</span></div>
+          <div><svg><use href="#i-check"/></svg>Asana project + team assignment<span class="req">Optional</span></div>
+          <div><svg><use href="#i-check"/></svg>SparkToro audience data<span class="req">Required</span></div>
+          <div><svg><use href="#i-check"/></svg>Site crawl (auto or Screaming Frog)<span class="req">Required</span></div>
+          <div><svg><use href="#i-check"/></svg>Search Console + GA4<span class="req">Optional</span></div>
+        </div>
+        <div class="meter">
+          <i style="width:25%;background:#29ABE2"></i><i style="width:20%;background:#22C55E;animation-delay:.25s!important"></i><i style="width:20%;background:#7DD3FC;animation-delay:.5s!important"></i><i style="width:15%;background:#FF2D8F;animation-delay:.75s!important"></i><i style="width:10%;background:#EAB308;animation-delay:1s!important"></i><i style="width:5%;background:#A78BFA;animation-delay:1.2s!important"></i><i style="width:5%;background:#9BA1AE;animation-delay:1.35s!important"></i>
+        </div>
+        <div class="meterkey"><span style="--c:#29ABE2">SparkToro 25</span><span style="--c:#22C55E">Crawl 20</span><span style="--c:#7DD3FC">GSC 20</span><span style="--c:#FF2D8F">GA4 15</span><span style="--c:#EAB308">GBP 10</span><span style="--c:#A78BFA">Profile 5</span><span style="--c:#9BA1AE">Asana 5</span></div>
+        <p class="dim" style="font-size:12.5px;margin:10px 0 0">The confidence meter is weighted by how much each source tells the strategy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 2 · Client intake form</div>
+      <div class="ttl"><svg><use href="#i-msg"/></svg><h2>The client's own words</h2></div>
+      <p class="subt">A branded form the client fills in with no login. You can edit the questions before it goes out.</p>
+    </div>
+    <div class="split">
+      <div class="card think" data-b="1">
+        <div class="lbl">How to think</div>
+        <h3>The best content ideas are what the dentist explains over and over.</h3>
+        <ul>
+          <li>That is pure Experience: no competitor can copy it.</li>
+          <li>Strategy Notes are the client's priorities. Matching topics get a scoring boost.</li>
+          <li>If the data doesn't back a priority, OQ must "flag this honestly but still include the topic." Then it's your conversation to have.</li>
+        </ul>
+      </div>
+      <div class="card oq" data-b="2">
+        <div class="lbl">What OQ automates</div>
+        <p style="margin:0 0 12px;font-size:14px">Writes two or three questions per service, with three rules:</p>
+        <ul style="margin-bottom:14px">
+          <li class="q">"Frame questions as scenarios patients actually face"</li>
+          <li class="q">"Ask about what the dentist finds themselves explaining repeatedly"</li>
+          <li class="q">"Never ask yes/no questions"</li>
+        </ul>
+        <div class="swap">
+          <div class="bad"><span class="why">Yes/no, tells us nothing</span><s>Do you offer sedation?</s></div>
+          <div class="good"><span class="why">Scenario, gives us a page</span>What do nervous patients usually ask you before their first sedation visit?</div>
+        </div>
+        <span class="ex" style="margin-top:10px;color:#9BA1AE;border-color:#2C3038">Example</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 3 · Run Strategy</div>
+      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>One button, seven phases</h2></div>
+      <p class="subt">Run Strategy chains the research together. Forum research runs alongside, and Synthesis waits for it.</p>
+    </div>
+    <div class="split">
+      <div class="card think" data-b="2">
+        <div class="lbl">How to think</div>
+        <h3>While it runs, your job isn't to wait.</h3>
+        <ul>
+          <li>Read each output as it lands and ask: do I believe this?</li>
+          <li>The calendar is left out on purpose. In the code's words, it "requires a manual trigger after reviewing data quality." That review is you.</li>
+        </ul>
+      </div>
+      <div class="card oq" data-b="1">
+        <div class="lbl">What OQ automates</div>
+        <div class="phases">
+          <div class="ph"><i class="fill"></i><span class="k">01</span><span>Audience profile</span><span class="t">Persona + head queries</span></div>
+          <div class="ph par"><i class="fill" style="animation-delay:.2s"></i><span class="k">||</span><span>Forum research</span><span class="t">In parallel</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:.6s"></i><span class="k">02</span><span>Performance data</span><span class="t">GSC + GA4</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1s"></i><span class="k">03</span><span>Topic clustering</span><span class="t">8 to 15 clusters</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1.4s"></i><span class="k">04</span><span>Page grouping</span><span class="t">GA4 pages</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:1.8s"></i><span class="k">05</span><span>Site content analysis</span><span class="t">Page verdicts</span></div>
+          <div class="ph"><i class="fill" style="animation-delay:2.4s"></i><span class="k">06</span><span>Synthesis</span><span class="t">Waits for forums</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 4 · Audience research</div>
+      <div class="ttl"><svg><use href="#i-users"/></svg><h2>A person, and how they actually search</h2></div>
+      <p class="subt">The Research tab: an archetype persona, their drivers and fears, and fifteen head queries across the funnel.</p>
+    </div>
+    <div class="split">
+      <div class="card think" data-b="3">
+        <div class="lbl">How to think</div>
+        <h3>Would the front desk recognize this person?</h3>
+        <ul>
+          <li>If the persona feels generic, the strategy will be too. Fix the Strategy Notes and rerun.</li>
+          <li>If the practice specializes, at least half the queries should be about those services. Check that they are.</li>
+          <li>The location should "appear naturally in 2-3 queries", never in all of them, and never the practice's name.</li>
+        </ul>
+      </div>
+      <div class="card oq" data-b="1">
+        <div class="lbl">What OQ automates</div>
+        <div class="persona">
+          <div class="avatar"><svg><use href="#i-person"/></svg></div>
+          <div><b>The Cautious Comparer</b> <span class="ex" style="margin-left:6px;color:#9BA1AE;border-color:#2C3038">Example</span>
+            <div class="chips"><span>Fears cost surprises</span><span>Reads reviews twice</span><span>Wants to be talked to, not sold</span></div></div>
+        </div>
+        <p class="dim" style="font-size:12px;margin:8px 0 0">An archetype label, never a made-up first name.</p>
+        <div class="funnel"><div><span>Top of funnel</span><b>5</b></div><div><span>Middle</span><b>5</b></div><div><span>Bottom</span><b>5</b></div></div>
+      </div>
+    </div>
+    <div class="card oq" data-b="2" style="margin-top:16px">
+      <div class="lbl">Queries are written "EXACTLY as real patients type them", not keyword-tool outputs</div>
+      <div class="grid2">
+        <div class="swap"><div class="bad"><span class="why">Tool phrasing</span><s>dental implants cost</s></div><div class="good"><span class="why">Patient phrasing</span>how much is one implant if my insurance won't cover it</div></div>
+        <div class="swap"><div class="bad"><span class="why">Tool phrasing</span><s>best dentist near me</s></div><div class="good"><span class="why">Patient phrasing</span>dentist in Springfield that's actually good with anxious adults</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 5 · Forum research</div>
+      <div class="ttl"><svg><use href="#i-msg"/></svg><h2>Real patient voice, high bar</h2></div>
+      <p class="subt">OQ pulls real patient threads, scores every quote for relevance, then runs a second quality pass.</p>
+    </div>
+    <div class="split">
+      <div data-b="1">
+        <div class="sieve">
+          <div class="qchip pass" style="left:6%;--end:235px"><b>88</b>"I've put off my crown for two years because I'm scared of the cost"</div>
+          <div class="qchip fail" style="left:52%;animation-delay:.35s!important"><b>31</b>"Anyone know a good pizza place downtown?"</div>
+          <div class="qchip pass" style="left:50%;--end:245px;animation-delay:.7s!important"><b>74</b>"Is sedation safe if I have high blood pressure?"</div>
+          <div class="qchip fail" style="left:8%;animation-delay:1.05s!important"><b>42</b>"My cousin is a dentist lol"</div>
+          <div class="qchip pass" style="left:28%;--end:292px;animation-delay:1.4s!important"><b>81</b>"Nobody told me the implant takes months, not one visit"</div>
+          <div class="mesh"></div><div class="mlabel">Relevance below 60: discarded</div>
+        </div>
+        <span class="ex" style="margin-top:8px">Example quotes</span>
+      </div>
+      <div>
+        <div class="card oq" data-b="2">
+          <div class="lbl">What OQ automates</div>
+          <ul>
+            <li class="q">"ONLY extract quotes from actual patients/consumers"</li>
+            <li class="q">"DISCARD anything below 60 relevance, this is a HIGH bar"</li>
+            <li class="q">"better to return 3-5 excellent quotes than 15 mediocre ones"</li>
+          </ul>
+        </div>
+        <div class="card think" data-b="3" style="margin-top:14px">
+          <div class="lbl">How to think</div>
+          <h3 style="font-size:16px">Use the writer test on every quote:</h3>
+          <p style="margin:0;font-size:14.5px">"Could I hand this to a content writer and say 'write a page that addresses this specific concern'?" If yes, it's a calendar idea or an angle. If no, it's noise.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 6 · Site content</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Know what already exists</h2></div>
+      <p class="subt">OQ crawls the site, you accept the crawl, then it deep-reads the 15 to 40 pages that matter most and gives each a verdict.</p>
+    </div>
+    <div class="split">
+      <div class="card oq" data-b="1">
+        <div class="lbl">What OQ automates</div>
+        <table class="inv">
+          <tr><th>Page</th><th>Words</th><th>Verdict</th><th>Action</th></tr>
+          <tr><td>Dental Implants</td><td><span class="wc"><i style="width:70px"></i>1,240</span></td><td><span class="v ok">Comprehensive</span></td><td>Keep</td></tr>
+          <tr style="animation-delay:.12s"><td>Invisalign</td><td><span class="wc"><i style="width:34px"></i>560</span></td><td><span class="v mid">Adequate</span></td><td>Update</td></tr>
+          <tr style="animation-delay:.24s"><td>Veneers</td><td><span class="wc"><i style="width:18px"></i>290</span></td><td><span class="v thin">Thin</span></td><td>Rebuild</td></tr>
+          <tr style="animation-delay:.36s"><td>Emergency Care</td><td><span class="wc"><i style="width:40px"></i>650</span></td><td><span class="v old">Outdated</span></td><td>Update</td></tr>
+          <tr style="animation-delay:.48s"><td>Whitening + Bleaching</td><td><span class="wc"><i style="width:20px"></i>310</span></td><td><span class="v thin">Thin</span></td><td>Consolidate</td></tr>
+        </table>
+        <p class="dim" style="font-size:12px;margin:10px 0 0">Comprehensive 800+ words · Adequate 400 to 800 · Thin under 400 · plus Outdated. <span class="ex" style="color:#9BA1AE;border-color:#2C3038">Example pages</span></p>
+      </div>
+      <div class="card think" data-b="2">
+        <div class="lbl">How to think</div>
+        <h3>This list tells you what can NOT go on the calendar.</h3>
+        <ul>
+          <li>An existing page on a topic, however thin, means that topic is not a new calendar piece.</li>
+          <li>Thin and outdated pages are still valuable work: they go to <b>Optimization</b>.</li>
+          <li>Thin pages drag the whole site down. Flag them; don't ignore them.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Step 7 · Synthesis</div>
+      <div class="ttl"><svg><use href="#i-layers"/></svg><h2>The Topic Opportunity Assessment</h2></div>
+      <p class="subt">The strategic core. Every topic gets a rating, an action, a 0 to 100 priority, and the evidence behind it. This is the primary input to the calendar.</p>
+    </div>
+    <div class="split">
+      <div data-b="1">
+        <div class="matrix">
+          <div class="q tl">High opportunity</div><div class="q tr">Protect + maintain</div>
+          <div class="q bl">Low priority</div><div class="q br">Fine as is</div>
+          <div class="dot" style="left:22%;top:20%;--c:var(--mag);--d:.2s">Sedation dentistry</div>
+          <div class="dot" style="left:30%;top:36%;--c:var(--mag);--d:.45s">Implant vs bridge</div>
+          <div class="dot" style="left:74%;top:22%;--d:.7s">Dental implants</div>
+          <div class="dot" style="left:28%;top:74%;--c:#9BA1AE;--d:.95s">Tooth gems</div>
+          <div class="dot" style="left:70%;top:72%;--c:#9BA1AE;--d:1.2s">Cleanings</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="small mono">Demand up · Site coverage right</span><span class="ex">Example topics</span></div>
+      </div>
+      <div>
+        <div class="card oq" data-b="2">
+          <div class="lbl">What OQ automates</div>
+          <p class="q" style="margin:0 0 10px;font-size:15px">"HIGH opportunity = strong audience demand + weak/no site coverage."</p>
+          <p class="q" style="margin:0 0 10px;font-size:14px">"Every number you cite MUST come from the actual data provided. Do not hallucinate metrics."</p>
+          <p class="dim" style="margin:0;font-size:13px">Actions: new content · rebuild · update · maintain · deprioritize</p>
+        </div>
+        <div class="card think" data-b="3" style="margin-top:14px">
+          <div class="lbl">How to think</div>
+          <p style="margin:0;font-size:14.5px">Read the evidence line under each topic. <b>If you can't explain why a topic is HIGH in one sentence to the dentist, it shouldn't drive the calendar.</b> And remember: rebuild and update are Optimization work, not calendar pieces.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The strategy">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Your checkpoint</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Before you click Generate</h2></div>
+      <p class="subt">Tick each one you can honestly say yes to. This is the human review the pipeline is waiting for.</p>
+    </div>
+    <div class="checks" data-b="0" id="checks">
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>The persona matches the patients this practice actually wants more of.</button>
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>Every HIGH topic is something this practice can speak to from real experience.</button>
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>The client's priorities from the intake and Strategy Notes show up, or are flagged honestly.</button>
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>I know which topics already have pages. Those go to Optimization.</button>
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>I've noted what the data can't see: a new doctor, new technology, a new location, seasonality.</button>
+      <button class="chk"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span>I could explain the top five topics to the dentist in plain language.</button>
+    </div>
+    <div class="gen" data-b="0">
+      <button class="btn primary" id="genBtn" disabled>Generate Content Calendar</button>
+      <span class="small" id="genMsg">0 of 6 ready</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 THE CALENDAR ================= -->
+<section class="scene" data-chap="The calendar">
+  <div class="divider" data-b="0">
+    <div class="big">03</div>
+    <h2>Build the calendar</h2>
+    <div class="bar grow"></div>
+    <p>The calendar is the client-approved plan of new pages, month by month. One rule above all, then the mix, the inputs that matter, and how to read what comes back.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">The hard rule</div>
+      <div class="ttl"><svg><use href="#i-cal"/></svg><h2>The calendar is new content only</h2></div>
+      <p class="subt">From the generator's own prompt: "NEW CONTENT is never a fix for an existing page… however thin or outdated that page is."</p>
+    </div>
+    <div class="lanes" data-b="1">
+      <div class="mover">Veneers (rewrite the thin page)<small>Existing page · 290 words · verdict: Thin</small></div>
+      <div class="nope">NOT A CALENDAR ITEM</div>
+      <div class="bin"><h4>Content calendar · new pages</h4>
+        <div class="piece">Sedation Dentistry in Springfield, IL <span class="tag blue">Service</span></div>
+        <div class="piece">Implant vs bridge for a back tooth <span class="tag green">Blog</span></div>
+      </div>
+      <div class="bin"><h4>Optimization · existing pages</h4>
+        <div class="piece">Emergency Care: refresh outdated info <span class="tag">Update</span></div>
+        <div style="height:56px"></div>
+      </div>
+    </div>
+    <div class="callout mag" data-b="2" style="margin-top:20px"><b>Why it matters:</b> the calendar is what the client approves as new work. Slipping fixes into it inflates the plan and misleads the client about what they're getting. Optimizations show up as "Suggested updates" on the On-Page side, never on the calendar.</div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">The mix + the pacing</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Three page types, your rhythm</h2></div>
+      <p class="subt">You set how many of each type, the start month (defaults to next month) and the pacing. Defaults are 4, 6 and 2; the cap is 24 pieces.</p>
+    </div>
+    <div class="grid3 types" data-b="1">
+      <div class="card stg"><span class="tag blue">Service page</span><div class="defn" style="color:var(--blue);margin-top:10px">4</div><h4>Sells one treatment to a ready-to-book patient</h4><div class="fmt">[Service] in [City], [State] | [Client Name]</div></div>
+      <div class="card stg"><span class="tag green">Blog article</span><div class="defn" style="color:var(--green);margin-top:10px">6</div><h4>Answers a specific question earlier in the decision</h4><div class="fmt">Question-driven or decision-focused titles</div></div>
+      <div class="card stg"><span class="tag mag">Pillar page</span><div class="defn" style="color:var(--mag);margin-top:10px">2</div><h4>Covers a broad topic completely; the authority builder</h4><div class="fmt">Topic with an insight-driven subtitle</div></div>
+    </div>
+    <div class="card" data-b="2" style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div class="seg" id="pace"><button data-p="1" class="on">1 per month</button><button data-p="2">2 per month</button><button data-p="0">Every other month</button></div>
+        <span class="small" id="paceNote">12 pieces fill 12 months.</span>
+      </div>
+      <div class="months" id="months"></div>
+      <div class="legend"><span style="--c:var(--blue)">Service</span><span style="--c:var(--green)">Blog</span><span style="--c:var(--mag)">Pillar</span><span>Months are placed by code, highest priority first.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">The input that protects a topic</div>
+      <div class="ttl"><svg><use href="#i-lock"/></svg><h2>Name the topics. Don't just mention them.</h2></div>
+      <p class="subt">The dentist insists on a sedation page. Where you type that decides whether it survives the duplicate check.</p>
+    </div>
+    <div class="grid2">
+      <div data-b="1">
+        <div class="inputbox fade-out">
+          <label>Additional guidance</label>
+          <div class="val">Make sure we include a sedation dentistry page, the doctor is pushing it this year.</div>
+        </div>
+        <div class="fate"><svg class="risk"><use href="#i-scissors"/></svg><span><b>Can be cut.</b> Today, the guidance box does not protect a topic. The duplicate check can still remove it.</span></div>
+      </div>
+      <div data-b="2">
+        <div class="inputbox">
+          <label>Name the topics · Service page slot 1</label>
+          <div class="val">Sedation dentistry</div>
+        </div>
+        <div class="fate"><svg class="lock"><use href="#i-lock"/></svg><span><b>Pinned.</b> The prompt treats named topics as "non-negotiable human decisions." They skip the duplicate check and get placed first.</span></div>
+      </div>
+    </div>
+    <div class="callout" data-b="3" style="margin-top:20px">If a named topic has no research behind it, OQ leaves its queries and quotes empty rather than inventing them ("Do NOT invent a query or a quote"). <b>That's expected</b>, and the reviewer may note "weak evidence". You're the evidence.</div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Under the hood</div>
+      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>What happens after you click</h2></div>
+      <p class="subt">Eight steps, each with one job. <span class="ex">Example run: asked for 12</span></p>
+    </div>
+    <div class="pipe">
+      <div class="pst" data-b="1"><span class="model">Sonnet</span><div class="n num" data-count="18">0</div><span class="u">candidates</span><h4>Draft 1.5x</h4><p>Asks for 1.5 times what you want, so there are spares to cut.</p></div>
+      <div class="pst" data-b="2"><span class="model">Haiku</span><div class="n num" data-count="13">0</div><span class="u">survive</span><h4>Duplicate check</h4><p>"A different angle, title, or city variation on the same core topic is still a duplicate."</p></div>
+      <div class="pst warn" data-b="3"><span class="model">Code</span><div class="n num" data-count="11">0</div><span class="u">of 12 filled</span><h4>Fill each type</h4><p>Highest priority first, named topics pinned. Never pads, never swaps one type for another.</p></div>
+      <div class="pst warn" data-b="4"><span class="model">Sonnet</span><div class="n num" data-count="11">0</div><span class="u">still 11</span><h4>Top-up round</h4><p>One more round with every used title off limits. Here nothing new survived, so it reports the shortfall instead of padding.</p></div>
+      <div class="pst" data-b="5"><span class="model">Code</span><div class="n">Months</div><h4>Placement</h4><p>Named topics first, then by priority, from your start month at your pacing.</p></div>
+      <div class="pst" data-b="6"><span class="model">Opus</span><div class="n num" data-count="2">0</div><span class="u">flagged</span><h4>Quality review</h4><p>Marks each item approved or flagged; suggests misses. Internal notes only, nothing auto-added.</p></div>
+      <div class="pst" data-b="7"><span class="model">Haiku</span><div class="n">Meta</div><h4>Descriptions</h4><p>A meta description for every item. Forum quotes get matched to topics.</p></div>
+      <div class="pst done" data-b="8"><span class="model">Saved</span><div class="n">Draft</div><h4>Ready for you</h4><p>Saved as a draft, and the Asana calendar task is created or notified.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Reading the result</div>
+      <div class="ttl"><svg><use href="#i-eye"/></svg><h2>Review it like the dentist will</h2></div>
+      <p class="subt">Start with the finish message, then work item by item.</p>
+    </div>
+    <div class="banner" data-b="0"><svg><use href="#i-alert"/></svg><span><b>"Calendar generated with 11 of 12 pieces you asked for…"</b> Always read the X of Y. Short means the duplicate check and top-up couldn't find enough new topics.</span></div>
+    <div class="anno">
+      <div class="ci" data-b="0">
+        <div class="row"><span class="tag">March</span><span class="tag blue">Service page</span><span class="tag mark" id="m4">Priority 88</span><span class="tag green mark" id="m5">Review: approved</span></div>
+        <h4 class="mark" id="m1">Sedation Dentistry in Springfield, IL | Example Dental</h4>
+        <p class="angle mark" id="m2">You told us anxious patients are the ones who put treatment off longest. We'll build this page around the questions they ask before booking: what it feels like, who it's safe for, and what the visit looks like from start to finish.</p>
+        <div class="small mono" style="margin-bottom:6px;text-transform:uppercase;letter-spacing:.1em">Topics we'll cover</div>
+        <div class="topics mark" id="m3"><span>is iv sedation safe for dental work</span><span>dentist that puts you to sleep for a filling</span></div>
+        <span class="ex" style="margin-top:12px">Example item</span>
+      </div>
+      <div class="notes">
+        <div class="note" data-b="1" data-hl="m1"><span class="n">1</span><span><b>Title format.</b> Service pages carry the city and state. No "Month 3" or "Blog" in a title, ever.</span></div>
+        <div class="note" data-b="2" data-hl="m2"><span class="n">2</span><span><b>The angle is your strategic plan</b>, in two to four sentences. Edit it freely: it carries straight into production and shapes the draft.</span></div>
+        <div class="note" data-b="3" data-hl="m3"><span class="n">3</span><span><b>Queries come from real data</b>, never invented. The client sees them as "Topics we'll cover", and you can hide any.</span></div>
+        <div class="note" data-b="4" data-hl="m4"><span class="n">4</span><span><b>Priority 85 to 100</b> means high opportunity with no coverage or declining performance. The reasoning must cite evidence; check it does.</span></div>
+        <div class="note" data-b="5" data-hl="m5"><span class="n">5</span><span><b>Read every flagged item.</b> Fix it in the edit panel, swap it with Replace with different page, or drag it to another month.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="The calendar">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Voice</div>
+      <div class="ttl"><svg><use href="#i-msg"/></svg><h2>Write to the client, not about them</h2></div>
+      <p class="subt">The calendar is a client-facing document. OQ enforces these rules; you keep them when you edit.</p>
+    </div>
+    <div class="vrow" data-b="1"><div class="rule2">You and we, never third person</div><div class="bad">The client mentioned fillings as a priority.</div><div class="arr">&rarr;</div><div class="good">You named fillings as a priority service.</div></div>
+    <div class="vrow" data-b="2"><div class="rule2">Visibility, not rankings</div><div class="bad">This page will help us rank for dental implants.</div><div class="arr">&rarr;</div><div class="good">This page will help you earn visibility for dental implants, in AI answers, the map and search.</div></div>
+    <div class="vrow" data-b="3"><div class="rule2">No em dashes, anywhere</div><div class="bad">Sedation, explained simply (with a long dash here)</div><div class="arr">&rarr;</div><div class="good">Sedation, explained simply: what it feels like and who it's for</div></div>
+    <div class="vrow" data-b="4"><div class="rule2">No invented evidence</div><div class="bad">"Thousands of patients search this every month."</div><div class="arr">&rarr;</div><div class="good">Only numbers and quotes that exist in the data.</div></div>
+  </div>
+</section>
+
+<!-- ================= 04 APPROVAL ================= -->
+<section class="scene" data-chap="Approval + handoff">
+  <div class="divider" data-b="0">
+    <div class="big">04</div>
+    <h2>Approval + handoff</h2>
+    <div class="bar grow"></div>
+    <p>How the client says yes, what OQ does while you wait, and how an approved calendar becomes production work.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="Approval + handoff">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Client review</div>
+      <div class="ttl"><svg><use href="#i-send"/></svg><h2>Two rounds, built-in deadlines</h2></div>
+      <p class="subt">The SEO sends it. The client gets a clean, month-by-month view: no forum quotes, no optimizations, just the plan.</p>
+    </div>
+    <div class="tl" data-b="1">
+      <div class="line"><i></i></div>
+      <div class="tsteps stg">
+        <div class="ts"><div class="d">Day 0</div><h4>Round 1 sent</h4><p>Email to the client, team BCC'd, Asana comment. Default deadline 14 days.</p></div>
+        <div class="ts"><div class="d">Day 7</div><h4>Reminder</h4><p>If the link was never opened, a reminder goes out automatically.</p></div>
+        <div class="ts"><div class="d">Round 1</div><h4>Approve or flag</h4><p>Per piece, with notes and highlight-to-comment. All approved means approved.</p></div>
+        <div class="ts"><div class="d">Up to 7 days</div><h4>Round 2</h4><p>Only if something was flagged. Read-only, final remarks; submitting approves.</p></div>
+        <div class="ts end"><div class="d">Done</div><h4>Approved</h4><p>Production unlocks.</p></div>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:28px">
+      <div class="card think" data-b="2"><div class="lbl">How to think</div><p style="margin:0;font-size:14.5px">A flag is a conversation, not a failure. Work each flagged piece in the feedback queue and leave a note the client will see: what you changed, or why you kept it.</p></div>
+      <div class="card oq" data-b="3"><div class="lbl">What OQ automates</div><ul><li>Deadline passes with no feedback: the calendar auto-approves.</li><li>Comments left but never submitted: a 3-day grace period and a nudge, then they count as submitted.</li><li>You can extend the deadline.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Approval + handoff">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Handoff</div>
+      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>Push to Production</h2></div>
+      <p class="subt">Once the calendar is approved, one click creates a production piece for every calendar item.</p>
+    </div>
+    <div class="handoff" data-b="1">
+      <div class="col"><h4>Approved calendar</h4>
+        <div class="calc"><span>Sedation Dentistry in Springfield, IL</span><span class="tag">Mar</span></div>
+        <div class="calc"><span>Implant vs bridge for a back tooth</span><span class="tag">Apr</span></div>
+        <div class="calc"><span>The complete guide to replacing a missing tooth</span><span class="tag">May</span></div>
+        <div class="calc"><span>Does a root canal hurt more than a filling?</span><span class="tag">Jun</span></div>
+      </div>
+      <div class="flowarrow"><svg><use href="#i-arrow"/></svg></div>
+      <div class="col"><h4>Production queue</h4>
+        <div class="prod" style="--d:.2s">Sedation Dentistry in Springfield, IL<small><span>Queued · Mar</span><span class="asana">Asana task</span></small></div>
+        <div class="prod" style="--d:.45s">Implant vs bridge for a back tooth<small><span>Queued · Apr</span><span class="asana">Asana task</span></small></div>
+        <div class="prod" style="--d:.7s">The complete guide to replacing a missing tooth<small><span>Queued · May</span><span class="asana">Asana task</span></small></div>
+        <div class="prod" style="--d:.95s">Does a root canal hurt more than a filling?<small><span>Queued · Jun</span><span class="asana">Asana task</span></small></div>
+      </div>
+    </div>
+    <div class="callout" data-b="2" style="margin-top:20px">Each piece keeps its month and its <b>strategic angle</b>, so the thinking you did in the calendar shapes the draft. OQ never makes a second piece for an item that already has one.</div>
+  </div>
+</section>
+
+<!-- ================= 05 WRAP UP ================= -->
+<section class="scene" data-chap="Wrap up">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Save yourself an afternoon</div>
+      <div class="ttl"><svg><use href="#i-alert"/></svg><h2>Gotchas to know</h2></div>
+      <p class="subt">Things that trip people up today.</p>
+    </div>
+    <div class="grid3 stg" data-b="1">
+      <div class="got"><span class="tag yellow">Counts</span><h4>Read the "X of Y"</h4><p>Duplicate removal can leave you short. Name the missing topics and regenerate, or add them by hand.</p></div>
+      <div class="got"><span class="tag yellow">Inputs</span><h4>Guidance doesn't protect topics</h4><p>Only "Name the topics" slots are pinned. Put must-haves there.</p></div>
+      <div class="got"><span class="tag yellow">Time</span><h4>Big calendars are slow</h4><p>Over 16 pieces can take up to 20 minutes. Leave the tab running.</p></div>
+      <div class="got"><span class="tag red">Review</span><h4>Out for review blocks regenerating</h4><p>Cancelling the review to regenerate deletes the client's feedback. Think first.</p></div>
+      <div class="got"><span class="tag yellow">Replace</span><h4>Undo is short-lived</h4><p>Replace with different page can be undone only until you refresh.</p></div>
+      <div class="got"><span class="tag yellow">Duplicates</span><h4>Old calendars still count</h4><p>Rejected and stale calendars count as "planned", so a topic may be blocked by an old plan.</p></div>
+      <div class="got"><span class="tag red">Email</span><h4>No test send for calendars</h4><p>A calendar "test" would go to the real client. Preview inside OQ instead.</p></div>
+      <div class="got"><span class="tag">Evidence</span><h4>Empty evidence on named topics</h4><p>Expected. The reviewer may flag "weak evidence"; that note is cosmetic.</p></div>
+      <div class="got"><span class="tag">Data</span><h4>Missing sources, weaker scores</h4><p>Without GSC, priorities rely on estimated volume. Say so when you present.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Wrap up">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Recap</div>
+      <div class="ttl"><svg><use href="#i-layers"/></svg><h2>OQ gathers. You judge.</h2></div>
+      <p class="subt">The split of work, in one view.</p>
+    </div>
+    <div class="grid2">
+      <div class="card oq recap" data-b="1"><div class="lbl">What OQ automates</div><ul class="stg">
+        <li>Connecting data and scoring confidence</li><li>Writing scenario-based intake questions</li><li>Persona and 15 head queries across the funnel</li><li>Finding and filtering real patient quotes</li><li>Crawling the site and giving pages a verdict</li><li>Scoring every topic's opportunity, with evidence</li><li>Drafting, de-duplicating, placing and reviewing the calendar</li><li>Review links, reminders, deadlines, production pieces, Asana tasks</li></ul></div>
+      <div class="card think recap" data-b="2"><div class="lbl">What you own</div><ul class="stg">
+        <li>Deciding whether the evidence is good enough</li><li>Bringing in what the data can't see</li><li>Checking the persona is a real patient</li><li>Choosing topics this practice can speak to from experience</li><li>Naming the must-have topics, setting the mix and pacing</li><li>Reading flagged items, editing angles and voice</li><li>The client conversation</li><li>The final test: would I show this to the dentist?</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Wrap up">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Quick check</div>
+      <div class="ttl"><svg><use href="#i-check"/></svg><h2>Five questions</h2></div>
+      <p class="subt">Answer out loud, then click to check.</p>
+    </div>
+    <div class="quiz stg" data-b="0" id="quiz">
+      <div class="qz"><button>The practice has a 290-word veneers page. Should "Veneers" be a calendar item? <span>Reveal</span></button><div class="a"><p>No. An existing page on the topic, however thin, means it's not new content. It goes to Optimization.</p></div></div>
+      <div class="qz"><button>The dentist insists on a sedation page this year. Where do you put it? <span>Reveal</span></button><div class="a"><p>In a "Name the topics" slot. The guidance box doesn't protect a topic from the duplicate check; named slots are pinned.</p></div></div>
+      <div class="qz"><button>The finish message says "11 of 12 pieces". What happened, and what do you do? <span>Reveal</span></button><div class="a"><p>The duplicate check removed candidates and the top-up round couldn't find enough new topics. Review the gap; name a topic and regenerate, or add one by hand.</p></div></div>
+      <div class="qz"><button>Why is dental content held to a higher bar than a travel blog? <span>Reveal</span></button><div class="a"><p>It's YMYL health content, so E-E-A-T matters most, and trust most of all: real dentist authorship, first-hand experience, sourced claims.</p></div></div>
+      <div class="qz"><button>What are Eli Schwartz's two top-down questions? <span>Reveal</span></button><div class="a"><p>"Who am I trying to reach? What am I creating?" Answer them before you trust any keyword list.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene" data-chap="Wrap up">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Go deeper</div>
+      <div class="ttl"><svg><use href="#i-book"/></svg><h2>Sources + further reading</h2></div>
+      <p class="subt">Quotes in this training come from these sources and from OQ's own prompts and screens.</p>
+    </div>
+    <div class="grid2">
+      <div class="card srcs" data-b="1"><span class="tag blue">Thinking</span><ul>
+        <li><a href="https://builtin.com/articles/product-led-seo-eli-schwartz" target="_blank" rel="noopener">Eli Schwartz Talks SEO Misconceptions</a> (Built In): product-led SEO, the top-down questions.</li>
+        <li>Eli Schwartz, <i>Product-Led SEO</i> (book).</li>
+        <li><a href="https://lilyray.nyc/e-a-t-expertise-authoritativeness-trustworthiness/" target="_blank" rel="noopener">E-E-A-T: Experience, Expertise, Authoritativeness, and Trustworthiness</a> (Lily Ray).</li>
+        <li><i>The Search Experience We Deserve</i>: our internal doc, linked in SEO 101 Lesson 2.</li>
+      </ul></div>
+      <div class="card srcs" data-b="2"><span class="tag mag">In our training</span><ul>
+        <li>SEO 101 Lesson 2: Why We Do It This Way.</li>
+        <li>SEO 101 Lesson 5: Content, and why we make so much of it (E-E-A-T, YMYL, topical authority).</li>
+        <li>OQ's built-in SEO and Marketing Strategist tours, inside any strategy.</li>
+      </ul>
+      <p class="small" style="margin:14px 0 0">Example clients, quotes and numbers on these slides are illustrations, not real client data.</p></div>
+    </div>
+  </div>
+</section>
+
+    </div>
+    <div class="controls">
+      <button class="btn" id="prev" aria-label="Back">&larr; Back</button>
+      <div class="prog"><i id="progBar"></i></div>
+      <span class="count num" id="count">01 / 01</span>
+      <button class="btn primary" id="next">Next &rarr;</button>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  const scenes=[...document.querySelectorAll('.scene')];
+  const maxB=s=>Math.max(0,...[...s.querySelectorAll('[data-b]')].map(e=>+e.dataset.b));
+  let i=0,b=0;
+
+  // chapters rail
+  const chapEl=document.getElementById('chapters');
+  const chaps=[];
+  scenes.forEach((s,k)=>{const c=s.dataset.chap;let ch=chaps.find(x=>x.name===c);if(!ch){ch={name:c,first:k,last:k};chaps.push(ch)}ch.last=k});
+  chaps.forEach((ch,n)=>{
+    const btn=document.createElement('button');btn.className='chap';
+    btn.innerHTML='<b>'+String(n).padStart(2,'0')+'</b>'+ch.name;
+    btn.onclick=()=>go(ch.first,0);
+    const bar=document.createElement('div');bar.className='chap-bar';bar.innerHTML='<i></i>';
+    chapEl.appendChild(btn);chapEl.appendChild(bar);ch.btn=btn;ch.bar=bar.firstChild;
+  });
+
+  function countUp(el){
+    const to=+el.dataset.count,t0=performance.now(),dur=900;
+    (function f(t){const p=Math.min(1,(t-t0)/dur);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0);
+  }
+
+  function render(){
+    scenes.forEach((s,k)=>{
+      const on=k===i;
+      s.classList.toggle('on',on);
+      s.querySelectorAll('[data-b]').forEach(e=>{
+        const show=on&&+e.dataset.b<=b, was=e.classList.contains('shown');
+        e.classList.toggle('shown',show);
+        if(show&&!was){
+          e.querySelectorAll('[data-count]').forEach(countUp);
+          if(e.querySelector('#months'))drawMonths();
+        }
+      });
+    });
+    // annotation highlights on the "reading the result" scene
+    document.querySelectorAll('.mark').forEach(m=>m.classList.remove('hl'));
+    const lastNote=[...scenes[i].querySelectorAll('[data-hl].shown')].pop();
+    if(lastNote)document.getElementById(lastNote.dataset.hl).classList.add('hl');
+
+    const total=scenes.length;
+    document.getElementById('progBar').style.width=((i+(b/Math.max(1,maxB(scenes[i]))))/(total-1)*100)+'%';
+    document.getElementById('count').textContent=String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+    document.getElementById('prev').disabled=i===0&&b===0;
+    const atEnd=i===total-1&&b>=maxB(scenes[i]);
+    document.getElementById('next').disabled=atEnd;
+    chaps.forEach(ch=>{
+      const active=i>=ch.first&&i<=ch.last;
+      ch.btn.classList.toggle('on',active);
+      const p=i>ch.last?1:i<ch.first?0:(i-ch.first+1)/(ch.last-ch.first+1);
+      ch.bar.style.width=(p*100)+'%';
+    });
+    if(scenes[i].querySelector('#typed'))startTyping();else stopTyping();
+    try{history.replaceState(null,'','#'+(i+1))}catch(e){}
+  }
+  function go(k,bb){i=Math.max(0,Math.min(scenes.length-1,k));b=bb;scenes[i].scrollTop=0;render()}
+  function next(){if(b<maxB(scenes[i])){b++;render();revealScroll()}else if(i<scenes.length-1)go(i+1,0)}
+  function prev(){if(b>0){b--;render()}else if(i>0)go(i-1,maxB(scenes[i-1]))}
+  function revealScroll(){
+    const s=scenes[i],last=[...s.querySelectorAll('[data-b].shown')].filter(e=>+e.dataset.b===b).pop();
+    if(last){const r=last.getBoundingClientRect(),sr=s.getBoundingClientRect();if(r.bottom>sr.bottom-10)s.scrollBy({top:r.bottom-sr.bottom+40,behavior:'smooth'})}
+  }
+  document.getElementById('next').onclick=next;
+  document.getElementById('prev').onclick=prev;
+  document.addEventListener('keydown',e=>{
+    if(e.target.closest('input,textarea'))return;
+    if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){if((e.key===' '||e.key==='Enter')&&e.target.closest('button'))return;e.preventDefault();next()}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
+    else if(e.key==='Home')go(0,0);else if(e.key==='End')go(scenes.length-1,0);
+  });
+  let tx=null;
+  document.getElementById('stage').addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  document.getElementById('stage').addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)(dx<0?next:prev)();tx=null});
+
+  // typing search box
+  const queries=["does a root canal hurt more than a filling","dentist that's good with nervous kids","implant or bridge for a back tooth","how long do veneers actually last","is it bad that my gums bleed when i floss"];
+  let typer=null;
+  function startTyping(){
+    if(typer)return;const el=document.getElementById('typed');let q=0,c=0,del=false;
+    const tick=()=>{const s=queries[q];
+      if(!del){c++;el.textContent=s.slice(0,c);if(c===s.length){del=true;typer=setTimeout(tick,1600);return}}
+      else{c-=2;el.textContent=s.slice(0,Math.max(0,c));if(c<=0){del=false;c=0;q=(q+1)%queries.length}}
+      typer=setTimeout(tick,del?22:55+Math.random()*50)};
+    typer=setTimeout(tick,700);
+  }
+  function stopTyping(){clearTimeout(typer);typer=null}
+
+  // long tail bars
+  const lt=document.getElementById('longtail');
+  for(let k=0;k<28;k++){const bar=document.createElement('i');bar.style.height=(14+Math.round(26*Math.pow(.93,k))+(k%3)*3)+'px';bar.style.animationDelay=(.3+k*.04)+'s';lt.appendChild(bar)}
+
+  // pacing demo
+  const mix=['s','b','b','s','p','b','s','b','b','s','p','b'];
+  let pace=1;
+  function drawMonths(){
+    const box=document.getElementById('months');box.innerHTML='';
+    const names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const slots=names.map(()=>[]);
+    if(pace===1)mix.forEach((t,k)=>slots[k].push(t));
+    else if(pace===2)mix.forEach((t,k)=>slots[Math.floor(k/2)].push(t));
+    else mix.slice(0,6).forEach((t,k)=>slots[k*2].push(t));
+    let d=0;
+    slots.forEach((sl,k)=>{const m=document.createElement('div');m.className='mo';m.innerHTML='<span>'+names[k]+'</span>';
+      sl.forEach(t=>{const p=document.createElement('i');p.className='k-'+t;p.style.animationDelay=(d+=.05)+'s';m.appendChild(p)});box.appendChild(m)});
+    document.getElementById('paceNote').textContent=pace===1?'12 pieces fill 12 months.':pace===2?'12 pieces fill 6 months, then the plan is done.':'6 pieces land this year; the other 6 continue into next year. Gaps are expected.';
+  }
+  document.querySelectorAll('#pace button').forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll('#pace button').forEach(x=>x.classList.toggle('on',x===btn));pace=+btn.dataset.p;drawMonths()});
+
+  // checklist
+  const checks=[...document.querySelectorAll('#checks .chk')];
+  checks.forEach(c=>c.onclick=()=>{c.classList.toggle('on');
+    const n=checks.filter(x=>x.classList.contains('on')).length;
+    const g=document.getElementById('genBtn');g.disabled=n<checks.length;
+    document.getElementById('genMsg').textContent=n<checks.length?n+' of '+checks.length+' ready':'Ready. Now generate it in OQ.'});
+  document.getElementById('genBtn').onclick=()=>next();
+
+  // quiz
+  document.querySelectorAll('#quiz .qz button').forEach(btn=>btn.onclick=()=>{
+    const q=btn.parentElement;q.classList.toggle('open');btn.querySelector('span').textContent=q.classList.contains('open')?'Hide':'Reveal'});
+
+  const h=parseInt(location.hash.slice(1),10);
+  go(isNaN(h)?0:h-1,0);
+})();
+</script>
+</body>
+</html>
