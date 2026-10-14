@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Inside Meaning Space · S8E8 Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* A 96-second 3D film built from real Gemini embeddings. Every frame is a pure
+   function of time (renderAt), so it can play live or be captured frame by frame. */
+:root{--blue:#29ABE2;--mag:#FF2D8F;--green:#22C55E;--ink:#F4F5F7;--dim:#8A91A2;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--disp:"Helvetica Neue",Helvetica,Arial,sans-serif;--body:Montserrat,system-ui,sans-serif}
+html,body{margin:0;height:100%;background:#050506;overflow:hidden}
+#wrap{position:fixed;inset:0}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;overflow:hidden;
+  background:radial-gradient(ellipse at 60% 45%,#141821 0%,#0A0A0B 62%,#050506 100%);font-family:var(--body);color:var(--ink)}
+canvas{position:absolute;inset:0}
+.ov{position:absolute;pointer-events:none}
+#brand{left:64px;top:52px}
+#brand b{display:block;font:800 19px/1.25 var(--disp);letter-spacing:.22em}
+#brand i{display:block;height:3px;width:210px;margin-top:14px;background:linear-gradient(90deg,#29ABE2,#22C55E,#EAB308,#FF2D8F)}
+#tag{right:64px;top:58px;font:600 15px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+#cap{left:50%;bottom:86px;transform:translateX(-50%);width:1240px;text-align:center}
+#cap .k{font:600 15px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+#cap .t{font:600 36px/1.35 var(--body);text-shadow:0 2px 24px rgba(0,0,0,.8)}
+#cap .t b{color:#fff;background:linear-gradient(90deg,#29ABE2,#FF2D8F);-webkit-background-clip:text;background-clip:text;color:transparent}
+#steps{right:64px;bottom:64px;display:flex;gap:10px}
+#steps i{width:34px;height:4px;border-radius:2px;background:#2A2E37}
+#steps i.on{background:var(--blue)}
+#title{left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+#title h1{font:800 124px/.95 var(--disp);letter-spacing:.01em;text-transform:uppercase;margin:0}
+#title h1 span{background:linear-gradient(90deg,#29ABE2,#22C55E,#EAB308,#FF2D8F);-webkit-background-clip:text;background-clip:text;color:transparent}
+#title p{font:500 30px/1.5 var(--body);color:#C9CDD6;margin:28px 0 0;max-width:1100px}
+#title small{display:block;margin-top:26px;font:600 15px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+#end{left:0;right:0;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(5,5,6,.55)}
+#end h2{font:800 96px/1 var(--disp);text-transform:uppercase;margin:0}
+#end h2 span{background:linear-gradient(90deg,#29ABE2,#22C55E,#EAB308,#FF2D8F);-webkit-background-clip:text;background-clip:text;color:transparent}
+#end p{font:600 15px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:34px;line-height:1.8}
+#panel{right:64px;top:170px;width:400px;background:rgba(17,19,23,.82);border:1px solid #23262E;border-radius:10px;padding:28px 30px;backdrop-filter:blur(6px)}
+#panel .k{font:600 13px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+#panel .n{font:800 104px/1 var(--disp);margin:14px 0 6px;font-variant-numeric:tabular-nums}
+#panel .s{font:500 20px var(--body);color:#C9CDD6}
+#panel .s b{color:var(--green)}
+#panel .bar{height:10px;border-radius:5px;background:#23262E;margin-top:18px;overflow:hidden}
+#panel .bar i{display:block;height:100%;background:var(--green);border-radius:5px}
+#panel .f{font:500 14px/1.5 var(--body);color:var(--dim);margin-top:16px}
+#labels{inset:0}
+.lb{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;font:600 17px var(--body);color:#E8EAEE;text-shadow:0 1px 10px rgba(0,0,0,.9);will-change:transform}
+.lb em{display:block;font:600 11px var(--mono);font-style:normal;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:3px;text-align:center}
+.lb.q{font-size:24px;color:#fff}
+.lb.q em{color:var(--mag)}
+.lb .sc{display:inline-block;margin-left:10px;font:700 17px var(--mono);padding:2px 8px;border-radius:4px;background:#23262E}
+.lb .sc.g{background:#12301F;color:#4ADE80}
+.lb.sm{font-size:14px;color:#C9CDD6}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <canvas id="cv" width="1920" height="1080"></canvas>
+  <div id="labels" class="ov"><svg id="leaders" width="1920" height="1080" style="position:absolute;inset:0"></svg></div>
+  <div id="brand" class="ov"><b>STUDIO<br>EIGHTY EIGHT</b><i></i></div>
+  <div id="tag" class="ov">AI search · inside meaning space</div>
+  <div id="panel" class="ov"><div class="k">Site relevance</div><div class="n" id="pn">0.00</div>
+    <div class="s" id="ps"></div><div class="bar"><i id="pb"></i></div>
+    <div class="f">Average closeness of every page to the center of the target searches. 0.70 and up counts as close.</div></div>
+  <div id="cap" class="ov"><div class="k" id="ck"></div><div class="t" id="ct"></div></div>
+  <div id="steps" class="ov"></div>
+  <div id="title" class="ov"><h1>Inside<br><span>meaning space</span></h1><p>What AI search actually sees when a patient asks a question.</p><small>Real Gemini embeddings · the same model as OQ's Relevance Analyzer</small></div>
+  <div id="end" class="ov"><h2>Answer the question.<br><span>Earn the visibility.</span></h2><p>Positions flattened from 3,072 dimensions to 3, so distances are approximate.<br>Every score shown is the exact cosine similarity. Example practice, real math.</p></div>
+</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA={"center": [0.637, 0.1125, 0.1426], "site_before": {"mean": 0.662, "inside": 2, "total": 10}, "site_after": {"mean": 0.699, "inside": 7, "total": 15}, "items": [{"id": "q0", "kind": "query", "label": "is a dental implant worth it", "pos": [0.7292, -0.0388, 0.1852], "sim_center": 0.8989642327455941, "sim_f1": 0.7056429822115836}, {"id": "f1", "kind": "fan", "label": "implant vs bridge for a back tooth", "pos": [0.4715, 0.2398, -0.8926], "sim_center": 0.8321105496398142, "sim_f1": 1.000000000000002, "type": "Comparative"}, {"id": "f2", "kind": "fan", "label": "how long do dental implants last", "pos": [0.5555, -0.1695, 0.4984], "sim_center": 0.852514822530951, "sim_f1": 0.6356711300662361, "type": "Implicit"}, {"id": "f3", "kind": "fan", "label": "dental implant cost without insurance", "pos": [0.5039, -0.2094, 0.4584], "sim_center": 0.835820394575589, "sim_f1": 0.6354992330383322, "type": "Related"}, {"id": "f4", "kind": "fan", "label": "implant dentist near me in Springfield", "pos": [0.0985, 0.9875, 0.3246], "sim_center": 0.8026539042216199, "sim_f1": 0.6456583344151332, "type": "Personalized"}, {"id": "f5", "kind": "fan", "label": "titanium vs zirconia dental implants", "pos": [0.4773, -0.053, 0.1996], "sim_center": 0.8270650381926139, "sim_f1": 0.6419247652791508, "type": "Entity"}, {"id": "f6", "kind": "fan", "label": "is getting a tooth implant worth the money", "pos": [0.7459, -0.079, 0.0499], "sim_center": 0.8895724153712656, "sim_f1": 0.7223464559732344, "type": "Reformulation"}, {"id": "f7", "kind": "fan", "label": "newest dental implant options this year", "pos": [0.3923, -0.0385, 0.1757], "sim_center": 0.838952328125314, "sim_f1": 0.6530142324451296, "type": "Recent"}, {"id": "pA", "kind": "passage", "label": "Generic services blurb", "pos": [-0.3312, 0.1789, -0.162], "sim_center": 0.7171753785386605, "sim_f1": 0.6473788875297231}, {"id": "pB", "kind": "passage", "label": "Implant or bridge, answered", "pos": [0.1565, 0.2428, -0.8252], "sim_center": 0.7699098624377925, "sim_f1": 0.8189086005497196}, {"id": "p3", "kind": "passage", "label": "How long implants last", "pos": [0.3656, -0.3036, 0.2625], "sim_center": 0.7685454976247557, "sim_f1": 0.6303157607431034}, {"id": "p4", "kind": "passage", "label": "Implant cost, line by line", "pos": [0.3094, -0.2783, 0.1108], "sim_center": 0.7790278173036816, "sim_f1": 0.6507899028555666}, {"id": "p5", "kind": "passage", "label": "What implant surgery feels like", "pos": [0.1631, -0.2071, -0.3249], "sim_center": 0.7387824227930366, "sim_f1": 0.6410070062645447}, {"id": "p6", "kind": "passage", "label": "Zirconia or titanium", "pos": [0.2052, -0.1078, -0.0195], "sim_center": 0.7906827995309295, "sim_f1": 0.6506753209674182}, {"id": "p7", "kind": "passage", "label": "Whitening options", "pos": [-0.5877, -0.4092, -0.0661], "sim_center": 0.6424610312632227, "sim_f1": 0.5550738358459159}, {"id": "p8", "kind": "passage", "label": "Office hours and parking", "pos": [-0.7156, -0.2658, -0.0464], "sim_center": 0.5844063832698891, "sim_f1": 0.5108139380461171}, {"id": "p9", "kind": "passage", "label": "Kids' cleanings", "pos": [-0.7731, -0.2408, -0.0671], "sim_center": 0.6028238602641476, "sim_f1": 0.5233647154157302}, {"id": "s1", "kind": "page", "label": "Home", "pos": [-0.4747, 0.9072, 0.2762], "sim_center": 0.7081948789136927, "sim_f1": 0.5944916930734327}, {"id": "s2", "kind": "page", "label": "Dental Implants", "pos": [0.0388, 0.8668, 0.3675], "sim_center": 0.7763273196178655, "sim_f1": 0.6164044359632852}, {"id": "s3", "kind": "page", "label": "Crowns", "pos": [-0.3659, -0.087, -0.0306], "sim_center": 0.6750250215248106, "sim_f1": 0.5916001448463536}, {"id": "s4", "kind": "page", "label": "Insurance and payment", "pos": [-0.4085, -0.285, 0.1661], "sim_center": 0.6861967986993682, "sim_f1": 0.5706910198804038}, {"id": "s5", "kind": "page", "label": "Meet the team", "pos": [-0.615, 0.777, 0.1889], "sim_center": 0.6509327995128553, "sim_f1": 0.5373871043268471}, {"id": "s6", "kind": "page", "label": "Emergency care", "pos": [-0.5508, -0.1075, -0.0345], "sim_center": 0.6444307752921954, "sim_f1": 0.5511481912544809}, {"id": "s7", "kind": "page", "label": "Teeth whitening", "pos": [-0.7071, -0.2407, 0.1217], "sim_center": 0.6261587239557356, "sim_f1": 0.5288739240477431}, {"id": "s8", "kind": "page", "label": "Invisalign", "pos": [-0.5318, -0.0933, 0.1322], "sim_center": 0.650380537370542, "sim_f1": 0.5387341220193363}, {"id": "s9", "kind": "page", "label": "Cleanings and exams", "pos": [-0.6656, -0.24, 0.0663], "sim_center": 0.6405107421195666, "sim_f1": 0.5569836619011636}, {"id": "s10", "kind": "page", "label": "Holiday hours", "pos": [-0.7611, -0.2908, -0.0419], "sim_center": 0.5610914393073771, "sim_f1": 0.4694457986807562}, {"id": "n1", "kind": "newpage", "label": "Implant or bridge for a back tooth?", "pos": [0.2903, 0.2091, -1.0], "sim_center": 0.7895046315737628, "sim_f1": 0.913795210715501}, {"id": "n2", "kind": "newpage", "label": "How long do dental implants last?", "pos": [0.4091, -0.3658, 0.3774], "sim_center": 0.793434005044192, "sim_f1": 0.6104633864371873}, {"id": "n3", "kind": "newpage", "label": "Dental implant cost without insurance", "pos": [0.4823, -0.209, 0.2595], "sim_center": 0.8138143977521836, "sim_f1": 0.6459986318019224}, {"id": "n4", "kind": "newpage", "label": "The complete guide to replacing a missing tooth", "pos": [0.2957, -0.0638, -0.5992], "sim_center": 0.7628797748133198, "sim_f1": 0.7399226116867604}, {"id": "n5", "kind": "newpage", "label": "Sedation for dental implant surgery", "pos": [0.1609, -0.138, -0.2535], "sim_center": 0.7125856049638647, "sim_f1": 0.5951284334307934}]};
+const DUR=96, W=1920, H=1080;
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const eout=t=>1-Math.pow(1-t,3);
+const back=t=>{const c=1.7;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+const seg=(t,a,d)=>clamp((t-a)/d);
+const fade=(t,a,b,d=.7)=>Math.min(seg(t,a,d),1-seg(t,b-d,d));   // 0..1 visible between a and b
+const lerp=(a,b,s)=>a+(b-a)*s;
+
+// ---------- three ----------
+const renderer=new THREE.WebGLRenderer({canvas:$('cv'),antialias:true,alpha:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(1);renderer.setSize(W,H,false);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,W/H,.1,200);
+scene.fog=new THREE.Fog(0x0A0A0B,12,34);
+const glowTex=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');
+  const r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.18,'rgba(255,255,255,.55)');r.addColorStop(.5,'rgba(255,255,255,.12)');r.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=r;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)})();
+const C={mag:new THREE.Color('#FF2D8F'),blue:new THREE.Color('#29ABE2'),sky:new THREE.Color('#7DD3FC'),grey:new THREE.Color('#6B7383'),white:new THREE.Color('#E8EAEE'),green:new THREE.Color('#22C55E')};
+const P=p=>new THREE.Vector3(p[0]*3.2,p[1]*2.4,p[2]*3.2);
+
+// dust + floor
+(()=>{const n=700,g=new THREE.BufferGeometry(),a=new Float32Array(n*3);let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};
+  for(let i=0;i<n;i++){const r=15+rnd()*11,th=rnd()*Math.PI*2,ph=Math.acos(2*rnd()-1);a[i*3]=r*Math.sin(ph)*Math.cos(th);a[i*3+1]=r*Math.cos(ph)*.6;a[i*3+2]=r*Math.sin(ph)*Math.sin(th)}
+  g.setAttribute('position',new THREE.BufferAttribute(a,3));scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x6B7383,size:.16,map:glowTex,transparent:true,opacity:.8,depthWrite:false,blending:THREE.AdditiveBlending})))})();
+const floor=new THREE.PolarGridHelper(7,16,6,64,0x2A2F3A,0x1C2028);floor.position.y=-2.6;floor.material.transparent=true;floor.material.opacity=.55;scene.add(floor);
+
+const items={};
+DATA.items.forEach(it=>{
+  const g=new THREE.Group();
+  const isPage=it.kind==='page'||it.kind==='newpage';
+  const core=new THREE.Mesh(isPage?new THREE.BoxGeometry(.13,.13,.13):new THREE.SphereGeometry(it.kind==='query'?.11:.065,24,16),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true}));
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));
+  glow.scale.setScalar(it.kind==='query'?1.3:.7);
+  g.add(core);g.add(glow);scene.add(g);
+  const lb=document.createElement('div');lb.className='lb'+(it.kind==='query'?' q':isPage?' sm':'');$('labels').appendChild(lb);
+  items[it.id]=Object.assign(it,{g,core,glow,home:P(it.pos),lb,col:new THREE.Color()});
+});
+const fans=DATA.items.filter(i=>i.kind==='fan').map(i=>i.id);
+const passes=DATA.items.filter(i=>i.kind==='passage').map(i=>i.id);
+const pages=DATA.items.filter(i=>i.kind==='page').map(i=>i.id);
+const news=DATA.items.filter(i=>i.kind==='newpage').map(i=>i.id);
+const centerPos=P(DATA.center);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(.32,.018,12,64),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true}));ring.position.copy(centerPos);scene.add(ring);
+const centerDot=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true}));centerDot.position.copy(centerPos);scene.add(centerDot);
+const cLabel=document.createElement('div');cLabel.className='lb';$('labels').appendChild(cLabel);cLabel.innerHTML='<em>Target</em>Center of the patient searches';
+function mkLine(color){const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const l=new THREE.Line(g,new THREE.LineBasicMaterial({color,transparent:true,opacity:0}));scene.add(l);return l}
+function setLine(l,a,b,op){const p=l.geometry.attributes.position;p.setXYZ(0,a.x,a.y,a.z);p.setXYZ(1,b.x,b.y,b.z);p.needsUpdate=true;l.material.opacity=op;l.visible=op>.001}
+const fanLines=fans.map(()=>mkLine(0x29ABE2));
+const lineB=mkLine(0x22C55E),lineA=mkLine(0x8A91A2);
+const pageLines=pages.concat(news).map(()=>mkLine(0x3A404C));
+
+// ---------- timeline ----------
+const SCENES=[
+  {t:0, k:'',t2:''},
+  {t:7, k:'01 · A question',t2:'A patient asks a question. AI search turns it into a point in <b>meaning space</b>: where it sits is what it means.'},
+  {t:17,k:'02 · Fan-out',t2:'Then it quietly fans out. One question becomes many related searches the patient never sees.'},
+  {t:31,k:'03 · Passages',t2:'Every passage on every page lands in the same space. Text about the same thing lands close together.'},
+  {t:45,k:'04 · Head to head',t2:'For "implant vs bridge for a back tooth", the specific answer scores <b>0.82</b>. The generic services blurb scores 0.65. The closer passage gets quoted.'},
+  {t:60,k:'05 · The whole site',t2:'OQ\'s Relevance Analyzer does this for a whole website: it scores every page against the <b>center</b> of the target searches.'},
+  {t:74,k:'06 · The calendar',t2:'Five new calendar pages land right where patients are searching. The score updates as each one arrives.'},
+  {t:88,k:'',t2:''}];
+$('steps').innerHTML=SCENES.slice(1,7).map(()=>'<i></i>').join('');
+const fB=items.f1, pA=items.pA, pB=items.pB;
+const focus=fB.home.clone().add(pA.home).add(pB.home).multiplyScalar(1/3);
+const qCluster=new THREE.Vector3();fans.concat(['q0']).forEach(id=>qCluster.add(items[id].home));qCluster.multiplyScalar(1/8);
+const CAM=[
+  {t:0, tg:new THREE.Vector3(0,0,0),r:13,el:20,az:.5},
+  {t:7, tg:items.q0.home.clone(),r:5.5,el:12,az:.25},
+  {t:17,tg:qCluster.clone(),r:6.6,el:18,az:.05},
+  {t:31,tg:new THREE.Vector3(.2,0,-.3),r:9,el:24,az:-.2},
+  {t:45,tg:focus,r:5.2,el:12,az:.74},
+  {t:60,tg:new THREE.Vector3(-.2,.25,0),r:9,el:22,az:.02},
+  {t:74,tg:new THREE.Vector3(0,.1,-.5),r:9.6,el:20,az:.12},
+  {t:88,tg:new THREE.Vector3(0,0,0),r:12.5,el:24,az:.35}];
+const DRIFT=.028;
+function camAt(t){
+  let tg=CAM[0].tg.clone(),r=CAM[0].r,el=CAM[0].el,az=CAM[0].az-DRIFT*6;
+  for(const k of CAM.slice(1)){if(t<k.t)break;const s=eio(seg(t,k.t,4));tg.lerp(k.tg,s);r=lerp(r,k.r,s);el=lerp(el,k.el,s);az=lerp(az,k.az-DRIFT*(k.t+6),s)}
+  az+=DRIFT*t;
+  const e=el*Math.PI/180;
+  camera.position.set(tg.x+r*Math.cos(e)*Math.sin(az),tg.y+r*Math.sin(e),tg.z+r*Math.cos(e)*Math.cos(az));
+  camera.lookAt(tg);camera.updateMatrixWorld();
+}
+const v3=new THREE.Vector3();
+let LQ=[];
+function place(lb,pos,op,html){
+  if(op<.01){lb.style.opacity=0;return}
+  v3.copy(pos).project(camera);
+  if(v3.z>1){lb.style.opacity=0;return}
+  if(html!==undefined&&lb._h!==html){lb.innerHTML=html;lb._h=html}
+  LQ.push({lb,op,x:(v3.x*.5+.5)*W,y:(-v3.y*.5+.5)*H});
+}
+const leaders=$('leaders'),LP=[];
+function layoutLabels(){
+  const boxes=[];let n=0;
+  LQ.forEach(q=>{
+    const w=q.lb.offsetWidth,h=q.lb.offsetHeight;let yb=q.y-14;
+    for(let k=0;k<30;k++){const hit=boxes.find(b=>Math.abs(b.x-q.x)<(b.w+w)/2+6&&yb>b.yb-b.h-4&&yb-h<b.yb+4);if(!hit)break;yb=hit.yb-hit.h-6}
+    boxes.push({x:q.x,w,h,yb});
+    q.lb.style.opacity=q.op;q.lb.style.left=q.x+'px';q.lb.style.top=yb+'px';
+    if(q.y-14-yb>6){let l=LP[n];if(!l){l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('stroke','#5A6170');l.setAttribute('stroke-width','1');leaders.appendChild(l);LP[n]=l}
+      l.setAttribute('x1',q.x);l.setAttribute('y1',q.y-6);l.setAttribute('x2',q.x);l.setAttribute('y2',yb);l.style.opacity=q.op*.8;n++}
+  });
+  for(let k=n;k<LP.length;k++)LP[k].style.opacity=0;
+  LQ=[];
+}
+function show(it,pos,scale,color,op,glowOp){
+  it.g.position.copy(pos);it.g.visible=op>.01;it.core.scale.setScalar(Math.max(.001,scale));
+  it.core.material.color.copy(color);it.core.material.opacity=op;
+  it.glow.material.color.copy(color);it.glow.material.opacity=op*(glowOp??.75);it.glow.scale.setScalar((it.kind==='query'?1.3:.7)*Math.max(.001,scale));
+}
+const tmp=new THREE.Color(),tp=new THREE.Vector3();
+function siteAt(n){ // live score with the first n calendar pages added
+  const list=pages.concat(news.slice(0,n)).map(id=>items[id].sim_center);
+  return{mean:list.reduce((a,b)=>a+b,0)/list.length,inside:list.filter(x=>x>=.7).length,total:list.length}}
+
+window.renderAt=function(t){
+  camAt(t);
+  // title + end
+  $('title').style.opacity=fade(t,.3,6.6,1);
+  $('end').style.opacity=seg(t,88.6,1.2);
+  // captions
+  const si=SCENES.reduce((a,s,i)=>t>=s.t?i:a,0),sc=SCENES[si],nx=(SCENES[si+1]||{t:DUR}).t;
+  if($('ct')._s!==si){$('ct').innerHTML=sc.t2;$('ck').textContent=sc.k;$('ct')._s=si}
+  $('cap').style.opacity=sc.t2?fade(t,sc.t+.6,nx-.2,.6):0;
+  $('cap').style.transform=`translateX(-50%) translateY(${(1-seg(t,sc.t+.6,.8))*16}px)`;
+  [...$('steps').children].forEach((d,i)=>d.classList.toggle('on',i<si&&si<7));
+  $('steps').style.opacity=fade(t,7,88.4);
+  const dimOld=1-.72*seg(t,60,2);   // queries/passages recede for the site view
+  const endDim=1-.35*seg(t,88.6,1.2);
+
+  // question
+  const q=items.q0,qa=seg(t,8,.9);
+  const h2h=1-.85*fade(t,45,60.5,1.2);
+  show(q,q.home,back(qa)*(1+.12*Math.sin(t*2.4)*(t<17?1:0)),C.mag,qa*Math.max(dimOld,.45)*endDim*h2h,.9);
+  place(q.lb,q.home,fade(t,8.6,59.6)*h2h,'<em>The patient types</em>'+q.label+'?');
+
+  // fan-out
+  fans.forEach((id,k)=>{const it=items[id],a=18+k*.95,s=eout(seg(t,a,1.5));
+    tp.copy(q.home).lerp(it.home,s);
+    const op=seg(t,a,.3)*dimOld*endDim*(t>45&&t<60&&id!=='f1'?.35:1);
+    show(it,tp,.7+.3*s,id==='f1'&&t>45&&t<60?C.blue:C.blue,op,.7);
+    setLine(fanLines[k],q.home,tp,.42*op*(1-seg(t,44,1)));
+    place(it.lb,tp,seg(t,a+1.2,.6)*(1-seg(t,43.5,1))+(id==='f1'?fade(t,46,59.6):0),'<em>'+it.type+'</em>'+it.label);
+  });
+
+  // passages rain in
+  passes.forEach((id,k)=>{const it=items[id],a=32+k*.75,s=back(seg(t,a,1.3));
+    tp.copy(it.home);tp.y+=(1-s)*4.5;
+    const rel=it.sim_center>=.7;
+    let col=rel?C.sky:C.grey,op=seg(t,a,.35)*dimOld*endDim,sc=1;
+    if(t>45&&t<61){ // head to head
+      if(id==='pB'){tmp.copy(C.sky).lerp(C.green,seg(t,51.5,.8));col=tmp;sc=1+.5*seg(t,51.5,.6)+.12*Math.sin(t*5)*seg(t,52,.5)}
+      else if(id==='pA'){sc=1;op*=1-.45*seg(t,51.5,.8)}
+      else op*=1-.75*seg(t,45,1.2);
+    }
+    show(it,tp,sc,col,op,.7);
+    let lop=0,html=it.label;
+    if(['pA','pB','p7','p8'].includes(id))lop=fade(t,a+1,44.6);
+    if(id==='pA'||id==='pB'){const sv=it.sim_f1*eout(seg(t,48.2,1.6));lop=Math.max(lop,fade(t,46.5,59.6));
+      if(t>46)html=it.label+'<span class="sc'+(id==='pB'&&t>51.5?' g':'')+'">'+sv.toFixed(2)+'</span>'+(id==='pB'&&t>52?' <span class="sc g">quoted</span>':'');}
+    place(it.lb,tp,lop,html);
+  });
+  setLine(lineB,fB.home,tp.copy(fB.home).lerp(pB.home,eio(seg(t,46.5,1.6))),.9*fade(t,46.5,60.4));
+  setLine(lineA,fB.home,new THREE.Vector3().copy(fB.home).lerp(pA.home,eio(seg(t,47,1.6))),.6*fade(t,47,60.4)*(1-.5*seg(t,51.5,.8)));
+
+  // the site
+  const ca=seg(t,61,1);
+  ring.material.opacity=centerDot.material.opacity=ca*endDim;ring.visible=centerDot.visible=ca>.01;
+  ring.rotation.set(Math.PI/2,0,t*.6);ring.scale.setScalar(1+.08*Math.sin(t*2.2));
+  place(cLabel,centerPos,fade(t,61.6,87.8)*.95);
+  const scored=seg(t,68,1.2);
+  pages.forEach((id,k)=>{const it=items[id],a=62+k*.38,s=eout(seg(t,a,1.4));
+    tp.copy(it.home);tp.x-=(1-s)*5;
+    tmp.copy(C.white).lerp(it.sim_center>=.7?C.green:C.grey,scored);
+    show(it,tp,.9,tmp,seg(t,a,.3)*endDim,.6);
+    setLine(pageLines[k],centerPos,it.home,.35*seg(t,68,1)*(1-seg(t,87,1.2))*(it.sim_center>=.7?1.6:1));
+    place(it.lb,tp,fade(t,a+.9,87.8)*.9,it.label+(t>68.6?' <span class="sc'+(it.sim_center>=.7?' g':'')+'">'+it.sim_center.toFixed(2)+'</span>':''));
+  });
+  // calendar pages fly in
+  let landed=0;
+  news.forEach((id,k)=>{const it=items[id],a=75.5+k*1.9,s=eio(seg(t,a,1.7));
+    tp.copy(camera.position).lerp(it.home,s);
+    if(s>=1)landed++;
+    tmp.copy(C.mag).lerp(C.green,seg(t,a+1.7,.5));
+    show(it,tp,1+.6*(1-seg(t,a+1.7,.6))*seg(t,a+1.4,.3),tmp,seg(t,a,.2)*endDim,.9);
+    setLine(pageLines[pages.length+k],centerPos,it.home,.55*seg(t,a+1.7,.6)*(1-seg(t,87,1.2)));
+    place(it.lb,tp,seg(t,a+1.5,.5)*(1-seg(t,87.8,.7)),'<em style="color:#FF2D8F">New calendar page</em>'+it.label+' <span class="sc g">'+it.sim_center.toFixed(2)+'</span>');
+  });
+  // panel
+  $('panel').style.opacity=fade(t,66,88.2,.8);$('panel').style.transform=`translateX(${(1-eout(seg(t,66,.9)))*40}px)`;
+  const base=siteAt(0),live=siteAt(landed),prev=siteAt(Math.max(0,landed-1));
+  const lastLand=landed?75.5+(landed-1)*1.9+1.7:0;
+  const mean=t<68?base.mean*eout(seg(t,66.4,1.8)):landed?lerp(prev.mean,live.mean,eout(seg(t,lastLand,.8))):base.mean;
+  const cur=landed?live:base;
+  $('pn').textContent=mean.toFixed(2);
+  $('ps').innerHTML='<b>'+(t<68.6?0:cur.inside)+' of '+cur.total+'</b> pages at 0.70 or above';
+  $('pb').style.width=(t<68.6?0:cur.inside/cur.total*100)+'%';
+  layoutLabels();
+  renderer.render(scene,camera);
+};
+
+// fit the 1920x1080 stage to the window
+function fit(){const s=Math.min(innerWidth/W,innerHeight/H);$('stage').style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+const params=new URLSearchParams(location.search);
+if(params.has('t'))renderAt(+params.get('t'));
+else if(!params.has('capture')){let t0=performance.now();(function loop(now){const t=((now-t0)/1000)%(DUR+3);renderAt(Math.min(t,DUR));requestAnimationFrame(loop)})(t0);}
+window.FILM_READY=true;
+</script>
+</body>
+</html>

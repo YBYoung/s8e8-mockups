@@ -584,6 +584,12 @@ p{line-height:1.6}
 .shown .scan{animation:scan 1.8s var(--ease) .1s forwards}
 @keyframes scan{to{top:100%}}
 
+/* ---------- film ---------- */
+.film{width:min(100%,calc(58vh*16/9));aspect-ratio:16/9;margin:0 auto;border-radius:10px;overflow:hidden;background:#0A0A0B;box-shadow:0 18px 50px rgba(10,10,11,.28)}
+.film video{width:100%;height:100%;display:block;background:#0A0A0B}
+.filmfoot{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;width:min(100%,calc(58vh*16/9));margin:14px auto 0}
+.filmfoot .btn{text-decoration:none}
+
 /* ---------- responsive ---------- */
 @media (max-width:1000px){
   .flowmap{grid-template-columns:repeat(3,1fr);row-gap:26px}.flowmap .track{display:none}
@@ -866,6 +872,18 @@ p{line-height:1.6}
     <h2>How AI search reads a page</h2>
     <div class="bar grow"></div>
     <p>Before we build anything: how Google's AI Mode and other answer engines decide which pages to quote. It's the reason every calendar piece is written the way it is.</p>
+  </div>
+</section>
+
+<section class="scene" data-chap="AI search" data-id="film">
+  <div class="inner">
+    <div data-b="0" class="stg">
+      <div class="eyebrow">Watch first · 96 seconds</div>
+      <div class="ttl"><svg><use href="#i-eye"/></svg><h2>Inside meaning space</h2></div>
+      <p class="subt">A 3D tour of what AI search sees, built from real Gemini embeddings of example patient searches, passages and practice pages. The next slides break down each part.</p>
+    </div>
+    <div class="film" data-b="0"><video id="filmVid" src="media/meaning-space.mp4" poster="media/meaning-space-poster.jpg" controls muted playsinline preload="metadata"></video></div>
+    <div class="filmfoot" data-b="0"><span class="small">Positions are flattened from 3,072 dimensions to 3, so distances are approximate. Every score shown is the exact similarity.</span><a class="btn" href="meaning-space.html" target="_blank" rel="noopener">Open the live 3D version &rarr;</a></div>
   </div>
 </section>
 
@@ -1611,6 +1629,7 @@ p{line-height:1.6}
         <li><a href="https://builtin.com/articles/product-led-seo-eli-schwartz" target="_blank" rel="noopener">Eli Schwartz Talks SEO Misconceptions</a> (Built In): product-led SEO, the top-down questions.</li>
         <li>Eli Schwartz, <i>Product-Led SEO</i> (book).</li>
         <li><a href="https://lilyray.nyc/e-a-t-expertise-authoritativeness-trustworthiness/" target="_blank" rel="noopener">E-E-A-T: Experience, Expertise, Authoritativeness, and Trustworthiness</a> (Lily Ray).</li>
+        <li><i>Inside meaning space</i> (the film): example texts embedded with Google's gemini-embedding-001, projected to 3D with PCA, the same approach as OQ's Relevance Analyzer.</li>
         <li><a href="https://ipullrank.com/how-ai-mode-works" target="_blank" rel="noopener">How AI Mode Works</a> (Mike King, iPullRank): fan-out, vector embeddings, passage-level retrieval, pairwise ranking. His reading of Google patents, not confirmed internals.</li>
         <li><i>The Search Experience We Deserve</i>: our internal doc, linked in SEO 101 Lesson 2.</li>
       </ul></div>
@@ -1701,7 +1720,7 @@ p{line-height:1.6}
   document.getElementById('next').onclick=next;
   document.getElementById('prev').onclick=prev;
   document.addEventListener('keydown',e=>{
-    if(e.target.closest('input,textarea'))return;
+    if(e.target.closest('input,textarea,video'))return;
     if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){if((e.key===' '||e.key==='Enter')&&e.target.closest('button'))return;e.preventDefault();next()}
     else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
     else if(e.key==='Home')go(0,0);else if(e.key==='End')go(scenes.length-1,0);
@@ -2026,7 +2045,9 @@ p{line-height:1.6}
       document.getElementById('rAdd').textContent=calOn?'Remove the calendar':'Add this year\'s calendar';setTimeout(window.__updateR,calOn?500:0)};
   }
 
+  const fv=document.getElementById('filmVid');
   document.addEventListener('build',e=>{const {id,b}=e.detail;
+    if(fv){if(id==='film'){if(!fv._on){fv._on=true;try{fv.currentTime=0}catch(err){}fv.play().catch(()=>{})}}else if(fv._on){fv._on=false;fv.pause()}}
     if(vsvg)vsvg.classList.toggle('q-on',id==='vector'&&b>=2);
     if(rsvg){rsvg.classList.toggle('cone-on',id==='analyzer'&&b>=2);
       if(id==='analyzer'&&b>=2&&!rShown){rShown=true;rVal=0;window.__updateR()}
