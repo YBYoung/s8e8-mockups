@@ -67,7 +67,7 @@ canvas{position:absolute;inset:0}
     <div class="f">Average closeness of every page to the center of the target searches. 0.70 and up counts as close.</div></div>
   <div id="cap" class="ov"><div class="k" id="ck"></div><div class="t" id="ct"></div></div>
   <div id="steps" class="ov"></div>
-  <div id="title" class="ov"><h1>Inside<br><span>meaning space</span></h1><p>What AI search actually sees when a patient asks a question.</p><small>Real Gemini embeddings · the same model as OQ's Relevance Analyzer</small></div>
+  <div id="title" class="ov"><h1>Inside<br><span>meaning space</span></h1><p>What AI search actually sees when a patient asks a question.</p><small>Real Gemini embeddings · the same model as Opened Queries' Relevance Analyzer</small></div>
   <div id="end" class="ov"><h2>Answer the question.<br><span>Earn the visibility.</span></h2><p>Positions flattened from 3,072 dimensions to 3, so distances are approximate.<br>Every score shown is the exact cosine similarity. Example practice, real math.</p></div>
 </div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -129,12 +129,12 @@ const pageLines=pages.concat(news).map(()=>mkLine(0x3A404C));
 // ---------- timeline ----------
 const SCENES=[
   {t:0, k:'',t2:''},
-  {t:7, k:'01 · A question',t2:'A patient asks a question. AI search turns it into a point in <b>meaning space</b>: where it sits is what it means.'},
-  {t:17,k:'02 · Fan-out',t2:'Then it quietly fans out. One question becomes many related searches the patient never sees.'},
-  {t:31,k:'03 · Passages',t2:'Every passage on every page lands in the same space. Text about the same thing lands close together.'},
-  {t:45,k:'04 · Head to head',t2:'For "implant vs bridge for a back tooth", the specific answer scores <b>0.82</b>. The generic services blurb scores 0.65. The closer passage gets quoted.'},
-  {t:60,k:'05 · The whole site',t2:'OQ\'s Relevance Analyzer does this for a whole website: it scores every page against the <b>center</b> of the target searches.'},
-  {t:74,k:'06 · The calendar',t2:'Five new calendar pages land right where patients are searching. The score updates as each one arrives.'},
+  {t:7, k:'01 · A question',t2:'A patient asks a question. AI search turns it into a <b>point in space</b>, near other questions that mean the same thing.'},
+  {t:17,k:'02 · Fan-out',t2:'Behind the scenes, it also searches related questions. The patient never sees them, but they shape the answer.'},
+  {t:31,k:'03 · Passages',t2:'Every passage from every website lands in the same space. Passages about the same topic land close together.'},
+  {t:45,k:'04 · Head to head',t2:'For "implant vs bridge for a back tooth", the dentist\'s specific answer scores <b>0.82</b> out of 1. A generic services blurb scores 0.65. The closer answer gets quoted.'},
+  {t:60,k:'05 · The whole site',t2:'Opened Queries\' Relevance Analyzer measures how close every page on a website is to the <b>center</b> of what patients search for.'},
+  {t:74,k:'06 · The calendar',t2:'Each new calendar page lands right where patients are searching, and the site\'s score goes up.'},
   {t:88,k:'',t2:''}];
 $('steps').innerHTML=SCENES.slice(1,7).map(()=>'<i></i>').join('');
 const fB=items.f1, pA=items.pA, pB=items.pB;
