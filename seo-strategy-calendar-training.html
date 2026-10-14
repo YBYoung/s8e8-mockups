@@ -584,6 +584,26 @@ p{line-height:1.6}
 .shown .scan{animation:scan 1.8s var(--ease) .1s forwards}
 @keyframes scan{to{top:100%}}
 
+/* ---------- calendar review game ---------- */
+.practice{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;font-size:13.5px;color:var(--sub);margin-bottom:18px}
+.practice b{color:var(--ink)}
+.deck{max-width:640px;margin:0 auto 20px;text-align:center}
+.deckmeta{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-bottom:10px}
+.stack{min-height:118px}
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 22px;box-shadow:0 12px 32px rgba(17,20,28,.09);text-align:left;animation:cardIn .45s var(--ease);transition:transform .55s var(--ease),opacity .55s}
+.pcard .meta{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.pcard h4{margin:0;font-size:19px;line-height:1.35}
+.pcard.wrong{animation:shake .45s}
+.pcard.fly{opacity:0}
+@keyframes cardIn{from{opacity:0;transform:translateX(50px) rotate(2deg)}to{opacity:1;transform:none}}
+.choices{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.choices button{border:1px solid var(--line);background:var(--card);border-radius:6px;padding:10px 16px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--ink);transition:background .2s,transform .1s}
+.choices button:hover{background:var(--blue-bg)}.choices button:active{transform:translateY(1px)}
+.sfb{min-height:22px;margin-top:10px;font-size:13.5px;color:var(--red)}
+.bins3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bins3 .binz{min-height:160px}
+#bin-keep .in{background:var(--blue-bg)}#bin-opt .in{background:var(--chip)}#bin-swap .in{background:var(--mag-bg)}
+
 /* ---------- film ---------- */
 .film{width:min(100%,calc(58vh*16/9));aspect-ratio:16/9;margin:0 auto;border-radius:10px;overflow:hidden;background:#0A0A0B;box-shadow:0 18px 50px rgba(10,10,11,.28)}
 .film video{width:100%;height:100%;display:block;background:#0A0A0B}
@@ -603,7 +623,7 @@ p{line-height:1.6}
   .months{grid-template-columns:repeat(6,1fr)}
   .handoff{grid-template-columns:1fr}.flowarrow{display:none}
   .vrow{grid-template-columns:1fr}.vrow .arr{display:none}
-  .sortgame,.spotwrap,.qwrap,.duel{grid-template-columns:1fr}.patient{display:none}
+  .sortgame,.spotwrap,.qwrap,.duel,.bins3{grid-template-columns:1fr}.patient{display:none}
   .fan{aspect-ratio:auto}.fan svg{display:none}.fcenter{position:static;transform:none;width:auto;margin-bottom:8px}
   .fnode{position:static;transform:none;width:auto;margin-top:6px}.shown .fnode{animation:rise .5s var(--ease) forwards}.poolcol{order:-1}.binz{min-height:0}
   .results{grid-template-columns:1fr;justify-items:center;text-align:center}.revisit{justify-content:center}
@@ -1326,16 +1346,23 @@ p{line-height:1.6}
 <section class="scene" data-chap="The calendar" data-id="sort">
   <div class="inner">
     <div data-b="0" class="stg">
-      <div class="eyebrow">Try it · Sorting</div>
-      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Calendar or Optimization?</h2></div>
-      <p class="subt">Six pieces of work. Send each one where it belongs. One of them is a trick.</p>
+      <div class="eyebrow">Try it · Review a draft calendar</div>
+      <div class="ttl"><svg><use href="#i-grid"/></svg><h2>Keep, optimize, or swap?</h2></div>
+      <p class="subt">OQ just drafted these eight pieces. For each one, decide: keep it, send the work to Optimization instead, or swap the slot for a different topic (in OQ, that's Replace with different page).</p>
     </div>
-    <div class="sortgame" data-b="0">
-      <div class="binz" id="binCal"><h4>Content calendar · new pages</h4></div>
-      <div class="poolcol"><div class="sortmeta mono" id="sortCount">0 of 6 sorted</div><div class="pool" id="pool"></div>
-        <div class="callout" id="sortDone" hidden><b>All sorted.</b> If a page on the topic already exists, in any shape, it's Optimization. Every time.</div></div>
-      <div class="binz" id="binOpt"><h4>Optimization · existing pages</h4></div>
+    <div class="practice" data-b="0"><span class="tag">Practice notes</span><span>Example Dental, Springfield IL · <b>adults only</b> · focus: implants, cosmetic, sedation · existing pages include Veneers (290 words), Invisalign, Emergency Care (outdated hours)</span></div>
+    <div class="deck" data-b="0">
+      <div class="deckmeta mono" id="sortCount">Piece 1 of 8</div>
+      <div class="stack" id="stack"></div>
+      <div class="choices" id="choices"><button data-to="keep">Keep it</button><button data-to="opt">Optimization instead</button><button data-to="swap">Swap the topic</button></div>
+      <div class="sfb" id="sfb"></div>
     </div>
+    <div class="bins3" data-b="0">
+      <div class="binz" id="bin-keep"><h4>Keep · new pages</h4></div>
+      <div class="binz" id="bin-opt"><h4>Optimization instead</h4></div>
+      <div class="binz" id="bin-swap"><h4>Swap the topic</h4></div>
+    </div>
+    <div class="callout" id="sortDone" hidden><b>The pattern:</b> an existing page in any shape means Optimization. Wrong patients or off-strategy means swap the topic. New, wanted, and on-strategy means keep.</div>
   </div>
 </section>
 
@@ -1780,68 +1807,70 @@ p{line-height:1.6}
   const goRef=id=>{const k=sceneIdx(id);if(k>=0)go(k,maxB(scenes[k]))};
   const LABEL={keyword:'Keyword-led vs audience-led',eeat:'E-E-A-T',setup:'Setup Wizard',forum:'Forum research',synth:'Topic Opportunity Assessment',
     named:'Name the topics',pipeline:'What happens after you click',review:'Two review rounds',newonly:'New content only',audience:'Audience research',
-    map:'Who does what',fanout:'Query fan-out',vector:'Points in vector space',analyzer:'Relevance Analyzer',pairwise:'Head to head',voice:'Calendar voice',handoff:'Push to Production',spot:'Spot the problem'};
+    map:'Who does what',sort:'Review a draft calendar',fanout:'Query fan-out',vector:'Points in vector space',analyzer:'Relevance Analyzer',pairwise:'Head to head',voice:'Calendar voice',handoff:'Push to Production',spot:'Spot the problem'};
   const Q={
-    c1a:{q:'A practice wants more implant patients. Where does your strategy start?',
-      o:['Pull the highest-volume implant keywords and plan a page for each.','Who is the patient weighing an implant, and what do they need to know before they book?','Copy the structure of the top-ranking competitor\'s implant page.'],a:1,
-      w:['Keyword-first planning can bring traffic without bookings. Volume tells you how people phrase things, not who they are or what they\'re deciding.','Right. Start top-down: who are we trying to reach, and what are we creating for them? Keywords come after, to check the patient\'s language.','That\'s how you end up in the sea of sameness. The page needs what only this practice can say.'],ref:'keyword'},
-    c1b:{q:'On a dental page, which part of E-E-A-T matters most?',o:['Experience','Expertise','Trust'],a:2,
-      w:['Experience matters, and it\'s how we stand out, but it isn\'t the center.','Expertise matters, but Google says one letter matters more.','Right. Google says trust is the most important part, and dental is YMYL content, so it\'s held to the strictest bar.'],ref:'eeat'},
-    c2a:{q:'The client has no Search Console connected. What changes?',
-      o:['Nothing; OQ fills in the gaps.','Priority scoring falls back to estimated volume only, so weigh the priorities with that in mind.','You can\'t run the strategy at all.'],a:1,
-      w:['OQ can\'t invent Search Console data. A missing source weakens the evidence.','Right. Note what\'s missing, and say so when you present.','Search Console is optional in the wizard. You can run the strategy, with weaker evidence.'],ref:'setup'},
-    c2b:{q:'Forum research turns up this quote: "My cousin is a dentist lol." Keep it or discard it?',
-      o:['Keep it: it\'s from a real person.','Discard it: you couldn\'t hand it to a writer and say "write a page about this concern".','Keep it, but only if it mentions the client\'s city.'],a:1,
-      w:['Being real isn\'t enough. It has to be a patient concern a page could address.','Right. That\'s the writer test, and it\'s the bar OQ\'s quality pass uses.','OQ deliberately doesn\'t penalize quotes for not naming the city. Usefulness is the test, not location.'],ref:'forum'},
-    c2c:{q:'Demand for emergency care is strong, and the site has an outdated Emergency Care page. What\'s the move?',
-      o:['Add a new Emergency Care page to the calendar.','Update the existing page through Optimization.','Deprioritize it; the page already exists.'],a:1,
-      w:['An existing page on the topic means no new calendar piece, however weak it is. A new one would be a duplicate.','Right. The demand is real, the coverage is weak, and the fix is improving what\'s there.','Strong demand plus weak coverage is an opportunity. Don\'t drop it; fix the page.'],ref:'synth'},
-    c3a:{q:'The dentist insists on a sedation page this year. Where do you put it?',
-      o:['In the Additional guidance box.','In a Name the topics slot.','Add it by hand after the client approves.'],a:1,
-      w:['Today the guidance box doesn\'t protect a topic. The duplicate check can still cut it.','Right. Named topics are pinned: they skip the duplicate check and get placed first.','Then the client approves a plan without it. Must-haves go in before you generate.'],ref:'named'},
-    c3b:{q:'Generation finishes with "Calendar generated with 10 of 12 pieces you asked for." What does it mean?',
-      o:['Something crashed. Regenerate right away.','OQ cut ideas that overlapped existing pages and couldn\'t find enough fresh ones. Review the gap, then name topics or add some by hand.','Two pieces stay hidden until the client approves.'],a:1,
-      w:['Nothing crashed. OQ reports a shortfall instead of padding the plan with weak or duplicate topics.','Right. Read the X of Y every time.','Nothing is hidden. The calendar has 10 pieces.'],ref:'pipeline'},
-    c4a:{q:'The client never opens the review link. What happens?',
-      o:['The calendar stays stuck in review until someone notices.','A reminder goes out at day 7. If the deadline passes with no feedback, the calendar auto-approves.','OQ deletes the calendar at the deadline.'],a:1,
-      w:['Deadlines are built in. Nothing sits forever.','Right. You can also extend the deadline if the client needs more time.','Calendars are never deleted for missing a deadline.'],ref:'review'},
-    c4b:{q:'The calendar is out for review and you want to regenerate it. What do you need to know?',
-      o:['Just regenerate; the client\'s feedback carries over.','Regenerating is blocked during review, and cancelling the review deletes the client\'s feedback. Think first.','Send yourself a test email first.'],a:1,
+    c1a:{q:'A practice wants more implant patients. Your keyword tool shows "dental implants" gets ten times the searches of "implant vs bridge for a back tooth". What\'s the strongest first move?',
+      o:['Build the strategy around "dental implants", since that\'s where the volume is.','Start from who is weighing an implant and what they need to decide, then check which searches express that.','Target both terms on one page, so you catch the volume and the long tail at once.'],a:1,
+      w:['Volume tells you how many people phrase it that way, not who they are or what they\'re deciding. Head terms are also the most fought over.','Right. Who are we trying to reach, and what are we creating for them? Keywords come after, to check the patient\'s language.','One page chasing two different questions usually answers neither well. Each question deserves a focused answer.'],ref:'keyword'},
+    c1b:{q:'Which change does the most for E-E-A-T on a dental implant page?',
+      o:['Adding an author box with Dr. Lee\'s credentials to an otherwise generic page.','Dr. Lee explaining, in her own words, when she recommends an implant over a bridge.','Working "experienced", "trusted" and "expert" into the copy more often.'],a:1,
+      w:['Bios help, but they aren\'t a ranking factor on their own. The content still has to earn the trust.','Right. First-hand experience shown in the content itself is what builds trust. The bio then makes it visible.','Claiming expertise isn\'t the same as showing it.'],ref:'eeat'},
+    c2a:{q:'The client never connected Search Console, and the strategy still runs. What\'s the real cost?',
+      o:['None. OQ estimates the missing search data from GA4.','Priority scores lean on estimated volume only, so you flag that when you present.','Only the report is affected; topic clustering works exactly the same.'],a:1,
+      w:['GA4 shows visits, not the searches behind them. OQ can\'t invent Search Console data.','Right. Note what\'s missing and say so when you present.','Topic clustering groups Search Console searches. Without them it has far less to work with.'],ref:'setup'},
+    c2b:{q:'Forum research finds: "I got quoted $4,000 for one implant and my dentist just said it\'s standard. Is that normal??" Keep it or discard it?',
+      o:['Discard it: it\'s about price, and pages shouldn\'t get into pricing.','Keep it: it\'s a real cost worry a page could answer, even though it names no city.','Discard it: it doesn\'t mention the client\'s city, so it isn\'t local.'],a:1,
+      w:['Cost is one of the biggest things patients need answered before booking. A page can address it honestly.','Right. It passes the writer test: you could hand it to a writer and say "answer this".','OQ deliberately doesn\'t penalize quotes for leaving out the city. Usefulness is the test.'],ref:'forum'},
+    c2c:{q:'The assessment rates "emergency dentist" HIGH. The site already has an Emergency Care page with outdated hours, and the client asks for an "Emergency Dentist in Springfield" page on the calendar. What do you do?',
+      o:['Add the new service page: the client asked for it and the rating is HIGH.','Update the existing Emergency Care page through Optimization, and explain why to the client.','Add it as a blog article instead, so it doesn\'t compete with the service page.'],a:1,
+      w:['A new page on a topic the site already covers is a duplicate, whatever the rating. That\'s the conversation to have with the client.','Right. Real demand, weak coverage, and the fix is improving what\'s already there.','A blog on the same core topic still overlaps the existing page.'],ref:'synth'},
+    c3a:{q:'The dentist insists on a sedation page. You write that in Additional guidance and generate. The calendar comes back without it. Why?',
+      o:['OQ ignores the guidance box. Report it as a bug.','Guidance doesn\'t protect topics, so the duplicate check cut it. Use a Name the topics slot.','Sedation was rated LOW, and LOW topics can\'t go on a calendar.'],a:1,
+      w:['It didn\'t ignore it. Guidance shapes the draft, but the duplicate check can still remove a topic that came from it.','Right. Named topics are pinned: they skip the duplicate check and go in first.','A named topic goes in whatever its rating. Your judgment can override the score.'],ref:'named'},
+    c3b:{q:'Generation ends with "Calendar generated with 10 of 12 pieces you asked for." What happened?',
+      o:['The AI hit a time limit. Regenerate and it usually fills all 12.','Ideas overlapping existing or planned pages were cut, and the extra round found too few fresh ones.','Two pieces are held back as internal notes until the quality review passes them.'],a:1,
+      w:['It isn\'t a timeout. Regenerating with the same inputs tends to hit the same overlaps; name topics instead.','Right. OQ reports a shortfall rather than padding the plan with weak or duplicate ideas.','The quality review flags pieces; it never holds them back.'],ref:'pipeline'},
+    c4a:{q:'The client opens the review link on day 3, flags two pieces, but never presses submit. The deadline passes. What happens?',
+      o:['The calendar auto-approves at the deadline, as if no flags were left.','They get a nudge and 3 more days; after that their comments count as submitted.','Nothing. It stays in review until someone presses submit.'],a:1,
+      w:['Auto-approval at the deadline is for clients who left no feedback at all. Unsubmitted comments get a grace period first.','Right. Their flags aren\'t lost, and the calendar doesn\'t sit forever.','Deadlines are built in. Nothing waits forever.'],ref:'review'},
+    c4b:{q:'The calendar is out for client review and you realize two pieces are weak. What do you need to know before regenerating?',
+      o:['Nothing special. The client\'s flags carry over to the new pieces.','Regenerating is blocked during review, and cancelling the review deletes the client\'s feedback.','Send yourself a test version of the calendar email first to check it.'],a:1,
       w:['Regenerating is blocked while the calendar is out for review.','Right. Usually it\'s better to work the feedback queue than to start over.','There\'s no test send for calendars: a "test" would go to the real client.'],ref:'review'},
-    c5a:{q:'An AI answer quotes a practice\'s page, but that page doesn\'t rank for the patient\'s question. How?',
-      o:['Luck; AI answers are random.','One section of the page best answered one of the hidden follow-up searches the AI ran.','The practice paid for the placement.'],a:1,
-      w:['Not random. The AI quotes the passage that best supports each part of its answer.','Right. That\'s fan-out: the original ranking matters less than answering the follow-ups well.','AI answers don\'t sell citations.'],ref:'fanout'},
-    c5b:{q:'In vector space, what makes a passage relevant to a question?',
-      o:['It repeats the keyword many times.','It points in nearly the same direction as the question (high cosine similarity).','It\'s the longest passage on the page.'],a:1,
-      w:['Repetition doesn\'t change what a passage means. Meaning is what gets measured.','Right. The smaller the angle, the higher the score.','Length doesn\'t matter; only the direction does.'],ref:'vector'},
-    f1:{q:'What are Eli Schwartz\'s two top-down questions?',
-      o:['What has the most volume? What\'s easiest to rank for?','Who am I trying to reach? What am I creating?','What are competitors doing? How do we do more of it?'],a:1,
-      w:['That\'s the keyword-first trap he argues against.','Right. Answer these before you trust any keyword list.','Copying competitors leads straight to the sea of sameness.'],ref:'keyword'},
-    f2:{q:'The practice has a 290-word veneers page. Should "Veneers" be a calendar item?',
-      o:['Yes. It\'s thin, so it needs a new page.','No. An existing page means Optimization, however thin it is.','Yes, if the client asks for it.'],a:1,
-      w:['Thin or not, it exists. A new page would duplicate it.','Right. The calendar is new content only.','Even then, an existing topic gets fixed through Optimization, not added to the calendar.'],ref:'newonly'},
-    f3:{q:'Which persona label follows OQ\'s rules?',o:['Sarah, 42, mom of two','The Cautious Comparer','Dental implant searchers'],a:1,
-      w:['OQ never gives a persona a made-up first name.','Right. A descriptive archetype label.','That\'s a keyword segment, not a person.'],ref:'audience'},
-    f4:{q:'Which head query is written the way OQ wants?',
-      o:['dental implants cost','best dentist near me','how much is one implant if my insurance won\'t cover it'],a:2,
-      w:['That\'s keyword-tool phrasing.','Too generic, and it reads like a tool output.','Right. Exactly how a real patient types it.'],ref:'audience'},
-    f5:{q:'In the Topic Opportunity Assessment, HIGH opportunity means:',
-      o:['The topic has the highest search volume.','Strong audience demand plus weak or no site coverage.','The client asked for it.'],a:1,
-      w:['Volume alone isn\'t opportunity if the site already covers the topic well.','Right. Demand the site isn\'t serving yet.','Client priorities get a scoring boost, but that\'s not the definition.'],ref:'synth'},
-    f6:{q:'Who sends the calendar to the client?',o:['The Marketing Strategist','The SEO Specialist','OQ, automatically when it\'s generated'],a:1,
-      w:['The MS owns the relationship but doesn\'t send calendars.','Right.','Generation saves a draft. Nothing reaches the client until you send it.'],ref:'map'},
-    f7:{q:'Which line follows our calendar voice?',
-      o:['The client mentioned fillings as a priority.','This page will help us rank for dental implants.','You named fillings as a priority service.'],a:2,
-      w:['Never talk about the client in the third person.','We say "earn visibility", never "rank for".','Right. You and we, written to the client.'],ref:'voice'},
-    f8:{q:'After approval, what does Push to Production create?',
-      o:['A new draft calendar for next year.','One production piece per item, each with an Asana task, keeping the item\'s month and angle.','Published pages on the client\'s site.'],a:1,
-      w:['Production works from the approved calendar; it doesn\'t make a new one.','Right. And it never duplicates a piece that already exists.','Publishing comes much later, after drafting and client review.'],ref:'handoff'},
+    c5a:{q:'A practice\'s implant page isn\'t in the top 10 for "is a dental implant worth it", yet AI Mode quotes it. What\'s the most likely reason?',
+      o:['AI Mode reads from a separate index that ignores regular rankings.','One section best answered a follow-up search the AI ran behind the scenes.','AI Mode favors smaller sites to keep its answers diverse.'],a:1,
+      w:['It draws on the same kind of index; what changes is which searches it runs and which passages win.','Right. That\'s fan-out: ranking for the original question matters less than answering the follow-ups well.','There\'s no small-site bonus. The passage won on merit.'],ref:'fanout'},
+    c5b:{q:'Passage A says "implant" 12 times. Passage B says it twice but directly answers the patient\'s question. Which sits closer to that question in meaning space?',
+      o:['A, because repeating the word strengthens the signal.','B, because the score measures meaning, not word counts.','Neither; they score about the same because both are about implants.'],a:1,
+      w:['Embeddings capture meaning. Repeating a word barely moves the point.','Right. In the film, a specific answer scored 0.82 against a generic blurb\'s 0.65.','Being on-topic isn\'t enough. Answering the specific question is what moves a passage closer.'],ref:'vector'},
+    f1:{q:'Which question best reflects Eli Schwartz\'s product-led approach to planning a calendar?',
+      o:['Which keywords can we realistically rank for this quarter?','Who are we trying to reach, and what are we creating for them?','Which topics are competitors covering that we aren\'t?'],a:1,
+      w:['How winnable a keyword is matters later. It isn\'t where strategy starts.','Right. Answer this before you trust any keyword list.','Competitor gaps are useful input, but copying their map leads to the sea of sameness.'],ref:'keyword'},
+    f2:{q:'Which of these is a valid NEW calendar item for a practice with a thin 290-word Veneers page?',
+      o:['Rewriting the Veneers page into a full, 1,500-word guide.','"Veneers vs bonding for chipped front teeth", which no page on the site covers.','"Veneers in Springfield, IL", alongside the existing Veneers page.'],a:1,
+      w:['Rewriting an existing page is Optimization, however thin the page is.','Right. A specific question the site doesn\'t answer yet is new content.','A city variation on a topic the site already covers is still a duplicate.'],ref:'newonly'},
+    f3:{q:'Which persona label follows OQ\'s rules?',o:['The Cautious Comparer','Sarah, 42, mom of two','Dental implant searchers, 35 to 54'],a:0,
+      w:['Right. A descriptive archetype, not a made-up person.','OQ never gives a persona a made-up first name.','That\'s an audience segment, not a person with drivers and fears.'],ref:'audience'},
+    f4:{q:'Which head query is written "EXACTLY as real patients type them"?',
+      o:['implant cost Springfield IL','how much is one implant if my insurance won\'t cover it','affordable dental implants near me'],a:1,
+      w:['That\'s keyword-tool shorthand.','Right. Patients describe their situation.','That reads like ad copy, not a patient\'s question.'],ref:'audience'},
+    f5:{q:'The Topic Opportunity Assessment rates a topic HIGH. What does that tell you?',
+      o:['Patients search for it a lot, and the site barely covers it.','It has the highest search volume of all the topics.','The client listed it as a priority on the intake form.'],a:0,
+      w:['Right. Demand the site isn\'t serving yet.','Volume alone isn\'t opportunity if the site already covers the topic well.','Client priorities get a scoring boost, but that isn\'t what HIGH means.'],ref:'synth'},
+    f6:{q:'Who sends the calendar to the client for review?',o:['The Marketing Strategist, since they own the relationship.','OQ, automatically, once generation finishes.','The SEO Specialist.'],a:2,
+      w:['The MS owns the relationship but doesn\'t send calendars.','Generation saves a draft. Nothing reaches the client until someone sends it.','Right.'],ref:'map'},
+    f7:{q:'Which line follows our calendar voice rules?',
+      o:['This page will help us rank for dental implants in Springfield.','You named fillings as a priority, so this page answers what patients ask first.','The client mentioned fillings as a priority service.'],a:1,
+      w:['We say "earn visibility", never "rank for".','Right. You and we, written to the client.','Never refer to the client in the third person.'],ref:'voice'},
+    f8:{q:'After approval, what does Push to Production create for each calendar item?',
+      o:['A production piece plus an Asana task, keeping its month and strategic angle.','A published page on the client\'s site, ready for their review.','A finished first draft for every item, written at once.'],a:0,
+      w:['Right. And it never duplicates a piece that already exists.','Publishing comes much later, after drafting and client review.','Pieces start queued. Drafting happens in production, piece by piece.'],ref:'handoff'},
   };
   const TICK='<svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>',CROSS='<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   function renderMCQ(el,id,final,onDone){
     const d=Q[id];
     el.innerHTML='<div class="mk">'+(el.dataset.kicker||'Question')+'</div><h3>'+d.q+'</h3><div class="opts">'+
-      d.o.map((t,k)=>'<button class="opt" data-k="'+k+'"><span class="ol">'+'ABC'[k]+'</span><span>'+t+'</span>'+(k===d.a?TICK:CROSS)+'</button>').join('')+
+      shuffle(d.o.map((t,k)=>k)).map((k,pos)=>'<button class="opt" data-k="'+k+'"><span class="ol">'+'ABC'[pos]+'</span><span>'+d.o[k]+'</span>'+(k===d.a?TICK:CROSS)+'</button>').join('')+
       '</div><div class="why"><div><p></p></div></div>';
     const opts=[...el.querySelectorAll('.opt')],why=el.querySelector('.why'),p=why.querySelector('p');
     opts.forEach(b=>b.onclick=()=>{
@@ -1867,28 +1896,35 @@ p{line-height:1.6}
     document.body.appendChild(c);setTimeout(()=>c.remove(),4000);
   }
 
-  // ---------- sorting game ----------
+  // ---------- review a draft calendar (keep / optimize / swap) ----------
   const SORT=[
-    {t:'Veneers: our 290-word page needs a rewrite',a:'opt',w:'It already exists. However thin, that\'s Optimization.'},
-    {t:'Sedation dentistry: high demand, nothing on the site yet',a:'cal',w:'No existing page and real demand: a new service page.'},
-    {t:'The Emergency Care page has outdated hours and prices',a:'opt',w:'Fix the existing page. It\'s an update, not new content.'},
-    {t:'"Implant or bridge for a back tooth?" A forum question no page on the site answers',a:'cal',w:'A specific patient question with no page: a new blog article.'},
-    {t:'"Invisalign in Springfield": a fresh angle on the Invisalign page we already have',a:'opt',w:'The trick card. A different angle, title or city on the same core topic is still a duplicate. Improve the existing page.'},
-    {t:'A complete guide to replacing a missing tooth; nothing on the site covers it end to end',a:'cal',w:'A broad topic the site doesn\'t cover yet: a new pillar page.'},
+    {t:'Sedation Dentistry in Springfield, IL',type:'Service page',a:'keep',w:'High demand, nothing on the site yet, and a practice focus.',hint:'Does the site have anything on sedation yet? Is it a focus for this practice?'},
+    {t:'Veneers: a fuller, rewritten Veneers page',type:'Service page',a:'opt',w:'The Veneers page already exists. However thin, improving it is Optimization.',hint:'Check the practice notes: does a page on this already exist?'},
+    {t:'Your child\'s first dental visit: what to expect',type:'Blog article',a:'swap',w:'A real topic, wrong practice: this office only sees adults.',hint:'Re-read the practice notes: who does this practice see?'},
+    {t:'Implant or bridge for a missing back tooth?',type:'Blog article',a:'keep',w:'A specific patient question no page answers yet.',hint:'Is there already a page answering this exact question?'},
+    {t:'The best electric toothbrushes this year',type:'Blog article',a:'swap',w:'Real search demand, but it won\'t bring in implant or cosmetic patients. Off-strategy.',hint:'Would this bring in the patients this practice wants?'},
+    {t:'Invisalign in Springfield: a fresh angle',type:'Service page',a:'opt',w:'A new angle on the existing Invisalign page is still a duplicate. Improve that page instead.',hint:'The site already has an Invisalign page. Is a new angle on it new content?'},
+    {t:'The complete guide to replacing a missing tooth',type:'Pillar page',a:'keep',w:'A broad topic the site doesn\'t cover end to end: a strong pillar.',hint:'Does any page on the site cover this end to end?'},
+    {t:'Emergency dentist: after-hours care in Springfield',type:'Service page',a:'opt',w:'Emergency Care already exists. Fix its outdated hours through Optimization.',hint:'Check the practice notes for an existing page on this topic.'},
   ];
-  const pool=document.getElementById('pool');let sorted=0;
-  [3,0,1,4,2,5].forEach(k=>{const c=SORT[k];const el=document.createElement('div');el.className='scard';
-    el.innerHTML='<div>'+c.t+'</div><div class="acts"><button data-to="cal">Calendar</button><button data-to="opt">Optimization</button></div><div class="fb"></div>';
-    el.querySelectorAll('button').forEach(b=>b.onclick=()=>{
-      const ok=b.dataset.to===c.a;record('sort'+k,ok);
-      if(!ok){el.classList.remove('wrong');void el.offsetWidth;el.classList.add('wrong');el.querySelector('.fb').textContent='Not quite. '+c.w;return}
-      el.classList.add('gone');
-      setTimeout(()=>{el.remove();const d=document.createElement('div');d.className='in';d.innerHTML=c.t+'<small>'+c.w+'</small>';
-        document.getElementById(c.a==='cal'?'binCal':'binOpt').appendChild(d);
-        sorted++;document.getElementById('sortCount').textContent=sorted+' of 6 sorted';
-        if(sorted===6){document.getElementById('sortDone').hidden=false;confetti()}},280);
-    });
-    pool.appendChild(el)});
+  const TAGC={'Service page':'blue','Blog article':'green','Pillar page':'mag'};
+  const stack=document.getElementById('stack'),sfb=document.getElementById('sfb');let si2=0,busy=false;
+  function showCard(){
+    if(si2>=SORT.length){stack.innerHTML='<div class="pcard"><h4>All eight reviewed.</h4></div>';document.getElementById('choices').hidden=true;
+      document.getElementById('sortCount').textContent='Done';document.getElementById('sortDone').hidden=false;confetti();return}
+    const c=SORT[si2];
+    stack.innerHTML='<div class="pcard"><div class="meta"><span class="tag '+TAGC[c.type]+'">'+c.type+'</span><span class="tag">Proposed for month '+(si2+1)+'</span></div><h4>'+c.t+'</h4></div>';
+    document.getElementById('sortCount').textContent='Piece '+(si2+1)+' of '+SORT.length;sfb.textContent='';
+  }
+  document.querySelectorAll('#choices button').forEach(b=>b.onclick=()=>{
+    if(busy||si2>=SORT.length)return;
+    const c=SORT[si2],card=stack.querySelector('.pcard'),ok=b.dataset.to===c.a;record('sort'+si2,ok);
+    if(!ok){card.classList.remove('wrong');void card.offsetWidth;card.classList.add('wrong');sfb.textContent='Not quite. '+c.hint;return}
+    busy=true;const bin=document.getElementById('bin-'+c.a),br=bin.getBoundingClientRect(),cr=card.getBoundingClientRect();
+    card.style.transform=`translate(${br.left+br.width/2-(cr.left+cr.width/2)}px,${br.top+50-(cr.top+cr.height/2)}px) scale(.35)`;card.classList.add('fly');
+    setTimeout(()=>{const d=document.createElement('div');d.className='in';d.innerHTML=c.t+'<small>'+c.w+'</small>';bin.appendChild(d);si2++;busy=false;showCard()},540);
+  });
+  showCard();
 
   // ---------- spot the problem ----------
   const spot=document.getElementById('spotText'),flaws=[...spot.querySelectorAll('.flaw')];let found=0,miss=0;
@@ -1929,7 +1965,7 @@ p{line-height:1.6}
     const checks=Object.keys(Q).filter(id=>id[0]==='c'),done=checks.filter(id=>id in first),cRight=done.filter(id=>first[id]).length;
     const sortIds=SORT.map((c,k)=>'sort'+k),sortRight=sortIds.filter(id=>first[id]).length,sortDone=sortIds.filter(id=>id in first).length;
     const refs=[];
-    Object.keys(first).forEach(id=>{if(first[id])return;const r=Q[id]?Q[id].ref:'newonly';if(!refs.includes(r))refs.push(r)});
+    Object.keys(first).forEach(id=>{if(first[id])return;const r=Q[id]?Q[id].ref:'sort';if(!refs.includes(r))refs.push(r)});
     if(found===flaws.length&&miss>2&&!refs.includes('voice'))refs.push('voice');
     const msg=score===8?'Perfect score. You\'re ready to run a strategy.':score>=6?'Solid. Revisit the sections below before your first solo strategy.':'Worth another pass. Revisit the sections below, then retake the quiz.';
     const C=2*Math.PI*52,col=score>=6?'var(--green)':'var(--mag)';
@@ -1937,7 +1973,7 @@ p{line-height:1.6}
       '<div class="sc"><b class="num" id="scN">0</b><span>of 8</span></div></div><div><div class="eyebrow">Your results</div><h3>'+msg+'</h3><div class="tally">'+
       '<span>Final quiz: <b>'+score+' of 8</b></span>'+
       '<span>Chapter checks, right on the first try: <b>'+cRight+' of '+checks.length+'</b>'+(done.length<checks.length?' ('+(checks.length-done.length)+' skipped)':'')+'</span>'+
-      '<span>Sorting game, right on the first try: <b>'+(sortDone?sortRight+' of 6'+(sortDone<6?' ('+(6-sortDone)+' not sorted)':''):'not played')+'</b></span>'+
+      '<span>Calendar review game, right on the first try: <b>'+(sortDone?sortRight+' of '+SORT.length+(sortDone<SORT.length?' ('+(SORT.length-sortDone)+' not reviewed)':''):'not played')+'</b></span>'+
       '<span>Spot the problem: <b>'+(found===flaws.length?'all 5 found, '+miss+(miss===1?' miss':' misses'):found+' of 5 found')+'</b></span></div>'+
       (refs.length?'<div class="rlabel">Worth revisiting</div><div class="revisit">'+refs.map(r=>'<button class="btn" data-go="'+r+'">'+(LABEL[r]||r)+' &rarr;</button>').join('')+'</div>':'')+
       '<div class="gen"><button class="btn" id="retake">Retake the quiz</button><button class="btn primary" id="toSources">Sources + further reading &rarr;</button></div>'+
