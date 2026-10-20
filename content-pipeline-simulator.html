@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>From Draft to Published · Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rail:#0A0A0B;--page:#F6F7F9;--card:#FFFFFF;--line:#E6E8EE;--line-soft:#EEF0F4;
+  --ink:#0E1116;--sub:#4A5163;--muted:#8A91A2;--chip:#F2F4F8;
+  --blue:#29ABE2;--blue-bg:#E6F5FC;--blue-ink:#0B7DB0;
+  --mag:#FF2D8F;--mag-bg:#FFE9F3;--mag-ink:#C8136A;
+  --green:#16A34A;--green-bg:#E7F6EF;--red:#E4483F;--red-bg:#FBE7E5;
+  --yellow:#CA9A04;--yellow-bg:#FCF5D7;
+  --violet:#7C3AED;--violet-bg:#EFE9FD;--teal:#0D9488;--teal-bg:#E0F2F1;--sky:#0284C7;--sky-bg:#E0F2FE;
+  --rainbow:linear-gradient(90deg,#29ABE2,#22C55E,#EAB308,#FF2D8F);
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  --body:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --disp:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--page);color:var(--ink);font-family:var(--body);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:default}
+.num{font-variant-numeric:tabular-nums}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.7)}70%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,45,143,.45)}50%{box-shadow:0 0 0 8px rgba(255,45,143,0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- frame ---------- */
+.top{display:flex;align-items:center;gap:16px;padding:10px 20px;background:var(--rail);color:#fff}
+.top .wm{font:800 11px/1.2 var(--disp);letter-spacing:.2em}
+.top .rule{width:90px;height:2px;background:var(--rainbow)}
+.top .t{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#9AA0AD}
+.top .sp{flex:1}
+.top button{background:#16171A;color:#C9CDD6;border:1px solid #26282E;border-radius:6px;padding:7px 12px;font-size:12px;font-weight:600}
+.top .fake{font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--mag);padding:4px 8px;border-radius:4px}
+.wrap{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 52px)}
+.panel{min-width:0;display:flex;flex-direction:column}
+.plabel{display:flex;align-items:center;gap:10px;padding:8px 18px;background:var(--card);border-bottom:1px solid var(--line);font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.plabel i{width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.plabel.client i{background:var(--mag)}
+.plabel .r{margin-left:auto;font-weight:500;letter-spacing:.08em;color:var(--muted);text-transform:none}
+.asana{background:#FAFAFB;border-left:1px solid var(--line)}
+.screen{flex:1;position:relative;overflow:auto}
+
+/* ---------- coach ---------- */
+.coach{position:sticky;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);padding:14px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;box-shadow:0 -6px 24px rgba(17,20,28,.06)}
+.coach .n{width:40px;height:40px;border-radius:8px;background:var(--mag);color:#fff;display:grid;place-items:center;font:800 15px var(--disp)}
+.coach h4{margin:0 0 3px;font-size:14px}
+.coach p{margin:0;color:var(--sub);line-height:1.5;font-size:13px}
+.coach .pr{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.coach .act{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:8px 14px;font-weight:600;font-size:13px;transition:transform .1s,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--mag);border-color:var(--mag);color:#fff}
+.btn.primary:hover{background:#E81F7E}
+.btn.dark{background:#111317;border-color:#111317;color:#fff}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.4}
+.btn.hint{animation:pulse 2s infinite}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#111317;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:40;opacity:0;transition:opacity .3s;pointer-events:none;max-width:520px;text-align:center}
+.toast.on{opacity:1}
+
+/* ---------- fake OQ chrome ---------- */
+.oq{padding:0 0 20px}
+.crumb{display:flex;gap:8px;align-items:center;padding:12px 18px 0;font-size:12px;color:var(--muted)}
+.crumb b{color:var(--ink);font-family:var(--mono);font-weight:700}
+.tabs{display:flex;gap:22px;padding:10px 18px 0;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--sub)}
+.tabs span{padding:8px 0}
+.tabs span.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--ink)}
+.section{padding:16px 18px}
+.h1row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h1row h2{font:700 18px var(--disp);margin:0}
+.seg{display:inline-flex;background:var(--chip);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:6px;font-weight:600;font-size:12px;color:var(--sub)}
+.seg button.on{background:#111317;color:#fff}
+.tag{display:inline-block;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:var(--chip);color:var(--sub)}
+.tag.blue{background:var(--blue-bg);color:var(--blue-ink)}.tag.mag{background:var(--mag-bg);color:var(--mag-ink)}.tag.green{background:var(--green-bg);color:var(--green)}.tag.red{background:var(--red-bg);color:var(--red)}.tag.violet{background:var(--violet-bg);color:var(--violet)}
+.prog{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin:14px 0 6px}
+.prog div{text-align:center;font:600 9px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:8px;border-top:3px solid var(--line-soft)}
+.prog div b{display:block;font:700 20px var(--disp);color:#C9CED8;margin-bottom:6px}
+.prog div.on{border-color:var(--violet)}.prog div.on b{color:var(--violet)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:5px;white-space:nowrap}
+.chip.queued{background:#EEF0F4;color:#57606E}.chip.generating{background:var(--sky-bg);color:var(--sky)}.chip.draft_ready{background:var(--green-bg);color:var(--green)}
+.chip.specialist_review,.chip.client_review{background:var(--violet-bg);color:var(--violet)}.chip.revision_requested{background:var(--red-bg);color:var(--red)}
+.chip.final{background:var(--green-bg);color:var(--green)}.chip.webflow_draft{background:var(--teal-bg);color:var(--teal)}.chip.published{background:#292524;color:#fff}
+table.list{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px}
+table.list th{font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sub);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+table.list td{padding:12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+table.list tr:last-child td{border-bottom:0}
+table.list .ttl{font-weight:600;display:flex;align-items:center;gap:8px}
+table.list .ttl i{width:7px;height:7px;border-radius:50%;background:var(--violet)}
+table.list a{color:var(--ink);text-decoration:none;border-bottom:1px dashed #C9CED8}
+.gen{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#FBFBFC;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600}
+.gen svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:2}
+.stream{background:#111317;color:#E8EAEE;border-radius:8px;padding:14px 16px;margin-top:14px;font:12.5px/1.6 var(--mono)}
+.stream div{opacity:0;animation:rise .4s var(--ease) forwards}
+.stream .ok{color:#4ADE80}.stream .run{color:var(--blue)}
+.stream .run::before{content:"";display:inline-block;width:9px;height:9px;border:2px solid var(--blue);border-right-color:transparent;border-radius:50%;margin-right:8px;animation:spin .8s linear infinite;vertical-align:-1px}
+.webrow{display:flex;gap:10px;align-items:center}
+
+/* editor */
+.edtop{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+.edtop .t{font-weight:700;font-size:14px;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edtop .dot{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)}
+.edtop .dot i{width:8px;height:8px;border-radius:50%;background:var(--violet)}
+.edtop .meta{margin-left:auto;font-size:11.5px;color:var(--muted);display:flex;gap:12px;align-items:center}
+.edtop .qa{color:var(--red);font-weight:600}
+.edtop .qa.ok{color:var(--green)}
+.tb{display:flex;align-items:center;gap:8px;padding:8px 18px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+.tb .ic{width:30px;height:30px;border:1px solid transparent;border-radius:6px;display:grid;place-items:center;background:transparent}
+.tb .ic:hover{background:var(--chip)}
+.tb .ic svg{width:16px;height:16px;stroke:var(--sub);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tb .ic.on{background:var(--blue-bg)}.tb .ic.on svg{stroke:var(--blue-ink)}
+.tb .sp{flex:1}
+.tb .lbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#FBFBFC;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:600}
+.tb .lbtn svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:1.8}
+.main{display:inline-flex;align-items:center;gap:8px;background:#111317;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-weight:600;font-size:13px}
+.main span.car{border-left:1px solid #3A3D45;padding-left:8px;margin-left:2px}
+.seobar{display:flex;gap:12px;align-items:center;padding:7px 18px;border-bottom:1px solid var(--line);background:var(--card);font-size:11.5px;color:var(--muted)}
+.seobar b{font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.edbody{display:grid;grid-template-columns:150px minmax(0,1fr) 290px;min-height:520px}
+.edbody>*{min-width:0}
+.pieces{border-right:1px solid var(--line);padding:12px 10px;background:var(--card)}
+.pieces h5{margin:0 0 10px;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.pieces div{display:flex;gap:7px;align-items:center;font-size:12px;padding:6px 6px;border-radius:5px;color:var(--sub)}
+.pieces div i{width:6px;height:6px;border-radius:50%;background:var(--violet);flex:none}
+.pieces div.on{background:var(--chip);color:var(--ink);font-weight:600}
+.doc{padding:14px 26px 30px;background:var(--card);position:relative}
+.secnav{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px}
+.secnav b{font-weight:600;color:var(--sub);margin-right:8px}
+.feat{border:1px dashed var(--line);border-radius:6px;padding:8px 10px;font-size:11.5px;color:var(--muted);display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.feat.has{border-style:solid;padding:0;overflow:hidden;background:#EEF1F5}
+.ph{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#DCE4EE,#C5D0DE);color:#3B4452;font-size:12px;padding:16px 14px;min-height:92px}
+.ph svg{width:28px;height:28px;stroke:#3B4452;fill:none;stroke-width:1.4;flex:none}
+.ph small{display:block;color:#5B6675;font-size:11px;margin-top:3px}
+.tbar{display:flex;gap:4px;margin-bottom:12px}
+.tbar span{font:600 11px var(--mono);color:var(--sub);padding:4px 7px;border-radius:4px;background:var(--chip)}
+.rich{font-size:14.5px;line-height:1.65;max-width:680px;overflow-wrap:anywhere}
+.rich h2{font:700 20px var(--disp);margin:22px 0 8px}
+.rich h3{font:700 16px var(--disp);margin:18px 0 6px}
+.rich p{margin:0 0 12px}
+.rich ul{margin:0 0 12px;padding-left:20px}
+.rich li{margin:4px 0}
+.rich a{color:var(--mag-ink);text-decoration:underline}
+.rich .pl{background:var(--yellow-bg);padding:0 3px;border-radius:3px}
+.rich .flag{background:var(--red-bg);box-shadow:inset 0 -2px 0 var(--red);padding:0 2px;border-radius:3px;cursor:pointer}
+.rich .flag:hover{background:#F8D3D0}
+.rich .fixed{background:var(--green-bg);padding:0 2px;border-radius:3px}
+.rich .hl{background:var(--blue-bg);box-shadow:0 0 0 3px var(--blue-bg);border-radius:3px}
+.sug{text-decoration:line-through;color:#9B2C2C;background:#FCE8E8;padding:0 2px}
+.ins{color:#166534;background:#DCFCE7;padding:0 2px}
+.rich .img{margin:10px 0 14px}
+.rich .img .ph{border-radius:6px}
+.rich .img small.alt{display:block;font:500 10.5px var(--mono);color:var(--muted);margin-top:4px}
+.lockov{position:absolute;inset:0;background:rgba(246,247,249,.45);cursor:not-allowed}
+.locktip{position:absolute;left:50%;top:40%;transform:translateX(-50%);background:#111317;color:#fff;padding:10px 14px;border-radius:8px;font-size:12.5px;max-width:300px;text-align:center;opacity:0;transition:opacity .3s;pointer-events:none}
+.locktip.on{opacity:1}
+.right{border-left:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;min-width:0}
+.rtabs{display:flex;gap:4px;padding:8px 8px 0;border-bottom:1px solid var(--line);font-size:12px;color:var(--sub);overflow-x:auto}
+.rtabs span{padding:6px 7px;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer}
+.rtabs span.on{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
+.rtabs span b{font:600 9.5px var(--mono);background:var(--red);color:#fff;border-radius:3px;padding:1px 4px;margin-left:4px}
+.rtabs span b.ok{background:var(--green)}
+.rbody{padding:12px;font-size:12.5px;overflow:auto;flex:1}
+.rbody h6{margin:0 0 8px;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.issue{border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:8px;background:#FBFBFC}
+.issue b{display:block;font-size:12.5px;margin-bottom:3px}
+.issue .k{font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--red)}
+.issue .k.ok{color:var(--green)}
+.issue p{margin:4px 0 8px;color:var(--sub);line-height:1.45}
+.allok{text-align:center;padding:28px 10px;color:var(--sub)}
+.allok i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--green-bg);margin:0 auto 10px}
+.allok svg{width:18px;height:18px;stroke:var(--green);fill:none;stroke-width:2.5}
+.note{background:var(--blue-bg);color:#0D3C52;border-radius:6px;padding:9px 11px;line-height:1.45;margin-bottom:10px}
+.fb{border:1px solid var(--line);border-radius:6px;padding:10px;margin-bottom:8px;background:var(--card)}
+.fb .who{display:flex;justify-content:space-between;font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:5px}
+.fb .q{font-size:11.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;margin:4px 0 6px;font-style:italic}
+.fb .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.fb .acts button{border:1px solid var(--line);background:#FBFBFC;border-radius:5px;padding:5px 9px;font-size:11.5px;font-weight:600}
+.fb .acts button.ok{background:var(--green-bg);border-color:#BFE6D1;color:#0E4A2A}
+.fb .acts button.no{color:var(--red)}
+.fb.done{opacity:.55}
+.fb .reply{font-size:12px;background:var(--chip);border-radius:5px;padding:6px 8px;margin-top:6px}
+.fb .pill{font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:var(--chip);color:var(--sub)}
+.fb .pill.open{background:var(--mag-bg);color:var(--mag-ink)}.fb .pill.res{background:var(--green-bg);color:var(--green)}
+.ver{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+.ver span:last-child{color:var(--muted);font-size:11px;white-space:nowrap}
+.fact{display:grid;grid-template-columns:90px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--line-soft);font-size:12px}
+.fact b{font:600 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);padding-top:2px}
+.fact.hl{background:var(--blue-bg);margin:0 -6px;padding:6px}
+
+/* modal */
+.mback{position:fixed;inset:0;background:rgba(14,17,22,.45);display:grid;place-items:center;z-index:30;padding:20px}
+.modal{background:var(--card);border-radius:10px;width:min(560px,100%);max-height:88vh;overflow:auto;box-shadow:0 24px 60px rgba(10,10,11,.3);animation:rise .3s var(--ease)}
+.modal .mh{padding:16px 20px 10px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.modal .mh h3{margin:0;font-size:15px}
+.modal .steps{font-size:11.5px;color:var(--muted);display:flex;gap:10px}
+.modal .steps b{color:var(--blue-ink)}
+.modal .mb{padding:4px 20px 16px;font-size:13px;line-height:1.5}
+.modal .mf{padding:12px 20px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line-soft)}
+.recip{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:8px 0}
+.recip input{margin-top:3px}
+.recip b{display:block;font-size:13px}
+.recip small{color:var(--muted);font-size:11.5px}
+.recip .why{margin-left:auto;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mag-ink);background:var(--mag-bg);padding:3px 6px;border-radius:3px;white-space:nowrap}
+.inp{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;color:var(--muted);background:#FBFBFC;margin:6px 0}
+label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin:12px 0 4px}
+.email{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:#FBFBFC;font-size:12.5px;line-height:1.5}
+.email .esub{font-weight:700;margin-bottom:4px}
+.cv .fixed{background:none}
+.email .m{color:var(--muted);font-size:11px;margin-bottom:8px}
+.email .cta{display:inline-block;background:#111317;color:#fff;border-radius:5px;padding:7px 12px;font-weight:600;margin-top:8px;font-size:12px}
+.linkrow{display:grid;grid-template-columns:20px 1fr 90px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px}
+.linkrow .a{font-weight:600}
+.linkrow .u{color:var(--muted);font-size:11px;font-family:var(--mono)}
+.linkrow .sc{text-align:right;font:600 11px var(--mono);color:var(--blue-ink)}
+.chks{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.chks label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12.5px;background:#FBFBFC}
+.imgpick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.imgpick .ic2{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card)}
+.imgpick .ic2 .ph{min-height:74px}
+.imgpick .ic2 div.m{padding:8px 10px;font-size:11.5px;line-height:1.4}
+.imgpick .ic2 b{display:block;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--blue-ink);margin-bottom:3px}
+.imgpick .ic2 .alt{color:var(--sub)}
+.schema{font:11.5px/1.5 var(--mono);background:#111317;color:#C9CDD6;border-radius:6px;padding:12px;white-space:pre;overflow:auto;max-height:220px}
+.schema .k{color:#7DD3FC}.schema .s{color:#86EFAC}
+.sv{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+.sv span{font:600 10px var(--mono);letter-spacing:.08em;padding:4px 8px;border-radius:4px;background:var(--green-bg);color:var(--green)}
+.sv span.warn{background:var(--yellow-bg);color:#8A6A00}
+.fields{columns:2;font-size:12px;color:var(--sub);margin:8px 0 0}
+.fields div{break-inside:avoid;padding:3px 0}
+.fields div::before{content:"\2713";color:var(--green);font-weight:700;margin-right:6px}
+
+/* client view */
+.cv{background:#F8F8F7;min-height:100%}
+.cvtop{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--card);border-bottom:1px solid var(--line)}
+.cvtop .logo{width:30px;height:30px;border-radius:50%;background:#111317;color:#fff;display:grid;place-items:center;font:800 8px var(--disp)}
+.cvtop .cl{font-size:10.5px;color:var(--blue-ink);font-weight:600}
+.cvtop .ti{font-weight:700;font-size:14px}
+.cvtop .you{margin-left:auto;display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600}
+.cvtop .you i{width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:10px}
+.cvgrid{display:grid;grid-template-columns:minmax(0,1fr) 260px;min-height:480px}
+.cvgrid>*{min-width:0}
+.cvdoc{padding:18px 26px}
+.tip{background:var(--blue-bg);color:#0D3C52;border-radius:6px;padding:8px 12px;font-size:12px;text-align:center;margin-bottom:8px}
+.dl{background:#EAF6FC;border:1px solid #CBE8F6;color:#0D3C52;border-radius:6px;padding:8px 12px;font-size:12px;text-align:center;margin-bottom:14px}
+.cvside{border-left:1px solid var(--line);background:var(--card);padding:12px}
+.cvside .sg{display:flex;background:var(--chip);border-radius:7px;padding:3px;margin-bottom:10px}
+.cvside .sg span{flex:1;text-align:center;font-size:12px;font-weight:600;padding:5px;border-radius:5px;color:var(--sub)}
+.cvside .sg span.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.cvside textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit;font-size:12.5px;resize:none;height:60px;background:#FBFBFC}
+.cvside .post{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);margin:6px 0 10px}
+.cvside .post button{background:#111317;color:#fff;border:0;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600}
+.cvc{border:1px solid var(--line);border-radius:6px;padding:9px;margin-bottom:8px;font-size:12px;animation:rise .4s var(--ease)}
+.cvc .w{font:600 10px var(--mono);color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;display:flex;justify-content:space-between}
+.cvc .q{color:var(--muted);font-style:italic;font-size:11px;border-left:2px solid var(--line);padding-left:7px;margin:3px 0 5px}
+.cvc .team{background:var(--chip);border-radius:5px;padding:6px 8px;margin-top:6px;font-size:11.5px}
+.cvside .empty{text-align:center;color:var(--muted);padding:24px 6px;font-size:12px}
+.cvbar{position:sticky;bottom:0;display:flex;gap:10px;justify-content:flex-end;align-items:center;padding:10px 20px;background:var(--card);border-top:1px solid var(--line)}
+.cvbar .fin{margin-right:auto;font-size:12px;color:var(--sub)}
+.pop{position:absolute;background:#111317;color:#fff;border-radius:6px;padding:6px 8px;font-size:11.5px;display:flex;gap:10px;animation:pop .3s var(--ease);z-index:5;white-space:nowrap}
+.pop span{display:inline-flex;align-items:center;gap:5px}
+.pop span.on{color:var(--blue)}
+.banner{background:#FFF4E5;border:1px solid #F5D9A8;color:#6B4A00;border-radius:6px;padding:10px 14px;font-size:12.5px;margin-bottom:14px;line-height:1.5}
+.banner.closed{background:var(--chip);border-color:var(--line);color:var(--sub)}
+.gate{display:grid;place-items:center;min-height:460px}
+.gate .card{background:var(--card);border-radius:10px;border-top:4px solid transparent;border-image:var(--rainbow) 1;box-shadow:0 12px 40px rgba(17,20,28,.08);padding:26px 30px;width:300px;text-align:center}
+.gate .card .logo{width:30px;height:30px;border-radius:50%;background:#111317;color:#fff;display:grid;place-items:center;font:800 8px var(--disp);margin:0 auto 10px}
+.gate h3{margin:4px 0 6px;font-size:16px}
+.gate p{font-size:12.5px;color:var(--sub);margin:0 0 14px;line-height:1.5}
+.gate .inp{text-align:left;color:var(--ink);min-height:36px}
+.gate .caret{display:inline-block;width:1px;height:14px;background:var(--blue);animation:blink 1s steps(1) infinite;vertical-align:middle;margin-left:1px}
+.gate .go{display:block;width:100%;background:#9DD7F3;color:#fff;border:0;border-radius:6px;padding:9px;font-weight:600;font-size:13px;margin-top:8px}
+.gate .go.on{background:var(--blue)}
+.approved{display:grid;place-items:center;min-height:460px;text-align:center}
+.approved .ic{width:56px;height:56px;border-radius:50%;background:var(--green-bg);display:grid;place-items:center;margin:0 auto 14px}
+.approved .ic svg{width:26px;height:26px;stroke:var(--green);fill:none;stroke-width:2.5}
+.approved h3{margin:0 0 6px;font-size:20px}
+.approved p{color:var(--sub);margin:0}
+.cvmail{position:absolute;right:20px;top:70px;width:300px;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 14px 40px rgba(17,20,28,.14);padding:12px 14px;font-size:12.5px;animation:rise .4s var(--ease);z-index:6}
+.cvmail .fr{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:4px}
+.cvmail b{display:block;margin-bottom:4px}
+.cvmail p{margin:0 0 8px;line-height:1.45;color:var(--sub)}
+
+/* decision moments */
+.mcq{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:0}
+.mcq .mk{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mag-ink)}
+.mcq h3{font-size:15px;line-height:1.4;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:#FBFBFC;border-radius:6px;padding:9px 11px;font-size:13px;line-height:1.4;color:var(--ink);transition:background .2s}
+.opt:hover:not(:disabled){background:var(--blue-bg)}
+.opt .ol{width:24px;height:24px;border-radius:5px;background:var(--chip);display:grid;place-items:center;font:700 11px var(--mono);color:var(--sub)}
+.opt.right{background:var(--green-bg);border-color:#9FD9B8}.opt.right .ol{background:var(--green);color:#fff}
+.opt.wrong{background:var(--red-bg);border-color:#F2B8B3;animation:shake .45s}.opt.wrong .ol{background:var(--red);color:#fff}
+.opt.dim{opacity:.45}
+.why{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:12.5px;line-height:1.5;display:none}
+.why.ok{display:block;background:var(--green-bg);color:#0E4A2A}.why.no{display:block;background:var(--red-bg);color:#7A1F1A}
+.honest{display:inline-block;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;background:var(--yellow-bg);color:#8A6A00;padding:3px 6px;border-radius:3px;margin-left:6px;vertical-align:middle}
+
+/* asana */
+.atask{padding:14px 16px}
+.atask .pj{font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sub);display:flex;gap:8px;align-items:center}
+.atask .pj i{width:10px;height:10px;border-radius:3px;background:#F06A6A}
+.atask h3{margin:8px 0 10px;font-size:15px;line-height:1.35}
+.arow{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:center;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--line-soft)}
+.arow b{font-weight:500;color:var(--muted);font-size:11.5px}
+.av{display:inline-flex;align-items:center;gap:6px}
+.av i{width:20px;height:20px;border-radius:50%;background:#FFB3D3;color:#7A1F4A;display:grid;place-items:center;font-size:9px;font-weight:700}
+.av i.y{background:#BFE6FB;color:#0B4A66}
+.phase{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:5px;background:#E8E9ED;color:#3A3D45}
+.phase.Drafted{background:#D9E8FF;color:#1E3A8A}.phase.InternalQA{background:#E9D8FD;color:#5B21B6}.phase.AwaitingApproval{background:#FEF3C7;color:#7C4A03}
+.phase.RevisionRequested{background:#FEE2E2;color:#991B1B}.phase.Approved{background:#DCFCE7;color:#166534}.phase.Published{background:#1F2937;color:#fff}
+.subs{margin-top:12px}
+.subs h6,.feed h6{margin:12px 0 6px;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub)}
+.sub{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:6px 0;font-size:12.5px;border-bottom:1px solid var(--line-soft)}
+.sub .c{width:16px;height:16px;border-radius:50%;border:1.5px solid #B8BEC9;display:grid;place-items:center}
+.sub .c svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:3}
+.sub.done .c{background:var(--green);border-color:var(--green)}
+.sub.done span{color:var(--muted);text-decoration:line-through}
+.sub small{color:var(--muted);font-size:10.5px}
+.feed .item{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:12px;line-height:1.45;animation:rise .4s var(--ease)}
+.feed .item i{width:20px;height:20px;border-radius:50%;background:#111317;color:#fff;display:grid;place-items:center;font-size:9px;font-weight:800}
+.feed .item i.p{background:#FFB3D3;color:#7A1F4A}
+.feed .item .w{font-weight:600;margin-bottom:2px;display:flex;justify-content:space-between;gap:6px}
+.feed .item .w small{font-weight:500;color:var(--muted);font-size:10.5px}
+.feed .item em{display:block;color:var(--muted);font-size:11px;margin-bottom:3px}
+.feed .item .at{color:#2A5BD7;font-weight:600}
+.feed .item .sys{color:var(--muted);font-style:italic}
+
+/* done */
+.finish{padding:28px 30px;max-width:760px}
+.finish h2{font:800 28px/1.05 var(--disp);text-transform:uppercase;margin:0 0 8px}
+.finish p{color:var(--sub);line-height:1.6}
+.tl{display:flex;flex-direction:column;gap:6px;margin:18px 0}
+.tl div{display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.tl div b{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sub);padding-top:2px}
+.score{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.score div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:12px;line-height:1.4}
+.score div b{display:block;font:800 22px var(--disp);margin-bottom:4px}
+.score div.ok b{color:var(--green)}.score div.no b{color:var(--red)}
+
+@media (max-width:980px){
+  .wrap{grid-template-columns:1fr}
+  .asana{border-left:0;border-top:1px solid var(--line)}
+  .edbody{grid-template-columns:1fr}.pieces{display:none}.right{border-left:0;border-top:1px solid var(--line)}
+  .cvgrid{grid-template-columns:1fr}.cvside{border-left:0;border-top:1px solid var(--line)}
+  .coach{grid-template-columns:auto 1fr;}.coach .act{grid-column:1/-1;justify-content:flex-end}
+  .score{grid-template-columns:1fr 1fr}
+  .prog{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM5 17l1 2 2 1-2 1-1 2-1-2-2-1 2-1z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11l18-8-8 18-2-8z"/></symbol>
+  <symbol id="i-web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></symbol>
+</svg>
+
+<div class="top">
+  <div class="wm">STUDIO EIGHTY EIGHT</div><div class="rule"></div>
+  <div class="t">Draft to Published · Simulator</div>
+  <span class="fake">Simulation · no real data</span>
+  <div class="sp"></div>
+  <button id="reset">Reset</button>
+</div>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="plabel" id="plabel"><i></i><span id="plabelTxt">Opened Queries · you are the SEO Specialist</span><span class="r" id="clock">Mon, Oct 19</span></div>
+    <div class="screen" id="screen"></div>
+    <div class="coach" id="coach"></div>
+  </div>
+  <div class="panel asana">
+    <div class="plabel"><i style="background:#F06A6A"></i>Asana · Example Dental</div>
+    <div class="screen" id="asana"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+/* ======================= data ======================= */
+const PRACTICE={name:'Example Dental',city:'Springfield, IL',phone:'(217) 555-0142',doctors:['Dr. Priya Patel','Dr. Marcus Nguyen'],insurance:'Delta Dental, Cigna, MetLife (in-network)',hours:'Mon to Thu 8 to 5, Fri 8 to 1'};
+const PIECE={title:'Dental Implants in Springfield, IL | Example Dental',type:'Service page',month:'Nov 26',words:1480,meta:'Dental implants in Springfield, IL from Example Dental. What to expect, who is a candidate, cost and insurance, and how to book a consult.'};
+const BLOG={title:'Implant or bridge for a missing back tooth?',type:'Blog article',month:'Dec 26'};
+const SECTIONS=['Introduction','Quick Takeaways','Are You a Candidate','What to Expect','Cost and Insurance','FAQ','Book a Consult'];
+
+/* The fake draft. Flags: doc=invented doctor (QA), sd=the same-day sentence (client comment), rec=the recovery sentence (client suggestion), ins=insurance paragraph (client comment 2). */
+function docHTML(){
+  const ins = S.insAdded
+    ? 'Example Dental is in-network with <span class="fixed">Delta Dental, Cigna and MetLife</span>, and we will check your benefits before your consult.'
+    : 'Most dental plans treat implants as a major service. <span class="pl">[add accepted insurance carriers]</span> We will check your benefits before your consult.';
+  const rec = S.sugAccepted
+    ? 'Most patients are <span class="fixed">back to normal activities within a few days</span>, with mild soreness managed by over-the-counter pain relief.'
+    : (S.sugShown ? 'Most patients are <span class="sug">back at work the next day</span><span class="ins">back to normal activities within a few days</span>, with mild soreness managed by over-the-counter pain relief.'
+    : 'Most patients are <span id="recTxt">back at work the next day</span>, with mild soreness managed by over-the-counter pain relief.');
+  const sd = S.sdRemoved ? '' : (S.step>=7 ? '<span id="sdTxt" class="'+(S.sdHL?'hl':'')+'">Ask us about same-day implants if you want to leave with a tooth the same afternoon.</span> ' : '<span id="sdTxt">Ask us about same-day implants if you want to leave with a tooth the same afternoon.</span> ');
+  const doc = S.qaFixed ? '<span class="fixed">Dr. Nguyen</span>' : '<span class="flag" id="docFlag" title="Click to fix">Dr. Alvarez</span>';
+  const L=(t,u)=>S.linksApplied?'<a href="#">'+t+'</a>':t;
+  const img=(key,alt)=>S.images?'<div class="img"><div class="ph"><svg><use href="#i-cam"/></svg><div>'+key+'<small>Photo from the client\'s Google Drive</small></div></div><small class="alt">alt: '+alt+'</small></div>':'';
+  return `
+<h2 id="s0">Dental Implants in Springfield, IL</h2>
+<p>If a missing tooth has you chewing on one side or hiding your smile, you are not alone, and you have options. ${doc}, ${PRACTICE.doctors[0]} and the team at Example Dental place and restore implants right here in Springfield, so you never have to drive to a specialist across town. ${sd}Call us at <a href="tel:2175550142">${PRACTICE.phone}</a> to talk it through.</p>
+<h3>Quick Takeaways</h3>
+<ul><li><b>An implant replaces the root, not just the tooth.</b> That is why it protects the bone around it.</li><li><b>Most adults with healthy gums are candidates.</b> Bone loss can often be rebuilt first.</li><li><b>Plan on three to six months start to finish.</b> The waiting is the healing.</li><li><b>We will check your insurance before you commit.</b> No surprises at the front desk.</li></ul>
+<h2 id="s2">Are You a Candidate for Dental Implants?</h2>
+${img('implant-consult-dr-nguyen.jpg','Dr. Nguyen reviewing a 3D scan with a patient at Example Dental in Springfield')}
+<p>Most adults who are missing one or more teeth can get an implant. What we look for at your consult is enough healthy bone to hold the post, gums free of active disease, and overall health that supports healing. If you smoke or have uncontrolled diabetes, we talk about that honestly, because both slow healing. A 3D scan shows us the bone before we recommend anything.</p>
+<p>If your jaw has thinned since the tooth came out, a ${L('bone graft','/services/bone-grafting')} can rebuild the area first. That adds time, not a dead end.</p>
+<h2 id="s3">What to Expect, Step by Step</h2>
+<p>Placing the post takes about an hour under local anesthetic, with ${L('sedation options','/services/sedation-dentistry')} if you are anxious. Then the implant and bone fuse over three to four months. Once it is solid, we attach the abutment and your custom crown, matched to your other teeth. ${rec}</p>
+<h2 id="s4">What Dental Implants Cost in Springfield</h2>
+${img('front-desk-benefits-check.jpg','A team member at the Example Dental front desk going over benefits with a patient')}
+<p>A single implant with its crown is a real investment, and the price depends on whether you need a graft, the crown material, and whether we are replacing one tooth or several. We give you a written estimate at your consult and a line-by-line breakdown. ${ins}</p>
+<p>Comparing an implant with a ${L('bridge','/services/dental-bridges')} or a ${L('partial denture','/services/dentures')}? We walk through all three, because the right answer depends on the tooth, your bone and your budget.</p>
+<h2 id="s5">Frequently Asked Questions</h2>
+<h3>Does getting an implant hurt?</h3><p>Placement is done with local anesthetic, so you feel pressure, not pain. Most people say the soreness afterward is milder than a tooth extraction.</p>
+<h3>How long do implants last?</h3><p>With daily brushing, flossing and regular ${L('cleanings','/services/cleanings-and-exams')}, the post can last decades. The crown may need replacing after 10 to 15 years of normal wear.</p>
+<h3>Can I get an implant years after losing the tooth?</h3><p>Yes. The bone may have shrunk, so a graft is more likely, but it is rarely too late.</p>
+<h3>What if I am missing several teeth?</h3><p>Two or more implants can support a bridge or a full arch, so you do not need one post per tooth.</p>
+<h2 id="s6">Book an Implant Consult in Springfield</h2>
+<p>Bring your questions and any X-rays from a previous dentist. We will scan, explain your options and give you a written plan. Call <a href="tel:2175550142">${PRACTICE.phone}</a> or request a visit online. Example Dental, ${PRACTICE.city}.</p>`;
+}
+
+/* ======================= state ======================= */
+let S;
+function fresh(){return {step:0,status:'queued',phase:'Drafted',est:0,subs:{create:true,send:false,confirm:false,publish:false},feed:[],
+  comments:[],sugs:[],revision:0,versions:[{n:'Generation',t:''}],qaFixed:false,qaOpen:false,rtab:'qa',linksApplied:false,sent:0,deadline:'',
+  sdHL:false,sdRemoved:false,sugShown:false,sugAccepted:false,insAdded:false,images:false,schema:false,webflow:null,adminStatus:false,
+  cv:null,cvStage:0,score:{},day:0,locked:false,view:'list',round:0}}
+const DAYS=['Mon, Oct 19','Tue, Oct 20','Wed, Oct 21','Thu, Oct 22','Fri, Oct 23','Mon, Oct 26','Tue, Oct 27','Wed, Oct 28','Thu, Oct 29','Fri, Oct 30','Mon, Nov 2','Tue, Nov 3','Wed, Nov 4'];
+const dayLabel=()=>DAYS[Math.min(S.day,DAYS.length-1)];
+const screen=document.getElementById('screen'),asanaEl=document.getElementById('asana'),coachEl=document.getElementById('coach');
+const LABEL={queued:'In Queue',generating:'Generating',draft_ready:'Draft Ready',specialist_review:'Internal Review',client_review:'Client Review',revision_requested:'Revision Requested',final:'Final',webflow_draft:'Webflow Draft',published:'Published'};
+const chip=s=>'<span class="chip '+s+'">'+LABEL[s]+'</span>';
+const AI='<em>AI Generated Message from OpenedQueries</em>';
+const YOU='<span class="at">@You</span>',MS='<span class="at">@Jordan Lee</span>';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
+function post(who,html,isPerson){S.feed.unshift({who,html,isPerson,day:dayLabel()});renderAsana()}
+function setPhase(p,est){S.phase=p;if(est)S.est=est}
+
+/* ======================= steps (the coach) ======================= */
+const STEPS=[
+ {t:'Your piece arrived from the approved calendar',p:'The calendar item became a production piece: same title, same month, same strategic angle. Asana already has a task for it with four subtasks. Click <b>Generate</b> on the row.'},
+ {t:'Watch the draft being written',p:'Outline first, then a second pass that checks the outline against the service-page rules, then each section on its own, then the quality checks. Nothing reaches the client yet.'},
+ {t:'Open the draft',p:'Status is <b>Draft Ready</b>. Notice the Asana comment: it tags you, the SEO, and nobody else. Internal QA is your job. Click the title to open the piece.'},
+ {t:'Internal Review starts with the QA tab',p:'One critical issue. The writer named a doctor who is not on this practice\'s roster. Open the <b>QA</b> tab, then click the flagged name in the text to fix it.'},
+ {t:'Your first save moved it to Internal Review',p:'Saving also set the Asana phase to Internal QA. Now the links. Click <b>Internal Links</b> in the toolbar.'},
+ {t:'Send it to the client',p:'Links are in and saved as their own version. Click <b>Send for Review</b>. Three steps: who, which email, preview.'},
+ {t:'The piece is locked',p:'It stays locked until Dr. Patel approves or requests a revision. Try clicking into the text, then click <b>Watch the client</b> to see what she sees.'},
+ {t:'What the client sees',p:'Dr. Patel opens the link on her own time. Step through her review with the <b>Next</b> button in the client view. Watch the Asana panel while she works.'},
+ {t:'Address the feedback',p:'The piece unlocked the moment she requested a revision. Open <b>Client Feedback</b> and work through all three items. Accept or dismiss the suggested edit, fix and reply to each comment, and resolve them.'},
+ {t:'Send the revision back',p:'All three handled. Click <b>Send Back Revision</b>. This is her final round: she can approve, but she cannot request another revision.'},
+ {t:'Final round',p:'Click <b>Watch the client</b> and step through her final look.'},
+ {t:'Approved. Now, and only now, images',p:'Opened Queries would have let you add photos at any editable stage. We wait until approval. Click the <b>image icon</b> in the toolbar, then AI Selection.'},
+ {t:'Schema last, after the last edit',p:'Any change to the body clears the stored schema, so it comes after images. Click the <b>schema icon</b> in the toolbar.'},
+ {t:'Push to Webflow',p:'This creates a draft item in the client\'s Webflow, never a live page. Click <b>Push to Webflow</b>.'},
+ {t:'Publish live, then label it',p:'Switch the list to the <b>Webflow</b> view and click Publish Live. Then set the piece status to Published by hand. Opened Queries does not do that part.'},
+ {t:'Done',p:''}
+];
+function renderCoach(){
+  const st=STEPS[S.step];if(!st){coachEl.innerHTML='';return}
+  let act='';
+  if(S.step===6)act='<button class="btn primary hint" id="watch">Watch the client &rarr;</button>';
+  if(S.step===10)act='<button class="btn primary hint" id="watch">Watch the client &rarr;</button>';
+  if(S.step===15)act='<button class="btn" id="again">Run it again</button>';
+  coachEl.innerHTML='<div class="n">'+(S.step+1)+'</div><div><div class="pr">Step '+(S.step+1)+' of '+STEPS.length+' · '+dayLabel()+'</div><h4>'+st.t+'</h4><p>'+st.p+'</p></div><div class="act">'+act+'</div>';
+  const w=document.getElementById('watch');if(w)w.onclick=()=>{S.view='client';S.cv=S.step===6?'r1':'r2';S.cvStage=0;render()};
+  const a=document.getElementById('again');if(a)a.onclick=()=>{S=fresh();render()};
+  document.getElementById('clock').textContent=dayLabel();
+}
+function advance(){S.step++;render()}
+
+/* ======================= OQ screens ======================= */
+function renderList(){
+  const row=(p,s,isMain)=>`<tr><td><div class="ttl"><i></i>${isMain?'<a href="#" id="openPiece">'+p.title+'</a>':'<span style="color:var(--muted)">'+p.title+'</span>'}</div></td><td>${p.month}</td><td>${p.type}</td><td>${chip(s)}</td><td>${isMain&&S.status!=='queued'&&S.status!=='generating'?PIECE.words.toLocaleString():'0'}</td><td>${isMain?(S.status==='queued'?'<button class="gen" id="genBtn"><svg><use href="#i-spark"/></svg>Generate</button>':S.status==='final'&&S.webflow?'<span class="tag green">Webflow '+S.webflow+'</span>':'<span class="tag">Open</span>'):'<span class="gen" style="opacity:.4">Waiting in queue</span>'}</td></tr>`;
+  const stages=['Queued','Generating','Failed','Draft','Review','Scheduled','Client','Revision','Final'];
+  const idx={queued:0,generating:1,draft_ready:3,specialist_review:4,client_review:6,revision_requested:7,final:8,webflow_draft:8,published:8}[S.status];
+  const webflowView=S.step===14&&S.view==='webflow';
+  screen.innerHTML=`<div class="oq">
+    <div class="crumb"><b>OpenedQueries</b><span>/ Portfolio / ${PRACTICE.name} / Production</span><span class="tag green" style="margin-left:4px">In Production</span></div>
+    <div class="tabs"><span>Overview</span><span>Research</span><span>Site Content</span><span>Performance</span><span>Synthesis</span><span>Calendar</span><span>Optimization</span><span class="on">Production</span></div>
+    <div class="section">
+      <div class="h1row"><h2>Content Production</h2><div class="seg"><button class="${webflowView?'':'on'}" id="segC">Content</button><button class="${webflowView?'on':''}" id="segW">Webflow</button></div><span class="tag mag">Pick from Calendar</span><span class="tag">Sync to Asana</span></div>
+      ${webflowView?'':'<div class="prog">'+stages.map((s,k)=>'<div class="'+(k===idx?'on':'')+'"><b>'+(k===idx?1:0)+'</b>'+s+'</div>').join('')+'</div>'}
+      ${webflowView?`<table class="list" style="margin-top:14px"><tr><th>Title</th><th>Content type</th><th>Webflow status</th><th>Published at</th><th>Actions</th></tr>
+        <tr><td><div class="ttl"><i></i>${PIECE.title}</div></td><td>Service page</td><td>${S.webflow==='live'?'<span class="tag green">Published</span>':'<span class="tag blue">Draft staged</span>'}</td><td>${S.webflow==='live'?dayLabel():'<span style="color:var(--muted)">not yet</span>'}</td><td>${S.webflow==='live'?'<span class="tag">Sync</span>':'<button class="btn sm dark hint" id="pubLive">Publish Live</button>'}</td></tr></table>
+        ${S.webflow==='live'?'<div class="note" style="margin-top:14px">Live on the client\'s site. Notice the piece status in the Content view: still <b>Final</b>. Webflow Draft and Published are labels an admin sets by hand. Switch back to <b>Content</b> and use the status dropdown.</div>':''}`
+      :`<table class="list" style="margin-top:14px"><tr><th>Title</th><th>Month</th><th>Type</th><th>Status</th><th>Words</th><th>Actions</th></tr>${row(PIECE,S.status,true)}${row(BLOG,'queued',false)}</table>`}
+      ${S.status==='generating'?streamHTML():''}
+      ${S.step===14&&!webflowView&&S.webflow==='live'?`<div class="card" style="margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px"><b style="font-size:13px">Admin status dropdown</b><p style="margin:6px 0 10px;color:var(--sub);font-size:12.5px">Only admins see this. It changes the label and nothing else: no email, no Asana call, no Webflow call.</p><select id="adminSel" style="font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:6px"><option>Final</option><option>Webflow Draft</option><option>Published</option></select></div>`:''}
+    </div></div>`;
+  const g=document.getElementById('genBtn');if(g)g.onclick=()=>{if(S.step!==0)return;S.status='generating';S.step=1;render();runStream()};
+  const o=document.getElementById('openPiece');if(o)o.onclick=e=>{e.preventDefault();if(S.step===2){S.view='editor';S.step=3;S.rtab='qa';render()}else{S.view='editor';render()}};
+  const sc=document.getElementById('segC'),sw=document.getElementById('segW');
+  if(sw)sw.onclick=()=>{if(S.step<13&&!S.webflow){toast('Nothing in Webflow yet.');return}S.view='webflow';render()};
+  if(sc)sc.onclick=()=>{S.view='list';render()};
+  const pl=document.getElementById('pubLive');if(pl)pl.onclick=()=>{S.webflow='live';render();toast('Published in Webflow. The piece status did not change.')};
+  const ad=document.getElementById('adminSel');if(ad)ad.onchange=()=>{if(ad.value==='Published'){S.status='published';S.adminStatus=true;setPhase('Published');post('You (SEO)','<span class="sys">changed Service Page Phases from Approved to Published</span>',true);S.step=15;S.day=12;render()}else toast('Pick Published to finish.')};
+}
+let streamT=[];
+function streamHTML(){return '<div class="stream" id="stream"></div>'}
+function runStream(){
+  const lines=['Reading the calendar item: cluster "Dental implants", 8 supporting searches, the angle, 3 forum quotes','Writing the outline','Checking the outline against the service-page rules (Quick Takeaways, FAQ, decision-stage sections, 3 CTAs max)','Writing section 1 of 7: Introduction','Writing sections 2 to 7','Stripping em dashes, demoting any H1, checking links against the site crawl','Quality checks: practice name, phone, doctors vs roster, word count, FAQ, CTAs','1 critical issue found: doctor name not on roster. Auto-fix skipped (needs a human).'];
+  const el=document.getElementById('stream');let k=0;
+  const tick=()=>{if(!el.isConnected)return;el.innerHTML=lines.slice(0,k+1).map((l,i)=>'<div class="'+(i<k?'ok':'run')+'">'+(i<k?'&#10003; ':'')+l+'</div>').join('');k++;
+    if(k<=lines.length)streamT.push(setTimeout(tick,k===lines.length?900:700));
+    else{S.status='draft_ready';setPhase('Drafted',20);post('OpenedQueries',AI+'Article Draft Generated! Pending Internal SEO QA. '+YOU);S.step=2;render()}};
+  tick();
+}
+
+function renderEditor(){
+  const editable=['draft_ready','specialist_review','revision_requested','final'].includes(S.status);
+  const mainBtn={draft_ready:'Send for Review',specialist_review:'Send for Review',client_review:'Re-Send for Review',revision_requested:'Send Back Revision',final:'',published:''}[S.status]||'';
+  const qaN=S.qaFixed?0:1;
+  screen.innerHTML=`<div class="oq" style="padding:0">
+    <div class="edtop"><span style="color:var(--muted)">&lsaquo;</span><span class="t">${PIECE.title}</span><span class="tag green">Service page</span><span class="dot"><i style="background:${S.status==='final'||S.status==='published'?'var(--green)':S.status==='revision_requested'?'var(--red)':'var(--violet)'}"></i>${LABEL[S.status]}</span>
+      <span class="meta">${S.sent?'<span>Email sent · Review link</span>':''}<span>${PIECE.words.toLocaleString()} words</span><span>Saved</span><span class="qa ${qaN?'':'ok'}">${qaN?'&#9650; 1 QA':'&#10003; QA'}</span></span></div>
+    <div class="tb"><span class="lbtn" id="optBtn"><svg><use href="#i-spark"/></svg>Optimize</span><span class="lbtn ${S.step===4?'hint':''}" id="linksBtn"><svg><use href="#i-link"/></svg>Internal Links</span><span class="sp"></span>
+      <button class="ic" title="Dark mode"><svg><use href="#i-moon"/></svg></button><button class="ic" title="Preview"><svg><use href="#i-eye"/></svg></button><button class="ic" title="Export to Google Doc"><svg><use href="#i-doc"/></svg></button>
+      <button class="ic ${S.step===11?'hint':''} ${S.images?'on':''}" id="imgBtn" title="Insert image"><svg><use href="#i-img"/></svg></button>
+      <button class="ic ${S.step===12?'hint':''} ${S.schema?'on':''}" id="schemaBtn" title="${S.schema?'Schema generated, view':'Generate schema markup'}"><svg><use href="#i-code"/></svg></button>
+      ${S.status==='final'&&!S.adminStatus?'<button class="ic '+(S.step===13?'hint':'')+'" id="webflowBtn" title="Push to Webflow"><svg><use href="#i-web"/></svg></button>':''}
+      <button class="ic" title="Delete"><svg><use href="#i-trash"/></svg></button>
+      ${mainBtn?'<button class="main '+(S.step===5||S.step===9?'hint':'')+'" id="mainBtn">'+mainBtn+' &rarr;<span class="car">&#8964;</span></button>':''}</div>
+    <div class="seobar"><b>SEO</b><span>Meta · ${PIECE.meta.length} chars</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${PIECE.meta}</span></div>
+    ${S.status==='final'?'<div class="banner" style="margin:12px 18px 0">This piece is finalized. Approved by Dr. Patel on '+DAYS[10]+'. Editing stays open for images and schema; a body edit would clear the schema.</div>':''}
+    <div class="edbody">
+      <div class="pieces"><h5>Pieces</h5><div class="on"><i></i>Dental Implants in Spr...</div><div><i style="background:#C9CED8"></i>Implant or bridge for...</div></div>
+      <div class="doc" id="doc">
+        <div class="secnav"><b>Sections:</b>${SECTIONS.join(' &nbsp; ')}</div>
+        <div class="feat ${S.images?'has':''}">${S.images?'<div class="ph"><svg><use href="#i-cam"/></svg><div>smile-exterior-springfield.jpg<small>Featured · alt: The Example Dental office on South Grand Avenue in Springfield, IL</small></div></div>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-img"/></svg> Add featured image'}</div>
+        <div class="tbar"><span>B</span><span>I</span><span>H2</span><span>H3</span><span>&bull;&bull;</span><span>1.</span><span>&#128279;</span><span>&#9633;</span></div>
+        <div class="rich">${docHTML()}</div>
+        ${editable?'':'<div class="lockov" id="lockov"></div><div class="locktip" id="locktip">Locked while the client reviews. It unlocks when Dr. Patel approves or requests a revision.<br><small style="color:#9BA1AE">Admins can recall it: status dropdown, Client Review to Internal Review.</small></div>'}
+      </div>
+      <div class="right">
+        <div class="rtabs">${[['fb','Client Feedback',openFbCount()],['qa','QA',qaN],['ref','Refiner',''],['ctx','Context',''],['hist','History',S.versions.length]].map(t=>'<span class="'+(S.rtab===t[0]?'on':'')+'" data-t="'+t[0]+'">'+t[1]+(t[2]!==''&&t[2]!==0?'<b class="'+(t[0]==='qa'?'':'ok')+'">'+t[2]+'</b>':'')+'</span>').join('')}</div>
+        <div class="rbody" id="rbody">${renderRight()}</div>
+      </div>
+    </div></div>`;
+  screen.querySelectorAll('.rtabs span').forEach(s=>s.onclick=()=>{S.rtab=s.dataset.t;if(S.step===3&&S.rtab==='qa')S.qaOpen=true;render()});
+  bindEditor(editable);
+}
+function openFbCount(){return S.comments.filter(c=>!c.res).length+S.sugs.filter(s=>s.state==='pending').length}
+function renderRight(){
+  if(S.rtab==='qa'){
+    if(S.qaFixed)return '<div class="allok"><i><svg><use href="#i-check"/></svg></i><b>All checks passed</b><div style="font-size:12px;margin-top:4px">Content meets quality standards</div></div>'+(S.step===3?'<div class="note">Now save. Your first save after generation moves the piece to Internal Review on its own.</div><button class="btn primary" id="saveBtn" style="width:100%">Save</button>':'');
+    return '<h6>Critical issues found <span style="float:right;color:var(--muted);text-transform:none;letter-spacing:0">Re-run QA</span></h6><div class="issue"><span class="k">Critical · doctor_name_invented</span><b>"Dr. Alvarez" is not on this practice\'s roster</b><p>The roster for Example Dental lists Dr. Priya Patel and Dr. Marcus Nguyen. The writer is never allowed to invent a doctor, and this check cannot be auto-fixed.</p><button class="btn sm '+(S.qaOpen?'hint':'')+'" id="jumpFlag">Show in editor</button></div><div class="issue"><span class="k ok">Passed</span><b>18 other checks</b><p>Practice name, phone, localization, word count, FAQ (4 questions), intro and closing CTA, no em dashes, no H1 in body, links valid against the crawl.</p></div>';
+  }
+  if(S.rtab==='fb'){
+    if(S.status==='client_review')return '<div class="note">You can review this feedback, but you can\'t act on it until the client submits the piece for revision or auto-approval triggers.</div>'+fbList(true);
+    if(!S.comments.length&&!S.sugs.length)return '<div class="allok" style="padding-top:40px"><b style="color:var(--muted)">No open comments</b><div style="font-size:12px;margin-top:4px">Nothing from the client yet.</div></div>';
+    return fbList(false);
+  }
+  if(S.rtab==='ctx')return '<h6>Practice facts to always honor</h6>'+[['Practice',PRACTICE.name+', '+PRACTICE.city],['Phone',PRACTICE.phone],['Doctors',PRACTICE.doctors.join(', ')],['Insurance',PRACTICE.insurance],['Hours',PRACTICE.hours],['Not offered','Same-day implants, sleep apnea appliances']].map(f=>'<div class="fact '+(S.step===8&&f[0]==='Insurance'?'hl':'')+'"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('')+'<h6 style="margin-top:14px">From the calendar item</h6><div class="fact"><b>Cluster</b><span>Dental implants</span></div><div class="fact"><b>Angle</b><span>Patients fear the price and the drive to a specialist. Lead with "right here in Springfield" and a written estimate.</span></div><div class="fact"><b>Queries</b><span>dental implants springfield il · implant cost without insurance · am i too old for implants · implant vs bridge back tooth</span></div>';
+  if(S.rtab==='hist')return '<h6>Version history</h6>'+S.versions.map(v=>'<div class="ver"><span>'+v.n+'</span><span>'+(v.t||DAYS[0])+'</span></div>').join('');
+  return '<div class="allok" style="padding-top:40px"><b style="color:var(--muted)">Refiner</b><div style="font-size:12px;margin-top:4px">Chat or quick edits with the writer. Not part of this run.</div></div>';
+}
+function fbList(locked){
+  let h='';
+  S.sugs.forEach((s,k)=>{h+='<div class="fb '+(s.state!=='pending'?'done':'')+'"><div class="who"><span>Suggested edit · Dr. Patel</span><span class="pill '+(s.state==='pending'?'open':'res')+'">'+(s.state==='pending'?'Pending':s.state)+'</span></div><div><span class="sug">'+s.from+'</span> <span class="ins">'+s.to+'</span></div>'+(s.state==='pending'&&!locked?'<div class="acts"><button class="ok" data-acc="'+k+'">Accept</button><button class="no" data-rej="'+k+'">Dismiss</button></div>':'')+'</div>'});
+  S.comments.forEach((c,k)=>{h+='<div class="fb '+(c.res?'done':'')+'"><div class="who"><span>Dr. Patel · '+c.day+'</span><span class="pill '+(c.res?'res':'open')+'">'+(c.res?'Resolved':'Open')+'</span></div>'+(c.q?'<div class="q">'+c.q+'</div>':'')+'<div>'+c.text+'</div>'+(c.reply?'<div class="reply"><b>You:</b> '+c.reply+'</div>':'')+(c.res||locked?'':'<div class="acts">'+(c.fix&&!c.fixed?'<button data-fix="'+k+'">'+c.fix+'</button>':'')+(c.fixed&&!c.reply?'<button data-reply="'+k+'">Reply</button>':'')+(c.reply?'<button class="ok" data-res="'+k+'">Resolve</button>':'')+'</div>')+'</div>'});
+  return h;
+}
+function bindEditor(editable){
+  const rb=document.getElementById('rbody');
+  const jf=document.getElementById('jumpFlag');if(jf)jf.onclick=()=>{const f=document.getElementById('docFlag');if(f){f.scrollIntoView({block:'center'});f.classList.add('hl');toast('Click the highlighted name to replace it with a doctor from the roster.')}};
+  const df=document.getElementById('docFlag');if(df)df.onclick=()=>{if(S.step!==3){toast('Open the QA tab first.');return}S.qaFixed=true;render();toast('Replaced with Dr. Nguyen, who is on the roster.')};
+  const sb=document.getElementById('saveBtn');if(sb)sb.onclick=()=>{S.status='specialist_review';setPhase('InternalQA',20);S.versions.unshift({n:'Specialist edit',t:DAYS[0]});S.step=4;render()};
+  const lb=document.getElementById('linksBtn');if(lb)lb.onclick=()=>{if(S.step!==4){toast(S.linksApplied?'Links already applied.':'Not yet. Follow the coach.');return}openLinksModal()};
+  const ob=document.getElementById('optBtn');if(ob)ob.onclick=()=>toast('Optimize runs a full rewrite of the draft. Not part of this run.');
+  const mb=document.getElementById('mainBtn');if(mb)mb.onclick=()=>{if(S.step===5)openSendModal(1);else if(S.step===9)openSendModal(2);else if(S.status==='client_review')toast('Re-sending resets the deadline. Not needed here.');else toast('Not yet. Follow the coach.')};
+  const lo=document.getElementById('lockov');if(lo)lo.onclick=()=>{const t=document.getElementById('locktip');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600);S.score.lockTried=true};
+  if(rb){rb.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const k=+b.dataset.acc;S.sugs[k].state='Accepted';S.sugAccepted=true;S.sugShown=false;S.versions.unshift({n:'Client suggestion',t:dayLabel()});S.comments.push({text:'Accepted suggested edit: "back at work the next day" to "back to normal activities within a few days".',res:true,day:dayLabel(),sys:true});render();toast('Applied to the page. Dr. Patel will see "Accepted suggested edit" on her side.');checkFbDone()});
+    rb.querySelectorAll('[data-rej]').forEach(b=>b.onclick=()=>{const k=+b.dataset.rej;S.sugs[k].state='Dismissed';S.sugShown=false;S.score.sugDismissed=true;render();toast('Dismissed. Her wording was more accurate for recovery; dismissing is allowed, but accepting was the better call here.');checkFbDone()});
+    rb.querySelectorAll('[data-fix]').forEach(b=>b.onclick=()=>{const k=+b.dataset.fix;const c=S.comments[k];if(c.key==='sd'){S.sdRemoved=true;c.fixed=true;S.versions.unshift({n:'Specialist edit',t:dayLabel()});render();toast('Sentence removed. Now reply so she sees what changed.')}if(c.key==='ins'){openInsuranceMoment(k)}});
+    rb.querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{const k=+b.dataset.reply;const c=S.comments[k];c.reply=c.key==='sd'?'Removed that sentence. We will keep same-day out of all pages for Example Dental.':'Added: in-network with Delta Dental, Cigna and MetLife, straight from your practice facts.';render()});
+    rb.querySelectorAll('[data-res]').forEach(b=>b.onclick=()=>{const k=+b.dataset.res;S.comments[k].res=true;render();checkFbDone()});}
+  const ib=document.getElementById('imgBtn');if(ib)ib.onclick=()=>{if(S.step===11)openImageMoment();else if(S.images)toast('Images are in. Use the editor to reorder or replace them.');else toast('Not yet. Images come after approval.')};
+  const scb=document.getElementById('schemaBtn');if(scb)scb.onclick=()=>{if(S.step===12)openSchemaModal();else if(S.schema)openSchemaModal(true);else toast('Not yet. Schema comes after the last edit.')};
+  const wb=document.getElementById('webflowBtn');if(wb)wb.onclick=()=>{if(S.step===13)openWebflowModal();else toast('Push to Webflow is only enabled on a Final piece.')};
+}
+function checkFbDone(){const open=S.comments.filter(c=>!c.res).length+S.sugs.filter(s=>s.state==='pending').length;if(open===0&&S.step===8){S.step=9;render()}}
+
+/* ======================= modals ======================= */
+const root=document.getElementById('modalRoot');
+function modal(html){root.innerHTML='<div class="mback"><div class="modal">'+html+'</div></div>';return root.querySelector('.modal')}
+function closeModal(){root.innerHTML=''}
+
+function openLinksModal(){
+  const LINKS=[['bone graft','/services/bone-grafting',91],['sedation options','/services/sedation-dentistry',88],['bridge','/services/dental-bridges',86],['partial denture','/services/dentures',79],['cleanings','/services/cleanings-and-exams',74],['Dr. Nguyen','/about/dr-marcus-nguyen',62]];
+  const m=modal(`<div class="mh"><h3>Internal Links</h3><div class="steps"><b>Add links</b><span>Fix links</span></div></div><div class="mb">
+    <div style="color:var(--sub);font-size:12.5px;margin-bottom:6px">Targets come from the client's accepted site crawl (41 pages). Pick which sections of the site count.</div>
+    <div class="chks"><label><input type="checkbox" checked> Services (14)</label><label><input type="checkbox" checked> About (5)</label><label><input type="checkbox"> Blog (18)</label><label><input type="checkbox" disabled> Homepage, never</label></div>
+    <div id="lk"><button class="btn primary" id="genLinks">Generate links</button></div></div>
+    <div class="mf"><span style="font-size:12px;color:var(--muted)">1,480 words: between 5 and 12 links. Anchors must already exist in the text.</span><div><button class="btn" id="mc">Cancel</button> <button class="btn primary" id="apply" disabled>Apply 0 changes</button></div></div>`);
+  m.querySelector('#mc').onclick=closeModal;
+  m.querySelector('#genLinks').onclick=()=>{const lk=m.querySelector('#lk');lk.innerHTML='<div style="font-size:12px;color:var(--blue-ink)">Ranking 41 pages by overlap, choosing anchors, checking each target is live...</div>';
+    setTimeout(()=>{lk.innerHTML=LINKS.map((l,k)=>'<div class="linkrow"><input type="checkbox" checked data-k="'+k+'"><div><div class="a">'+l[0]+'</div><div class="u">'+l[1]+'</div></div><div class="sc">'+l[2]+'</div></div>').join('')+'<div style="font-size:11.5px;color:var(--muted);margin-top:8px">1 proposal dropped: "implants" pointed at this page itself. 1 dropped: target returned 404.</div>';
+      const ap=m.querySelector('#apply');const upd=()=>{const n=lk.querySelectorAll('input:checked').length;ap.disabled=!n;ap.textContent='Apply '+n+' changes'};upd();lk.querySelectorAll('input').forEach(i=>i.onchange=upd);
+      ap.onclick=()=>{S.linksApplied=true;S.versions.unshift({n:'Internal Links',t:DAYS[0]});closeModal();S.step=5;render();toast('Links applied and saved as their own version.')}},900)};
+}
+function openSendModal(round){
+  let step=1;const recip={patel:true,nguyen:false};
+  const draw=()=>{
+    const body=step===1?`<div style="color:var(--sub);font-size:12.5px">Choose who should receive the review email for "${PIECE.title}".</div>
+      <div class="recip"><input type="checkbox" id="rP" ${recip.patel?'checked':''}><div><b>Dr. Priya Patel</b><small>priya@exampledental.test · practice owner</small></div><span class="why">The one reviewer</span></div>
+      <div class="recip"><input type="checkbox" id="rN" ${recip.nguyen?'checked':''}><div><b>Dr. Marcus Nguyen</b><small>marcus@exampledental.test</small></div></div>
+      <label class="lab">Add new recipient</label><div class="inp">client@example.com &nbsp; · &nbsp; Name (optional)</div>
+      <label class="lab">CC</label><div class="inp">office@example.com</div>
+      <div class="note" style="margin-top:12px"><b>Our rule, not the app's.</b><span class="honest">Team process</span><br>Opened Queries lets you add every doctor and a CC list, and they all get the same link. We ask each practice to name one reviewer, because the first person to click Approve or Request Revision closes the round for everyone.</div>`
+    :step===2?`<label class="lab">Email template</label><div class="inp" style="color:var(--ink)">${round===1?'Service page review (default)':'Revision resubmitted'}</div><label class="lab">Account manager</label><div class="inp" style="color:var(--ink)">Jordan Lee · jordan@s8e8.test</div><label class="lab">SEO</label><div class="inp" style="color:var(--ink)">You · you@s8e8.test</div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">Both are BCC'd on every client email, so the team sees exactly what the client got.</div>`
+    :`<div class="email"><div class="esub">${round===1?'Your new page is ready for review: Dental Implants in Springfield, IL':'We applied your feedback: Dental Implants in Springfield, IL'}</div><div class="m">To: Dr. Priya Patel · BCC: Jordan Lee, You</div>Hi Dr. Patel,<br><br>${round===1?'Your new service page is ready for your review. Open the link, read it at your own pace, and leave comments or suggested edits right on the page. Please review by <b>'+DAYS[10]+'</b> (14 days). If we do not hear from you by then, the page is approved automatically.':'We made the changes you asked for. This is the final review round: open the link and click Approve Content when you are happy. Please review by <b>'+DAYS[12]+'</b>.'}<br><span class="cta">Review the page &rarr;</span></div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">You never set the deadline by hand. It comes from the strategy settings (default 14 days).</div><div style="margin-top:8px"><span class="tag">Send Test to Me</span></div>`;
+    const m=modal(`<div class="mh"><h3>Send for Client Review</h3><div class="steps">${['1. Recipients','2. Template','3. Edit & Preview'].map((s,k)=>k+1===step?'<b>'+s+'</b>':'<span>'+s+'</span>').join('')}</div></div><div class="mb">${body}</div>
+      <div class="mf"><button class="btn" id="mc">Cancel</button><div>${step>1?'<button class="btn" id="back">Back</button> ':''}<button class="btn primary" id="nx">${step<3?'Next':(round===1?'Send for Review':'Send Back Revision')}</button></div></div>`);
+    m.querySelector('#mc').onclick=closeModal;
+    const b=m.querySelector('#back');if(b)b.onclick=()=>{step--;draw()};
+    const rP=m.querySelector('#rP'),rN=m.querySelector('#rN');if(rP)rP.onchange=()=>recip.patel=rP.checked;if(rN)rN.onchange=()=>{recip.nguyen=rN.checked;if(rN.checked){S.score.addedSecond=true;toast('Allowed by the app. Against our one-reviewer rule.')}};
+    m.querySelector('#nx').onclick=()=>{if(step===1&&!recip.patel){toast('Add at least one recipient to send the review email.');return}if(step<3){step++;draw();return}
+      closeModal();S.status='client_review';S.locked=true;S.sent++;S.round=round;S.deadline=round===1?DAYS[10]:DAYS[12];setPhase('AwaitingApproval',10);
+      if(round===1){S.subs.send=true;S.day=0}else{S.day=8}
+      post('OpenedQueries',AI+'This piece has been sent to the client for review. '+YOU+' '+MS);
+      S.step=round===1?6:10;S.rtab='fb';render();toast(round===1?'Sent. Deadline '+DAYS[10]+'. The editor is now locked.':'Sent back. Final round. Deadline '+DAYS[12]+'.')};
+  };
+  draw();
+}
+function openInsuranceMoment(k){
+  const m=modal(`<div class="mb" style="padding-top:18px"><div class="mcq"><div class="mk">Decision moment</div><h3>Dr. Patel asked you to mention that they take Delta Dental. What do you do?</h3><div class="opts" id="o"></div><div class="why" id="w"></div></div></div><div class="mf"><span></span><button class="btn" id="mc">Close</button></div>`);
+  const opts=[['Write it in. The client asked for it, so it is their claim, not ours.',false,'Tempting, but a comment is not a fact source. If she misremembered a plan, the page would carry it. Check the practice facts first.'],['Check the practice facts in the Context tab. If Delta Dental is there, add the in-network carriers from the facts.',true,'Right. The facts panel lists Delta Dental, Cigna and MetLife as in-network. That is what the writer was waiting for: the yellow placeholder said "[add accepted insurance carriers]".'],['Decline. Insurance claims on a page are risky, so leave the placeholder for the practice to fill in later.',false,'The placeholder is there precisely so a human fills it from verified facts. Leaving it in means a live page with brackets in it.']];
+  const o=m.querySelector('#o'),w=m.querySelector('#w');
+  shuffle(opts.map((x,i)=>i)).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span>'+opts[i][0]+'</span>';b.onclick=()=>{if(!('ins' in S.score))S.score.ins=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');
+    if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});S.insAdded=true;S.comments[k].fixed=true;S.versions.unshift({n:'Facts update',t:dayLabel()});m.querySelector('#mc').textContent='Added. Back to the feedback';m.querySelector('#mc').className='btn primary'}};o.appendChild(b)});
+  m.querySelector('#mc').onclick=()=>{closeModal();render()};
+}
+function openImageMoment(){
+  const m=modal(`<div class="mb" style="padding-top:18px"><div class="mcq"><div class="mk">Before you click</div><h3>Why did we wait until approval to add photos, when the editor allowed it from Draft Ready?</h3><div class="opts" id="o"></div><div class="why" id="w"></div></div></div><div class="mf"><span class="honest" style="margin:0">Team process, not enforced by the app</span><button class="btn" id="mc">Cancel</button></div>`);
+  const opts=[['Because the app blocks image uploads until the piece is Final.',false,'It does not. Every image control is available in any editable status. This one is on us.'],['Because the client reviews words. Photos added before approval get moved or dropped when a revision changes sections, and they pull attention from the copy.',true,'Right. Images are placed under specific headings, so a revision that reshapes the page means placing them again. Approval first, photos second. (Wording to confirm with the owner.)'],['Because photos need their own client approval round.',false,'There is no separate photo round. The photos come from the client\'s own Drive folder.']];
+  const o=m.querySelector('#o'),w=m.querySelector('#w');
+  shuffle(opts.map((x,i)=>i)).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span>'+opts[i][0]+'</span>';b.onclick=()=>{if(!('img' in S.score))S.score.img=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});const c=m.querySelector('#mc');c.textContent='AI Selection';c.className='btn primary';c.onclick=openImageModal}};o.appendChild(b)});
+  m.querySelector('#mc').onclick=closeModal;
+}
+function openImageModal(){
+  const m=modal(`<div class="mh"><h3>Select Images</h3><div class="steps"><span>Google Drive: Example Dental / Office photos (36 files)</span></div></div><div class="mb" id="ib"><div style="color:var(--blue-ink);font-size:12.5px">Matching images to your content...</div></div><div class="mf"><span style="font-size:12px;color:var(--muted)">One featured image and up to 3 inline, one per section at most, never the same photo twice.</span><div><button class="btn" id="mc">Cancel</button> <button class="btn primary" id="add" disabled>Add Images</button></div></div>`);
+  m.querySelector('#mc').onclick=closeModal;
+  setTimeout(()=>{m.querySelector('#ib').innerHTML=`<div class="imgpick">
+    <div class="ic2"><div class="ph"><svg><use href="#i-cam"/></svg>smile-exterior-springfield.jpg</div><div class="m"><b>Featured image</b><span class="alt">The Example Dental office on South Grand Avenue in Springfield, IL</span></div></div>
+    <div class="ic2"><div class="ph"><svg><use href="#i-cam"/></svg>implant-consult-dr-nguyen.jpg</div><div class="m"><b>Under: Are You a Candidate</b><span class="alt">Dr. Nguyen reviewing a 3D scan with a patient at Example Dental in Springfield</span></div></div>
+    <div class="ic2"><div class="ph"><svg><use href="#i-cam"/></svg>front-desk-benefits-check.jpg</div><div class="m"><b>Under: What Dental Implants Cost</b><span class="alt">A team member at the Example Dental front desk going over benefits with a patient</span></div></div>
+    <div class="ic2" style="opacity:.5"><div class="ph"><svg><use href="#i-cam"/></svg>holiday-party-2024.jpg</div><div class="m"><b>Skipped</b><span class="alt">Not relevant to implants</span></div></div></div>
+    <div style="font-size:11.5px;color:var(--muted)">Alt text is written for you: under 125 characters, describes what the photo shows, no keyword stuffing, no em dashes. You can edit any of it before inserting. Files are hosted for Webflow with their original names cleaned up, nothing renamed for SEO.</div>`;const a=m.querySelector('#add');a.disabled=false;a.onclick=()=>{S.images=true;closeModal();S.step=12;render();toast('3 photos placed. Asana does nothing for images; there is no subtask for them.')}},1200);
+}
+function openSchemaModal(viewOnly){
+  const graph=`{ "<span class="k">@context</span>": "<span class="s">https://schema.org</span>", "<span class="k">@graph</span>": [
+  { "<span class="k">@type</span>": "<span class="s">WebSite</span>", "name": "Example Dental" },
+  { "<span class="k">@type</span>": "<span class="s">Dentist</span>", "name": "Example Dental",
+    "address": { "streetAddress": "1200 S Grand Ave", "addressLocality": "Springfield", "addressRegion": "IL" },
+    "telephone": "(217) 555-0142", "openingHoursSpecification": [ ... ],
+    "employee": [ { "<span class="k">@type</span>": "<span class="s">Person</span>", "name": "Dr. Priya Patel" }, { "<span class="k">@type</span>": "<span class="s">Person</span>", "name": "Dr. Marcus Nguyen" } ] },
+  { "<span class="k">@type</span>": "<span class="s">WebPage</span>", "name": "Dental Implants in Springfield, IL", "primaryImageOfPage": "smile-exterior-springfield.jpg" },
+  { "<span class="k">@type</span>": "<span class="s">BreadcrumbList</span>", "itemListElement": [ Home, Services, Dental Implants ] },
+  { "<span class="k">@type</span>": "<span class="s">Service</span>", "name": "Dental Implants", "provider": { "@id": "#dentist" },
+    "description": "Implant placement and restoration in Springfield, IL, with written estimates and in-network benefits checks." },
+  { "<span class="k">@type</span>": "<span class="s">FAQPage</span>", "mainEntity": [ 4 questions, copied word for word from the FAQ section ] }
+] }`;
+  const m=modal(`<div class="mh"><h3>Schema markup</h3><div class="steps"><span>Practice location type: <b>Storefront</b></span></div></div><div class="mb" id="sb">${viewOnly||S.schema?schemaBody(graph):'<div style="color:var(--sub);font-size:12.5px;margin-bottom:10px">Built from the practice\'s own data (name, address, phone, hours, doctors) plus this page\'s headings and FAQ. The AI writes only the short description. FAQPage is included only because the page has a real FAQ section.</div><button class="btn primary" id="genS">Generate Schema</button>'}</div>
+    <div class="mf"><span style="font-size:12px;color:var(--muted)">Any change to the body clears this. Generate it after the last edit.</span><div><button class="btn" id="mc">${S.schema?'Close':'Cancel'}</button></div></div>`);
+  m.querySelector('#mc').onclick=()=>{closeModal();if(S.schema&&S.step===12){S.step=13;render()}};
+  const g=m.querySelector('#genS');if(g)g.onclick=()=>{m.querySelector('#sb').innerHTML='<div style="color:var(--blue-ink);font-size:12.5px">Generating...</div>';setTimeout(()=>{S.schema=true;m.querySelector('#sb').innerHTML=schemaBody(graph);m.querySelector('#mc').textContent='Close';renderEditor()},900)};
+}
+function schemaBody(graph){return '<div class="schema">'+graph+'</div><div class="sv"><span>6 sections checked</span><span>0 missing fields</span><span class="warn">2 recommended: priceRange, geo</span></div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">Checked against Google\'s required and recommended fields for each type. FAQ rich results no longer show in Google (removed May 2026); the FAQPage block stays because it is accurate and harmless.</div><div style="margin-top:8px"><span class="tag">Regenerate Schema</span> <span class="tag">Copy</span></div>'}
+function openWebflowModal(){
+  const m=modal(`<div class="mh"><h3>Publish to Webflow</h3><div class="steps"><span>Site: exampledental.test</span></div></div><div class="mb"><label class="lab">Collection</label><div class="inp" style="color:var(--ink)">Service Pages</div><label class="lab">Fields filled automatically</label><div class="fields"><div>Name</div><div>Slug: dental-implants-springfield-il</div><div>Body (links checked, images sized)</div><div>Post summary</div><div>Meta description</div><div>Content type</div><div>Topic cluster</div><div>Keywords</div><div>Featured image + alt</div><div>Publish date</div><div>Status: Draft</div><div>Schema markup (JSON-LD)</div></div><div class="note" style="margin-top:12px">This creates a <b>draft</b> item in Webflow. Nothing goes live from here. The piece status stays Final.</div></div><div class="mf"><button class="btn" id="mc">Cancel</button><button class="btn primary" id="pub">Publish as Draft</button></div>`);
+  m.querySelector('#mc').onclick=closeModal;
+  m.querySelector('#pub').onclick=()=>{S.webflow='draft';S.subs.publish=true;closeModal();S.step=14;S.view='list';S.day=11;render();toast('Draft staged in Webflow. Asana: "Publish Content on Webflow" marked done.')};
+}
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ======================= client view (scripted) ======================= */
+const R1=[
+ {d:1,t:'Day 2. Dr. Patel opens the link between patients and types her name.',gate:true},
+ {d:1,t:'She reads the page. The deadline banner and the comment sidebar are the only chrome around the copy.'},
+ {d:1,t:'She highlights a sentence in the opening. Two choices appear: Comment, or Suggest Edit.',hl:'sd',pop:true},
+ {d:1,t:'She comments. The team gets an email right away, and Asana gets a comment tagging you and Jordan.',hl:'sd',comment:{key:'sd',q:'Ask us about same-day implants if you want to leave with a tooth the same afternoon.',text:'We don\'t do same-day implants here. Please remove this.',fix:'Remove sentence'}},
+ {d:2,t:'Day 3. Back again. This time she uses Suggest Edit on the recovery sentence: a replacement, shown as a strike-through and an insert. Suggestions do not notify the team one by one; they travel with the revision request.',sug:true},
+ {d:2,t:'A general comment from the sidebar, with no passage attached.',comment:{key:'ins',text:'Can we mention that we\'re in-network with Delta Dental? Patients ask every day.',fix:'Check practice facts'}},
+ {d:3,t:'Day 4. An email lands in your inbox. Decide how to answer.',mail:true},
+ {d:4,t:'Day 5. Dr. Patel clicks Request Revision. The confirmation explains the one-round rule.',confirm:true},
+ {d:4,t:'Submitted. Her page is now closed for decisions, and she will get a fresh link when the new version is ready. On your side, the piece just unlocked.',closed:true}
+];
+const R2=[
+ {d:9,t:'Day 10. Dr. Patel opens the new link. The banner tells her this is the final round: Approve Content is the only decision left.',gate:true,final:true},
+ {d:9,t:'She reads the cost section: the carriers are in, the same-day line is gone, her wording about recovery is there with "Accepted suggested edit" under it.',final:true},
+ {d:9,t:'She clicks Approve Content and leaves a final note.',approve:true,final:true},
+ {d:9,t:'Approved. The piece is Final. Asana marks "Confirm Client/Auto-Approval" done and sets the phase to Approved.',approved:true}
+];
+function renderClient(){
+  const script=S.cv==='r1'?R1:R2,st=script[S.cvStage],last=S.cvStage===script.length-1;
+  document.getElementById('plabel').className='plabel client';document.getElementById('plabelTxt').textContent='What Dr. Patel sees · the client\'s browser';
+  S.day=S.cv==='r1'?st.d:st.d;
+  let body='';
+  if(st.gate){body=`<div class="gate"><div class="card"><div class="logo">S8E8</div><span class="tag blue">Example Dental</span><h3>Content Review</h3><p>You've been invited to review <b>"${PIECE.title}"</b></p><label class="lab" style="text-align:left">Your name</label><div class="inp" id="gateInp"><span class="caret"></span></div><button class="go" id="gateGo">Start Review</button></div></div>`}
+  else if(st.approved){body=`<div class="approved"><div><div class="ic"><svg><use href="#i-check"/></svg></div><h3>Content Approved</h3><p>Thank you for your review. The team will proceed with publishing.</p></div></div>`}
+  else{
+    const dl=st.final?'<div class="banner">This is your final review round. You can approve the page or leave comments, but you cannot request another revision. Deadline: '+DAYS[12]+'.</div>':'<div class="dl">Review deadline: '+DAYS[10]+' ('+(14-st.d)+' days remaining)</div>';
+    const closed=st.closed?'<div class="banner closed"><b>Dr. Patel</b> sent a revision request on '+DAYS[st.d]+'. Your comments and suggested edits are with the team. You will get a fresh link when the new version is ready.</div>':'';
+    body=`<div class="cv"><div class="cvtop"><div class="logo">S8E8</div><div><div class="cl">Example Dental</div><div class="ti">${PIECE.title}</div><div style="font-size:10.5px;color:var(--muted)"><span class="tag" style="padding:2px 6px">Service page</span> 1,480 words</div></div><div class="you"><i>P</i>Dr. Patel</div></div>
+      <div class="cvgrid"><div class="cvdoc" style="position:relative"><div class="tip">Tip: Highlight text to comment on a specific passage, or use the sidebar for general feedback</div>${closed||dl}<div class="rich" id="cvrich">${docHTML()}</div>${st.pop?'<div class="pop" id="pop" style="left:120px;top:150px"><span class="on">&#9679; Comment</span><span>&#9998; Suggest Edit</span></div>':''}${st.mail?mailHTML():''}</div>
+      <div class="cvside"><div class="sg"><span class="${st.sug?'':'on'}">Comments</span><span class="${st.sug?'on':''}">Edits</span></div>${st.sug?'<div class="cvc"><div class="w"><span>Suggested edit</span><span>Pending</span></div><div><span class="sug">back at work the next day</span> <span class="ins">back to normal activities within a few days</span></div><div style="font-size:11px;color:var(--muted);margin-top:6px">Saves on its own. Goes to the team with your revision request.</div></div>':cvComments()}</div></div>
+      <div class="cvbar"><span class="fin">${st.closed?'Decisions are closed for this round.':st.final?'Final round':'Leave feedback, then choose one:'}</span>${st.closed?'':st.final?'<button class="btn primary" id="appr" '+(st.approve?'':'disabled')+'>Approve Content</button>':'<button class="btn" id="rr" '+(st.confirm?'':'disabled')+'>Request Revision</button><button class="btn primary" disabled>Approve Content</button>'}</div></div>`;
+  }
+  screen.innerHTML=body;
+  coachEl.innerHTML='<div class="n" style="background:var(--blue)">'+(S.cvStage+1)+'</div><div><div class="pr">Client view · '+DAYS[st.d]+'</div><h4>'+(S.cv==='r1'?'Round 1 of 1':'Final round')+'</h4><p>'+st.t+'</p></div><div class="act">'+(st.mail&&!('reviewer' in S.score)?'<span style="font-size:12px;color:var(--muted)">Answer the email first</span>':'')+'<button class="btn primary '+(st.mail&&!('reviewer' in S.score)?'':'hint')+'" id="cvNext" '+(st.mail&&!('reviewer' in S.score)?'disabled':'')+'>'+(last?'Back to your side &rarr;':'Next &rarr;')+'</button></div>';
+  document.getElementById('clock').textContent=DAYS[st.d];
+  document.getElementById('cvNext').onclick=()=>{if(last){finishClient();return}S.cvStage++;applyStage(script[S.cvStage]);render()};
+  const popEl=document.getElementById('pop'),sdEl=document.getElementById('sdTxt');if(popEl&&sdEl){popEl.style.left=Math.max(20,sdEl.offsetLeft-10)+'px';popEl.style.top=(sdEl.offsetTop-36)+'px'}
+  if(st.gate){const inp=document.getElementById('gateInp'),go=document.getElementById('gateGo');const name='Dr. Patel';let c=0;const tick=()=>{if(!inp.isConnected)return;c++;inp.innerHTML=name.slice(0,c)+'<span class="caret"></span>';if(c<name.length)setTimeout(tick,90);else go.classList.add('on')};setTimeout(tick,500);go.onclick=()=>document.getElementById('cvNext').click()}
+  if(st.hl){const e=document.getElementById('sdTxt');if(e)e.classList.add('hl')}
+  const rr=document.getElementById('rr');if(rr)rr.onclick=()=>openConfirmRevision();
+  const ap=document.getElementById('appr');if(ap)ap.onclick=()=>openApprove();
+  if(st.mail)bindMail();
+}
+function cvComments(){
+  const list=S.comments.filter(c=>!c.sys);
+  if(!list.length)return '<textarea placeholder="Add a comment..."></textarea><div class="post"><span>as Dr. Patel</span><button>Post</button></div><div class="empty">No open comments yet<br><small>Select text in the content to leave a comment</small></div>';
+  return '<textarea placeholder="Add a comment..."></textarea><div class="post"><span>as Dr. Patel</span><button>Post</button></div>'+list.map(c=>'<div class="cvc"><div class="w"><span>Dr. Patel</span><span>'+(c.res?'Resolved':'Open')+'</span></div>'+(c.q?'<div class="q">'+c.q+'</div>':'')+c.text+(c.reply?'<div class="team"><b>Example Dental team:</b> '+c.reply+'</div>':'')+'</div>').join('')+S.comments.filter(c=>c.sys).map(c=>'<div class="cvc" style="opacity:.7"><div class="w"><span>Team</span><span>Resolved</span></div>'+c.text+'</div>').join('');
+}
+function applyStage(st){
+  if(st.comment){const c=Object.assign({res:false,day:DAYS[st.d]},st.comment);S.comments.push(c);post('OpenedQueries',AI+YOU+' '+MS+' Client feedback from Dr. Patel:<br>'+c.text)}
+  if(st.sug){S.sugs.push({from:'back at work the next day',to:'back to normal activities within a few days',state:'pending'});S.sugShown=true}
+  if(st.closed&&!S.rrDone){/* they pressed Next past the confirm stage without clicking Request Revision */doRevision()}
+}
+function mailHTML(){return `<div class="cvmail"><div class="fr">New email · to you</div><b>From: Dr. Marcus Nguyen</b><p>Priya forwarded me the review link. I'd like to add my notes on the implant page too. Can I just use the same link?</p><div class="mcq" style="padding:10px;border:0;background:var(--chip)"><div class="mk">Decision moment</div><div class="opts" id="mo"></div><div class="why" id="mw"></div></div></div>`}
+function bindMail(){
+  const opts=[['"Sure, the link works for anyone."',false,'True, and that is the problem. Opened Queries would accept his comments. But the first person to click Approve or Request Revision closes the round for everyone, and two voices on one page lead to contradictions. Our rule is one reviewer.'],['"Please send your notes to Dr. Patel. She is the one reviewer on this page, and she can add them under her name before she submits."',true,'Right. One reviewer, one voice, one decision. The app does not enforce this; we do, because the first decision closes the round for everyone.'],['Add him as a second recipient in Opened Queries so he gets his own email.',false,'The app would let you, and he would get the same link. That makes the problem official. One reviewer per practice.']];
+  const o=document.getElementById('mo'),w=document.getElementById('mw');
+  shuffle([0,1,2]).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span style="font-size:12px">'+opts[i][0]+'</span>';b.onclick=()=>{if(!('reviewer' in S.score))S.score.reviewer=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});const n=document.getElementById('cvNext');n.disabled=false;n.classList.add('hint');coachEl.querySelector('.act span')?.remove()}};o.appendChild(b)});
+}
+function openConfirmRevision(){
+  const m=modal(`<div class="mh"><h3>Submit Revision Request</h3></div><div class="mb">Your 2 comments and 1 suggested edit go to the team now. <b>You get one revision round.</b> When the updated page comes back, you will be able to approve it or leave comments, but not request another revision.<label class="lab">Anything else for the team?</label><div class="inp" style="color:var(--ink)">Thanks, mostly small things. Please keep the tone, it sounds like us.</div></div><div class="mf"><button class="btn" id="mc">Keep reviewing</button><button class="btn primary" id="go">Submit Revision Request</button></div>`);
+  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doRevision();S.cvStage++;render()};
+}
+function doRevision(){
+  if(S.rrDone)return;S.rrDone=true;S.status='revision_requested';S.revision=1;S.locked=false;setPhase('RevisionRequested',20);
+  post('OpenedQueries',AI+YOU+' '+MS+' A revision has been requested on this content piece for <b>Example Dental</b> (Dr. Patel).<br><b>Client feedback:</b><br>Thanks, mostly small things. Please keep the tone, it sounds like us.');
+  S.comments.push({text:'[Revision request] Thanks, mostly small things. Please keep the tone, it sounds like us.',res:true,day:DAYS[4],sys:true});
+}
+function openApprove(){
+  const m=modal(`<div class="mh"><h3>Approve this page?</h3></div><div class="mb">Approving tells the team the page is ready to publish as it stands.<label class="lab">Any final notes? (optional)</label><div class="inp" style="color:var(--ink)">Looks great. Thank you for the quick turnaround.</div></div><div class="mf"><button class="btn" id="mc">Not yet</button><button class="btn primary" id="go">Approve Content</button></div>`);
+  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doApprove();S.cvStage++;render()};
+}
+function doApprove(){
+  if(S.apDone)return;S.apDone=true;S.status='final';S.subs.confirm=true;setPhase('Approved',10);
+  post('OpenedQueries',AI+YOU+' '+MS+' This content piece for <b>Example Dental</b> has been approved by Dr. Patel!<br>Client notes: Looks great. Thank you for the quick turnaround.');
+}
+function finishClient(){
+  if(S.cv==='r1'){if(!S.rrDone)doRevision();S.view='editor';S.rtab='fb';S.step=8;S.day=5}
+  else{if(!S.apDone)doApprove();S.view='editor';S.rtab='qa';S.step=11;S.day=10}
+  S.cv=null;render();
+}
+
+/* ======================= asana ======================= */
+function renderAsana(){
+  const subs=[['create','Create Job',''],['send','Send to Client For Approval','Oct 2'],['confirm','Confirm Client/Auto-Approval','Oct 7'],['publish','Publish Content on Webflow','Nov 17']];
+  asanaEl.innerHTML=`<div class="atask"><div class="pj"><i></i>Example Dental &rsaquo; Service Pages</div><h3>${PIECE.title}</h3>
+    <div class="arow"><b>Assignee</b><span class="av"><i class="y">Y</i>You (SEO)</span></div>
+    <div class="arow"><b>Collaborators</b><span class="av"><i>JL</i>Jordan Lee (MS)</span></div>
+    <div class="arow"><b>Due date</b><span>Nov 20, 2026</span></div>
+    <div class="arow"><b>Service Page Phases</b><span><span class="phase ${S.phase}">${({Drafted:'Drafted',InternalQA:'Internal QA',AwaitingApproval:'Awaiting Approval',RevisionRequested:'Revision Requested',Approved:'Approved',Published:'Published'})[S.phase]}</span></span></div>
+    <div class="arow"><b>Estimated time</b><span>${S.est?S.est+' min':'<span style="color:var(--muted)">empty</span>'}</span></div>
+    <div class="arow"><b>Notes</b><span style="font-size:11.5px;color:var(--blue-ink)">Edit in App: openedqueries.../production/1024</span></div>
+    <div class="subs"><h6>Subtasks</h6>${subs.map(s=>'<div class="sub '+(S.subs[s[0]]?'done':'')+'"><div class="c"><svg><use href="#i-check"/></svg></div><span>'+s[1]+'</span><small>'+s[2]+'</small></div>').join('')}</div>
+    <div class="feed"><h6>Activity</h6>${S.feed.length?S.feed.map(f=>'<div class="item"><i class="'+(f.isPerson?'p':'')+'">'+(f.isPerson?'Y':'OQ')+'</i><div><div class="w"><span>'+f.who+'</span><small>'+f.day+'</small></div>'+f.html+'</div></div>').join(''):'<div style="font-size:12px;color:var(--muted)">Task created from the calendar. "Create Job" completed on creation.</div>'}</div></div>`;
+}
+
+/* ======================= done ======================= */
+function renderDone(){
+  const sc=[['Fixed the invented doctor before sending',S.qaFixed],['One reviewer: answered Dr. Nguyen correctly',S.score.reviewer===true&&!S.score.addedSecond],['Checked the practice facts before adding insurers',S.score.ins===true],['Knew why images wait for approval',S.score.img===true]];
+  const n=sc.filter(x=>x[1]).length;
+  screen.innerHTML=`<div class="finish"><div class="tag mag">Simulation complete</div><h2>Draft to published,<br>one service page</h2><p>You took one piece from the calendar to a live Webflow page. Here is what you clicked, and what Opened Queries did on its own.</p>
+    <div class="score">${sc.map(x=>'<div class="'+(x[1]?'ok':'no')+'"><b>'+(x[1]?'&#10003;':'&#10007;')+'</b>'+x[0]+'</div>').join('')}</div>
+    <p><b>${n} of 4</b> decision moments right on the first try.${S.score.lockTried?' You tested the lock, good instinct.':''}</p>
+    <div class="tl">
+      <div><b>You</b><span>Generate, fix QA, save, Internal Links, Send for Review, address 3 items, Send Back Revision, AI Selection, Generate Schema, Publish as Draft, Publish Live, set the status label.</span></div>
+      <div><b>Opened Queries</b><span>Wrote and checked the draft, moved it to Internal Review on your first save, locked it during review, enforced the single revision, emailed the team on every comment, mirrored every stage to Asana, built the schema from practice data, filled 12 Webflow fields.</span></div>
+      <div><b>Dr. Patel</b><span>Two comments, one suggested edit, one revision request, one approval. One reviewer, one voice.</span></div>
+      <div><b>Our rules</b><span>One reviewer per practice. Images after approval. Both are team process; the app does not enforce them.</span></div>
+      <div><b>Next</b><span>The blog article "Implant or bridge for a missing back tooth?" is still in the queue. In the full training you run it next: shorter, with the differences called out (direct answer up top, links up to this service page, no FAQ).</span></div>
+    </div></div>`;
+}
+
+/* ======================= render ======================= */
+function render(){
+  document.getElementById('plabel').className='plabel';document.getElementById('plabelTxt').textContent='Opened Queries · you are the SEO Specialist';
+  if(S.view==='client'&&S.cv){renderClient();renderAsana();return}
+  if(S.step===15){renderDone()}
+  else if(S.view==='editor')renderEditor();else renderList();
+  renderAsana();renderCoach();
+}
+document.getElementById('reset').onclick=()=>{streamT.forEach(clearTimeout);S=fresh();render()};
+S=fresh();render();
+})();
+</script>
+</body>
+</html>
