@@ -695,10 +695,13 @@ p{line-height:1.6}
 .ck td{padding:9px 12px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.45}
 .ck tr:last-child td{border-bottom:0}
 .ck .crit{font:600 9.5px var(--mono);color:var(--red);letter-spacing:.08em;text-transform:uppercase}.ck .warn{font:600 9.5px var(--mono);color:#8A6A00;letter-spacing:.08em;text-transform:uppercase}
-.simwrap{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);box-shadow:0 12px 40px rgba(17,20,28,.08)}
-.simwrap iframe{display:block;width:100%;height:min(78vh,860px);border:0;background:var(--page)}
-.simbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--sub)}
-.simbar a{color:var(--blue-ink)}
+.scene.full{padding:0;flex-direction:column;overflow:hidden}
+.scene.full.on{display:flex}
+.simstrip{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:8px 18px;background:var(--card);border-bottom:1px solid var(--line);font-size:12.5px;color:var(--sub);line-height:1.4}
+.simstrip a{color:var(--blue-ink);white-space:nowrap;font-weight:600}
+.simframe{flex:1;width:100%;min-height:0;border:0;background:var(--page)}
+.app.simfull{grid-template-columns:1fr}
+.app.simfull .rail{display:none}
 .stepper{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
 .stepper .list{display:flex;flex-direction:column;gap:6px}
 .stepper .list button{text-align:left;border:1px solid var(--line);background:var(--card);border-radius:6px;padding:10px 12px;font-weight:600;font-size:13px;color:var(--sub);cursor:pointer;display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:center}
@@ -715,7 +718,7 @@ p{line-height:1.6}
 .schem div.off{opacity:.45}
 .schem div small{display:block;color:#9BA1AE;font-size:11.5px}
 .tsteps.six{grid-template-columns:repeat(6,1fr)}
-@media (max-width:820px){.stepper{grid-template-columns:1fr}.tsteps.six{grid-template-columns:1fr 1fr}.simwrap iframe{height:min(80vh,700px)}.rule2{grid-template-columns:1fr}}
+@media (max-width:820px){.stepper{grid-template-columns:1fr}.tsteps.six{grid-template-columns:1fr 1fr}.rule2{grid-template-columns:1fr}.simstrip{font-size:11.5px;padding:8px 14px}}
 </style>
 
 <div class="app">
@@ -732,7 +735,6 @@ p{line-height:1.6}
 
 <!-- ================= 00 INTRO ================= -->
 <section class="scene" data-chap="Intro">
-  <div class="vfield" id="vfield"></div>
   <div class="hero">
     <div data-b="0" class="stg">
       <div class="eyebrow">S8E8 Training · Content production, for SEO Specialists and Marketing Strategists</div>
@@ -1462,16 +1464,9 @@ p{line-height:1.6}
   </div>
 </section>
 
-<section class="scene" data-id="sim" data-chap="Simulator">
-  <div class="inner" style="max-width:1400px">
-    <div data-b="0" class="stg">
-      <div class="eyebrow">The simulator · Example Dental, Springfield IL · no real data</div>
-      <div class="ttl"><svg><use href="#i-flow"/></svg><h2>Dental Implants in Springfield, IL</h2></div>
-      <p class="subt">You are the SEO. Dr. Patel is the reviewer, and she acts on her own schedule. The coach strip at the bottom tells you what to click next; the Asana panel updates on its own. Four moments are scored.</p>
-    </div>
-    <div class="simwrap" data-b="0"><iframe src="content-pipeline-simulator.html" title="OpenedQueries and Asana simulator" loading="lazy"></iframe></div>
-    <div class="simbar" data-b="0"><span>Keyboard arrows move the training, not the simulator. Click inside it to use it.</span><a href="content-pipeline-simulator.html" target="_blank" rel="noopener">Open the simulator full screen &rarr;</a></div>
-  </div>
+<section class="scene full" data-id="sim" data-chap="Simulator">
+  <div class="simstrip"><span><b>The simulator</b> · Example Dental, Springfield IL · no real data · You are the SEO; Dr. Patel is scripted. Follow the coach strip at the bottom of the simulator. Four moments are scored.</span><a href="content-pipeline-simulator.html" target="_blank" rel="noopener">Open in its own tab &rarr;</a></div>
+  <iframe class="simframe" src="content-pipeline-simulator.html" title="OpenedQueries and Asana simulator" loading="lazy"></iframe>
 </section>
 
 <section class="scene" data-id="blogrun" data-chap="Simulator">
@@ -1615,6 +1610,7 @@ p{line-height:1.6}
         if(show&&!was)e.querySelectorAll('[data-count]').forEach(countUp);
       });
     });
+    document.querySelector('.app').classList.toggle('simfull',scenes[i].classList.contains('full'));
     const total=scenes.length;
     document.getElementById('progBar').style.width=((i+(b/Math.max(1,maxB(scenes[i]))))/(total-1)*100)+'%';
     document.getElementById('count').textContent=String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');

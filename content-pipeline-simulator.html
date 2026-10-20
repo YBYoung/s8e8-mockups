@@ -348,6 +348,12 @@ label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-tra
 .score div b{display:block;font:800 22px var(--disp);margin-bottom:4px}
 .score div.ok b{color:var(--green)}.score div.no b{color:var(--red)}
 
+@media (max-width:1320px){
+  .pieces{display:none}
+  .edbody{grid-template-columns:minmax(0,1fr) 270px}
+  .wrap{grid-template-columns:1fr 300px}
+  .edtop .t{max-width:240px}
+}
 @media (max-width:980px){
   .wrap{grid-template-columns:1fr}
   .asana{border-left:0;border-top:1px solid var(--line)}
