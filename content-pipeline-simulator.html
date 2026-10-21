@@ -321,6 +321,7 @@ table.list a:hover{border-bottom-style:solid;border-bottom-color:var(--ink)}
 @keyframes clickring{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.2)}}
 .live{display:inline-flex;align-items:center;gap:7px;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
 .live i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:livepulse 1.2s infinite}
+.live.paused{color:var(--sub)}.live.paused i{background:var(--sub);animation:none}
 @keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(228,72,63,.5)}50%{box-shadow:0 0 0 6px rgba(228,72,63,0)}}
 .sugbox{margin:8px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);box-shadow:0 8px 24px rgba(17,20,28,.1);padding:10px 12px;animation:rise .3s var(--ease)}
 .sugbox .sl{font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
@@ -777,6 +778,8 @@ const cvScript=()=>S.cv==='r1'?R1:R2;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const cur=()=>document.getElementById('cur');
 let cvRun=0;
+async function pausedWait(token){while(S.cvPaused&&token===cvRun)await sleep(120)}
+function togglePause(){S.cvPaused=!S.cvPaused;renderCoachClient()}
 function placeCursor(el,ox,oy,ms){const c=cur();if(!c||!el)return;const pr=document.getElementById('leftPanel').getBoundingClientRect();const r=el.getBoundingClientRect();
   c.style.transitionDuration=(ms||600)+'ms';c.style.left=(r.left-pr.left+(ox==null?Math.min(34,r.width/2):ox))+'px';c.style.top=(r.top-pr.top+(oy==null?r.height/2:oy))+'px';c.classList.add('on')}
 function popAt(el,which){const d=document.querySelector('.cvdoc');if(!d||!el)return;document.querySelectorAll('.cvdoc .pop').forEach(p=>p.remove());const dr=d.getBoundingClientRect(),r=el.getBoundingClientRect();
@@ -789,7 +792,7 @@ async function runOp(op,token){
   if(k==='move'){const el=q(a);if(!el)return;if(!el.closest('.cvbar')&&!el.closest('.modal')){try{el.scrollIntoView({block:'nearest'})}catch(e){}}placeCursor(el);await sleep(680);return}
   if(k==='click'){const c=cur();if(c){c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk')}await sleep(260);if(typeof a==='function')a();await sleep(160);return}
   if(k==='type'){const el=q(a);if(!el)return;const per=Math.max(18,Math.min(55,2400/a.length));const isField=el.tagName==='TEXTAREA'||el.tagName==='INPUT';
-    for(let i=1;i<=b.length;i++){if(token!==cvRun)return;if(isField)el.value=b.slice(0,i);else el.innerHTML=b.slice(0,i)+'<span class="caret"></span>';await sleep(per)}
+    for(let i=1;i<=b.length;i++){if(token!==cvRun)return;await pausedWait(token);if(isField)el.value=b.slice(0,i);else el.innerHTML=b.slice(0,i)+'<span class="caret"></span>';await sleep(per)}
     if(!isField)el.innerHTML=b;if(a==='#gateInp'){const g=q('#gateGo');if(g)g.classList.add('on')}return}
   if(k==='scroll'){const sc=screen;const from=sc.scrollTop,t0=performance.now();await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/b);sc.scrollTop=from+a*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
   if(k==='select'){const el=q(a);if(!el)return;try{el.scrollIntoView({block:'center'})}catch(e){}await sleep(200);const r=el.getBoundingClientRect();placeCursor(el,2,10,500);await sleep(550);placeCursor(el,r.width-2,r.height-8,900);await sleep(500);el.classList.add('hl');S.hl=b;await sleep(450);return}
@@ -801,15 +804,15 @@ async function runOp(op,token){
 async function playStage(){
   const script=cvScript(),idx=S.cvStage,st=script[idx];
   if(!st||!st.ops||S.cvDone[idx]||S.cvPlaying)return;
-  const token=++cvRun;S.cvPlaying=true;renderCoachClient();
-  for(const op of st.ops){if(token!==cvRun)return;await runOp(op,token)}
+  const token=++cvRun;S.cvPlaying=true;S.cvPaused=false;renderCoachClient();
+  for(const op of st.ops){if(token!==cvRun)return;await pausedWait(token);if(token!==cvRun)return;await runOp(op,token)}
   if(token!==cvRun)return;
   S.cvDone[idx]=true;S.cvPlaying=false;
   if(idx<script.length-1){S.cvStage=idx+1}
   render();
 }
 function skipRound(){
-  cvRun++;S.cvPlaying=false;closeModal();const script=cvScript();
+  cvRun++;S.cvPlaying=false;S.cvPaused=false;closeModal();const script=cvScript();
   for(let k=S.cvStage;k<script.length;k++){const st=script[k];
     if(st.mail&&!('reviewer' in S.score)){S.cvStage=k;render();return}
     if(st.effect&&!S.cvDone[k])st.effect();S.cvDone[k]=true}
@@ -844,13 +847,14 @@ function renderClient(){
 function renderCoachClient(){
   const script=cvScript(),idx=S.cvStage,st=script[idx],last=idx===script.length-1;
   let act='';
-  if(S.cvPlaying)act='<span class="live"><i></i>Watching Dr. Patel\'s screen</span><button class="btn" id="cvSkip">Skip ahead</button>';
+  if(S.cvPlaying)act='<span class="live'+(S.cvPaused?' paused':'')+'"><i></i>'+(S.cvPaused?'Paused':'Watching Dr. Patel\'s screen')+'</span><button class="btn '+(S.cvPaused?'primary':'')+'" id="cvPause">'+(S.cvPaused?'Resume &#9654;':'Pause &#10074;&#10074;')+'</button><button class="btn" id="cvSkip">Skip ahead</button>';
   else if(st.mail)act=('reviewer' in S.score)?'<button class="btn primary hint" id="cvNext">Continue &rarr;</button>':'<span style="font-size:12px;color:var(--muted)">Answer the email first</span><button class="btn primary" id="cvNext" disabled>Continue &rarr;</button>';
   else if(last)act='<button class="btn primary hint" id="cvNext">Back to your side &rarr;</button>';
   else act='<button class="btn primary hint" id="cvNext">Next &rarr;</button>';
   coachEl.innerHTML='<div class="n" style="background:var(--blue)">'+(idx+1)+'</div><div><div class="pr">Client view · '+DAYS[st.d]+' · '+(S.cv==='r1'?'Round 1 of 1':'Final round')+'</div><h4>'+(S.cvPlaying?'Live':st.mail?'Your move':last?'Done':'Dr. Patel')+'</h4><p>'+st.t+'</p></div><div class="act">'+act+'</div>';
   const n=document.getElementById('cvNext');if(n)n.onclick=()=>{if(last){finishClient();return}S.cvDone[idx]=true;S.cvStage=idx+1;render()};
   const sk=document.getElementById('cvSkip');if(sk)sk.onclick=skipRound;
+  const pb=document.getElementById('cvPause');if(pb)pb.onclick=togglePause;
 }
 function cvComments(){
   const list=S.comments.filter(c=>!c.sys);
