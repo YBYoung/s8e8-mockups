@@ -1169,7 +1169,7 @@ p{line-height:1.6}
         <div class="chain stg">
           <div class="step"><em>Crawl</em><span>The client's accepted site crawl: sitemap plus Webflow pages. No crawl, no links: "Accept a crawl before generating internal links."</span></div>
           <div class="arrow growy"></div>
-          <div class="step"><em>Sections</em><span>You tick which parts of the site count (Services, About, Blog). The homepage is never a target.</span></div>
+          <div class="step"><em>Sections</em><span>You tick which parts of the site count (Services, About, Blog). The homepage is never offered: every page already links to it from the navigation, and a link that says nothing about the topic helps neither the reader nor the search engine.</span></div>
           <div class="arrow growy"></div>
           <div class="step"><em>Rank</em><span>Pages ranked by word overlap with the piece; the top 60 go to the AI.</span></div>
           <div class="arrow growy"></div>
@@ -1216,7 +1216,7 @@ p{line-height:1.6}
     </div>
     <div class="grid3 stg" data-b="1">
       <div class="got"><span class="tag blue">1 · Recipients</span><h4>One reviewer</h4><p>Saved recipients as checkboxes, an "add new" form, a CC field. The app lets you pick several. We pick one (next slide).</p></div>
-      <div class="got"><span class="tag blue">2 · Template</span><h4>Which email, and who is copied</h4><p>Service page review or blog review. The account manager and the SEO are BCC'd, so the team always sees exactly what the client got.</p></div>
+      <div class="got"><span class="tag blue">2 · Template</span><h4>Which email, and who is copied</h4><p>Service page review or blog review. The Marketing Strategist and the SEO are BCC'd, so the team always sees exactly what the client got.</p></div>
       <div class="got"><span class="tag blue">3 · Edit and preview</span><h4>Read it like the client</h4><p>Edit the copy, check the subject, Send Test to Me. The deadline in the email comes from the strategy settings: 14 days unless changed.</p></div>
     </div>
     <div class="grid2" style="margin-top:18px">
@@ -1262,7 +1262,7 @@ p{line-height:1.6}
     <div class="rules">
       <div class="rule2" data-b="1"><div><b>We cannot edit while the client is reviewing.</b><small>The API refuses content saves and version restores in Client Review; the editor goes read-only; the suggestion controls say "Available once the client submits the piece for revision". It unlocks by itself when they approve or request a revision. Admins can recall a piece (status dropdown, Client Review to Internal Review) if a review must be pulled.</small></div><span class="enf">Enforced by OQ</span></div>
       <div class="rule2" data-b="2"><div><b>The client gets one revision.</b><small>A second Request Revision is refused: "Maximum revisions (1) already used." Suggested edits are refused after round one. The final round shows "This is your final review round" with Approve as the only decision. If the final-round deadline passes, the piece auto-approves and any comments become optimization notes.</small></div><span class="enf">Enforced by OQ</span></div>
-      <div class="rule2" data-b="3"><div><b>One person from the practice reviews.</b><small>The app lets you send to several people plus CC, and they all get the same link. Anyone can comment, and the first person to click Approve or Request Revision closes the round for everyone. That is exactly why we ask each practice to name one reviewer: one voice, one decision, no contradictions.</small></div><span class="honest">Our rule, not enforced</span></div>
+      <div class="rule2" data-b="3"><div><b>One person from the practice reviews.</b><small>The app lets you send to several people plus CC, and they all get the same link. We ask each practice to name one reviewer, to avoid them leaving feedback that contradicts other reviewers and creating confusion, and because the first person to click Approve or Request Revision closes the round for everyone.</small></div><span class="honest">Our rule, not enforced</span></div>
     </div>
     <div class="callout mag" data-b="4" style="margin-top:18px"><b>MS, this one is yours:</b> when a second doctor asks for the link, the answer is "send your notes to Dr. Patel, she is the reviewer on this page". Not "sure, it works for anyone".</div>
   </div>
@@ -1304,7 +1304,7 @@ p{line-height:1.6}
         <div class="chain stg">
           <div class="step"><em>Suggest</em><span><b>Accept</b> applies the client's wording to the page and saves a version. <b>Dismiss</b> leaves it. Either way the client sees a resolved note ("Accepted suggested edit" or "Dismissed"). An optional decision note stays internal.</span></div>
           <div class="step"><em>Comment</em><span>Fix the text, then <b>Reply</b> so the client sees what changed, then <b>Resolve</b>. A reply the client can read is the difference between "handled" and "ignored".</span></div>
-          <div class="step"><em>Facts</em><span>A comment that asks for a claim (an insurer, a credential) is not a fact source. Check the practice facts first; if the fact is missing, the MS gets it from the practice.</span></div>
+          <div class="step"><em>Facts</em><span>When the practice tells you something about itself (an insurer, a credential, a service), that is a fact. Do what they say. Then add it to the practice's <b>supplemental facts</b> in OQ, so every future piece mentions it without being asked.</span></div>
         </div>
       </div>
       <div>
@@ -1692,7 +1692,7 @@ p{line-height:1.6}
       w:['Auto-approval at the deadline is for no feedback at all. Unsubmitted comments get a grace period first.','Right. Nothing is lost quietly, and nothing waits forever.','A sweep runs every five minutes. Deadlines are real.'],ref:'clock'},
     c5b:{q:'A second doctor emails: "Priya forwarded me the link, can I add my notes?" Which answer follows our process?',
       o:['"Sure, the link works for anyone."','"Please send your notes to Dr. Patel. She is the reviewer on this page."','"I will add you as a recipient so you get your own email."'],a:1,
-      w:['True, and that is the problem: the first decision closes the round for everyone.','Right. One reviewer per practice. The app does not enforce it; we do.','The app would let you. It makes two reviewers official, which is what we are avoiding.'],ref:'threerules'},
+      w:['True, and that is the problem. Two reviewers leave feedback that contradicts, and the first decision closes the round for everyone.','Right. One reviewer per practice: no contradicting feedback, and one decision closes the round. The app does not enforce it; we do.','The app would let you. It makes two reviewers official, which is what we are avoiding.'],ref:'threerules'},
     c6a:{q:'You generated the schema, then fixed a typo in the FAQ. Then you push to Webflow. What went to Webflow?',
       o:['The schema, with the corrected FAQ text.','An empty schema field. Any body edit clears the stored schema.','The old schema, with the typo.'],a:1,
       w:['Schema is not live-updated. It is cleared by the edit.','Right. Regenerate after the last edit, then push.','It is cleared, not kept. The field goes out empty.'],ref:'schema'},

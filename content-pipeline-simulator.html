@@ -291,6 +291,43 @@ label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-tra
 .cvmail b{display:block;margin-bottom:4px}
 .cvmail p{margin:0 0 8px;line-height:1.45;color:var(--sub)}
 
+/* hover states: every clickable thing answers the mouse */
+.tb .lbtn{cursor:pointer;transition:background .15s,border-color .15s}
+.tb .lbtn:hover{background:var(--chip);border-color:#C9CED8}
+.tb .ic{cursor:pointer}
+.main:hover{background:#2A2D35}
+.gen:hover{background:var(--chip);border-color:#C9CED8}
+.btn:hover{background:var(--chip)}
+.btn.dark:hover{background:#2A2D35}
+.top button:hover{background:#26282E;color:#fff}
+.rtabs span:hover{color:var(--ink)}
+table.list a:hover{border-bottom-style:solid;border-bottom-color:var(--ink)}
+.seg button{cursor:pointer}.seg button:hover{color:var(--ink)}
+.fb .acts button:hover{background:var(--chip)}.fb .acts button.ok:hover{background:#D6F0E2}
+.recip{cursor:pointer;transition:border-color .15s,background .15s}.recip:hover{border-color:#C9CED8;background:#FBFBFC}
+.chks label{cursor:pointer}.chks label:hover{background:var(--chip)}
+.linkrow input{cursor:pointer}
+.cvside .post button:hover{background:#2A2D35}
+.cvside .sg span{cursor:pointer}
+.issue .btn:hover,.gate .go.on:hover{filter:brightness(.95)}
+
+/* the fake cursor and the live indicator */
+#leftPanel{position:relative}
+#cur{position:absolute;left:40%;top:40%;width:22px;height:22px;z-index:60;pointer-events:none;opacity:0;transition:left .6s cubic-bezier(.3,.7,.3,1),top .6s cubic-bezier(.3,.7,.3,1),opacity .3s;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+#cur.on{opacity:1}
+#cur svg{width:22px;height:22px;display:block}
+#cur::after{content:"";position:absolute;left:-9px;top:-9px;width:40px;height:40px;border-radius:50%;border:2px solid var(--mag);opacity:0;transform:scale(.4)}
+#cur.clk::after{animation:clickring .45s var(--ease)}
+@keyframes clickring{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(1.2)}}
+.live{display:inline-flex;align-items:center;gap:7px;font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:livepulse 1.2s infinite}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 0 rgba(228,72,63,.5)}50%{box-shadow:0 0 0 6px rgba(228,72,63,0)}}
+.sugbox{margin:8px 0 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);box-shadow:0 8px 24px rgba(17,20,28,.1);padding:10px 12px;animation:rise .3s var(--ease)}
+.sugbox .sl{font:600 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.sugbox .sugta{min-height:34px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:13.5px;background:#FBFBFC;color:var(--ink)}
+.sugbox .sr{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+.rich .caret,.gate .caret,.sugta .caret{display:inline-block;width:1px;height:14px;background:var(--blue);animation:blink 1s steps(1) infinite;vertical-align:middle;margin-left:1px}
+
 /* decision moments */
 .mcq{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:0}
 .mcq .mk{font:600 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mag-ink)}
@@ -391,7 +428,8 @@ label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-tra
 </div>
 
 <div class="wrap">
-  <div class="panel">
+  <div class="panel" id="leftPanel">
+    <div id="cur"><svg viewBox="0 0 24 24"><path d="M5 3l14 9-6 1-3 6z" fill="#111317" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
     <div class="plabel" id="plabel"><i></i><span id="plabelTxt">Opened Queries · you are the SEO Specialist</span><span class="r" id="clock">Mon, Oct 19</span></div>
     <div class="screen" id="screen"></div>
     <div class="coach" id="coach"></div>
@@ -407,7 +445,7 @@ label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-tra
 <script>
 (function(){
 /* ======================= data ======================= */
-const PRACTICE={name:'Example Dental',city:'Springfield, IL',phone:'(217) 555-0142',doctors:['Dr. Priya Patel','Dr. Marcus Nguyen'],insurance:'Delta Dental, Cigna, MetLife (in-network)',hours:'Mon to Thu 8 to 5, Fri 8 to 1'};
+const PRACTICE={name:'Example Dental',city:'Springfield, IL',phone:'(217) 555-0142',doctors:['Dr. Priya Patel','Dr. Marcus Nguyen'],hours:'Mon to Thu 8 to 5, Fri 8 to 1'};
 const PIECE={title:'Dental Implants in Springfield, IL | Example Dental',type:'Service page',month:'Nov 26',words:1480,meta:'Dental implants in Springfield, IL from Example Dental. What to expect, who is a candidate, cost and insurance, and how to book a consult.'};
 const BLOG={title:'Implant or bridge for a missing back tooth?',type:'Blog article',month:'Dec 26'};
 const SECTIONS=['Introduction','Quick Takeaways','Are You a Candidate','What to Expect','Cost and Insurance','FAQ','Book a Consult'];
@@ -415,13 +453,14 @@ const SECTIONS=['Introduction','Quick Takeaways','Are You a Candidate','What to 
 /* The fake draft. Flags: doc=invented doctor (QA), sd=the same-day sentence (client comment), rec=the recovery sentence (client suggestion), ins=insurance paragraph (client comment 2). */
 function docHTML(){
   const ins = S.insAdded
-    ? 'Example Dental is in-network with <span class="fixed">Delta Dental, Cigna and MetLife</span>, and we will check your benefits before your consult.'
+    ? 'Example Dental is <span class="fixed">in-network with Delta Dental</span>, and we will check your benefits before your consult.'
     : 'Most dental plans treat implants as a major service. <span class="pl">[add accepted insurance carriers]</span> We will check your benefits before your consult.';
+  const inCv = S.view==='client';
   const rec = S.sugAccepted
     ? 'Most patients are <span class="fixed">back to normal activities within a few days</span>, with mild soreness managed by over-the-counter pain relief.'
     : (S.sugShown ? 'Most patients are <span class="sug">back at work the next day</span><span class="ins">back to normal activities within a few days</span>, with mild soreness managed by over-the-counter pain relief.'
-    : 'Most patients are <span id="recTxt">back at work the next day</span>, with mild soreness managed by over-the-counter pain relief.');
-  const sd = S.sdRemoved ? '' : (S.step>=7 ? '<span id="sdTxt" class="'+(S.sdHL?'hl':'')+'">Ask us about same-day implants if you want to leave with a tooth the same afternoon.</span> ' : '<span id="sdTxt">Ask us about same-day implants if you want to leave with a tooth the same afternoon.</span> ');
+    : 'Most patients are <span id="recTxt" class="'+(inCv&&S.hl==='rec'?'hl':'')+'">back at work the next day</span>, with mild soreness managed by over-the-counter pain relief.');
+  const sd = S.sdRemoved ? '' : '<span id="sdTxt" class="'+(inCv&&S.hl==='sd'?'hl':'')+'">Ask us about same-day implants if you want to leave with a tooth the same afternoon.</span> ';
   const doc = S.qaFixed ? '<span class="fixed">Dr. Nguyen</span>' : '<span class="flag" id="docFlag" title="Click to fix">Dr. Alvarez</span>';
   const L=(t,u)=>S.linksApplied?'<a href="#">'+t+'</a>':t;
   const img=(key,alt)=>S.images?'<div class="img"><div class="ph"><svg><use href="#i-cam"/></svg><div>'+key+'<small>Photo from the client\'s Google Drive</small></div></div><small class="alt">alt: '+alt+'</small></div>':'';
@@ -454,7 +493,7 @@ let S;
 function fresh(){return {step:0,status:'queued',phase:'Drafted',est:0,subs:{create:true,send:false,confirm:false,publish:false},feed:[],
   comments:[],sugs:[],revision:0,versions:[{n:'Generation',t:''}],qaFixed:false,qaOpen:false,rtab:'qa',linksApplied:false,sent:0,deadline:'',
   sdHL:false,sdRemoved:false,sugShown:false,sugAccepted:false,insAdded:false,images:false,schema:false,webflow:null,adminStatus:false,
-  cv:null,cvStage:0,score:{},day:0,locked:false,view:'list',round:0}}
+  cv:null,cvStage:0,cvDone:{},cvPlaying:false,cvTab:'comments',hl:null,draftNotified:false,streaming:false,score:{},day:0,locked:false,view:'list',round:0}}
 const DAYS=['Mon, Oct 19','Tue, Oct 20','Wed, Oct 21','Thu, Oct 22','Fri, Oct 23','Mon, Oct 26','Tue, Oct 27','Wed, Oct 28','Thu, Oct 29','Fri, Oct 30','Mon, Nov 2','Tue, Nov 3','Wed, Nov 4'];
 const dayLabel=()=>DAYS[Math.min(S.day,DAYS.length-1)];
 const screen=document.getElementById('screen'),asanaEl=document.getElementById('asana'),coachEl=document.getElementById('coach');
@@ -475,7 +514,7 @@ const STEPS=[
  {t:'Your first save moved it to Internal Review',p:'Saving also set the Asana phase to Internal QA. Now the links. Click <b>Internal Links</b> in the toolbar.'},
  {t:'Send it to the client',p:'Links are in and saved as their own version. Click <b>Send for Review</b>. Three steps: who, which email, preview.'},
  {t:'The piece is locked',p:'It stays locked until Dr. Patel approves or requests a revision. Try clicking into the text, then click <b>Watch the client</b> to see what she sees.'},
- {t:'What the client sees',p:'Dr. Patel opens the link on her own time. Step through her review with the <b>Next</b> button in the client view. Watch the Asana panel while she works.'},
+ {t:'What the client sees',p:'Dr. Patel opens the link on her own time. You are watching her screen: she reads, highlights, comments and decides. Watch the Asana panel while she works. One email will need your answer.'},
  {t:'Address the feedback',p:'The piece unlocked the moment she requested a revision. Open <b>Client Feedback</b> and work through all three items. Accept or dismiss the suggested edit, fix and reply to each comment, and resolve them.'},
  {t:'Send the revision back',p:'All three handled. Click <b>Send Back Revision</b>. This is her final round: she can approve, but she cannot request another revision.'},
  {t:'Final round',p:'Click <b>Watch the client</b> and step through her final look.'},
@@ -492,7 +531,7 @@ function renderCoach(){
   if(S.step===10)act='<button class="btn primary hint" id="watch">Watch the client &rarr;</button>';
   if(S.step===15)act='<button class="btn" id="again">Run it again</button>';
   coachEl.innerHTML='<div class="n">'+(S.step+1)+'</div><div><div class="pr">Step '+(S.step+1)+' of '+STEPS.length+' · '+dayLabel()+'</div><h4>'+st.t+'</h4><p>'+st.p+'</p></div><div class="act">'+act+'</div>';
-  const w=document.getElementById('watch');if(w)w.onclick=()=>{S.view='client';S.cv=S.step===6?'r1':'r2';S.cvStage=0;render()};
+  const w=document.getElementById('watch');if(w)w.onclick=()=>{S.view='client';S.cv=S.step===6?'r1':'r2';S.cvStage=0;S.cvDone={};S.cvPlaying=false;S.cvTab='comments';S.hl=null;render()};
   const a=document.getElementById('again');if(a)a.onclick=()=>{S=fresh();render()};
   document.getElementById('clock').textContent=dayLabel();
 }
@@ -517,7 +556,7 @@ function renderList(){
       ${S.status==='generating'?streamHTML():''}
       ${S.step===14&&!webflowView&&S.webflow==='live'?`<div class="card" style="margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px"><b style="font-size:13px">Admin status dropdown</b><p style="margin:6px 0 10px;color:var(--sub);font-size:12.5px">Only admins see this. It changes the label and nothing else: no email, no Asana call, no Webflow call.</p><select id="adminSel" style="font:inherit;padding:7px 10px;border:1px solid var(--line);border-radius:6px"><option>Final</option><option>Webflow Draft</option><option>Published</option></select></div>`:''}
     </div></div>`;
-  const g=document.getElementById('genBtn');if(g)g.onclick=()=>{if(S.step!==0)return;S.status='generating';S.step=1;render();runStream()};
+  const g=document.getElementById('genBtn');if(g)g.onclick=()=>{if(S.step!==0||S.streaming)return;S.streaming=true;S.status='generating';S.step=1;render();runStream()};
   const o=document.getElementById('openPiece');if(o)o.onclick=e=>{e.preventDefault();if(S.step===2){S.view='editor';S.step=3;S.rtab='qa';render()}else{S.view='editor';render()}};
   const sc=document.getElementById('segC'),sw=document.getElementById('segW');
   if(sw)sw.onclick=()=>{if(S.step<13&&!S.webflow){toast('Nothing in Webflow yet.');return}S.view='webflow';render()};
@@ -532,7 +571,7 @@ function runStream(){
   const el=document.getElementById('stream');let k=0;
   const tick=()=>{if(!el.isConnected)return;el.innerHTML=lines.slice(0,k+1).map((l,i)=>'<div class="'+(i<k?'ok':'run')+'">'+(i<k?'&#10003; ':'')+l+'</div>').join('');k++;
     if(k<=lines.length)streamT.push(setTimeout(tick,k===lines.length?900:700));
-    else{S.status='draft_ready';setPhase('Drafted',20);post('OpenedQueries',AI+'Article Draft Generated! Pending Internal SEO QA. '+YOU);S.step=2;render()}};
+    else{S.streaming=false;S.status='draft_ready';setPhase('Drafted',20);if(!S.draftNotified){S.draftNotified=true;post('OpenedQueries',AI+'Article Draft Generated! Pending Internal SEO QA. '+YOU)}S.step=2;render()}};
   tick();
 }
 
@@ -580,7 +619,7 @@ function renderRight(){
     if(!S.comments.length&&!S.sugs.length)return '<div class="allok" style="padding-top:40px"><b style="color:var(--muted)">No open comments</b><div style="font-size:12px;margin-top:4px">Nothing from the client yet.</div></div>';
     return fbList(false);
   }
-  if(S.rtab==='ctx')return '<h6>Practice facts to always honor</h6>'+[['Practice',PRACTICE.name+', '+PRACTICE.city],['Phone',PRACTICE.phone],['Doctors',PRACTICE.doctors.join(', ')],['Insurance',PRACTICE.insurance],['Hours',PRACTICE.hours],['Not offered','Same-day implants, sleep apnea appliances']].map(f=>'<div class="fact '+(S.step===8&&f[0]==='Insurance'?'hl':'')+'"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('')+'<h6 style="margin-top:14px">From the calendar item</h6><div class="fact"><b>Cluster</b><span>Dental implants</span></div><div class="fact"><b>Angle</b><span>Patients fear the price and the drive to a specialist. Lead with "right here in Springfield" and a written estimate.</span></div><div class="fact"><b>Queries</b><span>dental implants springfield il · implant cost without insurance · am i too old for implants · implant vs bridge back tooth</span></div>';
+  if(S.rtab==='ctx')return '<h6>Practice facts to always honor</h6>'+[['Practice',PRACTICE.name+', '+PRACTICE.city],['Phone',PRACTICE.phone],['Doctors',PRACTICE.doctors.join(', ')],['Insurance',S.factAdded?'In-network with Delta Dental <span class="tag green" style="margin-left:6px">supplemental fact · added by you</span>':'<span style="color:var(--muted)">not provided yet</span>'],['Hours',PRACTICE.hours],['Not offered','Same-day implants, sleep apnea appliances']].map(f=>'<div class="fact '+(S.step===8&&f[0]==='Insurance'?'hl':'')+'"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('')+'<h6 style="margin-top:14px">From the calendar item</h6><div class="fact"><b>Cluster</b><span>Dental implants</span></div><div class="fact"><b>Angle</b><span>Patients fear the price and the drive to a specialist. Lead with "right here in Springfield" and a written estimate.</span></div><div class="fact"><b>Queries</b><span>dental implants springfield il · implant cost without insurance · am i too old for implants · implant vs bridge back tooth</span></div>';
   if(S.rtab==='hist')return '<h6>Version history</h6>'+S.versions.map(v=>'<div class="ver"><span>'+v.n+'</span><span>'+(v.t||DAYS[0])+'</span></div>').join('');
   return '<div class="allok" style="padding-top:40px"><b style="color:var(--muted)">Refiner</b><div style="font-size:12px;margin-top:4px">Chat or quick edits with the writer. Not part of this run.</div></div>';
 }
@@ -602,7 +641,7 @@ function bindEditor(editable){
   if(rb){rb.querySelectorAll('[data-acc]').forEach(b=>b.onclick=()=>{const k=+b.dataset.acc;S.sugs[k].state='Accepted';S.sugAccepted=true;S.sugShown=false;S.versions.unshift({n:'Client suggestion',t:dayLabel()});S.comments.push({text:'Accepted suggested edit: "back at work the next day" to "back to normal activities within a few days".',res:true,day:dayLabel(),sys:true});render();toast('Applied to the page. Dr. Patel will see "Accepted suggested edit" on her side.');checkFbDone()});
     rb.querySelectorAll('[data-rej]').forEach(b=>b.onclick=()=>{const k=+b.dataset.rej;S.sugs[k].state='Dismissed';S.sugShown=false;S.score.sugDismissed=true;render();toast('Dismissed. Her wording was more accurate for recovery; dismissing is allowed, but accepting was the better call here.');checkFbDone()});
     rb.querySelectorAll('[data-fix]').forEach(b=>b.onclick=()=>{const k=+b.dataset.fix;const c=S.comments[k];if(c.key==='sd'){S.sdRemoved=true;c.fixed=true;S.versions.unshift({n:'Specialist edit',t:dayLabel()});render();toast('Sentence removed. Now reply so she sees what changed.')}if(c.key==='ins'){openInsuranceMoment(k)}});
-    rb.querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{const k=+b.dataset.reply;const c=S.comments[k];c.reply=c.key==='sd'?'Removed that sentence. We will keep same-day out of all pages for Example Dental.':'Added: in-network with Delta Dental, Cigna and MetLife, straight from your practice facts.';render()});
+    rb.querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{const k=+b.dataset.reply;const c=S.comments[k];c.reply=c.key==='sd'?'Removed that sentence. We will keep same-day out of all pages for Example Dental.':'Added: in-network with Delta Dental. We also saved it to your practice facts, so every page we write for you will mention it.';render()});
     rb.querySelectorAll('[data-res]').forEach(b=>b.onclick=()=>{const k=+b.dataset.res;S.comments[k].res=true;render();checkFbDone()});}
   const ib=document.getElementById('imgBtn');if(ib)ib.onclick=()=>{if(S.step===11)openImageMoment();else if(S.images)toast('Images are in. Use the editor to reorder or replace them.');else toast('Not yet. Images come after approval.')};
   const scb=document.getElementById('schemaBtn');if(scb)scb.onclick=()=>{if(S.step===12)openSchemaModal();else if(S.schema)openSchemaModal(true);else toast('Not yet. Schema comes after the last edit.')};
@@ -618,8 +657,8 @@ function closeModal(){root.innerHTML=''}
 function openLinksModal(){
   const LINKS=[['bone graft','/services/bone-grafting',91],['sedation options','/services/sedation-dentistry',88],['bridge','/services/dental-bridges',86],['partial denture','/services/dentures',79],['cleanings','/services/cleanings-and-exams',74],['Dr. Nguyen','/about/dr-marcus-nguyen',62]];
   const m=modal(`<div class="mh"><h3>Internal Links</h3><div class="steps"><b>Add links</b><span>Fix links</span></div></div><div class="mb">
-    <div style="color:var(--sub);font-size:12.5px;margin-bottom:6px">Targets come from the client's accepted site crawl (41 pages). Pick which sections of the site count.</div>
-    <div class="chks"><label><input type="checkbox" checked> Services (14)</label><label><input type="checkbox" checked> About (5)</label><label><input type="checkbox"> Blog (18)</label><label><input type="checkbox" disabled> Homepage, never</label></div>
+    <div style="color:var(--sub);font-size:12.5px;margin-bottom:6px">Targets come from the client's accepted site crawl (41 pages). Pick which sections of the site count. The homepage is never offered: every page already links to it from the navigation, and a link that says nothing about the topic helps neither the reader nor the search engine.</div>
+    <div class="chks"><label><input type="checkbox" checked> Services (14)</label><label><input type="checkbox" checked> About (5)</label><label><input type="checkbox"> Blog (18)</label></div>
     <div id="lk"><button class="btn primary" id="genLinks">Generate links</button></div></div>
     <div class="mf"><span style="font-size:12px;color:var(--muted)">1,480 words: between 5 and 12 links. Anchors must already exist in the text.</span><div><button class="btn" id="mc">Cancel</button> <button class="btn primary" id="apply" disabled>Apply 0 changes</button></div></div>`);
   m.querySelector('#mc').onclick=closeModal;
@@ -636,8 +675,8 @@ function openSendModal(round){
       <div class="recip"><input type="checkbox" id="rN" ${recip.nguyen?'checked':''}><div><b>Dr. Marcus Nguyen</b><small>marcus@exampledental.test</small></div></div>
       <label class="lab">Add new recipient</label><div class="inp">client@example.com &nbsp; · &nbsp; Name (optional)</div>
       <label class="lab">CC</label><div class="inp">office@example.com</div>
-      <div class="note" style="margin-top:12px"><b>Our rule, not the app's.</b><span class="honest">Team process</span><br>Opened Queries lets you add every doctor and a CC list, and they all get the same link. We ask each practice to name one reviewer, because the first person to click Approve or Request Revision closes the round for everyone.</div>`
-    :step===2?`<label class="lab">Email template</label><div class="inp" style="color:var(--ink)">${round===1?'Service page review (default)':'Revision resubmitted'}</div><label class="lab">Account manager</label><div class="inp" style="color:var(--ink)">Jordan Lee · jordan@s8e8.test</div><label class="lab">SEO</label><div class="inp" style="color:var(--ink)">You · you@s8e8.test</div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">Both are BCC'd on every client email, so the team sees exactly what the client got.</div>`
+      <div class="note" style="margin-top:12px"><b>Our rule, not the app's.</b><span class="honest">Team process</span><br>Opened Queries lets you add every doctor and a CC list, and they all get the same link. We ask each practice to name one reviewer, to avoid them leaving feedback that contradicts other reviewers and creating confusion, and because the first person to click Approve or Request Revision closes the round for everyone.</div>`
+    :step===2?`<label class="lab">Email template</label><div class="inp" style="color:var(--ink)">${round===1?'Service page review (default)':'Revision resubmitted'}</div><label class="lab">Marketing Strategist</label><div class="inp" style="color:var(--ink)">Jordan Lee · jordan@s8e8.test</div><label class="lab">SEO</label><div class="inp" style="color:var(--ink)">You · you@s8e8.test</div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">Both are BCC'd on every client email, so the team sees exactly what the client got.</div>`
     :`<div class="email"><div class="esub">${round===1?'Your new page is ready for review: Dental Implants in Springfield, IL':'We applied your feedback: Dental Implants in Springfield, IL'}</div><div class="m">To: Dr. Priya Patel · BCC: Jordan Lee, You</div>Hi Dr. Patel,<br><br>${round===1?'Your new service page is ready for your review. Open the link, read it at your own pace, and leave comments or suggested edits right on the page. Please review by <b>'+DAYS[10]+'</b> (14 days). If we do not hear from you by then, the page is approved automatically.':'We made the changes you asked for. This is the final review round: open the link and click Approve Content when you are happy. Please review by <b>'+DAYS[12]+'</b>.'}<br><span class="cta">Review the page &rarr;</span></div><div style="font-size:11.5px;color:var(--muted);margin-top:8px">You never set the deadline by hand. It comes from the strategy settings (default 14 days).</div><div style="margin-top:8px"><span class="tag">Send Test to Me</span></div>`;
     const m=modal(`<div class="mh"><h3>Send for Client Review</h3><div class="steps">${['1. Recipients','2. Template','3. Edit & Preview'].map((s,k)=>k+1===step?'<b>'+s+'</b>':'<span>'+s+'</span>').join('')}</div></div><div class="mb">${body}</div>
       <div class="mf"><button class="btn" id="mc">Cancel</button><div>${step>1?'<button class="btn" id="back">Back</button> ':''}<button class="btn primary" id="nx">${step<3?'Next':(round===1?'Send for Review':'Send Back Revision')}</button></div></div>`);
@@ -654,10 +693,10 @@ function openSendModal(round){
 }
 function openInsuranceMoment(k){
   const m=modal(`<div class="mb" style="padding-top:18px"><div class="mcq"><div class="mk">Decision moment</div><h3>Dr. Patel asked you to mention that they take Delta Dental. What do you do?</h3><div class="opts" id="o"></div><div class="why" id="w"></div></div></div><div class="mf"><span></span><button class="btn" id="mc">Close</button></div>`);
-  const opts=[['Write it in. The client asked for it, so it is their claim, not ours.',false,'Tempting, but a comment is not a fact source. If she misremembered a plan, the page would carry it. Check the practice facts first.'],['Check the practice facts in the Context tab. If Delta Dental is there, add the in-network carriers from the facts.',true,'Right. The facts panel lists Delta Dental, Cigna and MetLife as in-network. That is what the writer was waiting for: the yellow placeholder said "[add accepted insurance carriers]".'],['Decline. Insurance claims on a page are risky, so leave the placeholder for the practice to fill in later.',false,'The placeholder is there precisely so a human fills it from verified facts. Leaving it in means a live page with brackets in it.']];
+  const opts=[['Write it in, exactly as she asked, and add Delta Dental to the practice\'s supplemental facts so every future piece mentions it too.',true,'Right. The practice owner told you a fact about her practice; that is the source. Fill the placeholder, then save it as a supplemental fact so the writer knows it for every page from now on.'],['Check the practice facts first. If Delta Dental is not listed there, ask the MS to confirm with the practice before adding it.',false,'She is the practice. Her comment is the confirmation. The facts panel is where this should be recorded, not a gate that holds it up.'],['Decline. Insurance claims on a page are risky, so leave the placeholder for the practice to fill in later.',false,'The placeholder is there so a human fills it from what the practice says. Leaving it in means a live page with brackets in it.']];
   const o=m.querySelector('#o'),w=m.querySelector('#w');
   shuffle(opts.map((x,i)=>i)).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span>'+opts[i][0]+'</span>';b.onclick=()=>{if(!('ins' in S.score))S.score.ins=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');
-    if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});S.insAdded=true;S.comments[k].fixed=true;S.versions.unshift({n:'Facts update',t:dayLabel()});m.querySelector('#mc').textContent='Added. Back to the feedback';m.querySelector('#mc').className='btn primary'}};o.appendChild(b)});
+    if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});S.insAdded=true;S.factAdded=true;S.comments[k].fixed=true;S.versions.unshift({n:'Facts update',t:dayLabel()});m.querySelector('#mc').textContent='Added to the page and to the practice facts';m.querySelector('#mc').className='btn primary'}};o.appendChild(b)});
   m.querySelector('#mc').onclick=()=>{closeModal();render()};
 }
 function openImageMoment(){
@@ -703,69 +742,135 @@ function openWebflowModal(){
 }
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 
-/* ======================= client view (scripted) ======================= */
+/* ======================= client view (live playback) ======================= */
+const COMMENT1={key:'sd',q:'Ask us about same-day implants if you want to leave with a tooth the same afternoon.',text:'We don\'t do same-day implants here. Please remove this.',fix:'Remove sentence'};
+const COMMENT2={key:'ins',text:'Can we mention that we\'re in-network with Delta Dental? Patients ask every day.',fix:'Check practice facts'};
+const SUG_FROM='back at work the next day',SUG_TO='back to normal activities within a few days';
+function addComment(c){if(S.comments.some(x=>x.key===c.key))return;const cc=Object.assign({res:false,day:dayLabel()},c);S.comments.push(cc);post('OpenedQueries',AI+YOU+' '+MS+' Client feedback from Dr. Patel:<br>'+cc.text)}
+function addSug(){if(S.sugs.length)return;S.sugs.push({from:SUG_FROM,to:SUG_TO,state:'pending'});S.sugShown=true}
+
+const GATE_OPS=[['wait',700],['move','#gateInp'],['click'],['type','#gateInp','Dr. Patel'],['wait',250],['move','#gateGo'],['click'],['wait',250]];
 const R1=[
- {d:1,t:'Day 2. Dr. Patel opens the link between patients and types her name.',gate:true},
- {d:1,t:'She reads the page. The deadline banner and the comment sidebar are the only chrome around the copy.'},
- {d:1,t:'She highlights a sentence in the opening. Two choices appear: Comment, or Suggest Edit.',hl:'sd',pop:true},
- {d:1,t:'She comments. The team gets an email right away, and Asana gets a comment tagging you and Jordan.',hl:'sd',comment:{key:'sd',q:'Ask us about same-day implants if you want to leave with a tooth the same afternoon.',text:'We don\'t do same-day implants here. Please remove this.',fix:'Remove sentence'}},
- {d:2,t:'Day 3. Back again. This time she uses Suggest Edit on the recovery sentence: a replacement, shown as a strike-through and an insert. Suggestions do not notify the team one by one; they travel with the revision request.',sug:true},
- {d:2,t:'A general comment from the sidebar, with no passage attached.',comment:{key:'ins',text:'Can we mention that we\'re in-network with Delta Dental? Patients ask every day.',fix:'Check practice facts'}},
- {d:3,t:'Day 4. An email lands in your inbox. Decide how to answer.',mail:true},
- {d:4,t:'Day 5. Dr. Patel clicks Request Revision. The confirmation explains the one-round rule.',confirm:true},
- {d:4,t:'Submitted. Her page is now closed for decisions, and she will get a fresh link when the new version is ready. On your side, the piece just unlocked.',closed:true}
+ {d:1,t:'Day 2, 11:40 AM. Dr. Patel opens the link between patients and types her name.',build:'gate',ops:GATE_OPS},
+ {d:1,t:'She reads. The deadline banner and the comment sidebar are the only chrome around the copy.',build:'page',ops:[['wait',400],['scroll',360,2600],['wait',800],['scroll',-360,1400],['wait',300]]},
+ {d:1,t:'She highlights a sentence in the opening. Two choices appear: Comment, or Suggest Edit. She comments. The team is emailed at once, and Asana gets a comment tagging you and Jordan.',build:'page',effect:()=>addComment(COMMENT1),
+  ops:[['wait',300],['select','#sdTxt','sd'],['pop','#sdTxt','comment'],['wait',500],['clickpop','comment'],['move','.cvside textarea'],['click'],['type','.cvside textarea',COMMENT1.text],['wait',300],['move','.cvside .post button'],['click'],['do',()=>addComment(COMMENT1)],['wait',1500]]},
+ {d:2,t:'Day 3. Back again. This time she uses Suggest Edit on the recovery sentence and types a replacement. Suggestions do not notify the team one by one; they travel with the revision request.',build:'page',effect:()=>{addSug();S.cvTab='edits'},
+  ops:[['wait',400],['select','#recTxt','rec'],['pop','#recTxt','suggest'],['wait',500],['clickpop','suggest'],['sugbox'],['type','#sugInp',SUG_TO],['wait',300],['move','#sugSave'],['click'],['do',()=>{addSug();S.cvTab='edits'}],['wait',1600]]},
+ {d:2,t:'A general comment from the sidebar, with no passage attached.',build:'page',effect:()=>addComment(COMMENT2),
+  ops:[['do',()=>{S.cvTab='comments'}],['top'],['wait',300],['move','.cvside textarea'],['click'],['type','.cvside textarea',COMMENT2.text],['wait',300],['move','.cvside .post button'],['click'],['do',()=>addComment(COMMENT2)],['wait',1500]]},
+ {d:3,t:'Day 4. An email lands in your inbox. Decide how to answer before the playback continues.',build:'page',mail:true},
+ {d:4,t:'Day 5. Dr. Patel clicks Request Revision. The confirmation explains the one-round rule.',build:'page',effect:()=>doRevision(),
+  ops:[['top'],['wait',600],['move','#rr'],['click',()=>openConfirmRevision()],['wait',1100],['move','#go'],['click',()=>{closeModal();doRevision()}],['wait',300]]},
+ {d:4,t:'Submitted. Her page is closed for decisions, and she will get a fresh link when the new version is ready. On your side, the piece just unlocked.',build:'page',closed:true}
 ];
 const R2=[
- {d:9,t:'Day 10. Dr. Patel opens the new link. The banner tells her this is the final round: Approve Content is the only decision left.',gate:true,final:true},
- {d:9,t:'She reads the cost section: the carriers are in, the same-day line is gone, her wording about recovery is there with "Accepted suggested edit" under it.',final:true},
- {d:9,t:'She clicks Approve Content and leaves a final note.',approve:true,final:true},
- {d:9,t:'Approved. The piece is Final. Asana marks "Confirm Client/Auto-Approval" done and sets the phase to Approved.',approved:true}
+ {d:9,t:'Day 10. Dr. Patel opens the new link. The banner tells her this is the final round: Approve Content is the only decision left.',build:'gate',final:true,ops:GATE_OPS},
+ {d:9,t:'She reads the cost section: the carriers are in, the same-day line is gone, her wording about recovery is there with "Accepted suggested edit" under it.',build:'page',final:true,ops:[['wait',400],['scroll',560,3200],['wait',1400],['scroll',-560,1400],['wait',300]]},
+ {d:9,t:'She clicks Approve Content and leaves a final note.',build:'page',final:true,effect:()=>doApprove(),
+  ops:[['wait',500],['move','#appr'],['click',()=>openApprove()],['wait',1100],['move','#go'],['click',()=>{closeModal();doApprove()}],['wait',300]]},
+ {d:9,t:'Approved. The piece is Final. Asana marks "Confirm Client/Auto-Approval" done and sets the phase to Approved.',build:'approved'}
 ];
+const cvScript=()=>S.cv==='r1'?R1:R2;
+
+/* ---- the fake cursor and the op runner ---- */
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const cur=()=>document.getElementById('cur');
+let cvRun=0;
+function placeCursor(el,ox,oy,ms){const c=cur();if(!c||!el)return;const pr=document.getElementById('leftPanel').getBoundingClientRect();const r=el.getBoundingClientRect();
+  c.style.transitionDuration=(ms||600)+'ms';c.style.left=(r.left-pr.left+(ox==null?Math.min(34,r.width/2):ox))+'px';c.style.top=(r.top-pr.top+(oy==null?r.height/2:oy))+'px';c.classList.add('on')}
+function popAt(el,which){const d=document.querySelector('.cvdoc');if(!d||!el)return;document.querySelectorAll('.cvdoc .pop').forEach(p=>p.remove());const dr=d.getBoundingClientRect(),r=el.getBoundingClientRect();
+  const p=document.createElement('div');p.className='pop';p.id='cvpop';p.innerHTML='<span data-w="comment"'+(which==='comment'?' class="on"':'')+'>&#9679; Comment</span><span data-w="suggest"'+(which==='suggest'?' class="on"':'')+'>&#9998; Suggest Edit</span>';
+  p.style.left=Math.max(8,r.left-dr.left)+'px';p.style.top=(r.top-dr.top-38)+'px';d.appendChild(p)}
+async function runOp(op,token){
+  const [k,a,b]=op;const q=s=>document.querySelector(s);
+  if(k==='wait'){await sleep(a);return}
+  if(k==='top'){const sc=screen,from=sc.scrollTop,t0=performance.now();if(from<4)return;await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/700);sc.scrollTop=from*(1-(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2));if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
+  if(k==='move'){const el=q(a);if(!el)return;if(!el.closest('.cvbar')&&!el.closest('.modal')){try{el.scrollIntoView({block:'nearest'})}catch(e){}}placeCursor(el);await sleep(680);return}
+  if(k==='click'){const c=cur();if(c){c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk')}await sleep(260);if(typeof a==='function')a();await sleep(160);return}
+  if(k==='type'){const el=q(a);if(!el)return;const per=Math.max(18,Math.min(55,2400/a.length));const isField=el.tagName==='TEXTAREA'||el.tagName==='INPUT';
+    for(let i=1;i<=b.length;i++){if(token!==cvRun)return;if(isField)el.value=b.slice(0,i);else el.innerHTML=b.slice(0,i)+'<span class="caret"></span>';await sleep(per)}
+    if(!isField)el.innerHTML=b;if(a==='#gateInp'){const g=q('#gateGo');if(g)g.classList.add('on')}return}
+  if(k==='scroll'){const sc=screen;const from=sc.scrollTop,t0=performance.now();await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/b);sc.scrollTop=from+a*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
+  if(k==='select'){const el=q(a);if(!el)return;try{el.scrollIntoView({block:'center'})}catch(e){}await sleep(200);const r=el.getBoundingClientRect();placeCursor(el,2,10,500);await sleep(550);placeCursor(el,r.width-2,r.height-8,900);await sleep(500);el.classList.add('hl');S.hl=b;await sleep(450);return}
+  if(k==='pop'){popAt(q(a),b);await sleep(350);return}
+  if(k==='clickpop'){const p=q('#cvpop [data-w="'+a+'"]');if(p){placeCursor(p,p.getBoundingClientRect().width/2,10);await sleep(650);const c=cur();c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk');await sleep(300)}document.querySelectorAll('.cvdoc .pop').forEach(x=>x.remove());return}
+  if(k==='sugbox'){const el=q('#recTxt');if(!el)return;const p=el.closest('p');const box=document.createElement('div');box.className='sugbox';box.innerHTML='<div class="sl">Suggest an edit &middot; replaces &ldquo;'+SUG_FROM+'&rdquo;</div><div class="sugta" id="sugInp"><span class="caret"></span></div><div class="sr"><button class="btn sm">Cancel</button><button class="btn sm dark" id="sugSave">Save suggestion</button></div>';p.after(box);await sleep(500);placeCursor(q('#sugInp'),20,16);await sleep(500);return}
+  if(k==='do'){a();render();await sleep(80);return}
+}
+async function playStage(){
+  const script=cvScript(),idx=S.cvStage,st=script[idx];
+  if(!st||!st.ops||S.cvDone[idx]||S.cvPlaying)return;
+  const token=++cvRun;S.cvPlaying=true;renderCoachClient();
+  for(const op of st.ops){if(token!==cvRun)return;await runOp(op,token)}
+  if(token!==cvRun)return;
+  S.cvDone[idx]=true;S.cvPlaying=false;
+  if(idx<script.length-1){S.cvStage=idx+1}
+  render();
+}
+function skipRound(){
+  cvRun++;S.cvPlaying=false;closeModal();const script=cvScript();
+  for(let k=S.cvStage;k<script.length;k++){const st=script[k];
+    if(st.mail&&!('reviewer' in S.score)){S.cvStage=k;render();return}
+    if(st.effect&&!S.cvDone[k])st.effect();S.cvDone[k]=true}
+  S.cvStage=script.length-1;S.hl=null;render();
+}
+
+/* ---- rendering ---- */
 function renderClient(){
-  const script=S.cv==='r1'?R1:R2,st=script[S.cvStage],last=S.cvStage===script.length-1;
+  const script=cvScript(),st=script[S.cvStage],last=S.cvStage===script.length-1;
   document.getElementById('plabel').className='plabel client';document.getElementById('plabelTxt').textContent='What Dr. Patel sees · the client\'s browser';
-  S.day=S.cv==='r1'?st.d:st.d;
+  S.day=st.d;
   let body='';
-  if(st.gate){body=`<div class="gate"><div class="card"><div class="logo">S8E8</div><span class="tag blue">Example Dental</span><h3>Content Review</h3><p>You've been invited to review <b>"${PIECE.title}"</b></p><label class="lab" style="text-align:left">Your name</label><div class="inp" id="gateInp"><span class="caret"></span></div><button class="go" id="gateGo">Start Review</button></div></div>`}
-  else if(st.approved){body=`<div class="approved"><div><div class="ic"><svg><use href="#i-check"/></svg></div><h3>Content Approved</h3><p>Thank you for your review. The team will proceed with publishing.</p></div></div>`}
+  if(st.build==='gate'){body=`<div class="gate"><div class="card"><div class="logo">S8E8</div><span class="tag blue">Example Dental</span><h3>Content Review</h3><p>You've been invited to review <b>"${PIECE.title}"</b></p><label class="lab" style="text-align:left">Your name</label><div class="inp" id="gateInp"><span class="caret"></span></div><button class="go" id="gateGo">Start Review</button></div></div>`}
+  else if(st.build==='approved'){body=`<div class="approved"><div><div class="ic"><svg><use href="#i-check"/></svg></div><h3>Content Approved</h3><p>Thank you for your review. The team will proceed with publishing.</p></div></div>`}
   else{
     const dl=st.final?'<div class="banner">This is your final review round. You can approve the page or leave comments, but you cannot request another revision. Deadline: '+DAYS[12]+'.</div>':'<div class="dl">Review deadline: '+DAYS[10]+' ('+(14-st.d)+' days remaining)</div>';
     const closed=st.closed?'<div class="banner closed"><b>Dr. Patel</b> sent a revision request on '+DAYS[st.d]+'. Your comments and suggested edits are with the team. You will get a fresh link when the new version is ready.</div>':'';
+    const edits=S.cvTab==='edits';
     body=`<div class="cv"><div class="cvtop"><div class="logo">S8E8</div><div><div class="cl">Example Dental</div><div class="ti">${PIECE.title}</div><div style="font-size:10.5px;color:var(--muted)"><span class="tag" style="padding:2px 6px">Service page</span> 1,480 words</div></div><div class="you"><i>P</i>Dr. Patel</div></div>
-      <div class="cvgrid"><div class="cvdoc" style="position:relative"><div class="tip">Tip: Highlight text to comment on a specific passage, or use the sidebar for general feedback</div>${closed||dl}<div class="rich" id="cvrich">${docHTML()}</div>${st.pop?'<div class="pop" id="pop" style="left:120px;top:150px"><span class="on">&#9679; Comment</span><span>&#9998; Suggest Edit</span></div>':''}${st.mail?mailHTML():''}</div>
-      <div class="cvside"><div class="sg"><span class="${st.sug?'':'on'}">Comments</span><span class="${st.sug?'on':''}">Edits</span></div>${st.sug?'<div class="cvc"><div class="w"><span>Suggested edit</span><span>Pending</span></div><div><span class="sug">back at work the next day</span> <span class="ins">back to normal activities within a few days</span></div><div style="font-size:11px;color:var(--muted);margin-top:6px">Saves on its own. Goes to the team with your revision request.</div></div>':cvComments()}</div></div>
-      <div class="cvbar"><span class="fin">${st.closed?'Decisions are closed for this round.':st.final?'Final round':'Leave feedback, then choose one:'}</span>${st.closed?'':st.final?'<button class="btn primary" id="appr" '+(st.approve?'':'disabled')+'>Approve Content</button>':'<button class="btn" id="rr" '+(st.confirm?'':'disabled')+'>Request Revision</button><button class="btn primary" disabled>Approve Content</button>'}</div></div>`;
+      <div class="cvgrid"><div class="cvdoc"><div class="tip">Tip: Highlight text to comment on a specific passage, or use the sidebar for general feedback</div>${closed||dl}<div class="rich" id="cvrich">${docHTML()}</div>${st.mail?mailHTML():''}</div>
+      <div class="cvside"><div class="sg"><span class="${edits?'':'on'}">Comments</span><span class="${edits?'on':''}">Edits</span></div>${edits?cvEdits():cvComments()}</div></div>
+      <div class="cvbar"><span class="fin">${st.closed?'Decisions are closed for this round.':st.final?'Final round':'Leave feedback, then choose one:'}</span>${st.closed?'':st.final?'<button class="btn primary" id="appr" disabled>Approve Content</button>':'<button class="btn" id="rr" disabled>Request Revision</button><button class="btn primary" id="rrApprove" disabled>Approve Content</button>'}</div></div>`;
   }
   screen.innerHTML=body;
-  coachEl.innerHTML='<div class="n" style="background:var(--blue)">'+(S.cvStage+1)+'</div><div><div class="pr">Client view · '+DAYS[st.d]+'</div><h4>'+(S.cv==='r1'?'Round 1 of 1':'Final round')+'</h4><p>'+st.t+'</p></div><div class="act">'+(st.mail&&!('reviewer' in S.score)?'<span style="font-size:12px;color:var(--muted)">Answer the email first</span>':'')+'<button class="btn primary '+(st.mail&&!('reviewer' in S.score)?'':'hint')+'" id="cvNext" '+(st.mail&&!('reviewer' in S.score)?'disabled':'')+'>'+(last?'Back to your side &rarr;':'Next &rarr;')+'</button></div>';
+  if(st.build!=='page'||st.mail||st.closed||(st.ops&&st.ops.some(o=>o[0]==='top')))screen.scrollTop=0;
+  renderCoachClient();
   document.getElementById('clock').textContent=DAYS[st.d];
-  document.getElementById('cvNext').onclick=()=>{if(last){finishClient();return}S.cvStage++;applyStage(script[S.cvStage]);render()};
-  const popEl=document.getElementById('pop'),sdEl=document.getElementById('sdTxt');if(popEl&&sdEl){popEl.style.left=Math.max(20,sdEl.offsetLeft-10)+'px';popEl.style.top=(sdEl.offsetTop-36)+'px'}
-  if(st.gate){const inp=document.getElementById('gateInp'),go=document.getElementById('gateGo');const name='Dr. Patel';let c=0;const tick=()=>{if(!inp.isConnected)return;c++;inp.innerHTML=name.slice(0,c)+'<span class="caret"></span>';if(c<name.length)setTimeout(tick,90);else go.classList.add('on')};setTimeout(tick,500);go.onclick=()=>document.getElementById('cvNext').click()}
-  if(st.hl){const e=document.getElementById('sdTxt');if(e)e.classList.add('hl')}
-  const rr=document.getElementById('rr');if(rr)rr.onclick=()=>openConfirmRevision();
-  const ap=document.getElementById('appr');if(ap)ap.onclick=()=>openApprove();
+  const go=document.getElementById('gateGo');if(go)go.onclick=()=>{if(!S.cvPlaying){cvRun++;S.cvDone[S.cvStage]=true;S.cvStage++;render()}};
   if(st.mail)bindMail();
+  if(st.ops&&!S.cvDone[S.cvStage]&&!S.cvPlaying)setTimeout(playStage,450);
+}
+function renderCoachClient(){
+  const script=cvScript(),idx=S.cvStage,st=script[idx],last=idx===script.length-1;
+  let act='';
+  if(S.cvPlaying)act='<span class="live"><i></i>Watching Dr. Patel\'s screen</span><button class="btn" id="cvSkip">Skip ahead</button>';
+  else if(st.mail)act=('reviewer' in S.score)?'<button class="btn primary hint" id="cvNext">Continue &rarr;</button>':'<span style="font-size:12px;color:var(--muted)">Answer the email first</span><button class="btn primary" id="cvNext" disabled>Continue &rarr;</button>';
+  else if(last)act='<button class="btn primary hint" id="cvNext">Back to your side &rarr;</button>';
+  else act='<button class="btn primary hint" id="cvNext">Next &rarr;</button>';
+  coachEl.innerHTML='<div class="n" style="background:var(--blue)">'+(idx+1)+'</div><div><div class="pr">Client view · '+DAYS[st.d]+' · '+(S.cv==='r1'?'Round 1 of 1':'Final round')+'</div><h4>'+(S.cvPlaying?'Live':st.mail?'Your move':last?'Done':'Dr. Patel')+'</h4><p>'+st.t+'</p></div><div class="act">'+act+'</div>';
+  const n=document.getElementById('cvNext');if(n)n.onclick=()=>{if(last){finishClient();return}S.cvDone[idx]=true;S.cvStage=idx+1;render()};
+  const sk=document.getElementById('cvSkip');if(sk)sk.onclick=skipRound;
 }
 function cvComments(){
   const list=S.comments.filter(c=>!c.sys);
-  if(!list.length)return '<textarea placeholder="Add a comment..."></textarea><div class="post"><span>as Dr. Patel</span><button>Post</button></div><div class="empty">No open comments yet<br><small>Select text in the content to leave a comment</small></div>';
-  return '<textarea placeholder="Add a comment..."></textarea><div class="post"><span>as Dr. Patel</span><button>Post</button></div>'+list.map(c=>'<div class="cvc"><div class="w"><span>Dr. Patel</span><span>'+(c.res?'Resolved':'Open')+'</span></div>'+(c.q?'<div class="q">'+c.q+'</div>':'')+c.text+(c.reply?'<div class="team"><b>Example Dental team:</b> '+c.reply+'</div>':'')+'</div>').join('')+S.comments.filter(c=>c.sys).map(c=>'<div class="cvc" style="opacity:.7"><div class="w"><span>Team</span><span>Resolved</span></div>'+c.text+'</div>').join('');
+  const box='<textarea placeholder="Add a comment..."></textarea><div class="post"><span>as Dr. Patel</span><button>Post</button></div>';
+  if(!list.length)return box+'<div class="empty">No open comments yet<br><small>Select text in the content to leave a comment</small></div>';
+  return box+list.map(c=>'<div class="cvc"><div class="w"><span>Dr. Patel</span><span>'+(c.res?'Resolved':'Open')+'</span></div>'+(c.q?'<div class="q">'+c.q+'</div>':'')+c.text+(c.reply?'<div class="team"><b>Example Dental team:</b> '+c.reply+'</div>':'')+'</div>').join('')+S.comments.filter(c=>c.sys).map(c=>'<div class="cvc" style="opacity:.7"><div class="w"><span>Team</span><span>Resolved</span></div>'+c.text+'</div>').join('');
 }
-function applyStage(st){
-  if(st.comment){const c=Object.assign({res:false,day:DAYS[st.d]},st.comment);S.comments.push(c);post('OpenedQueries',AI+YOU+' '+MS+' Client feedback from Dr. Patel:<br>'+c.text)}
-  if(st.sug){S.sugs.push({from:'back at work the next day',to:'back to normal activities within a few days',state:'pending'});S.sugShown=true}
-  if(st.closed&&!S.rrDone){/* they pressed Next past the confirm stage without clicking Request Revision */doRevision()}
+function cvEdits(){
+  if(!S.sugs.length)return '<div class="empty">No suggested edits yet<br><small>Select text and choose "Suggest Edit"</small></div>';
+  return S.sugs.map(s=>'<div class="cvc"><div class="w"><span>Suggested edit</span><span>'+(s.state==='pending'?'Pending':s.state)+'</span></div><div><span class="sug">'+s.from+'</span> <span class="ins">'+s.to+'</span></div><div style="font-size:11px;color:var(--muted);margin-top:6px">Saved. It goes to the team with your revision request.</div></div>').join('');
 }
 function mailHTML(){return `<div class="cvmail"><div class="fr">New email · to you</div><b>From: Dr. Marcus Nguyen</b><p>Priya forwarded me the review link. I'd like to add my notes on the implant page too. Can I just use the same link?</p><div class="mcq" style="padding:10px;border:0;background:var(--chip)"><div class="mk">Decision moment</div><div class="opts" id="mo"></div><div class="why" id="mw"></div></div></div>`}
 function bindMail(){
-  const opts=[['"Sure, the link works for anyone."',false,'True, and that is the problem. Opened Queries would accept his comments. But the first person to click Approve or Request Revision closes the round for everyone, and two voices on one page lead to contradictions. Our rule is one reviewer.'],['"Please send your notes to Dr. Patel. She is the one reviewer on this page, and she can add them under her name before she submits."',true,'Right. One reviewer, one voice, one decision. The app does not enforce this; we do, because the first decision closes the round for everyone.'],['Add him as a second recipient in Opened Queries so he gets his own email.',false,'The app would let you, and he would get the same link. That makes the problem official. One reviewer per practice.']];
+  const opts=[['"Sure, the link works for anyone."',false,'True, and that is the problem. Opened Queries would accept his comments. We ask each practice to name one reviewer, to avoid feedback that contradicts other reviewers and creates confusion, and because the first person to click Approve or Request Revision closes the round for everyone.'],['"Please send your notes to Dr. Patel. She is the one reviewer on this page, and she can add them under her name before she submits."',true,'Right. One reviewer, one voice, one decision. The app does not enforce this; we do, to avoid contradicting feedback and because the first decision closes the round for everyone.'],['Add him as a second recipient in Opened Queries so he gets his own email.',false,'The app would let you, and he would get the same link. That makes two reviewers official, which is exactly what we are avoiding.']];
   const o=document.getElementById('mo'),w=document.getElementById('mw');
-  shuffle([0,1,2]).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span style="font-size:12px">'+opts[i][0]+'</span>';b.onclick=()=>{if(!('reviewer' in S.score))S.score.reviewer=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});const n=document.getElementById('cvNext');n.disabled=false;n.classList.add('hint');coachEl.querySelector('.act span')?.remove()}};o.appendChild(b)});
+  shuffle([0,1,2]).forEach((i,pos)=>{const b=document.createElement('button');b.className='opt';b.innerHTML='<span class="ol">'+'ABC'[pos]+'</span><span style="font-size:12px">'+opts[i][0]+'</span>';b.onclick=()=>{if(!('reviewer' in S.score))S.score.reviewer=opts[i][1];b.classList.add(opts[i][1]?'right':'wrong');w.textContent=opts[i][2];w.className='why '+(opts[i][1]?'ok':'no');if(opts[i][1]){o.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x!==b)x.classList.add('dim')});renderCoachClient()}};o.appendChild(b)});
 }
 function openConfirmRevision(){
   const m=modal(`<div class="mh"><h3>Submit Revision Request</h3></div><div class="mb">Your 2 comments and 1 suggested edit go to the team now. <b>You get one revision round.</b> When the updated page comes back, you will be able to approve it or leave comments, but not request another revision.<label class="lab">Anything else for the team?</label><div class="inp" style="color:var(--ink)">Thanks, mostly small things. Please keep the tone, it sounds like us.</div></div><div class="mf"><button class="btn" id="mc">Keep reviewing</button><button class="btn primary" id="go">Submit Revision Request</button></div>`);
-  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doRevision();S.cvStage++;render()};
+  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doRevision();if(!S.cvPlaying){S.cvDone[S.cvStage]=true;S.cvStage++;render()}};
 }
 function doRevision(){
   if(S.rrDone)return;S.rrDone=true;S.status='revision_requested';S.revision=1;S.locked=false;setPhase('RevisionRequested',20);
@@ -774,14 +879,15 @@ function doRevision(){
 }
 function openApprove(){
   const m=modal(`<div class="mh"><h3>Approve this page?</h3></div><div class="mb">Approving tells the team the page is ready to publish as it stands.<label class="lab">Any final notes? (optional)</label><div class="inp" style="color:var(--ink)">Looks great. Thank you for the quick turnaround.</div></div><div class="mf"><button class="btn" id="mc">Not yet</button><button class="btn primary" id="go">Approve Content</button></div>`);
-  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doApprove();S.cvStage++;render()};
+  m.querySelector('#mc').onclick=closeModal;m.querySelector('#go').onclick=()=>{closeModal();doApprove();if(!S.cvPlaying){S.cvDone[S.cvStage]=true;S.cvStage++;render()}};
 }
 function doApprove(){
   if(S.apDone)return;S.apDone=true;S.status='final';S.subs.confirm=true;setPhase('Approved',10);
   post('OpenedQueries',AI+YOU+' '+MS+' This content piece for <b>Example Dental</b> has been approved by Dr. Patel!<br>Client notes: Looks great. Thank you for the quick turnaround.');
 }
 function finishClient(){
-  if(S.cv==='r1'){if(!S.rrDone)doRevision();S.view='editor';S.rtab='fb';S.step=8;S.day=5}
+  cvRun++;S.cvPlaying=false;S.hl=null;
+  if(S.cv==='r1'){if(!S.rrDone)doRevision();if(!S.comments.some(c=>c.key==='sd'))addComment(COMMENT1);if(!S.sugs.length)addSug();if(!S.comments.some(c=>c.key==='ins'))addComment(COMMENT2);S.view='editor';S.rtab='fb';S.step=8;S.day=5}
   else{if(!S.apDone)doApprove();S.view='editor';S.rtab='qa';S.step=11;S.day=10}
   S.cv=null;render();
 }
@@ -802,7 +908,7 @@ function renderAsana(){
 
 /* ======================= done ======================= */
 function renderDone(){
-  const sc=[['Fixed the invented doctor before sending',S.qaFixed],['One reviewer: answered Dr. Nguyen correctly',S.score.reviewer===true&&!S.score.addedSecond],['Checked the practice facts before adding insurers',S.score.ins===true],['Knew why images wait for approval',S.score.img===true]];
+  const sc=[['Fixed the invented doctor before sending',S.qaFixed],['One reviewer: answered Dr. Nguyen correctly',S.score.reviewer===true&&!S.score.addedSecond],['Added Delta Dental as asked, and saved it as a practice fact',S.score.ins===true],['Knew why images wait for approval',S.score.img===true]];
   const n=sc.filter(x=>x[1]).length;
   screen.innerHTML=`<div class="finish"><div class="tag mag">Simulation complete</div><h2>Draft to published,<br>one service page</h2><p>You took one piece from the calendar to a live Webflow page. Here is what you clicked, and what Opened Queries did on its own.</p>
     <div class="score">${sc.map(x=>'<div class="'+(x[1]?'ok':'no')+'"><b>'+(x[1]?'&#10003;':'&#10007;')+'</b>'+x[0]+'</div>').join('')}</div>
@@ -811,7 +917,7 @@ function renderDone(){
       <div><b>You</b><span>Generate, fix QA, save, Internal Links, Send for Review, address 3 items, Send Back Revision, AI Selection, Generate Schema, Publish as Draft, Publish Live, set the status label.</span></div>
       <div><b>Opened Queries</b><span>Wrote and checked the draft, moved it to Internal Review on your first save, locked it during review, enforced the single revision, emailed the team on every comment, mirrored every stage to Asana, built the schema from practice data, filled 12 Webflow fields.</span></div>
       <div><b>Dr. Patel</b><span>Two comments, one suggested edit, one revision request, one approval. One reviewer, one voice.</span></div>
-      <div><b>Our rules</b><span>One reviewer per practice. Images after approval. Both are team process; the app does not enforce them.</span></div>
+      <div><b>Our rules</b><span>One reviewer per practice. Images after approval. What the practice tells you is a fact: write it in and save it as a supplemental fact. The app does not enforce any of these.</span></div>
       <div><b>Next</b><span>The blog article "Implant or bridge for a missing back tooth?" is still in the queue. In the full training you run it next: shorter, with the differences called out (direct answer up top, links up to this service page, no FAQ).</span></div>
     </div></div>`;
 }
@@ -819,12 +925,13 @@ function renderDone(){
 /* ======================= render ======================= */
 function render(){
   document.getElementById('plabel').className='plabel';document.getElementById('plabelTxt').textContent='Opened Queries · you are the SEO Specialist';
+  const cEl=document.getElementById('cur');if(cEl&&!(S.view==='client'&&S.cv))cEl.classList.remove('on');
   if(S.view==='client'&&S.cv){renderClient();renderAsana();return}
   if(S.step===15){renderDone()}
   else if(S.view==='editor')renderEditor();else renderList();
   renderAsana();renderCoach();
 }
-document.getElementById('reset').onclick=()=>{streamT.forEach(clearTimeout);S=fresh();render()};
+document.getElementById('reset').onclick=()=>{streamT.forEach(clearTimeout);cvRun++;closeModal();S=fresh();render()};
 S=fresh();render();
 })();
 </script>
