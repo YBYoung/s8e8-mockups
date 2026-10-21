@@ -215,7 +215,7 @@ table.list a{color:var(--ink);text-decoration:none;border-bottom:1px dashed #C9C
 .recip input{margin-top:3px}
 .recip b{display:block;font-size:13px}
 .recip small{color:var(--muted);font-size:11.5px}
-.recip .why{margin-left:auto;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mag-ink);background:var(--mag-bg);padding:3px 6px;border-radius:3px;white-space:nowrap}
+.recip .why{display:inline-block;margin-left:auto;font:600 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mag-ink);background:var(--mag-bg);padding:3px 6px;border-radius:3px;white-space:nowrap}
 .inp{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;color:var(--muted);background:#FBFBFC;margin:6px 0}
 label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin:12px 0 4px}
 .email{border:1px solid var(--line);border-radius:6px;padding:12px 14px;background:#FBFBFC;font-size:12.5px;line-height:1.5}
@@ -254,7 +254,7 @@ label.lab{display:block;font:600 9.5px var(--mono);letter-spacing:.12em;text-tra
 .cvtop .you i{width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:10px}
 .cvgrid{display:grid;grid-template-columns:minmax(0,1fr) 260px;min-height:480px}
 .cvgrid>*{min-width:0}
-.cvdoc{padding:18px 26px}
+.cvdoc{padding:18px 26px;position:relative}
 .tip{background:var(--blue-bg);color:#0D3C52;border-radius:6px;padding:8px 12px;font-size:12px;text-align:center;margin-bottom:8px}
 .dl{background:#EAF6FC;border:1px solid #CBE8F6;color:#0D3C52;border-radius:6px;padding:8px 12px;font-size:12px;text-align:center;margin-bottom:14px}
 .cvside{border-left:1px solid var(--line);background:var(--card);padding:12px}
@@ -590,8 +590,8 @@ let streamT=[];
 function streamHTML(){return '<div class="stream" id="stream"></div>'}
 function runStream(){
   const lines=['Reading the calendar item: cluster "Dental implants", 8 supporting searches, the angle, 3 forum quotes','Writing the outline','Checking the outline against the service-page rules (Quick Takeaways, FAQ, decision-stage sections, 3 CTAs max)','Writing section 1 of 7: Introduction','Writing sections 2 to 7','Stripping em dashes, demoting any H1, checking links against the site crawl','Quality checks: practice name, phone, doctors vs roster, word count, FAQ, CTAs','1 critical issue found: doctor name not on roster. Auto-fix skipped (needs a human).'];
-  const el=document.getElementById('stream');let k=0;
-  const tick=()=>{if(!el.isConnected)return;el.innerHTML=lines.slice(0,k+1).map((l,i)=>'<div class="'+(i<k?'ok':'run')+'">'+(i<k?'&#10003; ':'')+l+'</div>').join('');k++;
+  let k=0;
+  const tick=()=>{const el=document.getElementById('stream');if(el)el.innerHTML=lines.slice(0,k+1).map((l,i)=>'<div class="'+(i<k?'ok':'run')+'">'+(i<k?'&#10003; ':'')+l+'</div>').join('');k++;
     if(k<=lines.length)streamT.push(setTimeout(tick,k===lines.length?900:700));
     else{S.streaming=false;S.status='draft_ready';setPhase('Drafted',20);if(!S.draftNotified){S.draftNotified=true;post('OpenedQueries',AI+'Article Draft Generated! Pending Internal SEO QA. '+YOU)}S.step=2;render()}};
   tick();
@@ -653,7 +653,7 @@ function fbList(locked){
 }
 function bindEditor(editable){
   const rb=document.getElementById('rbody');
-  const jf=document.getElementById('jumpFlag');if(jf)jf.onclick=()=>{const f=document.getElementById('docFlag');if(f){f.scrollIntoView({block:'center'});f.classList.add('hl');toast('Click the highlighted name to replace it with a doctor from the roster.')}};
+  const jf=document.getElementById('jumpFlag');if(jf)jf.onclick=()=>{const f=document.getElementById('docFlag');if(f){{const sc=screen,sr=sc.getBoundingClientRect(),r=f.getBoundingClientRect();sc.scrollTop+=r.top-sr.top-sc.clientHeight/2}f.classList.add('hl');toast('Click the highlighted name to replace it with a doctor from the roster.')}};
   const df=document.getElementById('docFlag');if(df)df.onclick=()=>{if(S.step!==3){toast('Open the QA tab first.');return}S.qaFixed=true;render();toast('Replaced with Dr. Nguyen, who is on the roster.')};
   const sb=document.getElementById('saveBtn');if(sb)sb.onclick=()=>{S.status='specialist_review';setPhase('InternalQA',20);S.versions.unshift({n:'Specialist edit',t:DAYS[0]});S.step=4;render()};
   const lb=document.getElementById('linksBtn');if(lb)lb.onclick=()=>{if(S.step!==4){toast(S.linksApplied?'Links already applied.':'Not yet. Follow the coach.');return}openLinksModal()};
@@ -799,7 +799,13 @@ const cvScript=()=>S.cv==='r1'?R1:R2;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const cur=()=>document.getElementById('cur');
 let cvRun=0;
-async function pausedWait(token){while(S.cvPaused&&token===cvRun)await sleep(120)}
+/* Scroll the client screen from -> to over dur ms. Timer-driven, not requestAnimationFrame, so it still finishes when the tab is hidden or the window is covered. */
+function animScroll(sc,from,to,dur,token){return new Promise(res=>{const t0=Date.now();(function f(){const p=Math.min(1,(Date.now()-t0)/dur);sc.scrollTop=from+(to-from)*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1&&token===cvRun)setTimeout(f,16);else{if(p<1)sc.scrollTop=to;res()}})()})}
+/* Bring el into the client screen without scrollIntoView (which also scrolls the training page around the iframe). */
+function revealInScreen(el,center){const sc=screen;if(!el||!sc)return;const sr=sc.getBoundingClientRect(),r=el.getBoundingClientRect();
+  if(center){sc.scrollTop+=r.top-sr.top-(sc.clientHeight-r.height)/2;return}
+  if(r.top<sr.top+8)sc.scrollTop+=r.top-sr.top-40;else if(r.bottom>sr.bottom-90)sc.scrollTop+=r.bottom-sr.bottom+110}
+async function pausedWait(token){while(S.cvPaused&&token===cvRun&&!document.getElementById('modalRoot').innerHTML)await sleep(120)}
 function togglePause(){S.cvPaused=!S.cvPaused;renderCoachClient()}
 function placeCursor(el,ox,oy,ms){const c=cur();if(!c||!el)return;const pr=document.getElementById('leftPanel').getBoundingClientRect();const r=el.getBoundingClientRect();
   c.style.transitionDuration=(ms||600)+'ms';c.style.left=(r.left-pr.left+(ox==null?Math.min(34,r.width/2):ox))+'px';c.style.top=(r.top-pr.top+(oy==null?r.height/2:oy))+'px';c.classList.add('on')}
@@ -809,16 +815,16 @@ function popAt(el,which){const d=document.querySelector('.cvdoc');if(!d||!el)ret
 async function runOp(op,token){
   const [k,a,b]=op;const q=s=>document.querySelector(s);
   if(k==='wait'){await sleep(a);return}
-  if(k==='scrollto'){const el=q(a);if(!el)return;const sc=screen,from=sc.scrollTop,r=el.getBoundingClientRect(),target=Math.max(0,r.bottom-sc.getBoundingClientRect().top+from-(sc.clientHeight-130)),t0=performance.now(),dur=Math.min(2600,600+Math.abs(target-from)*1.1);
-    await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/dur);sc.scrollTop=from+(target-from)*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
-  if(k==='top'){const sc=screen,from=sc.scrollTop,t0=performance.now();if(from<4)return;await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/700);sc.scrollTop=from*(1-(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2));if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
-  if(k==='move'){const el=q(a);if(!el)return;if(!el.closest('.modal')){try{el.scrollIntoView({block:'nearest'})}catch(e){}}placeCursor(el);await sleep(680);return}
-  if(k==='click'){const c=cur();if(c){c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk')}await sleep(260);if(typeof a==='function')a();await sleep(160);return}
-  if(k==='type'){const el=q(a);if(!el)return;const per=Math.max(18,Math.min(55,2400/a.length));const isField=el.tagName==='TEXTAREA'||el.tagName==='INPUT';
+  if(k==='scrollto'){const el=q(a);if(!el)return;const sc=screen,from=sc.scrollTop,r=el.getBoundingClientRect(),target=Math.max(0,r.bottom-sc.getBoundingClientRect().top+from-(sc.clientHeight-130)),dur=Math.min(2600,600+Math.abs(target-from)*1.1);
+    await animScroll(sc,from,target,dur,token);return}
+  if(k==='top'){const sc=screen,from=sc.scrollTop;if(from<4)return;await animScroll(sc,from,0,700,token);return}
+  if(k==='move'){const el=q(a);if(!el)return;if(!el.closest('.modal'))revealInScreen(el,false);placeCursor(el);await sleep(680);return}
+  if(k==='click'){const c=cur();if(c){c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk')}await sleep(260);if(token!==cvRun)return;if(typeof a==='function')a();await sleep(160);return}
+  if(k==='type'){const el=q(a);if(!el)return;const per=Math.max(18,Math.min(55,2400/b.length));const isField=el.tagName==='TEXTAREA'||el.tagName==='INPUT';
     for(let i=1;i<=b.length;i++){if(token!==cvRun)return;await pausedWait(token);if(isField)el.value=b.slice(0,i);else el.innerHTML=b.slice(0,i)+'<span class="caret"></span>';await sleep(per)}
     if(!isField)el.innerHTML=b;if(a==='#gateInp'){const g=q('#gateGo');if(g)g.classList.add('on')}return}
-  if(k==='scroll'){const sc=screen;const from=sc.scrollTop,t0=performance.now();await new Promise(res=>{(function f(t){const p=Math.min(1,(t-t0)/b);sc.scrollTop=from+a*(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2);if(p<1&&token===cvRun)requestAnimationFrame(f);else res()})(t0)});return}
-  if(k==='select'){const el=q(a);if(!el)return;try{el.scrollIntoView({block:'center'})}catch(e){}await sleep(200);const r=el.getBoundingClientRect();placeCursor(el,2,10,500);await sleep(550);placeCursor(el,r.width-2,r.height-8,900);await sleep(500);el.classList.add('hl');S.hl=b;await sleep(450);return}
+  if(k==='scroll'){const sc=screen,from=sc.scrollTop;await animScroll(sc,from,from+a,b,token);return}
+  if(k==='select'){const el=q(a);if(!el)return;revealInScreen(el,true);await sleep(200);const r=el.getBoundingClientRect();placeCursor(el,2,10,500);await sleep(550);placeCursor(el,r.width-2,r.height-8,900);await sleep(500);el.classList.add('hl');S.hl=b;await sleep(450);return}
   if(k==='pop'){popAt(q(a),b);await sleep(350);return}
   if(k==='clickpop'){const p=q('#cvpop [data-w="'+a+'"]');if(p){placeCursor(p,p.getBoundingClientRect().width/2,10);await sleep(650);const c=cur();c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk');await sleep(300)}document.querySelectorAll('.cvdoc .pop').forEach(x=>x.remove());return}
   if(k==='sugbox'){const el=q('#recTxt');if(!el)return;const p=el.closest('p');const box=document.createElement('div');box.className='sugbox';box.innerHTML='<div class="sl">Suggest an edit &middot; replaces &ldquo;'+SUG_FROM+'&rdquo;</div><div class="sugta" id="sugInp"><span class="caret"></span></div><div class="sr"><button class="btn sm">Cancel</button><button class="btn sm dark" id="sugSave">Save suggestion</button></div>';p.after(box);await sleep(500);placeCursor(q('#sugInp'),20,16);await sleep(500);return}
@@ -828,14 +834,19 @@ async function playStage(){
   const script=cvScript(),idx=S.cvStage,st=script[idx];
   if(!st||!st.ops||S.cvDone[idx]||S.cvPlaying)return;
   const token=++cvRun;S.cvPlaying=true;S.cvPaused=false;renderCoachClient();
-  for(const op of st.ops){if(token!==cvRun)return;await pausedWait(token);if(token!==cvRun)return;await runOp(op,token)}
+  try{
+    for(const op of st.ops){if(token!==cvRun)return;await pausedWait(token);if(token!==cvRun)return;
+      await Promise.race([runOp(op,token).catch(e=>console.warn('[sim] op failed',op[0],e)),sleep(9000)])}
+  }finally{if(token===cvRun)S.cvPlaying=false}
   if(token!==cvRun)return;
-  S.cvDone[idx]=true;S.cvPlaying=false;
+  if(st.effect)st.effect();
+  S.cvDone[idx]=true;S.hl=null;
   if(idx<script.length-1){S.cvStage=idx+1}
   render();
 }
 function skipRound(){
-  cvRun++;S.cvPlaying=false;S.cvPaused=false;S.cvAction=null;closeModal();const script=cvScript();
+  if(Date.now()-(S.navAt||0)<900)return; /* the second click of a double-click on Continue lands on Skip ahead */
+  cvRun++;S.cvPlaying=false;S.cvPaused=false;S.cvAction=null;S.cvTab='comments';closeModal();const c=cur();if(c)c.classList.remove('on');const script=cvScript();
   for(let k=S.cvStage;k<script.length;k++){const st=script[k];
     if(st.mail&&!('reviewer' in S.score)){S.cvStage=k;render();return}
     if(st.effect&&!S.cvDone[k])st.effect();S.cvDone[k]=true}
@@ -855,11 +866,11 @@ function renderClient(){
     const closed=st.closed?'<div class="banner closed"><b>Dr. Patel</b> sent a revision request on '+DAYS[st.d]+'. Your comments and suggested edits are with the team. You will get a fresh link when the new version is ready.</div>':'';
     const edits=S.cvTab==='edits';
     body=`<div class="cv"><div class="cvtop"><div class="logo">S8E8</div><div><div class="cl">Example Dental</div><div class="ti">${PIECE.title}</div><div style="font-size:10.5px;color:var(--muted)"><span class="tag" style="padding:2px 6px">Service page</span> 1,480 words</div></div><div class="you"><i>P</i>Dr. Patel</div></div>
-      <div class="cvgrid"><div class="cvdoc"><div class="tip">Tip: Highlight text to comment on a specific passage, or use the sidebar for general feedback</div>${closed||dl}<div class="rich" id="cvrich">${docHTML()}</div>${st.closed?'':cvActionCard(st)}${st.mail?mailHTML():''}</div>
+      <div class="cvgrid"><div class="cvdoc"><div class="tip">Tip: Highlight text to comment on a specific passage, or use the sidebar for general feedback</div>${closed||dl}<div class="rich" id="cvrich">${docHTML()}</div>${st.closed||st.mail?'':cvActionCard(st)}${st.mail?mailHTML():''}</div>
       <div class="cvside"><div class="sg"><span class="${edits?'':'on'}">Comments</span><span class="${edits?'on':''}">Edits</span></div>${edits?cvEdits():cvComments()}</div></div></div>`;
   }
   screen.innerHTML=body;
-  if(st.build!=='page'||st.mail||st.closed||(st.ops&&st.ops.some(o=>o[0]==='top')))screen.scrollTop=0;
+  if(!S.cvPlaying&&(st.build!=='page'||st.mail||st.closed||(st.ops&&st.ops.some(o=>o[0]==='top'))))screen.scrollTop=0;
   renderCoachClient();
   document.getElementById('clock').textContent=DAYS[st.d];
   const go=document.getElementById('gateGo');if(go)go.onclick=()=>{if(!S.cvPlaying){cvRun++;S.cvDone[S.cvStage]=true;S.cvStage++;render()}};
@@ -872,12 +883,12 @@ function renderClient(){
 function renderCoachClient(){
   const script=cvScript(),idx=S.cvStage,st=script[idx],last=idx===script.length-1;
   let act='';
-  if(S.cvPlaying)act='<span class="live'+(S.cvPaused?' paused':'')+'"><i></i>'+(S.cvPaused?'Paused':'Watching Dr. Patel\'s screen')+'</span><button class="btn '+(S.cvPaused?'primary':'')+'" id="cvPause">'+(S.cvPaused?'Resume &#9654;':'Pause &#10074;&#10074;')+'</button><button class="btn" id="cvSkip">Skip ahead</button>';
+  if(S.cvPlaying||(st.ops&&!S.cvDone[idx]))act='<span class="live'+(S.cvPaused?' paused':'')+'"><i></i>'+(S.cvPaused?'Paused':'Watching Dr. Patel\'s screen')+'</span><button class="btn '+(S.cvPaused?'primary':'')+'" id="cvPause">'+(S.cvPaused?'Resume &#9654;':'Pause &#10074;&#10074;')+'</button><button class="btn" id="cvSkip">Skip ahead</button>';
   else if(st.mail)act=('reviewer' in S.score)?'<button class="btn primary hint" id="cvNext">Continue &rarr;</button>':'<span style="font-size:12px;color:var(--muted)">Answer the email first</span><button class="btn primary" id="cvNext" disabled>Continue &rarr;</button>';
   else if(last)act='<button class="btn primary hint" id="cvNext">Back to your side &rarr;</button>';
   else act='<button class="btn primary hint" id="cvNext">Next &rarr;</button>';
   coachEl.innerHTML='<div class="n" style="background:var(--blue)">'+(idx+1)+'</div><div><div class="pr">Client view · '+DAYS[st.d]+' · '+(S.cv==='r1'?'Round 1 of 1':'Final round')+'</div><h4>'+(S.cvPlaying?'Live':st.mail?'Your move':last?'Done':'Dr. Patel')+'</h4><p>'+st.t+'</p></div><div class="act">'+act+'</div>';
-  const n=document.getElementById('cvNext');if(n)n.onclick=()=>{if(last){finishClient();return}S.cvDone[idx]=true;S.cvStage=idx+1;render()};
+  const n=document.getElementById('cvNext');if(n)n.onclick=()=>{if(S.cvPlaying||(st.ops&&!S.cvDone[idx]))return;S.navAt=Date.now();if(last){finishClient();return}if(st.effect&&!S.cvDone[idx])st.effect();S.cvDone[idx]=true;S.cvStage=idx+1;render()};
   const sk=document.getElementById('cvSkip');if(sk)sk.onclick=skipRound;
   const pb=document.getElementById('cvPause');if(pb)pb.onclick=togglePause;
 }
@@ -969,6 +980,8 @@ function render(){
 }
 document.getElementById('reset').onclick=()=>{streamT.forEach(clearTimeout);cvRun++;closeModal();S=fresh();render()};
 S=fresh();render();
+/* test hook: read-only view of state for automated checks */
+window.__sim={get S(){return S},get cvRun(){return cvRun}};
 })();
 </script>
 </body>
