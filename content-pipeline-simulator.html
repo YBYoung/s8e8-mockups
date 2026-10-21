@@ -365,7 +365,9 @@ table.list a:hover{border-bottom-style:solid;border-bottom-color:var(--ink)}
 .sub.done .c{background:var(--green);border-color:var(--green)}
 .sub.done span{color:var(--muted);text-decoration:line-through}
 .sub small{color:var(--muted);font-size:10.5px}
-.feed .item{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:12px;line-height:1.45;animation:rise .4s var(--ease)}
+.feed .item{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:8px 6px;margin:0 -6px;border-radius:6px;border-bottom:1px solid var(--line-soft);font-size:12px;line-height:1.45;animation:rise .4s var(--ease)}
+.feed .item.new{animation:rise .4s var(--ease),newflash 4s var(--ease)}
+@keyframes newflash{0%{background:var(--blue-bg)}70%{background:var(--blue-bg)}100%{background:transparent}}
 .feed .item i{width:20px;height:20px;border-radius:50%;background:#111317;color:#fff;display:grid;place-items:center;font-size:9px;font-weight:800}
 .feed .item i.p{background:#FFB3D3;color:#7A1F4A}
 .feed .item .w{font-weight:600;margin-bottom:2px;display:flex;justify-content:space-between;gap:6px}
@@ -503,7 +505,7 @@ const chip=s=>'<span class="chip '+s+'">'+LABEL[s]+'</span>';
 const AI='<em>AI Generated Message from OpenedQueries</em>';
 const YOU='<span class="at">@You</span>',MS='<span class="at">@Jordan Lee</span>';
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
-function post(who,html,isPerson){S.feed.unshift({who,html,isPerson,day:dayLabel()});renderAsana()}
+function post(who,html,isPerson){S.feed.unshift({who,html,isPerson,day:dayLabel(),fresh:true});renderAsana();const a=document.getElementById('asana');if(a)a.scrollTop=0;setTimeout(()=>{S.feed.forEach(f=>f.fresh=false)},4000)}
 function setPhase(p,est){S.phase=p;if(est)S.est=est}
 
 /* ======================= steps (the coach) ======================= */
@@ -907,7 +909,7 @@ function renderAsana(){
     <div class="arow"><b>Estimated time</b><span>${S.est?S.est+' min':'<span style="color:var(--muted)">empty</span>'}</span></div>
     <div class="arow"><b>Notes</b><span style="font-size:11.5px;color:var(--blue-ink)">Edit in App: openedqueries.../production/1024</span></div>
     <div class="subs"><h6>Subtasks</h6>${subs.map(s=>'<div class="sub '+(S.subs[s[0]]?'done':'')+'"><div class="c"><svg><use href="#i-check"/></svg></div><span>'+s[1]+'</span><small>'+s[2]+'</small></div>').join('')}</div>
-    <div class="feed"><h6>Activity</h6>${S.feed.length?S.feed.map(f=>'<div class="item"><i class="'+(f.isPerson?'p':'')+'">'+(f.isPerson?'Y':'OQ')+'</i><div><div class="w"><span>'+f.who+'</span><small>'+f.day+'</small></div>'+f.html+'</div></div>').join(''):'<div style="font-size:12px;color:var(--muted)">Task created from the calendar. "Create Job" completed on creation.</div>'}</div></div>`;
+    <div class="feed"><h6>Activity</h6>${S.feed.length?S.feed.map(f=>'<div class="item'+(f.fresh?' new':'')+'"><i class="'+(f.isPerson?'p':'')+'">'+(f.isPerson?'Y':'OQ')+'</i><div><div class="w"><span>'+f.who+'</span><small>'+f.day+'</small></div>'+f.html+'</div></div>').join(''):'<div style="font-size:12px;color:var(--muted)">Task created from the calendar. "Create Job" completed on creation.</div>'}</div></div>`;
 }
 
 /* ======================= done ======================= */
