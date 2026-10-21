@@ -505,7 +505,7 @@ const chip=s=>'<span class="chip '+s+'">'+LABEL[s]+'</span>';
 const AI='<em>AI Generated Message from OpenedQueries</em>';
 const YOU='<span class="at">@You</span>',MS='<span class="at">@Jordan Lee</span>';
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2600)}
-function post(who,html,isPerson){S.feed.unshift({who,html,isPerson,day:dayLabel(),fresh:true});renderAsana();const a=document.getElementById('asana');if(a)a.scrollTop=0;setTimeout(()=>{S.feed.forEach(f=>f.fresh=false)},4000)}
+function post(who,html,isPerson){S.feed.push({who,html,isPerson,day:dayLabel(),fresh:true});renderAsana();const a=document.getElementById('asana');if(a)a.scrollTo({top:a.scrollHeight,behavior:'smooth'});setTimeout(()=>{S.feed.forEach(f=>f.fresh=false)},4000)}
 function setPhase(p,est){S.phase=p;if(est)S.est=est}
 
 /* ======================= steps (the coach) ======================= */
