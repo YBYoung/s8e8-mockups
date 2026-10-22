@@ -164,49 +164,94 @@
   .vis-foot .eye { color: var(--faint); flex: none; }
   .vis-foot a { color: var(--primary); font-weight: 600; text-decoration: none; }
 
-  /* Drawer */
-  .scrim { position: fixed; inset: 0; background: rgba(15,23,42,.14); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 20; }
-  .scrim.on { opacity: 1; pointer-events: auto; }
-  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(460px, 100%); background: #fff; border-left: 1px solid var(--border); box-shadow: -10px 0 30px rgba(15,23,42,.08); z-index: 21; transform: translateX(104%); transition: transform .42s var(--ease); display: flex; flex-direction: column; }
-  .drawer.on { transform: none; }
-  .dtop { display: flex; align-items: center; gap: 6px; padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
-  .dtop .ib { border: 1px solid var(--border); background: #fff; border-radius: 6px; width: 30px; height: 30px; cursor: pointer; display: grid; place-items: center; color: var(--ink); }
-  .dtop .ib:hover { background: #F6F7F9; }
-  .dtop .x { margin-left: auto; border: 0; font-size: 20px; }
-  .dbody { overflow: auto; padding: 20px 22px 24px; flex: 1; }
-  .dbody.swap { animation: fadeUp .35s var(--ease) both; }
-  .dname { font-size: 21px; font-weight: 700; color: var(--ink); line-height: 1.25; margin: 0; }
-  .dcat { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-  .dwhy { margin: 12px 0 0; font-size: 14px; color: var(--body); }
-  .eq { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 14px; font-size: 12.5px; }
-  .eq .chip { border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; background: #FAFBFC; color: var(--ink); }
-  .eq .chip span { color: var(--muted); }
-  .eq .op { color: var(--faint); font-weight: 600; }
-  .dsec { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 13.5px; }
-  .eyebrow { font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; margin: 0 0 10px; display: flex; justify-content: space-between; gap: 10px; }
-  .eyebrow .lab { text-transform: none; letter-spacing: 0; color: var(--ink); font-weight: 600; font-size: 12.5px; }
-  .qgrid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; max-width: 330px; }
-  .qc { aspect-ratio: 1; border-radius: 4px; position: relative; cursor: default; transition: transform .15s var(--ease); animation: cellIn .35s var(--ease) backwards; }
-  .qc.cov { background: var(--primary); }
-  .qc.thin { background: var(--primary-mid); }
-  .qc.none { background: #fff; box-shadow: inset 0 0 0 1px var(--border-strong); }
-  .qc.known::after { content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: var(--ink); opacity: .55; }
+  /* Topic popup: same shell as the Executive Dashboard Task Hub popup */
+  .tmodal { position: fixed; inset: 0; z-index: 20; visibility: hidden; pointer-events: none; transition: visibility 0s .2s; }
+  .tmodal.on { visibility: visible; pointer-events: auto; transition: visibility 0s; }
+  .tm-scrim { position: absolute; inset: 0; background: rgba(10,12,18,.34); opacity: 0; transition: opacity .2s ease; }
+  .tmodal.on .tm-scrim { opacity: 1; }
+  .tm-pop { position: absolute; left: 50%; top: 50%; width: min(1320px, 96vw); height: min(860px, 90vh); background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 24px 64px rgba(10,12,18,.28); display: flex; flex-direction: column; overflow: hidden; opacity: 0; transform: translate(-50%, -50%) scale(.985); transition: opacity .2s ease, transform .2s ease; }
+  .tmodal.on .tm-pop { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .tm-pop:focus { outline: none; }
+  .tm-head { flex: none; padding: 12px 22px 10px; border-bottom: 1px solid var(--border); }
+  .tm-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  .tm-eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; white-space: nowrap; }
+  .tm-title { font: 800 17px/1.25 Inter, sans-serif; color: var(--ink); margin: 0; min-width: 0; }
+  .tag.cat { background: #F1F5F9; color: var(--slate); font-weight: 600; }
+  .tm-nav { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  .ib { border: 1px solid var(--border); background: #fff; border-radius: 6px; width: 30px; height: 30px; cursor: pointer; display: grid; place-items: center; color: var(--ink); transition: background .15s; }
+  .ib:hover { background: #F6F7F9; }
+  .ib.x { border: 0; font-size: 22px; line-height: 1; color: var(--muted); }
+  .tm-sum { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 7px; font-size: 12.5px; color: var(--muted); }
+  .tm-sum .chip { border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; background: #FAFBFC; color: var(--ink); }
+  .tm-sum .chip span { color: var(--muted); }
+  .tm-sum .op { color: var(--faint); font-weight: 600; }
+  .tm-sum .rule { margin-left: 4px; }
+  .tm-body { flex: 1; display: flex; min-height: 0; }
+  .tm-rail { flex: none; width: 224px; background: var(--page); border-right: 1px solid var(--border); overflow: auto; padding: 14px 10px; }
+  .rail-g { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; margin: 12px 8px 6px; }
+  .rail-g:first-child { margin-top: 2px; }
+  .rail-i { display: flex; align-items: center; gap: 9px; width: 100%; border: 0; background: none; text-align: left; padding: 7px 8px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--body); line-height: 1.3; transition: background .15s, color .15s; }
+  .rail-i:hover { background: #EDEFF2; }
+  .rail-i .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; }
+  .rail-i .rt { min-width: 0; }
+  .rail-i small { display: block; font-size: 11.5px; color: var(--muted); }
+  .rail-i.on { font-weight: 600; }
+  .rail-i.on.a-write { background: var(--t-write); color: var(--c-write); }
+  .rail-i.on.a-optimize { background: var(--t-opt); color: var(--c-opt); }
+  .rail-i.on.a-notgap { background: var(--t-notgap); color: var(--c-notgap); }
+  .rail-i.on.a-hold { background: var(--t-hold); color: var(--c-hold); }
+  .tm-main { flex: 1; min-width: 0; overflow: auto; padding: 20px 24px; }
+  .tm-main.swap { animation: fadeUp .3s var(--ease) both; }
+  .tm-why { margin: 0 0 16px; font-size: 14px; color: var(--body); }
+  .tm-why .small { display: inline; margin-left: 6px; }
+  .tm-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 18px; align-items: start; }
+  .tm-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .tm-foot { flex: none; border-top: 1px solid var(--border); padding: 12px 22px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .tm-foot .hint { font-size: 12px; color: var(--faint); margin-left: auto; }
+
+  /* Section cards: white card, tinted header row only */
+  .sec { background: #fff; border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px; min-width: 0; }
+  .sec-h { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0; }
+  .sec-ic { flex: none; width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; }
+  .sec-t { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .sec-lab { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--ink); text-align: right; }
+  .sec-b { padding: 14px 16px 16px; }
+  .s-demand .sec-h { background: #F3FAF8; } .s-demand .sec-ic { background: #E6F4F1; color: #0F766E; } .s-demand .sec-t { color: #0F766E; }
+  .s-cov .sec-h { background: #F2F9FE; } .s-cov .sec-ic { background: #E0F2FE; color: #0369A1; } .s-cov .sec-t { color: #0369A1; }
+  .s-vis .sec-h { background: #F8F6FE; } .s-vis .sec-ic { background: #EDE9FE; color: #6D28D9; } .s-vis .sec-t { color: #6D28D9; }
+  .s-rate .sec-h { background: #F8FAFC; } .s-rate .sec-ic { background: #F1F5F9; color: #475569; } .s-rate .sec-t { color: #475569; }
+
+  .qgrid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 420px; }
+  .qc { aspect-ratio: 1; border-radius: 5px; position: relative; cursor: default; transition: transform .15s var(--ease); animation: cellIn .35s var(--ease) backwards; }
+  .qc.cov { background: #0F766E; }
+  .qc.thin { background: #7DD3FC; }
+  .qc.none { background: #F1F5F9; box-shadow: inset 0 0 0 1px var(--border-strong); }
+  .qc.known::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--ink); opacity: .55; }
   .qc.cov.known::after { background: #fff; opacity: .9; }
-  .qc:hover, .qc.hl { transform: scale(1.18); }
+  .qc:hover, .qc.hl { transform: scale(1.15); }
   @keyframes cellIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
   .qkey { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 10px; }
   .qkey i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
-  .reader { margin-top: 10px; min-height: 44px; font-size: 13px; color: var(--body); background: #FAFBFC; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; }
+  .reader { margin-top: 10px; min-height: 44px; font-size: 13px; color: var(--body); background: #F2F9FE; border: 1px solid #D6ECFA; border-radius: 6px; padding: 8px 10px; }
   .reader .rs { font-size: 11.5px; color: var(--muted); }
   .alsoq { margin: 8px 0 0; padding-left: 16px; font-size: 12.5px; color: var(--muted); }
+  .pagebox { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .pagebox .num { font: 700 18px/1 Inter, sans-serif; color: #0369A1; }
   .go { display: inline-block; margin-top: 8px; color: var(--primary); font-weight: 600; text-decoration: none; font-size: 13px; }
-  .vrow { display: grid; grid-template-columns: 90px 1fr; gap: 4px 10px; }
+  .s-cov .go { color: #0369A1; } .s-vis .go { color: #6D28D9; }
+  .vrow { display: grid; grid-template-columns: 90px 1fr; gap: 8px 10px; }
   .vrow dt { color: var(--muted); } .vrow dd { margin: 0; }
   .nr { color: var(--faint); }
+  .tag.nrtag { background: #fff; color: var(--faint); border: 1px dashed var(--border-strong); font-weight: 600; }
   .small { font-size: 12px; color: var(--faint); margin-top: 6px; }
-  .dfoot { border-top: 1px solid var(--border); padding: 14px 22px; display: flex; gap: 10px; align-items: center; }
-  .dfoot .hint { font-size: 12px; color: var(--faint); margin-left: auto; }
+  .btn.act-write { background: var(--c-write); border-color: transparent; color: #fff; }
+  .btn.act-write:hover { background: #0B5F58; }
+  .btn.act-optimize { background: var(--c-opt); border-color: transparent; color: #fff; }
+  .btn.act-optimize:hover { background: #075985; }
   .btn.inplan { background: var(--primary-tint); color: var(--primary); border-color: #CDE7E2; }
+  .btn.inplan.act-optimize { background: var(--t-opt); color: var(--c-opt); border-color: #BAE0F7; }
+  @media (max-width: 999px) { .tm-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 879px) { .tm-rail { display: none; } .tm-main { padding: 16px; } .tm-head, .tm-foot { padding-left: 16px; padding-right: 16px; } }
 
   .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--ink); color: #fff; font-size: 13px; border-radius: 8px; padding: 10px 16px; opacity: 0; transition: opacity .25s, transform .3s var(--ease); z-index: 30; pointer-events: none; }
   .toast.on { opacity: 1; transform: translate(-50%, 0); }
@@ -220,10 +265,36 @@
   .ch-grid { stroke: #EEF0F3; stroke-width: 1; }
   .ch-ylab, .ch-xlab { font: 10.5px Inter, sans-serif; fill: var(--faint); }
   .ch-band-lab { font: 10px Inter, sans-serif; fill: var(--muted); }
-  .ch-drive { fill: none; stroke: var(--primary); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-drive { fill: none; stroke: var(--primary); stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
   .ch-drive.draw { stroke-dasharray: 1; animation: drawLine .6s .12s ease-out both; }
   @keyframes drawLine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-  .ch-other { fill: none; stroke-width: 1.25; stroke-linejoin: round; opacity: .9; transition: opacity .2s; animation: fadeIn .5s .4s ease both; }
+  .ch-other { fill: none; stroke-width: 1.7; stroke-linejoin: round; opacity: 1; transition: opacity .2s; animation: fadeIn .5s .4s ease both; }
+  .ch-comb { stroke-width: 2; }
+  .ch-line, .ch-area { transition: opacity .15s; }
+  .chartwrap svg.focus .ch-line:not(.hl) { opacity: .12; }
+  .chartwrap svg.focus .ch-area { opacity: .25; }
+  .chartwrap svg.focus .ch-line.hl { opacity: 1; }
+  .chartwrap svg.focus .ch-line.hl path { stroke-width: 3; }
+  /* How the phrases add up */
+  .mix { margin-top: 14px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #FAFBFC; }
+  .mix-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+  .mix-h small { font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .mix-bar { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; }
+  .mix-seg { flex: var(--w) 1 0; min-width: 3px; cursor: default; transition: opacity .15s; }
+  .mix-rows { margin-top: 8px; display: flex; flex-direction: column; }
+  .mix-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) minmax(86px, auto) 64px 110px; gap: 10px; align-items: center; font-size: 12.5px; padding: 4px 4px; border-radius: 4px; cursor: default; transition: opacity .15s, background .15s; }
+  .mix-row:hover, .mix-row.hl { background: #F1F5F9; }
+  .mix-sw { width: 10px; height: 10px; border-radius: 3px; }
+  .mix-name { color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mix-name small { font-weight: 400; color: var(--muted); }
+  .mix-dir { font-weight: 600; }
+  .mix-share { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .mix-vol { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mix.focus .mix-seg:not(.hl), .mix.focus .mix-row:not(.hl) { opacity: .35; }
+  .mix-res { margin: 10px 0 0; font-size: 13.5px; color: var(--body); line-height: 1.5; }
+  .mix-res .w { font-weight: 700; }
+  .mix .small { margin-top: 4px; }
+  @media (max-width: 640px) { .mix-row { grid-template-columns: 10px minmax(0, 1fr) auto 56px; } .mix-vol { display: none; } }
   .ch-other.off { opacity: 0; }
   .ch-partial { fill: none; stroke-dasharray: 2 3; }
   @keyframes fadeIn { from { opacity: 0; } }
@@ -242,15 +313,21 @@
   .tg[aria-pressed="false"] svg { opacity: .3; }
   .tg.drive { cursor: default; border-color: #CDE7E2; background: var(--primary-tint); color: var(--primary); font-weight: 600; }
   .tg.drive small { font-weight: 400; color: var(--slate); }
-  .readout { margin-top: 12px; font-size: 13.5px; color: var(--body); line-height: 1.5; }
-  .readout p { margin: 0 0 4px; }
-  .readout .vd { font-weight: 600; color: var(--ink); }
-  .readout .q { color: var(--muted); }
-  .bars-h { font-size: 12.5px; color: var(--ink); font-weight: 600; margin: 14px 0 6px; }
-  .bars { display: flex; align-items: flex-end; gap: 4px; height: 52px; position: relative; }
-  .bar { flex: 1; background: var(--primary-mid); border-radius: 2px 2px 0 0; transform-origin: bottom; animation: growBar .45s var(--ease) both; cursor: default; min-height: 1px; transition: background .15s; }
-  .bar.last { background: var(--primary); }
-  .bar:hover { background: #0B5F58; }
+  .ch-area { animation: fadeIn .6s .3s ease both; }
+  .readout { margin-top: 12px; font-size: 13.5px; color: var(--body); line-height: 1.5; display: flex; flex-direction: column; gap: 6px; }
+  .rline { display: flex; gap: 8px; align-items: flex-start; }
+  .rline svg { flex: none; margin-top: 3px; color: var(--muted); }
+  .vcall { border-radius: 8px; padding: 9px 12px; }
+  .vcall .vd { font-weight: 700; }
+  .vcall.v-growing { background: #DCFCE7; color: #166534; }
+  .vcall.v-decaying { background: #FFE4E6; color: #9F1239; }
+  .vcall.v-stable { background: #F1F5F9; color: #334155; }
+  .vcall .q { opacity: .85; }
+  .bars-h { font-size: 12.5px; color: var(--ink); font-weight: 600; margin: 18px 0 6px; }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 72px; position: relative; }
+  .bar { flex: 1; background: #6FB1DA; border-radius: 2px 2px 0 0; transform-origin: bottom; animation: growBar .45s var(--ease) both; cursor: default; min-height: 1px; transition: background .15s; }
+  .bar.last { background: #0369A1; }
+  .bar:hover { background: #075985; }
   @keyframes growBar { from { transform: scaleY(0); } }
   .bars-x { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--faint); margin-top: 3px; }
   .quiet { font-size: 12px; color: var(--muted); margin-top: 8px; }
@@ -314,20 +391,32 @@
   </div>
 </div>
 
-<div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Topic details">
-  <div class="dtop">
-    <button class="ib" id="dPrev" aria-label="Previous topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
-    <button class="ib" id="dNext" aria-label="Next topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
-    <span id="dPos"></span>
-    <button class="ib x" id="dClose" aria-label="Close">×</button>
+<div class="tmodal" id="tmodal" aria-hidden="true">
+  <div class="tm-scrim" id="scrim"></div>
+  <div class="tm-pop" role="dialog" aria-modal="true" aria-labelledby="dName" tabindex="-1" id="tmPop">
+    <div class="tm-head">
+      <div class="tm-row">
+        <span class="tm-eyebrow" id="dPos"></span>
+        <h3 class="tm-title" id="dName"></h3>
+        <span id="dTags" class="tm-row" style="gap:6px"></span>
+        <div class="tm-nav">
+          <button class="ib" id="dPrev" aria-label="Previous topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="ib" id="dNext" aria-label="Next topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="ib x" id="dClose" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="tm-sum" id="dSum" aria-label="How the action was chosen"></div>
+    </div>
+    <div class="tm-body">
+      <nav class="tm-rail" id="dRail" aria-label="All topics"></nav>
+      <div class="tm-main" id="dBody"></div>
+    </div>
+    <div class="tm-foot">
+      <button class="btn" id="dPlan"></button>
+      <span class="hint">← → to move · Esc to close</span>
+    </div>
   </div>
-  <div class="dbody" id="dBody"></div>
-  <div class="dfoot">
-    <button class="btn" id="dPlan"></button>
-    <span class="hint">← → to move · Esc to close</span>
-  </div>
-</aside>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -487,7 +576,7 @@ function sharpDrop(term) {
 }
 
 // ---------- Demand chart ----------
-const CW = 416, CH = 178, PL = 28, PR = 10, PT = 18, PB = 24;
+const CW = 640, CH = 270, PL = 30, PR = 12, PT = 20, PB = 26;
 const cx = i => PL + i * (CW - PL - PR) / 60;
 const cy = v => PT + (1 - v / 100) * (CH - PT - PB);
 const OTHER_STYLE = [{ c: '#8B98A9', d: '' }, { c: '#475569', d: '4 3' }];
@@ -501,24 +590,30 @@ function linePath(m, from, to) {
 function swatch(color, dash, w) {
   return `<svg width="16" height="8" aria-hidden="true"><line x1="1" y1="4" x2="15" y2="4" stroke="${color}" stroke-width="${w}" ${dash ? `stroke-dasharray="${dash}"` : ''} stroke-linecap="round"/></svg>`;
 }
-function chartSvg(T, drive, others) {
+function chartSvg(T, drive, others, mix) {
   const last = 60, n = 60, a = analyze(drive.m);
   const half = (cx(1) - cx(0)) / 2;
   const band = (i0, i1, fill, label) => `<rect x="${cx(i0) - half}" y="${PT}" width="${cx(i1) - cx(i0) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/>
     <text class="ch-band-lab" x="${(cx(i0) + cx(i1)) / 2}" y="${CH - PB - 5}" text-anchor="middle">${label}</text>`;
   let s = `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Google interest in '${drive.t}' over 5 years">`;
-  s += band(n - 24, n - 13, '#F3F4F6', '12 before') + band(n - 12, n - 1, '#E6F4F1', 'last 12');
+  s += `<defs><linearGradient id="chFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>`;
+  s += band(n - 24, n - 13, '#F3F4F6', '12 before') + band(n - 12, n - 1, '#E3F2EE', 'last 12');
+  s += `<path class="ch-area" fill="url(#chFill)" d="${linePath(drive.m, 0, n - 1)}L${cx(n - 1).toFixed(1)} ${cy(0).toFixed(1)}L${cx(0).toFixed(1)} ${cy(0).toFixed(1)}Z"/>`;
   [0, 50, 100].forEach(v => s += `<line class="ch-grid" x1="${PL}" x2="${CW - PR}" y1="${cy(v)}" y2="${cy(v)}"/><text class="ch-ylab" x="${PL - 6}" y="${cy(v) + 3.5}" text-anchor="end">${v}</text>`);
   for (let i = 0; i <= last; i++) if (calMonth(i) === 0) {
     s += `<line class="ch-grid" x1="${cx(i)}" x2="${cx(i)}" y1="${CH - PB}" y2="${CH - PB + 4}"/><text class="ch-xlab" x="${cx(i)}" y="${CH - 6}" text-anchor="middle">${mLabel(i).slice(4)}</text>`;
   }
   others.forEach((o, k) => {
     const st = OTHER_STYLE[k % OTHER_STYLE.length];
-    s += `<g class="ch-other ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}>
+    s += `<g class="ch-other ch-line ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}>
       <path d="${linePath(o.m, 0, n - 1)}"/><path class="ch-partial" d="${linePath(o.m, n - 1, last)}"/></g>`;
   });
-  s += `<path class="ch-drive ${RM ? '' : 'draw'}" pathLength="1" d="${linePath(drive.m, 0, n - 1)}"/>
-        <path class="ch-drive ch-partial" style="stroke-width:1.8" d="${linePath(drive.m, n - 1, last)}"/>`;
+  if (mix) {
+    s += `<g class="ch-other ch-line ch-comb ${hiddenTerms.has(COMB) ? 'off' : ''}" data-term="${COMB}" stroke="${COMB_C}" stroke-dasharray="6 4">
+      <path d="${linePath(mix.combined, 0, n - 1)}"/><path d="${linePath(mix.combined, n - 1, last)}" stroke-dasharray="2 3"/></g>`;
+  }
+  s += `<g class="ch-line" data-term="${drive.t}"><path class="ch-drive ${RM ? '' : 'draw'}" pathLength="1" d="${linePath(drive.m, 0, n - 1)}"/>
+        <path class="ch-drive ch-partial" style="stroke-width:1.8" d="${linePath(drive.m, n - 1, last)}"/></g>`;
   if (SPIKE_WORD[T.spike]) {
     const px = cx(a.peakI), py = cy(a.peak), right = px > CW - 80;
     s += `<g class="ch-peak"><circle cx="${px}" cy="${py}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/>
@@ -532,15 +627,17 @@ function chartSvg(T, drive, others) {
 
 function demandHtml(c) {
   const T = TRENDS[c.topic];
-  const head = `<div class="eyebrow">Demand, in detail ${T ? `<span class="lab">${DEMAND[c.demand[0]].arr ? `<span class="arr ${c.demand[0]}">${DEMAND[c.demand[0]].arr}</span> ` : ''}${c.demand[1]}</span>` : ''}</div>`;
-  if (!T) return head + `<div class="dd-sent">No trend line: trust topic, never scored on demand.</div>`;
+  const lab = T ? `${DEMAND[c.demand[0]].arr ? `<span class="arr ${c.demand[0]}">${DEMAND[c.demand[0]].arr}</span> ` : ''}${c.demand[1]}` : 'Not measured';
+  const head = secHead('demand', 'Demand', lab);
+  if (!T) return head + `<div class="sec-b"><div class="dd-sent">No trend line: trust topic, never scored on demand.</div><div class="small">${c.d.sentence}</div></div>`;
   const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive);
-  const a = analyze(drive.m), word = DEMAND[c.demand[0]].word;
+  const a = analyze(drive.m), mix = phraseMix(T);
 
   // 1. Plain readout from the real monthly numbers
   const pct = Math.round((a.r12 - 1) * 100 / 5) * 5;
   const change = Math.abs(pct) < 5 ? 'about the same' : `${pct > 0 ? 'up' : 'down'} about ${Math.abs(pct)}%`;
-  const lines = [`Last 12 full months averaged ${Math.round(a.last12)}, the 12 before averaged ${Math.round(a.prev12)}: ${change}.`];
+  const row = (icon, txt) => `<div class="rline">${RICON[icon]}<span>${txt}</span></div>`;
+  const lines = [row('avg', `Last 12 full months averaged ${Math.round(a.last12)}, the 12 before averaged ${Math.round(a.prev12)}: ${change}.`)];
   let verdict = `<span class="vd">Verdict: ${T.dir[0].toUpperCase() + T.dir.slice(1)}</span>`;
   if (['growing', 'stable', 'decaying'].includes(T.dir) && ratioWord(a.r12) !== T.dir) {
     const p3 = Math.round((a.r3 - 1) * 100);
@@ -548,13 +645,15 @@ function demandHtml(c) {
       ? ` <span class="q">The check only compares the last 3 full months with the same months a year earlier (${p3 >= 0 ? 'up' : 'down'} ${Math.abs(p3)}%), so it calls this ${T.dir}.</span>`
       : ` <span class="q">Dental searches overall ${(a.r3 > 1.15 && T.dir === 'stable') || T.dir === 'decaying' ? 'rose too' : 'dipped'}, and the check measures against them, so it calls this ${T.dir}.</span>`;
   }
-  lines.push(verdict);
+  // Green and red only carry growing and decaying; everything else reads slate.
+  const vClass = T.dir === 'growing' ? 'v-growing' : T.dir === 'decaying' ? 'v-decaying' : 'v-stable';
+  lines.push(`<div class="vcall ${vClass}">${verdict}</div>`);
   // 3. Spike state
   if (SPIKE_WORD[T.spike]) {
-    lines.push(`Searches peaked in ${mLabel(a.peakI)} (${Math.round(a.peak)}): ${SPIKE_WORD[T.spike]}${a.tail != null ? `, the last 2 full months sit at about ${Math.round(a.tail * 100)}% of that peak` : ''}.`);
+    lines.push(row('spike', `Searches peaked in ${mLabel(a.peakI)} (${Math.round(a.peak)}): ${SPIKE_WORD[T.spike]}${a.tail != null ? `, the last 2 full months sit at about ${Math.round(a.tail * 100)}% of that peak` : ''}.`));
   }
   // 4. Season
-  lines.push(a.seasonTop.length ? `Searches usually peak in ${a.seasonTop.join(' and ')}.` : 'No clear season.');
+  lines.push(row('season', a.seasonTop.length ? `Searches usually peak in ${a.seasonTop.join(' and ')}.` : 'No clear season.'));
 
   // 5. Real searches, driving term
   const cs = drive.cs, mx = Math.max(...cs, 1);
@@ -570,13 +669,16 @@ function demandHtml(c) {
     .concat(others.map((o, k) => {
       const st = OTHER_STYLE[k % OTHER_STYLE.length];
       return `<button class="tg" data-term="${o.t}" aria-pressed="${!hiddenTerms.has(o.t)}" title="Its own reading: ${o.dir}${o.spike !== 'none' ? ', ' + o.spike.replace(/_/g, ' ') : ''}">${swatch(st.c, st.d, 1.6)}${o.t}</button>`;
-    })).join('');
+    }))
+    .concat(mix ? [`<button class="tg" data-term="${COMB}" aria-pressed="${!hiddenTerms.has(COMB)}">${swatch(COMB_C, '4 3', 2)}All phrases, weighted by searches</button>`] : [])
+    .join('');
 
-  return head + `<div class="dd-sent">${c.d.sentence}</div>
-    <div class="chartwrap" id="chWrap">${chartSvg(T, drive, others)}<div class="ch-tip" id="chTip"></div></div>
-    <div class="ch-cap">Google interest, 100 = the busiest month for this phrase in 5 years. Source: Google Trends, United States, each phrase checked on its own. Dotted end: ${mLabel(60)}, not over yet.</div>
+  return head + `<div class="sec-b"><div class="dd-sent">${c.d.sentence}</div>
+    <div class="chartwrap" id="chWrap">${chartSvg(T, drive, others, mix)}<div class="ch-tip" id="chTip"></div></div>
+    <div class="ch-cap">Google interest, 100 = the busiest month for this phrase in 5 years. Source: Google Trends, United States, each phrase checked on its own. Dotted end: ${mLabel(60)}, not over yet.${mix ? ' Each phrase is measured on its own 0-100 scale, so the combined line shows shape, not size.' : ''}</div>
+    ${mixHtml(mix)}
     <div class="tgrow">${toggles}</div>
-    <div class="readout">${lines.map(l => `<p>${l}</p>`).join('')}</div>
+    <div class="readout">${lines.join('')}</div>
     <div class="bars-h">Estimated US searches for '${drive.t}', last 12 months</div>
     <div class="chartwrap"><div class="bars" id="csBars">${bars}</div><div class="ch-tip" id="csTip"></div></div>
     <div class="bars-x"><span>${mLabel(CS_START)}</span><span>${mLabel(CS_START + 11)}</span></div>
@@ -590,27 +692,106 @@ function demandHtml(c) {
       </ul>
     </details>
     ${notes}
-    <a class="go" href="#" onclick="return false">Open the trend check ›</a>`;
+    <a class="go" href="#" onclick="return false">Open the trend check ›</a></div>`;
 }
+
+// ---------- How the phrases add up (services/market_trends/sizing.py rollup) ----------
+// Each phrase votes with its own Trends verdict, weighted by its share of estimated US searches
+// (last month of the embedded clickstream counts). Phrases with no classified direction or no
+// searches carry no weight. The heaviest direction wins; the heaviest phrase drives.
+const CLASSIFIED = ['growing', 'stable', 'decaying', 'emerging', 'negligible'];
+const DIR_FILL = { growing: '#16A34A', emerging: '#16A34A', stable: '#64748B', decaying: '#E11D48', negligible: '#CBD5E1' };
+const DIR_TEXT = { growing: '#15803D', emerging: '#15803D', stable: '#475569', decaying: '#BE123C', negligible: '#94A3B8' };
+const PHRASE_SPIKE = { fading: 'spike fading', spike_confirmed: 'short spike, gone', step_up_held: 'step up held' };
+const COMB = '__combined', COMB_C = '#0D9488';
+const cap = w => w[0].toUpperCase() + w.slice(1);
+const pctTxt = w => w <= 0 ? '0%' : w < 0.01 ? 'under 1%' : Math.round(w * 100) + '%';
+function phraseMix(T) {
+  if (!T) return null;
+  const live = T.terms.filter(t => CLASSIFIED.includes(t.dir));
+  const vol = t => (t.cs && t.cs.length ? t.cs[t.cs.length - 1] : 0) || 0;
+  const total = live.reduce((sum, t) => sum + vol(t), 0);
+  if (!live.length || total <= 0) return null;
+  const rows = live.map(t => ({ t: t.t, dir: t.dir, spike: t.spike, vol: vol(t), w: vol(t) / total, m: t.m }));
+  const driving = rows.reduce((b, r) => r.w > b.w ? r : b, rows[0]);
+  const votes = {};
+  rows.forEach(r => votes[r.dir] = (votes[r.dir] || 0) + r.w);
+  const winner = Object.keys(votes).reduce((b, d) => votes[d] > votes[b] || (votes[d] === votes[b] && d === driving.dir) ? d : b);
+  const combined = Array.from({ length: 61 }, (_, i) => rows.reduce((sum, r) => sum + r.w * r.m[i], 0));
+  return { rows: rows.slice().sort((x, y) => y.w - x.w), driving, votes, winner, combined };
+}
+function mixResult(mix) {
+  const { rows, driving, votes, winner } = mix;
+  const W = `<span class="w" style="color:${DIR_TEXT[winner]}">${cap(winner)} wins:</span>`;
+  const diff = rows.filter(r => r.dir !== winner);
+  if (!diff.length) {
+    const all = rows.length === 1 ? 'the only phrase is' : rows.length === 2 ? 'both phrases are' : `all ${rows.length} phrases are`;
+    return `${W} ${all} ${winner}; '${driving.t}' carries the most, ${pctTxt(driving.w)} of searches.`;
+  }
+  const lead = driving.dir === winner ? `'${driving.t}' carries ${pctTxt(driving.w)} of searches.`
+    : `phrases reading ${winner} carry ${pctTxt(votes[winner])} of searches.`;
+  const groups = [];
+  diff.forEach(r => { let g = groups.find(x => x.dir === r.dir); if (!g) groups.push(g = { dir: r.dir, list: [] }); g.list.push(r); });
+  const verb = (d, n) => d === 'negligible' ? (n > 1 ? 'read as negligible' : 'reads as negligible') : `${n > 1 ? 'are' : 'is'} ${d}`;
+  const parts = groups.map(g => `${names(g.list.map(r => `'${r.t}' (${pctTxt(r.w)})`))} ${verb(g.dir, g.list.length)}`);
+  const dw = diff.reduce((sum, r) => sum + r.w, 0), many = diff.length > 1;
+  const tail = dw < 0.25 ? `but ${many ? 'they are' : 'it is'} small` : `but ${many ? 'they carry' : 'it carries'} less of the searches`;
+  return `${W} ${lead} ${cap(names(parts))}, ${tail}.`;
+}
+function mixHtml(mix) {
+  if (!mix) return '';
+  const seg = mix.rows.map(r => `<span class="mix-seg" data-term="${r.t}" style="--w:${r.w};background:${DIR_FILL[r.dir]}" title="${r.t}: ${r.dir}, ${pctTxt(r.w)} of searches"></span>`).join('');
+  const rows = mix.rows.map(r => `<div class="mix-row" data-term="${r.t}">
+      <span class="mix-sw" style="background:${DIR_FILL[r.dir]}"></span>
+      <span class="mix-name">${r.t}${r === mix.driving ? ' <small>drives</small>' : ''}</span>
+      <span class="mix-dir" style="color:${DIR_TEXT[r.dir]}">${cap(r.dir)}${PHRASE_SPIKE[r.spike] ? ` <small style="font-weight:400">(${PHRASE_SPIKE[r.spike]})</small>` : ''}</span>
+      <span class="mix-share">${pctTxt(r.w)}</span>
+      <span class="mix-vol">${fmtN(r.vol)} a month</span>
+    </div>`).join('');
+  return `<div class="mix" id="mix">
+    <div class="mix-h">How the phrases add up <small>each phrase votes with its own verdict, sized by its share of searches</small></div>
+    <div class="mix-bar" role="img" aria-label="Share of searches per phrase">${seg}</div>
+    <div class="mix-rows">${rows}</div>
+    <p class="mix-res">${mixResult(mix)}</p>
+    <div class="small">Searches: estimated US searches last month (${mLabel(CS_START + 11)}). A spike only counts when the phrase carrying it has 25% or more of the searches.</div>
+  </div>`;
+}
+
+// ---------- Section card chrome ----------
+const SEC_ICON = {
+  demand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>',
+  cov: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
+  vis: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  rate: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9l-5.3 2.7 1-5.8-4.2-4.1 5.9-.9z"/></svg>',
+};
+const SEC_CLASS = { demand: 's-demand', cov: 's-cov', vis: 's-vis', rate: 's-rate' };
+const secHead = (k, title, lab) => `<div class="sec-h"><span class="sec-ic">${SEC_ICON[k]}</span><span class="sec-t">${title}</span>${lab ? `<span class="sec-lab">${lab}</span>` : ''}</div>`;
+const RICON = {
+  avg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
+  spike: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h5l4-12 4 12h7"/></svg>',
+  season: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+};
 
 function wireDemand(c) {
   const T = TRENDS[c.topic];
   if (!T) return;
   const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive);
   const wrap = $('chWrap'), svg = wrap.querySelector('svg'), tipEl = $('chTip');
-  const cross = $('chCross'), dots = $('chDots');
+  const cross = $('chCross'), dots = $('chDots'), mix = phraseMix(T);
   const show = clientX => {
     const r = svg.getBoundingClientRect(), vx = (clientX - r.left) * CW / r.width;
     const i = Math.max(0, Math.min(60, Math.round((vx - PL) / (cx(1) - cx(0)))));
     cross.setAttribute('x1', cx(i)); cross.setAttribute('x2', cx(i)); cross.setAttribute('visibility', 'visible');
-    const vis = others.filter(o => !hiddenTerms.has(o.t));
+    const vis = others.filter(o => !hiddenTerms.has(o.t)), combOn = mix && !hiddenTerms.has(COMB);
     dots.innerHTML = vis.map((o, k) => `<circle cx="${cx(i)}" cy="${cy(o.m[i])}" r="2.6" fill="${OTHER_STYLE[others.indexOf(o) % 2].c}"/>`).join('') +
+      (combOn ? `<circle cx="${cx(i)}" cy="${cy(mix.combined[i])}" r="3" fill="${COMB_C}"/>` : '') +
       `<circle cx="${cx(i)}" cy="${cy(drive.m[i])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>`;
     tipEl.innerHTML = `<b>${mLabel(i)} · ${Math.round(drive.m[i])}</b>${i === 60 ? ' <span class="o">(not over yet)</span>' : ''}` +
-      vis.map(o => `<div class="o">${o.t} · ${Math.round(o.m[i])}</div>`).join('');
+      vis.map(o => `<div class="o">${o.t} · ${Math.round(o.m[i])}</div>`).join('') +
+      (combOn ? `<div class="o">All phrases, weighted · ${Math.round(mix.combined[i])}</div>` : '');
     const px = cx(i) * r.width / CW, w = tipEl.offsetWidth;
     tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px';
-    tipEl.style.top = (Math.min(cy(drive.m[i]), ...vis.map(o => cy(o.m[i]))) * r.height / CH - 8) + 'px';
+    tipEl.style.top = (Math.min(cy(drive.m[i]), ...vis.map(o => cy(o.m[i])), combOn ? cy(mix.combined[i]) : CH) * r.height / CH - 8) + 'px';
     tipEl.classList.add('on');
   };
   const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.innerHTML = ''; tipEl.classList.remove('on'); };
@@ -624,6 +805,22 @@ function wireDemand(c) {
     if (on) hiddenTerms.delete(t); else hiddenTerms.add(t);
     b.setAttribute('aria-pressed', on);
     svg.querySelector(`.ch-other[data-term="${t}"]`).classList.toggle('off', !on);
+  });
+
+  // Hover a phrase in the strip: light up its line on the chart.
+  const mixEl = $('mix');
+  if (mixEl) mixEl.querySelectorAll('[data-term]').forEach(el => {
+    const t = el.dataset.term;
+    el.onmouseenter = () => {
+      mixEl.classList.add('focus'); svg.classList.add('focus');
+      mixEl.querySelectorAll('[data-term]').forEach(x => x.classList.toggle('hl', x.dataset.term === t));
+      svg.querySelectorAll('.ch-line').forEach(g => g.classList.toggle('hl', g.dataset.term === t));
+    };
+    el.onmouseleave = () => {
+      mixEl.classList.remove('focus'); svg.classList.remove('focus');
+      mixEl.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+      svg.querySelectorAll('.ch-line.hl').forEach(g => g.classList.remove('hl'));
+    };
   });
 
   const csTip = $('csTip'), barsEl = $('csBars');
@@ -868,52 +1065,64 @@ function cellsFor(c) {
   });
   return { cells, unplaced };
 }
-const ST_WORD = { cov: 'Covered', thin: 'Thin answer', none: 'No answer' };
+const ST_WORD = { cov: 'Covered', thin: 'Partly answered', none: 'No answer' };
+const VERDICT = { write: 'Write a new page', optimize: 'Improve the page', notgap: 'Content is not the gap', hold: 'Hold', noread: 'No Read' };
+const sec = (k, inner) => `<section class="sec ${SEC_CLASS[k]}">${inner}</section>`;
 
-function drawerHtml(c) {
+// Header pieces: tags beside the title, and the one-line reasoning under it.
+function headTagsHtml(c) {
+  return `<span class="tag ${c.action}">${ACTION[c.action].tag}</span>` +
+    (c.cat ? `<span class="tag cat" title="Checked on its own trend line">Category: ${c.cat}</span>` : '');
+}
+function summaryHtml(c) {
+  const demandChip = c.demand[0] === 'none' ? 'Not measured <span>(trust topic, counts as healthy)</span>' : `${c.demand[1]}`;
+  return `<span class="chip"><span>Demand:</span> ${demandChip}</span><span class="op">+</span>
+    <span class="chip"><span>Coverage:</span> ${c.coverage}</span><span class="op">=</span>
+    <span class="tag ${c.action}">${VERDICT[c.action]}</span>
+    <span class="rule">${ACTION[c.action].rule}</span>`;
+}
+
+function coverageHtml(c) {
   const d = c.d, [cv, th, gp] = d.cov;
   const { cells, unplaced } = cellsFor(c);
-  const demandChip = c.demand[0] === 'none' ? 'Not measured <span>(trust topic, counts as healthy)</span>' : `${c.demand[1]}`;
-  const verdict = { write: 'Write a new page', optimize: 'Improve the page', notgap: 'Content is not the gap', hold: 'Hold', noread: 'No Read' }[c.action];
-  return `
-    <h3 class="dname">${c.topic}</h3>
-    ${c.cat ? `<div class="dcat">Category: ${c.cat}, checked on its own trend line</div>` : ''}
-    <p class="dwhy">${c.why}</p>
-    <div class="eq" aria-label="How the action was chosen">
-      <span class="chip"><span>Demand:</span> ${demandChip}</span><span class="op">+</span>
-      <span class="chip"><span>Coverage:</span> ${c.coverage}</span><span class="op">=</span>
-      <span class="tag ${c.action}">${verdict}</span>
-    </div>
-    <div class="small">${ACTION[c.action].rule}</div>
-
-    <div class="dsec">${demandHtml(c)}</div>
-
-    <div class="dsec">
-      <div class="eyebrow">Coverage <span class="lab">${c.coverage}</span></div>
-      <div>${cv} covered, ${th} thin, ${gp} with no answer, out of ${c.total} questions people ask.</div>
+  return secHead('cov', 'Coverage', c.coverage) + `<div class="sec-b">
+      <div>${cv} covered, ${th} partly answered, ${gp} with no answer, out of ${c.total} questions people ask.</div>
       <div class="qgrid" id="qgrid" style="margin-top:12px">${cells.map((x, k) =>
-        `<span class="qc ${x.st} ${x.q ? 'known' : ''}" data-k="${k}" style="animation-delay:${k * 18}ms"></span>`).join('')}</div>
-      <div class="qkey"><span><i style="background:var(--primary)"></i>Covered</span><span><i style="background:var(--primary-mid)"></i>Thin</span><span><i style="background:#fff;box-shadow:inset 0 0 0 1px var(--border-strong)"></i>No answer</span><span><i style="background:none;position:relative"><b style="position:absolute;left:2.5px;top:2.5px;width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:.55"></b></i>Question text available</span></div>
+        `<span class="qc ${x.st} ${x.q ? 'known' : ''}" data-k="${k}" style="animation-delay:${RM ? 0 : k * 18}ms"></span>`).join('')}</div>
+      <div class="qkey"><span><i style="background:#0F766E"></i>Covered</span><span><i style="background:#7DD3FC"></i>Partly answered</span><span><i style="background:#F1F5F9;box-shadow:inset 0 0 0 1px var(--border-strong)"></i>No answer</span><span><i style="background:none;position:relative"><b style="position:absolute;left:2.5px;top:2.5px;width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:.55"></b></i>Question text available</span></div>
       <div class="reader" id="reader"><span class="rs">Hover a square to read it.</span></div>
       ${unplaced.length ? `<div class="small" style="margin-top:8px">Also close, answer level not stored:</div><ul class="alsoq">${unplaced.map(q => `<li>'${q.q}' · closest page ${q.page} (match ${q.s})</li>`).join('')}</ul>` : ''}
-      ${d.pages ? `<div style="margin-top:10px">${d.pages} new pages recommended.</div>` : ''}
-      ${d.page ? `<div style="margin-top:10px">Page to improve: <b style="font-weight:600">${d.page}</b></div>` : ''}
-      <div class="small">Label cut-offs are provisional: Solid at half or more covered; Thin at 30% or more covered or thin.</div>
+      ${d.pages ? `<div class="pagebox"><span class="num">${d.pages}</span><span>new pages recommended</span></div>` : ''}
+      ${d.page ? `<div class="pagebox"><span>Page to improve:</span> <b style="font-weight:600;color:#0369A1">${d.page}</b></div>` : ''}
+      <div class="small">Label cut-offs are provisional: Solid at half or more covered; Thin at 30% or more covered or partly answered.</div>
       <a class="go" href="#" onclick="return false">Open Find gaps ›</a>
-    </div>
-
-    <div class="dsec">
-      <div class="eyebrow">Visibility</div>
-      <dl class="vrow">
-        <dt>Maps</dt><dd><span class="nr">No Read</span> · no grid scan for this office yet. <a class="go" href="#" onclick="return false" style="margin-top:2px">Run a grid scan ›</a></dd>
-        <dt>AI answers</dt><dd><span class="nr">No Read</span> · AI visibility is off for this office.</dd>
-      </dl>
-    </div>
-
-    <div class="dsec">
-      <div class="eyebrow">Topic rating</div>
-      <div>${d.rating || 'Fired before ratings existed (10/22). New runs show a 1 to 10 rating with its breakdown here.'}</div>
     </div>`;
+}
+
+function drawerHtml(c) {
+  const d = c.d;
+  const vis = secHead('vis', 'Visibility', 'Not measured yet') + `<div class="sec-b"><dl class="vrow">
+        <dt>Maps</dt><dd><span class="tag nrtag">No Read</span> No grid scan for this office yet.<br><a class="go" href="#" onclick="return false" style="margin-top:4px">Run a grid scan ›</a></dd>
+        <dt>AI answers</dt><dd><span class="tag nrtag">No Read</span> AI visibility is off for this office.</dd>
+      </dl></div>`;
+  const rate = secHead('rate', 'Topic rating', '') + `<div class="sec-b">${d.rating || 'Fired before ratings existed (10/22). New runs show a 1 to 10 rating with its breakdown here.'}</div>`;
+  return `<p class="tm-why">${c.why}</p>
+    <div class="tm-grid">
+      <div class="tm-col">${sec('demand', demandHtml(c))}</div>
+      <div class="tm-col">${sec('cov', coverageHtml(c))}${sec('vis', vis)}${sec('rate', rate)}</div>
+    </div>`;
+}
+
+const ACOLOR = { write: 'var(--c-write)', optimize: 'var(--c-opt)', notgap: 'var(--c-notgap)', hold: 'var(--c-hold)', noread: 'var(--faint)' };
+// Left rail: every topic, grouped by action, in the same order as prev / next.
+function renderRail() {
+  $('dRail').innerHTML = ORDER.map(a => {
+    const items = navOrder.filter(c => c.action === a);
+    if (!items.length) return '';
+    return `<div class="rail-g" style="color:${ACOLOR[a]}">${ACTION[a].zone}</div>` +
+      items.map(c => `<button class="rail-i a-${c.action}" data-i="${c.i}"><span class="dot" style="background:${ACOLOR[c.action]}"></span><span class="rt">${c.short}<small>${DEMAND[c.demand[0]].word} · ${c.coverage}</small></span></button>`).join('');
+  }).join('');
+  $('dRail').querySelectorAll('.rail-i').forEach(b => b.onclick = () => openDrawer(+b.dataset.i));
 }
 
 function wireCells(c) {
@@ -942,18 +1151,29 @@ function openDrawer(i) {
   wireCells(c);
   wireDemand(c);
   const k = navOrder.findIndex(x => x.i === i);
-  $('dPos').textContent = `${k + 1} of ${navOrder.length}`;
+  $('dPos').textContent = `Topic ${k + 1} of ${navOrder.length}`;
+  $('dName').textContent = c.topic;
+  $('dTags').innerHTML = headTagsHtml(c);
+  $('dSum').innerHTML = summaryHtml(c);
+  $('dRail').querySelectorAll('.rail-i').forEach(b => {
+    const on = +b.dataset.i === i;
+    b.classList.toggle('on', on);
+    if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
   updatePlanBtn();
-  $('drawer').classList.add('on'); $('drawer').setAttribute('aria-hidden', 'false');
-  $('scrim').classList.add('on');
+  if (was === null) {
+    $('tmodal').classList.add('on'); $('tmodal').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    $('tmPop').focus({ preventScroll: true });
+  }
 }
 function closeDrawer() {
   if (selected === null) return;
   const back = nodes[selected];
   selected = null;
   nodes.forEach(n => n.classList.remove('sel'));
-  $('drawer').classList.remove('on'); $('drawer').setAttribute('aria-hidden', 'true');
-  $('scrim').classList.remove('on');
+  $('tmodal').classList.remove('on'); $('tmodal').setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
   back.focus({ preventScroll: true });
 }
 function step(dir) {
@@ -962,12 +1182,12 @@ function step(dir) {
   openDrawer(navOrder[(k + dir + navOrder.length) % navOrder.length].i);
 }
 // Calendars hold NEW content only: Write topics go to the calendar, Improve topics go to On-Page Optimization.
-const DEST = { optimize: { on: '✓ In the On-Page fixes', off: 'Send to On-Page Optimization' },
+const DEST = { optimize: { on: '✓ In the On-Page fixes', off: 'Add to On-Page fixes' },
                write: { on: '✓ In the calendar plan', off: 'Add to the calendar plan' } };
 const destFor = c => DEST[c.action === 'optimize' ? 'optimize' : 'write'];
 function updatePlanBtn() {
   const b = $('dPlan'), on = plan.has(selected), dst = destFor(cards[selected]);
-  b.className = 'btn ' + (on ? 'inplan' : 'primary');
+  b.className = 'btn act-' + (cards[selected].action === 'optimize' ? 'optimize' : 'write') + (on ? ' inplan' : '');
   b.textContent = on ? dst.on : dst.off;
 }
 const keptIn = a => cards.filter(c => c.action === a && plan.has(c.i)).length;
@@ -1028,7 +1248,7 @@ $('bList').onclick = () => setMode('list');
 
 // ---------- Boot: dots fly in from the bottom-left corner, staggered ----------
 function boot() {
-  renderTakeaway(); renderLegend(); updateCta();
+  renderTakeaway(); renderLegend(); updateCta(); renderRail();
   stage.classList.add('noanim');
   const W = stage.clientWidth, g = geom(W);
   stage.style.height = g.H + 'px';
