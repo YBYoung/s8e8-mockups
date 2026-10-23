@@ -1,0 +1,1786 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topic Cards: coverage D3, question-to-page match-up (#1220) - OpenedQueries mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0F172A; --body: #1F2937; --muted: #6B7280; --faint: #9CA3AF;
+    --border: #E5E7EB; --border-strong: #D1D5DB; --page: #F6F7F9; --card: #FFFFFF;
+    --primary: #0F766E; --primary-tint: #E6F4F1; --primary-mid: #99CBC4;
+    --slate: #475569; --hold: #CBD5E1;
+    /* One color per action (owner 10/22): write teal, improve sky, not-a-content-problem violet, hold slate. */
+    --c-write: #0F766E; --t-write: #E6F4F1; --c-opt: #0369A1; --t-opt: #E0F2FE;
+    --c-notgap: #6D28D9; --t-notgap: #EDE9FE; --c-hold: #64748B; --t-hold: #F1F5F9;
+    --ok: #16A34A; --danger: #E11D48;
+    --ease: cubic-bezier(.2,.8,.2,1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--body); font: 15px/1.5 Inter, system-ui, sans-serif; }
+  button { font: inherit; color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 20px 64px; }
+
+  .note-top { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .note-top b { color: var(--ink); font-weight: 600; }
+  .stepper { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+  .stepper .done { color: var(--ink); }
+  .stepper .here { color: var(--primary); background: var(--primary-tint); border-radius: 6px; padding: 2px 8px; font-weight: 600; }
+
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+  .panel-head { display: flex; gap: 14px; align-items: flex-start; padding: 20px 24px 6px; flex-wrap: wrap; }
+  .badge-icon { color: var(--primary); width: 40px; height: 40px; border-radius: 8px; background: var(--primary-tint); display: grid; place-items: center; flex: none; }
+  .title { font: 800 18px/1.2 Montserrat, Inter, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin: 0; }
+  .sub { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+  .head-main { flex: 1 1 340px; min-width: 0; }
+  .head-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn { font: 600 13px Inter, sans-serif; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--border-strong); background: #fff; color: var(--ink); transition: background .15s, transform .15s; }
+  .btn:hover { background: #F9FAFB; }
+  .btn.primary { background: var(--primary); border-color: transparent; color: #fff; }
+  .btn.primary:hover { background: #0B5F58; }
+  .btn:active { transform: translateY(1px); }
+
+  /* Map | List segmented toggle */
+  .seg { position: relative; display: inline-flex; background: #F1F3F5; border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+  .seg button { position: relative; z-index: 1; border: 0; background: none; padding: 5px 14px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 6px; display: inline-flex; gap: 6px; align-items: center; transition: color .2s; }
+  .seg button[aria-pressed="true"] { color: var(--ink); }
+  .seg .thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; border-radius: 6px; background: #fff; box-shadow: 0 1px 2px rgba(15,23,42,.08); transition: transform .35s var(--ease), width .35s var(--ease); }
+
+  /* Takeaway */
+  .takeaway { padding: 14px 24px 2px; }
+  .headline { font-size: 20px; font-weight: 600; color: var(--ink); line-height: 1.35; margin: 0; letter-spacing: -.005em; }
+  .linkish { border: 0; background: none; padding: 0; font: inherit; color: var(--primary); cursor: pointer; border-bottom: 1.5px solid var(--primary-mid); transition: border-color .15s; }
+  .linkish:hover { border-color: var(--primary); }
+  .subline { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .subline .why-first { color: var(--faint); font-size: 12.5px; }
+
+  /* Stage: the shared space where dots live in both map and list modes */
+  .stage-wrap { padding: 16px 24px 8px; }
+  .stage { position: relative; transition: height .6s var(--ease); }
+  .mapbg { position: absolute; inset: 0; transition: opacity .45s ease; }
+  .stage.is-list .mapbg { opacity: 0; pointer-events: none; }
+  .howcount { margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+  .howcount summary { cursor: pointer; color: var(--primary); font-weight: 600; }
+  .howcount p { margin: 6px 0 4px; }
+  .howcount ul { margin: 0; padding-left: 18px; }
+  .zone { position: absolute; border-radius: 8px; transition: opacity .3s; }
+  .zone.z-write { background: var(--t-write); }
+  .zone.z-optimize { background: var(--t-opt); }
+  .zone.z-notgap { background: var(--t-notgap); }
+  .zone.z-hold { background: var(--t-hold); }
+  .zone .zname { position: absolute; top: 9px; left: 12px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); }
+  .zone.z-optimize .zname { color: var(--c-opt); }
+  .zone.z-notgap .zname { color: var(--c-notgap); }
+  .zone.z-hold .zname { color: var(--c-hold); }
+  .zone .zempty { position: absolute; top: 30px; left: 12px; right: 12px; font-size: 12.5px; color: var(--faint); line-height: 1.45; }
+  .stage.spot .zone { opacity: .45; }
+  .stage.spot .zone.lit { opacity: 1; }
+  .lane-rule { position: absolute; height: 0; border-top: 1px dashed var(--border-strong); }
+  .collabel { position: absolute; top: 12px; font-size: 12px; font-weight: 600; color: var(--ink); text-align: center; }
+  .rowlabel { position: absolute; left: 0; font-size: 12.5px; font-weight: 600; color: var(--ink); display: flex; flex-direction: column; justify-content: center; line-height: 1.3; }
+  .rowlabel small { font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .rowlabel .arr { font-weight: 700; margin-right: 4px; }
+  .arr.up { color: var(--ok); } .arr.down { color: var(--danger); } .arr.flat { color: var(--faint); }
+  .corner { position: absolute; left: 0; top: 10px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; line-height: 1.4; }
+  .xaxis { position: absolute; height: 0; border-top: 1px solid var(--border-strong); }
+  .xaxis::after { content: ""; position: absolute; right: -1px; top: -4px; border-left: 7px solid var(--border-strong); border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+  .xtick { position: absolute; font-size: 11px; color: var(--faint); }
+  .xcap { position: absolute; font-size: 12px; color: var(--muted); text-align: center; }
+
+  /* Nodes: one element per topic, morphs between dot+label and list row */
+  .node { position: absolute; left: 0; top: 0; border: 0; background: none; padding: 0; cursor: pointer; text-align: left;
+          display: flex; align-items: center; gap: 8px; height: 18px; white-space: nowrap; z-index: 2;
+          transition: transform .8s var(--ease), opacity .5s ease, background .2s; will-change: transform; }
+  .node.flip { flex-direction: row-reverse; }
+  .node .mark { flex: none; width: 16px; height: 16px; border-radius: 50%; transition: transform .2s var(--ease), filter .2s; box-shadow: 0 0 0 2px #fff; }
+  .a-write .mark { background: var(--primary); }
+  .a-optimize .mark { background: var(--c-opt); }
+  .a-notgap .mark { background: var(--c-notgap); }
+  .a-hold .mark { background: var(--c-hold); }
+  .a-noread .mark { background: #fff; box-shadow: none; border: 1.5px dashed var(--faint); }
+  .node .ntext { display: flex; flex-direction: column; min-width: 0; }
+  .node .nname { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 18px; text-shadow: 0 0 3px #fff, 0 0 3px #fff; transition: color .15s; }
+  .node .nfull, .node .nwhy, .node .nmeta, .node .nplan { display: none; }
+  .node:hover .mark, .node:focus-visible .mark, .node.hot .mark { transform: scale(1.3); filter: drop-shadow(0 2px 4px rgba(15,23,42,.22)); }
+  .node:hover .nname, .node:focus-visible .nname { color: var(--primary); }
+  .node:focus-visible { outline: none; }
+  .node.sel .mark { transform: scale(1.3); box-shadow: 0 0 0 2px #fff, 0 0 0 5px var(--primary-mid); }
+  .a-optimize.sel .mark { box-shadow: 0 0 0 2px #fff, 0 0 0 5px #93C5E6; }
+  .a-notgap.sel .mark { box-shadow: 0 0 0 2px #fff, 0 0 0 5px #C4B5FD; }
+  .stage.hovering .node:not(:hover):not(.hot):not(:focus-visible) { opacity: .45; }
+  .stage.spot .node.dim { opacity: .18; }
+  .node.pulse .mark { animation: pulse 1.1s ease-out 2; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 2px #fff, 0 0 0 2px rgba(15,118,110,.45); } 100% { box-shadow: 0 0 0 2px #fff, 0 0 0 16px rgba(15,118,110,0); } }
+
+  /* List mode skin */
+  .stage.is-list .node { height: 62px; padding: 0 14px; gap: 14px; background: #fff; border: 1px solid var(--border); border-radius: 8px; }
+  .stage.is-list .node.flip { flex-direction: row; }
+  .stage.is-list .node:hover { background: #FAFBFB; }
+  .stage.is-list .node .nshort { display: none; }
+  .stage.is-list .node .nfull { display: inline; font-size: 14px; }
+  .stage.is-list .node .nname { text-shadow: none; }
+  .stage.is-list .node .nwhy { display: block; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; animation: fadeUp .45s .35s var(--ease) both; }
+  .stage.is-list .node .ntext { flex: 1; }
+  .stage.is-list .node .nmeta { display: block; flex: none; font-size: 12.5px; color: var(--muted); animation: fadeUp .45s .4s var(--ease) both; }
+  .stage.is-list .node .nplan { display: grid; place-items: center; flex: none; width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--border-strong); color: transparent; font-size: 12px; font-weight: 700; animation: fadeUp .45s .45s var(--ease) both; }
+  .stage.is-list .node .nplan.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .stage.is-list.hovering .node:not(:hover) { opacity: 1; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .ghead { position: absolute; left: 0; right: 0; top: 0; height: 44px; display: flex; align-items: flex-end; gap: 10px; padding-bottom: 8px; opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+  .stage.is-list .ghead { opacity: 1; transition-delay: .25s; }
+  .ghead .gname { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+  .ghead .grule { font-size: 12.5px; color: var(--muted); }
+  .ghead .gnone { font-size: 12.5px; color: var(--faint); }
+
+  /* Tooltip */
+  .tip { position: absolute; z-index: 5; max-width: 290px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgba(15,23,42,.10); padding: 10px 12px; pointer-events: none; opacity: 0; transform: translate(-50%, calc(-100% - 4px)); transition: opacity .15s, transform .2s var(--ease); font-size: 13px; }
+  .tip.on { opacity: 1; transform: translate(-50%, calc(-100% - 12px)); }
+  .tip .tt { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .tip .tw { color: var(--body); line-height: 1.45; margin-top: 6px; }
+  .tip .tc { color: var(--faint); font-size: 12px; margin-top: 6px; }
+
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 5px; padding: 2px 8px; white-space: nowrap; }
+  .tag.write { background: var(--primary); color: #fff; }
+  .tag.optimize { background: var(--t-opt); color: var(--c-opt); }
+  .tag.notgap { background: var(--t-notgap); color: var(--c-notgap); }
+  .tag.hold { background: var(--t-hold); color: var(--c-hold); }
+  .tag.noread { background: #fff; color: var(--faint); border: 1px dashed var(--border-strong); }
+
+  /* Legend + footnote */
+  .legend-row { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; padding: 6px 24px 0; }
+  .lg { display: inline-flex; align-items: center; gap: 7px; border: 1px solid transparent; background: none; border-radius: 6px; padding: 4px 8px; font-size: 12.5px; color: var(--body); cursor: pointer; transition: background .15s, border-color .15s; }
+  .lg:hover { background: #F6F7F9; }
+  .lg.on { background: var(--primary-tint); border-color: #CDE7E2; color: var(--primary); }
+  .lg .mark { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+  .lg.a-optimize .mark { box-shadow: none; }
+  #ctaOnp { color: var(--c-opt); border-color: var(--c-opt); }
+  .lg b { font-weight: 600; color: var(--muted); }
+  .lg.zero { color: var(--faint); }
+  .footnote { font-size: 11.5px; color: var(--faint); padding: 4px 24px 16px; max-width: 900px; line-height: 1.5; }
+
+  .vis-foot { display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); padding: 12px 24px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+  .vis-foot .eye { color: var(--faint); flex: none; }
+  .vis-foot a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+  /* Topic popup: same shell as the Executive Dashboard Task Hub popup */
+  .tmodal { position: fixed; inset: 0; z-index: 20; visibility: hidden; pointer-events: none; transition: visibility 0s .2s; }
+  .tmodal.on { visibility: visible; pointer-events: auto; transition: visibility 0s; }
+  .tm-scrim { position: absolute; inset: 0; background: rgba(10,12,18,.34); opacity: 0; transition: opacity .2s ease; }
+  .tmodal.on .tm-scrim { opacity: 1; }
+  .tm-pop { position: absolute; left: 50%; top: 50%; width: min(1320px, 96vw); height: min(860px, 90vh); background: #fff; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 24px 64px rgba(10,12,18,.28); display: flex; flex-direction: column; overflow: hidden; opacity: 0; transform: translate(-50%, -50%) scale(.985); transition: opacity .2s ease, transform .2s ease; }
+  .tmodal.on .tm-pop { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .tm-pop:focus { outline: none; }
+  .tm-head { flex: none; padding: 12px 22px 10px; border-bottom: 1px solid var(--border); }
+  .tm-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  .tm-eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 600; white-space: nowrap; }
+  .tm-title { font: 800 17px/1.25 Inter, sans-serif; color: var(--ink); margin: 0; min-width: 0; }
+  .tag.cat { background: #F1F5F9; color: var(--slate); font-weight: 600; }
+  .tm-nav { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+  .ib { border: 1px solid var(--border); background: #fff; border-radius: 6px; width: 30px; height: 30px; cursor: pointer; display: grid; place-items: center; color: var(--ink); transition: background .15s; }
+  .ib:hover { background: #F6F7F9; }
+  .ib.x { border: 0; font-size: 22px; line-height: 1; color: var(--muted); }
+  .tm-sum { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 7px; font-size: 12.5px; color: var(--muted); }
+  .tm-sum .chip { border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; background: #FAFBFC; color: var(--ink); }
+  .tm-sum .chip span { color: var(--muted); }
+  .tm-sum .op { color: var(--faint); font-weight: 600; }
+  .tm-sum .rule { margin-left: 4px; }
+  .tm-body { flex: 1; display: flex; min-height: 0; }
+  .tm-rail { flex: none; width: 224px; background: var(--page); border-right: 1px solid var(--border); overflow: auto; padding: 14px 10px; }
+  .rail-g { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; margin: 12px 8px 6px; }
+  .rail-g:first-child { margin-top: 2px; }
+  .rail-i { display: flex; align-items: center; gap: 9px; width: 100%; border: 0; background: none; text-align: left; padding: 7px 8px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--body); line-height: 1.3; transition: background .15s, color .15s; }
+  .rail-i:hover { background: #EDEFF2; }
+  .rail-i .dot { flex: none; width: 9px; height: 9px; border-radius: 50%; }
+  .rail-i .rt { min-width: 0; }
+  .rail-i small { display: block; font-size: 11.5px; color: var(--muted); }
+  .rail-i.on { font-weight: 600; }
+  .rail-i.on.a-write { background: var(--t-write); color: var(--c-write); }
+  .rail-i.on.a-optimize { background: var(--t-opt); color: var(--c-opt); }
+  .rail-i.on.a-notgap { background: var(--t-notgap); color: var(--c-notgap); }
+  .rail-i.on.a-hold { background: var(--t-hold); color: var(--c-hold); }
+  .tm-main { flex: 1; min-width: 0; overflow: auto; padding: 20px 24px; }
+  .tm-main.swap { animation: fadeUp .3s var(--ease) both; }
+  .tm-why { margin: 0 0 16px; font-size: 14px; color: var(--body); }
+  .tm-why .small { display: inline; margin-left: 6px; }
+  .tm-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 18px; align-items: start; }
+  .tm-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .tm-foot { flex: none; border-top: 1px solid var(--border); padding: 12px 22px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .tm-foot .hint { font-size: 12px; color: var(--faint); margin-left: auto; }
+
+  /* Section cards: white card, tinted header row only */
+  .sec { background: #fff; border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px; min-width: 0; }
+  .sec-h { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0; }
+  .sec-ic { flex: none; width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; }
+  .sec-t { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .sec-lab { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--ink); text-align: right; }
+  .sec-b { padding: 14px 16px 16px; }
+  .s-demand .sec-h { background: #F3FAF8; } .s-demand .sec-ic { background: #E6F4F1; color: #0F766E; } .s-demand .sec-t { color: #0F766E; }
+  .s-cov .sec-h { background: #F2F9FE; } .s-cov .sec-ic { background: #E0F2FE; color: #0369A1; } .s-cov .sec-t { color: #0369A1; }
+  .s-vis .sec-h { background: #F8F6FE; } .s-vis .sec-ic { background: #EDE9FE; color: #6D28D9; } .s-vis .sec-t { color: #6D28D9; }
+  .s-rate .sec-h { background: #F8FAFC; } .s-rate .sec-ic { background: #F1F5F9; color: #475569; } .s-rate .sec-t { color: #475569; }
+
+  .qgrid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 420px; }
+  .qc { aspect-ratio: 1; border-radius: 5px; position: relative; cursor: default; transition: transform .15s var(--ease); animation: cellIn .35s var(--ease) backwards; }
+  .qc.cov { background: #0F766E; }
+  .qc.thin { background: #7DD3FC; }
+  .qc.none { background: #F1F5F9; box-shadow: inset 0 0 0 1px var(--border-strong); }
+  .qc.known::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--ink); opacity: .55; }
+  .qc.cov.known::after { background: #fff; opacity: .9; }
+  .qc:hover, .qc.hl { transform: scale(1.15); }
+  @keyframes cellIn { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+  .qkey { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .qkey i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .reader { margin-top: 10px; min-height: 44px; font-size: 13px; color: var(--body); background: #F2F9FE; border: 1px solid #D6ECFA; border-radius: 6px; padding: 8px 10px; }
+  .reader .rs { font-size: 11.5px; color: var(--muted); }
+  .alsoq { margin: 8px 0 0; padding-left: 16px; font-size: 12.5px; color: var(--muted); }
+  .pagebox { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .pagebox .num { font: 700 18px/1 Inter, sans-serif; color: #0369A1; }
+  .go { display: inline-block; margin-top: 8px; color: var(--primary); font-weight: 600; text-decoration: none; font-size: 13px; }
+  .s-cov .go { color: #0369A1; } .s-vis .go { color: #6D28D9; }
+  .vrow { display: grid; grid-template-columns: 90px 1fr; gap: 8px 10px; }
+  .vrow dt { color: var(--muted); } .vrow dd { margin: 0; }
+  .nr { color: var(--faint); }
+  .tag.nrtag { background: #fff; color: var(--faint); border: 1px dashed var(--border-strong); font-weight: 600; }
+  .small { font-size: 12px; color: var(--faint); margin-top: 6px; }
+  .btn.act-write { background: var(--c-write); border-color: transparent; color: #fff; }
+  .btn.act-write:hover { background: #0B5F58; }
+  .btn.act-optimize { background: var(--c-opt); border-color: transparent; color: #fff; }
+  .btn.act-optimize:hover { background: #075985; }
+  .btn.inplan { background: var(--primary-tint); color: var(--primary); border-color: #CDE7E2; }
+  .btn.inplan.act-optimize { background: var(--t-opt); color: var(--c-opt); border-color: #BAE0F7; }
+  @media (max-width: 999px) { .tm-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 879px) { .tm-rail { display: none; } .tm-main { padding: 16px; } .tm-head, .tm-foot { padding-left: 16px; padding-right: 16px; } }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); background: var(--ink); color: #fff; font-size: 13px; border-radius: 8px; padding: 10px 16px; opacity: 0; transition: opacity .25s, transform .3s var(--ease); z-index: 30; pointer-events: none; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  [hidden] { display: none !important; }
+
+  /* Demand, in detail */
+  .dd-sent { font-size: 13.5px; color: var(--body); margin-bottom: 10px; }
+  .chartwrap { position: relative; touch-action: pan-y; }
+  .chartwrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .ch-grid { stroke: #EEF0F3; stroke-width: 1; }
+  .ch-ylab, .ch-xlab { font: 10.5px Inter, sans-serif; fill: var(--faint); }
+  .ch-band-lab { font: 10px Inter, sans-serif; fill: var(--muted); }
+  .ch-drive { fill: none; stroke: var(--primary); stroke-width: 2.8; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-drive.draw { stroke-dasharray: 1; animation: drawLine .6s .12s ease-out both; }
+  @keyframes drawLine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  .ch-other { fill: none; stroke-width: 1.7; stroke-linejoin: round; opacity: 1; transition: opacity .2s; animation: fadeIn .5s .4s ease both; }
+  .ch-comb { stroke-width: 2; }
+  .ch-line, .ch-area { transition: opacity .15s; }
+  .chartwrap svg.focus .ch-line:not(.hl) { opacity: .12; }
+  .chartwrap svg.focus .ch-area { opacity: .25; }
+  .chartwrap svg.focus .ch-line.hl { opacity: 1; }
+  .chartwrap svg.focus .ch-line.hl path { stroke-width: 3; }
+  /* How the phrases add up */
+  .mix { margin-top: 14px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #FAFBFC; }
+  .mix-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 12.5px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+  .mix-h small { font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .mix-bar { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; }
+  .mix-seg { flex: var(--w) 1 0; min-width: 3px; cursor: default; transition: opacity .15s; }
+  .mix-rows { margin-top: 8px; display: flex; flex-direction: column; }
+  .mix-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) minmax(86px, auto) 64px 110px; gap: 10px; align-items: center; font-size: 12.5px; padding: 4px 4px; border-radius: 4px; cursor: default; transition: opacity .15s, background .15s; }
+  .mix-row:hover, .mix-row.hl { background: #F1F5F9; }
+  .mix-sw { width: 10px; height: 10px; border-radius: 3px; }
+  .mix-name { color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mix-name small { font-weight: 400; color: var(--muted); }
+  .mix-dir { font-weight: 600; }
+  .mix-share { text-align: right; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .mix-vol { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mix.focus .mix-seg:not(.hl), .mix.focus .mix-row:not(.hl) { opacity: .35; }
+  .mix-res { margin: 10px 0 0; font-size: 13.5px; color: var(--body); line-height: 1.5; }
+  .mix-res .w { font-weight: 700; }
+  .mix .small { margin-top: 4px; }
+  @media (max-width: 640px) { .mix-row { grid-template-columns: 10px minmax(0, 1fr) auto 56px; } .mix-vol { display: none; } }
+  .ch-other.off { opacity: 0; }
+  .ch-partial { fill: none; stroke-dasharray: 2 3; }
+  @keyframes fadeIn { from { opacity: 0; } }
+  .ch-peak text { font: 600 10.5px Inter, sans-serif; fill: var(--ink); }
+  .ch-peak { animation: fadeIn .4s .7s ease both; }
+  .ch-cross { stroke: var(--slate); stroke-width: 1; stroke-dasharray: 2 2; }
+  .ch-tip { position: absolute; top: 0; pointer-events: none; background: #fff; border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 4px 14px rgba(15,23,42,.10); padding: 5px 8px; font-size: 12px; white-space: nowrap; transform: translate(-50%, -100%); opacity: 0; transition: opacity .12s; z-index: 3; }
+  .ch-tip.on { opacity: 1; }
+  .ch-tip b { color: var(--ink); font-weight: 700; }
+  .ch-tip .o { color: var(--muted); }
+  .ch-cap { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .tgrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tg { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: #fff; border-radius: 4px; padding: 3px 8px; font-size: 12px; color: var(--body); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+  .tg:hover { background: #F6F7F9; }
+  .tg[aria-pressed="false"] { color: var(--faint); }
+  .tg[aria-pressed="false"] svg { opacity: .3; }
+  .tg.drive { cursor: default; border-color: #CDE7E2; background: var(--primary-tint); color: var(--primary); font-weight: 600; }
+  .tg.drive small { font-weight: 400; color: var(--slate); }
+  .ch-area { animation: fadeIn .6s .3s ease both; }
+  .readout { margin-top: 12px; font-size: 13.5px; color: var(--body); line-height: 1.5; display: flex; flex-direction: column; gap: 6px; }
+  .rline { display: flex; gap: 8px; align-items: flex-start; }
+  .rline svg { flex: none; margin-top: 3px; color: var(--muted); }
+  .vcall { border-radius: 8px; padding: 9px 12px; }
+  .vcall .vd { font-weight: 700; }
+  .vcall.v-growing { background: #DCFCE7; color: #166534; }
+  .vcall.v-decaying { background: #FFE4E6; color: #9F1239; }
+  .vcall.v-stable { background: #F1F5F9; color: #334155; }
+  .vcall .q { opacity: .85; }
+  .bars-h { font-size: 12.5px; color: var(--ink); font-weight: 600; margin: 18px 0 6px; }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 72px; position: relative; }
+  .bar { flex: 1; background: #6FB1DA; border-radius: 2px 2px 0 0; transform-origin: bottom; animation: growBar .45s var(--ease) both; cursor: default; min-height: 1px; transition: background .15s; }
+  .bar.last { background: #0369A1; }
+  .bar:hover { background: #075985; }
+  @keyframes growBar { from { transform: scaleY(0); } }
+  .bars-x { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--faint); margin-top: 3px; }
+  .quiet { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  .noanim, .noanim * { transition: none !important; }
+  @media (max-width: 820px) {
+    .panel-head, .takeaway, .stage-wrap, .legend-row, .footnote, .vis-foot { padding-left: 16px; padding-right: 16px; }
+    .head-actions { margin-left: 0; width: 100%; }
+    .headline { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+  /* ---- Our practices (agency corpus) additions ---- */
+  .bh { position: relative; cursor: default; }
+  .bh-t { text-decoration: underline dotted var(--primary-mid); text-underline-offset: 3px; }
+  .bh .qtip { display: none; position: absolute; left: 0; top: calc(100% + 8px); width: 310px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgba(15,23,42,.10); padding: 9px 12px; z-index: 6; font: 400 12px/1.45 Inter, sans-serif; color: var(--body); text-align: left; text-transform: none; letter-spacing: 0; white-space: normal; }
+  .bh .qtip b { display: block; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; }
+  .bh:hover .qtip, .bh:focus-visible .qtip { display: block; }
+  .bh.flip .qtip { left: auto; right: 0; }
+  .lgd { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin: 2px 0 8px; }
+  .lgd > span { display: inline-flex; align-items: center; gap: 7px; }
+  .sw-bar { width: 14px; height: 10px; border-radius: 2px; background: #94A3B8; flex: none; }
+  .sw-tbar { width: 14px; height: 10px; border-radius: 2px; background: var(--primary); flex: none; }
+  .sw-band { width: 18px; height: 8px; border-radius: 2px; background: linear-gradient(90deg, #CFE6E1, #0F766E); flex: none; }
+  .sw-sline { width: 18px; height: 0; border-top: 2px solid #94A3B8; flex: none; }
+  .sw-line { width: 18px; height: 10px; position: relative; flex: none; }
+  .sw-line::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 2px solid var(--primary); }
+  .sw-line::after { content: ""; position: absolute; left: 6px; top: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 2px #fff; }
+  .sw-dots { width: 24px; height: 14px; position: relative; flex: none; }
+  .sw-dots::before { content: ""; position: absolute; left: 0; top: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
+  .sw-dots::after { content: ""; position: absolute; left: 10px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); }
+  .ch-corp-case { fill: none; stroke: #fff; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-corp-line { fill: none; stroke: #DB2777; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+  .bh .qtip.s8 b { color: #DB2777; }
+  .ch-tip .km { background: #DB2777; border-radius: 50%; }
+  /* Chart hover readout, V1 */
+  .ch-tip.rich { padding: 8px 10px; white-space: nowrap; }
+  .tt-h { display: flex; justify-content: space-between; gap: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .tt-h span { font-weight: 400; color: var(--faint); font-size: 11px; }
+  .tt-r { display: grid; grid-template-columns: 18px auto auto; gap: 2px 7px; align-items: center; padding: 2px 0; color: var(--body); }
+  .tt-r b { color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; min-width: 24px; justify-self: end; }
+  .tt-r small { grid-column: 2 / 4; color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .tt-r.corp { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; }
+  /* Branded dropdown on the "All phrases" chip */
+  .tgx { position: relative; display: inline-flex; }
+  .tgx .tg:first-child { border-radius: 4px 0 0 4px; }
+  .tg-dd { border-radius: 0 4px 4px 0; border-left: 0; padding: 3px 6px; color: var(--muted); }
+  .tg-dd[aria-expanded="true"] { background: var(--primary-tint); color: var(--primary); border-color: #CDE7E2; }
+  .dd { display: none; position: absolute; left: 0; top: calc(100% + 6px); z-index: 7; width: 380px; max-width: 86vw; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(15,23,42,.12); padding: 8px 0; font-size: 12.5px; text-align: left; }
+  .dd.on { display: block; }
+  .dd-h { padding: 4px 12px 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--primary); }
+  .dd-r { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 6px 12px; }
+  .dd-r:hover { background: #F6F7F9; }
+  .dd-r .n { color: var(--ink); font-weight: 600; min-width: 0; }
+  .dd-r .n small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .dd-r .w, .dd-r .v { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .dd-r .w { color: var(--ink); } .dd-r .v { color: var(--muted); }
+  .dd-f { padding: 7px 12px 2px; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 4px; line-height: 1.45; }
+  .chartwrap svg.focus .ch-corp { opacity: .12; }
+  .m-bar, .m-tbar { transform-box: fill-box; transform-origin: 50% 100%; animation: growBar .45s var(--ease) both; transition: fill .15s; }
+  .m-bar { fill: #94A3B8; } .m-bar.hot { fill: #64748B; }
+  .m-tbar { fill: #0F766E; } .m-tbar.hot { fill: #0B5F58; }
+  .m-line { fill: none; stroke: #0F766E; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; animation: fadeIn .5s .35s ease both; }
+  .m-dot { fill: #0F766E; stroke: #fff; stroke-width: 2; animation: fadeIn .5s .35s ease both; }
+  .m-area { fill: url(#corpFill); animation: fadeIn .6s .3s ease both; }
+  .m-sline { fill: none; stroke: #94A3B8; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; animation: fadeIn .5s .35s ease both; }
+  .m-sdot { fill: #94A3B8; stroke: #fff; stroke-width: 2; }
+  .m-cell { transition: opacity .15s; }
+  .ch-dlab { font: 600 10.5px Inter, sans-serif; fill: var(--muted); }
+  .ch-tip .k { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .ch-tip .kb { background: #94A3B8; } .ch-tip .kl { background: #0F766E; border-radius: 50%; } .ch-tip .kt { background: #0F766E; }
+  .ch-tip .tip-corp span { margin-left: 4px; }
+
+  /* ---- Coverage redesigns ---- */
+  .cv-lead { font-size: 14px; color: var(--ink); font-weight: 600; margin: 0 0 8px; line-height: 1.4; }
+  .cv-lead .bh-t { font-weight: 600; }
+  .cv-meter { display: flex; gap: 2px; height: 10px; border-radius: 3px; overflow: hidden; background: #F1F5F9; }
+  .cv-meter i { display: block; height: 100%; }
+  .c-cov { background: #0F766E; } .c-thin { background: #7DD3FC; } .c-none { background: #E2E8F0; }
+  .cv-counts { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); margin: 6px 0 10px; }
+  .cv-counts i, .cv-list li i, .cv-rows li i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .cv-counts i { margin-right: 5px; vertical-align: -1px; }
+  .cv-counts b { color: var(--ink); font-weight: 600; }
+  .cv-list, .cv-rows, .cv-check { margin: 0; padding: 0; list-style: none; }
+  .cv-list { max-height: 330px; overflow: auto; border-top: 1px solid var(--border); }
+  .cv-list li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 7px 2px; border-bottom: 1px solid #F1F5F9; font-size: 13px; color: var(--body); line-height: 1.4; }
+  .cv-list li i { margin-top: 4px; }
+  .cv-list .pg { color: var(--faint); font-size: 11.5px; white-space: nowrap; margin-top: 2px; max-width: 128px; overflow: hidden; text-overflow: ellipsis; }
+  .cv-list .pg.on { color: #0369A1; }
+  .cv-aside { margin-top: 10px; }
+  .cv-aside ul { margin: 6px 0 0; padding-left: 0; list-style: none; }
+  .cv-aside li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-bottom: 1px solid #F1F5F9; font-size: 12.5px; color: var(--body); }
+  .cv-aside li span:last-child { color: var(--faint); font-size: 11.5px; white-space: nowrap; }
+  /* C2 */
+  .cv-hero { display: flex; align-items: center; gap: 14px; margin: 2px 0 10px; }
+  .cv-big { font: 600 40px/1 Inter, sans-serif; color: var(--ink); letter-spacing: -.01em; white-space: nowrap; }
+  .cv-big small { font-size: 16px; color: var(--muted); font-weight: 500; margin-left: 2px; }
+  .cv-hero-t { font-size: 13.5px; color: var(--ink); font-weight: 600; line-height: 1.35; }
+  .cv-hero-t .sub { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .cv-h { font-size: 12.5px; font-weight: 600; color: var(--ink); margin: 14px 0 6px; }
+  .cv-check li { display: flex; gap: 10px; align-items: flex-start; padding: 6px 2px; border-bottom: 1px solid #F1F5F9; font-size: 13px; color: var(--body); line-height: 1.4; }
+  .cv-check li .bx { flex: none; width: 15px; height: 15px; margin-top: 2px; border-radius: 4px; border: 1.5px solid var(--border-strong); background: #fff; display: grid; place-items: center; font-size: 10px; color: #fff; }
+  .cv-check li .bx.c { background: #0F766E; border-color: #0F766E; }
+  .cv-check li .bx.t { background: #7DD3FC; border-color: #7DD3FC; }
+  .cv-more summary { font-size: 12.5px; color: var(--primary); font-weight: 600; cursor: pointer; margin-top: 6px; }
+  .cv-pages { display: grid; grid-template-columns: minmax(0, 1fr) 110px auto; gap: 6px 10px; align-items: center; font-size: 12.5px; }
+  .cv-pages .p { color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cv-pages .n { color: var(--muted); white-space: nowrap; text-align: right; }
+  .mbar { position: relative; height: 8px; background: #F1F5F9; border-radius: 2px; }
+  .mbar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; }
+  .mbar::before, .mbar::after { content: ""; position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--border-strong); }
+  .mbar::before { left: var(--t1); } .mbar::after { left: var(--t2); background: var(--muted); }
+  .mscale { display: grid; grid-template-columns: minmax(0, 1fr) 110px auto; gap: 6px 10px; font-size: 10.5px; color: var(--faint); margin: 4px 0 2px; }
+  .mscale .s { position: relative; height: 12px; }
+  .mscale .s span { position: absolute; top: 0; white-space: nowrap; }
+  .mscale .s .l { transform: translateX(-100%); padding-right: 4px; }
+  .mscale .s .r { padding-left: 4px; }
+  /* C3 */
+  .cv-rows li { display: grid; grid-template-columns: 10px minmax(0, 1fr) 110px; gap: 10px; align-items: center; padding: 6px 2px; border-bottom: 1px solid #F1F5F9; font-size: 13px; color: var(--body); line-height: 1.35; }
+  .cv-rows { max-height: 360px; overflow: auto; }
+  .cv-rows li.g { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 0; padding-top: 10px; }
+  .cv-rows li.g span { grid-column: 1 / 4; }
+  .cv-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .cv-chip { font-size: 12px; border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; color: var(--body); background: #fff; }
+  .cv-chip b { font-weight: 600; color: var(--ink); }
+
+  /* ---- Range chips + 24-month searches ---- */
+  .rg-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 0 0 6px; }
+  .rg { display: inline-flex; background: #F1F3F5; border: 1px solid var(--border); border-radius: 8px; padding: 3px; }
+  .rg button { border: 0; background: none; padding: 4px 11px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; border-radius: 6px; }
+  .rg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgba(15,23,42,.08); }
+  .rg-lab { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .src { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .src .tg[aria-pressed="true"] { background: var(--primary-tint); color: var(--primary); border-color: #CDE7E2; font-weight: 600; }
+  .m-bar.prev { fill: #E2E8F0; } .m-bar.prev.hot { fill: #CBD5E1; }
+  .sw-prev { width: 14px; height: 10px; border-radius: 2px; background: #E2E8F0; flex: none; }
+  .ch-tip .kp { background: #E2E8F0; }
+  #chPlot { transition: transform .7s var(--ease); }
+  #chChrome { transition: opacity .35s ease; } #chChrome.swap { opacity: 0; }
+  #chMarks .mk { transition: cx .7s var(--ease), transform .7s var(--ease); }
+  .chartwrap.fade { transition: opacity .18s ease; } .chartwrap.fade.out { opacity: 0; }
+  .ch-tip .d-up { color: #15803D; font-weight: 600; } .ch-tip .d-down { color: #BE123C; font-weight: 600; } .ch-tip .d-flat { color: var(--muted); font-weight: 600; }
+</style>
+<style>
+  .cv-rows li.wide { grid-template-columns: 10px minmax(0, 1fr) var(--bar, 110px); }
+  .cv-rows.nolimit { max-height: none; overflow: visible; }
+  .tm-band { margin-top: 18px; }
+  .tm-band > .sec { width: 100%; }
+
+  .mx { position: relative; margin-top: 12px; overflow-x: auto; }
+  .mx table { border-collapse: separate; border-spacing: 0; width: auto; min-width: 70%; font-size: 13px; color: var(--body); }
+  .mx th:not(.q), .mx td:not(.q) { width: var(--colw, 104px); min-width: var(--colw, 104px); }
+  .mx th { font-weight: 600; color: var(--ink); vertical-align: bottom; padding: 0 4px 6px; text-align: center; border-bottom: 1px solid var(--border); font-size: 11.5px; line-height: 1.25; }
+  .mx th.q { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-left: 2px; }
+  .mx th .pg { display: block; max-width: 92px; margin: 0 auto; white-space: normal; overflow-wrap: anywhere; color: var(--ink); }
+  .mx th .pn { display: block; color: var(--faint); font-weight: 500; margin-top: 2px; }
+  .mx th.none .pg { color: var(--muted); font-weight: 500; }
+  .mx td { padding: 0 4px; height: 30px; border-bottom: 1px solid #F1F5F9; text-align: center; }
+  .mx td.q { text-align: left; padding-left: 2px; line-height: 1.3; }
+  .mx td.q.g { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 12px; border-bottom: 0; height: 34px; }
+  .mx td.g { border-bottom: 0; }
+  .mx .m { display: inline-block; width: 16px; height: 16px; border-radius: 4px; vertical-align: middle; cursor: default; transition: transform .15s; }
+  .mx .m.c-cov { background: #0F766E; } .mx .m.c-thin { background: #7DD3FC; } .mx .m.c-none { background: #fff; box-shadow: inset 0 0 0 1.5px #CBD5E1; }
+  .mx .m:hover { transform: scale(1.25); }
+  .mx tr:hover td { background: #FAFBFC; }
+  .mx-tip { position: absolute; z-index: 5; pointer-events: none; display: none; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgba(15,23,42,.10); padding: 7px 10px; font-size: 12px; line-height: 1.4; color: var(--body); white-space: nowrap; }
+  .mx-tip.on { display: block; }
+  .mx-tip b { display: block; color: var(--ink); font-weight: 600; }
+  .mx-key { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .mx-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .mx-key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="note-top"><b>D3: the question-to-page match-up.</b> A full-width band under Demand with every question down the side and the site pages that came closest across the top; the mark sits under the page each question matched, in the colour of what Claude found there. Hover a mark for the page and the match. Real data: Expedition Pediatric Dentistry (strategy 21, built 10/23). Opens on Frenectomy.</div>
+
+  <div class="stepper"><span class="done">Run Strategy</span> › <span class="done">Site analysis</span> › <span class="done">Market Signals</span> › <span class="here">Synthesis: Topic Cards</span> › <span>Calendar (new pages) and On-Page Optimization (fixes)</span></div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="8" height="7" rx="1.5"/><rect x="13" y="4" width="8" height="7" rx="1.5"/><rect x="3" y="13" width="8" height="7" rx="1.5"/><rect x="13" y="13" width="8" height="7" rx="1.5"/></svg></div>
+      <div class="head-main">
+        <h2 class="title">Topic Cards</h2>
+        <div class="sub">Oracle Family Dental · 7 topics from the Market Trend Check. Advisory only: nothing changes until you act.</div>
+      </div>
+      <div class="head-actions">
+        <div class="seg" role="group" aria-label="View">
+          <span class="thumb" id="thumb"></span>
+          <button id="bMap" aria-pressed="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="8" r="2.2"/><circle cx="16" cy="6" r="2.2"/><circle cx="12" cy="16" r="2.2"/><path d="M3 21h18M3 21V3"/></svg>Map</button>
+          <button id="bList" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="4" cy="6" r="1.2"/><circle cx="4" cy="12" r="1.2"/><circle cx="4" cy="18" r="1.2"/></svg>List</button>
+        </div>
+        <button class="btn primary" id="ctaCal"></button>
+        <button class="btn" id="ctaOnp"></button>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <p class="headline" id="headline"></p>
+      <div class="subline" id="subline"></div>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="stage is-map" id="stage">
+        <div class="mapbg" id="mapbg"></div>
+        <div class="tip" id="tip" role="tooltip"></div>
+      </div>
+    </div>
+
+    <div class="legend-row" id="legend"></div>
+    <div class="footnote" id="footnote">Left to right: how many of about 20 real questions people ask the site already answers (covered counts fully, thin counts half), from Find gaps. Each topic sits in the column of its coverage label; column edges are approximate. Up and down inside a band is spread out only so dots do not overlap; it carries no meaning.</div>
+
+    <div class="vis-foot">
+      <svg class="eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <span>Maps and AI visibility: not measured yet for this office.</span>
+      <a href="#" onclick="return false">Run a grid scan ›</a>
+    </div>
+  </div>
+</div>
+
+<div class="tmodal" id="tmodal" aria-hidden="true">
+  <div class="tm-scrim" id="scrim"></div>
+  <div class="tm-pop" role="dialog" aria-modal="true" aria-labelledby="dName" tabindex="-1" id="tmPop">
+    <div class="tm-head">
+      <div class="tm-row">
+        <span class="tm-eyebrow" id="dPos"></span>
+        <h3 class="tm-title" id="dName"></h3>
+        <span id="dTags" class="tm-row" style="gap:6px"></span>
+        <div class="tm-nav">
+          <button class="ib" id="dPrev" aria-label="Previous topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="ib" id="dNext" aria-label="Next topic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="ib x" id="dClose" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="tm-sum" id="dSum" aria-label="How the action was chosen"></div>
+    </div>
+    <div class="tm-body">
+      <nav class="tm-rail" id="dRail" aria-label="All topics"></nav>
+      <div class="tm-main" id="dBody"></div>
+    </div>
+    <div class="tm-foot">
+      <button class="btn" id="dPlan"></button>
+      <span class="hint">← → to move · Esc to close</span>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- Real data (Oracle Family Dental, from the baseline topic-card.html) ----------
+// qs: closest-match questions kept from the baseline. st = 'covered' | 'thin' | 'none' when the
+// status is certain (explicitly tagged, or every question has no answer); null when unknown.
+const cards = [
+  {"topic": "Frenectomy", "short": "Frenectomy", "cat": null, "action": "optimize", "why": "Steady demand, and /articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist comes closest, answering 8 of 20 questions outright and partly answering 7.", "demand": ["flat", "Stable · sizable"], "coverage": "Thin page", "d": {"sentence": "Sizable national demand, driven by 'tongue tie', which is stable with no spike.", "cov": [8, 7, 5], "page": "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}},
+  {"topic": "Sedation Dentistry", "short": "Sedation Dentistry", "cat": null, "action": "optimize", "why": "Steady demand, and /articles/is-dental-sedation-safe-for-kids-a-parents-guide comes closest, answering 8 of 19 questions outright and partly answering 9.", "demand": ["flat", "Stable · sizable"], "coverage": "Thin page", "d": {"sentence": "Sizable national demand, driven by 'sedation dentistry', which is stable after a spike that is fading.", "cov": [8, 9, 2], "page": "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}},
+  {"topic": "Frenectomy: Procedure Details & Process", "short": "Frenectomy: Procedure Details & Process", "cat": null, "action": "optimize", "why": "Demand is easing, and /articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist comes closest, answering 7 of 20 questions outright and partly answering 8.", "demand": ["none", "Not sizable (trust topic)"], "coverage": "Thin page", "d": {"sentence": "Sizable national demand, driven by 'tongue tie surgery', which is decaying with no spike, measured via 'tongue tie surgery'.", "cov": [7, 8, 5], "page": "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}},
+  {"topic": "Lip Tie & Tongue Tie: Infant & Baby Treatment", "short": "Lip Tie & Tongue Tie: Infant & Baby Treatment", "cat": null, "action": "optimize", "why": "Steady demand, and /articles/what-is-a-frenectomy-and-who-needs-one comes closest, answering 6 of 19 questions outright and partly answering 11.", "demand": ["flat", "Stable · sizable"], "coverage": "Thin page", "d": {"sentence": "Sizable national demand, driven by 'lip tie', which is stable after a spike that is fading.", "cov": [6, 11, 2], "page": "/articles/what-is-a-frenectomy-and-who-needs-one", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}},
+  {"topic": "Insurance accepted and cost information", "short": "Insurance accepted and cost information", "cat": null, "action": "optimize", "why": "Steady demand, and /dental-services/pediatric-dental-crowns comes closest, answering 0 of 20 questions outright and partly answering 7.", "demand": ["flat", "Stable · sizable"], "coverage": "Thin page", "d": {"sentence": "Sizable national demand, driven by 'dental insurance', which is stable with no spike.", "cov": [0, 7, 13], "page": "/dental-services/pediatric-dental-crowns", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}},
+  {"topic": "Cost and insurance coverage for general anesthesia", "short": "Cost and insurance coverage for general anesthesia", "cat": null, "action": "optimize", "why": "A trust topic, so demand never counts against it; and /articles/is-dental-sedation-safe-for-kids-a-parents-guide comes closest, answering 1 of 20 questions outright and partly answering 13.", "demand": ["none", "Not sizable (trust topic)"], "coverage": "Thin page", "d": {"sentence": "Trust, process or practice-model topic; exempt from demand scoring.", "cov": [1, 13, 6], "page": "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", "qs": [], "rating": "This trend check ran before ratings existed. New runs show a 1 to 10 rating with its breakdown here."}}
+];
+
+// ---------- Real trend data: market_trend_run_terms + topic_results, run_id 2 (prod, 10/22) ----------
+// m: monthly mean Google Trends index per term, 61 months from 2021-10 to 2026-10 (the last month is
+//    not over yet, which is why the check ignores it). cs: real US searches per month, Oct 2025 to Sep 2026.
+// Keys are the page's topic names; the DB names differ for two topics (see comments).
+const z61 = hot => Array.from({ length: 61 }, (_, i) => hot[i] || 0);
+const TRENDS = {
+  "Frenectomy": {"drive": "tongue tie", "dir": "stable", "spike": "none", "terms": [{"t": "tongue tie", "dir": "stable", "spike": "none", "m": [40, 41, 35, 39, 44, 44, 45, 43, 45, 50, 47, 47, 46, 44, 39, 52, 52, 55, 51, 66, 64, 50, 50, 49, 59, 52, 69, 51, 51, 48, 47, 49, 51, 53, 44, 43, 45, 44, 48, 54, 53, 51, 50, 47, 53, 63, 55, 50, 56, 54, 43, 51, 49, 52, 55, 55, 55, 57, 48, 47, 48], "cs": [11915, 11865, 11765, 11815, 11513, 11211, 10960, 11262, 11010, 10658, 11061, 10306]}, {"t": "frenectomy", "dir": "decaying", "spike": "none", "m": [22, 21, 20, 24, 29, 27, 27, 25, 27, 33, 29, 26, 31, 25, 23, 27, 30, 29, 28, 28, 32, 31, 29, 28, 28, 25, 26, 26, 33, 28, 26, 24, 27, 28, 26, 23, 27, 28, 25, 28, 30, 29, 30, 31, 32, 56, 41, 32, 29, 28, 26, 28, 31, 31, 30, 31, 34, 34, 31, 29, 28], "cs": [7089, 7340, 7290, 6686, 6586, 6284, 5480, 4977, 4575, 4424, 4122, 3921]}]},
+  "Sedation Dentistry": {"drive": "sedation dentistry", "dir": "stable", "spike": "fading", "terms": [{"t": "sedation dentistry", "dir": "stable", "spike": "fading", "m": [32, 30, 27, 28, 32, 31, 31, 28, 31, 31, 32, 29, 30, 26, 29, 33, 33, 31, 30, 29, 31, 33, 31, 33, 30, 28, 29, 30, 31, 28, 26, 26, 26, 30, 29, 27, 26, 25, 23, 38, 44, 48, 54, 52, 68, 95, 96, 72, 56, 59, 58, 61, 68, 70, 71, 74, 80, 79, 70, 66, 54], "cs": [754, 754, 854, 905, 804, 854, 754, 854, 804, 754, 905, 905]}, {"t": "dental sedation", "dir": "stable", "spike": "none", "m": [30, 26, 27, 31, 35, 36, 34, 29, 34, 34, 34, 32, 34, 29, 25, 38, 37, 38, 35, 32, 36, 37, 35, 31, 32, 33, 31, 38, 38, 35, 37, 31, 35, 35, 35, 33, 36, 32, 29, 43, 44, 45, 48, 45, 48, 68, 63, 52, 48, 55, 54, 64, 68, 74, 76, 76, 85, 70, 57, 54, 52], "cs": [100, 50, 50, 100, 100, 100, 150, 150, 150, 150, 100, 100]}, {"t": "sleep dentistry", "dir": "stable", "spike": "fading", "m": [24, 24, 17, 29, 27, 25, 25, 20, 25, 28, 25, 23, 27, 24, 23, 27, 24, 23, 26, 28, 24, 26, 23, 24, 23, 25, 27, 23, 24, 21, 25, 29, 27, 22, 24, 29, 24, 19, 23, 27, 33, 31, 38, 36, 39, 55, 41, 33, 34, 40, 34, 45, 50, 60, 66, 66, 90, 59, 46, 40, 37], "cs": [452, 301, 301, 251, 251, 201, 251, 301, 251, 251, 251, 201]}]},
+  "Frenectomy: Procedure Details & Process": {"drive": "tongue tie surgery", "dir": "decaying", "spike": "none", "terms": [{"t": "tongue tie surgery", "dir": "decaying", "spike": "none", "m": [31, 27, 24, 29, 34, 37, 38, 35, 41, 42, 43, 37, 35, 32, 38, 44, 40, 41, 40, 42, 49, 45, 47, 37, 44, 37, 56, 37, 42, 31, 41, 39, 45, 55, 42, 42, 41, 39, 36, 47, 43, 38, 45, 38, 53, 58, 53, 43, 45, 46, 38, 46, 44, 45, 44, 42, 46, 45, 39, 39, 39], "cs": [1960, 1860, 1910, 2161, 1960, 1810, 1759, 1709, 1558, 1307, 1256, 1156]}, {"t": "lip tie surgery", "dir": "stable", "spike": "none", "m": [0.0, 0.0, 24, 12, 25, 9.8, 25, 11, 14, 38, 44, 44, 47, 29, 12, 35, 45, 51, 57, 11, 49, 21, 42, 15, 45, 29, 41, 25, 19, 32, 54, 51, 40, 15, 37, 50, 22, 13, 20, 30, 18, 46, 12, 12, 12, 51, 49, 32, 30, 36, 17, 51, 24, 28, 44, 33, 46, 33, 53, 33, 26], "cs": [50, 50, 50, 0.0, 0.0, 0.0, 50, 50, 50, 50, 50, 50]}]},
+  "Lip Tie & Tongue Tie: Infant & Baby Treatment": {"drive": "lip tie", "dir": "stable", "spike": "fading", "terms": [{"t": "lip tie", "dir": "stable", "spike": "fading", "m": [29, 26, 26, 31, 34, 35, 32, 31, 32, 34, 37, 32, 35, 29, 27, 35, 36, 34, 35, 31, 34, 31, 31, 34, 34, 32, 34, 28, 30, 28, 32, 31, 33, 32, 28, 28, 29, 27, 29, 35, 31, 30, 31, 32, 33, 40, 35, 32, 37, 34, 28, 33, 35, 44, 81, 61, 48, 37, 35, 31, 32], "cs": [1759, 1759, 1759, 1709, 1608, 1458, 1508, 1608, 1458, 1357, 1256, 1055]}]},
+  "Insurance accepted and cost information": {"drive": "dental insurance", "dir": "stable", "spike": "none", "terms": [{"t": "dental insurance", "dir": "stable", "spike": "none", "m": [55, 54, 47, 55, 60, 58, 55, 49, 51, 53, 55, 49, 56, 56, 52, 62, 59, 56, 55, 51, 51, 52, 52, 50, 57, 58, 58, 64, 58, 58, 54, 49, 51, 54, 55, 54, 58, 63, 59, 70, 62, 63, 59, 60, 63, 76, 69, 69, 76, 87, 69, 86, 84, 87, 86, 84, 87, 85, 79, 67, 75], "cs": [86226, 83058, 78081, 75668, 75316, 71293, 67774, 64506, 62193, 60735, 60182, 58623]}, {"t": "dental cost", "dir": "stable", "spike": "none", "m": [41, 38, 35, 43, 46, 45, 44, 40, 41, 41, 42, 40, 41, 38, 37, 44, 44, 45, 43, 41, 42, 41, 39, 39, 40, 39, 39, 45, 42, 41, 41, 40, 39, 40, 41, 40, 42, 41, 40, 50, 47, 47, 47, 50, 49, 67, 56, 59, 57, 77, 73, 83, 87, 94, 87, 85, 84, 75, 64, 58, 54], "cs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50, 50, 50, 50, 50, 50]}]}
+};
+const T_START = 2021 * 12 + 9;   // 2021-10 as a month count
+const CS_START = 48;             // cs[0] is Oct 2025 = month 48 of the series
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const calMonth = i => (T_START + i) % 12;
+const mLabel = i => `${MON[calMonth(i)]} ${Math.floor((T_START + i) / 12)}`;
+const fmtN = n => Math.round(n).toLocaleString('en-US');
+const avg = a => a.reduce((s, v) => s + v, 0) / a.length;
+const ratioWord = r => r > 1.15 ? 'growing' : r < 0.85 ? 'decaying' : 'stable';  // same cut-offs as the check
+const SPIKE_WORD = { fading: 'a spike that is fading', spike_confirmed: 'a short spike that has already dropped away', step_up_held: 'a step up that has held' };
+
+// Everything the readout says is computed here from the monthly numbers above.
+function analyze(m) {
+  const full = m.slice(0, -1), n = full.length;          // the check ignores the month in progress
+  const last12 = avg(full.slice(n - 12)), prev12 = avg(full.slice(n - 24, n - 12));
+  const cur3 = avg(full.slice(n - 3)), prev3 = avg(full.slice(n - 15, n - 12));
+  let p = n - 24;
+  for (let i = n - 24; i < n; i++) if (full[i] > full[p]) p = i;
+  // Season: each month against the 12 months around it (so a rising trend does not fake a season),
+  // averaged per calendar month across the years.
+  const per = Array.from({ length: 12 }, () => []);
+  for (let i = 6; i <= n - 6; i++) {
+    const w = avg(full.slice(i - 6, i + 6));
+    if (w > 0) per[calMonth(i)].push(full[i] / w);
+  }
+  const season = per.map(a => a.length ? avg(a) : 0);
+  const top = season.map((v, k) => ({ v, k })).sort((a, b) => b.v - a.v).filter(x => x.v >= 1.10).slice(0, 2);
+  return { n, last12, prev12, r12: prev12 > 0 ? last12 / prev12 : null, r3: prev3 > 0 ? cur3 / prev3 : null,
+           peakI: p, peak: full[p], tail: full[p] > 0 ? avg(full.slice(n - 2)) / full[p] : null,
+           seasonTop: top.sort((a, b) => a.k - b.k).map(x => MON_FULL[x.k]) };
+}
+function sharpDrop(term) {
+  for (let j = 1; j < term.cs.length; j++) {
+    const a = term.cs[j - 1], b = term.cs[j];
+    if (a >= 1000 && b < 0.4 * a) {
+      const gi = CS_START + j, googleDropped = term.m[gi] < 0.7 * term.m[gi - 1];
+      return { j, label: mLabel(gi), googleDropped };
+    }
+  }
+  return null;
+}
+
+// ---------- Demand chart ----------
+const CW = 640, CH = 270, PL = 30, PR = 12, PT = 20, PB = 26;
+const cx = i => PL + i * (CW - PL - PR) / 60;
+const cy = v => PT + (1 - v / 100) * (CH - PT - PB);
+const OTHER_STYLE = [{ c: '#8B98A9', d: '' }, { c: '#475569', d: '4 3' }];
+let hiddenTerms = new Set();
+
+function linePath(m, from, to) {
+  let d = '';
+  for (let i = from; i <= to; i++) d += (i === from ? 'M' : 'L') + cx(i).toFixed(1) + ' ' + cy(m[i]).toFixed(1);
+  return d;
+}
+function swatch(color, dash, w) {
+  return `<svg width="16" height="8" aria-hidden="true"><line x1="1" y1="4" x2="15" y2="4" stroke="${color}" stroke-width="${w}" ${dash ? `stroke-dasharray="${dash}"` : ''} stroke-linecap="round"/></svg>`;
+}
+function chartSvg(T, drive, others, mix) {
+  const last = 60, n = 60, a = analyze(drive.m);
+  const half = (cx(1) - cx(0)) / 2;
+  const band = (i0, i1, fill, label) => `<rect x="${cx(i0) - half}" y="${PT}" width="${cx(i1) - cx(i0) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/>
+    <text class="ch-band-lab" x="${(cx(i0) + cx(i1)) / 2}" y="${CH - PB - 5}" text-anchor="middle">${label}</text>`;
+  let s = `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Google interest in '${drive.t}' over 5 years">`;
+  s += `<defs><linearGradient id="chFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>`;
+  s += band(n - 24, n - 13, '#F3F4F6', '12 before') + band(n - 12, n - 1, '#E3F2EE', 'last 12');
+  s += `<path class="ch-area" fill="url(#chFill)" d="${linePath(drive.m, 0, n - 1)}L${cx(n - 1).toFixed(1)} ${cy(0).toFixed(1)}L${cx(0).toFixed(1)} ${cy(0).toFixed(1)}Z"/>`;
+  [0, 50, 100].forEach(v => s += `<line class="ch-grid" x1="${PL}" x2="${CW - PR}" y1="${cy(v)}" y2="${cy(v)}"/><text class="ch-ylab" x="${PL - 6}" y="${cy(v) + 3.5}" text-anchor="end">${v}</text>`);
+  for (let i = 0; i <= last; i++) if (calMonth(i) === 0) {
+    s += `<line class="ch-grid" x1="${cx(i)}" x2="${cx(i)}" y1="${CH - PB}" y2="${CH - PB + 4}"/><text class="ch-xlab" x="${cx(i)}" y="${CH - 6}" text-anchor="middle">${mLabel(i).slice(4)}</text>`;
+  }
+  others.forEach((o, k) => {
+    const st = OTHER_STYLE[k % OTHER_STYLE.length];
+    s += `<g class="ch-other ch-line ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}>
+      <path d="${linePath(o.m, 0, n - 1)}"/><path class="ch-partial" d="${linePath(o.m, n - 1, last)}"/></g>`;
+  });
+  if (mix) {
+    s += `<g class="ch-other ch-line ch-comb ${hiddenTerms.has(COMB) ? 'off' : ''}" data-term="${COMB}" stroke="${COMB_C}" stroke-dasharray="6 4">
+      <path d="${linePath(mix.combined, 0, n - 1)}"/><path d="${linePath(mix.combined, n - 1, last)}" stroke-dasharray="2 3"/></g>`;
+  }
+  s += `<g class="ch-line" data-term="${drive.t}"><path class="ch-drive ${RM ? '' : 'draw'}" pathLength="1" d="${linePath(drive.m, 0, n - 1)}"/>
+        <path class="ch-drive ch-partial" style="stroke-width:1.8" d="${linePath(drive.m, n - 1, last)}"/></g>`;
+  if (SPIKE_WORD[T.spike]) {
+    const px = cx(a.peakI), py = cy(a.peak), right = px > CW - 80;
+    s += `<g class="ch-peak"><circle cx="${px}" cy="${py}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/>
+      <text x="${right ? px - 7 : px + 7}" y="${py + 4}" text-anchor="${right ? 'end' : 'start'}">peak, ${mLabel(a.peakI)}</text></g>`;
+  }
+  s += `<line class="ch-cross" id="chCross" y1="${PT}" y2="${CH - PB}" x1="-10" x2="-10" visibility="hidden"/>
+        <g id="chDots"></g>
+        <rect id="chHit" x="${PL - 6}" y="0" width="${CW - PL - PR + 12}" height="${CH}" fill="transparent"/></svg>`;
+  return s;
+}
+
+function demandHtml(c) {
+  const T = TRENDS[c.topic];
+  const lab = T ? `${DEMAND[c.demand[0]].arr ? `<span class="arr ${c.demand[0]}">${DEMAND[c.demand[0]].arr}</span> ` : ''}${c.demand[1]}` : 'Not measured';
+  const head = secHead('demand', 'Demand', lab);
+  if (!T) return head + `<div class="sec-b"><div class="dd-sent">No trend line: trust topic, never scored on demand.</div><div class="small">${c.d.sentence}</div></div>`;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive);
+  const a = analyze(drive.m), mix = phraseMix(T);
+
+  // 1. Plain readout from the real monthly numbers
+  const pct = Math.round((a.r12 - 1) * 100 / 5) * 5;
+  const change = Math.abs(pct) < 5 ? 'about the same' : `${pct > 0 ? 'up' : 'down'} about ${Math.abs(pct)}%`;
+  const row = (icon, txt) => `<div class="rline">${RICON[icon]}<span>${txt}</span></div>`;
+  const lines = [row('avg', `Last 12 full months averaged ${Math.round(a.last12)}, the 12 before averaged ${Math.round(a.prev12)}: ${change}.`)];
+  let verdict = `<span class="vd">Verdict: ${T.dir[0].toUpperCase() + T.dir.slice(1)}</span>`;
+  if (['growing', 'stable', 'decaying'].includes(T.dir) && ratioWord(a.r12) !== T.dir) {
+    const p3 = Math.round((a.r3 - 1) * 100);
+    verdict += ratioWord(a.r3) === T.dir
+      ? ` <span class="q">The check only compares the last 3 full months with the same months a year earlier (${p3 >= 0 ? 'up' : 'down'} ${Math.abs(p3)}%), so it calls this ${T.dir}.</span>`
+      : ` <span class="q">Dental searches overall ${(a.r3 > 1.15 && T.dir === 'stable') || T.dir === 'decaying' ? 'rose too' : 'dipped'}, and the check measures against them, so it calls this ${T.dir}.</span>`;
+  }
+  // Green and red only carry growing and decaying; everything else reads slate.
+  const vClass = T.dir === 'growing' ? 'v-growing' : T.dir === 'decaying' ? 'v-decaying' : 'v-stable';
+  lines.push(`<div class="vcall ${vClass}">${verdict}</div>`);
+  // 3. Spike state
+  if (SPIKE_WORD[T.spike]) {
+    lines.push(row('spike', `Searches peaked in ${mLabel(a.peakI)} (${Math.round(a.peak)}): ${SPIKE_WORD[T.spike]}${a.tail != null ? `, the last 2 full months sit at about ${Math.round(a.tail * 100)}% of that peak` : ''}.`));
+  }
+  // 4. Season
+  lines.push(row('season', a.seasonTop.length ? `Searches usually peak in ${a.seasonTop.join(' and ')}.` : 'No clear season.'));
+
+  // 5. Real searches, driving term
+  const cs = drive.cs, mx = Math.max(...cs, 1);
+  const bars = cs.map((v, j) => `<div class="bar ${j === cs.length - 1 ? 'last' : ''}" data-j="${j}" style="height:${Math.max(2, v / mx * 100)}%;animation-delay:${RM ? 0 : 150 + j * 30}ms"></div>`).join('');
+  const notes = T.terms.map(t => {
+    const d = sharpDrop(t);
+    if (!d) return '';
+    const who = t === drive ? 'Sharp drop' : `'${t.t}' shows a sharp drop`;
+    return `<div class="quiet">${who} in ${d.label} from the search data provider (${fmtN(t.cs[d.j - 1])} to ${fmtN(t.cs[d.j])}); the Google line ${d.googleDropped ? 'dips too' : 'does not show it'}.</div>`;
+  }).join('');
+
+  const toggles = [`<span class="tg drive">${swatch('#0F766E', '', 2.6)}${drive.t} <small>drives the verdict</small></span>`]
+    .concat(others.map((o, k) => {
+      const st = OTHER_STYLE[k % OTHER_STYLE.length];
+      return `<button class="tg" data-term="${o.t}" aria-pressed="${!hiddenTerms.has(o.t)}" title="Its own reading: ${o.dir}${o.spike !== 'none' ? ', ' + o.spike.replace(/_/g, ' ') : ''}">${swatch(st.c, st.d, 1.6)}${o.t}</button>`;
+    }))
+    .concat(mix ? [`<button class="tg" data-term="${COMB}" aria-pressed="${!hiddenTerms.has(COMB)}">${swatch(COMB_C, '4 3', 2)}All phrases, weighted by searches</button>`] : [])
+    .join('');
+
+  return head + `<div class="sec-b"><div class="dd-sent">${c.d.sentence}</div>
+    <div class="chartwrap" id="chWrap">${chartSvg(T, drive, others, mix)}<div class="ch-tip" id="chTip"></div></div>
+    <div class="ch-cap">Google interest, 100 = the busiest month for this phrase in 5 years. Source: Google Trends, United States, each phrase checked on its own. Dotted end: ${mLabel(60)}, not over yet.${mix ? ' Each phrase is measured on its own 0-100 scale, so the combined line shows shape, not size.' : ''}</div>
+    ${mixHtml(mix)}
+    <div class="tgrow">${toggles}</div>
+    <div class="readout">${lines.join('')}</div>
+    <div class="bars-h">Estimated US searches for '${drive.t}', last 12 months</div>
+    <div class="chartwrap"><div class="bars" id="csBars">${bars}</div><div class="ch-tip" id="csTip"></div></div>
+    <div class="bars-x"><span>${mLabel(CS_START)}</span><span>${mLabel(CS_START + 11)}</span></div>
+    <div class="small" style="margin-top:4px">About ${fmtN(cs[11])} US searches last month (${mLabel(CS_START + 11)}).</div>
+    <details class="howcount"><summary>How we count searches</summary>
+      <p>These are estimates from DataForSEO's clickstream data: anonymized browsing activity, scaled up to the whole US. Google does not publish exact search counts; its Ads planner only gives wide ranges.</p>
+      <ul>
+        <li>Counts searches for this exact phrase, US nationwide, per month. Not limited to the practice's area.</li>
+        <li>Smoothed from month to month, so treat it as a size check, not a precise count. "No data" means no estimate, never zero.</li>
+        <li>The verdict above never uses these numbers: growing, stable or fading always comes from the Google Trends line.</li>
+      </ul>
+    </details>
+    ${notes}
+    <a class="go" href="#" onclick="return false">Open the trend check ›</a></div>`;
+}
+
+// ---------- How the phrases add up (services/market_trends/sizing.py rollup) ----------
+// Each phrase votes with its own Trends verdict, weighted by its share of estimated US searches
+// (last month of the embedded clickstream counts). Phrases with no classified direction or no
+// searches carry no weight. The heaviest direction wins; the heaviest phrase drives.
+const CLASSIFIED = ['growing', 'stable', 'decaying', 'emerging', 'negligible'];
+const DIR_FILL = { growing: '#16A34A', emerging: '#16A34A', stable: '#64748B', decaying: '#E11D48', negligible: '#CBD5E1' };
+const DIR_TEXT = { growing: '#15803D', emerging: '#15803D', stable: '#475569', decaying: '#BE123C', negligible: '#94A3B8' };
+const PHRASE_SPIKE = { fading: 'spike fading', spike_confirmed: 'short spike, gone', step_up_held: 'step up held' };
+const COMB = '__combined', COMB_C = '#0D9488';
+const cap = w => w[0].toUpperCase() + w.slice(1);
+const pctTxt = w => w <= 0 ? '0%' : w < 0.01 ? 'under 1%' : Math.round(w * 100) + '%';
+function phraseMix(T) {
+  if (!T) return null;
+  const live = T.terms.filter(t => CLASSIFIED.includes(t.dir));
+  const vol = t => (t.cs && t.cs.length ? t.cs[t.cs.length - 1] : 0) || 0;
+  const total = live.reduce((sum, t) => sum + vol(t), 0);
+  if (!live.length || total <= 0) return null;
+  const rows = live.map(t => ({ t: t.t, dir: t.dir, spike: t.spike, vol: vol(t), w: vol(t) / total, m: t.m }));
+  const driving = rows.reduce((b, r) => r.w > b.w ? r : b, rows[0]);
+  const votes = {};
+  rows.forEach(r => votes[r.dir] = (votes[r.dir] || 0) + r.w);
+  const winner = Object.keys(votes).reduce((b, d) => votes[d] > votes[b] || (votes[d] === votes[b] && d === driving.dir) ? d : b);
+  const combined = Array.from({ length: 61 }, (_, i) => rows.reduce((sum, r) => sum + r.w * r.m[i], 0));
+  return { rows: rows.slice().sort((x, y) => y.w - x.w), driving, votes, winner, combined };
+}
+function mixResult(mix) {
+  const { rows, driving, votes, winner } = mix;
+  const W = `<span class="w" style="color:${DIR_TEXT[winner]}">${cap(winner)} wins:</span>`;
+  const diff = rows.filter(r => r.dir !== winner);
+  if (!diff.length) {
+    const all = rows.length === 1 ? 'the only phrase is' : rows.length === 2 ? 'both phrases are' : `all ${rows.length} phrases are`;
+    return `${W} ${all} ${winner}; '${driving.t}' carries the most, ${pctTxt(driving.w)} of searches.`;
+  }
+  const lead = driving.dir === winner ? `'${driving.t}' carries ${pctTxt(driving.w)} of searches.`
+    : `phrases reading ${winner} carry ${pctTxt(votes[winner])} of searches.`;
+  const groups = [];
+  diff.forEach(r => { let g = groups.find(x => x.dir === r.dir); if (!g) groups.push(g = { dir: r.dir, list: [] }); g.list.push(r); });
+  const verb = (d, n) => d === 'negligible' ? (n > 1 ? 'read as negligible' : 'reads as negligible') : `${n > 1 ? 'are' : 'is'} ${d}`;
+  const parts = groups.map(g => `${names(g.list.map(r => `'${r.t}' (${pctTxt(r.w)})`))} ${verb(g.dir, g.list.length)}`);
+  const dw = diff.reduce((sum, r) => sum + r.w, 0), many = diff.length > 1;
+  const tail = dw < 0.25 ? `but ${many ? 'they are' : 'it is'} small` : `but ${many ? 'they carry' : 'it carries'} less of the searches`;
+  return `${W} ${lead} ${cap(names(parts))}, ${tail}.`;
+}
+function mixHtml(mix) {
+  if (!mix) return '';
+  const seg = mix.rows.map(r => `<span class="mix-seg" data-term="${r.t}" style="--w:${r.w};background:${DIR_FILL[r.dir]}" title="${r.t}: ${r.dir}, ${pctTxt(r.w)} of searches"></span>`).join('');
+  const rows = mix.rows.map(r => `<div class="mix-row" data-term="${r.t}">
+      <span class="mix-sw" style="background:${DIR_FILL[r.dir]}"></span>
+      <span class="mix-name">${r.t}${r === mix.driving ? ' <small>drives</small>' : ''}</span>
+      <span class="mix-dir" style="color:${DIR_TEXT[r.dir]}">${cap(r.dir)}${PHRASE_SPIKE[r.spike] ? ` <small style="font-weight:400">(${PHRASE_SPIKE[r.spike]})</small>` : ''}</span>
+      <span class="mix-share">${pctTxt(r.w)}</span>
+      <span class="mix-vol">${fmtN(r.vol)} a month</span>
+    </div>`).join('');
+  return `<div class="mix" id="mix">
+    <div class="mix-h">How the phrases add up <small>each phrase votes with its own verdict, sized by its share of searches</small></div>
+    <div class="mix-bar" role="img" aria-label="Share of searches per phrase">${seg}</div>
+    <div class="mix-rows">${rows}</div>
+    <p class="mix-res">${mixResult(mix)}</p>
+    <div class="small">Searches: estimated US searches last month (${mLabel(CS_START + 11)}). A spike only counts when the phrase carrying it has 25% or more of the searches.</div>
+  </div>`;
+}
+
+// ---------- Section card chrome ----------
+const SEC_ICON = {
+  demand: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>',
+  cov: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>',
+  vis: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  rate: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.9l-5.3 2.7 1-5.8-4.2-4.1 5.9-.9z"/></svg>',
+};
+const SEC_CLASS = { demand: 's-demand', cov: 's-cov', vis: 's-vis', rate: 's-rate' };
+const secHead = (k, title, lab) => `<div class="sec-h"><span class="sec-ic">${SEC_ICON[k]}</span><span class="sec-t">${title}</span>${lab ? `<span class="sec-lab">${lab}</span>` : ''}</div>`;
+const RICON = {
+  avg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>',
+  spike: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h5l4-12 4 12h7"/></svg>',
+  season: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+};
+
+function wireDemand(c) {
+  const T = TRENDS[c.topic];
+  if (!T) return;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive);
+  const wrap = $('chWrap'), svg = wrap.querySelector('svg'), tipEl = $('chTip');
+  const cross = $('chCross'), dots = $('chDots'), mix = phraseMix(T);
+  const show = clientX => {
+    const r = svg.getBoundingClientRect(), vx = (clientX - r.left) * CW / r.width;
+    const i = Math.max(0, Math.min(60, Math.round((vx - PL) / (cx(1) - cx(0)))));
+    cross.setAttribute('x1', cx(i)); cross.setAttribute('x2', cx(i)); cross.setAttribute('visibility', 'visible');
+    const vis = others.filter(o => !hiddenTerms.has(o.t)), combOn = mix && !hiddenTerms.has(COMB);
+    dots.innerHTML = vis.map((o, k) => `<circle cx="${cx(i)}" cy="${cy(o.m[i])}" r="2.6" fill="${OTHER_STYLE[others.indexOf(o) % 2].c}"/>`).join('') +
+      (combOn ? `<circle cx="${cx(i)}" cy="${cy(mix.combined[i])}" r="3" fill="${COMB_C}"/>` : '') +
+      `<circle cx="${cx(i)}" cy="${cy(drive.m[i])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>`;
+    tipEl.innerHTML = `<b>${mLabel(i)} · ${Math.round(drive.m[i])}</b>${i === 60 ? ' <span class="o">(not over yet)</span>' : ''}` +
+      vis.map(o => `<div class="o">${o.t} · ${Math.round(o.m[i])}</div>`).join('') +
+      (combOn ? `<div class="o">All phrases, weighted · ${Math.round(mix.combined[i])}</div>` : '');
+    const px = cx(i) * r.width / CW, w = tipEl.offsetWidth;
+    tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px';
+    tipEl.style.top = (Math.min(cy(drive.m[i]), ...vis.map(o => cy(o.m[i])), combOn ? cy(mix.combined[i]) : CH) * r.height / CH - 8) + 'px';
+    tipEl.classList.add('on');
+  };
+  const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.innerHTML = ''; tipEl.classList.remove('on'); };
+  const hit = $('chHit');
+  hit.addEventListener('pointermove', e => show(e.clientX));
+  hit.addEventListener('pointerdown', e => show(e.clientX));
+  hit.addEventListener('pointerleave', hide);
+
+  $('dBody').querySelectorAll('.tg[data-term]').forEach(b => b.onclick = () => {
+    const t = b.dataset.term, on = hiddenTerms.has(t);
+    if (on) hiddenTerms.delete(t); else hiddenTerms.add(t);
+    b.setAttribute('aria-pressed', on);
+    svg.querySelector(`.ch-other[data-term="${t}"]`).classList.toggle('off', !on);
+  });
+
+  // Hover a phrase in the strip: light up its line on the chart.
+  const mixEl = $('mix');
+  if (mixEl) mixEl.querySelectorAll('[data-term]').forEach(el => {
+    const t = el.dataset.term;
+    el.onmouseenter = () => {
+      mixEl.classList.add('focus'); svg.classList.add('focus');
+      mixEl.querySelectorAll('[data-term]').forEach(x => x.classList.toggle('hl', x.dataset.term === t));
+      svg.querySelectorAll('.ch-line').forEach(g => g.classList.toggle('hl', g.dataset.term === t));
+    };
+    el.onmouseleave = () => {
+      mixEl.classList.remove('focus'); svg.classList.remove('focus');
+      mixEl.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+      svg.querySelectorAll('.ch-line.hl').forEach(g => g.classList.remove('hl'));
+    };
+  });
+
+  const csTip = $('csTip'), barsEl = $('csBars');
+  barsEl.querySelectorAll('.bar').forEach(bar => {
+    const j = +bar.dataset.j;
+    bar.onmouseenter = () => {
+      csTip.innerHTML = `<b>${mLabel(CS_START + j)} · ${fmtN(drive.cs[j])}</b> <span class="o">searches</span>`;
+      const w = csTip.offsetWidth, x = bar.offsetLeft + bar.offsetWidth / 2;
+      csTip.style.left = Math.max(w / 2, Math.min(barsEl.offsetWidth - w / 2, x)) + 'px';
+      csTip.style.top = (bar.offsetTop - 6) + 'px';
+      csTip.classList.add('on');
+    };
+    bar.onmouseleave = () => csTip.classList.remove('on');
+  });
+}
+
+const ORDER =['write', 'optimize', 'notgap', 'hold', 'noread'];
+const ACTION = {
+  write:    { tag: 'Write', zone: 'Write new pages', rule: 'Demand is healthy and the site has no page on it.' },
+  optimize: { tag: 'Optimize', zone: 'Improve the page', rule: 'Demand is healthy and the page is thin.' },
+  notgap:   { tag: 'Content is not the gap', zone: 'Not a content problem', rule: 'The page is solid, but Maps or AI visibility is weak.' },
+  hold:     { tag: 'Hold', zone: 'Hold', rule: 'Demand is falling or negligible.' },
+  noread:   { tag: 'No Read', zone: 'No Read', rule: 'No demand reading, or demand alone.' },
+};
+const EMPTY = {
+  notgap: 'Nothing here today. This needs a Maps or AI reading, and neither is measured for this office yet.',
+  hold: 'Nothing here today: no topic shows falling demand.',
+};
+const DEMAND = { up: { row: 'growing', word: 'Growing', arr: '↑' }, flat: { row: 'stable', word: 'Stable', arr: '→' },
+                 down: { row: 'decaying', word: 'Decaying', arr: '↓' }, none: { row: 'trust', word: 'Not measured', arr: '' } };
+const COLS = ['No page', 'Thin page', 'Solid page'];
+const RANGES = [[0, 0.15], [0.15, 0.6], [0.6, 1]]; // approximate column edges on the share axis
+
+cards.forEach((c, i) => {
+  const [cv, th, gp] = c.d.cov;
+  c.i = i; c.total = cv + th + gp;
+  c.share = (cv + 0.5 * th) / c.total;          // real: covered + half of thin, over total questions
+  c.row = DEMAND[c.demand[0]].row;
+  c.col = COLS.indexOf(c.coverage);
+});
+const navOrder = ORDER.flatMap(a => cards.filter(c => c.action === a));
+const plan = new Set(cards.filter(c => c.action === 'write' || c.action === 'optimize').map(c => c.i));
+
+// ---------- DOM refs ----------
+const $ = id => document.getElementById(id);
+const stage = $('stage'), mapbg = $('mapbg'), tip = $('tip');
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let mode = 'map', selected = null, spot = null, firstPaint = true;
+const pos = {};       // per node: {x, y, cx, cy}
+
+// ---------- Nodes ----------
+const nodes = cards.map(c => {
+  const b = document.createElement('button');
+  b.className = 'node a-' + c.action;
+  b.dataset.i = c.i;
+  b.setAttribute('aria-label', `${c.topic}: ${ACTION[c.action].tag}`);
+  b.innerHTML = `<span class="mark"></span>
+    <span class="ntext"><span class="nname"><span class="nshort">${c.short}</span><span class="nfull">${c.topic}</span></span><span class="nwhy">${c.why}</span></span>
+    <span class="nmeta">${DEMAND[c.demand[0]].word} · ${c.coverage}</span>
+    <span class="nplan" title="${c.action === 'optimize' ? 'Kept for On-Page Optimization' : 'In the calendar plan'}">✓</span>`;
+  b.addEventListener('mouseenter', () => showTip(c.i));
+  b.addEventListener('mouseleave', hideTip);
+  b.addEventListener('focus', () => { if (b.matches(':focus-visible')) showTip(c.i); });
+  b.addEventListener('blur', hideTip);
+  b.addEventListener('click', () => openDrawer(c.i));
+  stage.appendChild(b);
+  return b;
+});
+const heads = ORDER.map(a => {
+  const h = document.createElement('div');
+  h.className = 'ghead';
+  const n = cards.filter(c => c.action === a).length;
+  h.innerHTML = `<span class="gname">${ACTION[a].zone}</span>` +
+    (n ? `<span class="grule">${ACTION[a].rule}</span>` : `<span class="gnone">${EMPTY[a] || 'None today.'}</span>`);
+  stage.appendChild(h);
+  return h;
+});
+
+// ---------- Map geometry ----------
+function geom(W) {
+  const narrow = W < 820;
+  const padL = narrow ? 100 : 148, padR = 12, top = 42;
+  const rows = [ { k: 'growing', h: 96 }, { k: 'stable', h: 176 }, { k: 'trust', h: 58 }, { k: 'decaying', h: 92 } ];
+  let y = top; rows.forEach(r => { r.y = y; y += r.h; });
+  const plotW = W - padL - padR, colW = plotW / 3;
+  const cols = [0, 1, 2].map(k => ({ x: padL + k * colW, w: colW }));
+  const rowBy = {}; rows.forEach(r => rowBy[r.k] = r);
+  return { padL, padR, top, rows, rowBy, cols, colW, plotW, plotBottom: y, H: y + 50 };
+}
+function dotX(g, c) {
+  const k = c.col < 0 ? 0 : c.col, [lo, hi] = RANGES[k];
+  const t = Math.max(0, Math.min(1, (c.share - lo) / (hi - lo)));
+  // Left half of the column only, so the label never crosses into the next zone.
+  return g.cols[k].x + 22 + t * 0.45 * (g.colW - 44);
+}
+
+function renderMapBg(g, W) {
+  const R = g.rowBy, healthyTop = R.growing.y, healthyBot = R.trust.y + R.trust.h;
+  const count = a => cards.filter(c => c.action === a).length;
+  let h = `<div class="corner">Demand ↓<br>Coverage →</div>`;
+  const zone = (a, x, y, w, ht) => {
+    const n = count(a);
+    return `<div class="zone z-${a}" data-a="${a}" style="left:${x + 3}px;top:${y + 3}px;width:${w - 6}px;height:${ht - 6}px">
+      <span class="zname">${ACTION[a].zone}${n ? ' · ' + n : ''}</span>${n ? '' : `<span class="zempty">${EMPTY[a]}</span>`}</div>`;
+  };
+  ['write', 'optimize', 'notgap'].forEach((a, k) => h += zone(a, g.cols[k].x, healthyTop, g.colW, healthyBot - healthyTop));
+  h += zone('hold', g.padL, R.decaying.y, g.plotW, R.decaying.h);
+  // dashed rules mark the trust lane inside the healthy zones
+  [R.trust.y, R.trust.y + R.trust.h].forEach(y => h += `<div class="lane-rule" style="left:${g.padL + 6}px;width:${g.plotW - 12}px;top:${y}px"></div>`);
+  COLS.forEach((name, k) => h += `<div class="collabel" style="left:${g.cols[k].x}px;width:${g.colW}px">${name}</div>`);
+  const rl = (r, html) => h += `<div class="rowlabel" style="top:${r.y}px;height:${r.h}px;width:${g.padL - 14}px">${html}</div>`;
+  rl(R.growing, `<span><span class="arr up">↑</span>Growing</span>`);
+  rl(R.stable, `<span><span class="arr flat">→</span>Stable</span>`);
+  rl(R.trust, `<span>Demand not measured</span><small>trust topics, never scored down</small>`);
+  rl(R.decaying, `<span><span class="arr down">↓</span>Decaying</span>`);
+  const ay = g.plotBottom + 12;
+  h += `<div class="xaxis" style="left:${g.padL}px;width:${g.plotW}px;top:${ay}px"></div>
+        <div class="xtick" style="left:${g.padL}px;top:${ay + 4}px">none</div>
+        <div class="xtick" style="right:${g.padR + 2}px;top:${ay + 4}px">all</div>
+        <div class="xcap" style="left:${g.padL}px;width:${g.plotW}px;top:${ay + 4}px">Share of real questions the site already answers</div>`;
+  mapbg.innerHTML = h;
+  mapbg.querySelectorAll('.zone').forEach(z => z.classList.toggle('lit', z.dataset.a === spot));
+}
+
+function layoutMap(W) {
+  const g = geom(W);
+  renderMapBg(g, W);
+  // spread dots vertically inside each demand band (no meaning, avoids overlap)
+  const byRow = {};
+  cards.forEach(c => (byRow[c.row] = byRow[c.row] || []).push(c));
+  Object.keys(byRow).forEach(rk => {
+    const r = g.rowBy[rk], list = byRow[rk];
+    list.forEach((c, k) => {
+      const cx = dotX(g, c), cy = r.y + r.h * (k + 1) / (list.length + 1);
+      const el = nodes[c.i];
+      el.style.width = '';
+      el.classList.remove('flip');
+      const w = el.offsetWidth;
+      const flip = cx - 8 + w > W - 4;
+      el.classList.toggle('flip', flip);
+      pos[c.i] = { x: flip ? cx - (w - 8) : cx - 8, y: cy - 9, cx, cy };
+    });
+  });
+  return g.H;
+}
+
+function layoutList(W) {
+  let y = 0;
+  ORDER.forEach((a, k) => {
+    const items = cards.filter(c => c.action === a);
+    const h = heads[k];
+    if (!items.length && a === 'noread') { h.style.display = 'none'; return; }
+    h.style.display = '';
+    h.style.transform = `translateY(${y}px)`;
+    y += 44;
+    items.forEach(c => {
+      nodes[c.i].classList.remove('flip');
+      nodes[c.i].style.width = W + 'px';
+      pos[c.i] = { x: 0, y, cx: 22, cy: y + 31 };
+      y += 70;
+    });
+    y += items.length ? 14 : 4;
+  });
+  return y;
+}
+
+function layout(stagger) {
+  const W = stage.clientWidth;
+  const H = mode === 'map' ? layoutMap(W) : layoutList(W);
+  stage.style.height = H + 'px';
+  const order = mode === 'map' ? cards.map(c => c.i) : navOrder.map(c => c.i);
+  order.forEach((i, rank) => {
+    const el = nodes[i];
+    el.style.transitionDelay = (stagger && !RM) ? (rank * (firstPaint ? 90 : 45)) + 'ms' : '0ms';
+    el.style.transform = `translate(${pos[i].x}px, ${pos[i].y}px)`;
+    el.style.opacity = '';
+  });
+  if (stagger) setTimeout(() => nodes.forEach(n => n.style.transitionDelay = '0ms'), 1400);
+  nodes.forEach(n => n.querySelector('.nplan').classList.toggle('on', plan.has(+n.dataset.i)));
+}
+
+// ---------- Tooltip ----------
+function showTip(i) {
+  if (mode !== 'map') { stage.classList.add('hovering'); return; }
+  const c = cards[i], p = pos[i];
+  tip.innerHTML = `<div class="tt">${c.topic}</div><span class="tag ${c.action}">${ACTION[c.action].tag}</span>
+    <div class="tw">${c.why}</div><div class="tc">Click for the numbers</div>`;
+  const W = stage.clientWidth, half = 150;
+  tip.style.left = Math.max(half, Math.min(W - half, p.cx)) + 'px';
+  tip.style.top = (p.cy - 4) + 'px';
+  tip.classList.add('on');
+  stage.classList.add('hovering');
+}
+function hideTip() { tip.classList.remove('on'); stage.classList.remove('hovering'); }
+
+// ---------- Takeaway + legend ----------
+const names = list => list.length === 1 ? list[0] : list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
+function renderTakeaway() {
+  const by = a => cards.filter(c => c.action === a);
+  const w = by('write'), o = by('optimize'), h = by('hold'), ng = by('notgap');
+  $('headline').innerHTML = w.length
+    ? `${w.length} ${w.length === 1 ? 'topic needs a new page' : 'topics need new pages'}. Start with <button class="linkish" data-open="${w[0].i}">${w[0].topic}</button>.`
+    : (o.length ? `${o.length} existing ${o.length === 1 ? 'page needs' : 'pages need'} improving.` : 'No content work suggested right now.');
+  const parts = [];
+  if (w.length) parts.push(`<span class="why-first">(first in the Trend Check's order)</span>`);
+  if (o.length && w.length) parts.push(`<br>${o.length} ${o.length === 1 ? 'page' : 'pages'} to improve: ${names(o.map(c => c.short))}.`);
+  parts.push(h.length ? ` ${h.length} on hold.` : ' Nothing to hold.');
+  if (!ng.length) parts.push(' Visibility problems cannot show until Maps or AI is measured.');
+  $('subline').innerHTML = parts.join('');
+  const link = $('headline').querySelector('[data-open]');
+  if (link) {
+    const i = +link.dataset.open;
+    link.onclick = () => openDrawer(i);
+    link.onmouseenter = () => { nodes[i].classList.add('hot', 'pulse'); stage.classList.add('hovering'); };
+    link.onmouseleave = () => { nodes[i].classList.remove('hot', 'pulse'); stage.classList.remove('hovering'); };
+  }
+}
+function renderLegend() {
+  $('legend').innerHTML = ORDER.map(a => {
+    const n = cards.filter(c => c.action === a).length;
+    return `<button class="lg a-${a} ${n ? '' : 'zero'} ${spot === a ? 'on' : ''}" data-a="${a}" aria-pressed="${spot === a}"><span class="mark"></span>${ACTION[a].tag} <b>${n}</b></button>`;
+  }).join('');
+  $('legend').querySelectorAll('.lg').forEach(b => b.onclick = () => { spot = spot === b.dataset.a ? null : b.dataset.a; applySpot(); });
+}
+function applySpot() {
+  stage.classList.toggle('spot', !!spot);
+  nodes.forEach(n => n.classList.toggle('dim', !!spot && !n.classList.contains('a-' + spot)));
+  mapbg.querySelectorAll('.zone').forEach(z => z.classList.toggle('lit', z.dataset.a === spot));
+  renderLegend();
+}
+
+// ---------- Drawer ----------
+function cellsFor(c) {
+  const [cv, th, gp] = c.d.cov;
+  const cells = [].concat(Array(cv).fill('cov'), Array(th).fill('thin'), Array(gp).fill('none')).map(st => ({ st, q: null }));
+  const map = { covered: 'cov', thin: 'thin', none: 'none' };
+  const unplaced = [];
+  c.d.qs.forEach(q => {
+    const st = q.st && map[q.st];
+    const slot = st ? cells.find(x => x.st === st && !x.q) : null;
+    if (slot) slot.q = q; else unplaced.push(q);
+  });
+  return { cells, unplaced };
+}
+const ST_WORD = { cov: 'Covered', thin: 'Partly answered', none: 'No answer' };
+const VERDICT = { write: 'Write a new page', optimize: 'Improve the page', notgap: 'Content is not the gap', hold: 'Hold', noread: 'No Read' };
+const sec = (k, inner) => `<section class="sec ${SEC_CLASS[k]}">${inner}</section>`;
+
+// Header pieces: tags beside the title, and the one-line reasoning under it.
+function headTagsHtml(c) {
+  return `<span class="tag ${c.action}">${ACTION[c.action].tag}</span>` +
+    (c.cat ? `<span class="tag cat" title="Checked on its own trend line">Category: ${c.cat}</span>` : '');
+}
+function summaryHtml(c) {
+  const demandChip = c.demand[0] === 'none' ? 'Not measured <span>(trust topic, counts as healthy)</span>' : `${c.demand[1]}`;
+  return `<span class="chip"><span>Demand:</span> ${demandChip}</span><span class="op">+</span>
+    <span class="chip"><span>Coverage:</span> ${c.coverage}</span><span class="op">=</span>
+    <span class="tag ${c.action}">${VERDICT[c.action]}</span>
+    <span class="rule">${ACTION[c.action].rule}</span>`;
+}
+
+function coverageHtml(c) {
+  const d = c.d, [cv, th, gp] = d.cov;
+  const { cells, unplaced } = cellsFor(c);
+  return secHead('cov', 'Coverage', c.coverage) + `<div class="sec-b">
+      <div>${cv} covered, ${th} partly answered, ${gp} with no answer, out of ${c.total} questions people ask.</div>
+      <div class="qgrid" id="qgrid" style="margin-top:12px">${cells.map((x, k) =>
+        `<span class="qc ${x.st} ${x.q ? 'known' : ''}" data-k="${k}" style="animation-delay:${RM ? 0 : k * 18}ms"></span>`).join('')}</div>
+      <div class="qkey"><span><i style="background:#0F766E"></i>Covered</span><span><i style="background:#7DD3FC"></i>Partly answered</span><span><i style="background:#F1F5F9;box-shadow:inset 0 0 0 1px var(--border-strong)"></i>No answer</span><span><i style="background:none;position:relative"><b style="position:absolute;left:2.5px;top:2.5px;width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:.55"></b></i>Question text available</span></div>
+      <div class="reader" id="reader"><span class="rs">Hover a square to read it.</span></div>
+      ${unplaced.length ? `<div class="small" style="margin-top:8px">Also close, answer level not stored:</div><ul class="alsoq">${unplaced.map(q => `<li>'${q.q}' · closest page ${q.page} (match ${q.s})</li>`).join('')}</ul>` : ''}
+      ${d.pages ? `<div class="pagebox"><span class="num">${d.pages}</span><span>new pages recommended</span></div>` : ''}
+      ${d.page ? `<div class="pagebox"><span>Page to improve:</span> <b style="font-weight:600;color:#0369A1">${d.page}</b></div>` : ''}
+      <div class="small">Label cut-offs are provisional: Solid at half or more covered; Thin at 30% or more covered or partly answered.</div>
+      <a class="go" href="#" onclick="return false">Open Find gaps ›</a>
+    </div>`;
+}
+
+function drawerHtml(c) {
+  const d = c.d;
+  const vis = secHead('vis', 'Visibility', 'Not measured yet') + `<div class="sec-b"><dl class="vrow">
+        <dt>Maps</dt><dd><span class="tag nrtag">No Read</span> No grid scan for this office yet.<br><a class="go" href="#" onclick="return false" style="margin-top:4px">Run a grid scan ›</a></dd>
+        <dt>AI answers</dt><dd><span class="tag nrtag">No Read</span> AI visibility is off for this office.</dd>
+      </dl></div>`;
+  const rate = secHead('rate', 'Topic rating', '') + `<div class="sec-b">${d.rating || 'Fired before ratings existed (10/22). New runs show a 1 to 10 rating with its breakdown here.'}</div>`;
+  return `<p class="tm-why">${c.why}</p>
+    <div class="tm-grid">
+      <div class="tm-col">${sec('demand', demandHtml(c))}</div>
+      <div class="tm-col">${sec('cov', coverageHtml(c))}${sec('vis', vis)}${sec('rate', rate)}</div>
+    </div>`;
+}
+
+const ACOLOR = { write: 'var(--c-write)', optimize: 'var(--c-opt)', notgap: 'var(--c-notgap)', hold: 'var(--c-hold)', noread: 'var(--faint)' };
+// Left rail: every topic, grouped by action, in the same order as prev / next.
+function renderRail() {
+  $('dRail').innerHTML = ORDER.map(a => {
+    const items = navOrder.filter(c => c.action === a);
+    if (!items.length) return '';
+    return `<div class="rail-g" style="color:${ACOLOR[a]}">${ACTION[a].zone}</div>` +
+      items.map(c => `<button class="rail-i a-${c.action}" data-i="${c.i}"><span class="dot" style="background:${ACOLOR[c.action]}"></span><span class="rt">${c.short}<small>${DEMAND[c.demand[0]].word} · ${c.coverage}</small></span></button>`).join('');
+  }).join('');
+  $('dRail').querySelectorAll('.rail-i').forEach(b => b.onclick = () => openDrawer(+b.dataset.i));
+}
+
+function wireCells(c) {
+  const { cells } = cellsFor(c), reader = $('reader');
+  $('qgrid').querySelectorAll('.qc').forEach(el => {
+    const x = cells[+el.dataset.k], n = +el.dataset.k + 1;
+    el.onmouseenter = () => {
+      reader.innerHTML = x.q
+        ? `<div class="rs">Question ${n} · ${ST_WORD[x.st]}</div>'${x.q.q}' · closest page ${x.q.page} (match ${x.q.s})`
+        : `<div class="rs">Question ${n} · ${ST_WORD[x.st]}</div><span class="nr">Only the closest matches are kept in this mockup.</span>`;
+    };
+    el.onmouseleave = () => { reader.innerHTML = '<span class="rs">Hover a square to read it.</span>'; };
+  });
+}
+
+function openDrawer(i) {
+  const was = selected;
+  selected = i;
+  hideTip();
+  nodes.forEach(n => n.classList.toggle('sel', +n.dataset.i === i));
+  const c = cards[i], body = $('dBody');
+  if (was !== i) hiddenTerms = new Set();
+  body.innerHTML = drawerHtml(c);
+  body.scrollTop = 0;
+  if (was !== null && !RM) { body.classList.remove('swap'); void body.offsetWidth; body.classList.add('swap'); }
+  wireCells(c);
+  wireDemand(c);
+  const k = navOrder.findIndex(x => x.i === i);
+  $('dPos').textContent = `Topic ${k + 1} of ${navOrder.length}`;
+  $('dName').textContent = c.topic;
+  $('dTags').innerHTML = headTagsHtml(c);
+  $('dSum').innerHTML = summaryHtml(c);
+  $('dRail').querySelectorAll('.rail-i').forEach(b => {
+    const on = +b.dataset.i === i;
+    b.classList.toggle('on', on);
+    if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+  });
+  updatePlanBtn();
+  if (was === null) {
+    $('tmodal').classList.add('on'); $('tmodal').setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    $('tmPop').focus({ preventScroll: true });
+  }
+}
+function closeDrawer() {
+  if (selected === null) return;
+  const back = nodes[selected];
+  selected = null;
+  nodes.forEach(n => n.classList.remove('sel'));
+  $('tmodal').classList.remove('on'); $('tmodal').setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  back.focus({ preventScroll: true });
+}
+function step(dir) {
+  if (selected === null) return;
+  const k = navOrder.findIndex(x => x.i === selected);
+  openDrawer(navOrder[(k + dir + navOrder.length) % navOrder.length].i);
+}
+// Calendars hold NEW content only: Write topics go to the calendar, Improve topics go to On-Page Optimization.
+const DEST = { optimize: { on: '✓ In the On-Page fixes', off: 'Add to On-Page fixes' },
+               write: { on: '✓ In the calendar plan', off: 'Add to the calendar plan' } };
+const destFor = c => DEST[c.action === 'optimize' ? 'optimize' : 'write'];
+function updatePlanBtn() {
+  const b = $('dPlan'), on = plan.has(selected), dst = destFor(cards[selected]);
+  b.className = 'btn act-' + (cards[selected].action === 'optimize' ? 'optimize' : 'write') + (on ? ' inplan' : '');
+  b.textContent = on ? dst.on : dst.off;
+}
+const keptIn = a => cards.filter(c => c.action === a && plan.has(c.i)).length;
+function updateCta() {
+  const w = keptIn('write'), o = keptIn('optimize');
+  $('ctaCal').textContent = `Add ${w} new ${w === 1 ? 'page' : 'pages'} to the calendar`;
+  $('ctaCal').hidden = !w;
+  $('ctaOnp').textContent = `Send ${o} page ${o === 1 ? 'fix' : 'fixes'} to On-Page Optimization`;
+  $('ctaOnp').hidden = !o;
+}
+
+$('dPlan').onclick = () => {
+  if (plan.has(selected)) plan.delete(selected); else plan.add(selected);
+  updatePlanBtn(); updateCta();
+  nodes.forEach(n => n.querySelector('.nplan').classList.toggle('on', plan.has(+n.dataset.i)));
+};
+$('dPrev').onclick = () => step(-1);
+$('dNext').onclick = () => step(1);
+$('dClose').onclick = closeDrawer;
+$('scrim').onclick = closeDrawer;
+document.addEventListener('keydown', e => {
+  if (selected === null) return;
+  if (e.key === 'Escape') closeDrawer();
+  else if (e.key === 'ArrowRight') step(1);
+  else if (e.key === 'ArrowLeft') step(-1);
+});
+
+let toastT;
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600);
+}
+$('ctaCal').onclick = () => { const n = keptIn('write'); toast(`${n} new ${n === 1 ? 'page' : 'pages'} added to the calendar draft. Nothing is published.`); };
+$('ctaOnp').onclick = () => { const n = keptIn('optimize'); toast(`${n} page ${n === 1 ? 'fix' : 'fixes'} sent to On-Page Optimization. Nothing on the site changes yet.`); };
+
+// ---------- Map | List toggle ----------
+function placeThumb() {
+  const active = mode === 'map' ? $('bMap') : $('bList');
+  const th = $('thumb');
+  th.style.width = active.offsetWidth + 'px';
+  th.style.transform = `translateX(${active.offsetLeft - 3}px)`;
+}
+function setMode(m) {
+  if (m === mode) return;
+  mode = m;
+  hideTip();
+  stage.classList.toggle('is-list', m === 'list');
+  stage.classList.toggle('is-map', m === 'map');
+  $('bMap').setAttribute('aria-pressed', m === 'map');
+  $('bList').setAttribute('aria-pressed', m === 'list');
+  $('footnote').hidden = m === 'list';
+  placeThumb();
+  layout(true);
+}
+$('bMap').onclick = () => setMode('map');
+$('bList').onclick = () => setMode('list');
+
+// ---------- Boot: dots fly in from the bottom-left corner, staggered ----------
+function boot() {
+  renderTakeaway(); renderLegend(); updateCta(); renderRail();
+  stage.classList.add('noanim');
+  const W = stage.clientWidth, g = geom(W);
+  stage.style.height = g.H + 'px';
+  nodes.forEach(n => { n.style.transform = `translate(${g.padL}px, ${g.plotBottom}px) scale(.4)`; n.style.opacity = '0'; });
+  void stage.offsetWidth;                // commit the start state before enabling transitions
+  stage.classList.remove('noanim');
+  layout(true); firstPaint = false;
+  placeThumb();
+}
+let rT;
+window.addEventListener('resize', () => {
+  clearTimeout(rT);
+  rT = setTimeout(() => {
+    stage.classList.add('noanim'); layout(false); void stage.offsetWidth; stage.classList.remove('noanim'); placeThumb();
+  }, 120);
+});
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { boot(); }); else boot();
+</script>
+<script>
+// ---------- Our practices (agency corpus): performance_cache_queries, Search Console impressions for every
+// practice we manage (237), Oct 2025 to Sep 2026, local snapshot. Same read the trend check already makes. ----------
+const CORP = '__corpus', TEAL = '#0F766E';
+const CORPUS = {
+  practices: 237,
+  "tongue tie": {"start": 49, "imp": [5849, 8800, 8296, 8078, 9406, 8176, 9172, 16523, 12699, 10076, 5530], "pr": [30, 29, 36, 35, 38, 34, 31, 39, 43, 43, 44], "seen": 73},
+  "frenectomy": {"start": 49, "imp": [32708, 39526, 45783, 48023, 62918, 46347, 43560, 55941, 52349, 52900, 13322], "pr": [35, 42, 45, 42, 44, 45, 47, 51, 58, 50, 50], "seen": 105},
+  "sedation dentistry": {"start": 49, "imp": [15074, 22974, 20792, 23715, 28778, 22747, 23677, 29608, 24699, 40892, 26895], "pr": [103, 117, 120, 134, 129, 124, 120, 125, 127, 129, 127], "seen": 201},
+  "dental sedation": {"start": 49, "imp": [4530, 7776, 3894, 4434, 5303, 3710, 4539, 6101, 2805, 5198, 2606], "pr": [42, 48, 48, 46, 56, 54, 55, 56, 62, 58, 53], "seen": 109},
+  "sleep dentistry": {"start": 49, "imp": [443, 441, 293, 450, 740, 822, 897, 1216, 951, 1112, 863], "pr": [32, 38, 44, 51, 51, 46, 44, 44, 43, 52, 47], "seen": 111},
+  "tongue tie surgery": {"start": 49, "imp": [1527, 2189, 1574, 1963, 2298, 2608, 1712, 2511, 2812, 1769, 978], "pr": [16, 17, 18, 17, 18, 19, 17, 20, 21, 20, 16], "seen": 37},
+  "lip tie surgery": {"start": 49, "imp": [723, 1420, 922, 621, 896, 707, 919, 1200, 914, 499, 125], "pr": [13, 12, 12, 12, 14, 11, 9, 13, 14, 10, 11], "seen": 22},
+  "lip tie": {"start": 49, "imp": [2698, 4484, 3888, 5675, 6447, 4021, 5867, 9358, 7206, 5544, 4749], "pr": [17, 23, 25, 22, 31, 25, 26, 30, 26, 31, 28], "seen": 57},
+  "dental insurance": {"start": 49, "imp": [22271, 21964, 19335, 16741, 19220, 15337, 17312, 16879, 9710, 11909, 7617], "pr": [59, 65, 76, 76, 87, 79, 74, 78, 78, 79, 80], "seen": 161},
+  "dental cost": {"start": 49, "imp": [215, 313, 304, 365, 403, 286, 290, 264, 172, 205, 133], "pr": [14, 17, 15, 20, 22, 20, 17, 17, 18, 14, 16], "seen": 42}
+};
+const idx100 = a => { const m = Math.max(...a, 1); return a.map(v => v / m * 100); };
+const argmax = a => a.reduce((b, v, j) => v > a[b] ? j : b, 0);
+const fmtK = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(Math.round(n));
+const corpusTip = (t, cls = '') => { const C = CORPUS[t];
+  return `<span class="qtip ${cls}"><b>Our practices</b>Search Console impressions for every practice we manage, ${CORPUS.practices} over the full months of the last year, on searches that contain '${t}'.${C.seen ? ` Seen by ${C.seen} of them.` : ''} Drawn as 100 = the busiest month, so the shape compares with the national estimate.</span>`; };
+// 12-month chart geometry: same left and right padding as the 5-year chart, so the months line up.
+const MW = 640, MPT = 22, MPB = 22, BW = 24;
+let MPL = 30, MPR = 12, slotW = (MW - MPL - MPR) / 12;
+const mX = j => MPL + (j + 0.5) * slotW;
+const yFn = (top, base) => v => top + (1 - v / 100) * (base - top);
+function barPath(x, yTop, yBase, w) { const r = Math.min(4, Math.max(0, (yBase - yTop) / 2)); return `M${x.toFixed(1)} ${yBase.toFixed(1)}V${(yTop + r).toFixed(1)}a${r} ${r} 0 0 1 ${r} ${-r}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}V${yBase.toFixed(1)}Z`; }
+const pathOf = (vals, y) => vals.map((v, j) => (j ? 'L' : 'M') + mX(j).toFixed(1) + ' ' + y(v).toFixed(1)).join('');
+const gridOf = (y, labels) => [0, 50, 100].map(v => `<line class="ch-grid" x1="${MPL}" x2="${MW - MPR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>` + (labels ? `<text class="ch-ylab" x="${MPL - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v}</text>` : '')).join('');
+const tickLab = j => (j === 0 || j === 3) ? mLabel(CS_START + j).replace(/ 20(\d\d)$/, " '$1") : MON[calMonth(CS_START + j)];
+const ticksOf = yText => [0, 3, 6, 9, 11].map(j => `<text class="ch-xlab" x="${mX(j).toFixed(1)}" y="${yText}" text-anchor="middle">${tickLab(j)}</text>`).join('');
+const jFromEvent = (e, svg) => { const r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * MW / r.width; return Math.max(0, Math.min(11, Math.floor((vx - MPL) / slotW))); };
+function placeTip(tipEl, svg, j, yPx) {
+  const r = svg.getBoundingClientRect(), H = +svg.getAttribute('viewBox').split(' ')[3];
+  const px = mX(j) * r.width / MW, w = tipEl.offsetWidth;
+  tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px';
+  tipEl.style.top = (yPx * r.height / H - 8) + 'px';
+  tipEl.classList.add('on');
+}
+const BARS_RE = /<div class="bars-h">[\s\S]*?<div class="bars-x">[\s\S]*?<\/div>/;
+const STUBS = '<div id="csBars" hidden></div><div id="csTip" hidden></div>';   // keeps the approved wiring intact
+const baseChartSvg = chartSvg, baseDemandHtml = demandHtml, baseWireDemand = wireDemand;
+const driveOf = c => { const T = TRENDS[c.topic]; if (!T) return null; const d = T.terms.find(t => t.t === T.drive); return CORPUS[d.t] ? d : null; };
+// The mockup opens on Dental Implants so the Demand section is on screen.
+document.fonts.ready.then(() => setTimeout(() => openDrawer(0), 450));
+// Branded hovers flip to open leftward when the 310px card would run past the popup's scroll area.
+document.addEventListener('mouseover', e => {
+  const b = e.target.closest && e.target.closest('.bh'); if (!b) return;
+  const host = b.closest('.tm-main') || document.body, hr = host.getBoundingClientRect(), br = b.getBoundingClientRect();
+  b.classList.toggle('flip', br.left + 316 > hr.right - 8);
+});
+
+// ===== V1: our practices as a branded line inside the 5-year Trends chart (over the last-12 band) =====
+// Our practices wear the S8E8 magenta (owner 10/23): the one series that is us, inside the OQ teal chart.
+const S8 = '#DB2777';
+const corpSwatch = `<svg width="18" height="10" aria-hidden="true"><line x1="1" y1="5" x2="17" y2="5" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line x1="1" y1="5" x2="17" y2="5" stroke="${S8}" stroke-width="2.4" stroke-linecap="round"/><circle cx="13" cy="5" r="3" fill="${S8}" stroke="#fff" stroke-width="1.5"/></svg>`;
+const chev = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+chartSvg = function (T, drive, others, mix) {
+  let s = baseChartSvg(T, drive, others, mix);
+  const C = CORPUS[drive.t];
+  if (!C) return s;
+  const v = idx100(C.imp), d = v.map((x, j) => (j ? 'L' : 'M') + cx((C.start ?? CS_START) + j).toFixed(1) + ' ' + cy(x).toFixed(1)).join('');
+  const g = `<g class="ch-other ch-line ch-corp ${hiddenTerms.has(CORP) ? 'off' : ''}" data-term="${CORP}">
+      <path class="ch-corp-case" d="${d}"/><path class="ch-corp-line" d="${d}"/>
+      <circle cx="${cx(CS_START + 11).toFixed(1)}" cy="${cy(v[11]).toFixed(1)}" r="4" fill="${S8}" stroke="#fff" stroke-width="2"/></g>`;
+  return s.replace('<line class="ch-cross"', g + '<line class="ch-cross"');
+};
+// Branded dropdown: every phrase in the topic, its own reading, and its weight in the verdict.
+function phrasesDropdown(T, drive, others) {
+  const mix = phraseMix(T);
+  const sw = t => t === drive.t ? swatch('#0F766E', '', 2.6) : (k => swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6))(others.findIndex(o => o.t === t));
+  const rows = T.terms.map(t => {
+    const r = mix && mix.rows.find(x => x.t === t.t);
+    const read = `${cap(t.dir)}${PHRASE_SPIKE[t.spike] ? ', ' + PHRASE_SPIKE[t.spike] : ''}${t.t === drive.t ? ' · drives the verdict' : ''}`;
+    return `<div class="dd-r">${sw(t.t)}<span class="n">${t.t}<small>${read}</small></span><span class="w">${r ? pctTxt(r.w) : 'no weight'}</span><span class="v">${r && r.vol ? fmtN(r.vol) + ' a month' : 'no searches'}</span></div>`;
+  }).join('');
+  return `<div class="dd" role="dialog" aria-label="Phrases in this topic"><div class="dd-h">Phrases in this topic</div>${rows}
+    <div class="dd-f">Each phrase is checked on its own Google Trends line, then weighted by its share of estimated US searches to reach the topic verdict.</div></div>`;
+}
+const HOW_PRACTICES = t => { const C = CORPUS[t]; return `<details class="howcount"><summary>How our practices are counted</summary>
+      <p>Our practices are every practice we manage whose Google Search Console we hold: ${CORPUS.practices} over the full months of the last year. The trend check reads them once per run, in the same pass that sizes the topic.</p>
+      <ul>
+        <li>Each month, we add up the impressions every practice got on searches that contain the phrase ('${t} cost' counts, a different wording does not), and count the practices that had any.</li>
+        <li>The magenta line is that monthly total, drawn as 100 = its busiest month. It covers the full months of the last year only; the Google line covers 5 years.</li>
+        <li>It never changes the verdict. It shows whether what our practices actually see agrees with the national picture.</li>
+        ${C.seen ? `<li>For '${t}': seen by ${C.seen} of ${CORPUS.practices} practices; </li>` : ''}
+      </ul>
+    </details>`; };
+demandHtml = function (c) {
+  let h = baseDemandHtml(c);
+  const T = TRENDS[c.topic];
+  if (!T) return h;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), C = CORPUS[drive.t];
+  // 1. The phrase chips move up to sit right under the chart they control.
+  const m = h.match(/<div class="tgrow">[\s\S]*?<\/div>/);
+  let tg = m[0];
+  h = h.replace(m[0], '');
+  tg = tg.replace(/(<button class="tg" data-term="__combined"[\s\S]*?<\/button>)/, (x, b) => `<span class="tgx">${b}<button class="tg tg-dd" type="button" aria-expanded="false" aria-label="See the phrases in this topic">${chev}</button>${phrasesDropdown(T, drive, others)}</span>`);
+  if (C) tg = tg.replace(/<\/div>$/, `<button class="tg bh" data-term="${CORP}" aria-pressed="${!hiddenTerms.has(CORP)}">${corpSwatch}Our practices${corpusTip(drive.t, 's8')}</button></div>`);
+  h = h.replace('<div class="ch-tip" id="chTip"></div></div>', '<div class="ch-tip rich" id="chTip"></div></div>' + tg);
+  // 2. Copy
+  if (C) h = h.replace('shape, not size.</div>', 'shape, not size. Our practices: 100 = their busiest month, drawn over the last 12 only.</div>');
+  h = h.replace('No clear season.', 'No clear seasonality found for this topic nationally.').replace('Searches usually peak in', 'Nationally, searches usually peak in');
+  // 3. Where the agency numbers come from, next to "How we count searches".
+  if (C) h = h.replace('</details>', '</details>' + HOW_PRACTICES(drive.t));
+  return h;
+};
+wireDemand = function (c) {
+  baseWireDemand(c);
+  const T = TRENDS[c.topic];
+  if (!T) return;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), mix = phraseMix(T);
+  const C = CORPUS[drive.t], v = C ? idx100(C.imp) : null;
+  const svg = $('chWrap').querySelector('svg'), dots = $('chDots'), tipEl = $('chTip');
+  // Hover readout, rebuilt: one row per visible line, swatch + name + value, our practices last with its real counts.
+  const readout = e => {
+    const r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * CW / r.width;
+    const i = Math.max(0, Math.min(60, Math.round((vx - PL) / (cx(1) - cx(0))))), j = i - (C ? (C.start ?? CS_START) : CS_START);
+    const row = (sw, name, val, sub) => `<div class="tt-r">${sw}<span>${name}</span><b>${val}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+    let html = `<div class="tt-h"><span style="color:var(--ink);font-weight:700">${mLabel(i)}${i === 60 ? ' (not over yet)' : ''}</span><span>Google interest, 0 to 100</span></div>`;
+    html += row(swatch('#0F766E', '', 2.6), drive.t, Math.round(drive.m[i]));
+    others.forEach((o, k) => { if (!hiddenTerms.has(o.t)) html += row(swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6), o.t, Math.round(o.m[i])); });
+    if (mix && !hiddenTerms.has(COMB)) html += row(swatch(COMB_C, '4 3', 2), 'All phrases, weighted', Math.round(mix.combined[i]));
+    const corpOn = !!C && !hiddenTerms.has(CORP) && j >= 0 && j < C.imp.length;
+    if (corpOn) {
+      html += `<div class="tt-r corp">${corpSwatch}<span>Our practices</span><b>${Math.round(v[j])}</b><small>${fmtN(C.imp[j])} impressions across ${C.pr[j]} practices</small></div>`;
+      dots.insertAdjacentHTML('beforeend', `<circle cx="${cx(i)}" cy="${cy(v[j])}" r="4.5" fill="${S8}" stroke="#fff" stroke-width="2"/>`);
+    }
+    tipEl.innerHTML = html;
+    const px = cx(i) * r.width / CW, w = tipEl.offsetWidth;
+    tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px';
+    if (corpOn) tipEl.style.top = Math.min(parseFloat(tipEl.style.top), cy(v[j]) * r.height / CH - 8) + 'px';
+  };
+  const hit = $('chHit');
+  hit.addEventListener('pointermove', readout);
+  hit.addEventListener('pointerdown', readout);
+  // Dropdown open / close
+  const dd = $('dBody').querySelector('.tg-dd'), pane = $('dBody').querySelector('.dd');
+  if (dd) {
+    const close = () => { pane.classList.remove('on'); dd.setAttribute('aria-expanded', 'false'); };
+    dd.onclick = ev => { ev.stopPropagation(); const on = !pane.classList.contains('on'); pane.classList.toggle('on', on); dd.setAttribute('aria-expanded', on); if (on) pane.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); };
+    pane.onclick = ev => ev.stopPropagation();
+    document.addEventListener('click', close);
+  }
+};
+</script>
+<script>
+// Real Find gaps rows for Oracle (strategy 210). st: cov = answered, thin = partly answered, none = no answer.
+const COV = {
+  "Frenectomy": {"aside": [], "judged": [["what is a frenectomy and why would a dentist recommend it", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.76, "claude"], ["tongue tie frenectomy for newborn breastfeeding problems", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.75, "claude"], ["laser frenectomy vs traditional frenectomy which is better", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.77, "claude"], ["lip tie frenectomy vs tongue tie frenectomy differences", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.76, "claude"], ["how much does a frenectomy cost without dental insurance", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.72, "claude"], ["does dental insurance cover frenectomy procedure", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["frenectomy recovery time and what to expect after surgery", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["frenectomy for adults before braces orthodontic treatment", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.7, "claude"], ["is a frenectomy painful for babies and toddlers", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.77, "claude"], ["frenectomy exercises after procedure to prevent reattachment", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.72, "claude"], ["signs my child needs a frenectomy tongue or lip tie symptoms", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.78, "claude"], ["frenectomy speech improvement results for older children", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.75, "claude"], ["how long does a frenectomy procedure take at the dentist", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.74, "claude"], ["frenectomy vs speech therapy which should come first", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.77, "claude"], ["can a frenectomy close the gap between my front teeth", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.72, "claude"], ["what type of dentist performs a frenectomy oral surgeon vs pediatric dentist", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.78, "claude"], ["affordable frenectomy payment plans financing options", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.73, "claude"], ["frenectomy risks and complications parents should know about", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.82, "claude"], ["frenum vs frenulum what is the difference in dental terms", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.68, "claude"], ["what to feed baby after frenectomy soft foods healing tips", "none", "/dental-services/frenectomy-aftercare", 0.75, "claude"]]},
+  "Sedation Dentistry": {"aside": [["oral conscious sedation dentistry pill you take before appointment", "booking search, not a question"]], "judged": [["what is sedation dentistry", "cov", "/dental-services/mild-sedation", 0.7, "claude"], ["how does sedation dentistry work", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.68, "claude"], ["types of sedation used at the dentist", "cov", "/dental-services/mild-sedation", 0.73, "claude"], ["is sedation dentistry safe", "cov", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.71, "claude"], ["nitrous oxide vs oral sedation vs IV sedation dentistry", "thin", "/dental-services/mild-sedation", 0.71, "claude"], ["sedation dentistry vs general anesthesia what is the difference", "cov", "/dental-services/get-pediatric-dental-sedation", 0.71, "claude"], ["dental anxiety treatment options for adults who hate the dentist", "none", "/dental-services/get-pediatric-dental-sedation", 0.66, "claude"], ["can I be put to sleep for a routine dental cleaning", "thin", "/dental-services/get-pediatric-dental-sedation", 0.69, "claude"], ["how much does sedation dentistry cost without insurance", "none", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.68, "claude"], ["does dental insurance cover sedation dentistry", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.72, "claude"], ["sedation dentistry for children is it safe for kids", "cov", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.75, "claude"], ["what to expect after sedation dentistry recovery tips", "cov", "/dental-services/get-pediatric-dental-sedation", 0.68, "claude"], ["IV sedation dentistry what does it feel like", "thin", "/dental-services/mild-sedation", 0.65, "claude"], ["am I a good candidate for sedation dentistry health conditions that prevent it", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.67, "claude"], ["sedation dentistry for someone with severe gag reflex", "cov", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.67, "claude"], ["laughing gas at dentist how effective is it for anxiety", "thin", "/dental-services/nitrous-oxide", 0.68, "similarity"], ["sedation dentistry for multiple teeth pulled in one visit", "cov", "/dental-services/get-pediatric-dental-sedation", 0.69, "claude"], ["how long does dental sedation last during procedure", "thin", "/dental-services/get-pediatric-dental-sedation", 0.71, "claude"], ["affordable sedation dentistry payment plans options", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.69, "claude"]]},
+  "Frenectomy: Procedure Details & Process": {"aside": [], "judged": [["what is a frenectomy and why would a dentist recommend it", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.76, "claude"], ["tongue tie procedure for babies what to expect", "cov", "/articles/what-is-a-frenectomy-a-comprehensive-guide-for-parents", 0.72, "similarity"], ["does a frenectomy hurt for adults", "none", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.74, "claude"], ["laser frenectomy vs traditional scalpel which is better", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["lip tie release procedure steps", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.72, "claude"], ["how long does frenectomy recovery take", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.75, "claude"], ["frenectomy cost without dental insurance", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.72, "claude"], ["tongue tie symptoms in toddlers signs you need a frenectomy", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.75, "claude"], ["will frenectomy fix my gap between front teeth", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.73, "claude"], ["is frenectomy safe for newborns", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.78, "claude"], ["breastfeeding problems tongue tie frenectomy help", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.74, "claude"], ["frenectomy healing stages photos what normal healing looks like", "cov", "/articles/what-is-a-frenectomy-a-comprehensive-guide-for-parents", 0.73, "similarity"], ["frenectomy vs braces for gap teeth which do I need first", "none", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.71, "claude"], ["what to eat after frenectomy foods to avoid", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.74, "claude"], ["does tongue tie affect speech in older children frenectomy fix it", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.74, "claude"], ["how many stitches does a frenectomy require", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.73, "claude"], ["how to do frenectomy stretching exercises after procedure", "none", "/dental-services/frenectomy-aftercare", 0.73, "claude"], ["does my dental insurance cover frenectomy procedure", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["tongue tie frenectomy before and after speech improvement", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.74, "claude"], ["frenectomy for adults getting it done later in life worth it", "none", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.72, "claude"]]},
+  "Lip Tie & Tongue Tie: Infant & Baby Treatment": {"aside": [["best way to prepare for baby's frenectomy appointment", "booking search, not a question"]], "judged": [["what is tongue tie in babies", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.72, "claude"], ["signs of lip tie in newborn", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.69, "claude"], ["how does tongue tie affect breastfeeding", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.71, "claude"], ["lip tie vs tongue tie difference in infants", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.71, "claude"], ["laser frenectomy vs scissor frenotomy for tongue tie baby", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["tongue tie release procedure what to expect", "cov", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.72, "claude"], ["is tongue tie treatment covered by insurance", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.7, "claude"], ["how much does a frenectomy cost for a baby", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.76, "claude"], ["can untreated tongue tie cause speech problems later", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.71, "claude"], ["how to tell if my baby has a lip tie at home", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.69, "claude"], ["tongue tie in newborn breastfeeding latch problems", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.68, "claude"], ["baby tongue tie treatment age when is it too late", "cov", "/articles/what-is-a-frenectomy-a-comprehensive-guide-for-parents", 0.69, "similarity"], ["lip tie release aftercare exercises for baby", "none", "/dental-services/frenectomy-aftercare", 0.74, "claude"], ["do pediatric dentists treat tongue tie or should I see an ENT", "cov", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.74, "claude"], ["tongue tie symptoms in infants beyond breastfeeding", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.71, "claude"], ["will my baby need anesthesia for tongue tie surgery", "thin", "/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist", 0.73, "claude"], ["tongue tie vs normal frenulum how to tell the difference", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.72, "claude"], ["lip tie causing gas and poor weight gain in breastfed baby", "thin", "/articles/what-is-a-frenectomy-and-who-needs-one", 0.69, "claude"], ["how long does it take for tongue tie wound to heal in babies", "none", "/dental-services/frenectomy-aftercare", 0.72, "claude"]]},
+  "Insurance accepted and cost information": {"aside": [], "judged": [["what dental insurance plans does a dentist accept", "none", "/articles/difference-family-dentist-and-pediatric-dentist", 0.63, "claude"], ["how to check if my dentist is in network with my insurance", "none", "/articles/dentist-special-needs-child", 0.61, "claude"], ["does dental insurance cover routine cleanings and checkups", "thin", "/dental-services/dental-prophylaxis", 0.65, "similarity"], ["dental care costs without insurance what to expect", "thin", "/dental-services/get-pediatric-dental-sedation", 0.63, "claude"], ["how much does a dental checkup cost out of pocket", "none", "/articles/how-often-should-kids-go-to-the-dentist", 0.64, "claude"], ["does Delta Dental cover orthodontics and braces for adults", "none", "/articles/difference-family-dentist-and-pediatric-dentist", 0.59, "claude"], ["CareCredit dental financing how does it work for patients", "none", "/articles/benefits-of-using-a-special-needs-dentist-for-your-child", 0.61, "claude"], ["in network vs out of network dentist cost difference", "none", "/articles/difference-family-dentist-and-pediatric-dentist", 0.62, "claude"], ["paying for dental work with insurance vs paying cash discount", "none", "/articles/benefits-of-using-a-special-needs-dentist-for-your-child", 0.59, "claude"], ["what happens if my dental insurance doesn't cover a procedure", "thin", "/dental-services/pediatric-dental-crowns", 0.62, "claude"], ["how to maximize dental insurance benefits before they expire", "none", "/articles/how-often-should-kids-go-to-the-dentist", 0.65, "claude"], ["affordable dental payment plans for expensive procedures", "thin", "/dental-services/get-pediatric-dental-sedation", 0.63, "claude"], ["do dentists offer free consultations before treatment", "thin", "/articles/dentist-special-needs-child", 0.62, "claude"], ["dental costs for seniors on Medicare what is covered", "none", "/articles/benefits-of-using-a-special-needs-dentist-for-your-child", 0.59, "claude"], ["how much does a tooth extraction cost with insurance", "thin", "/dental-services/extraction", 0.68, "similarity"], ["can I use HSA or FSA account to pay for dental work", "none", "/dental-services/pediatric-dental-crowns", 0.61, "claude"], ["dental savings plan vs dental insurance which is better for patients", "none", "/articles/benefits-of-using-a-special-needs-dentist-for-your-child", 0.62, "claude"], ["how to read a dental insurance explanation of benefits", "none", "/dental-services/get-pediatric-dental-sedation", 0.63, "claude"], ["what is the average cost of a dental crown with and without insurance", "thin", "/dental-services/pediatric-dental-crowns", 0.7, "claude"], ["does dental insurance have a waiting period before I can use it", "none", "/articles/how-often-should-kids-go-to-the-dentist", 0.62, "claude"]]},
+  "Cost and insurance coverage for general anesthesia": {"aside": [], "judged": [["does dental insurance cover general anesthesia", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.7, "claude"], ["how much does dental anesthesia cost out of pocket", "thin", "/dental-services/get-pediatric-dental-sedation", 0.67, "claude"], ["is general anesthesia at the dentist covered by medical insurance instead of dental", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.68, "claude"], ["what is IV sedation vs general anesthesia at dentist difference", "thin", "/dental-services/get-pediatric-dental-sedation", 0.71, "claude"], ["does Medicaid cover general anesthesia for dental work adults", "none", "/dental-services/get-pediatric-dental-sedation", 0.68, "claude"], ["does insurance cover anesthesia for child dental procedure", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.72, "claude"], ["why does the dentist charge separately for anesthesia", "none", "/dental-services/get-pediatric-dental-sedation", 0.67, "claude"], ["dental anesthesia prior authorization how to get approved", "thin", "/dental-services/get-pediatric-dental-sedation", 0.68, "claude"], ["affordable sedation dentistry options for anxious patients", "thin", "/dental-services/get-pediatric-dental-sedation", 0.69, "claude"], ["what does dental insurance typically not cover anesthesia exceptions", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.7, "claude"], ["CareCredit financing for dental sedation is it worth it", "none", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.66, "claude"], ["how to find out if my dental plan covers sedation before my appointment", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.72, "claude"], ["general anesthesia dental work medical necessity requirement insurance", "thin", "/dental-services/general-anesthesia", 0.68, "claude"], ["nitrous oxide vs oral sedation cost difference which is cheaper", "cov", "/dental-services/nitrous-oxide", 0.69, "similarity"], ["sedation dentistry covered by insurance for special needs patients", "none", "/articles/choosing-a-pediatric-dentist-for-special-needs-kids", 0.74, "claude"], ["what questions to ask dentist about anesthesia costs and billing", "thin", "/dental-services/get-pediatric-dental-sedation", 0.67, "claude"], ["anesthesia fee on dental bill what does it include", "none", "/dental-services/general-anesthesia", 0.69, "claude"], ["how long does dental insurance take to reimburse anesthesia claim", "none", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.65, "claude"], ["is getting put to sleep at the dentist safe and covered by insurance", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.71, "claude"], ["payment plans for dental procedures requiring full sedation no insurance", "thin", "/articles/is-dental-sedation-safe-for-kids-a-parents-guide", 0.68, "claude"]]}
+};
+const COV_WORD = { cov: 'Answered', thin: 'Partly answered', none: 'No answer' };
+const COVERED_AT = 0.69, THIN_AT = 0.64;             // calendar_coverage_scorer.py
+let covExample = false;   // mockup only: swap in the real Solid example
+function covStats(c) {
+  const d = covExample ? COV.__solid_example : COV[c.topic]; if (!d) return null;
+  const n = k => d.judged.filter(q => q[1] === k).length;
+  const cov = n('cov'), thin = n('thin'), none = n('none'), total = d.judged.length;
+  const label = cov >= 0.5 * total ? 'Solid page' : (cov + thin) >= 0.3 * total ? 'Thin page' : 'No page';
+  const pages = {};
+  d.judged.forEach(q => { const p = pages[q[2]] = pages[q[2]] || { n: 0, best: 0 }; p.n++; p.best = Math.max(p.best, q[3]); });
+  const pageRows = Object.entries(pages).map(([p, v]) => ({ p, ...v })).sort((a, b) => b.n - a.n || b.best - a.best);
+  return { ...d, cov, thin, none, total, label, pageRows };
+}
+const covLeadText = s => (s.who ? `${s.who}: ` : '') + (s.total === 0 ? 'No questions were checked.'
+  : s.cov === 0 && s.thin === 0 ? `The site answers none of the ${s.total} questions people ask about this.`
+  : s.cov === s.total ? `The site answers all ${s.total} questions people ask about this.`
+  : `The site answers ${s.cov} of the ${s.total} questions people ask about this${s.thin ? `, and partly answers ${s.thin} more` : ''}.`);
+const covTip = `<span class="qtip"><b>Where these questions come from</b>OpenedQueries asks Claude for about 20 searches a dental patient would type about this topic, then checks every page on the site for each one. Answered means a page matches it closely; partly answered means a page touches it; no answer means nothing on the site comes close. With demand, this decides the action: healthy demand and no page means write a new page.</span>`;
+const meterHtml = s => `<div class="cv-meter" role="img" aria-label="${s.cov} answered, ${s.thin} partly answered, ${s.none} with no answer"><i class="c-cov" style="width:${s.cov / s.total * 100}%"></i><i class="c-thin" style="width:${s.thin / s.total * 100}%"></i><i class="c-none" style="flex:1"></i></div>
+  <div class="cv-counts"><span><i class="c-cov"></i><b>${s.cov}</b> answered</span><span><i class="c-thin"></i><b>${s.thin}</b> partly answered</span><span><i class="c-none"></i><b>${s.none}</b> no answer</span></div>`;
+const asideHtml = s => s.aside.length ? `<details class="howcount cv-aside"><summary>${s.aside.length} more searches were skipped, never checked against the site</summary>
+    <ul>${s.aside.map(a => `<li><span>${a[0]}</span><span>${a[1]}</span></li>`).join('')}</ul>
+    <p>The calendar rule that never recommends writing price, insurance or financing pages also skips those searches here, so they were not checked. Branded, "near me" and plain-city searches are skipped because they are not questions about the topic.</p></details>` : '';
+const pageboxHtml = c => (c.d.pages ? `<div class="pagebox"><span class="num">${c.d.pages}</span><span>new pages recommended</span></div>` : '') +
+  (c.d.page ? `<div class="pagebox"><span>Page to improve:</span> <b style="font-weight:600;color:#0369A1">${c.d.page}</b></div>` : '');
+const covFoot = `<div class="small">No page: under 30% answered or partly answered. Thin: 30% or more. Solid: half or more answered outright.</div>
+    <a class="go" href="#" onclick="return false">Open Find gaps ›</a>`;
+const baseCoverageHtml = coverageHtml, baseWireCells = wireCells;
+const exampleLink = c => '' || COV[c.topic] && false ? `<div class="small" style="margin:0 0 10px">Mockup only: <a href="#" class="go" id="covEx" style="margin:0;display:inline" onclick="return false">${covExample ? 'back to this topic' : 'show a real Solid example (Santa Rosa Dental Suite, Gum Disease Treatment)'}</a></div>` : '';
+wireCells = function (c) {
+  if ($('qgrid')) baseWireCells(c);
+  const ex = $('covEx');
+  if (ex) ex.onclick = () => { covExample = !covExample; const sec = ex.closest('section'); sec.innerHTML = coverageHtml(c); wireCells(c); return false; };
+};
+
+// ===== C3: every question with its match bar, grouped by status, so the mechanism is visible =====
+const mbar3 = (v, cls) => { const lo = 0.5, hi = 0.8, pct = x => Math.max(0, Math.min(100, (x - lo) / (hi - lo) * 100)); return `<span class="mbar" style="--t1:${pct(THIN_AT)}%;--t2:${pct(COVERED_AT)}%"><i class="${cls}" style="width:${pct(v)}%"></i></span>`; };
+coverageHtml = function (c) {
+  const s = covStats(c); if (!s) return baseCoverageHtml(c);
+  const lo = 0.5, hi = 0.8, pct = x => (x - lo) / (hi - lo) * 100;
+  const group = (k, title) => { const qs = s.judged.filter(q => q[1] === k); if (!qs.length) return ''; return `<li class="g"><span>${title} · ${qs.length}</span></li>` + qs.map(q => `<li><i class="c-${k}"></i><span>${q[0]}</span>${mbar3(q[3], 'c-' + k)}</li>`).join(''); };
+  const chips = s.pageRows.map(r => `<span class="cv-chip"><b>${r.p}</b> · ${r.n}</span>`).join('');
+  return secHead('cov', 'Coverage', s.label) + `<div class="sec-b">${exampleLink(c)}
+      <p class="cv-lead">${covLeadText(s).replace('questions people ask', `<span class="bh" tabindex="0"><span class="bh-t">questions people ask</span>${covTip}</span>`)}</p>
+      <div class="mscale" style="grid-template-columns:10px minmax(0,1fr) 110px"><span></span><span style="text-align:right">how close the nearest page comes</span><span class="s"><span class="l" style="left:${pct(THIN_AT)}%">partly</span><span class="r" style="left:${pct(COVERED_AT)}%">answers</span></span></div>
+      <ul class="cv-rows">${group('cov', 'Answered')}${group('thin', 'Partly answered')}${group('none', 'No answer')}</ul>
+      <div class="cv-h" style="margin-top:12px">Pages that came closest</div><div class="cv-chips">${chips}</div>
+      ${asideHtml(s)}${pageboxHtml(c)}${covFoot}</div>`;
+};
+</script>
+<script>const WITH_ADS = false;
+// ===== Range chips (12 months / 24 months / 5 years) with a zoom morph, and searches over the window with the same month a year earlier =====
+const ADS_START = 36;   // 2024-10 on the 61-month axis
+const ADS24 = {
+  'dental implants': [246000,246000,246000,301000,246000,450000,450000,450000,301000,165000,246000,201000,165000,135000,135000,165000,165000,201000,165000,135000,135000,201000,201000,135000],
+  'tooth implant':   [60500,60500,74000,90500,74000,110000,74000,74000,60500,60500,49500,40500,40500,33100,33100,40500,33100,40500,49500,40500,40500,33100,33100,33100],
+};
+const RANGE_OPTS = [[12, '12 months'], [24, '24 months'], [60, '5 years']];
+let range = 24;
+const rateIdx = C => { const r = C.imp.map((v, j) => v / (C.weeks ? C.weeks[j] : 1)); const m = Math.max(...r, 1); return r.map(v => v / m * 100); };
+const step60 = (CW - PL - PR) / 60;
+const plotTransform = () => { const k = 60 / range, t = PL - k * cx(60 - range); return `translate(${t.toFixed(2)}px, 0px) scale(${k.toFixed(4)}, 1)`; };
+const rxFor = i => PL + (i - (60 - range)) * step60 * (60 / range);
+const rangeChips = () => `<div class="rg-row"><span class="rg-lab">Show</span><div class="rg" role="group" aria-label="Range">${RANGE_OPTS.map(([r, l]) => `<button type="button" data-range="${r}" aria-pressed="${r === range}">${l}</button>`).join('')}</div></div>`;
+
+// The chrome (bands, grid, month labels) is drawn for the current window; the plot (every line, all 61 months) is
+// drawn once in 5-year coordinates and zoomed with a CSS transform, so a range change slides and stretches the lines.
+function chromeSvg() {
+  const s0 = 60 - range, half = step60 * (60 / range) / 2;
+  const band = (i0, i1, fill, label) => (i1 < s0) ? '' : `<rect x="${rxFor(Math.max(i0, s0)) - half}" y="${PT}" width="${rxFor(i1) - rxFor(Math.max(i0, s0)) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/><text class="ch-band-lab" x="${(rxFor(Math.max(i0, s0)) + rxFor(i1)) / 2}" y="${CH - PB - 5}" text-anchor="middle">${label}</text>`;
+  let s = range > 12 ? band(36, 47, '#F3F4F6', '12 before') : '';
+  s += band(48, 59, '#E3F2EE', 'last 12');
+  [0, 50, 100].forEach(v => s += `<line class="ch-grid" x1="${PL}" x2="${CW - PR}" y1="${cy(v)}" y2="${cy(v)}"/><text class="ch-ylab" x="${PL - 6}" y="${cy(v) + 3.5}" text-anchor="end">${v}</text>`);
+  for (let i = s0; i <= 60; i++) { const cm = calMonth(i), tick = range === 60 ? cm === 0 : (range === 24 ? cm % 3 === 0 : true);
+    if (tick) s += `<line class="ch-grid" x1="${rxFor(i)}" x2="${rxFor(i)}" y1="${CH - PB}" y2="${CH - PB + 4}"/><text class="ch-xlab" x="${rxFor(i)}" y="${CH - 6}" text-anchor="middle">${range === 60 ? mLabel(i).slice(4) : (cm === 0 || i === s0 ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm])}</text>`; }
+  return s;
+}
+function plotSvg(T, drive, others, mix) {
+  const NS = 'vector-effect="non-scaling-stroke"';
+  let s = `<path class="ch-area" fill="url(#chFill)" d="${linePath(drive.m, 0, 59)}L${cx(59).toFixed(1)} ${cy(0).toFixed(1)}L${cx(0).toFixed(1)} ${cy(0).toFixed(1)}Z"/>`;
+  others.forEach((o, k) => { const st = OTHER_STYLE[k % 2]; s += `<g class="ch-other ch-line ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}><path ${NS} d="${linePath(o.m, 0, 59)}"/><path ${NS} class="ch-partial" d="${linePath(o.m, 59, 60)}"/></g>`; });
+  if (mix) s += `<g class="ch-other ch-line ch-comb ${hiddenTerms.has(COMB) ? 'off' : ''}" data-term="${COMB}" stroke="${COMB_C}" stroke-dasharray="6 4"><path ${NS} d="${linePath(mix.combined, 0, 59)}"/><path ${NS} d="${linePath(mix.combined, 59, 60)}" stroke-dasharray="2 3"/></g>`;
+  s += `<g class="ch-line" data-term="${drive.t}"><path ${NS} class="ch-drive" d="${linePath(drive.m, 0, 59)}"/><path ${NS} class="ch-drive ch-partial" style="stroke-width:1.8" d="${linePath(drive.m, 59, 60)}"/></g>`;
+  const C = CORPUS[drive.t];
+  if (C) { const v = rateIdx(C), d = v.map((x, j) => (j ? 'L' : 'M') + cx((C.start ?? CS_START) + j).toFixed(1) + ' ' + cy(x).toFixed(1)).join('');
+    s += `<g class="ch-other ch-line ch-corp ${hiddenTerms.has(CORP) ? 'off' : ''}" data-term="${CORP}"><path ${NS} class="ch-corp-case" d="${d}"/><path ${NS} class="ch-corp-line" d="${d}"/></g>`; }
+  return s;
+}
+function markersSvg(T, drive) {
+  const C = CORPUS[drive.t], a = analyze(drive.m);
+  let s = C ? `<circle class="mk" id="corpEnd" cx="${rxFor((C.start ?? CS_START) + C.imp.length - 1).toFixed(1)}" cy="${cy(rateIdx(C)[C.imp.length - 1]).toFixed(1)}" r="4" fill="${S8}" stroke="#fff" stroke-width="2" ${hiddenTerms.has(CORP) ? 'visibility="hidden"' : ''}/>` : '';
+  if (SPIKE_WORD[T.spike]) { const px = rxFor(a.peakI), py = cy(a.peak), right = px > CW - 80, off = a.peakI < 60 - range;
+    s += `<g class="ch-peak mk" id="peakMk" ${off ? 'visibility="hidden"' : ''}><circle cx="${px}" cy="${py}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/><text x="${right ? px - 7 : px + 7}" y="${py + 4}" text-anchor="${right ? 'end' : 'start'}">peak, ${mLabel(a.peakI)}</text></g>`; }
+  return s;
+}
+chartSvg = function (T, drive, others, mix) {
+  return `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Google interest in '${drive.t}'">
+    <defs><linearGradient id="chFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient>
+      <clipPath id="plotClip"><rect x="${PL}" y="0" width="${CW - PL - PR}" height="${CH}"/></clipPath></defs>
+    <g id="chChrome">${chromeSvg()}</g>
+    <g clip-path="url(#plotClip)"><g id="chPlot" style="transform:${plotTransform()}">${plotSvg(T, drive, others, mix)}</g></g>
+    <g id="chMarks">${markersSvg(T, drive)}</g>
+    <line class="ch-cross" id="chCross" y1="${PT}" y2="${CH - PB}" x1="-10" x2="-10" visibility="hidden"/><g id="chDots"></g>
+    <rect id="chHit" x="${PL - 6}" y="0" width="${CW - PL - PR + 12}" height="${CH}" fill="transparent"/></svg>`;
+};
+
+// Searches over the window: the clickstream count (exact phrase, 12 months per run, growing a month per run); with WITH_ADS a
+// second row of Google Ads history above it, each row in its own counts. The same month a year earlier is ghosted where known.
+const SOURCES = (WITH_ADS ? [{ key: 'ads', start: ADS_START, name: 'Google Ads estimate', get: t => ADS24[t.t] || null }] : [])
+  .concat([{ key: 'cs', start: CS_START, name: 'Clickstream estimate', get: t => t.cs }]);
+const WIN = () => Math.min(range, 24);
+function rowSvg(term, src, H) {
+  const vals = src.get(term), shown = WIN(), first = 60 - shown, slot = (MW - MPL - MPR) / shown, bw = Math.min(22, slot * 0.58);
+  const y = yFn(20, H - 22), base = y(0), at = i => (vals && i >= src.start && i < src.start + vals.length) ? vals[i - src.start] : null;
+  const inWin = []; for (let i = first; i < 60; i++) if (at(i) != null) inWin.push(at(i));
+  const mx = Math.max(...inWin, 1), x = i => MPL + (i - first + 0.5) * slot;
+  let g = `<g class="row" data-src="${src.key}">${SOURCES.length > 1 ? `<text class="ch-band-lab" x="${MPL}" y="12">${src.name}</text>` : ''}`;
+  rowSvg.have = inWin.length; rowSvg.shown = shown;
+  [0, 50, 100].forEach(v => g += `<line class="ch-grid" x1="${MPL}" x2="${MW - MPR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text class="ch-ylab" x="${MPL - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v === 0 ? '0' : fmtK(mx * v / 100)}</text>`);
+  for (let i = first; i < 60; i++) { const cur = at(i), p = at(i - 12); if (cur == null) continue;
+    if (p != null) g += `<path class="m-bar prev" data-i="${i}" d="${barPath(x(i) - bw / 2 - 3, Math.min(y(p / mx * 100), base - 2), base, bw)}"/>`;
+    g += `<path class="m-bar" data-i="${i}" d="${barPath(x(i) - bw / 2 + (p != null ? 3 : 0), Math.min(y(cur / mx * 100), base - 2), base, bw)}"/>`; }
+  const pk = [...Array(60).keys()].find(i => i >= first && at(i) === mx);
+  if (pk != null) g += `<text class="ch-dlab" x="${x(pk).toFixed(1)}" y="${(y(100) - 5).toFixed(1)}" text-anchor="middle">${fmtK(mx)}</text>`;
+  return g + '</g>';
+}
+function barsSvg(term) {
+  const shown = WIN(), first = 60 - shown, slot = (MW - MPL - MPR) / shown, RH = SOURCES.length > 1 ? 150 : 170, H = RH * SOURCES.length + 26;
+  let s = `<svg viewBox="0 0 ${MW} ${H}" role="img" aria-label="Estimated US searches for '${term.t}', ${shown} months, with the same month a year earlier where known">`;
+  SOURCES.forEach((src, n) => s += `<g transform="translate(0 ${RH * n})">${rowSvg(term, src, RH)}</g>`);
+  for (let i = first; i < 60; i++) { const cm = calMonth(i); if (shown <= 12 || cm % 3 === 0) s += `<text class="ch-xlab" x="${(MPL + (i - first + 0.5) * slot).toFixed(1)}" y="${H - 6}" text-anchor="middle">${cm === 0 || i === first ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm]}</text>`; }
+  s += `<line class="ch-cross" id="mCross" y1="16" y2="${H - 20}" x1="-10" x2="-10" visibility="hidden"/><rect id="mHit" x="${MPL - 6}" y="0" width="${MW - MPL - MPR + 12}" height="${H}" fill="transparent"/></svg>`;
+  return { svg: s, shown, first, slot, H };
+}
+const EXPLAIN_ADS = `<details class="howcount"><summary>What the Google Ads estimate is</summary>
+      <p>Google's own count of how often a phrase and its close variants ("dental implant", "dental implants near me") were searched in the US each month, rounded to steps (135,000, 165,000, 201,000...). It reaches back four years, so it can show the same month a year earlier today.</p>
+      <ul><li>It does not change the verdict (the Google interest line) or the size reading (the clickstream estimate).</li><li>Because it counts variants and rounds, it reads about ten times larger than the exact-phrase count; compare each row with itself, year over year.</li></ul></details>`;
+const EXPLAIN = `
+    <details class="howcount"><summary>What the search estimate is</summary>
+      <p>DataForSEO's clickstream estimate: anonymized browsing from a panel of real people, scaled to the whole US, for this exact phrase. Google does not publish exact counts; its Ads planner only gives wide, rounded ranges that also count close variants, so the card does not use it.</p>
+      <ul><li>This is the number the card sizes a topic with ("sizable" or not) and weights the phrases by. Smoothed month to month, so treat it as a size check, not a precise count.</li><li>Each trend check stores twelve months; a check a month builds the 24-month view (Expedition has one run so far), and the same month a year earlier appears behind each bar as soon as it is known.</li></ul>
+    </details>
+    ${WITH_ADS ? EXPLAIN_ADS : ''}
+    <details class="howcount"><summary>How the Google interest line is read</summary>
+      <p>Google Trends scores each phrase 0 to 100, where 100 is that phrase's busiest month in the last 5 years. It is a share of all Google searches, not a count, which is why it sits on its own chart.</p>
+      <ul><li>The verdict compares the last 3 full months with the same months a year earlier, measured against dental searches overall, and calls the topic growing, stable or fading.</li><li>Our practices (the rose line) is drawn on the same 0 to 100 so the shapes compare; it never changes the verdict.</li></ul>
+    </details>`;
+const barsCap = () => `${rowSvg.have < rowSvg.shown ? `${rowSvg.have} of ${rowSvg.shown} months so far; each monthly trend check adds one. ` : ''}${SOURCES.length > 1 ? 'Two estimates of the same thing, each on its own scale; hover' : 'Hover'} a month for the count and the change from a year earlier.`;
+function barsBlock(term) {
+  const b = barsSvg(term);
+  return `<div class="bars-h" id="barsH">Estimated US searches for '${term.t}', last ${b.shown} months</div>
+    <div class="lgd" style="margin:0 0 6px"><span><i class="sw-bar"></i>searches a month</span><span><i class="sw-prev"></i>same month a year earlier</span></div>
+    <div class="chartwrap fade" id="mWrap">${b.svg}<div class="ch-tip" id="mTip"></div></div>
+    <div class="ch-cap" id="barsCap">${barsCap()}</div>${EXPLAIN}${STUBS}`;
+}
+const baseDemandHtmlV1 = demandHtml, baseWireDemandV1 = wireDemand;
+demandHtml = function (c) {
+  const h = baseDemandHtmlV1(c), T = TRENDS[c.topic];
+  if (!T) return h;
+  const drive = T.terms.find(t => t.t === T.drive);
+  return h.replace('<div class="chartwrap" id="chWrap">', rangeChips() + '<div class="chartwrap" id="chWrap">').replace(BARS_RE, barsBlock(drive))
+    .replace(/<details class="howcount"><summary>How we count searches<\/summary>[\s\S]*?<\/details>/, '');
+};
+function applyRange(c, T, drive) {
+  // the morph: new chrome fades in, the plot group slides and stretches into the window, markers glide
+  const svg = $('chWrap').querySelector('svg');
+  const chrome = svg.querySelector('#chChrome'); chrome.classList.add('swap'); chrome.innerHTML = chromeSvg(); requestAnimationFrame(() => chrome.classList.remove('swap'));
+  svg.querySelector('#chPlot').style.transform = plotTransform();
+  svg.querySelector('#chMarks').innerHTML = markersSvg(T, drive);
+  $('dBody').querySelectorAll('.rg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.range === range));
+  const mw = $('mWrap'); mw.classList.add('out');
+  setTimeout(() => { const b = barsSvg(drive); mw.innerHTML = b.svg + '<div class="ch-tip" id="mTip"></div>'; $('barsH').textContent = `Estimated US searches for '${drive.t}', last ${b.shown} months`; $('barsCap').textContent = barsCap(); wireBars(drive); mw.classList.remove('out'); }, 180);
+}
+function wireBars(drive) {
+  const mwrap = $('mWrap'); if (!mwrap) return;
+  const msvg = mwrap.querySelector('svg'), mtip = $('mTip'), mcross = $('mCross'), b = barsSvg(drive);
+  const show = e => {
+    const r = msvg.getBoundingClientRect(), vx = (e.clientX - r.left) * MW / r.width;
+    const k = Math.max(0, Math.min(b.shown - 1, Math.floor((vx - MPL) / b.slot))), i = b.first + k, cx0 = MPL + (k + 0.5) * b.slot;
+    mcross.setAttribute('x1', cx0); mcross.setAttribute('x2', cx0); mcross.setAttribute('visibility', 'visible');
+    msvg.querySelectorAll('.m-bar').forEach(el => el.classList.toggle('hot', +el.dataset.i === i));
+    const line = src => { const vals = src.get(drive), at = n => (vals && n >= src.start && n < src.start + vals.length) ? vals[n - src.start] : null, cur = at(i), p = at(i - 12);
+      if (cur == null) return `<div class="o">not in this run's twelve months yet</div>`;
+      const pct = p ? Math.round((cur - p) / p * 100) : null, cls = pct == null ? '' : pct > 2 ? 'd-up' : pct < -2 ? 'd-down' : 'd-flat';
+      return `<div class="o"><i class="k kb"></i>${SOURCES.length > 1 ? src.name + ' ' : ''}${fmtN(cur)} searches${p != null ? ` <span class="${cls}">${pct > 0 ? '+' : ''}${pct}%</span> <span>vs ${fmtN(p)} in ${mLabel(i - 12)}</span>` : ''}</div>`; };
+    mtip.innerHTML = `<b>${mLabel(i)}</b>` + SOURCES.map(line).join('');
+    const w = mtip.offsetWidth, px = cx0 * r.width / MW; mtip.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; mtip.style.top = '12px'; mtip.classList.add('on');
+  };
+  const mhide = () => { mcross.setAttribute('visibility', 'hidden'); mtip.classList.remove('on'); msvg.querySelectorAll('.m-bar.hot').forEach(el => el.classList.remove('hot')); };
+  const mh = $('mHit'); mh.addEventListener('pointermove', show); mh.addEventListener('pointerdown', show); mh.addEventListener('pointerleave', mhide);
+}
+wireDemand = function (c) {
+  baseWireDemandV1(c);
+  const T = TRENDS[c.topic]; if (!T) return;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), mix = phraseMix(T), C = CORPUS[drive.t], v = C ? rateIdx(C) : null;
+  const wrap = $('chWrap'), svg = wrap.querySelector('svg'), dots = $('chDots'), tipEl = $('chTip'), cross = $('chCross');
+  const readout = e => {
+    const s0 = 60 - range, step = step60 * (60 / range), r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * CW / r.width;
+    const i = Math.max(s0, Math.min(60, s0 + Math.round((vx - PL) / step))), j = i - (C ? (C.start ?? CS_START) : CS_START), X = rxFor(i);
+    cross.setAttribute('x1', X); cross.setAttribute('x2', X); cross.setAttribute('visibility', 'visible');
+    const row = (sw, name, val) => `<div class="tt-r">${sw}<span>${name}</span><b>${val}</b></div>`;
+    let html = `<div class="tt-h"><span style="color:var(--ink);font-weight:700">${mLabel(i)}${i === 60 ? ' (not over yet)' : ''}</span><span>Google interest, 0 to 100</span></div>`;
+    html += row(swatch('#0F766E', '', 2.6), drive.t, Math.round(drive.m[i]));
+    let d = `<circle cx="${X}" cy="${cy(drive.m[i])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>`;
+    others.forEach((o, k) => { if (!hiddenTerms.has(o.t)) { html += row(swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6), o.t, Math.round(o.m[i])); d += `<circle cx="${X}" cy="${cy(o.m[i])}" r="2.6" fill="${OTHER_STYLE[k % 2].c}"/>`; } });
+    if (mix && !hiddenTerms.has(COMB)) html += row(swatch(COMB_C, '4 3', 2), 'All phrases, weighted', Math.round(mix.combined[i]));
+    let top = cy(drive.m[i]);
+    if (v && !hiddenTerms.has(CORP) && j >= 0 && j < C.imp.length) { html += `<div class="tt-r corp">${corpSwatch}<span>Our practices</span><b>${Math.round(v[j])}</b><small>${fmtN(C.imp[j])} impressions across ${C.pr[j]} practices</small></div>`; d += `<circle cx="${X}" cy="${cy(v[j])}" r="4.5" fill="${S8}" stroke="#fff" stroke-width="2"/>`; top = Math.min(top, cy(v[j])); }
+    dots.innerHTML = d; tipEl.innerHTML = html;
+    const px = X * r.width / CW, w = tipEl.offsetWidth;
+    tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; tipEl.style.top = (top * r.height / CH - 8) + 'px'; tipEl.classList.add('on');
+  };
+  const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.innerHTML = ''; tipEl.classList.remove('on'); };
+  const hit = $('chHit'); hit.addEventListener('pointermove', readout); hit.addEventListener('pointerdown', readout); hit.addEventListener('pointerleave', hide);
+  $('dBody').querySelectorAll('.tg[data-term]').forEach(b => b.onclick = () => { const t = b.dataset.term, on = hiddenTerms.has(t); if (on) hiddenTerms.delete(t); else hiddenTerms.add(t); b.setAttribute('aria-pressed', on); const g = svg.querySelector(`.ch-other[data-term="${t}"]`); if (g) g.classList.toggle('off', !on); const ce = svg.querySelector('#corpEnd'); if (t === CORP && ce) ce.setAttribute('visibility', on ? 'visible' : 'hidden'); });
+  $('dBody').querySelectorAll('.rg button').forEach(b => b.onclick = () => { if (+b.dataset.range === range) return; range = +b.dataset.range; applyRange(c, T, drive); });
+  wireBars(drive);
+};
+</script>
+<script>
+// ----- Expedition rows: judged by Claude or by the text match alone; a question with no page near it has no page chip -----
+const byCounts = s => { const n = k => s.judged.filter(q => q[4] === k).length; return { claude: n('claude'), sim: n('similarity') }; };
+covStats = function (c) {
+  const d = COV[c.topic]; if (!d) return null;
+  const n = k => d.judged.filter(q => q[1] === k).length;
+  const cov = n('cov'), thin = n('thin'), none = n('none'), total = d.judged.length;
+  const label = cov >= 0.5 * total ? 'Solid page' : (cov + thin) >= 0.3 * total ? 'Thin page' : 'No page';
+  const pages = {};
+  d.judged.forEach(q => { if (!q[2]) return; const p = pages[q[2]] = pages[q[2]] || { n: 0, best: 0 }; p.n++; p.best = Math.max(p.best, q[3]); });
+  const pageRows = Object.entries(pages).map(([p, v]) => ({ p, ...v })).sort((a, b) => b.n - a.n || b.best - a.best);
+  return { ...d, cov, thin, none, total, label, pageRows };
+};
+const covTipFor = s => { const b = byCounts(s); return `<span class="qtip"><b>Where these questions come from</b>OpenedQueries asks Claude for about 20 searches a dental patient would type about this topic, finds the page on the site whose text comes closest to each one, then has Claude read that page and say whether it answers the question: answered, partly answered, or no answer. The bar beside each question shows only how close the nearest page's text came. For this topic Claude read the page for ${b.claude} of ${s.total}${b.sim ? `; ${b.sim} fell back to the text match alone` : ''}. With demand, this decides the action: healthy demand and no page means write a new page.</span>`; };
+const leadHtml = s => `<p class="cv-lead">${covLeadText(s).replace('questions people ask', `<span class="bh" tabindex="0"><span class="bh-t">questions people ask</span>${covTipFor(s)}</span>`)}</p>`;
+const chipsHtml = s => `<div class="cv-h" style="margin-top:12px">Pages that came closest</div><div class="cv-chips">${s.pageRows.map(r => `<span class="cv-chip"><b>${r.p}</b> · ${r.n}</span>`).join('')}</div>`;
+const BAR_LO = 0.5, BAR_HI = 0.8, barPct = x => Math.max(0, Math.min(100, (x - BAR_LO) / (BAR_HI - BAR_LO) * 100));
+const scaleHtml = (bar, cols) => `<div class="mscale" style="grid-template-columns:${cols || `10px minmax(0,1fr) ${bar}px`}"><span></span><span style="text-align:right">how close the nearest page comes</span><span class="s"><span class="l" style="left:${barPct(THIN_AT)}%">partly</span><span class="r" style="left:${barPct(COVERED_AT)}%">answers</span></span></div>`;
+const rowsHtml = (s, bar, keys) => (keys || ['cov', 'thin', 'none']).map(k => { const qs = s.judged.filter(q => q[1] === k); if (!qs.length) return '';
+  return `<li class="g"><span>${COV_WORD[k]} · ${qs.length}</span></li>` + qs.map(q => `<li class="wide" style="--bar:${bar}px"><i class="c-${k}"></i><span>${q[0]}</span>${mbar3(q[3], 'c-' + k)}</li>`).join(''); }).join('');
+const tailHtml = (s, c) => `${asideHtml(s)}${pageboxHtml(c)}${covFoot}`;
+// The Visibility and Topic rating sections, as the approved popup builds them.
+const visHtml = () => secHead('vis', 'Visibility', 'Not measured yet') + `<div class="sec-b"><dl class="vrow">
+        <dt>Maps</dt><dd><span class="tag nrtag">No Read</span> No grid scan for this office yet.<br><a class="go" href="#" onclick="return false" style="margin-top:4px">Run a grid scan ›</a></dd>
+        <dt>AI answers</dt><dd><span class="tag nrtag">No Read</span> AI visibility is off for this office.</dd>
+      </dl></div>`;
+const rateHtml = c => secHead('rate', 'Topic rating', '') + `<div class="sec-b">${c.d.rating}</div>`;
+// A full-width C3 list: every question on one line, a longer match bar.
+const listHtml = (c, bar) => { const s = covStats(c);
+  return secHead('cov', 'Coverage', s.label) + `<div class="sec-b">${leadHtml(s)}${scaleHtml(bar)}<ul class="cv-rows nolimit">${rowsHtml(s, bar)}</ul>${chipsHtml(s)}${tailHtml(s, c)}</div>`; };
+
+const shortPage = p => { const seg = p.replace(/\/$/, '').split('/').pop() || p; return seg.replace(/-/g, ' '); };
+coverageHtml = function (c) {
+  const s = covStats(c);
+  const pages = s.pageRows.map(r => r.p), hasNone = s.judged.some(q => !q[2]);
+  const head = `<tr><th class="q">Questions people ask · ${s.total}</th>${pages.map(p => `<th title="${p}"><span class="pg">${shortPage(p)}</span><span class="pn">${s.pageRows.find(r => r.p === p).n}</span></th>`).join('')}${hasNone ? '<th class="none"><span class="pg">no page close</span></th>' : ''}</tr>`;
+  const cell = (q, p) => q[2] === p ? `<span class="m c-${q[1]}" data-q="${q[0].replace(/"/g, '&quot;')}" data-p="${p}" data-k="${q[1]}" data-s="${q[3]}"></span>` : '';
+  const rows = ['cov', 'thin', 'none'].map(k => { const qs = s.judged.filter(q => q[1] === k); if (!qs.length) return '';
+    return `<tr><td class="q g">${COV_WORD[k]} · ${qs.length}</td>${pages.map(() => '<td class="g"></td>').join('')}${hasNone ? '<td class="g"></td>' : ''}</tr>` +
+      qs.map(q => `<tr><td class="q">${q[0]}</td>${pages.map(p => `<td>${cell(q, p)}</td>`).join('')}${hasNone ? `<td>${q[2] ? '' : `<span class="m c-${q[1]}" data-q="${q[0].replace(/"/g, '&quot;')}" data-p="" data-k="${q[1]}" data-s="${q[3]}"></span>`}</td>` : ''}</tr>`).join(''); }).join('');
+  return secHead('cov', 'Coverage', s.label) + `<div class="sec-b">${leadHtml(s)}
+    <div class="mx" id="mx" style="--colw:${Math.max(76, Math.min(104, Math.floor(640 / (pages.length + (hasNone ? 1 : 0)))))}px"><table>${head}${rows}</table><div class="mx-tip" id="mxTip"></div></div>
+    <div class="mx-key"><span><i style="background:#0F766E"></i>Answered there</span><span><i style="background:#7DD3FC"></i>Partly answered there</span><span><i style="background:#fff;box-shadow:inset 0 0 0 1.5px #CBD5E1"></i>Closest page, no answer</span></div>
+    ${tailHtml(s, c)}</div>`;
+};
+const MX_WORD = { cov: 'answers it', thin: 'partly answers it', none: 'does not answer it' };
+const baseWire3 = wireCells;
+wireCells = function (c) {
+  baseWire3(c);
+  const mx = $('mx'); if (!mx) return;
+  const tip = $('mxTip');
+  mx.querySelectorAll('.m').forEach(m => {
+    m.addEventListener('pointerenter', () => {
+      tip.innerHTML = `<b>${m.dataset.p || 'No page came close'}</b>${m.dataset.p ? `Claude read it: ${MX_WORD[m.dataset.k]}. Text match ${(+m.dataset.s).toFixed(2)}.` : `Nearest text match ${(+m.dataset.s).toFixed(2)}, under the floor.`}`;
+      const r = mx.getBoundingClientRect(), b = m.getBoundingClientRect();
+      tip.classList.add('on');
+      const left = Math.min(r.width - tip.offsetWidth - 4, Math.max(4, b.left - r.left + b.width / 2 - tip.offsetWidth / 2));
+      tip.style.left = left + 'px'; tip.style.top = (b.top - r.top + mx.scrollTop - tip.offsetHeight - 8) + 'px';
+    });
+    m.addEventListener('pointerleave', () => tip.classList.remove('on'));
+  });
+};
+drawerHtml = function (c) {
+  return `<p class="tm-why">${c.why}</p><div class="tm-grid">
+    <div class="tm-col">${sec('demand', demandHtml(c))}</div>
+    <div class="tm-col">${sec('vis', visHtml())}${sec('rate', rateHtml(c))}</div></div>
+    <div class="tm-band">${sec('cov', coverageHtml(c))}</div>`;
+};
+</script>
+</body>
+</html>
