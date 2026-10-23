@@ -347,6 +347,7 @@
   .bh .qtip { display: none; position: absolute; left: 0; top: calc(100% + 8px); width: 310px; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 6px 20px rgba(15,23,42,.10); padding: 9px 12px; z-index: 6; font: 400 12px/1.45 Inter, sans-serif; color: var(--body); text-align: left; text-transform: none; letter-spacing: 0; white-space: normal; }
   .bh .qtip b { display: block; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; }
   .bh:hover .qtip, .bh:focus-visible .qtip { display: block; }
+  .bh.flip .qtip { left: auto; right: 0; }
   .lgd { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--muted); margin: 2px 0 8px; }
   .lgd > span { display: inline-flex; align-items: center; gap: 7px; }
   .sw-bar { width: 14px; height: 10px; border-radius: 2px; background: #94A3B8; flex: none; }
@@ -364,11 +365,11 @@
   .bh .qtip.s8 b { color: #DB2777; }
   .ch-tip .km { background: #DB2777; border-radius: 50%; }
   /* Chart hover readout, V1 */
-  .ch-tip.rich { padding: 8px 10px; }
+  .ch-tip.rich { padding: 8px 10px; white-space: nowrap; }
   .tt-h { display: flex; justify-content: space-between; gap: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
   .tt-h span { font-weight: 400; color: var(--faint); font-size: 11px; }
-  .tt-r { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 2px 7px; align-items: center; padding: 2px 0; color: var(--body); }
-  .tt-r b { color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; min-width: 24px; }
+  .tt-r { display: grid; grid-template-columns: 18px auto auto; gap: 2px 7px; align-items: center; padding: 2px 0; color: var(--body); }
+  .tt-r b { color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; min-width: 24px; justify-self: end; }
   .tt-r small { grid-column: 2 / 4; color: var(--muted); font-size: 11px; line-height: 1.3; }
   .tt-r.corp { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; }
   /* Branded dropdown on the "All phrases" chip */
@@ -1418,6 +1419,12 @@ const baseChartSvg = chartSvg, baseDemandHtml = demandHtml, baseWireDemand = wir
 const driveOf = c => { const T = TRENDS[c.topic]; if (!T) return null; const d = T.terms.find(t => t.t === T.drive); return CORPUS[d.t] ? d : null; };
 // The mockup opens on Dental Implants so the Demand section is on screen.
 document.fonts.ready.then(() => setTimeout(() => openDrawer(0), 450));
+// Branded hovers flip to open leftward when the 310px card would run past the popup's scroll area.
+document.addEventListener('mouseover', e => {
+  const b = e.target.closest && e.target.closest('.bh'); if (!b) return;
+  const host = b.closest('.tm-main') || document.body, hr = host.getBoundingClientRect(), br = b.getBoundingClientRect();
+  b.classList.toggle('flip', br.left + 316 > hr.right - 8);
+});
 
 // ===== V1: our practices as a branded line inside the 5-year Trends chart (over the last-12 band) =====
 // Our practices wear the S8E8 magenta (owner 10/23): the one series that is us, inside the OQ teal chart.
@@ -1452,7 +1459,7 @@ const HOW_PRACTICES = t => { const C = CORPUS[t]; return `<details class="howcou
         <li>Each month, we add up the impressions every practice got on searches that contain the phrase ('${t} cost' counts, a different wording does not), and count the practices that had any.</li>
         <li>The magenta line is that monthly total, drawn as 100 = its busiest month. It covers the last 12 months only; the Google line covers 5 years.</li>
         <li>It never changes the verdict. It shows whether what our practices actually see agrees with the national picture.</li>
-        ${C.seen ? `<li>For this phrase: seen by ${C.seen} of ${CORPUS.practices} practices; ${C.traffic} got real traffic from it (1,000 or more impressions).</li>` : ''}
+        ${C.seen ? `<li>For '${t}': seen by ${C.seen} of ${CORPUS.practices} practices; ${C.traffic} got real traffic from it (1,000 or more impressions).</li>` : ''}
       </ul>
     </details>`; };
 demandHtml = function (c) {
@@ -1560,11 +1567,35 @@ const COV = {
       ["what happens if you don't wear Invisalign 22 hours a day", "thin", "/invisalign-oro-valley-az", 0.641],
       ["Invisalign vs Smile Direct Club at-home aligners pros and cons", "none", "/invisalign-oro-valley-az", 0.638],
       ["best age to start Invisalign treatment for teenagers", "none", "/invisalign-oro-valley-az", 0.635] ] },
+  // Real Solid example from another practice (Santa Rosa Dental Suite, strategy 231, Find gaps row 40).
+  '__solid_example': { who: 'Santa Rosa Dental Suite · Gum Disease Treatment', aside: [
+      ["gum disease treatment cost without insurance", "price-shopper: insurance or coverage"],
+      ["cheapest way to treat gum disease", "price-shopper: cheapest or affordable angle"],
+      ["periodontist near me for gum disease", "booking search, not a question"] ],
+    judged: [
+      ["scaling and root planing procedure explained step by step", "cov", "/dental-services/periodontal-scaling-root-planing", 0.76],
+      ["difference between gingivitis and periodontitis", "cov", "/dental-services/gum-disease-treatment", 0.754],
+      ["can gum disease be reversed or is it permanent", "cov", "/dental-services/gum-disease-treatment", 0.752],
+      ["professional deep cleaning vs regular cleaning for gum disease", "cov", "/dental-services/gum-disease-treatment", 0.742],
+      ["how long does gum disease treatment take to show results", "cov", "/dental-services/gum-disease-treatment", 0.736],
+      ["gum disease linked to heart disease what the research shows", "cov", "/articles/mouth-body-connection", 0.73],
+      ["what is gum disease and how does it develop", "cov", "/dental-services/gum-disease-treatment", 0.729],
+      ["can gum disease cause tooth loss if left untreated", "cov", "/dental-services/periodontics", 0.722],
+      ["is gum disease surgery worth it for advanced periodontitis", "cov", "/dental-services/gum-disease-treatment", 0.717],
+      ["early signs of gum disease you should not ignore", "cov", "/dental-services/gum-disease-treatment", 0.717],
+      ["how to treat mild gum disease at home effectively", "cov", "/articles/causes-of-gum-disease", 0.716],
+      ["non-surgical gum disease treatments that actually work", "cov", "/dental-services/gum-disease-treatment", 0.711],
+      ["gum graft surgery recovery time and what to expect", "cov", "/dental-services/gum-grafting", 0.71],
+      ["antibiotics for gum disease oral vs topical options", "cov", "/articles/types-of-periodontal-disease", 0.692],
+      ["gum disease treatment for diabetic patients special considerations", "thin", "/articles/types-of-periodontal-disease", 0.685],
+      ["best mouthwash for gum disease recommended by dentists", "thin", "/articles/oral-hygiene-aids", 0.683],
+      ["laser gum treatment vs traditional gum surgery which is better", "thin", "/dental-services/gum-disease-treatment", 0.674] ] },
 };
 const COV_WORD = { cov: 'Answered', thin: 'Partly answered', none: 'No answer' };
 const COVERED_AT = 0.69, THIN_AT = 0.64;             // calendar_coverage_scorer.py
+let covExample = false;   // mockup only: swap in the real Solid example
 function covStats(c) {
-  const d = COV[c.topic]; if (!d) return null;
+  const d = covExample ? COV.__solid_example : COV[c.topic]; if (!d) return null;
   const n = k => d.judged.filter(q => q[1] === k).length;
   const cov = n('cov'), thin = n('thin'), none = n('none'), total = d.judged.length;
   const label = cov >= 0.5 * total ? 'Solid page' : (cov + thin) >= 0.3 * total ? 'Thin page' : 'No page';
@@ -1573,22 +1604,27 @@ function covStats(c) {
   const pageRows = Object.entries(pages).map(([p, v]) => ({ p, ...v })).sort((a, b) => b.n - a.n || b.best - a.best);
   return { ...d, cov, thin, none, total, label, pageRows };
 }
-const covLeadText = s => s.total === 0 ? 'No questions were checked.'
+const covLeadText = s => (s.who ? `${s.who}: ` : '') + (s.total === 0 ? 'No questions were checked.'
   : s.cov === 0 && s.thin === 0 ? `The site answers none of the ${s.total} questions people ask about this.`
   : s.cov === s.total ? `The site answers all ${s.total} questions people ask about this.`
-  : `The site answers ${s.cov} of the ${s.total} questions people ask about this${s.thin ? `, and partly answers ${s.thin} more` : ''}.`;
+  : `The site answers ${s.cov} of the ${s.total} questions people ask about this${s.thin ? `, and partly answers ${s.thin} more` : ''}.`);
 const covTip = `<span class="qtip"><b>Where these questions come from</b>OpenedQueries asks Claude for about 20 searches a dental patient would type about this topic, then checks every page on the site for each one. Answered means a page matches it closely; partly answered means a page touches it; no answer means nothing on the site comes close. With demand, this decides the action: healthy demand and no page means write a new page.</span>`;
 const meterHtml = s => `<div class="cv-meter" role="img" aria-label="${s.cov} answered, ${s.thin} partly answered, ${s.none} with no answer"><i class="c-cov" style="width:${s.cov / s.total * 100}%"></i><i class="c-thin" style="width:${s.thin / s.total * 100}%"></i><i class="c-none" style="flex:1"></i></div>
   <div class="cv-counts"><span><i class="c-cov"></i><b>${s.cov}</b> answered</span><span><i class="c-thin"></i><b>${s.thin}</b> partly answered</span><span><i class="c-none"></i><b>${s.none}</b> no answer</span></div>`;
-const asideHtml = s => s.aside.length ? `<details class="howcount cv-aside"><summary>${s.aside.length} searches set aside, not judged</summary>
+const asideHtml = s => s.aside.length ? `<details class="howcount cv-aside"><summary>${s.aside.length} more searches were skipped, never checked against the site</summary>
     <ul>${s.aside.map(a => `<li><span>${a[0]}</span><span>${a[1]}</span></li>`).join('')}</ul>
-    <p>Branded, near-me, plain-city and price-shopper searches are set aside before judging.</p></details>` : '';
+    <p>The calendar rule that never recommends writing price, insurance or financing pages also skips those searches here, so they were not checked. Branded, "near me" and plain-city searches are skipped because they are not questions about the topic.</p></details>` : '';
 const pageboxHtml = c => (c.d.pages ? `<div class="pagebox"><span class="num">${c.d.pages}</span><span>new pages recommended</span></div>` : '') +
   (c.d.page ? `<div class="pagebox"><span>Page to improve:</span> <b style="font-weight:600;color:#0369A1">${c.d.page}</b></div>` : '');
 const covFoot = `<div class="small">No page: under 30% answered or partly answered. Thin: 30% or more. Solid: half or more answered outright.</div>
     <a class="go" href="#" onclick="return false">Open Find gaps ›</a>`;
 const baseCoverageHtml = coverageHtml, baseWireCells = wireCells;
-wireCells = function (c) { if ($('qgrid')) baseWireCells(c); };
+const exampleLink = c => COV[c.topic] ? `<div class="small" style="margin:0 0 10px">Mockup only: <a href="#" class="go" id="covEx" style="margin:0;display:inline" onclick="return false">${covExample ? 'back to this topic' : 'show a real Solid example (Santa Rosa Dental Suite, Gum Disease Treatment)'}</a></div>` : '';
+wireCells = function (c) {
+  if ($('qgrid')) baseWireCells(c);
+  const ex = $('covEx');
+  if (ex) ex.onclick = () => { covExample = !covExample; const sec = ex.closest('section'); sec.innerHTML = coverageHtml(c); wireCells(c); return false; };
+};
 
 // ===== C2: verdict first, then what the page must answer, then the pages that come closest =====
 const mbar = (v, cls) => { const lo = 0.5, hi = 0.8, pct = x => Math.max(0, Math.min(100, (x - lo) / (hi - lo) * 100)); return `<span class="mbar" style="--t1:${pct(THIN_AT)}%;--t2:${pct(COVERED_AT)}%"><i class="${cls}" style="width:${pct(v)}%"></i></span>`; };
@@ -1599,7 +1635,7 @@ coverageHtml = function (c) {
   const item = q => `<li><span class="bx ${q[1] === 'cov' ? 'c' : q[1] === 'thin' ? 't' : ''}">${q[1] === 'cov' ? '✓' : ''}</span><span>${q[0]}${q[1] === 'thin' ? ` <span class="small" style="display:inline;margin:0">(partly, on ${q[2]})</span>` : ''}</span></li>`;
   const first = todo.slice(0, 6), rest = todo.slice(6);
   const pages = s.pageRows.map(r => `<span class="p">${r.p}</span>${mbar(r.best, r.best >= COVERED_AT ? 'c-cov' : r.best >= THIN_AT ? 'c-thin' : 'c-none')}<span class="n">${r.n} ${r.n === 1 ? 'question' : 'questions'}</span>`).join('');
-  return secHead('cov', 'Coverage', s.label) + `<div class="sec-b">
+  return secHead('cov', 'Coverage', s.label) + `<div class="sec-b">${exampleLink(c)}
       <div class="cv-hero"><div class="cv-big">${s.cov}<small>of ${s.total}</small></div><div class="cv-hero-t">questions answered by the site<span class="sub">${s.total} <span class="bh" tabindex="0"><span class="bh-t">patient questions</span>${covTip}</span> checked${s.thin ? `, ${s.thin} partly answered` : ''}${s.none === s.total ? ', none has an answer on any page' : ''}</span></div></div>
       ${meterHtml(s)}
       <div class="cv-h">${s.label === 'No page' ? 'What a new page must answer' : 'What the page still needs to answer'}</div>
