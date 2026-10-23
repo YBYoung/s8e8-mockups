@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Topic Cards: chart range + 24-month searches (#1220) - OpenedQueries mockup</title>
+<title>Topic Cards: chart range (#1220) - OpenedQueries mockup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
 <style>
@@ -466,13 +466,17 @@
   .m-bar.prev { fill: #E2E8F0; } .m-bar.prev.hot { fill: #CBD5E1; }
   .sw-prev { width: 14px; height: 10px; border-radius: 2px; background: #E2E8F0; flex: none; }
   .ch-tip .kp { background: #E2E8F0; }
+  #chPlot { transition: transform .7s var(--ease); }
+  #chChrome { transition: opacity .35s ease; } #chChrome.swap { opacity: 0; }
+  #chMarks .mk { transition: cx .7s var(--ease), transform .7s var(--ease); }
+  .chartwrap.fade { transition: opacity .18s ease; } .chartwrap.fade.out { opacity: 0; }
   .ch-tip .d-up { color: #15803D; font-weight: 600; } .ch-tip .d-down { color: #BE123C; font-weight: 600; } .ch-tip .d-flat { color: var(--muted); font-weight: 600; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="note-top"><b>Range: 12 months, 24 months, 5 years.</b> The chips above the chart change its window; the searches below show 24 months from the Google Ads estimate with the same month a year earlier ghosted behind each bar, or the 12-month exact-phrase clickstream count (switch under the chart). Our practices: the twelve full months we hold (Oct 2025 to Sep 2026), as a weekly rate. Real data: Oracle Family Dental (strategy 210). Opens on Dental Implants.</div>
+  <div class="note-top"><b>Range: 12 months, 24 months, 5 years.</b> The chips above the chart zoom it (the lines morph into the new window); the searches below follow the same window, the same month a year earlier ghosted behind a bar once it is known, and explainers under them. Our practices: the twelve full months we hold (Oct 2025 to Sep 2026), as a weekly rate. Real data: Oracle Family Dental (strategy 210). Opens on Dental Implants.</div>
 
   <div class="stepper"><span class="done">Run Strategy</span> › <span class="done">Site analysis</span> › <span class="done">Market Signals</span> › <span class="here">Synthesis: Topic Cards</span> › <span>Calendar (new pages) and On-Page Optimization (fixes)</span></div>
 
@@ -1654,133 +1658,176 @@ coverageHtml = function (c) {
       ${asideHtml(s)}${pageboxHtml(c)}${covFoot}</div>`;
 };
 </script>
-<script>
-// ===== Range chips (12 months / 24 months / 5 years) on the Demand chart, and 24-month searches with same-month-last-year =====
-// Google Ads monthly history (DataForSEO keywords_data/google_ads/search_volume, US, Oct 2024 to Sep 2026, fetched 10/23):
-// rounded to buckets and counting close variants, so about ten times the exact-phrase clickstream count.
+<script>const WITH_ADS = false;
+// ===== Range chips (12 months / 24 months / 5 years) with a zoom morph, and searches over the window with the same month a year earlier =====
 const ADS_START = 36;   // 2024-10 on the 61-month axis
 const ADS24 = {
   'dental implants': [246000,246000,246000,301000,246000,450000,450000,450000,301000,165000,246000,201000,165000,135000,135000,165000,165000,201000,165000,135000,135000,201000,201000,135000],
   'tooth implant':   [60500,60500,74000,90500,74000,110000,74000,74000,60500,60500,49500,40500,40500,33100,33100,40500,33100,40500,49500,40500,40500,33100,33100,33100],
 };
-// Our practices, the twelve full months we hold (Oct 2025 to Sep 2026) with the Mondays in each, so the line is a weekly rate.
 CORPUS['dental implants'] = { imp: [128152,151336,165614,141847,156657,200393,163989,173469,235401,169757,241282,149227],
   pr: [133,137,151,153,159,168,169,164,162,178,181,174], weeks: [4,4,5,4,4,5,4,4,5,4,5,4], seen: 214, traffic: 111 };
 const RANGE_OPTS = [[12, '12 months'], [24, '24 months'], [60, '5 years']];
-let range = 24, source = 'ads';
+let range = 24;
 const rateIdx = C => { const r = C.imp.map((v, j) => v / (C.weeks ? C.weeks[j] : 1)); const m = Math.max(...r, 1); return r.map(v => v / m * 100); };
+const step60 = (CW - PL - PR) / 60;
+const plotTransform = () => { const k = 60 / range, t = PL - k * cx(60 - range); return `translate(${t.toFixed(2)}px, 0px) scale(${k.toFixed(4)}, 1)`; };
+const rxFor = i => PL + (i - (60 - range)) * step60 * (60 / range);
 const rangeChips = () => `<div class="rg-row"><span class="rg-lab">Show</span><div class="rg" role="group" aria-label="Range">${RANGE_OPTS.map(([r, l]) => `<button type="button" data-range="${r}" aria-pressed="${r === range}">${l}</button>`).join('')}</div></div>`;
 
-function rangeChartSvg(T, drive, others, mix) {
-  const s0 = 60 - range, step = (CW - PL - PR) / range, rx = i => PL + (i - s0) * step;
-  const path = (m, a, b) => { let d = ''; for (let i = a; i <= b; i++) d += (i === a ? 'M' : 'L') + rx(i).toFixed(1) + ' ' + cy(m[i]).toFixed(1); return d; };
-  const a = analyze(drive.m), half = step / 2;
-  const band = (i0, i1, fill, label) => (i1 < s0) ? '' : `<rect x="${rx(Math.max(i0, s0)) - half}" y="${PT}" width="${rx(i1) - rx(Math.max(i0, s0)) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/><text class="ch-band-lab" x="${(rx(Math.max(i0, s0)) + rx(i1)) / 2}" y="${CH - PB - 5}" text-anchor="middle">${label}</text>`;
-  let s = `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Google interest in '${drive.t}', last ${range === 60 ? '5 years' : range + ' months'}">`;
-  s += `<defs><linearGradient id="chFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>`;
-  if (range > 12) s += band(36, 47, '#F3F4F6', '12 before');
+// The chrome (bands, grid, month labels) is drawn for the current window; the plot (every line, all 61 months) is
+// drawn once in 5-year coordinates and zoomed with a CSS transform, so a range change slides and stretches the lines.
+function chromeSvg() {
+  const s0 = 60 - range, half = step60 * (60 / range) / 2;
+  const band = (i0, i1, fill, label) => (i1 < s0) ? '' : `<rect x="${rxFor(Math.max(i0, s0)) - half}" y="${PT}" width="${rxFor(i1) - rxFor(Math.max(i0, s0)) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/><text class="ch-band-lab" x="${(rxFor(Math.max(i0, s0)) + rxFor(i1)) / 2}" y="${CH - PB - 5}" text-anchor="middle">${label}</text>`;
+  let s = range > 12 ? band(36, 47, '#F3F4F6', '12 before') : '';
   s += band(48, 59, '#E3F2EE', 'last 12');
-  s += `<path class="ch-area" fill="url(#chFill)" d="${path(drive.m, s0, 59)}L${rx(59).toFixed(1)} ${cy(0).toFixed(1)}L${rx(s0).toFixed(1)} ${cy(0).toFixed(1)}Z"/>`;
   [0, 50, 100].forEach(v => s += `<line class="ch-grid" x1="${PL}" x2="${CW - PR}" y1="${cy(v)}" y2="${cy(v)}"/><text class="ch-ylab" x="${PL - 6}" y="${cy(v) + 3.5}" text-anchor="end">${v}</text>`);
-  for (let i = s0; i <= 60; i++) {
-    const cm = calMonth(i), tick = range === 60 ? cm === 0 : (range === 24 ? cm % 3 === 0 : true);
-    if (tick) s += `<line class="ch-grid" x1="${rx(i)}" x2="${rx(i)}" y1="${CH - PB}" y2="${CH - PB + 4}"/><text class="ch-xlab" x="${rx(i)}" y="${CH - 6}" text-anchor="middle">${range === 60 ? mLabel(i).slice(4) : (cm === 0 || i === s0 ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm])}</text>`;
-  }
-  others.forEach((o, k) => { const st = OTHER_STYLE[k % 2]; s += `<g class="ch-other ch-line ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}><path d="${path(o.m, s0, 59)}"/><path class="ch-partial" d="${path(o.m, 59, 60)}"/></g>`; });
-  if (mix) s += `<g class="ch-other ch-line ch-comb ${hiddenTerms.has(COMB) ? 'off' : ''}" data-term="${COMB}" stroke="${COMB_C}" stroke-dasharray="6 4"><path d="${path(mix.combined, s0, 59)}"/><path d="${path(mix.combined, 59, 60)}" stroke-dasharray="2 3"/></g>`;
-  s += `<g class="ch-line" data-term="${drive.t}"><path class="ch-drive" d="${path(drive.m, s0, 59)}"/><path class="ch-drive ch-partial" style="stroke-width:1.8" d="${path(drive.m, 59, 60)}"/></g>`;
-  const C = CORPUS[drive.t];
-  if (C) { const v = rateIdx(C), d = v.map((x, j) => (j ? 'L' : 'M') + rx(CS_START + j).toFixed(1) + ' ' + cy(x).toFixed(1)).join('');
-    s += `<g class="ch-other ch-line ch-corp ${hiddenTerms.has(CORP) ? 'off' : ''}" data-term="${CORP}"><path class="ch-corp-case" d="${d}"/><path class="ch-corp-line" d="${d}"/><circle cx="${rx(CS_START + 11).toFixed(1)}" cy="${cy(v[11]).toFixed(1)}" r="4" fill="${S8}" stroke="#fff" stroke-width="2"/></g>`; }
-  if (SPIKE_WORD[T.spike] && a.peakI >= s0) { const px = rx(a.peakI), py = cy(a.peak), right = px > CW - 80;
-    s += `<g class="ch-peak"><circle cx="${px}" cy="${py}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/><text x="${right ? px - 7 : px + 7}" y="${py + 4}" text-anchor="${right ? 'end' : 'start'}">peak, ${mLabel(a.peakI)}</text></g>`; }
-  s += `<line class="ch-cross" id="chCross" y1="${PT}" y2="${CH - PB}" x1="-10" x2="-10" visibility="hidden"/><g id="chDots"></g><rect id="chHit" x="${PL - 6}" y="0" width="${CW - PL - PR + 12}" height="${CH}" fill="transparent"/></svg>`;
+  for (let i = s0; i <= 60; i++) { const cm = calMonth(i), tick = range === 60 ? cm === 0 : (range === 24 ? cm % 3 === 0 : true);
+    if (tick) s += `<line class="ch-grid" x1="${rxFor(i)}" x2="${rxFor(i)}" y1="${CH - PB}" y2="${CH - PB + 4}"/><text class="ch-xlab" x="${rxFor(i)}" y="${CH - 6}" text-anchor="middle">${range === 60 ? mLabel(i).slice(4) : (cm === 0 || i === s0 ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm])}</text>`; }
   return s;
 }
-chartSvg = function (T, drive, others, mix) { return rangeChartSvg(T, drive, others, mix); };
+function plotSvg(T, drive, others, mix) {
+  const NS = 'vector-effect="non-scaling-stroke"';
+  let s = `<path class="ch-area" fill="url(#chFill)" d="${linePath(drive.m, 0, 59)}L${cx(59).toFixed(1)} ${cy(0).toFixed(1)}L${cx(0).toFixed(1)} ${cy(0).toFixed(1)}Z"/>`;
+  others.forEach((o, k) => { const st = OTHER_STYLE[k % 2]; s += `<g class="ch-other ch-line ${hiddenTerms.has(o.t) ? 'off' : ''}" data-term="${o.t}" stroke="${st.c}" ${st.d ? `stroke-dasharray="${st.d}"` : ''}><path ${NS} d="${linePath(o.m, 0, 59)}"/><path ${NS} class="ch-partial" d="${linePath(o.m, 59, 60)}"/></g>`; });
+  if (mix) s += `<g class="ch-other ch-line ch-comb ${hiddenTerms.has(COMB) ? 'off' : ''}" data-term="${COMB}" stroke="${COMB_C}" stroke-dasharray="6 4"><path ${NS} d="${linePath(mix.combined, 0, 59)}"/><path ${NS} d="${linePath(mix.combined, 59, 60)}" stroke-dasharray="2 3"/></g>`;
+  s += `<g class="ch-line" data-term="${drive.t}"><path ${NS} class="ch-drive" d="${linePath(drive.m, 0, 59)}"/><path ${NS} class="ch-drive ch-partial" style="stroke-width:1.8" d="${linePath(drive.m, 59, 60)}"/></g>`;
+  const C = CORPUS[drive.t];
+  if (C) { const v = rateIdx(C), d = v.map((x, j) => (j ? 'L' : 'M') + cx(CS_START + j).toFixed(1) + ' ' + cy(x).toFixed(1)).join('');
+    s += `<g class="ch-other ch-line ch-corp ${hiddenTerms.has(CORP) ? 'off' : ''}" data-term="${CORP}"><path ${NS} class="ch-corp-case" d="${d}"/><path ${NS} class="ch-corp-line" d="${d}"/></g>`; }
+  return s;
+}
+function markersSvg(T, drive) {
+  const C = CORPUS[drive.t], a = analyze(drive.m);
+  let s = C ? `<circle class="mk" id="corpEnd" cx="${rxFor(CS_START + 11).toFixed(1)}" cy="${cy(rateIdx(C)[11]).toFixed(1)}" r="4" fill="${S8}" stroke="#fff" stroke-width="2" ${hiddenTerms.has(CORP) ? 'visibility="hidden"' : ''}/>` : '';
+  if (SPIKE_WORD[T.spike]) { const px = rxFor(a.peakI), py = cy(a.peak), right = px > CW - 80, off = a.peakI < 60 - range;
+    s += `<g class="ch-peak mk" id="peakMk" ${off ? 'visibility="hidden"' : ''}><circle cx="${px}" cy="${py}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/><text x="${right ? px - 7 : px + 7}" y="${py + 4}" text-anchor="${right ? 'end' : 'start'}">peak, ${mLabel(a.peakI)}</text></g>`; }
+  return s;
+}
+chartSvg = function (T, drive, others, mix) {
+  return `<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="Google interest in '${drive.t}'">
+    <defs><linearGradient id="chFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient>
+      <clipPath id="plotClip"><rect x="${PL}" y="0" width="${CW - PL - PR}" height="${CH}"/></clipPath></defs>
+    <g id="chChrome">${chromeSvg()}</g>
+    <g clip-path="url(#plotClip)"><g id="chPlot" style="transform:${plotTransform()}">${plotSvg(T, drive, others, mix)}</g></g>
+    <g id="chMarks">${markersSvg(T, drive)}</g>
+    <line class="ch-cross" id="chCross" y1="${PT}" y2="${CH - PB}" x1="-10" x2="-10" visibility="hidden"/><g id="chDots"></g>
+    <rect id="chHit" x="${PL - 6}" y="0" width="${CW - PL - PR + 12}" height="${CH}" fill="transparent"/></svg>`;
+};
 
-// 24-month searches: bars for the shown months, the same month a year earlier ghosted behind each (where the source has it).
-function searchSeries(term) {
-  if (source === 'ads' && ADS24[term.t]) return { start: ADS_START, values: ADS24[term.t], name: 'Google Ads estimate', note: 'rounded to buckets and counting close variants' };
-  return { start: CS_START, values: term.cs, name: 'Clickstream estimate', note: 'exact phrase, 12 months' };
+// Searches over the window: the clickstream count (exact phrase, 12 months per run, growing a month per run); with WITH_ADS a
+// second row of Google Ads history above it, each row in its own counts. The same month a year earlier is ghosted where known.
+const SOURCES = (WITH_ADS ? [{ key: 'ads', start: ADS_START, name: 'Google Ads estimate', get: t => ADS24[t.t] || null }] : [])
+  .concat([{ key: 'cs', start: CS_START, name: 'Clickstream estimate', get: t => t.cs }]);
+const WIN = () => Math.min(range, 24);
+function rowSvg(term, src, H) {
+  const vals = src.get(term), shown = WIN(), first = 60 - shown, slot = (MW - MPL - MPR) / shown, bw = Math.min(22, slot * 0.58);
+  const y = yFn(20, H - 22), base = y(0), at = i => (vals && i >= src.start && i < src.start + vals.length) ? vals[i - src.start] : null;
+  const inWin = []; for (let i = first; i < 60; i++) if (at(i) != null) inWin.push(at(i));
+  const mx = Math.max(...inWin, 1), x = i => MPL + (i - first + 0.5) * slot;
+  let g = `<g class="row" data-src="${src.key}">${SOURCES.length > 1 ? `<text class="ch-band-lab" x="${MPL}" y="12">${src.name}</text>` : ''}`;
+  rowSvg.have = inWin.length; rowSvg.shown = shown;
+  [0, 50, 100].forEach(v => g += `<line class="ch-grid" x1="${MPL}" x2="${MW - MPR}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/><text class="ch-ylab" x="${MPL - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v === 0 ? '0' : fmtK(mx * v / 100)}</text>`);
+  for (let i = first; i < 60; i++) { const cur = at(i), p = at(i - 12); if (cur == null) continue;
+    if (p != null) g += `<path class="m-bar prev" data-i="${i}" d="${barPath(x(i) - bw / 2 - 3, Math.min(y(p / mx * 100), base - 2), base, bw)}"/>`;
+    g += `<path class="m-bar" data-i="${i}" d="${barPath(x(i) - bw / 2 + (p != null ? 3 : 0), Math.min(y(cur / mx * 100), base - 2), base, bw)}"/>`; }
+  const pk = [...Array(60).keys()].find(i => i >= first && at(i) === mx);
+  if (pk != null) g += `<text class="ch-dlab" x="${x(pk).toFixed(1)}" y="${(y(100) - 5).toFixed(1)}" text-anchor="middle">${fmtK(mx)}</text>`;
+  return g + '</g>';
 }
 function barsSvg(term) {
-  const S = searchSeries(term), shown = Math.min(range, S.values.length), first = S.start + S.values.length - shown;
-  const H = 210, y = yFn(MPT, H - MPB), base = y(0), mx = Math.max(...S.values, 1), slot = (MW - MPL - MPR) / shown, bw = Math.min(24, slot * 0.6);
-  const at = i => S.values[i - S.start], prev = i => at(i - 12);
-  const x = i => MPL + (i - first + 0.5) * slot;
-  let s = `<svg viewBox="0 0 ${MW} ${H}" role="img" aria-label="Estimated US searches for '${term.t}', ${shown} months, with the same month a year earlier">`;
-  s += gridOf(y, false);
-  [0, 50, 100].forEach(v => s += `<text class="ch-ylab" x="${MPL - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end">${v === 0 ? '0' : fmtK(mx * v / 100)}</text>`);
-  for (let i = first; i < S.start + S.values.length; i++) {
-    const p = prev(i);
-    if (p != null) s += `<path class="m-bar prev" data-i="${i}" d="${barPath(x(i) - bw / 2 - 3, Math.min(y(p / mx * 100), base - 2), base, bw)}"/>`;
-    s += `<path class="m-bar" data-i="${i}" d="${barPath(x(i) - bw / 2 + (p != null ? 3 : 0), Math.min(y(at(i) / mx * 100), base - 2), base, bw)}"/>`;
-    const cm = calMonth(i);
-    if (shown <= 12 || cm % 3 === 0) s += `<text class="ch-xlab" x="${x(i).toFixed(1)}" y="${H - 6}" text-anchor="middle">${cm === 0 || i === first ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm]}</text>`;
-  }
-  const pk = S.values.indexOf(mx) + S.start; if (pk >= first) s += `<text class="ch-dlab" x="${x(pk).toFixed(1)}" y="${(y(100) - 6).toFixed(1)}" text-anchor="middle">${fmtK(mx)}</text>`;
-  s += `<line class="ch-cross" id="mCross" y1="${MPT}" y2="${base}" x1="-10" x2="-10" visibility="hidden"/><rect id="mHit" x="${MPL - 6}" y="0" width="${MW - MPL - MPR + 12}" height="${H}" fill="transparent"/></svg>`;
-  return { svg: s, S, shown, first, slot, H, y, mx };
+  const shown = WIN(), first = 60 - shown, slot = (MW - MPL - MPR) / shown, RH = SOURCES.length > 1 ? 150 : 170, H = RH * SOURCES.length + 26;
+  let s = `<svg viewBox="0 0 ${MW} ${H}" role="img" aria-label="Estimated US searches for '${term.t}', ${shown} months, with the same month a year earlier where known">`;
+  SOURCES.forEach((src, n) => s += `<g transform="translate(0 ${RH * n})">${rowSvg(term, src, RH)}</g>`);
+  for (let i = first; i < 60; i++) { const cm = calMonth(i); if (shown <= 12 || cm % 3 === 0) s += `<text class="ch-xlab" x="${(MPL + (i - first + 0.5) * slot).toFixed(1)}" y="${H - 6}" text-anchor="middle">${cm === 0 || i === first ? mLabel(i).replace(/ 20(\d\d)$/, " '$1") : MON[cm]}</text>`; }
+  s += `<line class="ch-cross" id="mCross" y1="16" y2="${H - 20}" x1="-10" x2="-10" visibility="hidden"/><rect id="mHit" x="${MPL - 6}" y="0" width="${MW - MPL - MPR + 12}" height="${H}" fill="transparent"/></svg>`;
+  return { svg: s, shown, first, slot, H };
 }
+const EXPLAIN_ADS = `<details class="howcount"><summary>What the Google Ads estimate is</summary>
+      <p>Google's own count of how often a phrase and its close variants ("dental implant", "dental implants near me") were searched in the US each month, rounded to steps (135,000, 165,000, 201,000...). It reaches back four years, so it can show the same month a year earlier today.</p>
+      <ul><li>It does not change the verdict (the Google interest line) or the size reading (the clickstream estimate).</li><li>Because it counts variants and rounds, it reads about ten times larger than the exact-phrase count; compare each row with itself, year over year.</li></ul></details>`;
+const EXPLAIN = `
+    <details class="howcount"><summary>What the search estimate is</summary>
+      <p>DataForSEO's clickstream estimate: anonymized browsing from a panel of real people, scaled to the whole US, for this exact phrase. Google does not publish exact counts; its Ads planner only gives wide, rounded ranges that also count close variants, so the card does not use it.</p>
+      <ul><li>This is the number the card sizes a topic with ("sizable" or not) and weights the phrases by. Smoothed month to month, so treat it as a size check, not a precise count.</li><li>Each trend check stores twelve months; a check a month builds the 24-month view, and the same month a year earlier appears behind each bar as soon as it is known.</li></ul>
+    </details>
+    ${WITH_ADS ? EXPLAIN_ADS : ''}
+    <details class="howcount"><summary>How the Google interest line is read</summary>
+      <p>Google Trends scores each phrase 0 to 100, where 100 is that phrase's busiest month in the last 5 years. It is a share of all Google searches, not a count, which is why it sits on its own chart.</p>
+      <ul><li>The verdict compares the last 3 full months with the same months a year earlier, measured against dental searches overall, and calls the topic growing, stable or fading.</li><li>Our practices (the rose line) is drawn on the same 0 to 100 so the shapes compare; it never changes the verdict.</li></ul>
+    </details>`;
+const barsCap = () => `${rowSvg.have < rowSvg.shown ? `${rowSvg.have} of ${rowSvg.shown} months so far; each monthly trend check adds one. ` : ''}${SOURCES.length > 1 ? 'Two estimates of the same thing, each on its own scale; hover' : 'Hover'} a month for the count and the change from a year earlier.`;
 function barsBlock(term) {
-  const b = barsSvg(term), hasPrev = b.S.values.length > 12;
-  return `<div class="bars-h">Estimated US searches for '${term.t}', ${b.shown === 12 ? 'last 12 months' : `last ${b.shown} months`}</div>
-    <div class="rg-row"><div class="lgd" style="margin:0"><span><i class="sw-bar"></i>searches a month</span>${hasPrev ? '<span><i class="sw-prev"></i>same month a year earlier</span>' : ''}</div>
-      <div class="src"><button class="tg" type="button" data-src="ads" aria-pressed="${source === 'ads'}">Google Ads estimate · 24 months</button><button class="tg" type="button" data-src="cs" aria-pressed="${source === 'cs'}">Clickstream · 12 months, exact phrase</button></div></div>
-    <div class="chartwrap" id="mWrap">${b.svg}<div class="ch-tip" id="mTip"></div></div>
-    <div class="ch-cap">${b.S.name}: ${b.S.note}. Hover a month for the count and the change from a year earlier.</div>${STUBS}`;
+  const b = barsSvg(term);
+  return `<div class="bars-h" id="barsH">Estimated US searches for '${term.t}', last ${b.shown} months</div>
+    <div class="lgd" style="margin:0 0 6px"><span><i class="sw-bar"></i>searches a month</span><span><i class="sw-prev"></i>same month a year earlier</span></div>
+    <div class="chartwrap fade" id="mWrap">${b.svg}<div class="ch-tip" id="mTip"></div></div>
+    <div class="ch-cap" id="barsCap">${barsCap()}</div>${EXPLAIN}${STUBS}`;
 }
 const baseDemandHtmlV1 = demandHtml, baseWireDemandV1 = wireDemand;
 demandHtml = function (c) {
   const h = baseDemandHtmlV1(c), T = TRENDS[c.topic];
   if (!T) return h;
   const drive = T.terms.find(t => t.t === T.drive);
-  return h.replace('<div class="chartwrap" id="chWrap">', rangeChips() + '<div class="chartwrap" id="chWrap">').replace(BARS_RE, barsBlock(drive));
+  return h.replace('<div class="chartwrap" id="chWrap">', rangeChips() + '<div class="chartwrap" id="chWrap">').replace(BARS_RE, barsBlock(drive))
+    .replace(/<details class="howcount"><summary>How we count searches<\/summary>[\s\S]*?<\/details>/, '');
 };
-function wireRange(c) {
-  const T = TRENDS[c.topic]; if (!T) return;
-  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), mix = phraseMix(T), C = CORPUS[drive.t], v = C ? rateIdx(C) : null;
-  const wrap = $('chWrap'), svg = wrap.querySelector('svg'), dots = $('chDots'), tipEl = $('chTip'), cross = $('chCross');
-  const s0 = 60 - range, step = (CW - PL - PR) / range, rx = i => PL + (i - s0) * step;
-  const readout = e => {
-    const r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * CW / r.width;
-    const i = Math.max(s0, Math.min(60, s0 + Math.round((vx - PL) / step))), j = i - CS_START;
-    cross.setAttribute('x1', rx(i)); cross.setAttribute('x2', rx(i)); cross.setAttribute('visibility', 'visible');
-    const row = (sw, name, val) => `<div class="tt-r">${sw}<span>${name}</span><b>${val}</b></div>`;
-    let html = `<div class="tt-h"><span style="color:var(--ink);font-weight:700">${mLabel(i)}${i === 60 ? ' (not over yet)' : ''}</span><span>Google interest, 0 to 100</span></div>`;
-    html += row(swatch('#0F766E', '', 2.6), drive.t, Math.round(drive.m[i]));
-    let d = `<circle cx="${rx(i)}" cy="${cy(drive.m[i])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>`;
-    others.forEach((o, k) => { if (!hiddenTerms.has(o.t)) { html += row(swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6), o.t, Math.round(o.m[i])); d += `<circle cx="${rx(i)}" cy="${cy(o.m[i])}" r="2.6" fill="${OTHER_STYLE[k % 2].c}"/>`; } });
-    if (mix && !hiddenTerms.has(COMB)) html += row(swatch(COMB_C, '4 3', 2), 'All phrases, weighted', Math.round(mix.combined[i]));
-    let top = cy(drive.m[i]);
-    if (v && !hiddenTerms.has(CORP) && j >= 0 && j <= 11) { html += `<div class="tt-r corp">${corpSwatch}<span>Our practices</span><b>${Math.round(v[j])}</b><small>${fmtN(C.imp[j])} impressions across ${C.pr[j]} practices</small></div>`; d += `<circle cx="${rx(i)}" cy="${cy(v[j])}" r="4.5" fill="${S8}" stroke="#fff" stroke-width="2"/>`; top = Math.min(top, cy(v[j])); }
-    dots.innerHTML = d; tipEl.innerHTML = html;
-    const px = rx(i) * r.width / CW, w = tipEl.offsetWidth;
-    tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; tipEl.style.top = (top * r.height / CH - 8) + 'px'; tipEl.classList.add('on');
-  };
-  const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.innerHTML = ''; tipEl.classList.remove('on'); };
-  const hit = $('chHit'); hit.addEventListener('pointermove', readout); hit.addEventListener('pointerdown', readout); hit.addEventListener('pointerleave', hide);
-  $('dBody').querySelectorAll('.tg[data-term]').forEach(b => b.onclick = () => { const t = b.dataset.term, on = hiddenTerms.has(t); if (on) hiddenTerms.delete(t); else hiddenTerms.add(t); b.setAttribute('aria-pressed', on); const g = svg.querySelector(`.ch-other[data-term="${t}"]`); if (g) g.classList.toggle('off', !on); });
-  $('dBody').querySelectorAll('.rg button').forEach(b => b.onclick = () => { range = +b.dataset.range; rerender(c); });
-  $('dBody').querySelectorAll('.src button').forEach(b => b.onclick = () => { source = b.dataset.src; rerender(c); });
-  // bars hover
+function applyRange(c, T, drive) {
+  // the morph: new chrome fades in, the plot group slides and stretches into the window, markers glide
+  const svg = $('chWrap').querySelector('svg');
+  const chrome = svg.querySelector('#chChrome'); chrome.classList.add('swap'); chrome.innerHTML = chromeSvg(); requestAnimationFrame(() => chrome.classList.remove('swap'));
+  svg.querySelector('#chPlot').style.transform = plotTransform();
+  svg.querySelector('#chMarks').innerHTML = markersSvg(T, drive);
+  $('dBody').querySelectorAll('.rg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.range === range));
+  const mw = $('mWrap'); mw.classList.add('out');
+  setTimeout(() => { const b = barsSvg(drive); mw.innerHTML = b.svg + '<div class="ch-tip" id="mTip"></div>'; $('barsH').textContent = `Estimated US searches for '${drive.t}', last ${b.shown} months`; $('barsCap').textContent = barsCap(); wireBars(drive); mw.classList.remove('out'); }, 180);
+}
+function wireBars(drive) {
   const mwrap = $('mWrap'); if (!mwrap) return;
   const msvg = mwrap.querySelector('svg'), mtip = $('mTip'), mcross = $('mCross'), b = barsSvg(drive);
   const show = e => {
     const r = msvg.getBoundingClientRect(), vx = (e.clientX - r.left) * MW / r.width;
-    const k = Math.max(0, Math.min(b.shown - 1, Math.floor((vx - MPL) / b.slot))), i = b.first + k, cur = b.S.values[i - b.S.start], p = b.S.values[i - 12 - b.S.start];
-    const cx0 = MPL + (k + 0.5) * b.slot; mcross.setAttribute('x1', cx0); mcross.setAttribute('x2', cx0); mcross.setAttribute('visibility', 'visible');
+    const k = Math.max(0, Math.min(b.shown - 1, Math.floor((vx - MPL) / b.slot))), i = b.first + k, cx0 = MPL + (k + 0.5) * b.slot;
+    mcross.setAttribute('x1', cx0); mcross.setAttribute('x2', cx0); mcross.setAttribute('visibility', 'visible');
     msvg.querySelectorAll('.m-bar').forEach(el => el.classList.toggle('hot', +el.dataset.i === i));
-    const pct = p ? Math.round((cur - p) / p * 100) : null, cls = pct == null ? '' : pct > 2 ? 'd-up' : pct < -2 ? 'd-down' : 'd-flat';
-    mtip.innerHTML = `<b>${mLabel(i)}</b><div class="o"><i class="k kb"></i>${fmtN(cur)} searches</div>` + (p != null ? `<div class="o"><i class="k kp"></i>${fmtN(p)} in ${mLabel(i - 12)} <span class="${cls}">${pct > 0 ? '+' : ''}${pct}%</span></div>` : `<div class="o">no year-earlier month in this source</div>`);
-    const w = mtip.offsetWidth, px = cx0 * r.width / MW; mtip.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; mtip.style.top = (b.y(cur / b.mx * 100) * r.height / b.H - 8) + 'px'; mtip.classList.add('on');
+    const line = src => { const vals = src.get(drive), at = n => (vals && n >= src.start && n < src.start + vals.length) ? vals[n - src.start] : null, cur = at(i), p = at(i - 12);
+      if (cur == null) return `<div class="o">not in this run's twelve months yet</div>`;
+      const pct = p ? Math.round((cur - p) / p * 100) : null, cls = pct == null ? '' : pct > 2 ? 'd-up' : pct < -2 ? 'd-down' : 'd-flat';
+      return `<div class="o"><i class="k kb"></i>${SOURCES.length > 1 ? src.name + ' ' : ''}${fmtN(cur)} searches${p != null ? ` <span class="${cls}">${pct > 0 ? '+' : ''}${pct}%</span> <span>vs ${fmtN(p)} in ${mLabel(i - 12)}</span>` : ''}</div>`; };
+    mtip.innerHTML = `<b>${mLabel(i)}</b>` + SOURCES.map(line).join('');
+    const w = mtip.offsetWidth, px = cx0 * r.width / MW; mtip.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; mtip.style.top = '12px'; mtip.classList.add('on');
   };
   const mhide = () => { mcross.setAttribute('visibility', 'hidden'); mtip.classList.remove('on'); msvg.querySelectorAll('.m-bar.hot').forEach(el => el.classList.remove('hot')); };
   const mh = $('mHit'); mh.addEventListener('pointermove', show); mh.addEventListener('pointerdown', show); mh.addEventListener('pointerleave', mhide);
 }
-function rerender(c) { const body = $('dBody'), top = body.scrollTop; body.innerHTML = drawerHtml(c); body.scrollTop = top; wireCells(c); wireDemand(c); }
-wireDemand = function (c) { baseWireDemandV1(c); wireRange(c); };
+wireDemand = function (c) {
+  baseWireDemandV1(c);
+  const T = TRENDS[c.topic]; if (!T) return;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), mix = phraseMix(T), C = CORPUS[drive.t], v = C ? rateIdx(C) : null;
+  const wrap = $('chWrap'), svg = wrap.querySelector('svg'), dots = $('chDots'), tipEl = $('chTip'), cross = $('chCross');
+  const readout = e => {
+    const s0 = 60 - range, step = step60 * (60 / range), r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * CW / r.width;
+    const i = Math.max(s0, Math.min(60, s0 + Math.round((vx - PL) / step))), j = i - CS_START, X = rxFor(i);
+    cross.setAttribute('x1', X); cross.setAttribute('x2', X); cross.setAttribute('visibility', 'visible');
+    const row = (sw, name, val) => `<div class="tt-r">${sw}<span>${name}</span><b>${val}</b></div>`;
+    let html = `<div class="tt-h"><span style="color:var(--ink);font-weight:700">${mLabel(i)}${i === 60 ? ' (not over yet)' : ''}</span><span>Google interest, 0 to 100</span></div>`;
+    html += row(swatch('#0F766E', '', 2.6), drive.t, Math.round(drive.m[i]));
+    let d = `<circle cx="${X}" cy="${cy(drive.m[i])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>`;
+    others.forEach((o, k) => { if (!hiddenTerms.has(o.t)) { html += row(swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6), o.t, Math.round(o.m[i])); d += `<circle cx="${X}" cy="${cy(o.m[i])}" r="2.6" fill="${OTHER_STYLE[k % 2].c}"/>`; } });
+    if (mix && !hiddenTerms.has(COMB)) html += row(swatch(COMB_C, '4 3', 2), 'All phrases, weighted', Math.round(mix.combined[i]));
+    let top = cy(drive.m[i]);
+    if (v && !hiddenTerms.has(CORP) && j >= 0 && j <= 11) { html += `<div class="tt-r corp">${corpSwatch}<span>Our practices</span><b>${Math.round(v[j])}</b><small>${fmtN(C.imp[j])} impressions across ${C.pr[j]} practices</small></div>`; d += `<circle cx="${X}" cy="${cy(v[j])}" r="4.5" fill="${S8}" stroke="#fff" stroke-width="2"/>`; top = Math.min(top, cy(v[j])); }
+    dots.innerHTML = d; tipEl.innerHTML = html;
+    const px = X * r.width / CW, w = tipEl.offsetWidth;
+    tipEl.style.left = Math.max(w / 2, Math.min(r.width - w / 2, px)) + 'px'; tipEl.style.top = (top * r.height / CH - 8) + 'px'; tipEl.classList.add('on');
+  };
+  const hide = () => { cross.setAttribute('visibility', 'hidden'); dots.innerHTML = ''; tipEl.classList.remove('on'); };
+  const hit = $('chHit'); hit.addEventListener('pointermove', readout); hit.addEventListener('pointerdown', readout); hit.addEventListener('pointerleave', hide);
+  $('dBody').querySelectorAll('.tg[data-term]').forEach(b => b.onclick = () => { const t = b.dataset.term, on = hiddenTerms.has(t); if (on) hiddenTerms.delete(t); else hiddenTerms.add(t); b.setAttribute('aria-pressed', on); const g = svg.querySelector(`.ch-other[data-term="${t}"]`); if (g) g.classList.toggle('off', !on); const ce = svg.querySelector('#corpEnd'); if (t === CORP && ce) ce.setAttribute('visibility', on ? 'visible' : 'hidden'); });
+  $('dBody').querySelectorAll('.rg button').forEach(b => b.onclick = () => { if (+b.dataset.range === range) return; range = +b.dataset.range; applyRange(c, T, drive); });
+  wireBars(drive);
+};
 </script>
 </body>
 </html>
