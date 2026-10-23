@@ -1404,29 +1404,29 @@ const HOW_PRACTICES = t => { const C = CORPUS[t]; return `<details class="howcou
     </details>`; };
 demandHtml = function (c) {
   let h = baseDemandHtml(c);
-  const drive = driveOf(c);
-  if (!drive) return h;
-  const T = TRENDS[c.topic], others = T.terms.filter(t => t !== drive);
+  const T = TRENDS[c.topic];
+  if (!T) return h;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), C = CORPUS[drive.t];
   // 1. The phrase chips move up to sit right under the chart they control.
   const m = h.match(/<div class="tgrow">[\s\S]*?<\/div>/);
   let tg = m[0];
   h = h.replace(m[0], '');
   tg = tg.replace(/(<button class="tg" data-term="__combined"[\s\S]*?<\/button>)/, (x, b) => `<span class="tgx">${b}<button class="tg tg-dd" type="button" aria-expanded="false" aria-label="See the phrases in this topic">${chev}</button>${phrasesDropdown(T, drive, others)}</span>`);
-  tg = tg.replace(/<\/div>$/, `<button class="tg bh" data-term="${CORP}" aria-pressed="${!hiddenTerms.has(CORP)}">${corpSwatch}Our practices${corpusTip(drive.t, 's8')}</button></div>`);
+  if (C) tg = tg.replace(/<\/div>$/, `<button class="tg bh" data-term="${CORP}" aria-pressed="${!hiddenTerms.has(CORP)}">${corpSwatch}Our practices${corpusTip(drive.t, 's8')}</button></div>`);
   h = h.replace('<div class="ch-tip" id="chTip"></div></div>', '<div class="ch-tip rich" id="chTip"></div></div>' + tg);
   // 2. Copy
-  h = h.replace('shape, not size.</div>', 'shape, not size. Our practices: 100 = their busiest month, drawn over the last 12 only.</div>');
+  if (C) h = h.replace('shape, not size.</div>', 'shape, not size. Our practices: 100 = their busiest month, drawn over the last 12 only.</div>');
   h = h.replace('No clear season.', 'No clear seasonality found for this topic nationally.').replace('Searches usually peak in', 'Nationally, searches usually peak in');
   // 3. Where the agency numbers come from, next to "How we count searches".
-  h = h.replace('</details>', '</details>' + HOW_PRACTICES(drive.t));
+  if (C) h = h.replace('</details>', '</details>' + HOW_PRACTICES(drive.t));
   return h;
 };
 wireDemand = function (c) {
   baseWireDemand(c);
-  const drive = driveOf(c);
-  if (!drive) return;
-  const T = TRENDS[c.topic], others = T.terms.filter(t => t !== drive), mix = phraseMix(T);
-  const C = CORPUS[drive.t], v = idx100(C.imp);
+  const T = TRENDS[c.topic];
+  if (!T) return;
+  const drive = T.terms.find(t => t.t === T.drive), others = T.terms.filter(t => t !== drive), mix = phraseMix(T);
+  const C = CORPUS[drive.t], v = C ? idx100(C.imp) : null;
   const svg = $('chWrap').querySelector('svg'), dots = $('chDots'), tipEl = $('chTip');
   // Hover readout, rebuilt: one row per visible line, swatch + name + value, our practices last with its real counts.
   const readout = e => {
@@ -1437,7 +1437,7 @@ wireDemand = function (c) {
     html += row(swatch('#0F766E', '', 2.6), drive.t, Math.round(drive.m[i]));
     others.forEach((o, k) => { if (!hiddenTerms.has(o.t)) html += row(swatch(OTHER_STYLE[k % 2].c, OTHER_STYLE[k % 2].d, 1.6), o.t, Math.round(o.m[i])); });
     if (mix && !hiddenTerms.has(COMB)) html += row(swatch(COMB_C, '4 3', 2), 'All phrases, weighted', Math.round(mix.combined[i]));
-    const corpOn = !hiddenTerms.has(CORP) && j >= 0 && j <= 11;
+    const corpOn = !!C && !hiddenTerms.has(CORP) && j >= 0 && j <= 11;
     if (corpOn) {
       html += `<div class="tt-r corp">${corpSwatch}<span>Our practices</span><b>${Math.round(v[j])}</b><small>${fmtN(C.imp[j])} impressions across ${C.pr[j]} practices</small></div>`;
       dots.insertAdjacentHTML('beforeend', `<circle cx="${cx(i)}" cy="${cy(v[j])}" r="4.5" fill="${S8}" stroke="#fff" stroke-width="2"/>`);

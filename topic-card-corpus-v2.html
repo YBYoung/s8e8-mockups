@@ -359,8 +359,33 @@
   .sw-dots { width: 24px; height: 14px; position: relative; flex: none; }
   .sw-dots::before { content: ""; position: absolute; left: 0; top: 4px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); }
   .sw-dots::after { content: ""; position: absolute; left: 10px; top: 0; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); }
-  .ch-corp-case { fill: none; stroke: #fff; stroke-width: 5.5; stroke-linejoin: round; stroke-linecap: round; }
-  .ch-corp-line { fill: none; stroke: #0F766E; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-corp-case { fill: none; stroke: #fff; stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-corp-line { fill: none; stroke: #DB2777; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+  .bh .qtip.s8 b { color: #DB2777; }
+  .ch-tip .km { background: #DB2777; border-radius: 50%; }
+  /* Chart hover readout, V1 */
+  .ch-tip.rich { padding: 8px 10px; }
+  .tt-h { display: flex; justify-content: space-between; gap: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .tt-h span { font-weight: 400; color: var(--faint); font-size: 11px; }
+  .tt-r { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 2px 7px; align-items: center; padding: 2px 0; color: var(--body); }
+  .tt-r b { color: var(--ink); font-variant-numeric: tabular-nums; text-align: right; min-width: 24px; }
+  .tt-r small { grid-column: 2 / 4; color: var(--muted); font-size: 11px; line-height: 1.3; }
+  .tt-r.corp { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 6px; }
+  /* Branded dropdown on the "All phrases" chip */
+  .tgx { position: relative; display: inline-flex; }
+  .tgx .tg:first-child { border-radius: 4px 0 0 4px; }
+  .tg-dd { border-radius: 0 4px 4px 0; border-left: 0; padding: 3px 6px; color: var(--muted); }
+  .tg-dd[aria-expanded="true"] { background: var(--primary-tint); color: var(--primary); border-color: #CDE7E2; }
+  .dd { display: none; position: absolute; left: 0; top: calc(100% + 6px); z-index: 7; width: 380px; max-width: 86vw; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(15,23,42,.12); padding: 8px 0; font-size: 12.5px; text-align: left; }
+  .dd.on { display: block; }
+  .dd-h { padding: 4px 12px 6px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--primary); }
+  .dd-r { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 6px 12px; }
+  .dd-r:hover { background: #F6F7F9; }
+  .dd-r .n { color: var(--ink); font-weight: 600; min-width: 0; }
+  .dd-r .n small { display: block; font-weight: 400; color: var(--muted); font-size: 11.5px; }
+  .dd-r .w, .dd-r .v { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .dd-r .w { color: var(--ink); } .dd-r .v { color: var(--muted); }
+  .dd-f { padding: 7px 12px 2px; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 4px; line-height: 1.45; }
   .chartwrap svg.focus .ch-corp { opacity: .12; }
   .m-bar, .m-tbar { transform-box: fill-box; transform-origin: 50% 100%; animation: growBar .45s var(--ease) both; transition: fill .15s; }
   .m-bar { fill: #94A3B8; } .m-bar.hot { fill: #64748B; }
@@ -1314,8 +1339,8 @@ const CORPUS = {
 const idx100 = a => { const m = Math.max(...a, 1); return a.map(v => v / m * 100); };
 const argmax = a => a.reduce((b, v, j) => v > a[b] ? j : b, 0);
 const fmtK = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 10000 ? Math.round(n / 1000) + 'k' : n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(Math.round(n));
-const corpusTip = t => { const C = CORPUS[t];
-  return `<span class="qtip"><b>Our practices</b>Search Console impressions for every practice we manage, ${CORPUS.practices} over the last 12 months, on searches that contain '${t}'.${C.seen ? ` Seen by ${C.seen} of them; ${C.traffic} get real traffic from it.` : ''} Drawn as 100 = the busiest month, so the shape compares with the national estimate.</span>`; };
+const corpusTip = (t, cls = '') => { const C = CORPUS[t];
+  return `<span class="qtip ${cls}"><b>Our practices</b>Search Console impressions for every practice we manage, ${CORPUS.practices} over the last 12 months, on searches that contain '${t}'.${C.seen ? ` Seen by ${C.seen} of them; ${C.traffic} get real traffic from it.` : ''} Drawn as 100 = the busiest month, so the shape compares with the national estimate.</span>`; };
 // 12-month chart geometry: same left and right padding as the 5-year chart, so the months line up.
 const MW = 640, MPT = 22, MPB = 22, BW = 24;
 let MPL = 30, MPR = 12, slotW = (MW - MPL - MPR) / 12;
