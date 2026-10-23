@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topic Cards: where the numbers come from</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0F172A; --body:#1F2937; --muted:#6B7280; --faint:#9CA3AF; --border:#E5E7EB; --border-strong:#D1D5DB;
+    --page:#F6F7F9; --card:#fff; --primary:#0F766E; --primary-tint:#E6F4F1; --primary-mid:#99CBC4;
+    --sky:#0369A1; --sky-tint:#E0F2FE; --ok:#16A34A; --danger:#E11D48;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--page); color:var(--body); font:15px/1.5 Inter, system-ui, sans-serif; }
+  .wrap { max-width:1120px; margin:0 auto; padding:22px 20px 64px; }
+  .note-top { font-size:12.5px; color:var(--muted); margin-bottom:14px; }
+  .note-top b { color:var(--ink); }
+  h1 { font:800 18px/1.2 Montserrat, Inter, sans-serif; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); margin:0 0 4px; }
+  .sub { font-size:13.5px; color:var(--muted); margin:0 0 18px; }
+  .panel { background:#fff; border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.03); padding:20px 24px; margin-bottom:22px; }
+  .panel h2 { font:700 12px/1.3 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); margin:0 0 12px; }
+  .grid { display:grid; grid-template-columns:minmax(0,3fr) minmax(0,2fr); gap:18px; align-items:start; }
+  @media (max-width:999px) { .grid { grid-template-columns:1fr; } }
+  .sec { background:#fff; border:1px solid var(--border); border-radius:10px; font-size:13.5px; }
+  .sec-h { display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid var(--border); border-radius:10px 10px 0 0; }
+  .sec-ic { width:28px; height:28px; border-radius:6px; display:grid; place-items:center; }
+  .sec-t { font:700 12px Inter; letter-spacing:.08em; text-transform:uppercase; }
+  .sec-lab { margin-left:auto; font:600 12.5px Inter; color:var(--ink); text-align:right; }
+  .sec-b { padding:14px 16px 16px; }
+  .s-demand .sec-h { background:#F3FAF8; } .s-demand .sec-ic { background:var(--primary-tint); color:var(--primary);} .s-demand .sec-t { color:var(--primary); }
+  .s-cov .sec-h { background:#F2F9FE; } .s-cov .sec-ic { background:var(--sky-tint); color:var(--sky);} .s-cov .sec-t { color:var(--sky); }
+  .small { font-size:12px; color:var(--muted); }
+  .placeholder { border:1px dashed var(--border-strong); border-radius:8px; padding:10px 12px; font-size:12.5px; color:var(--faint); margin:10px 0; }
+  .bars-h { font:600 12.5px Inter; color:var(--ink); margin:14px 0 6px; }
+  .bars { display:flex; gap:5px; height:72px; align-items:flex-end; }
+  .bars i { flex:1; background:#6FB1DA; border-radius:2px 2px 0 0; display:block; }
+  .bars i.last { background:var(--sky); }
+  .axis { display:flex; justify-content:space-between; font-size:10.5px; color:var(--faint); margin-top:4px; }
+  /* NEW: what our practices see */
+  .corp { margin-top:18px; border:1px solid var(--border); border-radius:8px; background:#FAFBFC; padding:12px 14px; }
+  .corp-h { display:flex; justify-content:space-between; gap:8px; align-items:baseline; font:600 12.5px Inter; color:var(--ink); }
+  .corp-h small { font:400 11.5px Inter; color:var(--muted); }
+  table.corp-t { width:100%; border-collapse:collapse; margin-top:8px; font-size:12.5px; }
+  .corp-t th { text-align:left; font:600 11px Inter; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); padding:4px 6px; border-bottom:1px solid var(--border); }
+  .corp-t td { padding:6px; border-bottom:1px solid #F1F5F9; vertical-align:top; }
+  .corp-t td.num, .corp-t th.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .corp-t td b { color:var(--ink); font-weight:600; }
+  .corp-t td small { display:block; color:var(--muted); font-size:11.5px; }
+  .agree { display:flex; gap:9px; align-items:flex-start; margin-top:10px; padding:9px 12px; border-radius:8px; font-size:13.5px; }
+  .agree i { width:10px; height:10px; border-radius:50%; margin-top:5px; flex:none; }
+  .agree.yes { background:#DCFCE7; color:#166534; } .agree.yes i { background:var(--ok); }
+  .agree.blind { background:#FEF3C7; color:#78350F; } .agree.blind i { background:#D97706; }
+  .agree.solo { background:#F1F5F9; color:#334155; } .agree.solo i { background:#64748B; }
+  .states { margin-top:12px; }
+  .states .agree { margin-top:6px; font-size:12.5px; padding:6px 10px; }
+  /* branded hover */
+  .q { color:var(--primary); font-weight:600; text-decoration:underline dotted var(--primary-mid); text-underline-offset:2px; cursor:default; position:relative; }
+  .q .tip { display:none; position:absolute; left:0; top:calc(100% + 6px); width:300px; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 6px 20px rgba(15,23,42,.10); padding:8px 12px; z-index:5; font-weight:400; text-decoration:none; color:var(--body); font-size:12px; line-height:1.45; }
+  .q .tip b { display:block; color:var(--primary); font-size:11px; margin-bottom:2px; }
+  .q:hover .tip { display:block; }
+  /* coverage */
+  .qgrid { display:grid; grid-template-columns:repeat(10, 1fr); gap:6px; max-width:420px; margin-top:12px; }
+  .qgrid span { aspect-ratio:1; border-radius:5px; background:#F1F5F9; box-shadow:inset 0 0 0 1px var(--border-strong); }
+  .qgrid span.c { background:var(--primary); box-shadow:none; } .qgrid span.t { background:#7DD3FC; box-shadow:none; }
+  .qkey { display:flex; gap:14px; font-size:12px; color:var(--muted); margin-top:10px; }
+  .qkey i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .asks { margin-top:14px; }
+  .asks h4 { font:600 12.5px Inter; color:var(--ink); margin:0 0 6px; }
+  .asks ul { margin:0; padding:0; list-style:none; }
+  .asks li { display:flex; gap:8px; align-items:flex-start; padding:5px 0; border-bottom:1px solid #F1F5F9; font-size:13px; }
+  .asks li i { width:10px; height:10px; border-radius:3px; flex:none; margin-top:5px; }
+  .asks li i.c { background:var(--primary);} .asks li i.t { background:#7DD3FC;} .asks li i.n { background:#F1F5F9; box-shadow:inset 0 0 0 1px var(--border-strong);}
+  .tag { display:inline-block; font:700 11px Inter; border-radius:5px; padding:1px 7px; white-space:nowrap; margin-left:6px; vertical-align:1px; }
+  .tag.real { background:var(--primary-tint); color:var(--primary); }
+  .tag.ill { background:#FEF3C7; color:#92400E; }
+  .tag.ns { background:var(--sky-tint); color:var(--sky); }
+  .reader { margin-top:10px; min-height:44px; font-size:13px; background:#F2F9FE; border:1px solid #D6ECFA; border-radius:6px; padding:8px 10px; }
+  .explain { margin-top:12px; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:12.5px; color:var(--body); background:#fff; }
+  .explain b { display:block; color:var(--primary); font-size:11px; letter-spacing:.06em; text-transform:uppercase; margin-bottom:4px; }
+  .explain + .explain { margin-top:8px; }
+  .delta { font-size:12.5px; color:var(--muted); margin:0 0 10px; }
+  .delta b { color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="note-top"><b>Mockup for approval (10/23).</b> Topic Cards, two changes the owner asked for after the first prod build: show how our own practices' Search Console data corroborates the national search estimate, and judge coverage from the questions patients really ask. Real data: Oracle Family Dental, strategy 210, trend run 2, corpus of 237 practices (last 12 months). Items marked <span class="tag ill" style="margin:0">illustrative</span> are not generated yet.</div>
+  <h1>Topic Cards: where the numbers come from</h1>
+  <p class="sub">Both panels are sections of the approved popup (topic-card-vb.html). Everything else in the popup stays as approved.</p>
+
+  <div class="panel">
+    <h2>A · Demand section, Dental Implants: the national estimate and what our practices see</h2>
+    <p class="delta"><b>What changes:</b> a block under the 12-month searches, one row per phrase, plus one sentence saying whether the two sources agree. Nothing above it moves.</p>
+    <div class="grid">
+      <section class="sec s-demand">
+        <div class="sec-h"><span class="sec-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg></span><span class="sec-t">Demand</span><span class="sec-lab">Stable · sizable</span></div>
+        <div class="sec-b">
+          <p style="margin:0 0 10px">Sizable national demand, driven by 'dental implants', which is stable with no spike.</p>
+          <div class="placeholder">5-year Google Trends chart, phrase toggles, how the phrases add up, readout: unchanged from the approved design.</div>
+
+          <div class="bars-h">Estimated US searches for 'dental implants', last 12 months</div>
+          <div class="bars">
+            <i style="height:99%"></i><i style="height:100%"></i><i style="height:99%"></i><i style="height:99%"></i><i style="height:97%"></i><i style="height:89%"></i><i style="height:83%"></i><i style="height:77%"></i><i style="height:75%"></i><i style="height:75%"></i><i style="height:72%"></i><i class="last" style="height:67%"></i>
+          </div>
+          <div class="axis"><span>Oct 2025</span><span>Sep 2026</span></div>
+          <p class="small" style="margin:4px 0 0">About 12,800 US searches last month (Sep 2026). <span class="q">How we count searches<span class="tip"><b>How we count searches</b>Estimates from DataForSEO's clickstream data: anonymized browsing activity from a panel of real people, scaled up to the whole US, for this exact phrase. Not limited to the practice's area. "No data" means no estimate, never zero.</span></span></p>
+
+          <!-- NEW -->
+          <div class="corp">
+            <div class="corp-h">What our practices see<small>Search Console, 237 practices, last 12 months</small></div>
+            <table class="corp-t">
+              <thead><tr><th>Phrase</th><th class="num">US searches a month</th><th class="num">Seen by</th><th class="num">Get real traffic</th><th class="num">Typical share</th></tr></thead>
+              <tbody>
+                <tr><td><b>dental implants</b><small>drives the verdict</small></td><td class="num">12,770</td><td class="num">214 of 237</td><td class="num">111</td><td class="num">1.5%</td></tr>
+                <tr><td><b>tooth implant</b></td><td class="num">1,608</td><td class="num">155 of 237</td><td class="num">13</td><td class="num">0.06%</td></tr>
+                <tr><td><b>implants teeth</b></td><td class="num">251</td><td class="num">60 of 237</td><td class="num">1</td><td class="num">under 0.1%</td></tr>
+              </tbody>
+            </table>
+            <div class="agree yes"><i></i><span><b>Both sources agree.</b> About 12,800 US searches a month, and 214 of our 237 practices are seen for 'dental implants'; 111 of them get real traffic from it.</span></div>
+            <p class="small" style="margin:8px 0 0"><span class="q">Where these numbers come from<span class="tip"><b>Where these numbers come from</b>"US searches a month" is the DataForSEO estimate above. The other three columns come from our own agency data: the Google Search Console impressions of every practice we manage, over the last 12 months. "Seen by" counts practices that showed up in Google for the phrase at all. "Get real traffic" counts practices with 1,000+ impressions on it. "Typical share" is how much of a typical seen practice's impressions the phrase makes up. The verdict calls a phrase sizable only when both sources show demand.</span></span></p>
+          </div>
+
+          <div class="states">
+            <div class="small">The sentence has three readings (the first is above):</div>
+            <div class="agree blind"><i></i><span><b>Searched nationally, but not by our patients' kind of practice.</b> About 103,900 US searches a month, yet only 2 of our 237 practices get real traffic from it. Example wording; 'sleep apnea' on Oracle does not read this way (18 practices get traffic).</span></div>
+            <div class="agree solo"><i></i><span><b>No national estimate for this phrase.</b> Sized from our practices alone: seen by 41 of 237, 1 gets real traffic.</span></div>
+          </div>
+        </div>
+      </section>
+      <div class="explain" style="margin-top:0">
+        <b>Why this matters</b>
+        The national estimate says how many people search; our practices say whether dental offices like this one actually get seen for it. When they disagree, that is the interesting case: lots of searches but no practice visibility usually means the searches are informational, not patient-finding-a-dentist.
+        <div class="explain" style="margin-top:10px"><b>Shown, not changed</b> The verdict already uses both sources (spec #1040). This block only shows the numbers it used. No new rule.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>B + C · Coverage section, Insurance acceptance (Not searched by name): judged from the questions patients ask</h2>
+    <p class="delta"><b>What changes:</b> (B) for coverage checks, only branded, "near me" and plain-city searches are set aside; insurance and price-shopper searches are judged. The calendar's "never write a price-shopper page" rule stays as it is. (C) the question writer is told this is a dental practice, and for Not-searched-by-name topics it writes the indirect way patients ask.</p>
+    <div class="grid">
+      <section class="sec s-cov">
+        <div class="sec-h"><span class="sec-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg></span><span class="sec-t">Coverage</span><span class="sec-lab">Thin page<span class="tag ill">illustrative</span></span></div>
+        <div class="sec-b">
+          <p style="margin:0">2 covered, 7 partly answered, 9 with no answer, out of 18 likely searches judged.</p>
+          <div class="qgrid">
+            <span class="c"></span><span class="c"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span class="t"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="qkey"><span><i style="background:var(--primary)"></i>Covered</span><span><i style="background:#7DD3FC"></i>Partly answered</span><span><i style="background:#F1F5F9;box-shadow:inset 0 0 0 1px var(--border-strong)"></i>No answer</span></div>
+          <div class="reader"><span class="small">Question 3 · Partly answered</span><br>'what happens if your dentist doesn't accept your insurance' · closest page /membership (match 0.66)</div>
+          <p class="small" style="margin:8px 0 0">18 judged, 2 set aside (branded, near me), from 20 likely searches suggested by AI. <span class="q">Where these searches come from<span class="tip"><b>Where these searches come from</b>OpenedQueries asks Claude to write about 20 searches a dental patient would likely type about this topic. They are AI suggestions, not counted search data. Branded, "near me" and plain-city searches are set aside; each remaining search is matched to the pages on the site. For a topic that is Not searched by name, Claude is asked for the indirect way patients ask.</span></span></p>
+
+          <div class="asks">
+            <h4>What people ask, in their own words</h4>
+            <ul>
+              <li><i class="n"></i><span>what questions to ask a dental office about insurance before your appointment<span class="tag real">real, 10/23 run</span></span></li>
+              <li><i class="t"></i><span>what happens if your dentist doesn't accept your insurance<span class="tag real">real, 10/23 run</span></span></li>
+              <li><i class="n"></i><span>how to check if a dentist is in-network with your insurance plan<span class="tag real">real, 10/23 run</span></span></li>
+              <li><i class="t"></i><span>dental care options if you have no insurance or out-of-network provider<span class="tag real">real, 10/23 run</span></span></li>
+              <li><i class="c"></i><span>is it worth paying out-of-pocket vs using dental insurance at a preferred provider<span class="tag real">real, 10/23 run</span></span></li>
+              <li><i class="n"></i><span>will my cleaning be covered or will I owe something after<span class="tag ill">illustrative, indirect</span></span></li>
+              <li><i class="t"></i><span>do you take Delta Dental and what does it usually leave me paying<span class="tag ill">illustrative, indirect</span></span></li>
+              <li><i class="n"></i><span>how do I find out what my plan covers before I book<span class="tag ill">illustrative, indirect</span></span></li>
+            </ul>
+            <p class="small" style="margin:8px 0 0">Under today's rule, the five real searches above were set aside as "price-shopper: insurance or coverage", which left 3 of 20 to judge. The three indirect ones show the phrasing the writer will be asked for.</p>
+          </div>
+          <p class="small" style="margin:10px 0 0">Solid at half or more covered; Thin at 30% or more covered or partly answered; under 5 judged is too few.</p>
+        </div>
+      </section>
+      <div>
+        <div class="explain" style="margin-top:0"><b>B · One rule, two jobs</b> The 10/14 rule says the calendar never recommends writing price-shopper pages (cheap, discounts, price lists, insurance, financing). Topic Cards borrowed Find gaps as-is, so the same rule also stopped the site check from asking insurance questions at all. The fix scopes the rule to what gets recommended, not to what gets checked.</div>
+        <div class="explain"><b>C · Context for the question writer</b> Today the writer gets only the topic name. "Pricing or cost transparency for any services" produced searches about SaaS pricing pages and attorneys. It will be told the topic is for a dental practice, and for Not-searched-by-name topics, to write how patients ask indirectly (in a chat, at the front desk, on a review).</div>
+        <div class="explain"><b>Not searched by name<span class="tag ns" style="margin-left:6px">unchanged</span></b> Demand stays "Not searched by name" with the approved tooltip. Only the coverage side changes.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
