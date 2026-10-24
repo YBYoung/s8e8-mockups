@@ -505,7 +505,7 @@
 <body>
 <div class="wrap">
 
-  <div class="note-top"><b>D3: the question-to-page match-up.</b> A full-width band under Demand with every question down the side and the site pages that came closest across the top; the mark sits under the page each question matched, in the colour of what Claude found there. Hover a mark for the page and the match. Real data: Expedition Pediatric Dentistry (strategy 21, built 10/23). Opens on Frenectomy.</div>
+  <div class="note-top"><b>D3: the question-to-page match-up, Demand full width.</b> Demand runs the whole width on top, then a full-width band with every question down the side and the site pages that came closest across the top; the mark sits under the page each question matched, in the colour of what Claude found there. Hover a mark for the page and the match. Real data: Expedition Pediatric Dentistry (strategy 21, built 10/23). Opens on Frenectomy.</div>
 
   <div class="stepper"><span class="done">Run Strategy</span> › <span class="done">Site analysis</span> › <span class="done">Market Signals</span> › <span class="here">Synthesis: Topic Cards</span> › <span>Calendar (new pages) and On-Page Optimization (fixes)</span></div>
 
@@ -1776,10 +1776,12 @@ wireCells = function (c) {
   });
 };
 drawerHtml = function (c) {
-  return `<p class="tm-why">${c.why}</p><div class="tm-grid">
-    <div class="tm-col">${sec('demand', demandHtml(c))}</div>
-    <div class="tm-col">${sec('vis', visHtml())}${sec('rate', rateHtml(c))}</div></div>
-    <div class="tm-band">${sec('cov', coverageHtml(c))}</div>`;
+  return `<p class="tm-why">${c.why}</p>
+    <div class="tm-band" style="margin-top:0">${sec('demand', demandHtml(c))}</div>
+    <div class="tm-band">${sec('cov', coverageHtml(c))}</div>
+    <div class="tm-grid" style="margin-top:18px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+    <div class="tm-col">${sec('vis', visHtml())}</div>
+    <div class="tm-col">${sec('rate', rateHtml(c))}</div></div>`;
 };
 </script>
 </body>
