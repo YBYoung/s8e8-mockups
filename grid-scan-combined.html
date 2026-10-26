@@ -87,12 +87,12 @@
 .tab { padding:11px 10px; font-weight:600; font-size:13px; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; } .tab.on { color:var(--primary); border-color:var(--primary); }
 .chips { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; } .chip { border:1px solid var(--border-strong); border-radius:6px; padding:3px 8px; font-size:12px; background:#fff; cursor:pointer; } .chip.on { background:var(--tint); border-color:var(--primary); color:var(--primary); }
 .body { padding:14px 16px; }
-.stage { position:relative; height:520px; }
+.stage { position:relative; height:500px; }
 .stage .map { position:absolute; inset:0; }
 .dots { position:absolute; left:50%; top:50%; width:0; height:0; }
 .dot { position:absolute; width:22px; height:22px; border-radius:5px; transform:translate(-50%,-50%) scale(.4); opacity:0; display:flex; align-items:center; justify-content:center; font:500 9px 'JetBrains Mono'; color:var(--ink); transition:transform .3s, opacity .3s; border:1px solid rgba(255,255,255,.8); }
 .dot.on { transform:translate(-50%,-50%) scale(1); opacity:.92; }
-.panel { position:absolute; right:14px; top:14px; width:250px; padding:12px 14px; background:rgba(255,255,255,.96); border:1px solid var(--border); border-radius:10px; box-shadow:0 6px 24px rgba(0,0,0,.08); }
+.livebar { display:flex; align-items:center; gap:12px; padding:8px 12px; margin-bottom:10px; border:1px solid var(--tint); background:var(--tint); border-radius:8px; }
 .empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:13px; text-align:center; padding:40px; }
 .pulse { animation:pulse 1.2s infinite; }
 .btn.ready { animation:readypulse 1.6s ease-in-out infinite; } @keyframes readypulse { 0%,100% { box-shadow:0 0 0 0 rgba(15,118,110,.55); transform:none; } 50% { box-shadow:0 0 0 9px rgba(15,118,110,0); transform:translateY(-1px); } }
@@ -150,8 +150,8 @@
       <div class="tabs"><span class="tab on" onclick="tab(0,this)">Map</span><span class="tab" onclick="tab(1,this)">Grids</span><span class="tab" onclick="tab(2,this)">Leaderboard</span><div class="chips" id="chips"></div></div>
       <div style="padding:6px 16px 0;font-size:11px;color:var(--muted)" id="orderhint">Average first; keywords in list order until a scan runs, then best to worst.</div>
       <div class="body">
-        <div id="v0"><div class="stage"><div class="map" id="map"><div class="dots" id="dots"></div><div class="empty" id="empty">The map fills in once the listing is picked. The scan then draws itself here, point by point.</div></div>
-          <div class="panel" id="panel" hidden><div class="label">Live</div><div class="kpi" id="p-solv" style="margin:6px 0 2px">0%</div><div style="font-size:12px;color:var(--muted)" id="p-sub">Share of Local Voice</div><div class="mono" id="p-count" style="color:var(--muted);margin-top:6px">0 of 405 · $0.00</div></div></div>
+        <div id="v0"><div class="livebar" id="panel" hidden><span class="label">Live</span><span class="kpi" id="p-solv" style="font-size:20px">0%</span><span style="font-size:12px;color:var(--muted)" id="p-sub">Share of Local Voice</span><span class="mono" id="p-count" style="color:var(--muted);margin-left:auto">0 of 405 · $0.00</span></div><div class="stage"><div class="map" id="map"><div class="dots" id="dots"></div><div class="empty" id="empty">The map fills in once the listing is picked. The scan then draws itself here, point by point.</div></div>
+          </div>
           <div style="margin-top:8px"><div class="legend"><span><i style="background:var(--r1)"></i>1 to 3</span><span><i style="background:var(--r2)"></i>4 to 10</span><span><i style="background:var(--r3)"></i>11 to 20</span><span><i style="background:var(--r4)"></i>not in top 20</span></div></div></div>
         <div id="v1" hidden><div class="gridrow" id="gridrow"></div></div>
         <div id="v2" hidden><div class="kpis"><div><div class="label">Share of Local Voice</div><div class="kpi" id="k-solv" style="font-size:22px;margin-top:4px">&nbsp;</div><div style="font-size:12px;color:var(--muted)" id="k-band"></div></div><div><div class="label">Average rank</div><div class="kpi" id="k-arp" style="font-size:22px;margin-top:4px">&nbsp;</div><div style="font-size:12px;color:var(--muted)">not in top 20 counts as 21</div></div><div><div class="label">Leaderboard</div><div class="kpi" id="k-pos" style="font-size:22px;margin-top:4px">&nbsp;</div><div style="font-size:12px;color:var(--muted)">practitioners excluded</div></div></div>
