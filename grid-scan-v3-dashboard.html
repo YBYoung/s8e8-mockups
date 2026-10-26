@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Scan V3: search bar dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0F172A; --body:#1F2937; --muted:#6B7280; --faint:#9CA3AF; --border:#E5E7EB; --border-strong:#D1D5DB;
+    --page:#F6F7F9; --card:#FFFFFF; --primary:#0F766E; --tint:#E6F4F1; --ok:#22C55E; --danger:#E11D48; --warn:#F5C518;
+    --r1:#BBF7D0; --r2:#FDE68A; --r3:#FECACA; --r4:#E5E7EB;
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { margin:0; background:var(--page); color:var(--body); font:14px/1.5 Inter,system-ui,sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:24px 20px 72px; }
+  .title { display:flex; align-items:center; gap:12px; margin:0 0 2px; }
+  .title h1 { font:800 22px/1.1 Montserrat,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:var(--ink); margin:0; }
+  .title svg { width:26px; height:26px; stroke:var(--primary); fill:none; stroke-width:1.5; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .label { font:600 11px/1 Inter,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .btn { font:600 13px Inter,sans-serif; border-radius:8px; padding:8px 14px; cursor:pointer; border:1px solid var(--border-strong); background:#fff; color:var(--ink); transition:background .15s, transform .1s; }
+  .btn:active { transform:translateY(1px); }
+  .btn.primary { background:var(--primary); border-color:transparent; color:#fff; }
+  .btn.primary:disabled { opacity:.45; cursor:not-allowed; }
+  .btn.link { border:0; background:none; color:var(--primary); padding:6px 4px; }
+  .btn.small { padding:5px 10px; font-size:12px; }
+  .input { border:1px solid var(--border-strong); border-radius:8px; padding:9px 12px; font:14px Inter,sans-serif; color:var(--ink); background:#fff; outline:none; width:100%; }
+  .input:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--tint); }
+  .mono { font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .tag { display:inline-block; border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:11px; color:var(--muted); background:#FAFAFA; }
+  .tag.you { color:var(--primary); border-color:var(--tint); background:var(--tint); }
+  .fade { animation:fade .35s ease both; } @keyframes fade { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .grid9 { display:grid; grid-template-columns:repeat(9,1fr); gap:2px; }
+  .cell { aspect-ratio:1; border-radius:3px; background:#F3F4F6; display:flex; align-items:center; justify-content:center; font:500 10px 'JetBrains Mono',monospace; color:var(--ink); transition:background .3s, transform .3s; }
+  .cell.pending { color:transparent; }
+  .cell.pop { animation:pop .35s ease; } @keyframes pop { 0% { transform:scale(.6); } 60% { transform:scale(1.12); } 100% { transform:scale(1); } }
+  .bar { height:6px; background:#EEF0F3; border-radius:3px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--primary); width:0; transition:width .25s linear; }
+  .map { position:relative; border-radius:10px; overflow:hidden; background-color:#F8FAFC; background-image:repeating-linear-gradient(0deg, #E6EAF0 0 1px, transparent 1px 48px), repeating-linear-gradient(90deg, #E6EAF0 0 1px, transparent 1px 48px); border:1px solid var(--border); }
+  .map .ring { position:absolute; border:1.5px dashed var(--primary); border-radius:50%; opacity:.7; }
+  .pin { position:absolute; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translate(-50%,-50%); }
+  .pin.you { background:var(--primary); width:18px; height:18px; }
+  .pin.comp { background:#64748B; } .pin.custom { background:#0E7490; }
+  .pin span { position:absolute; left:16px; top:-4px; white-space:nowrap; font:500 11px Inter; color:var(--ink); background:rgba(255,255,255,.9); padding:1px 5px; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  td { padding:9px 10px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:0; }
+  .legend { display:flex; gap:12px; font-size:11px; color:var(--muted); align-items:center; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:-2px; }
+  .toast { position:fixed; right:20px; bottom:20px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:8px; font-size:13px; opacity:0; transform:translateY(8px); transition:all .25s; pointer-events:none; }
+  .toast.on { opacity:1; transform:none; }
+  .toggle { display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; }
+  .toggle i { width:30px; height:16px; border-radius:8px; background:#D1D5DB; position:relative; transition:background .2s; }
+  .toggle i::after { content:""; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:#fff; transition:left .2s; }
+  .toggle.on i { background:var(--primary); } .toggle.on i::after { left:16px; }
+  .kpi { font:800 28px/1 Montserrat,sans-serif; color:var(--ink); }
+  
+.search { position:relative; margin:0 0 18px; }
+.search .input { padding:14px 16px 14px 44px; font-size:16px; border-radius:12px; }
+.search svg { position:absolute; left:14px; top:15px; width:20px; height:20px; stroke:var(--muted); fill:none; stroke-width:2; }
+.sugg { position:absolute; left:0; right:0; top:calc(100% + 6px); background:#fff; border:1px solid var(--border-strong); border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.1); padding:6px; display:none; z-index:5; }
+.sugg.on { display:block; } .si { padding:9px 12px; border-radius:7px; cursor:pointer; display:flex; justify-content:space-between; } .si:hover { background:var(--tint); } .si small { color:var(--muted); }
+.ident { display:flex; align-items:center; gap:14px; padding:14px 16px; }
+.ident .av { width:44px; height:44px; border-radius:10px; background:var(--tint); color:var(--primary); display:flex; align-items:center; justify-content:center; font:800 16px Montserrat; }
+.tiles { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px; }
+.tile { padding:14px 16px; position:relative; overflow:hidden; } .tile .kpi { margin-top:6px; }
+.tile.sk::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); animation:sh 1.1s infinite; } @keyframes sh { from { transform:translateX(-100%);} to { transform:translateX(100%);} }
+.cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+.sec { padding:14px 16px; } .sec h3 { margin:0 0 8px; font:700 14px Inter; color:var(--ink); }
+.comp { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border); font-size:13px; } .comp:last-child { border-bottom:0; }
+.sticky { position:sticky; bottom:12px; margin-top:16px; padding:12px 16px; background:#fff; border:1px solid var(--border); border-radius:10px; box-shadow:0 -4px 20px rgba(0,0,0,.06); display:flex; align-items:center; gap:14px; }
+.gridrow { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-top:14px; } .gridrow .card { padding:10px; } .gridrow .n { font-size:12px; font-weight:600; color:var(--ink); margin-bottom:6px; }
+.spark { display:inline-flex; gap:2px; align-items:flex-end; height:18px; } .spark i { width:4px; background:var(--primary); border-radius:2px 2px 0 0; opacity:.6; }
+
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <div class="title"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 1 8 8c0 5.5-8 12-8 12S4 15.5 4 10a8 8 0 0 1 8-8z"/></svg><h1>Grid Scan</h1></div>
+  <p class="sub">Variation 3 of 5: one search box, like an SEO tool. Type a client, a business or a domain; the page becomes that practice's dashboard and the run fills the tiles in.</p>
+  <div class="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input class="input" id="q" placeholder="Client, business name or domain" oninput="sugg(this.value)" onfocus="sugg(this.value)">
+    <div class="sugg" id="sugg"></div>
+  </div>
+  <div id="dash" hidden>
+    <div class="card ident fade">
+      <div class="av">SD</div>
+      <div style="flex:1"><b style="color:var(--ink)">Smile Dental of Boulder</b> <span class="tag">prospect</span><br><span style="color:var(--muted);font-size:13px">2525 Arapahoe Ave Suite E4, Boulder, CO · 4.9 (212 reviews) · smiledentalboulder.com</span></div>
+      <button class="btn small">Change listing</button><button class="btn small">Link to client</button>
+    </div>
+    <div class="tiles" id="tiles">
+      <div class="card tile"><div class="label">Share of Local Voice</div><div class="kpi" id="t-solv">no scan yet</div><div style="font-size:12px;color:var(--muted)" id="t-band">run one to find out</div></div>
+      <div class="card tile"><div class="label">Average rank</div><div class="kpi" id="t-arp">&nbsp;</div><div style="font-size:12px;color:var(--muted)">across keywords</div></div>
+      <div class="card tile"><div class="label">Leaderboard</div><div class="kpi" id="t-pos">&nbsp;</div><div style="font-size:12px;color:var(--muted)">of listings within a mile</div></div>
+      <div class="card tile"><div class="label">History</div><div class="kpi" style="font-size:18px"><span class="spark"><i style="height:6px"></i><i style="height:9px"></i><i style="height:8px"></i><i style="height:13px"></i></span> 4 scans</div><div style="font-size:12px;color:var(--muted)">last: Oct 22, 35.8%</div></div>
+    </div>
+    <div class="cols">
+      <div class="card sec"><h3>Competitors</h3><div id="comps"></div><div style="display:flex;gap:6px;margin-top:8px"><input class="input" id="addc" placeholder="Add a competitor by name"><button class="btn small" onclick="addComp()">Add</button></div></div>
+      <div class="card sec"><h3>Keywords</h3><div id="kws"></div><p style="font-size:12px;color:var(--muted);margin:8px 0 0">3 templates, 2 read from the homepage. Click a keyword to edit.</p></div>
+    </div>
+    <div class="gridrow" id="gridrow" hidden></div>
+    <div class="cols" id="after" hidden>
+      <div class="card sec"><h3>Map</h3><div class="map" id="map" style="height:280px"></div></div>
+      <div class="card sec"><h3>Leaderboard</h3><table><thead><tr><th>#</th><th>Listing</th><th>SoLV</th></tr></thead><tbody id="lb"></tbody></table></div>
+    </div>
+    <div class="sticky" id="sticky">
+      <div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:13px"><b id="s-title">9 x 9 grid · 5 keywords · one mile</b><span class="mono" id="s-count">405 calls · $0.81</span></div><div class="bar" style="margin-top:6px"><i id="s-bar"></i></div></div>
+      <button class="btn primary" id="runBtn" onclick="run()">Run Grid Scan for $0.81</button>
+    </div>
+  </div>
+</div>
+<script>
+const SEED = 7; let _s = SEED; function rnd() { _s = (_s * 9301 + 49297) % 233280; return _s / 233280; }
+const KEYWORDS = ['dentist near me', 'dentist in boulder', 'emergency dentist boulder', 'dental implants boulder', 'invisalign boulder'];
+const AUTO_COMPS = [
+  { name: 'Boulder Smile Design', address: '2919 Valmont Rd', rating: 4.8, reviews: 341, solv: 61.2 },
+  { name: 'Flatirons Family Dentistry', address: '1420 28th St', rating: 4.9, reviews: 288, solv: 54.0 },
+  { name: 'Pearl Street Dental', address: '1136 Pearl St', rating: 4.7, reviews: 197, solv: 38.4 },
+  { name: 'Table Mesa Dental', address: '695 S Broadway', rating: 4.6, reviews: 122, solv: 22.1 },
+];
+const CUSTOM_POOL = [
+  { name: 'Smile Dental Care', address: '1650 38th St Suite 100', rating: 4.7, reviews: 88 },
+  { name: 'Gunbarrel Dental', address: '6685 Gunpark Dr', rating: 4.9, reviews: 64 },
+  { name: 'North Boulder Dental Group', address: '1001 N Broadway', rating: 4.5, reviews: 151 },
+];
+function rankFor(r, c, k) { const d = Math.hypot(r - 4, c - 4); const base = 1 + d * 1.6 + k * 0.4 + rnd() * 2.2 - 1.5; return Math.max(1, Math.min(21, Math.round(base))); }
+function cellColor(rank) { return rank <= 3 ? 'var(--r1)' : rank <= 10 ? 'var(--r2)' : rank <= 20 ? 'var(--r3)' : 'var(--r4)'; }
+function buildGrid(el, k) { el.innerHTML = ''; const cells = []; for (let i = 0; i < 81; i++) { const c = document.createElement('div'); c.className = 'cell pending'; const rank = rankFor(Math.floor(i / 9), i % 9, k); c.dataset.rank = rank; c.textContent = rank > 20 ? '20+' : rank; c.title = KEYWORDS[k] + ': rank ' + (rank > 20 ? 'not in top 20' : rank); el.appendChild(c); cells.push(c); } return cells; }
+function revealCell(c) { c.classList.remove('pending'); c.classList.add('pop'); c.style.background = cellColor(+c.dataset.rank); }
+function solvOf(cells) { const top3 = cells.filter(c => +c.dataset.rank <= 3).length; return (100 * top3 / cells.length); }
+function arpOf(cells) { return cells.reduce((a, c) => a + +c.dataset.rank, 0) / cells.length; }
+function band(s) { return s >= 70 ? 'dominant' : s >= 40 ? 'competitive' : s >= 15 ? 'present' : 'invisible'; }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400); }
+function countUp(el, to, fmt, ms = 900) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = fmt(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0); }
+/* simulate a 9x9 x N keyword run: calls per tick */
+function simulateRun({ grids, onPoint, onDone, speed = 4 }) {
+  const all = []; grids.forEach((cells, k) => cells.forEach((c, i) => all.push({ c, k, i })));
+  let i = 0; const total = all.length;
+  const h = setInterval(() => {
+    for (let n = 0; n < speed && i < total; n++, i++) { revealCell(all[i].c); }
+    onPoint(i, total);
+    if (i >= total) { clearInterval(h); onDone(); }
+  }, 60);
+  return () => clearInterval(h);
+}
+const MAP_PINS = [{ x: 50, y: 50, cls: 'you', label: 'Smile Dental of Boulder' }, { x: 62, y: 38, cls: 'comp', label: 'Boulder Smile Design' }, { x: 36, y: 44, cls: 'comp', label: 'Flatirons Family' }, { x: 58, y: 66, cls: 'comp', label: 'Pearl Street' }, { x: 30, y: 70, cls: 'comp', label: 'Table Mesa' }];
+function drawMap(el, extra = []) { el.querySelectorAll('.pin,.ring').forEach(n => n.remove()); const ring = document.createElement('div'); ring.className = 'ring'; const s = Math.min(el.clientWidth, el.clientHeight) * .72; ring.style.cssText = `width:${s}px;height:${s}px;left:calc(50% - ${s/2}px);top:calc(50% - ${s/2}px)`; el.appendChild(ring); [...MAP_PINS, ...extra].forEach(p => { const d = document.createElement('div'); d.className = 'pin ' + p.cls; d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.innerHTML = `<span>${p.label}</span>`; el.appendChild(d); }); }
+
+let comps = AUTO_COMPS.map(c => ({...c, on: true}));
+function sugg(q) { const s = document.getElementById('sugg'); s.innerHTML = ''; const items = [{ n: 'Smile Dental of Boulder', d: 'prospect · smiledentalboulder.com' }, { n: 'Carolina Crossroads Dental', d: 'client · placed office' }, { n: 'Lefberg Dental', d: 'client · placed office' }].filter(x => !q || x.n.toLowerCase().includes(q.toLowerCase())); items.forEach(x => { const d = document.createElement('div'); d.className = 'si'; d.innerHTML = `<span>${x.n}</span><small>${x.d}</small>`; d.onclick = () => { document.getElementById('q').value = x.n; s.classList.remove('on'); open(); }; s.appendChild(d); }); s.classList.toggle('on', items.length > 0); }
+document.addEventListener('click', e => { if (!e.target.closest('.search')) document.getElementById('sugg').classList.remove('on'); });
+function open() { document.getElementById('dash').hidden = false; renderComps(); document.getElementById('kws').innerHTML = KEYWORDS.map((k, i) => `<div class="comp"><span class="tag">${i < 3 ? 'template' : 'homepage'}</span><span style="flex:1">${k}</span><button class="btn link small">Edit</button></div>`).join(''); toast('Listing matched on Google Maps'); }
+function renderComps() { const box = document.getElementById('comps'); box.innerHTML = ''; comps.forEach((c, i) => { const d = document.createElement('div'); d.className = 'comp'; d.innerHTML = `<label class="toggle ${c.on ? 'on' : ''}" onclick="comps[${i}].on=!comps[${i}].on;renderComps()"><i></i></label><span style="flex:1">${c.name}<br><small style="color:var(--muted)">${c.address} · ${c.rating} (${c.reviews})</small></span>${c.custom ? '<span class="tag you">added by you</span>' : '<span class="tag">found</span>'}`; box.appendChild(d); }); }
+function addComp() { const q = document.getElementById('addc').value.toLowerCase(); const c = CUSTOM_POOL.find(x => x.name.toLowerCase().includes(q)); if (!c) { toast('No listing by that name near Boulder'); return; } comps.push({...c, on: true, custom: true, solv: 18 + rnd() * 20}); renderComps(); document.getElementById('addc').value = ''; toast(c.name + ' added'); }
+function run() {
+  document.getElementById('runBtn').disabled = true; document.querySelectorAll('.tile').forEach((t, i) => { if (i < 3) t.classList.add('sk'); });
+  document.getElementById('t-solv').textContent = 'scanning'; document.getElementById('t-band').textContent = 'live';
+  const row = document.getElementById('gridrow'); row.hidden = false; row.innerHTML = ''; const grids = [];
+  KEYWORDS.forEach((k, i) => { const c = document.createElement('div'); c.className = 'card fade'; c.style.animationDelay = (i * 80) + 'ms'; c.innerHTML = `<div class="n">${k}</div><div class="grid9"></div>`; row.appendChild(c); grids.push(buildGrid(c.querySelector('.grid9'), i)); });
+  simulateRun({ grids, onPoint: (i, t) => { document.getElementById('s-bar').style.width = (100 * i / t) + '%'; document.getElementById('s-count').textContent = `${i} of ${t} · $${(i * .002).toFixed(2)}`; document.getElementById('s-title').textContent = 'Scanning ' + KEYWORDS[Math.min(4, Math.floor(i / 81))]; }, onDone: () => { document.querySelectorAll('.tile').forEach(t => t.classList.remove('sk')); const all = grids.flat(); const s = solvOf(all); countUp(document.getElementById('t-solv'), s, v => v.toFixed(1) + '%'); document.getElementById('t-band').textContent = band(s); countUp(document.getElementById('t-arp'), arpOf(all), v => v.toFixed(2)); document.getElementById('t-pos').textContent = '#4'; document.getElementById('s-title').textContent = 'Scan #18 complete'; document.getElementById('runBtn').textContent = 'Scan again for $0.81'; document.getElementById('runBtn').disabled = false; document.getElementById('after').hidden = false; drawMap(document.getElementById('map'), comps.filter(c => c.custom).map((c, i) => ({ x: 72 + i * 6, y: 30, cls: 'custom', label: c.name }))); const rows = [...comps.filter(c => c.on).map(c => ({ n: c.name + (c.custom ? ' <span class="tag you">added</span>' : ''), s: c.solv })), { n: '<b>Smile Dental of Boulder</b>', s }].sort((a, b) => b.s - a.s); document.getElementById('lb').innerHTML = rows.map((r, i) => `<tr><td class="mono">${i + 1}</td><td>${r.n}</td><td class="mono">${r.s.toFixed(1)}%</td></tr>`).join(''); toast('Scan complete: ' + band(s)); } });
+}
+</script>
+</body>
+</html>
