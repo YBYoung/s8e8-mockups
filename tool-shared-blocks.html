@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Standalone tools: shared input and history blocks (mockup, #1291)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0F172A; --body: #1F2937; --muted: #6B7280; --faint: #9CA3AF;
+    --border: #E5E7EB; --border-strong: #D1D5DB; --page: #F6F7F9; --card: #FFFFFF;
+    --primary: #0F766E; --primary-tint: #E6F4F1; --ok: #22C55E; --danger: #E11D48; --warn: #F5C518;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--body); font: 14px/1.5 Inter, system-ui, sans-serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 64px; }
+  .page-title { display: flex; align-items: center; gap: 12px; margin: 0 0 4px; }
+  .page-title h1 { font: 800 22px/1.1 Montserrat, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); margin: 0; }
+  .page-title svg { width: 26px; height: 26px; stroke: var(--primary); fill: none; stroke-width: 1.5; }
+  .subtitle { color: var(--muted); margin: 0 0 22px; }
+  .label { font: 600 11px/1 Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .card + .card { margin-top: 18px; }
+  .card-head { display: flex; gap: 14px; align-items: center; justify-content: space-between; padding: 16px 20px 12px; border-bottom: 1px solid var(--border); }
+  .card-head h2 { font: 700 16px Inter, sans-serif; color: var(--ink); margin: 0; }
+  .card-body { padding: 18px 20px 20px; }
+  .btn { font: 600 13px Inter, sans-serif; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--border-strong); background: #fff; color: var(--ink); }
+  .btn.primary { background: var(--primary); border-color: transparent; color: #fff; }
+  .btn.primary:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.link { border: 0; background: none; color: var(--primary); padding: 6px 4px; }
+  .btn.small { padding: 5px 10px; font-size: 12px; }
+  /* mode switch: two segments, not pills */
+  .seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; }
+  .seg button { font: 600 13px Inter, sans-serif; padding: 7px 14px; border: 0; background: #fff; color: var(--muted); cursor: pointer; }
+  .seg button.on { background: var(--primary-tint); color: var(--primary); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-weight: 600; color: var(--ink); font-size: 13px; }
+  .field label .req { color: var(--danger); margin-left: 3px; }
+  .field .hint { color: var(--muted); font-size: 12px; }
+  .input { border: 1px solid var(--border-strong); border-radius: 8px; padding: 9px 12px; font: 14px Inter, sans-serif; color: var(--ink); background: #fff; outline: none; width: 100%; }
+  .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-tint); }
+  .input.filled { background: #FAFAFA; }
+  /* branded dropdown (never a native select) */
+  .dd { position: relative; }
+  .dd .input { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .dd-menu { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--border-strong); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.08); padding: 6px; display: none; }
+  .dd.open .dd-menu { display: block; }
+  .dd-menu input { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font: 13px Inter, sans-serif; margin-bottom: 6px; }
+  .dd-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; }
+  .dd-item:hover { background: var(--primary-tint); }
+  .dd-item small { color: var(--muted); }
+  .prefill { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .prefill b { color: var(--primary); font-weight: 600; }
+  .run-row { display: flex; align-items: center; gap: 14px; justify-content: space-between; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .est { color: var(--muted); font-size: 13px; }
+  .est b { color: var(--ink); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .tool-slot { border: 1px dashed var(--border-strong); border-radius: 8px; padding: 14px 16px; color: var(--muted); font-size: 13px; background: #FCFCFD; margin-top: 16px; }
+  /* history */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); font: 600 11px/1 Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .status { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); display: inline-block; }
+  .dot.run { background: var(--primary); }
+  .dot.fail { background: var(--danger); }
+  .tag { display: inline-block; border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px; font-size: 11px; color: var(--muted); background: #FAFAFA; }
+  .tag.client { color: var(--primary); border-color: var(--primary-tint); background: var(--primary-tint); }
+  .filters { display: flex; gap: 10px; align-items: center; }
+  .check { display: inline-flex; align-items: center; gap: 6px; color: var(--body); font-size: 13px; cursor: pointer; }
+  .notes { margin-top: 26px; color: var(--muted); font-size: 12px; }
+  .notes h3 { font: 600 11px/1 Inter, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .notes li { margin-bottom: 4px; }
+  .linkbox { display: none; margin-top: 8px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: #FAFAFA; }
+  .linkbox.open { display: block; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } .run-row { flex-direction: column; align-items: stretch; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-title">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 1 8 8c0 5.5-8 12-8 12S4 15.5 4 10a8 8 0 0 1 8-8z"/></svg>
+    <h1>Grid Scan</h1>
+  </div>
+  <p class="subtitle">Where a practice shows up on the map for its keywords, any client or prospect. The same input block and history sit on every tool page.</p>
+
+  <!-- ===== Shared input block ===== -->
+  <div class="card">
+    <div class="card-head">
+      <h2>Practice</h2>
+      <div class="seg" role="tablist">
+        <button class="on" id="segPick" onclick="setMode('pick')">Pick a client</button>
+        <button id="segType" onclick="setMode('type')">Type it</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- pick a client -->
+      <div id="modePick">
+        <div class="grid">
+          <div class="field">
+            <label>Client<span class="req">*</span></label>
+            <div class="dd" id="dd">
+              <div class="input" onclick="toggleDd()"><span id="ddLabel">Choose a client</span><span style="color:var(--faint)">&#9662;</span></div>
+              <div class="dd-menu">
+                <input placeholder="Search clients" oninput="filterDd(this.value)">
+                <div id="ddItems"></div>
+              </div>
+            </div>
+            <div class="prefill" id="prefill">Picking a client fills the domain, the address and the placed office. Edit any of them before you run.</div>
+          </div>
+          <div class="field">
+            <label>Domain</label>
+            <input class="input filled" id="pDomain" value="" placeholder="filled from the client">
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <input class="input filled" id="pAddress" value="" placeholder="filled from the client's primary office">
+          </div>
+          <div class="field">
+            <label>Listing</label>
+            <input class="input filled" id="pPlace" value="" placeholder="the placed office's listing, when one exists">
+            <span class="hint">No placed office? The tool looks the listing up from the address before it runs (one cheap call, you confirm from a short list).</span>
+          </div>
+        </div>
+      </div>
+      <!-- type it -->
+      <div id="modeType" hidden>
+        <div class="grid">
+          <div class="field">
+            <label>Domain<span class="req">*</span></label>
+            <input class="input" placeholder="smiledental.com" oninput="typed()">
+            <span class="hint">Runs are saved under this domain. If this practice signs later, they move to the client automatically.</span>
+          </div>
+          <div class="field">
+            <label>Address<span class="req">*</span></label>
+            <input class="input" placeholder="123 Main St, Boulder, CO" oninput="typed()">
+            <span class="hint">Local tools only. Market Trends needs just the domain.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-slot">Tool-specific step goes here. Grid Scan: confirm the listing, then approve 3 to 10 keywords. Market Trends: type the topics. Each tool page fills this slot; the block above and the Run row below are shared.</div>
+
+      <div class="run-row">
+        <div class="est">Estimate: <b id="estCalls">405 calls</b> &middot; <b id="estUsd">$0.81</b> &middot; 9 x 9 grid, 5 keywords &middot; lands in the DataForSEO ledger under this domain</div>
+        <button class="btn primary" id="runBtn" disabled>Run Grid Scan for $0.81</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Shared history block ===== -->
+  <div class="card">
+    <div class="card-head">
+      <h2>Past runs</h2>
+      <div class="filters">
+        <span class="label" id="histDomain">all domains</span>
+        <label class="check"><input type="checkbox" id="clientsOnly" onchange="renderHistory()"> Clients only</label>
+      </div>
+    </div>
+    <div class="card-body" style="padding-top:8px">
+      <table>
+        <thead><tr><th>When</th><th>Domain</th><th>Client</th><th>Result</th><th>Cost</th><th></th></tr></thead>
+        <tbody id="hist"></tbody>
+      </table>
+      <div class="linkbox" id="linkbox">
+        <div class="label" style="margin-bottom:6px">Link this run to a client</div>
+        <div style="display:flex; gap:8px; align-items:center">
+          <input class="input" style="max-width:320px" placeholder="Search clients" value="Carolina Cross">
+          <button class="btn primary small" onclick="doLink()">Link</button>
+          <button class="btn small" onclick="document.getElementById('linkbox').classList.remove('open')">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>What this mockup decides (#1291, spec #1289)</h3>
+    <ul>
+      <li>One input block for every tool: pick a client (fills domain, address, listing from the record) or type it. Red asterisk marks what the tool needs.</li>
+      <li>The estimate sits on the Run button and in the row, before every fire. Disabled until the inputs are complete.</li>
+      <li>History is listed by domain, newest first. Prospects show with no client; a run can be linked to a client from the row. "Clients only" hides prospect runs.</li>
+      <li>Deep teal primary, white cards, grey uppercase labels, rounded corners, no pills, no colored edges.</li>
+    </ul>
+  </div>
+</div>
+<script>
+  const clients = [
+    { name: 'Carolina Crossroads Dental', domain: 'carolinacrossroadsdental.com', address: '1215 Davie Ave, Statesville, NC 28677', place: 'Carolina Crossroads Dental (placed)' },
+    { name: 'Lefberg Dental', domain: 'lefbergdental.com', address: '2001 W Main St, Rapid City, SD 57702', place: 'Lefberg Dental (placed)' },
+    { name: 'Long Island Dental Excellence', domain: 'lidentalexcellence.com', address: '100 N Centre Ave, Rockville Centre, NY 11570', place: '' },
+  ];
+  const runs = [
+    { when: 'Oct 22, 11:05', domain: 'carolinacrossroadsdental.com', client: 'Carolina Crossroads Dental', result: 'SoLV 47.7%, competitive', cost: '$0.65', status: 'ok' },
+    { when: 'Oct 21, 16:40', domain: 'carolinacrossroadsdental.com', client: 'Carolina Crossroads Dental', result: 'SoLV 35.8%, present', cost: '$0.65', status: 'ok' },
+    { when: 'Oct 20, 09:12', domain: 'brightfuturedental.com', client: null, result: 'SoLV 12.0%, invisible', cost: '$0.81', status: 'ok' },
+    { when: 'Oct 19, 14:03', domain: 'brightfuturedental.com', client: null, result: 'Running, 212 of 405 points', cost: '$0.42 so far', status: 'run' },
+    { when: 'Oct 18, 10:30', domain: 'northhillsdentistry.com', client: null, result: 'Failed: DataForSEO 402, nothing charged', cost: '$0.00', status: 'fail' },
+  ];
+  let mode = 'pick', linkRow = null;
+  function setMode(m) {
+    mode = m;
+    document.getElementById('modePick').hidden = m !== 'pick';
+    document.getElementById('modeType').hidden = m !== 'type';
+    document.getElementById('segPick').classList.toggle('on', m === 'pick');
+    document.getElementById('segType').classList.toggle('on', m === 'type');
+    document.getElementById('runBtn').disabled = true;
+  }
+  function toggleDd() { document.getElementById('dd').classList.toggle('open'); }
+  function filterDd(q) {
+    const box = document.getElementById('ddItems'); box.innerHTML = '';
+    clients.filter(c => c.name.toLowerCase().includes((q || '').toLowerCase())).forEach(c => {
+      const d = document.createElement('div'); d.className = 'dd-item';
+      d.innerHTML = `<span>${c.name}</span><small>${c.domain}</small>`;
+      d.onclick = () => pick(c); box.appendChild(d);
+    });
+  }
+  function pick(c) {
+    document.getElementById('ddLabel').textContent = c.name;
+    document.getElementById('pDomain').value = c.domain;
+    document.getElementById('pAddress').value = c.address;
+    document.getElementById('pPlace').value = c.place;
+    document.getElementById('prefill').innerHTML = c.place
+      ? `Filled from <b>${c.name}</b>. The placed office is the listing; edit anything before you run.`
+      : `Filled from <b>${c.name}</b>. No placed office yet, so the tool will look the listing up from the address first.`;
+    document.getElementById('dd').classList.remove('open');
+    document.getElementById('runBtn').disabled = false;
+    document.getElementById('histDomain').textContent = c.domain;
+    renderHistory(c.domain);
+  }
+  function typed() {
+    const [d, a] = document.querySelectorAll('#modeType .input');
+    document.getElementById('runBtn').disabled = !(d.value && a.value);
+    if (d.value) { document.getElementById('histDomain').textContent = d.value; renderHistory(d.value); }
+  }
+  function renderHistory(domain) {
+    const only = document.getElementById('clientsOnly').checked;
+    const tb = document.getElementById('hist'); tb.innerHTML = '';
+    runs.filter(r => (!domain || r.domain === domain) && (!only || r.client)).forEach((r, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="mono">${r.when}</td><td class="mono">${r.domain}</td>
+        <td>${r.client ? `<span class="tag client">${r.client}</span>` : `<span class="tag">prospect</span>`}</td>
+        <td><span class="status"><span class="dot ${r.status === 'ok' ? '' : r.status}"></span>${r.result}</span></td>
+        <td class="mono">${r.cost}</td>
+        <td style="text-align:right">${r.client ? '<button class="btn link small">Open</button>' : `<button class="btn link small" onclick="openLink(${i})">Link to client</button> <button class="btn link small">Open</button>`}</td>`;
+      tb.appendChild(tr);
+    });
+    if (!tb.children.length) tb.innerHTML = '<tr><td colspan="6" style="color:var(--muted)">No runs for this domain yet. The first one starts the history.</td></tr>';
+  }
+  function openLink(i) { linkRow = i; document.getElementById('linkbox').classList.add('open'); }
+  function doLink() { if (linkRow !== null) runs[linkRow].client = 'Carolina Crossroads Dental'; document.getElementById('linkbox').classList.remove('open'); renderHistory(document.getElementById('histDomain').textContent === 'all domains' ? null : document.getElementById('histDomain').textContent); }
+  filterDd(''); renderHistory();
+</script>
+</body>
+</html>
