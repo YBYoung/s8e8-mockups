@@ -131,17 +131,32 @@
         <div class="grid">
           <div class="field">
             <label>Domain<span class="req">*</span></label>
-            <input class="input" placeholder="smiledental.com" oninput="typed()">
+            <input class="input" id="tDomain" placeholder="smiledental.com" oninput="typed()">
             <span class="hint">Runs are saved under this domain. If this practice signs later, they move to the client automatically.</span>
           </div>
           <div class="field">
-            <label>Address<span class="req">*</span></label>
-            <input class="input" placeholder="123 Main St, Boulder, CO" oninput="typed()">
-            <span class="hint">Local tools only. Market Trends needs just the domain.</span>
+            <label>Business name<span class="req">*</span></label>
+            <input class="input" id="tName" placeholder="Smile Dental of Boulder" oninput="typed()">
+            <span class="hint">As it reads on Google Maps. Local tools only; Market Trends needs just the domain.</span>
+          </div>
+          <div class="field">
+            <label>City or state<span class="req">*</span></label>
+            <input class="input" id="tCity" placeholder="Boulder, CO" oninput="typed()">
+          </div>
+          <div class="field">
+            <label>Listing</label>
+            <div style="display:flex; gap:8px; align-items:center">
+              <input class="input filled" id="tListing" placeholder="not found yet" readonly>
+              <button class="btn small" id="findBtn" type="button" onclick="findListing()" disabled>Find listing</button>
+            </div>
+            <span class="hint">One Maps call ($0.002) searches the name around the city; you pick yours from a short list. Nothing found? Type the street address instead and the lookup runs around it.</span>
           </div>
         </div>
+        <div id="candidates" class="linkbox" style="margin-top:12px">
+          <div class="label" style="margin-bottom:6px">Which one is theirs?</div>
+          <div id="candList"></div>
+        </div>
       </div>
-
       <div class="tool-slot">Tool-specific step goes here. Grid Scan: confirm the listing, then approve 3 to 10 keywords. Market Trends: type the topics. Each tool page fills this slot; the block above and the Run row below are shared.</div>
 
       <div class="run-row">
@@ -179,7 +194,7 @@
   <div class="notes">
     <h3>What this mockup decides (#1291, spec #1289)</h3>
     <ul>
-      <li>One input block for every tool: pick a client (fills domain, address, listing from the record) or type it. Red asterisk marks what the tool needs.</li>
+      <li>One input block for every tool: pick a client (fills domain, address, listing from the record) or type Domain, Business name and City. One Maps call finds the listing, the pick fills the address and office point (owner ruling 10/26, Local Falcon style). Red asterisk marks what the tool needs.</li>
       <li>The estimate sits on the Run button and in the row, before every fire. Disabled until the inputs are complete.</li>
       <li>History is listed by domain, newest first. Prospects show with no client; a run can be linked to a client from the row. "Clients only" hides prospect runs.</li>
       <li>Deep teal primary, white cards, grey uppercase labels, rounded corners, no pills, no colored edges.</li>
@@ -231,9 +246,25 @@
     renderHistory(c.domain);
   }
   function typed() {
-    const [d, a] = document.querySelectorAll('#modeType .input');
-    document.getElementById('runBtn').disabled = !(d.value && a.value);
-    if (d.value) { document.getElementById('histDomain').textContent = d.value; renderHistory(d.value); }
+    const d = document.getElementById('tDomain').value, n = document.getElementById('tName').value, c = document.getElementById('tCity').value;
+    document.getElementById('findBtn').disabled = !(n && c);
+    document.getElementById('runBtn').disabled = true;
+    if (d) { document.getElementById('histDomain').textContent = d; renderHistory(d); }
+  }
+  const found = [
+    { name: 'Smile Dental of Boulder', address: '2525 Arapahoe Ave Suite E4, Boulder, CO 80302', rating: '4.9', reviews: 212 },
+    { name: 'Smile Dental Care', address: '1650 38th St Suite 100, Boulder, CO 80301', rating: '4.7', reviews: 88 },
+    { name: 'Boulder Smile Design', address: '2919 Valmont Rd Suite 101, Boulder, CO 80301', rating: '4.8', reviews: 341 },
+  ];
+  function findListing() {
+    const box = document.getElementById('candList'); box.innerHTML = '';
+    found.forEach(f => {
+      const d = document.createElement('div'); d.className = 'dd-item';
+      d.innerHTML = `<span><b style="font-weight:600;color:var(--ink)">${f.name}</b><br><small>${f.address}</small></span><small>${f.rating} (${f.reviews} reviews)</small>`;
+      d.onclick = () => { document.getElementById('tListing').value = `${f.name}, ${f.address}`; document.getElementById('candidates').classList.remove('open'); document.getElementById('runBtn').disabled = false; };
+      box.appendChild(d);
+    });
+    document.getElementById('candidates').classList.add('open');
   }
   function renderHistory(domain) {
     const only = document.getElementById('clientsOnly').checked;
