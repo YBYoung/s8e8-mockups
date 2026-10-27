@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Trends layout A-BAND: Setup as a band above full-width cards (mockup, #1294)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0F172A; --body:#1F2937; --muted:#6B7280; --faint:#9CA3AF; --border:#E5E7EB; --border-strong:#D1D5DB;
+    --page:#F6F7F9; --card:#FFFFFF; --primary:#0F766E; --tint:#E6F4F1; --ok:#22C55E; --danger:#E11D48; --warn:#F5C518;
+    --r1:#BBF7D0; --r2:#FDE68A; --r3:#FECACA; --r4:#E5E7EB;
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { margin:0; background:var(--page); color:var(--body); font:14px/1.5 Inter,system-ui,sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:24px 20px 72px; }
+  .title { display:flex; align-items:center; gap:12px; margin:0 0 2px; }
+  .title h1 { font:800 22px/1.1 Montserrat,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:var(--ink); margin:0; }
+  .title svg { width:26px; height:26px; stroke:var(--primary); fill:none; stroke-width:1.5; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .label { font:600 11px/1 Inter,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .btn { font:600 13px Inter,sans-serif; border-radius:8px; padding:8px 14px; cursor:pointer; border:1px solid var(--border-strong); background:#fff; color:var(--ink); transition:background .15s, transform .1s; }
+  .btn:active { transform:translateY(1px); }
+  .btn.primary { background:var(--primary); border-color:transparent; color:#fff; }
+  .btn.primary:disabled { opacity:.45; cursor:not-allowed; }
+  .btn.link { border:0; background:none; color:var(--primary); padding:6px 4px; }
+  .btn.small { padding:5px 10px; font-size:12px; }
+  .input { border:1px solid var(--border-strong); border-radius:8px; padding:9px 12px; font:14px Inter,sans-serif; color:var(--ink); background:#fff; outline:none; width:100%; }
+  .input:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--tint); }
+  .mono { font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .tag { display:inline-block; border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:11px; color:var(--muted); background:#FAFAFA; }
+  .tag.you { color:var(--primary); border-color:var(--tint); background:var(--tint); }
+  .fade { animation:fade .35s ease both; } @keyframes fade { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .grid9 { display:grid; grid-template-columns:repeat(9,1fr); gap:2px; }
+  .cell { aspect-ratio:1; border-radius:3px; background:#F3F4F6; display:flex; align-items:center; justify-content:center; font:500 10px 'JetBrains Mono',monospace; color:var(--ink); transition:background .3s, transform .3s; }
+  .cell.pending { color:transparent; }
+  .cell.pop { animation:pop .35s ease; } @keyframes pop { 0% { transform:scale(.6); } 60% { transform:scale(1.12); } 100% { transform:scale(1); } }
+  .bar { height:6px; background:#EEF0F3; border-radius:3px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--primary); width:0; transition:width .25s linear; }
+  .map { position:relative; border-radius:10px; overflow:hidden; background-color:#F8FAFC; background-image:repeating-linear-gradient(0deg, #E6EAF0 0 1px, transparent 1px 48px), repeating-linear-gradient(90deg, #E6EAF0 0 1px, transparent 1px 48px); border:1px solid var(--border); }
+  .map .ring { position:absolute; border:1.5px dashed var(--primary); border-radius:50%; opacity:.7; }
+  .pin { position:absolute; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translate(-50%,-50%); }
+  .pin.you { background:var(--primary); width:18px; height:18px; }
+  .pin.comp { background:#64748B; } .pin.custom { background:#0E7490; }
+  .pin span { position:absolute; left:16px; top:-4px; white-space:nowrap; font:500 11px Inter; color:var(--ink); background:rgba(255,255,255,.9); padding:1px 5px; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  td { padding:9px 10px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:0; }
+  .legend { display:flex; gap:12px; font-size:11px; color:var(--muted); align-items:center; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:-2px; }
+  .toast { position:fixed; right:20px; bottom:20px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:8px; font-size:13px; opacity:0; transform:translateY(8px); transition:all .25s; pointer-events:none; }
+  .toast.on { opacity:1; transform:none; }
+  .toggle { display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; }
+  .toggle i { width:30px; height:16px; border-radius:8px; background:#D1D5DB; position:relative; transition:background .2s; }
+  .toggle i::after { content:""; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:#fff; transition:left .2s; }
+  .toggle.on i { background:var(--primary); } .toggle.on i::after { left:16px; }
+  .kpi { font:800 28px/1 Montserrat,sans-serif; color:var(--ink); }
+  
+.split { display:grid; grid-template-columns:360px 1fr; gap:18px; align-items:start; }
+.left .card { padding:14px 16px; margin-bottom:12px; }
+.left h3 { margin:0 0 8px; font:700 13px Inter; color:var(--ink); display:flex; justify-content:space-between; align-items:center; }
+.field { margin-bottom:8px; } .field label { display:block; font-weight:600; font-size:12px; color:var(--ink); margin-bottom:4px; } .req { color:var(--danger); margin-left:3px; }
+.steps { padding:6px 0 0; }
+.step { display:flex; gap:10px; padding:9px 10px; border-radius:8px; color:var(--muted); align-items:flex-start; }
+.step > b { width:20px; height:20px; border-radius:50%; border:1.5px solid var(--border-strong); display:inline-flex; align-items:center; justify-content:center; font:600 11px Inter; flex:none; }
+.step.on { color:var(--ink); background:var(--tint); } .step.on > b { border-color:var(--primary); color:var(--primary); }
+.step.done > b { background:var(--primary); border-color:var(--primary); color:#fff; } .step.done { color:var(--ink); }
+.step .body { flex:1; min-width:0; } .step .sum { font-size:12px; color:var(--muted); } .step .form { margin-top:8px; display:none; } .step.on .form { display:block; }
+.cand { border:1px solid var(--border); border-radius:8px; padding:8px 10px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:center; cursor:pointer; margin-top:6px; font-size:13px; background:#fff; }
+.cand:hover, .cand.on { border-color:var(--primary); background:var(--tint); } .cand b { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; } .row:last-child { border-bottom:0; }
+.row .nm { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.addrow { display:flex; gap:6px; margin-top:8px; } .addrow .input { min-width:0; }
+.phr { display:flex; flex-wrap:wrap; gap:4px; margin:4px 0 2px 0; } .phr span { border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:11px; background:#FAFAFA; color:var(--body); }
+.phr span.drive { border-color:var(--tint); background:var(--tint); color:var(--primary); font-weight:600; }
+.hist { font-size:12px; padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; cursor:pointer; } .hist:last-child { border-bottom:0; }
+.right { position:sticky; top:16px; }
+.head { display:flex; align-items:center; gap:14px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.status { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); } .status i { width:8px; height:8px; border-radius:50%; background:var(--faint); display:inline-block; } .status.live i { background:var(--primary); animation:blink 1s infinite; } @keyframes blink { 50% { opacity:.3; } }
+.btn.ready { animation:readypulse 1.6s ease-in-out infinite; } @keyframes readypulse { 0%,100% { box-shadow:0 0 0 0 rgba(15,118,110,.55); } 50% { box-shadow:0 0 0 9px rgba(15,118,110,0); transform:translateY(-1px); } }
+.readyhint { color:var(--primary); font-weight:600; } .readyhint .arrow { display:inline-block; margin-left:4px; animation:nudge 1.6s ease-in-out infinite; } @keyframes nudge { 50% { transform:translateX(4px); } }
+.rbody { padding:14px 16px; }
+.empty { color:var(--muted); font-size:13px; text-align:center; padding:60px 40px; border:1px dashed var(--border-strong); border-radius:10px; }
+/* topic card: the shipped Topic Card sections */
+.tc { border:1px solid var(--border); border-radius:10px; margin-bottom:14px; overflow:hidden; background:#fff; }
+.tc-head { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.tc-head h4 { margin:0; font:700 15px Inter; color:var(--ink); flex:1; min-width:0; }
+.tc-head .pos { font:600 11px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
+.rating { display:inline-flex; align-items:baseline; gap:6px; border:1px solid var(--border); border-radius:8px; padding:5px 10px; background:#F8FAFC; position:relative; cursor:default; }
+.rating b { font:800 18px Montserrat; color:#475569; } .rating small { color:var(--muted); font-size:11px; }
+.rating .tip { display:none; position:absolute; right:0; top:calc(100% + 6px); z-index:5; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.12); padding:10px 12px; width:240px; font-size:12px; color:var(--body); text-align:left; }
+.rating:hover .tip { display:block; } .rating .tip div { display:flex; justify-content:space-between; padding:2px 0; } .rating .tip b { font:600 12px 'JetBrains Mono'; color:var(--ink); }
+.sec { border-top:1px solid var(--border); } .sec-h { display:flex; align-items:center; gap:10px; padding:8px 16px; font:700 13px Inter; } .sec-h .lab { margin-left:auto; font:500 12.5px Inter; color:var(--ink); }
+.sec-h i { width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; } .sec-h i svg { width:13px; height:13px; fill:none; stroke-width:2; }
+.sec.demand .sec-h { background:#F3FAF8; color:#0F766E; } .sec.demand i { background:#E6F4F1; } .sec.demand svg { stroke:#0F766E; }
+.sec.coverage .sec-h { background:#F2F9FE; color:#0369A1; } .sec.coverage i { background:#E0F2FE; } .sec.coverage svg { stroke:#0369A1; }
+.sec.visibility .sec-h { background:#F8F6FE; color:#6D28D9; } .sec.visibility i { background:#EDE9FE; } .sec.visibility svg { stroke:#6D28D9; }
+.sec-b { padding:12px 16px 14px; } .sent { font-size:13px; color:var(--body); margin:0 0 8px; }
+.show { display:flex; align-items:center; gap:8px; margin-bottom:6px; } .show .lab { font:600 11px Inter; letter-spacing:.08em; color:#9CA3AF; }
+.segc { display:inline-flex; background:#F1F3F5; border:1px solid var(--border); border-radius:8px; padding:2px; } .segc button { border:0; background:transparent; font:600 12px Inter; color:var(--muted); padding:4px 10px; border-radius:6px; cursor:pointer; } .segc button.on { background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08); }
+.chart { position:relative; } .chart svg { width:100%; height:auto; display:block; } .chart .plot { transition:transform .7s ease; transform-origin:30px 0; }
+.ctip { position:absolute; display:none; pointer-events:none; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.12); padding:8px 10px; font-size:12px; min-width:180px; z-index:4; }
+.ctip h5 { margin:0 0 4px; font:600 12px Inter; color:var(--ink); } .ctip div { display:flex; justify-content:space-between; gap:12px; } .ctip div i { width:8px; height:8px; border-radius:2px; display:inline-block; margin-right:6px; vertical-align:middle; }
+.chips2 { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; } .chip { border:1px solid var(--border-strong); border-radius:6px; padding:3px 8px; font-size:12px; background:#fff; cursor:pointer; display:inline-flex; align-items:center; gap:6px; } .chip i { width:14px; height:0; border-top:2px solid; display:inline-block; } .chip.off { opacity:.4; }
+.cap { font-size:11.5px; color:var(--muted); margin-top:6px; }
+.readout { margin-top:10px; font-size:13px; } .readout .v { display:inline-block; border-radius:6px; padding:2px 8px; font-weight:600; font-size:12px; margin-right:6px; }
+.bars { margin-top:12px; } .bars .t { font:600 11px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.navail { display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--body); } .navail .tag { flex:none; border:1px dashed #D1D5DB; color:#9CA3AF; background:#fff; }
+.navail a { color:var(--primary); font-weight:600; text-decoration:none; }
+.vrow { display:flex; align-items:center; gap:10px; padding:4px 0; font-size:13px; } .vrow b { width:92px; font-weight:600; color:var(--ink); }
+
+    body.settled .split { display:block; }
+    body.settled .right { position:static; }
+    .band { display:none; } body.settled .band { display:flex; } body.settled #settled { display:none !important; }
+    .band { align-items:center; gap:18px; flex-wrap:wrap; padding:12px 16px; margin-bottom:12px; }
+    .band .who { font:700 14px Inter; color:var(--ink); } .band .meta { font-size:12px; color:var(--muted); }
+    .band .tlist { display:flex; flex-wrap:wrap; gap:6px; align-items:center; } .band .tlist .chip { cursor:default; }
+    .band .tlist .chip b { font-weight:600; color:var(--ink); } .band .tlist .chip small { color:var(--muted); }
+    .band .histb { margin-left:auto; font-size:12px; color:var(--muted); }
+    body.settled .chart, body.settled .bars { max-width:860px; }
+  
+</style>
+</head>
+<body data-layout="a-band">
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <div class="title"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><h1>Market Trends</h1></div>
+  <p class="sub">How demand for a topic is moving where a practice is, for any client or prospect, with no strategy in flight.</p>
+  <div class="card band" id="band"><div><div class="who">Bothell Family Dentistry <span class="tag">prospect</span></div><div class="meta">bothellfamilydentistry.com · Bothell, WA · <a class="btn link small" href="#" onclick="reopen();return false">edit setup</a></div></div><div class="tlist" id="bandTopics"></div><div class="histb" id="bandHist">History: no trend checks yet</div></div><div class="split">
+    <div class="left">
+      <div class="card" id="setup">
+        <h3>Set up this practice <span class="tag" id="who">new</span></h3>
+        <div class="steps">
+          <div class="step on" id="s1"><b>1</b><div class="body">Practice<div class="sum" id="sum1">Who the check is for</div>
+            <div class="form">
+              <div class="field"><label>Client</label><input class="input" placeholder="Search clients, or leave empty for a prospect"></div>
+              <div class="field"><label>Domain<span class="req">*</span></label><input class="input" value="bothellfamilydentistry.com"></div>
+              <div class="field"><label>Business name<span class="req">*</span></label><input class="input" value="Bothell Family Dentistry"></div>
+              <div class="field"><label>City or state<span class="req">*</span></label><input class="input" value="Bothell, WA"></div>
+              <button class="btn primary" style="width:100%" onclick="done(1)">Find the listing</button>
+            </div></div></div>
+          <div class="step" id="s2"><b>2</b><div class="body">Listing<div class="sum" id="sum2">Their Google listing; it sets the state the trends are read in</div>
+            <div class="form"><div style="font-size:12px;color:var(--muted)">One Maps call around Bothell, WA ($0.002).</div><div id="cands"></div><button class="btn primary" id="b2" style="width:100%;margin-top:8px" disabled onclick="done(2)">Use this listing</button></div></div></div>
+          <div class="step" id="s3"><b>3</b><div class="body">Topics<div class="sum" id="sum3">1 to 10, in the client's words</div>
+            <div class="form"><div id="topics"></div><div class="addrow"><input class="input" id="addt" placeholder="Add a topic, e.g. sedation dentistry" onkeydown="if(event.key==='Enter')addTopic()"><button class="btn small" onclick="addTopic()">Add</button></div><div style="font-size:11px;color:var(--muted);margin-top:4px">A topic is what a patient wants, not a keyword. Phrases come next.</div><button class="btn primary" style="width:100%;margin-top:8px" id="b3" onclick="done(3)">Propose phrases</button></div></div></div>
+          <div class="step" id="s4"><b>4</b><div class="body">Phrases<div class="sum" id="sum4">How people search each topic, 3 to 5 each</div>
+            <div class="form"><div id="phrases"></div><div style="font-size:11px;color:var(--muted);margin-top:4px">Proposed from the topic and the homepage. Remove any that are not this practice; add the ones the client hears.</div><button class="btn primary" style="width:100%;margin-top:8px" id="b4" onclick="done(4)">Approve phrases</button></div></div></div>
+        </div>
+      </div>
+      <div class="card" id="settled" hidden>
+        <h3>Bothell Family Dentistry <span class="tag">prospect</span></h3>
+        <div style="font-size:12px;color:var(--muted)">bothellfamilydentistry.com · 19515 N Creek Pkwy S Ste 213, Bothell, WA · <a class="btn link small" href="#" onclick="reopen();return false">edit setup</a></div>
+        <h3 style="margin-top:12px">Topics <span style="font-weight:500;color:var(--muted);font-size:12px" id="tcount"></span></h3><div id="topics2"></div>
+        <div class="addrow"><input class="input" id="addt2" placeholder="Add a topic" onkeydown="if(event.key==='Enter')addTopic2()"><button class="btn small" onclick="addTopic2()">Add</button></div>
+        <h3 style="margin-top:12px">History <span style="font-weight:500;color:var(--muted);font-size:12px">bothellfamilydentistry.com</span></h3>
+        <div id="hist"><div class="hist" style="color:var(--muted)"><span>No trend checks yet. The first one starts the history.</span></div></div>
+      </div>
+    </div>
+    <div class="right card">
+      <div class="head">
+        <div style="flex:1"><b style="color:var(--ink)">Run</b> <span class="status" id="st"><i></i>finish the setup on the left</span><div class="bar" style="margin-top:8px"><i id="bar"></i></div></div>
+        <button class="btn primary" id="runBtn" disabled onclick="run()">Run for $0.00</button>
+      </div>
+      <div class="ttabs" id="ttabs"></div><div class="rbody" id="results"><div class="empty">One card per topic lands here: demand over five years with the search counts, the 1 to 10 rating, and the coverage and visibility readings once the site crawl and the other tools' runs exist for this domain.</div></div>
+    </div>
+  </div>
+</div>
+<script>
+const SEED = 7; let _s = SEED; function rnd() { _s = (_s * 9301 + 49297) % 233280; return _s / 233280; }
+const KEYWORDS = ['dentist near me', 'dentist in boulder', 'emergency dentist boulder', 'dental implants boulder', 'invisalign boulder'];
+const AUTO_COMPS = [
+  { name: 'Boulder Smile Design', address: '2919 Valmont Rd', rating: 4.8, reviews: 341, solv: 61.2 },
+  { name: 'Flatirons Family Dentistry', address: '1420 28th St', rating: 4.9, reviews: 288, solv: 54.0 },
+  { name: 'Pearl Street Dental', address: '1136 Pearl St', rating: 4.7, reviews: 197, solv: 38.4 },
+  { name: 'Table Mesa Dental', address: '695 S Broadway', rating: 4.6, reviews: 122, solv: 22.1 },
+];
+const CUSTOM_POOL = [
+  { name: 'Smile Dental Care', address: '1650 38th St Suite 100', rating: 4.7, reviews: 88 },
+  { name: 'Gunbarrel Dental', address: '6685 Gunpark Dr', rating: 4.9, reviews: 64 },
+  { name: 'North Boulder Dental Group', address: '1001 N Broadway', rating: 4.5, reviews: 151 },
+];
+function rankFor(r, c, k) { const d = Math.hypot(r - 4, c - 4); const base = 1 + d * 1.6 + k * 0.4 + rnd() * 2.2 - 1.5; return Math.max(1, Math.min(21, Math.round(base))); }
+function cellColor(rank) { return rank <= 3 ? 'var(--r1)' : rank <= 10 ? 'var(--r2)' : rank <= 20 ? 'var(--r3)' : 'var(--r4)'; }
+function buildGrid(el, k) { el.innerHTML = ''; const cells = []; for (let i = 0; i < 81; i++) { const c = document.createElement('div'); c.className = 'cell pending'; const rank = rankFor(Math.floor(i / 9), i % 9, k); c.dataset.rank = rank; c.textContent = rank > 20 ? '20+' : rank; c.title = KEYWORDS[k] + ': rank ' + (rank > 20 ? 'not in top 20' : rank); el.appendChild(c); cells.push(c); } return cells; }
+function revealCell(c) { c.classList.remove('pending'); c.classList.add('pop'); c.style.background = cellColor(+c.dataset.rank); }
+function solvOf(cells) { const top3 = cells.filter(c => +c.dataset.rank <= 3).length; return (100 * top3 / cells.length); }
+function arpOf(cells) { return cells.reduce((a, c) => a + +c.dataset.rank, 0) / cells.length; }
+function band(s) { return s >= 70 ? 'dominant' : s >= 40 ? 'competitive' : s >= 15 ? 'present' : 'invisible'; }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400); }
+function countUp(el, to, fmt, ms = 900) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = fmt(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0); }
+/* simulate a 9x9 x N keyword run: calls per tick */
+function simulateRun({ grids, onPoint, onDone, speed = 4 }) {
+  const all = []; grids.forEach((cells, k) => cells.forEach((c, i) => all.push({ c, k, i })));
+  let i = 0; const total = all.length;
+  const h = setInterval(() => {
+    for (let n = 0; n < speed && i < total; n++, i++) { revealCell(all[i].c); }
+    onPoint(i, total);
+    if (i >= total) { clearInterval(h); onDone(); }
+  }, 60);
+  return () => clearInterval(h);
+}
+const MAP_PINS = [{ x: 50, y: 50, cls: 'you', label: 'Smile Dental of Boulder' }, { x: 62, y: 38, cls: 'comp', label: 'Boulder Smile Design' }, { x: 36, y: 44, cls: 'comp', label: 'Flatirons Family' }, { x: 58, y: 66, cls: 'comp', label: 'Pearl Street' }, { x: 30, y: 70, cls: 'comp', label: 'Table Mesa' }];
+function drawMap(el, extra = []) { el.querySelectorAll('.pin,.ring').forEach(n => n.remove()); const ring = document.createElement('div'); ring.className = 'ring'; const s = Math.min(el.clientWidth, el.clientHeight) * .72; ring.style.cssText = `width:${s}px;height:${s}px;left:calc(50% - ${s/2}px);top:calc(50% - ${s/2}px)`; el.appendChild(ring); [...MAP_PINS, ...extra].forEach(p => { const d = document.createElement('div'); d.className = 'pin ' + p.cls; d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.innerHTML = `<span>${p.label}</span>`; el.appendChild(d); }); }
+
+const TOPICS = [
+  { t: 'Dental implants', phr: ['dental implants bothell', 'dental implants near me', 'tooth implant cost', 'all on 4 bothell'], drive: 0, rating: 8, parts: [['Demand rising', 3], ['Searched by name', 2], ['High value service', 2], ['Seasonal lift', 1]], base: 42, slope: .55, season: 8, verdict: 'growing', avg: '+14% a year', spike: 'Jan 2026 (+31%)', searches: [180, 210, 240, 260, 290, 260, 240, 270, 300, 320, 310, 330] },
+  { t: 'Invisalign', phr: ['invisalign bothell', 'clear aligners cost', 'invisalign near me'], drive: 0, rating: 6, parts: [['Demand steady', 2], ['Searched by name', 2], ['High value service', 2]], base: 58, slope: .05, season: 14, verdict: 'stable', avg: '+1% a year', spike: 'Aug 2025 (+22%)', searches: [390, 420, 400, 380, 430, 460, 480, 500, 450, 410, 390, 420] },
+  { t: 'Emergency dentist', phr: ['emergency dentist bothell', 'emergency dentist near me', 'toothache relief', 'same day dentist bothell', 'broken tooth repair'], drive: 1, rating: 5, parts: [['Demand steady', 2], ['Searched by name', 2], ['Urgent intent', 1]], base: 64, slope: .02, season: 4, verdict: 'stable', avg: '0% a year', spike: 'none in five years', searches: [720, 700, 740, 760, 730, 710, 750, 770, 740, 720, 730, 760] },
+];
+let topics = TOPICS.map(x => ({ ...x, phr: [...x.phr] })), ran = false;
+const CANDS = [{ name: 'Bothell Smiles Family Dentistry', address: '18323 98th Ave NE Ste 4', rating: 4.8, reviews: 70 }, { name: 'Bothell Family Dentistry', address: '19515 N Creek Pkwy S Ste 213', rating: 4.9, reviews: 218 }, { name: 'Bothell Family Dental Care', address: '24003 Bothell Everett Hwy #100', rating: 5, reviews: 13 }];
+const MONTHS = []; { let y = 2021, m = 10; for (let i = 0; i < 61; i++) { MONTHS.push(`${y}-${String(m).padStart(2, '0')}`); m++; if (m > 12) { m = 1; y++; } } }
+const COST_PER_PHRASE = 0.09;
+function go(n) { for (let i = 1; i <= 4; i++) document.getElementById('s' + i).classList.toggle('on', i === n); }
+function nPhr() { return topics.reduce((a, t) => a + t.phr.length, 0); }
+function price() { return (nPhr() * COST_PER_PHRASE).toFixed(2); }
+function done(n) {
+  const s = document.getElementById('s' + n); s.classList.add('done');
+  if (n === 1) { document.getElementById('sum1').textContent = 'Bothell Family Dentistry · bothellfamilydentistry.com · Bothell, WA'; const box = document.getElementById('cands'); box.innerHTML = ''; CANDS.forEach((c, i) => { const d = document.createElement('div'); d.className = 'cand fade'; d.style.animationDelay = (i * 60) + 'ms'; d.innerHTML = `<span><b>${c.name}</b><small style="color:var(--muted)">${c.address}</small></span><span class="mono">${c.rating} (${c.reviews})</span>`; d.onclick = () => { box.querySelectorAll('.cand').forEach(x => x.classList.remove('on')); d.classList.add('on'); document.getElementById('b2').disabled = false; }; box.appendChild(d); }); }
+  if (n === 2) { document.getElementById('sum2').textContent = '19515 N Creek Pkwy S Ste 213 · WA'; renderTopics(); }
+  if (n === 3) { document.getElementById('sum3').textContent = topics.map(t => t.t).join(', '); renderPhrases(); toast(`${nPhr()} phrases proposed for ${topics.length} topics`); }
+  if (n === 4) { document.getElementById('sum4').textContent = `${nPhr()} phrases`; settle(); return; }
+  go(n + 1);
+}
+function renderTopics() { document.getElementById('topics').innerHTML = topics.map((t, i) => `<div class="row"><span class="nm">${t.t}</span><button class="btn link small" onclick="topics.splice(${i},1);renderTopics()">Remove</button></div>`).join(''); document.getElementById('b3').textContent = `Propose phrases for ${topics.length} topic${topics.length === 1 ? '' : 's'}`; }
+function addTopic() { const el = document.getElementById('addt'); const v = el.value.trim(); if (!v) return; if (topics.length >= 10) { toast('Ten topics is the limit for one check'); return; } topics.push({ t: v, phr: [v.toLowerCase() + ' bothell', v.toLowerCase() + ' near me', v.toLowerCase() + ' cost'], drive: 0, rating: 4, parts: [['Demand unknown yet', 0], ['Searched by name', 2], ['Typed by you', 2]], base: 30, slope: .1, season: 6, verdict: 'stable', avg: '+3% a year', spike: 'none in five years', searches: [90, 95, 100, 110, 105, 100, 98, 104, 110, 115, 112, 118] }); el.value = ''; renderTopics(); toast(`Added "${v}" (${topics.length} of 10)`); }
+function renderPhrases() { document.getElementById('phrases').innerHTML = topics.map((t, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><span class="nm" style="font-weight:600;color:var(--ink)">${t.t}</span><span class="mono" style="color:var(--muted)">${t.phr.length} of 5</span></div><div class="phr">${t.phr.map((p, j) => `<span class="${j === t.drive ? 'drive' : ''}" title="${j === t.drive ? 'the driving phrase' : 'click to remove'}" onclick="if(${j}!==${t.drive}&&topics[${i}].phr.length>3){topics[${i}].phr.splice(${j},1);renderPhrases()}">${p}</span>`).join('')}</div></div>`).join(''); document.getElementById('b4').textContent = `Approve ${nPhr()} phrases`; }
+function renderTopics2() { document.getElementById('topics2').innerHTML = topics.map((t, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><span class="nm">${t.t}</span><button class="btn link small" onclick="topics.splice(${i},1);renderTopics2()">Remove</button></div><div class="phr">${t.phr.map((p, j) => `<span class="${j === t.drive ? 'drive' : ''}">${p}</span>`).join('')}</div></div>`).join(''); document.getElementById('tcount').textContent = `${topics.length} of 10 · ${nPhr()} phrases`; const rb = document.getElementById('runBtn'); rb.textContent = `${ran ? 'Check again' : 'Run'} for $${price()}`; const st = document.getElementById('st'); if (!st.classList.contains('live') && rb.classList.contains('ready')) st.innerHTML = `<i style="background:var(--ok)"></i>setup done · ${nPhr()} phrases · $${price()} · <span class="readyhint">ready to run<span class="arrow">→</span></span>`; }
+function addTopic2() { const el = document.getElementById('addt2'); const v = el.value.trim(); if (!v) return; if (topics.length >= 10) { toast('Ten topics is the limit for one check'); return; } el.value = ''; document.getElementById('addt').value = v; addTopic(); renderTopics2(); toast(`Added "${v}". The next check covers ${topics.length} topics.`); }
+function settle() { layoutSettle(); document.getElementById('setup').hidden = true; document.getElementById('settled').hidden = false; const rb = document.getElementById('runBtn'); rb.disabled = false; rb.classList.add('ready'); renderTopics2(); document.getElementById('st').innerHTML = `<i style="background:var(--ok)"></i>setup done · ${nPhr()} phrases · $${price()} · <span class="readyhint">ready to run<span class="arrow">→</span></span>`; toast('Set up. Run when ready; the setup stays on the left from now on.'); }
+function reopen() { document.getElementById('setup').hidden = false; document.getElementById('settled').hidden = true; go(1); }
+/* series: 0 to 100 Google interest per phrase, the combined weighted line, and our practices (rose) over the last 12 months */
+function series(t, k) { const out = []; for (let i = 0; i < 61; i++) { const seasonal = t.season * Math.sin((i + 3) * Math.PI / 6); const v = t.base + t.slope * i + seasonal - k * 9 + (rnd() * 10 - 5) + (i === 52 && k === 0 ? 24 : 0); out.push(Math.max(2, Math.min(100, Math.round(v)))); } return out; }
+function corpus(t) { const out = []; for (let i = 0; i < 12; i++) out.push(Math.round(40 + i * 3 + rnd() * 12 + (t.rating - 5) * 3)); return out; }
+const W = 640, H = 270, L = 30, R = 12, T = 20, B = 26;
+function x(i, n) { return L + (W - L - R) * i / (n - 1); } function y(v) { return T + (H - T - B) * (1 - v / 100); }
+function path(vals, n) { return vals.map((v, i) => (i ? 'L' : 'M') + x(i, n).toFixed(1) + ' ' + y(v).toFixed(1)).join(' '); }
+function chartSvg(t, data, id) {
+  const n = 61; const lines = data.lines; const corp = data.corpus;
+  const band = `<rect x="${x(49, n)}" y="${T}" width="${x(60, n) - x(49, n)}" height="${H - T - B}" fill="#E3F2EE" stroke="none"/><rect x="${x(37, n)}" y="${T}" width="${x(49, n) - x(37, n)}" height="${H - T - B}" fill="#F3F4F6" stroke="none"/>`;
+  const grid = [0, 50, 100].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10.5" fill="#9CA3AF">${v}</text>`).join('');
+  const xt = `<g id="xt${id}"></g>`;
+  const area = `<defs><linearGradient id="g${id}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>`;
+  const drive = lines[t.drive];
+  const areaP = `<path d="${path(drive.vals, n)} L${x(60, n)} ${y(0)} L${x(0, n)} ${y(0)} Z" fill="url(#g${id})" stroke="none"/>`;
+  const ls = lines.map((l, k) => `<path class="ln" data-k="${k}" d="${path(l.vals, n)}" fill="none" stroke="${l.color}" stroke-width="${l.width}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} stroke-linejoin="round"/>`).join('');
+  const comb = `<path class="ln" data-k="c" d="${path(data.combined, n)}" fill="none" stroke="#0D9488" stroke-width="2" stroke-dasharray="6 4"/>`;
+  const cp = corp.map((v, i) => (i ? 'L' : 'M') + x(49 + i, n).toFixed(1) + ' ' + y(v).toFixed(1)).join(' ');
+  const rose = `<path class="ln" data-k="r" d="${cp}" fill="none" stroke="#fff" stroke-width="4"/><path class="ln" data-k="r" d="${cp}" fill="none" stroke="#DB2777" stroke-width="2.2"/>`;
+  const pk = drive.vals.indexOf(Math.max(...drive.vals));
+  /* markers sit outside the scaled group (a circle under scaleX is an ellipse) and are placed per range */
+  const marks = `<g id="mk${id}" data-pk="${pk}" data-pky="${y(drive.vals[pk]).toFixed(1)}" data-ry="${y(corp[11]).toFixed(1)}"><circle class="ln" data-k="r" cx="${x(60, n)}" cy="${y(corp[11])}" r="4" fill="#DB2777" stroke="#fff" stroke-width="1.5"/><circle id="pkc${id}" cx="${x(pk, n)}" cy="${y(drive.vals[pk])}" r="4.5" fill="#fff" stroke="#0F766E" stroke-width="2"/><text id="pkt${id}" x="${x(pk, n)}" y="${y(drive.vals[pk]) - 9}" text-anchor="middle" font-size="10.5" fill="#0F766E" font-weight="600">peak, ${MONTHS[pk]}</text></g>`;
+  return `<svg viewBox="0 0 ${W} ${H}" id="svg${id}">${area}${grid}${xt}<g class="plot" id="plot${id}">${band}${areaP}${ls}${comb}${rose}</g>${marks}<line id="guide${id}" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="#475569" stroke-dasharray="3 3" style="display:none"/></svg>`;
+}
+function setRange(id, months, el) { el.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('on')); el.classList.add('on'); const n = 61; const g = document.getElementById('plot' + id); const x0 = x(60 - (months - 1), n), x1 = x(60, n); const s = (W - L - R) / (x1 - x0); g.style.transformOrigin = '0 0'; g.style.transform = `matrix(${s},0,0,1,${(W - R) - x1 * s},0)`; g.querySelectorAll('path,circle').forEach(p => p.setAttribute('vector-effect', 'non-scaling-stroke')); const mk = document.getElementById('mk' + id); const pk = +mk.dataset.pk; const place = (i) => (x(i, n) - x0) * s + L; const pc = document.getElementById('pkc' + id), pt = document.getElementById('pkt' + id); const show = pk >= 60 - (months - 1); pc.style.display = pt.style.display = show ? '' : 'none'; pc.setAttribute('cx', place(pk)); pt.setAttribute('x', place(pk)); pt.setAttribute('text-anchor', place(pk) > W - 70 ? 'end' : place(pk) < L + 40 ? 'start' : 'middle');
+  /* ticks follow the window: every 3 months at 12, every 6 at 24, yearly at 5 years */
+  const step = months === 12 ? 3 : months === 24 ? 6 : 12; const ticks = []; for (let i = 60 - (months - 1); i <= 60; i += step) ticks.push(i); if (months === 60) { ticks.length = 0; for (let i = 0; i <= 60; i += 12) ticks.push(i); }
+  document.getElementById('xt' + id).innerHTML = ticks.map(i => { const xx = (x(i, n) - x0) * s + L; const lab = months === 60 ? MONTHS[i].slice(0, 4) : MONTHS[i]; return `<text x="${xx.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10.5" fill="#9CA3AF">${lab}</text>`; }).join(''); }
+function hover(id, data, ev) { const svg = document.getElementById('svg' + id); const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) / r.width * W; const n = 61; let i = Math.round((px - L) / (W - L - R) * (n - 1)); i = Math.max(0, Math.min(60, i)); const g = document.getElementById('guide' + id); g.style.display = 'block'; g.setAttribute('x1', x(i, n)); g.setAttribute('x2', x(i, n)); const tip = document.getElementById('tip' + id); const rows = data.lines.map(l => `<div><span><i style="background:${l.color}"></i>${l.label}</span><b class="mono">${l.vals[i]}</b></div>`).join('') + `<div><span><i style="background:#0D9488"></i>All phrases, weighted</span><b class="mono">${data.combined[i]}</b></div>` + (i >= 49 ? `<div><span><i style="background:#DB2777"></i>Our practices</span><b class="mono">${data.corpus[i - 49]} · ${(data.corpus[i - 49] * 31)} impressions, ${6 + (i % 3)} practices</b></div>` : ''); tip.innerHTML = `<h5>${MONTHS[i]}</h5>${rows}`; tip.style.display = 'block'; const cx = ev.clientX - r.left; tip.style.left = (cx > r.width * .6 ? cx - 210 : cx + 14) + 'px'; tip.style.top = '24px'; }
+function unhover(id) { document.getElementById('guide' + id).style.display = 'none'; document.getElementById('tip' + id).style.display = 'none'; }
+function toggle(id, k, el) { el.classList.toggle('off'); const on = !el.classList.contains('off'); document.querySelectorAll(`#svg${id} .ln[data-k="${k}"]`).forEach(p => p.style.opacity = on ? 1 : 0); }
+function barsSvg(t) { const w = 640, h = 90, n = 12, bw = 30, gap = (w - 40) / n; const max = Math.max(...t.searches) * 1.15; const last = t.searches.map(v => Math.round(v * (0.78 + rnd() * .25))); const bars = t.searches.map((v, i) => { const xx = 30 + i * gap; const hh = (h - 24) * v / max, hl = (h - 24) * last[i] / max; return `<rect x="${xx + 4}" y="${h - 18 - hl}" width="${bw}" height="${hl}" rx="3" fill="#E5E7EB"/><rect x="${xx}" y="${h - 18 - hh}" width="${bw}" height="${hh}" rx="3" fill="#0F766E"/><text x="${xx + bw / 2}" y="${h - 4}" text-anchor="middle" font-size="10" fill="#9CA3AF">${MONTHS[49 + i].slice(5)}</text>${i % 3 === 2 ? `<text x="${xx + bw / 2}" y="${h - 22 - hh}" text-anchor="middle" font-size="10" fill="#475569">${v}</text>` : ''}`; }).join(''); return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block">${bars}</svg>`; }
+const PAL = ['#0F766E', '#8B98A9', '#475569', '#8B98A9', '#475569'];
+function card(t, i) {
+  const lines = t.phr.map((p, k) => ({ label: p, vals: series(t, k === t.drive ? 0 : k + 1), color: k === t.drive ? '#0F766E' : PAL[k % 2 + 1], width: k === t.drive ? 2.8 : 1.7, dash: k === t.drive ? '' : (k % 2 ? '4 3' : '') }));
+  const combined = lines[0].vals.map((_, j) => Math.round(lines.reduce((a, l) => a + l.vals[j], 0) / lines.length));
+  const data = { lines, combined, corpus: corpus(t) };
+  const vcol = t.verdict === 'growing' ? 'background:#DCFCE7;color:#166534' : t.verdict === 'decaying' ? 'background:#FFE4E6;color:#9F1239' : 'background:#F1F5F9;color:#334155';
+  const chips = lines.map((l, k) => `<span class="chip" onclick="toggle(${i},${k},this)"><i style="border-color:${l.color};${l.dash ? 'border-top-style:dashed' : ''}"></i>${l.label}</span>`).join('') + `<span class="chip" onclick="toggle(${i},'c',this)"><i style="border-color:#0D9488;border-top-style:dashed"></i>All phrases, weighted</span><span class="chip" onclick="toggle(${i},'r',this)"><i style="border-color:#DB2777"></i>Our practices</span>`;
+  return `<div class="tc fade" style="animation-delay:${i * 120}ms">
+    <div class="tc-head"><span class="pos">Topic ${i + 1} of ${topics.length}</span><h4>${t.t}</h4><span class="rating"><b>${t.rating}</b><small>/10</small><div class="tip"><div style="font-weight:600;color:var(--ink);margin-bottom:4px">How the rating adds up</div>${t.parts.map(p => `<div><span>${p[0]}</span><b>+${p[1]}</b></div>`).join('')}<div style="color:var(--muted);margin-top:4px">Orders the cards; it never changes the action.</div></div></span></div>
+    <div class="sec demand"><div class="sec-h"><i><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/></svg></i>Demand<span class="lab">${t.verdict === 'growing' ? 'Growing' : 'Steady'}</span></div><div class="sec-b">
+      <p class="sent">Google interest in <b>${t.phr[t.drive]}</b> ${t.verdict === 'growing' ? 'has climbed' : 'has held'} across Washington over five years; the last twelve months are the shaded band, with our practices' impressions in rose.</p>
+      <div class="show"><span class="lab">SHOW</span><span class="segc"><button onclick="setRange(${i},12,this)">12 months</button><button class="on" onclick="setRange(${i},24,this)">24 months</button><button onclick="setRange(${i},60,this)">5 years</button></span></div>
+      <div class="chart" onmousemove="hover(${i},DATA[${i}],event)" onmouseleave="unhover(${i})">${chartSvg(t, data, i)}<div class="ctip" id="tip${i}"></div></div>
+      <div class="chips2">${chips}</div>
+      <div class="cap">0 to 100 is Google's interest index for Washington; every line is on the same scale. Our practices is Search Console impressions across the S8E8 practices for these phrases, indexed to the same 100.</div>
+      <div class="readout"><span class="v" style="${vcol}">${t.verdict}</span>${t.avg} on average · spike ${t.spike} · ${t.season > 6 ? 'seasonal, peaks each winter' : 'no clear seasonality found'}</div>
+      <div class="bars"><div class="t">Searches a month, Washington · this year over last year</div>${barsSvg(t)}<div class="cap">Clickstream counts for the phrases, the same month a year earlier in grey behind each bar. 12 of 24 months so far; each monthly check adds one.</div></div>
+    </div></div>
+    <div class="sec coverage"><div class="sec-h"><i><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 12h8M8 8h8M8 16h5"/></svg></i>Coverage<span class="lab">Not available yet</span></div><div class="sec-b"><div class="navail"><span class="tag">No Read</span><span>No crawl of bothellfamilydentistry.com yet. Coverage reads what the site already answers from a crawl; <a href="#">crawl the site</a> and this fills in.</span></div></div></div>
+    <div class="sec visibility"><div class="sec-h"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg></i>Visibility<span class="lab">Not measured yet</span></div><div class="sec-b">
+      <div class="vrow"><b>Maps</b><span class="tag" style="border-style:dashed;color:#9CA3AF">No Read</span><span>No Grid Scan for this domain yet. <a href="#" style="color:var(--primary);font-weight:600;text-decoration:none">Run one</a> and the share of local voice for ${t.phr[t.drive]} shows here.</span></div>
+      <div class="vrow"><b>AI answers</b><span class="tag" style="border-style:dashed;color:#9CA3AF">No Read</span><span>No AI Visibility run for this domain yet.</span></div>
+    </div></div>
+  </div>`;
+}
+let DATA = [];
+if (location.hash === '#run') { setTimeout(() => { done(1); document.querySelectorAll('#cands .cand')[1].click(); done(2); done(3); done(4); run(); }, 300); }
+function run() {
+  const rb = document.getElementById('runBtn'); rb.disabled = true; rb.classList.remove('ready'); const st = document.getElementById('st'); st.className = 'status live';
+  const box = document.getElementById('results'); box.innerHTML = ''; DATA = [];
+  const total = nPhr(); let i = 0;
+  const h = setInterval(() => { i++; document.getElementById('bar').style.width = (100 * i / total) + '%'; st.innerHTML = `<i></i>reading ${i} of ${total} phrases · $${(i * COST_PER_PHRASE).toFixed(2)}`; if (i >= total) { clearInterval(h); finish(); } }, 180);
+  function finish() {
+    topics.forEach((t, k) => { _s = 7 + k * 13; const lines = t.phr.map((p, j) => ({ label: p, vals: series(t, j === t.drive ? 0 : j + 1), color: j === t.drive ? '#0F766E' : PAL[j % 2 + 1] })); const combined = lines[0].vals.map((_, j) => Math.round(lines.reduce((a, l) => a + l.vals[j], 0) / lines.length)); DATA.push({ lines, combined, corpus: corpus(t) }); });
+    const ordered = topics.map((t, k) => k).sort((a, b) => topics[b].rating - topics[a].rating);
+    _s = 7; box.innerHTML = ordered.map((k, pos) => { _s = 7 + k * 13; return card(topics[k], k); }).join('');
+    ordered.forEach((k) => { const b = document.querySelector(`#svg${k}`).closest('.sec-b').querySelector('.segc button.on'); setRange(k, 24, b); });
+    ran = true; layoutRan(); st.className = 'status'; st.innerHTML = `<i style="background:var(--ok)"></i>check #8 complete · ${topics.length} topics · ${total} phrases · read as of ${MONTHS[60]} · basket 1.08x year over year`;
+    rb.disabled = false; rb.textContent = `Check again for $${price()}`;
+    const hst = document.getElementById('hist'); if (hst.textContent.includes('No trend checks')) hst.innerHTML = ''; const d = document.createElement('div'); d.className = 'hist fade'; d.innerHTML = `<span>Oct 27 · check #8 · ${topics.length} topics · complete</span><span class="mono">$${price()}</span>`; hst.prepend(d);
+    toast(`Check #8 complete: ${topics.length} topic cards, best rating first`);
+  }
+}
+
+const LAYOUT = document.body.dataset.layout; let cur = 0;
+function layoutSettle() {
+  document.body.classList.add('settled');
+  if (LAYOUT === 'a-band' || LAYOUT === 'c-grid') { document.getElementById('bandTopics').innerHTML = topics.map(t => `<span class="chip"><b>${t.t}</b>&nbsp;<small>${t.phr.length} phrases</small></span>`).join('') + `<span class="chip" onclick="reopen()">+ topic</span>`; }
+  if (LAYOUT === 'b-rail') { renderRail(); }
+}
+function renderRail() { const box = document.getElementById('topics2'); box.innerHTML = topics.map((t, i) => `<div class="row ${i === cur ? 'active' : ''}" onclick="jump(${i})"><span class="nm">${t.t}</span>${ran ? `<span class="rt">${t.rating}/10</span>` : ''}</div>`).join(''); document.getElementById('tcount').textContent = `${topics.length} of 10`; }
+function jump(i) { cur = i; renderRail(); const el = document.querySelectorAll('#results .tc')[i]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+function showTopic(i) { cur = i; document.querySelectorAll('#results .tc').forEach((c, k) => c.classList.toggle('on', k === i)); document.querySelectorAll('#ttabs .chip').forEach((c, k) => c.classList.toggle('on', k === i)); }
+function layoutRan() {
+  document.body.classList.add('ran');
+  const order = [...document.querySelectorAll('#results .tc')].map(c => c.querySelector('h4').textContent);
+  if (LAYOUT === 'd-tabs') { document.getElementById('ttabs').innerHTML = order.map((n, i) => { const t = topics.find(x => x.t === n); return `<span class="chip ${i === 0 ? 'on' : ''}" onclick="showTopic(${i})">${n} <b>${t.rating}/10</b></span>`; }).join('') + `<span class="nav"><button class="btn small" onclick="showTopic(Math.max(0,cur-1))">Previous</button><button class="btn small" onclick="showTopic(Math.min(topics.length-1,cur+1))">Next</button></span>`; showTopic(0); }
+  if (LAYOUT === 'b-rail') { topics.sort((a, b) => order.indexOf(a.t) - order.indexOf(b.t)); renderRail(); const io = new IntersectionObserver((es) => { es.forEach(e => { if (e.isIntersecting) { cur = [...document.querySelectorAll('#results .tc')].indexOf(e.target); renderRail(); } }); }, { rootMargin: '-30% 0px -60% 0px' }); document.querySelectorAll('#results .tc').forEach(c => io.observe(c)); }
+  if (LAYOUT === 'a-band' || LAYOUT === 'c-grid') { document.getElementById('bandHist').innerHTML = `History: <b style="color:var(--ink)">check #8</b> · Oct 27 · $${price()} · <a class="btn link small" href="#">all checks</a>`; }
+}
+</script>
+</body>
+</html>
