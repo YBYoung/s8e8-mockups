@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Links: Option B</title>
+<script src="https://cdn.tailwindcss.com/3.4.1"></script>
+<style>
+  body { background: #FAF9F7; -webkit-font-smoothing: antialiased; }
+  .teal { color: #0F766E; }
+  .bg-teal-tint { background: #E6F4F1; }
+  .hc-card { opacity: 0; transform: translateY(2px); transition: opacity .12s ease, transform .12s ease; pointer-events: none; }
+  .hc-card.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .row-flash { animation: rowflash 1.2s ease-out; }
+  @keyframes rowflash { from { background: #E6F4F1; } to { background: transparent; } }
+  [data-hc] { cursor: default; }
+  a[data-hc], button[data-hc] { cursor: pointer; }
+</style>
+</head>
+<body class="text-stone-800">
+
+<!-- Mockup label (not product chrome) -->
+<div class="bg-stone-900 text-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+    <span class="text-xs font-semibold tracking-wide">Option B: Check on demand</span>
+    <span class="text-[11px] text-stone-400">Nothing runs in the background: click Check live link in the editor, or Check links on the list, and the result shows right there.</span>
+  </div>
+</div>
+
+<!-- 1. Editor toolbar -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+    <p class="text-[10px] font-mono uppercase tracking-wider text-stone-400">Editor toolbar</p>
+    <div id="pagePicker" class="flex flex-wrap gap-1.5"></div>
+  </div>
+  <div class="bg-white border border-stone-200/60 rounded-md overflow-hidden" style="background:#FAF9F7">
+    <div id="toolbar"></div>
+    <div id="toolbarNotices"></div>
+    <div class="h-40 sm:h-44 overflow-hidden">
+      <div class="max-w-3xl mx-auto px-6 sm:px-10 py-6">
+        <div id="editorBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Inventory -->
+<div class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+  <p class="text-[10px] font-mono uppercase tracking-wider text-stone-400 mb-2">Inventory</p>
+  <div class="border border-stone-200/60 rounded-md overflow-hidden" style="background:#FAF9F7">
+    <!-- StrategyTabs -->
+    <div class="border-b border-stone-200 bg-white">
+      <div class="px-4 sm:px-6">
+        <div class="py-3">
+          <div class="flex items-center gap-2 text-sm mb-1 min-w-0">
+            <a href="#" class="font-bold font-mono text-stone-900 hover:text-emerald-700 transition-colors shrink-0">OpenedQueries</a>
+            <span class="text-stone-300 shrink-0">/</span>
+            <a href="#" class="hidden sm:inline text-stone-500 hover:text-stone-700 transition-colors shrink-0">Portfolio</a>
+            <span class="hidden sm:inline text-stone-300 shrink-0">/</span>
+            <a href="#" class="text-stone-500 hover:text-stone-700 transition-colors shrink-0">Lakeside Family Dental</a>
+            <span class="text-stone-300 shrink-0">/</span>
+            <span class="text-stone-700 font-medium truncate">2026 SEO Strategy</span>
+            <span class="flex items-center gap-1.5 shrink-0 ml-1">
+              <span class="w-1.5 h-1.5 rounded-sm bg-emerald-500"></span>
+              <span class="text-[10px] text-stone-400 font-medium">In production</span>
+            </span>
+          </div>
+          <p class="text-xs text-stone-400 truncate">lakesidefamilydental.com</p>
+        </div>
+        <div class="flex items-end -mb-px overflow-x-auto">
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Overview</a>
+          <div class="w-px h-4 bg-stone-200 mx-2 mb-2 shrink-0"></div>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Research</a>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Site Content</a>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Performance</a>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Synthesis</a>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Calendar</a>
+          <div class="w-px h-4 bg-stone-200 mx-1.5 mb-2 shrink-0"></div>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-stone-900 text-stone-900 whitespace-nowrap">Optimization</a>
+          <a class="px-3 py-2 text-sm font-medium border-b-2 border-transparent text-stone-400 whitespace-nowrap">Production</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-4 sm:px-6 py-6 space-y-5">
+      <div class="flex flex-wrap items-end justify-between gap-2 sm:gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-stone-900">On-Page Optimization</h2>
+          <p class="text-sm text-stone-500">Your live site inventory, grouped so you can optimize whole topics at a time.</p>
+        </div>
+        <p class="text-xs text-stone-400 shrink-0">6/22 pages optimized</p>
+      </div>
+
+      <!-- OptimizationToolbar -->
+      <div class="-mx-4 sm:-mx-6 px-4 sm:px-6 py-3 border-y border-stone-200/60 space-y-2.5" style="background:#FAF9F7">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div class="inline-flex bg-stone-200/50 rounded p-0.5">
+            <button class="px-3 py-1 text-xs font-medium rounded transition-colors bg-white text-stone-900 shadow-sm">Page type</button>
+            <button class="px-3 py-1 text-xs font-medium rounded transition-colors text-stone-500 hover:text-stone-700">Topic cluster</button>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input placeholder="Search pages…" class="flex-1 sm:flex-none sm:w-52 rounded-md border border-stone-200 px-2.5 py-1.5 text-xs text-stone-800 placeholder:text-stone-400 focus:outline-none focus:border-stone-400 bg-white">
+            <button class="px-3 py-1.5 text-xs font-medium bg-white text-stone-900 border border-stone-300 rounded-md hover:bg-stone-50 transition-colors shrink-0">Sync pages</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <button class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border bg-stone-900 text-white border-stone-900">Services <span class="text-stone-300">6</span></button>
+          <button class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border bg-white text-stone-600 border-stone-200 hover:bg-stone-50">Blog <span class="text-stone-400">14</span></button>
+          <button class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border bg-white text-stone-600 border-stone-200 hover:bg-stone-50">Locations <span class="text-stone-400">2</span></button>
+        </div>
+      </div>
+
+      <div class="bg-white border border-stone-200/60 rounded-md overflow-hidden">
+        <div id="groupHeader" class="px-4 py-3 border-b border-stone-100"></div>
+        <ul id="rows" class="divide-y divide-stone-100"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Branded hover card (one, positioned on demand) -->
+<div id="hc" class="hc-card fixed z-50 bg-white border border-stone-200 rounded-md shadow-sm" style="width:272px" role="tooltip"></div>
+
+<script>
+const OPTION = 'B';
+const HOST = 'lakesidefamilydental.com';
+
+const PAGES = [
+  { id: 'invisalign', name: 'Invisalign', title: 'Invisalign in Lakeside, NC | Lakeside Family Dental', slug: 'invisalign',
+    words: 1240, stage: ['In progress', 'bg-sky-400'], outcome: 'live', asana: true,
+    ready: { label: 'In progress', base: 'bg-stone-100', fill: 'bg-emerald-50', text: 'text-stone-600', pct: 60, gaps: ['Meta', 'Schema'] } },
+  { id: 'implants', name: 'Dental Implants', title: 'Dental Implants in Lakeside, NC | Lakeside Family Dental', slug: 'dental-implants-lakeside-nc',
+    words: 1580, stage: ['In progress', 'bg-sky-400'], outcome: 'notfound', asana: true,
+    ready: { label: 'Looks ready', base: 'bg-emerald-50', fill: 'bg-emerald-100', text: 'text-emerald-700', pct: 100, gaps: [] } },
+  { id: 'emergency', name: 'Emergency Dentist', title: 'Emergency Dentist Near Lake Marin | Lakeside Family Dental', slug: 'emergency-dentist',
+    words: 860, stage: ['In progress', 'bg-sky-400'], outcome: 'archived', asana: false, archived: true,
+    ready: { label: 'In progress', base: 'bg-stone-100', fill: 'bg-emerald-50', text: 'text-stone-600', pct: 40, gaps: ['Links', 'QA'] } },
+  { id: 'whitening', name: 'Teeth Whitening', title: 'Professional Teeth Whitening | Lakeside Family Dental', slug: 'teeth-whitening',
+    words: 720, stage: ['Draft staged', 'bg-violet-400'], outcome: 'home', asana: true, draftStaged: true,
+    ready: { label: 'Draft staged', base: 'bg-violet-50', fill: 'bg-violet-100', text: 'text-violet-700', pct: 100, gaps: [] } },
+  { id: 'sedation', name: 'Sedation Dentistry', title: 'Sedation Dentistry for Anxious Patients | Lakeside Family Dental', slug: 'sedation-dentistry',
+    words: 1050, stage: ['Imported', 'bg-stone-300'], outcome: 'live', asana: false, importedBefore: true,
+    ready: { label: 'Not started', base: 'bg-stone-100', fill: 'bg-emerald-50', text: 'text-stone-600', pct: 20, gaps: ['Title', 'Meta', 'Links'] } },
+  { id: 'kids', name: 'Kids Dentistry', title: 'Kids Dentistry in Lakeside, NC | Lakeside Family Dental', slug: 'kids-dentistry',
+    words: 980, stage: ['In progress', 'bg-sky-400'], outcome: 'live', asana: true, inReview: true,
+    ready: { label: 'Looks ready', base: 'bg-emerald-50', fill: 'bg-emerald-100', text: 'text-emerald-700', pct: 100, gaps: [] } },
+];
+const byId = Object.fromEntries(PAGES.map(p => [p.id, p]));
+
+// Link status per page: unchecked | checking | live | notfound | archived | home
+const CHECK = {};
+PAGES.forEach(p => {
+  if (OPTION === 'A') {
+    CHECK[p.id] = p.importedBefore
+      ? { status: 'unchecked' }
+      : { status: p.outcome, when: 'Oct 26', via: p.inReview ? 'sent' : 'nightly' };
+  } else {
+    // B: nothing runs in the background. Only the send step (already live today) has checked a link.
+    CHECK[p.id] = p.inReview ? { status: 'live', when: 'Oct 24', via: 'sent' } : { status: 'unchecked' };
+  }
+});
+
+let current = 'invisalign';
+let bulk = null; // B only: { done, total }
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const url = p => `${HOST}/${p.slug}`;
+const isFail = s => s === 'notfound' || s === 'archived' || s === 'home';
+
+const ICON = {
+  copy: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>',
+  ext: '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6M10 14L20 4M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>',
+  check: '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>',
+  spin: '<svg class="animate-spin w-3.5 h-3.5 text-stone-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>',
+  spinSm: '<svg class="animate-spin w-3 h-3 text-stone-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>',
+};
+const dot = cls => `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${cls}"></span>`;
+
+// ---------- Hover card copy (plain language, no jargon) ----------
+function cardFor(id) {
+  const p = byId[id], c = CHECK[p.id];
+  const when = c.when === 'just now' ? 'just now' : `on ${c.when}`;
+  const again = { label: 'Check again', id };
+  const how = OPTION === 'A'
+    ? 'We check every page when it is imported, when it goes to the client, and again each night.'
+    : null;
+  switch (c.status) {
+    case 'live': return {
+      dot: 'bg-emerald-400', title: 'Live page',
+      body: c.via === 'sent' && OPTION === 'B'
+        ? `We opened this link when the page was sent to the client (${c.when}) and it loaded this page.`
+        : `We opened this link ${when} and it loaded this page.`,
+      note: how, tried: [`Opened ${url(p)}`, 'Loaded the page'], action: again };
+    case 'notfound': return {
+      dot: 'bg-red-400', title: 'No live page at this address',
+      body: `We opened this link ${when} and the site said the page does not exist. The page address may have changed in Webflow, or the page is not published.`,
+      note: how, tried: [`Opened ${url(p)}`, 'Page not found'], action: again };
+    case 'archived': return {
+      dot: 'bg-red-400', title: 'No live page at this address',
+      body: `This page's Webflow item is archived, so the site does not show it. The page visitors see is probably a different item in Webflow.`,
+      note: how, tried: [`Opened ${url(p)}`, 'Page not found'], action: again };
+    case 'home': return {
+      dot: 'bg-red-400', title: 'Goes to the homepage instead',
+      body: `Opening this link lands on the homepage, not this page, so it does not count as live. This usually means an old address was redirected.`,
+      note: how, tried: [`Opened ${url(p)}`, `Landed on ${HOST}`], action: again };
+    case 'checking': return {
+      dot: 'bg-stone-300', title: 'Checking the live link…',
+      body: 'Opening the page now. This takes a few seconds.', tried: null, action: null };
+    default: return OPTION === 'A' ? {
+      dot: 'bg-stone-300', title: 'Not checked yet',
+      body: 'This page was imported before link checks started. It gets checked tonight, or you can check it now.',
+      tried: null, action: { label: 'Check now', id } } : {
+      dot: 'bg-stone-300', title: 'Not checked yet',
+      body: `This link is built from the site address and the page's slug. Nobody has opened it yet, so it may not work.`,
+      tried: null, action: { label: 'Check live link', id } };
+  }
+}
+
+function cardHTML(id) {
+  const k = cardFor(id);
+  return `<div class="p-3">
+    <p class="flex items-center gap-1.5 text-xs font-semibold text-stone-900">${dot(k.dot)}${esc(k.title)}</p>
+    <p class="text-[11px] leading-relaxed text-stone-600 mt-1">${esc(k.body)}</p>
+    ${k.tried ? `<div class="mt-2 rounded bg-stone-50 border border-stone-100 px-2 py-1.5 text-[10px] leading-relaxed text-stone-500">
+      <p class="font-semibold text-stone-600">What we tried</p>
+      ${k.tried.map((t, i) => `<p class="truncate">${i ? '<span class="text-stone-300">then </span>' : ''}${esc(t)}</p>`).join('')}
+    </div>` : ''}
+    ${k.note ? `<p class="text-[10px] text-stone-400 mt-2">${esc(k.note)}</p>` : ''}
+    ${k.action ? `<div class="mt-2.5 pt-2 border-t border-stone-100 flex justify-end">
+      <button data-act="check" data-id="${k.action.id}" class="inline-flex items-center gap-1 text-[11px] font-medium teal hover:underline">${ICON.check}${esc(k.action.label)}</button>
+    </div>` : ''}
+  </div>`;
+}
+
+// ---------- Toolbar ----------
+function liveLeading(p) {
+  const c = CHECK[p.id];
+  const hc = `data-hc="${p.id}"`;
+  const quietAgain = OPTION === 'B'
+    ? `<button data-act="check" data-id="${p.id}" class="shrink-0 text-stone-400 hover:text-[#0F766E] transition-colors">Check again</button>` : '';
+  if (c.status === 'checking') {
+    return `<span class="inline-flex items-center gap-1.5 text-stone-500" ${hc}>${ICON.spin}Checking live link…</span>`;
+  }
+  if (c.status === 'live') {
+    const when = c.when === 'just now' ? 'checked just now' : (c.via === 'sent' && OPTION === 'B' ? `checked when sent ${c.when}` : `checked ${c.when}`);
+    return `<span class="inline-flex items-center gap-1.5 min-w-0">
+      <span class="inline-flex items-center gap-1.5 min-w-0" ${hc}>
+        ${dot('bg-emerald-400')}
+        <a href="#" data-link class="truncate max-w-[24ch] text-stone-500 hover:text-stone-700 underline">/${esc(p.slug)}</a>
+      </span>
+      <button data-act="copy" class="shrink-0 text-stone-400 hover:text-stone-700 transition-colors" title="Copy live link">${ICON.copy}</button>
+      <span class="shrink-0 text-stone-400 whitespace-nowrap" ${hc}>Live · ${when}</span>
+      ${quietAgain ? '<span class="text-stone-300">·</span>' + quietAgain : ''}
+    </span>`;
+  }
+  if (isFail(c.status)) {
+    return `<span class="inline-flex items-center gap-1.5 min-w-0">
+      <span class="inline-flex items-center gap-1.5 min-w-0 text-stone-500" ${hc}>
+        ${dot('bg-red-400')}<span class="truncate max-w-[34ch]">No live page at /${esc(p.slug)}</span>
+      </span>
+      ${quietAgain ? '<span class="text-stone-300">·</span>' + quietAgain : ''}
+    </span>`;
+  }
+  // unchecked
+  if (OPTION === 'A') {
+    return `<span class="inline-flex items-center gap-1.5 min-w-0">
+      <span class="inline-flex items-center gap-1.5 min-w-0 text-stone-400" ${hc}>${dot('bg-stone-300')}<span class="truncate max-w-[24ch]">/${esc(p.slug)}</span><span class="whitespace-nowrap">· Not checked yet</span></span>
+    </span>`;
+  }
+  return `<span class="inline-flex items-center gap-1.5 min-w-0">
+    <a href="#" data-link data-hc="${p.id}" class="truncate max-w-[24ch] text-stone-400 hover:text-stone-600 underline">/${esc(p.slug)}</a>
+    <button data-act="copy" class="shrink-0 text-stone-400 hover:text-stone-700 transition-colors" title="Copy link">${ICON.copy}</button>
+    <button data-act="check" data-id="${p.id}" class="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-stone-200 bg-white text-[11px] font-medium text-stone-700 hover:border-[#0F766E] hover:text-[#0F766E] hover:bg-[#E6F4F1] transition-colors">${ICON.check}Check live link</button>
+  </span>`;
+}
+
+function iconBtn(tip, svg, opts = {}) {
+  return `<span class="relative inline-flex group">
+    <button type="button" ${opts.disabled ? 'disabled' : ''} class="relative inline-flex items-center justify-center w-[30px] h-[30px] rounded-md transition-colors disabled:opacity-40 disabled:hover:bg-transparent text-stone-500 hover:bg-stone-50/70 hover:text-stone-700">
+      ${svg}${opts.badge ? '<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500"></span>' : ''}
+    </button>
+    <span role="tooltip" class="pointer-events-none absolute left-1/2 bottom-full mb-2 -translate-x-1/2 translate-y-1 z-30 whitespace-nowrap rounded-md bg-stone-900 px-2 py-1 text-[11px] font-medium leading-none text-white opacity-0 shadow-md transition-all duration-150 delay-200 group-hover:opacity-100 group-hover:translate-y-0">${esc(tip)}<span class="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-stone-900"></span></span>
+  </span>`;
+}
+
+function renderToolbar() {
+  const p = byId[current];
+  const locked = !!p.inReview;
+  const mail = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>';
+  const review = p.inReview
+    ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md border border-stone-200 bg-white text-stone-700 whitespace-nowrap">${dot('bg-sky-400')}In client review · due Oct 29</span>`
+    : `<button class="px-3 py-1.5 text-xs font-medium rounded-md border border-stone-300 text-stone-800 bg-white hover:bg-stone-50/60 transition-colors inline-flex items-center gap-1.5">${mail}Send to client</button>`;
+
+  document.getElementById('toolbar').innerHTML = `
+  <div class="shrink-0 bg-white border-b border-stone-200/60">
+    <div class="flex flex-wrap lg:flex-nowrap items-center gap-x-2.5 gap-y-1.5 px-3 py-2">
+      <a href="#" class="text-stone-400 hover:text-stone-600 transition-colors -ml-1 shrink-0" title="Back to optimization">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </a>
+      <div class="flex items-center gap-2 min-w-0">
+        <h1 class="text-sm font-semibold text-stone-900 truncate max-w-[200px] sm:max-w-[280px]">${esc(p.title)}</h1>
+        <span class="shrink-0 text-[11px] font-medium text-stone-600 bg-stone-100 rounded px-2 py-0.5">Service page</span>
+        <span class="hidden sm:inline-flex shrink-0 items-center gap-1.5 text-xs text-stone-500">${dot(p.stage[1])}${p.stage[0]}</span>
+      </div>
+      <div class="w-full lg:w-auto lg:ml-auto min-w-0">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-400">
+          ${liveLeading(p)}
+          <span class="text-stone-300">·</span>
+          <span class="tabular-nums">${p.words.toLocaleString()} words</span>
+          <span class="text-stone-300">·</span>
+          <span>Saved</span>
+          <span class="text-stone-300">·</span>
+          <span class="inline-flex items-center gap-1 text-emerald-600 font-medium"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>QA</span>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-stone-200/60"></div>
+    <div class="flex flex-wrap items-center gap-2 px-3 py-2">
+      <button ${locked ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-medium rounded-md border border-stone-300 text-stone-800 bg-white hover:bg-stone-50/60 disabled:opacity-40 transition-colors inline-flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>Optimize
+      </button>
+      <button ${locked ? 'disabled' : ''} class="px-3 py-1.5 text-xs font-medium rounded-md text-stone-600 hover:bg-stone-50/60 disabled:opacity-40 transition-colors inline-flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>Internal Linking
+      </button>
+      <div class="ml-auto flex flex-wrap items-center gap-1">
+        ${p.draftStaged ? iconBtn('Restore original as Webflow draft', '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v6h6"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 13a9 9 0 1 0 3-7.7L3 8"/></svg>') : ''}
+        ${iconBtn('View, download, or revert the original', '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>')}
+        ${iconBtn('Version history', '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>')}
+        ${iconBtn('Edit schema markup', '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>', { badge: p.ready.gaps.indexOf('Schema') < 0 })}
+        ${iconBtn('Export to a client-preview Google Doc', '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg>')}
+        ${review}
+        <div class="w-px h-5 bg-stone-200/80 mx-1"></div>
+        <button ${locked ? 'disabled' : ''} title="${locked ? 'Webflow push is locked while the client reviews this page' : 'Stage the edited page to Webflow as a draft (does not publish)'}" class="px-3.5 py-1.5 text-xs font-medium bg-stone-900 text-white rounded-md hover:bg-stone-800 disabled:opacity-40 transition-colors inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>Push to Webflow
+        </button>
+      </div>
+    </div>
+  </div>`;
+
+  // Existing one-line notices under the toolbar (OptimizationItemWarning / OptimizationEditLockNotice)
+  let notices = '';
+  if (p.archived) notices += `<div role="status" class="px-4 py-2 text-xs text-stone-700 bg-stone-50 border-b border-stone-200"><span class="font-medium">Webflow item: </span>This item is archived in Webflow, so it is not the page visitors see.</div>`;
+  if (p.inReview) notices += `<div role="status" class="px-4 py-2 text-xs text-stone-700 bg-stone-50 border-b border-stone-200"><span class="font-medium">Read only: </span>Lakeside Family Dental is reviewing this page. Editing opens again once they approve it or ask for changes.</div>`;
+  document.getElementById('toolbarNotices').innerHTML = notices;
+
+  document.getElementById('editorBody').innerHTML = `
+    <h2 class="text-2xl font-semibold text-stone-900 leading-tight">${esc(p.name)} at Lakeside Family Dental</h2>
+    <p class="mt-3 text-[15px] leading-relaxed text-stone-700">Our team in Lakeside helps families across Lake Marin feel at ease in the chair. Here is what to expect from ${esc(p.name.toLowerCase())}, how long it takes, and what it costs with and without insurance.</p>
+    <p class="mt-3 text-[15px] leading-relaxed text-stone-700">Most visits start with a short exam and a conversation about your goals, so nothing happens until you know the plan.</p>`;
+
+  document.getElementById('pagePicker').innerHTML = PAGES.map(q => {
+    const active = q.id === current;
+    return `<button data-act="pick" data-id="${q.id}" class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md border transition-colors ${active ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'}">${esc(q.name)}</button>`;
+  }).join('');
+}
+
+// ---------- Inventory ----------
+function slugLine(p) {
+  const c = CHECK[p.id], path = `/${p.slug}`, hc = `data-hc="${p.id}"`;
+  if (c.status === 'checking') {
+    return `<p class="flex items-center gap-1.5 text-[11px] text-stone-400"><span class="truncate">${esc(path)}</span><span class="inline-flex items-center gap-1 shrink-0">${ICON.spinSm}Checking…</span></p>`;
+  }
+  if (c.status === 'live') {
+    return `<p class="flex items-center gap-1 min-w-0" ${hc}>
+      <a href="#" data-link class="text-[11px] text-stone-400 hover:text-stone-600 underline truncate">${esc(path)}</a>
+      <span class="shrink-0 text-emerald-600">${ICON.ext}</span>
+    </p>`;
+  }
+  if (isFail(c.status)) {
+    return `<p class="flex items-center gap-2 min-w-0 text-[11px]" ${hc}>
+      <span class="text-stone-400 truncate">${esc(path)}</span>
+      <span class="shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold text-red-700">${dot('bg-red-400')}Not live</span>
+    </p>`;
+  }
+  if (OPTION === 'A') {
+    return `<p class="flex items-center gap-2 min-w-0 text-[11px]" ${hc}>
+      <span class="text-stone-400 truncate">${esc(path)}</span>
+      <span class="shrink-0 inline-flex items-center gap-1 text-[10px] text-stone-400">${dot('bg-stone-300')}Not checked yet</span>
+    </p>`;
+  }
+  // B, unchecked: today's guessed link, unchanged
+  return `<a href="#" data-link ${hc} class="block text-[11px] text-stone-400 hover:text-stone-600 underline truncate">${esc(path)}</a>`;
+}
+
+function readinessStrip(p) {
+  const r = p.ready;
+  return `<div class="flex flex-wrap items-center gap-2 pt-1.5">
+    <span class="relative inline-flex overflow-hidden rounded px-2 py-0.5 text-[10px] font-semibold ${r.base} ${r.text}">
+      <span class="absolute inset-y-0 left-0 ${r.fill}" style="width:${r.pct}%"></span><span class="relative">${r.label}</span>
+    </span>
+    ${p.archived ? `<span title="This item is archived in Webflow, so it is not the page visitors see." class="rounded bg-red-50 px-2 py-0.5 text-[10px] font-semibold text-red-700">Webflow item archived</span>` : ''}
+    ${r.gaps.length ? `<span class="text-[11px]"><span class="font-semibold text-stone-700">${r.gaps.join(', ')}</span><span class="text-stone-400"> left</span></span>` : ''}
+  </div>`;
+}
+
+const ASANA = '<svg class="w-3.5 h-3.5" viewBox="0 0 512 512" fill="#E86856"><path d="M365.3 266.7c-52.9 0-95.8 42.9-95.8 95.8s42.9 95.8 95.8 95.8 95.8-42.9 95.8-95.8-42.9-95.8-95.8-95.8zm-218.6 0c-52.9 0-95.8 42.9-95.8 95.8s42.9 95.8 95.8 95.8 95.8-42.9 95.8-95.8-42.9-95.8-95.8-95.8zM256 53.7c-52.9 0-95.8 42.9-95.8 95.8s42.9 95.8 95.8 95.8 95.8-42.9 95.8-95.8-42.9-95.8-95.8-95.8z"/></svg>';
+
+function renderRows(flashId) {
+  document.getElementById('rows').innerHTML = PAGES.map(p => `
+    <li class="flex items-start justify-between gap-3 px-4 py-3 hover:bg-stone-50/50 transition-colors ${p.id === flashId ? 'row-flash' : ''}">
+      <div class="flex items-start gap-3 min-w-0">
+        <input type="checkbox" class="mt-1 h-3.5 w-3.5 shrink-0 rounded-sm border-stone-300 text-stone-900 focus:ring-stone-400 cursor-pointer">
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-stone-800 truncate">${esc(p.title)}</p>
+          ${slugLine(p)}
+          <div class="flex items-center gap-2 text-[10px] text-stone-400 pt-0.5"><span>Services</span><span>${p.words.toLocaleString()} words</span></div>
+          ${readinessStrip(p)}
+          ${p.inReview ? `<p class="flex items-center gap-1.5 text-[11px] text-stone-600 pt-1">${dot('bg-sky-400')}In client review · due Oct 29</p>` : ''}
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        ${p.asana
+          ? `<a href="#" title="Open task in Asana" class="relative p-1 hover:opacity-80 transition-opacity shrink-0 inline-flex">${ASANA}<span class="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white"></span></a>`
+          : `<button title="Sync to Asana" class="p-1 opacity-50 hover:opacity-100 transition-opacity shrink-0">${ASANA}</button>`}
+        <button data-act="open" data-id="${p.id}" class="px-3 py-1.5 text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-md transition-colors">Open</button>
+      </div>
+    </li>`).join('');
+}
+
+function renderGroupHeader() {
+  const fails = PAGES.filter(p => isFail(CHECK[p.id].status)).length;
+  const unchecked = PAGES.filter(p => CHECK[p.id].status === 'unchecked').length;
+  const anyChecked = PAGES.some(p => CHECK[p.id].when === 'just now');
+  let linkSummary = '';
+  if (OPTION === 'B' && bulk) {
+    const pct = Math.round((bulk.done / bulk.total) * 100);
+    linkSummary = `<span class="inline-flex items-center gap-1.5 text-[11px] text-stone-500">${ICON.spinSm}Checking ${Math.min(bulk.done + 1, bulk.total)} of ${bulk.total}…
+      <span class="relative inline-block w-14 h-1 rounded-sm bg-stone-100 overflow-hidden"><span class="absolute inset-y-0 left-0 rounded-sm transition-all duration-300" style="width:${pct}%;background:#0F766E"></span></span></span>`;
+  } else {
+    const parts = [];
+    if (fails) parts.push(`<span class="inline-flex items-center gap-1 text-red-700 font-medium">${dot('bg-red-400')}${fails} not live</span>`);
+    if (unchecked && OPTION === 'A') parts.push(`<span class="text-stone-400">${unchecked} not checked yet</span>`);
+    linkSummary = parts.join('<span class="text-stone-300">·</span>');
+    if (OPTION === 'B') {
+      linkSummary += `<button data-act="checkAll" class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-md border border-stone-300 bg-white text-stone-800 hover:border-[#0F766E] hover:text-[#0F766E] hover:bg-[#E6F4F1] transition-colors">${ICON.check}${anyChecked ? 'Check links again' : 'Check links'}</button>`;
+    }
+  }
+  document.getElementById('groupHeader').innerHTML = `
+    <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+      <div class="min-w-0">
+        <p class="text-sm font-semibold text-stone-900 truncate">Services</p>
+        <p class="text-[11px] text-stone-400 mt-0.5 truncate">Treatment and service pages on the main site</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        ${linkSummary ? `<span class="inline-flex flex-wrap items-center gap-2 text-[11px]">${linkSummary}</span><span class="w-px h-3.5 bg-stone-200"></span>` : ''}
+        <button class="text-[11px] text-stone-500 hover:text-stone-800 underline underline-offset-2">Select all optimized</button>
+        <span class="text-[11px] text-stone-500">3/6 optimized</span>
+        <span class="relative inline-block w-16 h-1.5 rounded-sm bg-stone-100 overflow-hidden"><span class="absolute inset-y-0 left-0 bg-emerald-400 rounded-sm" style="width:50%"></span></span>
+      </div>
+    </div>`;
+}
+
+function renderAll(flashId) { renderToolbar(); renderGroupHeader(); renderRows(flashId); }
+
+// ---------- Fake checks ----------
+function runCheck(id, ms) {
+  return new Promise(resolve => {
+    CHECK[id] = { status: 'checking' };
+    hideCard(true); renderAll();
+    setTimeout(() => {
+      CHECK[id] = { status: byId[id].outcome, when: 'just now', via: 'you' };
+      renderAll(id); resolve();
+    }, ms || 2000);
+  });
+}
+async function runBulk() {
+  bulk = { done: 0, total: PAGES.length };
+  renderGroupHeader();
+  for (const p of PAGES) {
+    await runCheck(p.id, 650);
+    bulk.done++;
+    if (bulk.done < bulk.total) renderGroupHeader();
+  }
+  bulk = null; renderGroupHeader();
+}
+
+// ---------- Hover card ----------
+const card = document.getElementById('hc');
+let openFor = null, showT = null, hideT = null;
+function placeCard(el) {
+  const r = el.getBoundingClientRect();
+  const w = Math.min(272, window.innerWidth - 32);
+  card.style.width = w + 'px';
+  let left = Math.max(16, Math.min(r.left, window.innerWidth - w - 16));
+  const h = card.offsetHeight || 160;
+  let top = r.bottom + 6;
+  if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+  card.style.left = left + 'px'; card.style.top = top + 'px';
+}
+function showCard(el) {
+  clearTimeout(hideT);
+  const id = el.getAttribute('data-hc');
+  card.innerHTML = cardHTML(id);
+  openFor = el; placeCard(el); card.classList.add('open');
+}
+function hideCard(now) {
+  clearTimeout(showT);
+  const go = () => { card.classList.remove('open'); openFor = null; };
+  if (now) go(); else hideT = setTimeout(go, 160);
+}
+document.addEventListener('mouseover', e => {
+  const t = e.target.closest('[data-hc]');
+  if (t) { clearTimeout(hideT); if (openFor !== t) { clearTimeout(showT); showT = setTimeout(() => showCard(t), 180); } }
+  else if (e.target.closest('#hc')) clearTimeout(hideT);
+});
+document.addEventListener('mouseout', e => {
+  const from = e.target.closest('[data-hc], #hc');
+  const to = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('[data-hc], #hc');
+  if (from && !to) { clearTimeout(showT); hideCard(); }
+});
+window.addEventListener('scroll', () => hideCard(true), { passive: true });
+
+document.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]');
+  if (act) {
+    const a = act.getAttribute('data-act'), id = act.getAttribute('data-id');
+    if (a === 'check' && CHECK[id].status !== 'checking') runCheck(id);
+    if (a === 'checkAll' && !bulk) runBulk();
+    if (a === 'pick') { current = id; renderToolbar(); }
+    if (a === 'open') { current = id; renderToolbar(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (a === 'copy') {
+      act.innerHTML = '<svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+      setTimeout(() => renderToolbar(), 1500);
+    }
+    return;
+  }
+  // Tap support: a tap on a status opens its card (links in the mockup go nowhere)
+  const t = e.target.closest('[data-hc]');
+  if (e.target.closest('[data-link]')) e.preventDefault();
+  if (t && !e.target.closest('#hc')) {
+    if (window.matchMedia('(hover: none)').matches) { e.preventDefault(); openFor === t ? hideCard(true) : showCard(t); }
+  } else if (!e.target.closest('#hc')) hideCard(true);
+});
+
+renderAll();
+</script>
+</body>
+</html>

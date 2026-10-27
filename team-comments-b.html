@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Comments B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.1"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    borderRadius: { sm: '4px', md: '8px', lg: '16px' },
+    fontFamily: { sans: ['Neue Montreal', 'Inter', 'SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'] },
+  } } };
+</script>
+<style>
+  :root { --oq-teal: #0F766E; --oq-teal-tint: #E6F4F1; --page-bg: #FAF9F7; }
+  body { background: var(--page-bg); font-family: 'Neue Montreal', 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; }
+  /* globals.css .comment-highlight, copied */
+  .comment-highlight { background-color: rgba(254, 240, 138, 0.3); border-radius: 2px; transition: background-color 150ms ease; cursor: pointer; }
+  .comment-highlight:hover { background-color: rgba(254, 240, 138, 0.45); }
+  .comment-highlight-active { background-color: rgba(254, 240, 138, 0.5); }
+  .scroll-comfort { scrollbar-width: thin; scrollbar-color: #d6d3d1 transparent; }
+  /* Read-only body: a sentence lights up on hover and a click selects it */
+  .is-readonly .sent { cursor: text; border-radius: 2px; transition: background-color 120ms ease; }
+  .is-readonly .sent:hover { background-color: rgba(231, 229, 228, 0.55); }
+  .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  @keyframes flash { 0% { background-color: rgba(224, 242, 254, 0.9); } 100% { background-color: rgba(240, 249, 255, 0.4); } }
+  .flash { animation: flash 900ms ease-out; }
+  [contenteditable="true"]:focus { outline: none; }
+</style>
+</head>
+<body class="text-stone-800 antialiased">
+
+<!-- Mockup label bar (not product UI) -->
+<div class="sticky top-0 z-40 bg-white border-b border-stone-200">
+  <div class="max-w-[1280px] mx-auto px-4 py-2 flex flex-wrap items-center gap-x-4 gap-y-2">
+    <div class="min-w-0 w-full sm:w-auto sm:flex-1">
+      <p class="text-xs font-semibold text-stone-900">Option B: Composer in the Feedback tab</p>
+      <p class="text-[11px] text-stone-500">An "Add a note" box sits at the top of the Feedback tab; select text in the page first to attach the note to that quote.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-3 shrink-0">
+      <div class="flex bg-stone-100/80 rounded p-0.5" id="state-switch">
+        <button data-state="client_review" class="text-[11px] px-2.5 py-1 rounded transition-all">In client review</button>
+        <button data-state="revision_requested" class="text-[11px] px-2.5 py-1 rounded transition-all">Client asked for changes</button>
+      </div>
+      <a href="team-comments-a.html" class="text-[11px] text-stone-400 hover:text-stone-700 underline underline-offset-2">See option A</a>
+    </div>
+  </div>
+</div>
+
+<!-- Inventory (pages/content-strategy/[id]/optimization.tsx + InventoryRow) -->
+<div id="inventory" class="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <h2 class="text-lg font-semibold text-stone-900">On-Page Optimization</h2>
+      <p class="text-sm text-stone-500">Your live site inventory, grouped so you can optimize whole topics at a time.</p>
+    </div>
+    <p class="text-xs text-stone-400 shrink-0">4/12 pages optimized</p>
+  </div>
+  <div class="bg-white border border-stone-200/60 rounded-md overflow-hidden">
+    <div class="px-4 py-3 border-b border-stone-100">
+      <p class="text-sm font-semibold text-stone-900 truncate">Dental Implants</p>
+      <p class="text-[11px] text-stone-400 mt-0.5 truncate">Implant service pages and the questions patients ask before booking</p>
+    </div>
+    <ul class="divide-y divide-stone-100">
+      <li class="flex items-start justify-between gap-3 px-4 py-3 hover:bg-stone-50/50 transition-colors">
+        <div class="flex items-start gap-3 min-w-0">
+          <input type="checkbox" class="mt-1 h-3.5 w-3.5 shrink-0 rounded border-stone-300 accent-stone-900" title="Select for bulk Webflow push">
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-stone-800 truncate">Dental Implants in Lakeside</p>
+            <a href="#" onclick="return false" class="block text-[11px] text-stone-400 hover:text-stone-600 underline truncate">/dental-implants-lakeside-nc</a>
+            <div class="flex items-center gap-2 text-[10px] text-stone-400 pt-0.5"><span>Services</span><span>1,284 words</span></div>
+            <div class="flex items-center gap-2 pt-1.5">
+              <span class="relative inline-flex overflow-hidden rounded px-2 py-0.5 text-[10px] font-semibold bg-stone-100 text-stone-600">
+                <span class="absolute inset-y-0 left-0 bg-emerald-50" style="width:83%"></span><span class="relative">In progress</span>
+              </span>
+              <span class="text-[11px]"><span class="font-semibold text-stone-700">Schema</span><span class="text-stone-400"> left</span></span>
+            </div>
+            <div id="inv-note"></div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="openFeedbackFromInventory()" class="px-3 py-1.5 text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-md transition-colors">Open</button>
+        </div>
+      </li>
+      <li class="flex items-start justify-between gap-3 px-4 py-3 hover:bg-stone-50/50 transition-colors">
+        <div class="flex items-start gap-3 min-w-0">
+          <input type="checkbox" class="mt-1 h-3.5 w-3.5 shrink-0 rounded border-stone-300 accent-stone-900">
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-stone-800 truncate">All-on-4 Implants | Lakeside Family Dental</p>
+            <a href="#" onclick="return false" class="block text-[11px] text-stone-400 hover:text-stone-600 underline truncate">/all-on-4-implants</a>
+            <div class="flex items-center gap-2 text-[10px] text-stone-400 pt-0.5"><span>Services</span><span>842 words</span></div>
+            <div class="flex items-center gap-2 pt-1.5">
+              <span class="relative inline-flex overflow-hidden rounded px-2 py-0.5 text-[10px] font-semibold bg-stone-100 text-stone-600">
+                <span class="absolute inset-y-0 left-0 bg-emerald-50" style="width:50%"></span><span class="relative">In progress</span>
+              </span>
+              <span class="text-[11px]"><span class="font-semibold text-stone-700">Meta, Links, Schema</span><span class="text-stone-400"> left</span></span>
+            </div>
+          </div>
+        </div>
+        <button class="px-3 py-1.5 text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-md transition-colors shrink-0">Open</button>
+      </li>
+      <li class="flex items-start justify-between gap-3 px-4 py-3 hover:bg-stone-50/50 transition-colors">
+        <div class="min-w-0 pl-[26px]">
+          <p class="text-sm font-medium text-stone-800 truncate">Implant Cost and Financing</p>
+          <a href="#" onclick="return false" class="block text-[11px] text-stone-400 hover:text-stone-600 underline truncate">/implant-cost</a>
+          <div class="flex items-center gap-2 text-[10px] text-stone-400 pt-0.5"><span>Services</span><span>611 words</span></div>
+        </div>
+        <button class="px-3 py-1.5 text-xs font-medium bg-stone-900 text-white rounded-md hover:bg-stone-800 transition-colors shrink-0">Import</button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- Editor ([optId].tsx) -->
+<div class="max-w-[1280px] mx-auto px-0 sm:px-4 pb-10">
+  <div id="editor-frame" class="flex flex-col overflow-hidden border-y sm:border border-stone-200/60 sm:rounded-md lg:h-[860px]" style="background:#FAF9F7">
+
+    <!-- OptimizationEditorToolbar via EditorToolbarShell -->
+    <div class="shrink-0 bg-white border-b border-stone-200/60">
+      <div class="flex flex-wrap items-center gap-2.5 px-3 py-2">
+        <button onclick="document.getElementById('inventory').scrollIntoView({behavior:'smooth'})" class="text-stone-400 hover:text-stone-600 transition-colors -ml-1 shrink-0" title="Back to optimization">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="flex items-center gap-2 min-w-0">
+          <h1 class="text-sm font-semibold text-stone-900 truncate max-w-[280px]">Dental Implants in Lakeside | Lakeside Family Dental</h1>
+          <span class="shrink-0 text-[11px] font-medium text-stone-600 bg-stone-100 rounded px-2 py-0.5">Service page</span>
+          <span class="shrink-0 hidden sm:inline-flex items-center gap-1.5 text-xs text-stone-500"><span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>In progress</span>
+        </div>
+        <div class="ml-auto shrink-0 hidden md:block">
+          <div class="flex items-center gap-2 text-xs text-stone-400">
+            <span class="inline-flex items-center gap-1.5 min-w-0">
+              <a href="#" onclick="return false" class="truncate max-w-[24ch] text-stone-400 hover:text-stone-600 underline">https://lakesidefamilydental.com/dental-implants-lakeside-nc</a>
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </span>
+            <span class="tabular-nums">1,284 words</span><span class="text-stone-300">·</span><span>Saved</span><span class="text-stone-300">·</span>
+            <span class="inline-flex items-center gap-1 text-emerald-600 font-medium"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>QA</span>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-stone-200/60"></div>
+      <div class="flex flex-wrap items-center gap-2 px-3 py-2">
+        <button class="px-3 py-1.5 text-xs font-medium rounded-md border border-stone-300 text-stone-800 bg-white hover:bg-stone-50/60 transition-colors inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>Optimize
+        </button>
+        <button class="px-3 py-1.5 text-xs font-medium rounded-md text-stone-600 hover:bg-stone-50/60 transition-colors inline-flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>Internal Linking
+        </button>
+        <div class="ml-auto flex flex-wrap items-center gap-1">
+          <span class="hidden sm:inline-flex">
+            <button class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-md text-stone-500 hover:bg-stone-50/70 hover:text-stone-700" title="View, download, or revert the original"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-md text-stone-500 hover:bg-stone-50/70 hover:text-stone-700" title="Version history"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
+            <button class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-md text-stone-500 hover:bg-stone-50/70 hover:text-stone-700" title="Edit schema markup"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></button>
+            <button class="inline-flex items-center justify-center w-[30px] h-[30px] rounded-md text-stone-500 hover:bg-stone-50/70 hover:text-stone-700" title="Export to a client-preview Google Doc"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg></button>
+          </span>
+          <span id="review-actions" class="inline-flex items-center gap-1"></span>
+          <div class="w-px h-5 bg-stone-200/80 mx-1"></div>
+          <button id="push-btn" class="px-3.5 py-1.5 text-xs font-medium bg-stone-900 text-white rounded-md hover:bg-stone-800 disabled:opacity-40 transition-colors inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>Push to Webflow
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OptimizationEditLockNotice -->
+    <div id="lock-notice" role="status" class="px-4 py-2 text-xs text-stone-700 bg-stone-50 border-b border-stone-200"><span class="font-medium">Read only: </span>This page is with the client for review. Editing is locked until they approve it or ask for changes.</div>
+
+    <!-- SeoMetaFields collapsed bar -->
+    <div class="shrink-0 bg-white border-b border-stone-200/60">
+      <button class="w-full px-4 py-2 flex items-center gap-3 text-left hover:bg-stone-50/60 transition-colors overflow-hidden">
+        <span class="text-[10px] font-semibold uppercase tracking-wider text-stone-500 shrink-0">SEO</span>
+        <span class="flex items-center gap-1.5 min-w-0"><span class="text-[11px] text-stone-400">Title</span><span class="text-[10px] font-medium tabular-nums text-emerald-600 truncate">52 chars · 498/580px</span></span>
+        <span class="hidden sm:flex items-center gap-1.5 min-w-0"><span class="text-[11px] text-stone-400">Meta</span><span class="text-[10px] font-medium tabular-nums text-emerald-600">148 chars · 902/920px</span></span>
+        <span class="text-[10px] font-medium text-emerald-600 shrink-0">H1 ✓</span>
+        <span class="ml-auto flex items-center gap-2 shrink-0"><span class="text-[11px] text-emerald-600">Saved</span>
+          <svg class="w-4 h-4 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg></span>
+      </button>
+    </div>
+    <!-- OptimizationSectionNav -->
+    <div class="shrink-0 bg-stone-50/60 border-b border-stone-100 px-4 py-1.5 flex items-center gap-1 overflow-x-auto">
+      <span class="text-[10px] font-semibold uppercase tracking-wider text-stone-400 shrink-0 pr-1">Sections</span>
+      <button data-jump="s-what" class="shrink-0 px-2 py-0.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 hover:bg-white rounded transition-colors">What is a dental implant?</button>
+      <button data-jump="s-why" class="shrink-0 px-2 py-0.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 hover:bg-white rounded transition-colors">Why patients choose us</button>
+      <button data-jump="s-recovery" class="shrink-0 px-2 py-0.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 hover:bg-white rounded transition-colors">What recovery looks like</button>
+      <button data-jump="s-cost" class="shrink-0 px-2 py-0.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 hover:bg-white rounded transition-colors">Cost and insurance</button>
+      <button data-jump="s-book" class="shrink-0 px-2 py-0.5 text-[11px] font-medium text-stone-500 hover:text-stone-900 hover:bg-white rounded transition-colors">Book a consultation</button>
+    </div>
+
+    <!-- Body: editor + inspector -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
+      <div id="editor-scroll" class="flex-1 overflow-y-auto scroll-comfort relative h-[560px] lg:h-auto">
+        <div class="max-w-3xl mx-auto px-2 sm:px-10 py-8">
+          <div class="h-full flex flex-col bg-transparent">
+            <!-- BrutalistToolbar (only while editable) -->
+            <div id="brut" class="border-b border-stone-200 bg-white sticky top-0 z-20"></div>
+            <div id="body" class="min-h-full pt-6 pb-48 px-4 sm:px-10 text-[15px] text-stone-700 leading-relaxed">
+              <h1 class="text-[1.65rem] font-bold mb-5 mt-8 text-stone-900 leading-tight"><span class="sent">Dental Implants in Lakeside</span></h1>
+              <p class="mb-4 leading-relaxed"><span class="sent">A missing tooth affects more than your smile.</span> <span class="sent">It changes how you chew, how you speak, and over time, the shape of your jaw.</span> <span class="sent">At Lakeside Family Dental, we replace missing teeth with dental implants that look, feel, and work like the real thing.</span></p>
+              <h2 id="s-what" class="text-[1.35rem] font-bold mb-4 mt-7 text-stone-900 leading-tight"><span class="sent">What is a dental implant?</span></h2>
+              <p class="mb-4 leading-relaxed"><span class="sent">A dental implant is a small titanium post that takes the place of a tooth root.</span> <span class="sent">Once it bonds with your jawbone, we attach a custom crown on top.</span> <span class="sent">The result is a tooth that stays put when you eat, laugh, and brush.</span></p>
+              <h2 id="s-why" class="text-[1.35rem] font-bold mb-4 mt-7 text-stone-900 leading-tight"><span class="sent">Why patients choose Lakeside Family Dental</span></h2>
+              <p class="mb-4 leading-relaxed"><span class="sent"><span class="comment-highlight" data-cid="2">Dr. Patel has placed more than 1,200 implants</span> over 15 years.</span> <span class="sent">We plan every case with a 3D scan, so you know exactly what to expect before treatment starts.</span> <span class="sent">We also offer <span class="comment-highlight" data-cid="3">same-day implants</span> for patients who qualify.</span></p>
+              <h2 id="s-recovery" class="text-[1.35rem] font-bold mb-4 mt-7 text-stone-900 leading-tight"><span class="sent">What recovery looks like</span></h2>
+              <p class="mb-4 leading-relaxed"><span class="sent"><span class="comment-highlight" data-cid="1">Most patients are back to work the next day.</span></span> <span class="sent">You may feel some soreness for a few days, which over-the-counter pain relief usually handles well.</span> <span class="sent">We check in after one week and again once the implant has healed.</span></p>
+              <h2 id="s-cost" class="text-[1.35rem] font-bold mb-4 mt-7 text-stone-900 leading-tight"><span class="sent">Cost and insurance</span></h2>
+              <p class="mb-4 leading-relaxed"><span class="sent" id="sugg-target">We accept most PPO plans and offer financing for larger treatment plans.</span> <span class="sent">Every consultation includes a written estimate, so there are no surprises.</span></p>
+              <h2 id="s-book" class="text-[1.35rem] font-bold mb-4 mt-7 text-stone-900 leading-tight"><span class="sent">Book a consultation</span></h2>
+              <p class="mb-4 leading-relaxed"><span class="sent">Call our Lakeside office or book online.</span> <span class="sent">Your first visit includes an exam, a 3D scan, and a clear plan for next steps.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OptimizationInspector -->
+      <div id="inspector" class="w-full lg:w-96 border-t lg:border-t-0 lg:border-l border-stone-200/60 bg-white flex flex-col shrink-0 overflow-hidden h-[640px] lg:h-auto"></div>
+    </div>
+  </div>
+</div>
+
+<div id="float" class="hidden" style="position:fixed; z-index:9999; transform:translate(-50%,-100%)"></div>
+
+<script>
+const MODE = 'B';
+const TEAL = 'bg-[#0F766E] hover:bg-[#0B5F59]';
+const S = {
+  review: 'client_review',
+  tab: 'feedback',
+  sub: 'comments',
+  activeId: null,
+  pending: null,       // { text, el }
+  draft: '',
+  vis: 'internal',
+  replyingId: null,
+  selRange: null,
+  nextId: 10,
+  comments: [
+    { id: 1, author: 'Dr. Patel', type: 'client', time: '2d ago', anchor: 'Most patients are back to work the next day.',
+      text: 'Can we soften this? A few of our patients needed two or three days off after surgery.', vis: 'client_facing', resolved: false, replies: [] },
+    { id: 2, author: 'Dr. Patel', type: 'client', time: '1d ago', anchor: 'Dr. Patel has placed more than 1,200 implants',
+      text: 'Please make this 1,500. We passed that number in September.', vis: 'client_facing', resolved: false,
+      replies: [{ author: 'Sam (SEO)', type: 'specialist', time: '20h ago', text: 'Thanks, we will update it as soon as the review closes.' }] },
+    { id: 3, author: 'Sam (SEO)', type: 'specialist', time: '3h ago', anchor: 'same-day implants',
+      text: 'Check with the front desk that they still offer same-day implants before we push this live.', vis: 'internal', resolved: false, replies: [] },
+  ],
+  suggestions: [
+    { id: 1, author: 'Dr. Patel', time: '1d ago', status: 'pending',
+      parts: [['eq', 'We accept most PPO plans and offer '], ['del', 'financing for larger treatment plans'], ['ins', '0% financing for 12 months on implant treatment'], ['eq', '.']],
+      suggested: 'We accept most PPO plans and offer 0% financing for 12 months on implant treatment.' },
+  ],
+};
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const initials = (n) => n.replace(/\(.*?\)/g, '').trim().split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+const AUTHOR_BG = { specialist: 'bg-violet-100 text-violet-700', client: 'bg-sky-100 text-sky-700' };
+const locked = () => S.review === 'client_review';
+const LOCK_TIP = 'Available once Dr. Patel approves or asks for changes';
+
+// Client feedback that still needs the team: open client comments + open suggested edits.
+function clientOpen() {
+  const c = S.comments.filter((x) => x.type === 'client' && !x.resolved).length;
+  const s = S.suggestions.filter((x) => x.status === 'pending').length;
+  return { c, s, total: c + s };
+}
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+/* ---------- Inventory review note (InventoryReviewNote + count) ---------- */
+function renderInventoryNote() {
+  const dot = locked() ? 'bg-sky-400' : 'bg-red-400';
+  const label = locked() ? 'In client review · due Nov 9' : 'Client asked for changes';
+  const { c, s } = clientOpen();
+  const parts = [];
+  if (c) parts.push(plural(c, 'open comment', 'open comments'));
+  if (s) parts.push(plural(s, 'suggested edit', 'suggested edits'));
+  const count = parts.length
+    ? ` · <span class="font-medium text-stone-800 group-hover:underline underline-offset-2">${parts.join(' · ')}</span>`
+    : '';
+  document.getElementById('inv-note').innerHTML = `
+    <button type="button" onclick="openFeedbackFromInventory()" title="Open the page's Feedback tab"
+      class="group flex items-center gap-1.5 text-[11px] text-stone-600 pt-1 text-left hover:text-stone-900 transition-colors">
+      <span class="w-1.5 h-1.5 rounded-full shrink-0 ${dot}"></span><span>${label}${count}</span>
+    </button>`;
+}
+function openFeedbackFromInventory() {
+  S.tab = 'feedback'; S.sub = 'comments';
+  renderInspector();
+  document.getElementById('editor-frame').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const panel = document.getElementById('fb-panel');
+  if (panel) { panel.classList.remove('flash'); void panel.offsetWidth; panel.classList.add('flash'); }
+}
+
+/* ---------- Toolbar review slot + push lock ---------- */
+function renderToolbar() {
+  const chip = locked()
+    ? '<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>In client review · due Nov 9'
+    : '<span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>Client asked for changes';
+  const mail = '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>';
+  document.getElementById('review-actions').innerHTML =
+    `<span title="${locked() ? 'Sent to Dr. Patel for review' : 'Apply the client feedback, then send the page back for the final review'}" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-md border border-stone-200 bg-white text-stone-700 whitespace-nowrap">${chip}</span>` +
+    (locked() ? '' : `<button class="px-3 py-1.5 text-xs font-medium rounded-md border border-stone-300 text-stone-800 bg-white hover:bg-stone-50/60 transition-colors inline-flex items-center gap-1.5">${mail}Send for final review</button>`);
+  const push = document.getElementById('push-btn');
+  push.disabled = locked();
+  push.title = locked() ? 'This page is with the client for review. Wait for their approval before pushing.' : 'Stage the edited page to Webflow as a draft (does not publish)';
+  document.getElementById('lock-notice').style.display = locked() ? '' : 'none';
+  const body = document.getElementById('body');
+  body.setAttribute('contenteditable', locked() ? 'false' : 'true');
+  body.classList.toggle('is-readonly', locked());
+  document.querySelectorAll('#state-switch button').forEach((b) => {
+    b.className = 'text-[11px] px-2.5 py-1 rounded transition-all ' + (b.dataset.state === S.review
+      ? 'bg-white text-stone-800 font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06)]' : 'text-stone-400 hover:text-stone-600');
+  });
+}
+
+/* ---------- BrutalistToolbar (editable only) ---------- */
+function renderBrut() {
+  const el = document.getElementById('brut');
+  if (locked()) { el.style.display = 'none'; return; }
+  el.style.display = '';
+  const btn = (inner, title, extra = '') => `<button type="button" title="${title}" onmousedown="event.preventDefault()" ${extra} class="px-2 py-1 text-[13px] rounded-md transition-colors text-stone-500 hover:text-stone-800 hover:bg-stone-100">${inner}</button>`;
+  const div = '<div class="w-px h-5 bg-stone-200 mx-1"></div>';
+  const commentBtn = MODE === 'A'
+    ? div + `<button id="brut-comment" type="button" title="Add comment on selected text" onmousedown="event.preventDefault(); startCommentFromSelection()" class="px-2 py-1 text-[13px] rounded-md transition-colors text-stone-300 cursor-default">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h6M5 5.5h4"/><path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H9l-3 3v-3H3a1 1 0 01-1-1V3z"/></svg></button>`
+    : '';
+  el.innerHTML = `<div class="flex items-center gap-0.5 py-1.5 px-4 overflow-x-auto">
+    ${btn('<span class="font-bold">B</span>', 'Bold')}${btn('<span class="italic">I</span>', 'Italic')}${btn('<span class="underline">U</span>', 'Underline')}${btn('<span class="line-through">S</span>', 'Strikethrough')}
+    ${div}${btn('H2', 'Heading 2')}${btn('H3', 'Heading 3')}${btn('¶', 'Paragraph')}
+    ${div}${btn('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 4h8M6 8h8M6 12h8"/><circle cx="2.5" cy="4" r=".8" fill="currentColor"/><circle cx="2.5" cy="8" r=".8" fill="currentColor"/><circle cx="2.5" cy="12" r=".8" fill="currentColor"/></svg>', 'Bulleted list')}
+    ${btn('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6.5 9.5a3 3 0 004.2 0l2-2a3 3 0 00-4.2-4.2l-.6.6M9.5 6.5a3 3 0 00-4.2 0l-2 2a3 3 0 004.2 4.2l.6-.6"/></svg>', 'Link')}
+    ${btn('<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1"/><circle cx="6" cy="7" r="1.2"/><path d="M14 11l-3.5-3.5L4 13"/></svg>', 'Insert image')}
+    ${commentBtn}</div>`;
+}
+function updateBrutComment(hasSel) {
+  const b = document.getElementById('brut-comment');
+  if (!b) return;
+  b.className = 'px-2 py-1 text-[13px] rounded-md transition-colors ' + (hasSel ? 'text-stone-500 hover:text-stone-800 hover:bg-stone-100' : 'text-stone-300 cursor-default');
+}
+
+/* ---------- Inspector ---------- */
+function renderInspector() {
+  const { total } = clientOpen();
+  const tabs = [['qa', 'QA'], ['refiner', 'Refiner'], ['feedback', 'Feedback', total]];
+  const strip = `<div class="flex border-b border-stone-200/60 px-1 shrink-0">${tabs.map(([k, l, n]) => `
+    <button onclick="setTab('${k}')" class="px-3 py-2 text-xs font-medium border-b-2 transition-colors inline-flex items-center gap-1.5 ${S.tab === k ? 'border-stone-900 text-stone-900' : 'border-transparent text-stone-400 hover:text-stone-600'}">
+      ${l}${n ? `<span class="px-1.5 py-px text-[10px] font-semibold rounded-md bg-stone-100 text-stone-600 tabular-nums">${n}</span>` : ''}
+    </button>`).join('')}</div>`;
+  let content = '';
+  if (S.tab === 'qa') content = qaStub();
+  else if (S.tab === 'refiner') content = refinerStub();
+  else content = feedbackPanel();
+  document.getElementById('inspector').innerHTML = strip + `<div class="flex-1 overflow-hidden">${content}</div>`;
+  wireComposer();
+}
+function setTab(t) { S.tab = t; renderInspector(); }
+function setSub(t) { S.sub = t; renderInspector(); }
+
+function qaStub() {
+  const checks = ['Title tag length', 'Meta description length', 'One H1 on the page', 'Internal links', 'Reading level', 'No placeholder text'];
+  return `<div class="h-full overflow-y-auto scroll-comfort px-4 py-3">
+    <div class="flex items-center justify-between mb-3"><p class="text-[12px] font-medium text-stone-800">All checks pass</p>
+    <button class="text-[11px] text-stone-500 hover:text-stone-800">Re-run QA</button></div>
+    ${checks.map((c) => `<div class="flex items-center gap-2 py-2 border-b border-stone-100 text-[12px] text-stone-600">
+      <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/></svg>${c}</div>`).join('')}</div>`;
+}
+function refinerStub() {
+  return `<div class="h-full flex flex-col"><div class="flex-1 flex items-center justify-center px-6 text-center">
+    <p class="text-[12px] text-stone-400">Select text in the editor, or ask the Refiner to rewrite a section.</p></div>
+    <div class="p-3 border-t border-stone-200/60"><input placeholder="What should I do with this?" class="w-full text-[12px] px-2 py-1.5 border border-stone-200 rounded-md focus:outline-none focus:border-stone-400 focus:ring-1 focus:ring-stone-200"></div></div>`;
+}
+
+function visToggle() {
+  const b = (v, l) => `<button type="button" data-vis="${v}" class="text-[11px] px-2 py-0.5 rounded transition-colors ${S.vis === v ? 'bg-[#E6F4F1] text-[#0F766E] font-medium' : 'text-stone-400 hover:text-stone-600'}">${l}</button>`;
+  return `<div class="flex items-center bg-stone-100/80 rounded p-0.5">${b('internal', 'Internal note')}${b('client_facing', 'Client can see')}</div>`;
+}
+function visHint() {
+  return S.vis === 'client_facing'
+    ? '<p class="mt-1.5 text-[11px] text-sky-700">Dr. Patel will see this on the review page.</p>'
+    : '<p class="mt-1.5 text-[11px] text-stone-400">Only the team sees this.</p>';
+}
+
+// Option A: CommentComposeBox, opened from a text selection.
+function composerA() {
+  if (!S.pending) return '';
+  const q = S.pending.text.length > 120 ? S.pending.text.slice(0, 120) + '...' : S.pending.text;
+  return `<div id="composer" class="px-4 py-3 border-b border-stone-200/60 bg-sky-50/30">
+    <div class="text-[11px] text-stone-400 italic line-clamp-2 mb-2">&ldquo;${esc(q)}&rdquo;</div>
+    <textarea id="draft" rows="3" placeholder="Add your comment..." class="w-full text-[13px] text-stone-800 placeholder-stone-400 border border-stone-200 rounded bg-white px-2.5 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-stone-400 leading-relaxed">${esc(S.draft)}</textarea>
+    ${visHint()}
+    <div class="flex items-center justify-between mt-2">
+      ${visToggle()}
+      <div class="flex items-center gap-1.5">
+        <button type="button" id="cancel-btn" class="text-[11px] text-stone-400 hover:text-stone-600 px-1.5 py-1 transition-colors">Cancel</button>
+        <button type="button" id="post-btn" ${S.draft.trim() ? '' : 'disabled'} class="text-[11px] font-medium px-3 py-1.5 ${TEAL} text-white rounded disabled:opacity-40 transition-colors">Post</button>
+      </div>
+    </div></div>`;
+}
+
+// Option B: always-visible "Add a note" box at the top of the Feedback tab.
+function composerB() {
+  const chip = S.pending
+    ? `<div class="mb-2 flex items-center gap-1.5 max-w-full bg-stone-100 rounded px-2 py-1 text-[11px] text-stone-600">
+        <span class="shrink-0 font-medium text-stone-700">On:</span>
+        <span class="italic truncate">&lsquo;${esc(S.pending.text)}&rsquo;</span>
+        <button type="button" id="chip-x" title="Remove the quote" class="ml-auto shrink-0 text-stone-400 hover:text-stone-700">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>` : '';
+  const dirty = S.draft.trim() || S.pending;
+  return `<div id="composer" class="px-4 py-3 border-b border-stone-200/60 bg-white shrink-0">
+    ${chip}
+    <textarea id="draft" rows="${dirty ? 3 : 2}" placeholder="${S.pending ? 'Comment on this text...' : 'Add a note. Select text in the page to point at it.'}" class="w-full text-[13px] text-stone-800 placeholder-stone-400 border border-stone-200 rounded bg-white px-2.5 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-stone-400 leading-relaxed">${esc(S.draft)}</textarea>
+    ${dirty ? visHint() : ''}
+    <div class="flex items-center justify-between mt-2">
+      ${visToggle()}
+      <div class="flex items-center gap-1.5">
+        ${dirty ? '<button type="button" id="cancel-btn" class="text-[11px] text-stone-400 hover:text-stone-600 px-1.5 py-1 transition-colors">Cancel</button>' : ''}
+        <button type="button" id="post-btn" ${S.draft.trim() ? '' : 'disabled'} class="text-[11px] font-medium px-3 py-1.5 ${TEAL} text-white rounded disabled:opacity-40 transition-colors">Post</button>
+      </div>
+    </div></div>`;
+}
+
+function feedbackPanel() {
+  const top = S.comments.filter((c) => !c.resolved);
+  const resolvedC = S.comments.filter((c) => c.resolved);
+  const activeS = S.suggestions.filter((s) => s.status === 'pending');
+  const resolvedS = S.suggestions.filter((s) => s.status !== 'pending');
+  const subs = [['comments', 'Comments', top.length], ['suggestions', 'Suggestions', activeS.length], ['resolved', 'Resolved', resolvedC.length + resolvedS.length]];
+  const subtabs = `<div class="px-4 py-2.5 border-b border-stone-200/60 shrink-0"><div class="flex bg-stone-100/80 rounded p-0.5">${subs.map(([k, l, n]) => `
+    <button onclick="setSub('${k}')" class="flex-1 text-[11px] py-1 rounded transition-all ${S.sub === k ? 'bg-white text-stone-800 font-medium shadow-[0_1px_2px_rgba(0,0,0,0.06)]' : 'text-stone-400 hover:text-stone-600'}">${l} (${n})</button>`).join('')}</div></div>`;
+  const lockBox = locked() ? `<div class="mx-4 mt-3 px-3 py-2.5 bg-stone-50 border border-stone-200/60 rounded-md">
+      <p class="text-[11px] leading-relaxed text-stone-500">You can read and add comments now. Resolving and accepting Dr. Patel&rsquo;s feedback opens up once they approve or ask for changes.</p></div>` : '';
+  let list = '';
+  if (S.sub === 'comments') {
+    list = (top.length ? top.map(threadHTML).join('')
+      : `<div class="px-4 py-10 text-center"><p class="text-[12px] text-stone-400">No open comments</p><p class="text-[11px] text-stone-300 mt-1">Select text in the editor to add one</p></div>`);
+  } else if (S.sub === 'suggestions') {
+    list = activeS.length ? `<div class="px-4 py-3 space-y-2">${activeS.map(suggHTML).join('')}</div>` : '<div class="px-4 py-10 text-center"><p class="text-[12px] text-stone-400">No open suggested edits</p></div>';
+  } else {
+    list = (resolvedS.length ? `<div class="px-4 py-3 space-y-2 border-b border-stone-100"><p class="text-[10px] font-semibold uppercase tracking-wider text-stone-400">Suggested Edits</p>${resolvedS.map(suggHTML).join('')}</div>` : '')
+      + resolvedC.map(threadHTML).join('')
+      || '<div class="px-4 py-10 text-center"><p class="text-[12px] text-stone-400">Nothing resolved yet</p></div>';
+  }
+  return `<div id="fb-panel" class="flex flex-col h-full">
+    ${MODE === 'B' ? composerB() : ''}
+    ${subtabs}
+    <div id="fb-scroll" class="flex-1 overflow-y-auto scroll-comfort">${MODE === 'A' && S.sub === 'comments' ? composerA() : ''}${lockBox}${list}</div></div>`;
+}
+
+function threadHTML(c) {
+  const isActive = S.activeId === c.id;
+  const label = c.type === 'specialist'
+    ? (c.vis === 'internal'
+      ? '<span class="text-[9px] font-medium text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded shrink-0">Internal</span>'
+      : '<span class="text-[9px] font-medium text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded shrink-0">Client can see</span>')
+    : '';
+  const replies = c.replies.length ? `<div class="ml-12 mr-4 mb-1">${c.replies.map((r) => `
+      <div class="py-2 border-t border-stone-100/60">
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold shrink-0 ${AUTHOR_BG[r.type]}">${initials(r.author)}</span>
+          <span class="text-[11px] font-medium text-stone-700">${esc(r.author)}</span><span class="text-[10px] text-stone-400">${r.time}</span>
+        </div>
+        <p class="text-[12px] text-stone-600 leading-relaxed pl-[26px]">${esc(r.text)}</p>
+      </div>`).join('')}</div>` : '';
+  // The team's own notes can be resolved any time; the client's wait for the lock to lift.
+  const resolveLocked = locked() && c.type === 'client';
+  let actions = '';
+  if (!c.resolved) {
+    actions = S.replyingId === c.id
+      ? `<div class="ml-12 mr-4 pb-3"><div class="mt-1">
+          <textarea id="reply-${c.id}" rows="1" placeholder="Reply..." class="w-full px-2.5 py-1.5 text-[12px] border border-stone-200 rounded bg-white text-stone-700 placeholder-stone-400 resize-none focus:outline-none focus:ring-1 focus:ring-stone-400"></textarea>
+          <div class="flex items-center gap-1.5 mt-1.5">
+            <button onclick="sendReply(${c.id})" class="px-2.5 py-1 text-[11px] font-medium bg-stone-900 text-white rounded hover:bg-stone-800 transition-colors">Reply</button>
+            <button onclick="S.replyingId=null;renderInspector()" class="text-[11px] text-stone-400 hover:text-stone-600 px-1.5 py-1 transition-colors">Cancel</button>
+          </div></div></div>`
+      : `<div class="ml-12 mr-4 pb-3"><div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px]">
+          <button onclick="event.stopPropagation();S.replyingId=${c.id};renderInspector();setTimeout(()=>document.getElementById('reply-${c.id}')?.focus(),0)" class="text-stone-400 hover:text-stone-700 transition-colors">Reply</button>
+          <button onclick="event.stopPropagation();resolveComment(${c.id})" ${resolveLocked ? `disabled title="${LOCK_TIP}"` : ''} class="text-stone-400 hover:text-stone-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:text-stone-400">Resolve</button>
+          ${c.type === 'client' ? '<button class="text-stone-400 hover:text-stone-700 transition-colors">Save as fact</button>' : ''}
+        </div></div>`;
+  } else {
+    actions = '<div class="ml-12 pb-2.5"><span class="text-[10px] text-emerald-600 font-medium">Resolved</span></div>';
+  }
+  return `<div id="thread-${c.id}" class="border-b border-stone-100 transition-colors ${isActive ? 'bg-sky-50/40' : 'hover:bg-stone-50/40'} ${c.resolved ? 'opacity-60' : ''}">
+    <div class="px-4 pt-3 pb-2 cursor-pointer" onclick="activate(${c.id}, true)">
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold shrink-0 ${AUTHOR_BG[c.type]}">${initials(c.author)}</span>
+        <div class="flex-1 min-w-0"><span class="text-[12px] font-medium text-stone-800">${esc(c.author)}</span><span class="text-[10px] text-stone-400 ml-1.5">${c.time}</span></div>
+        ${label}
+      </div>
+      ${c.anchor ? `<div class="ml-8 mb-1.5 text-[11px] text-stone-400 italic line-clamp-1">&ldquo;${esc(c.anchor)}&rdquo;</div>` : '<div class="ml-8 mb-1.5 text-[11px] text-stone-400">On the whole page</div>'}
+      <p class="ml-8 text-[13px] text-stone-700 leading-relaxed">${esc(c.text)}</p>
+    </div>${replies}${actions}</div>`;
+}
+
+function suggHTML(s) {
+  const badge = s.status === 'accepted' ? '<span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-emerald-50 text-emerald-700">Accepted</span>'
+    : s.status === 'rejected' ? '<span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-stone-100 text-stone-500">Dismissed</span>' : '';
+  const diff = s.parts.map(([t, x]) => t === 'eq' ? `<span>${esc(x)}</span>`
+    : t === 'del' ? `<del class="line-through text-rose-500 bg-rose-50/70 rounded-sm px-0.5">${esc(x)}</del>`
+    : `<ins class="no-underline text-emerald-700 bg-emerald-50/70 rounded-sm px-0.5">${esc(x)}</ins>`).join('');
+  const dis = locked() ? `disabled title="${LOCK_TIP}"` : '';
+  const btns = s.status === 'pending' ? `<div class="flex gap-1.5">
+      <button ${dis} onclick="decide(${s.id},'accepted')" class="flex-1 px-2 py-1 text-[11px] font-medium bg-stone-900 text-white rounded hover:bg-stone-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-stone-900">Accept</button>
+      <button ${dis} onclick="decide(${s.id},'rejected')" class="flex-1 px-2 py-1 text-[11px] font-medium bg-white text-stone-500 border border-stone-200 rounded hover:bg-stone-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white">Dismiss</button>
+    </div>` : '';
+  return `<div class="bg-white border border-stone-200/60 rounded-md p-3 hover:bg-stone-50/40 transition-colors">
+    <div class="flex items-center gap-1.5 mb-2">
+      <span class="w-5 h-5 rounded bg-sky-100 text-sky-700 flex items-center justify-center text-[9px] font-bold shrink-0">${initials(s.author)}</span>
+      <span class="text-[11px] font-medium text-stone-700">${esc(s.author)}</span>${badge}
+      <span class="text-[10px] text-stone-400 ml-auto">${s.time}</span>
+    </div>
+    <div class="bg-stone-50/60 rounded px-2 py-1.5 mb-2.5"><div class="whitespace-pre-wrap leading-relaxed text-[12px] text-stone-700">${diff}</div></div>
+    ${btns}</div>`;
+}
+
+/* ---------- Composer wiring ---------- */
+function wireComposer() {
+  const ta = document.getElementById('draft');
+  if (!ta) return;
+  const post = document.getElementById('post-btn');
+  ta.addEventListener('input', () => {
+    const wasEmpty = !S.draft.trim();
+    S.draft = ta.value;
+    post.disabled = !S.draft.trim();
+    // Option B grows the box and shows Cancel once there is something to cancel.
+    if (MODE === 'B' && wasEmpty !== !S.draft.trim() && !S.pending) { renderInspector(); focusDraft(); }
+  });
+  ta.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); postComment(); }
+    if (e.key === 'Escape') cancelCompose();
+  });
+  post.addEventListener('click', postComment);
+  document.getElementById('cancel-btn')?.addEventListener('click', cancelCompose);
+  document.getElementById('chip-x')?.addEventListener('click', () => { dropPending(); renderInspector(); focusDraft(); });
+  document.querySelectorAll('[data-vis]').forEach((b) => b.addEventListener('click', () => { S.vis = b.dataset.vis; renderInspector(); focusDraft(); }));
+}
+function focusDraft() {
+  const ta = document.getElementById('draft');
+  if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+}
+function dropPending() {
+  if (S.pending?.el) unwrap(S.pending.el);
+  S.pending = null;
+}
+function cancelCompose() {
+  dropPending(); S.draft = ''; S.vis = 'internal'; renderInspector();
+}
+function postComment() {
+  const text = S.draft.trim();
+  if (!text) return;
+  const id = S.nextId++;
+  const anchor = S.pending ? S.pending.text : null;
+  if (S.pending?.el) {
+    S.pending.el.classList.remove('pending-hl');
+    S.pending.el.dataset.cid = id;
+  }
+  S.comments.push({ id, author: 'Sam (SEO)', type: 'specialist', time: 'Just now', anchor, text, vis: S.vis, resolved: false, replies: [] });
+  S.pending = null; S.draft = ''; S.vis = 'internal';
+  S.sub = 'comments';
+  activate(id, false);
+  const t = document.getElementById('thread-' + id);
+  if (t) { t.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); t.classList.add('flash'); }
+}
+function sendReply(id) {
+  const ta = document.getElementById('reply-' + id);
+  const v = ta?.value.trim();
+  if (!v) return;
+  S.comments.find((c) => c.id === id).replies.push({ author: 'Sam (SEO)', type: 'specialist', time: 'Just now', text: v });
+  S.replyingId = null; renderInspector();
+}
+function resolveComment(id) {
+  const c = S.comments.find((x) => x.id === id);
+  if (locked() && c.type === 'client') return;
+  c.resolved = true;
+  document.querySelectorAll(`[data-cid="${id}"]`).forEach((el) => el.classList.remove('comment-highlight', 'comment-highlight-active'));
+  if (S.activeId === id) S.activeId = null;
+  renderInspector(); renderInventoryNote();
+}
+function decide(id, status) {
+  if (locked()) return;
+  const s = S.suggestions.find((x) => x.id === id);
+  s.status = status;
+  if (status === 'accepted') {
+    const t = document.getElementById('sugg-target');
+    t.textContent = s.suggested;
+    t.style.transition = 'background-color 900ms'; t.style.backgroundColor = 'rgba(209,250,229,0.8)';
+    setTimeout(() => { t.style.backgroundColor = ''; }, 900);
+  }
+  renderInspector(); renderInventoryNote();
+}
+
+/* ---------- Comment highlights <-> threads ---------- */
+function activate(id, scrollEditor) {
+  const c = S.comments.find((x) => x.id === id);
+  S.activeId = id;
+  S.tab = 'feedback';
+  S.sub = c && c.resolved ? 'resolved' : 'comments';
+  document.querySelectorAll('.comment-highlight[data-cid]').forEach((el) => el.classList.toggle('comment-highlight-active', el.dataset.cid === String(id)));
+  renderInspector();
+  const t = document.getElementById('thread-' + id);
+  if (t) t.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  if (scrollEditor) document.querySelector(`.comment-highlight[data-cid="${id}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+/* ---------- Selection handling ---------- */
+const body = document.getElementById('body');
+const floatEl = document.getElementById('float');
+const BLOCK = 'p,h1,h2,h3,li';
+
+function wrapRange(range) {
+  const startBlock = (range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement).closest(BLOCK);
+  if (startBlock && !startBlock.contains(range.endContainer)) range.setEndAfter(startBlock.lastChild);
+  const span = document.createElement('span');
+  span.className = 'comment-highlight comment-highlight-active pending-hl';
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  return span;
+}
+function unwrap(span) {
+  const p = span.parentNode;
+  if (!p) return;
+  while (span.firstChild) p.insertBefore(span.firstChild, span);
+  p.removeChild(span);
+  p.normalize();
+}
+function hideFloat() { floatEl.classList.add('hidden'); }
+
+function showFloat(range) {
+  const r = range.getBoundingClientRect();
+  const darkBtn = 'flex items-center gap-1 px-2 py-1 bg-stone-800 text-white text-[11px] font-medium rounded-md shadow-lg hover:bg-stone-700 transition-colors';
+  const refiner = `<button data-act="refiner" class="${darkBtn}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Refiner</button>`;
+  const comment = `<button data-act="comment" class="${darkBtn}"><svg class="w-3 h-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h6M5 5.5h4"/><path d="M2 3a1 1 0 011-1h10a1 1 0 011 1v7a1 1 0 01-1 1H9l-3 3v-3H3a1 1 0 01-1-1V3z"/></svg>Comment</button>`;
+  // The Refiner rewrites text, so it only shows while the page is editable (as today).
+  const html = MODE === 'A' ? (locked() ? comment : refiner + comment) : (locked() ? '' : refiner);
+  if (!html) { hideFloat(); return; }
+  floatEl.innerHTML = `<div class="editor-app flex items-center gap-1">${html}</div>`;
+  floatEl.style.left = (r.left + r.width / 2) + 'px';
+  floatEl.style.top = (r.top - 8) + 'px';
+  floatEl.classList.remove('hidden');
+}
+floatEl.addEventListener('mousedown', (e) => {
+  e.preventDefault();
+  const act = e.target.closest('[data-act]')?.dataset.act;
+  if (act === 'comment') startCommentFromSelection();
+  if (act === 'refiner') { hideFloat(); window.getSelection().removeAllRanges(); setTab('refiner'); }
+});
+
+// Option A: the floating "Comment" (or the toolbar Comment icon) opens the composer on the quote.
+function startCommentFromSelection() {
+  if (!S.selRange) return;
+  dropPending();
+  const text = S.selRange.toString().trim();
+  const el = wrapRange(S.selRange);
+  S.selRange = null;
+  window.getSelection().removeAllRanges();
+  hideFloat(); updateBrutComment(false);
+  S.pending = { text, el }; S.draft = ''; S.vis = 'internal';
+  S.tab = 'feedback'; S.sub = 'comments'; S.activeId = null;
+  renderInspector(); focusDraft();
+}
+
+// Option B: a selection becomes the "On: ..." chip above the always-visible box.
+function anchorFromSelection(range) {
+  const draft = S.draft;
+  dropPending();
+  const text = range.toString().trim();
+  const el = wrapRange(range);
+  window.getSelection().removeAllRanges();
+  S.pending = { text, el }; S.draft = draft;
+  S.tab = 'feedback'; S.activeId = null;
+  renderInspector(); focusDraft();
+}
+
+function handleSelection() {
+  const sel = window.getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) { S.selRange = null; hideFloat(); updateBrutComment(false); return; }
+  const range = sel.getRangeAt(0);
+  if (!body.contains(range.commonAncestorContainer)) return;
+  const text = sel.toString().trim();
+  if (text.length < 2) return;
+  S.selRange = range.cloneRange();
+  updateBrutComment(true);
+  if (MODE === 'B' && locked()) { anchorFromSelection(range); return; }
+  showFloat(range);
+}
+
+body.addEventListener('mouseup', (e) => {
+  const hl = e.target.closest('.comment-highlight[data-cid]');
+  const sel = window.getSelection();
+  if (hl && sel.isCollapsed) { activate(Number(hl.dataset.cid), false); return; }
+  // Read-only: a plain click on a sentence selects the whole sentence.
+  if (locked() && sel.isCollapsed) {
+    const sent = e.target.closest('.sent');
+    if (sent && !e.target.closest('.pending-hl')) {
+      const r = document.createRange(); r.selectNodeContents(sent);
+      sel.removeAllRanges(); sel.addRange(r);
+    }
+  }
+  setTimeout(handleSelection, 0);
+});
+body.addEventListener('keyup', () => setTimeout(handleSelection, 0));
+document.getElementById('editor-scroll').addEventListener('scroll', hideFloat);
+document.addEventListener('mousedown', (e) => { if (!floatEl.contains(e.target) && !body.contains(e.target)) hideFloat(); });
+
+// Option B while editable: the floating Refiner stays as today, and "Comment on selection"
+// lives in the note box. Clicking into the box pins the last body selection as the chip.
+if (MODE === 'B') {
+  document.getElementById('inspector').addEventListener('mousedown', (e) => {
+    if (e.target.id === 'draft' && S.selRange && !S.pending) {
+      const r = S.selRange; S.selRange = null; hideFloat();
+      setTimeout(() => anchorFromSelection(r), 0);
+    }
+  });
+}
+
+document.querySelectorAll('[data-jump]').forEach((b) => b.addEventListener('click', () =>
+  document.getElementById(b.dataset.jump).scrollIntoView({ behavior: 'smooth', block: 'start' })));
+document.querySelectorAll('#state-switch button').forEach((b) => b.addEventListener('click', () => {
+  S.review = b.dataset.state; hideFloat(); renderAll();
+}));
+
+function renderAll() { renderToolbar(); renderBrut(); renderInspector(); renderInventoryNote(); }
+renderAll();
+
+// Deep link: #compose opens the compose state on a sample sentence; #compose-changes does it in the revision state.
+if (location.hash.startsWith('#compose')) {
+  if (location.hash === '#compose-changes') { S.review = 'revision_requested'; renderAll(); }
+  const target = [...document.querySelectorAll('#body .sent')].find((s) => s.textContent.startsWith('We plan every case'));
+  const r = document.createRange(); r.selectNodeContents(target);
+  const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  S.selRange = r.cloneRange();
+  if (MODE === 'A') startCommentFromSelection(); else anchorFromSelection(r);
+  S.draft = 'Should we name the scanner brand here? Ask the office first.';
+  S.vis = 'client_facing';
+  renderInspector();
+  S.pending?.el.scrollIntoView({ block: 'center' });
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
