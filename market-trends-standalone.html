@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Market Trends: standalone tool (mockup, #1294)</title>
+<title>Market Trends: standalone tool (mockup, #1294, rail layout approved 10/27)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -113,14 +113,24 @@
 .navail a { color:var(--primary); font-weight:600; text-decoration:none; }
 .vrow { display:flex; align-items:center; gap:10px; padding:4px 0; font-size:13px; } .vrow b { width:92px; font-weight:600; color:var(--ink); }
 
+    .band { display:none; }
+    body.settled .split { grid-template-columns:240px 1fr; }
+    body.settled .left { align-self:stretch; }
+    body.settled #settled { position:sticky; top:16px; }
+    body.settled #settled .phr, body.settled #settled .addrow, body.settled #settled .row .btn { display:none; }
+    body.settled #settled .row { cursor:pointer; border-radius:6px; padding:6px 8px; border-bottom:0; margin:0 -8px; display:flex; }
+    body.settled #settled .row.active { background:var(--tint); color:var(--primary); font-weight:600; }
+    body.settled #settled .row .rt { font:600 11px 'JetBrains Mono'; color:var(--muted); margin-left:auto; }
+    body.settled .chart, body.settled .bars { max-width:860px; }
+  
 </style>
 </head>
-<body>
+<body data-layout="b-rail">
 <div class="toast" id="toast"></div>
 <div class="wrap">
   <div class="title"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg><h1>Market Trends</h1></div>
   <p class="sub">How demand for a topic is moving where a practice is, for any client or prospect, with no strategy in flight.</p>
-  <div class="split">
+  <div class="card band" id="band"><div><div class="who">Bothell Family Dentistry <span class="tag">prospect</span></div><div class="meta">bothellfamilydentistry.com · Bothell, WA · <a class="btn link small" href="#" onclick="reopen();return false">edit setup</a></div></div><div class="tlist" id="bandTopics"></div><div class="histb" id="bandHist">History: no trend checks yet</div></div><div class="split">
     <div class="left">
       <div class="card" id="setup">
         <h3>Set up this practice <span class="tag" id="who">new</span></h3>
@@ -155,7 +165,7 @@
         <div style="flex:1"><b style="color:var(--ink)">Run</b> <span class="status" id="st"><i></i>finish the setup on the left</span><div class="bar" style="margin-top:8px"><i id="bar"></i></div></div>
         <button class="btn primary" id="runBtn" disabled onclick="run()">Run for $0.00</button>
       </div>
-      <div class="rbody" id="results"><div class="empty">One card per topic lands here: demand over five years with the search counts, the 1 to 10 rating, and the coverage and visibility readings once the site crawl and the other tools' runs exist for this domain.</div></div>
+      <div class="ttabs" id="ttabs"></div><div class="rbody" id="results"><div class="empty">One card per topic lands here: demand over five years with the search counts, the 1 to 10 rating, and the coverage and visibility readings once the site crawl and the other tools' runs exist for this domain.</div></div>
     </div>
   </div>
 </div>
@@ -221,7 +231,7 @@ function addTopic() { const el = document.getElementById('addt'); const v = el.v
 function renderPhrases() { document.getElementById('phrases').innerHTML = topics.map((t, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><span class="nm" style="font-weight:600;color:var(--ink)">${t.t}</span><span class="mono" style="color:var(--muted)">${t.phr.length} of 5</span></div><div class="phr">${t.phr.map((p, j) => `<span class="${j === t.drive ? 'drive' : ''}" title="${j === t.drive ? 'the driving phrase' : 'click to remove'}" onclick="if(${j}!==${t.drive}&&topics[${i}].phr.length>3){topics[${i}].phr.splice(${j},1);renderPhrases()}">${p}</span>`).join('')}</div></div>`).join(''); document.getElementById('b4').textContent = `Approve ${nPhr()} phrases`; }
 function renderTopics2() { document.getElementById('topics2').innerHTML = topics.map((t, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between"><span class="nm">${t.t}</span><button class="btn link small" onclick="topics.splice(${i},1);renderTopics2()">Remove</button></div><div class="phr">${t.phr.map((p, j) => `<span class="${j === t.drive ? 'drive' : ''}">${p}</span>`).join('')}</div></div>`).join(''); document.getElementById('tcount').textContent = `${topics.length} of 10 · ${nPhr()} phrases`; const rb = document.getElementById('runBtn'); rb.textContent = `${ran ? 'Check again' : 'Run'} for $${price()}`; const st = document.getElementById('st'); if (!st.classList.contains('live') && rb.classList.contains('ready')) st.innerHTML = `<i style="background:var(--ok)"></i>setup done · ${nPhr()} phrases · $${price()} · <span class="readyhint">ready to run<span class="arrow">→</span></span>`; }
 function addTopic2() { const el = document.getElementById('addt2'); const v = el.value.trim(); if (!v) return; if (topics.length >= 10) { toast('Ten topics is the limit for one check'); return; } el.value = ''; document.getElementById('addt').value = v; addTopic(); renderTopics2(); toast(`Added "${v}". The next check covers ${topics.length} topics.`); }
-function settle() { document.getElementById('setup').hidden = true; document.getElementById('settled').hidden = false; const rb = document.getElementById('runBtn'); rb.disabled = false; rb.classList.add('ready'); renderTopics2(); document.getElementById('st').innerHTML = `<i style="background:var(--ok)"></i>setup done · ${nPhr()} phrases · $${price()} · <span class="readyhint">ready to run<span class="arrow">→</span></span>`; toast('Set up. Run when ready; the setup stays on the left from now on.'); }
+function settle() { layoutSettle(); document.getElementById('setup').hidden = true; document.getElementById('settled').hidden = false; const rb = document.getElementById('runBtn'); rb.disabled = false; rb.classList.add('ready'); renderTopics2(); document.getElementById('st').innerHTML = `<i style="background:var(--ok)"></i>setup done · ${nPhr()} phrases · $${price()} · <span class="readyhint">ready to run<span class="arrow">→</span></span>`; toast('Set up. Run when ready; the setup stays on the left from now on.'); }
 function reopen() { document.getElementById('setup').hidden = false; document.getElementById('settled').hidden = true; go(1); }
 /* series: 0 to 100 Google interest per phrase, the combined weighted line, and our practices (rose) over the last 12 months */
 function series(t, k) { const out = []; for (let i = 0; i < 61; i++) { const seasonal = t.season * Math.sin((i + 3) * Math.PI / 6); const v = t.base + t.slope * i + seasonal - k * 9 + (rnd() * 10 - 5) + (i === 52 && k === 0 ? 24 : 0); out.push(Math.max(2, Math.min(100, Math.round(v)))); } return out; }
@@ -291,11 +301,28 @@ function run() {
     const ordered = topics.map((t, k) => k).sort((a, b) => topics[b].rating - topics[a].rating);
     _s = 7; box.innerHTML = ordered.map((k, pos) => { _s = 7 + k * 13; return card(topics[k], k); }).join('');
     ordered.forEach((k) => { const b = document.querySelector(`#svg${k}`).closest('.sec-b').querySelector('.segc button.on'); setRange(k, 24, b); });
-    ran = true; st.className = 'status'; st.innerHTML = `<i style="background:var(--ok)"></i>check #8 complete · ${topics.length} topics · ${total} phrases · read as of ${MONTHS[60]} · basket 1.08x year over year`;
+    ran = true; layoutRan(); st.className = 'status'; st.innerHTML = `<i style="background:var(--ok)"></i>check #8 complete · ${topics.length} topics · ${total} phrases · read as of ${MONTHS[60]} · basket 1.08x year over year`;
     rb.disabled = false; rb.textContent = `Check again for $${price()}`;
     const hst = document.getElementById('hist'); if (hst.textContent.includes('No trend checks')) hst.innerHTML = ''; const d = document.createElement('div'); d.className = 'hist fade'; d.innerHTML = `<span>Oct 27 · check #8 · ${topics.length} topics · complete</span><span class="mono">$${price()}</span>`; hst.prepend(d);
     toast(`Check #8 complete: ${topics.length} topic cards, best rating first`);
   }
+}
+
+const LAYOUT = document.body.dataset.layout; let cur = 0;
+function layoutSettle() {
+  document.body.classList.add('settled');
+  if (LAYOUT === 'a-band' || LAYOUT === 'c-grid') { document.getElementById('bandTopics').innerHTML = topics.map(t => `<span class="chip"><b>${t.t}</b>&nbsp;<small>${t.phr.length} phrases</small></span>`).join('') + `<span class="chip" onclick="reopen()">+ topic</span>`; }
+  if (LAYOUT === 'b-rail') { renderRail(); }
+}
+function renderRail() { const box = document.getElementById('topics2'); box.innerHTML = topics.map((t, i) => `<div class="row ${i === cur ? 'active' : ''}" onclick="jump(${i})"><span class="nm">${t.t}</span>${ran ? `<span class="rt">${t.rating}/10</span>` : ''}</div>`).join(''); document.getElementById('tcount').textContent = `${topics.length} of 10`; }
+function jump(i) { cur = i; renderRail(); const el = document.querySelectorAll('#results .tc')[i]; if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+function showTopic(i) { cur = i; document.querySelectorAll('#results .tc').forEach((c, k) => c.classList.toggle('on', k === i)); document.querySelectorAll('#ttabs .chip').forEach((c, k) => c.classList.toggle('on', k === i)); }
+function layoutRan() {
+  document.body.classList.add('ran');
+  const order = [...document.querySelectorAll('#results .tc')].map(c => c.querySelector('h4').textContent);
+  if (LAYOUT === 'd-tabs') { document.getElementById('ttabs').innerHTML = order.map((n, i) => { const t = topics.find(x => x.t === n); return `<span class="chip ${i === 0 ? 'on' : ''}" onclick="showTopic(${i})">${n} <b>${t.rating}/10</b></span>`; }).join('') + `<span class="nav"><button class="btn small" onclick="showTopic(Math.max(0,cur-1))">Previous</button><button class="btn small" onclick="showTopic(Math.min(topics.length-1,cur+1))">Next</button></span>`; showTopic(0); }
+  if (LAYOUT === 'b-rail') { topics.sort((a, b) => order.indexOf(a.t) - order.indexOf(b.t)); renderRail(); const io = new IntersectionObserver((es) => { es.forEach(e => { if (e.isIntersecting) { cur = [...document.querySelectorAll('#results .tc')].indexOf(e.target); renderRail(); } }); }, { rootMargin: '-30% 0px -60% 0px' }); document.querySelectorAll('#results .tc').forEach(c => io.observe(c)); }
+  if (LAYOUT === 'a-band' || LAYOUT === 'c-grid') { document.getElementById('bandHist').innerHTML = `History: <b style="color:var(--ink)">check #8</b> · Oct 27 · $${price()} · <a class="btn link small" href="#">all checks</a>`; }
 }
 </script>
 </body>
