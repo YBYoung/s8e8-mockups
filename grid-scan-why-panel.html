@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid Scan: why they rank, profile panel (mockup, #1317)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#0F172A; --body:#1F2937; --muted:#6B7280; --faint:#9CA3AF; --border:#E5E7EB; --border-strong:#D1D5DB;
+    --page:#F6F7F9; --card:#FFFFFF; --primary:#0F766E; --tint:#E6F4F1; --ok:#22C55E; --danger:#E11D48; --warn:#F5C518;
+    --r1:#BBF7D0; --r2:#FDE68A; --r3:#FECACA; --r4:#E5E7EB;
+  }
+  * { box-sizing:border-box; }
+  [hidden] { display:none !important; }
+  body { margin:0; background:var(--page); color:var(--body); font:14px/1.5 Inter,system-ui,sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:24px 20px 72px; }
+  .title { display:flex; align-items:center; gap:12px; margin:0 0 2px; }
+  .title h1 { font:800 22px/1.1 Montserrat,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:var(--ink); margin:0; }
+  .title svg { width:26px; height:26px; stroke:var(--primary); fill:none; stroke-width:1.5; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .label { font:600 11px/1 Inter,sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .btn { font:600 13px Inter,sans-serif; border-radius:8px; padding:8px 14px; cursor:pointer; border:1px solid var(--border-strong); background:#fff; color:var(--ink); transition:background .15s, transform .1s; }
+  .btn:active { transform:translateY(1px); }
+  .btn.primary { background:var(--primary); border-color:transparent; color:#fff; }
+  .btn.primary:disabled { opacity:.45; cursor:not-allowed; }
+  .btn.link { border:0; background:none; color:var(--primary); padding:6px 4px; }
+  .btn.small { padding:5px 10px; font-size:12px; }
+  .input { border:1px solid var(--border-strong); border-radius:8px; padding:9px 12px; font:14px Inter,sans-serif; color:var(--ink); background:#fff; outline:none; width:100%; }
+  .input:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--tint); }
+  .mono { font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .tag { display:inline-block; border:1px solid var(--border); border-radius:6px; padding:2px 7px; font-size:11px; color:var(--muted); background:#FAFAFA; }
+  .tag.you { color:var(--primary); border-color:var(--tint); background:var(--tint); }
+  .fade { animation:fade .35s ease both; } @keyframes fade { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  .grid9 { display:grid; grid-template-columns:repeat(9,1fr); gap:2px; }
+  .cell { aspect-ratio:1; border-radius:3px; background:#F3F4F6; display:flex; align-items:center; justify-content:center; font:500 10px 'JetBrains Mono',monospace; color:var(--ink); transition:background .3s, transform .3s; }
+  .cell.pending { color:transparent; }
+  .cell.pop { animation:pop .35s ease; } @keyframes pop { 0% { transform:scale(.6); } 60% { transform:scale(1.12); } 100% { transform:scale(1); } }
+  .bar { height:6px; background:#EEF0F3; border-radius:3px; overflow:hidden; }
+  .bar > i { display:block; height:100%; background:var(--primary); width:0; transition:width .25s linear; }
+  .map { position:relative; border-radius:10px; overflow:hidden; background-color:#F8FAFC; background-image:repeating-linear-gradient(0deg, #E6EAF0 0 1px, transparent 1px 48px), repeating-linear-gradient(90deg, #E6EAF0 0 1px, transparent 1px 48px); border:1px solid var(--border); }
+  .map .ring { position:absolute; border:1.5px dashed var(--primary); border-radius:50%; opacity:.7; }
+  .pin { position:absolute; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translate(-50%,-50%); }
+  .pin.you { background:var(--primary); width:18px; height:18px; }
+  .pin.comp { background:#64748B; } .pin.custom { background:#0E7490; }
+  .pin span { position:absolute; left:16px; top:-4px; white-space:nowrap; font:500 11px Inter; color:var(--ink); background:rgba(255,255,255,.9); padding:1px 5px; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+  td { padding:9px 10px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:0; }
+  .legend { display:flex; gap:12px; font-size:11px; color:var(--muted); align-items:center; }
+  .legend i { display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:4px; vertical-align:-2px; }
+  .toast { position:fixed; right:20px; bottom:20px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:8px; font-size:13px; opacity:0; transform:translateY(8px); transition:all .25s; pointer-events:none; }
+  .toast.on { opacity:1; transform:none; }
+  .toggle { display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; }
+  .toggle i { width:30px; height:16px; border-radius:8px; background:#D1D5DB; position:relative; transition:background .2s; }
+  .toggle i::after { content:""; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:#fff; transition:left .2s; }
+  .toggle.on i { background:var(--primary); } .toggle.on i::after { left:16px; }
+  .kpi { font:800 28px/1 Montserrat,sans-serif; color:var(--ink); }
+  
+.run { max-width:860px; margin:0 auto; }
+.runhead { display:flex; align-items:center; gap:14px; padding:12px 16px; border-bottom:1px solid var(--border); }
+.runhead .st { flex:1; min-width:0; } .runhead .st b { color:var(--ink); } .runhead .st span { font-size:12px; color:var(--muted); margin-left:6px; }
+.runhead .st i { display:inline-block; width:8px; height:8px; border-radius:50%; background:#22C55E; margin-right:6px; }
+.bar { height:6px; border-radius:3px; background:#EEF0F3; margin-top:8px; overflow:hidden; } .bar i { display:block; height:100%; width:100%; background:var(--primary); }
+.tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); padding:0 16px; align-items:center; flex-wrap:wrap; }
+.tab { padding:11px 10px; font-weight:600; font-size:13px; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; } .tab.on { color:var(--primary); border-color:var(--primary); }
+.chips { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; padding:8px 0; } .chip { border:1px solid var(--border-strong); border-radius:6px; padding:3px 8px; font-size:12px; background:#fff; cursor:pointer; } .chip.on { background:var(--tint); border-color:var(--primary); color:var(--primary); } .chip small { font-family:'JetBrains Mono'; font-size:11px; color:var(--muted); margin-left:3px; } .chip.avg { font-weight:600; }
+.view { padding:14px 16px 18px; }
+.strip { display:flex; align-items:center; gap:14px; background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:13px; }
+.strip .lab { font:600 11px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); } .strip .big { font:800 22px Montserrat; color:var(--ink); } .strip .r { margin-left:auto; font-family:'JetBrains Mono'; font-size:12px; color:var(--muted); }
+.g9 { display:grid; grid-template-columns:repeat(9,1fr); gap:2px; } .g9 i { aspect-ratio:1; border-radius:3px; display:flex; align-items:center; justify-content:center; font:700 11px Inter; font-style:normal; }
+.g9.big { gap:3px; } .g9.big i { border-radius:4px; font-size:12px; }
+.legend { display:flex; gap:12px; margin-top:10px; font-size:11px; color:var(--muted); } .legend b { display:inline-flex; width:18px; height:18px; border-radius:4px; align-items:center; justify-content:center; font:700 10px Inter; margin-right:5px; }
+table { width:100%; border-collapse:collapse; font-size:13px; } th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); } td { padding:8px 10px; border-bottom:1px solid #F3F4F6; color:var(--body); }
+td.n, th.n { font-family:'JetBrains Mono'; font-size:12px; text-align:right; } tr.you td { background:var(--tint); color:var(--ink); font-weight:600; }
+.youtag { font:600 10px Inter; color:var(--primary); margin-left:6px; letter-spacing:.06em; text-transform:uppercase; }
+tr.row { cursor:pointer; transition:background .15s; } tr.row:hover td { background:#F8FAFC; } tr.row td:first-child { color:var(--muted); }
+.open { color:var(--primary); font-weight:600; font-size:12px; white-space:nowrap; } .open::after { content:" →"; }
+.note { font-size:11px; color:var(--muted); background:#F5F5F4; border-radius:8px; padding:8px 10px; margin-top:10px; }
+.hov { position:relative; cursor:help; border-bottom:1px dotted var(--border-strong); }
+.hov .tip { display:none; position:absolute; left:0; top:calc(100% + 6px); z-index:5; width:280px; background:var(--ink); color:#fff; font:400 12px/1.5 Inter; padding:9px 11px; border-radius:8px; box-shadow:0 8px 24px rgba(15,23,42,.18); }
+.hov:hover .tip { display:block; }
+.toast { position:fixed; right:20px; bottom:20px; background:var(--ink); color:#fff; padding:10px 14px; border-radius:8px; font-size:13px; opacity:0; transition:opacity .25s; pointer-events:none; } .toast.on { opacity:1; }
+
+.why-h { font:700 13px Inter; color:var(--ink); margin:22px 0 8px; }
+.why th { font:600 12px Inter; text-transform:none; letter-spacing:0; color:var(--ink); vertical-align:top; } .why th small { display:block; font:500 11px 'JetBrains Mono'; color:var(--muted); margin-top:2px; }
+.why th.lbl { font-weight:600; color:var(--body); width:190px; } .why td { font-family:'JetBrains Mono'; font-size:12px; color:var(--ink); }
+.why th.you, .why td.you { background:var(--tint); }
+
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <div class="title"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 1 8 8c0 5.5-8 12-8 12S4 15.5 4 10a8 8 0 0 1 8-8z"/></svg><h1>Grid Scan</h1></div>
+  <p class="sub">Where a practice ranks in the local pack at 81 points around its office, for any client or prospect.</p>
+  <div class="run card"><div class="runhead"><div class="st"><b>Run</b><span><i></i>run #2 complete · SoLV 34.8% (present) · avg rank 8.3</span><div class="bar"><i></i></div></div><button class="btn primary">Run again for $0.81</button></div><div class="tabs"><span class="tab ">Map</span><span class="tab ">Grids</span><span class="tab on">Leaderboard</span><div class="chips" id="chips"><span class="chip avg on" data-k="avg">All 5 keywords (average)</span><span class="chip " data-k="dentist in bothell">dentist in bothell <small>94%</small></span><span class="chip " data-k="dentist near me">dentist near me <small>69%</small></span><span class="chip " data-k="emergency dentist bothell">emergency dentist bothell <small>10%</small></span><span class="chip " data-k="invisalign bothell">invisalign bothell <small>1%</small></span><span class="chip " data-k="botox bothell">botox bothell <small>0%</small></span></div></div>
+<div class="view">
+  <div class="strip"><span class="lab">Result</span><span class="big">35%</span><span>Share of Local Voice, present</span><span class="r">405 of 405 · $0.81</span></div>
+  <table><thead><tr><th class="n">#</th><th>Listing</th><th class="n">Share</th><th class="n">Avg rank</th></tr></thead><tbody><tr class="row" data-id="ChIJEQQv6EMOkFQRWCOJSQsfGkQ"><td class="n">1</td><td>Accent Dental Center Bothell</td><td class="n">45.4%</td><td class="n">7.9</td><td></td></tr><tr class="you" data-id="own"><td class="n">2</td><td>Bothell Family Dentistry<span class="youtag">this practice</span></td><td class="n">34.8%</td><td class="n">8.3</td><td></td></tr><tr class="row" data-id="ChIJUZ3nM2cOkFQRLKqa_e9Z_ns"><td class="n">3</td><td>Annigan Dental</td><td class="n">30.4%</td><td class="n">9.4</td><td></td></tr><tr class="row" data-id="ChIJNaK6cVYPkFQRHdVKvg_p5ec"><td class="n">4</td><td>Bothell Dental Care</td><td class="n">12.1%</td><td class="n">12.9</td><td></td></tr><tr class="row" data-id="ChIJ72xfL-QPkFQRuS35wXhbSdg"><td class="n">5</td><td>Beardslee Dental</td><td class="n">4.7%</td><td class="n">12.6</td><td></td></tr></tbody></table>
+  <h3 class="why-h">Why they rank: your profile beside the top three</h3>
+  <table class="why"><thead><tr><th></th><th class="you">Bothell Family Dentistry<span class=youtag>this practice</span><small>#2 · 34.8%</small></th><th class="">Accent Dental Center Bothell<small>#1 · 45.4%</small></th><th class="">Annigan Dental<small>#3 · 30.4%</small></th><th class="">Bothell Dental Care<small>#4 · 12.1%</small></th></tr></thead><tbody><tr><th class="lbl"><span class="hov">Primary category<span class="tip">The one category Google files the listing under. "Dentist" matches a "dentist" search better than a broader category.</span></span></th><td class="you">Dentist</td><td class="">Dentist</td><td class="">Dental clinic</td><td class="">Dentist</td></tr><tr><th class="lbl"><span class="hov">Reviews<span class="tip">How many Google reviews the listing has. More reviews, more trust from Google and from patients.</span></span></th><td class="you">218</td><td class="">247</td><td class="">144</td><td class="">96</td></tr><tr><th class="lbl"><span class="hov">Rating<span class="tip">The star rating on the listing.</span></span></th><td class="you">4.9</td><td class="">4.8</td><td class="">4.7</td><td class="">4.7</td></tr><tr><th class="lbl"><span class="hov">Reviews, last 90 days<span class="tip">How many new reviews came in over the last three months. A steady flow matters more than an old pile.</span></span></th><td class="you">11</td><td class="">19</td><td class="">9</td><td class="">6</td></tr><tr><th class="lbl"><span class="hov">Photos<span class="tip">Photos on the listing. Listings with more photos get picked more often.</span></span></th><td class="you">48</td><td class="">112</td><td class="">64</td><td class="">37</td></tr><tr><th class="lbl"><span class="hov">Keyword in the name<span class="tip">Whether the business name contains the word patients search for ("dental", "dentist"). Google still rewards it.</span></span></th><td class="you">no</td><td class="">yes</td><td class="">yes</td><td class="">yes</td></tr><tr><th class="lbl"><span class="hov">Distance from your office<span class="tip">How far the listing is from your office. Closer listings win the points nearest to them.</span></span></th><td class="you">here</td><td class="">0.07 mi</td><td class="">0.36 mi</td><td class="">1.08 mi</td></tr></tbody></table>
+  <div class="note">Reviews, rating and distance come from the scan's own Maps results. Category, reviews in the last 90 days and photos come from one business-profile read per listing (DataForSEO, about $0.002 each, four listings here: under a cent; the exact price goes on the ticket before building). Hover a row name for what it means. On this mockup the category, 90-day review and photo values are placeholders; reviews, rating and distance are run #2's real numbers.</div>
+</div></div>
+</div><div class="toast" id="toast"></div><script>
+const SEED = 7; let _s = SEED; function rnd() { _s = (_s * 9301 + 49297) % 233280; return _s / 233280; }
+const KEYWORDS = ['dentist near me', 'dentist in boulder', 'emergency dentist boulder', 'dental implants boulder', 'invisalign boulder'];
+const AUTO_COMPS = [
+  { name: 'Boulder Smile Design', address: '2919 Valmont Rd', rating: 4.8, reviews: 341, solv: 61.2 },
+  { name: 'Flatirons Family Dentistry', address: '1420 28th St', rating: 4.9, reviews: 288, solv: 54.0 },
+  { name: 'Pearl Street Dental', address: '1136 Pearl St', rating: 4.7, reviews: 197, solv: 38.4 },
+  { name: 'Table Mesa Dental', address: '695 S Broadway', rating: 4.6, reviews: 122, solv: 22.1 },
+];
+const CUSTOM_POOL = [
+  { name: 'Smile Dental Care', address: '1650 38th St Suite 100', rating: 4.7, reviews: 88 },
+  { name: 'Gunbarrel Dental', address: '6685 Gunpark Dr', rating: 4.9, reviews: 64 },
+  { name: 'North Boulder Dental Group', address: '1001 N Broadway', rating: 4.5, reviews: 151 },
+];
+function rankFor(r, c, k) { const d = Math.hypot(r - 4, c - 4); const base = 1 + d * 1.6 + k * 0.4 + rnd() * 2.2 - 1.5; return Math.max(1, Math.min(21, Math.round(base))); }
+function cellColor(rank) { return rank <= 3 ? 'var(--r1)' : rank <= 10 ? 'var(--r2)' : rank <= 20 ? 'var(--r3)' : 'var(--r4)'; }
+function buildGrid(el, k) { el.innerHTML = ''; const cells = []; for (let i = 0; i < 81; i++) { const c = document.createElement('div'); c.className = 'cell pending'; const rank = rankFor(Math.floor(i / 9), i % 9, k); c.dataset.rank = rank; c.textContent = rank > 20 ? '20+' : rank; c.title = KEYWORDS[k] + ': rank ' + (rank > 20 ? 'not in top 20' : rank); el.appendChild(c); cells.push(c); } return cells; }
+function revealCell(c) { c.classList.remove('pending'); c.classList.add('pop'); c.style.background = cellColor(+c.dataset.rank); }
+function solvOf(cells) { const top3 = cells.filter(c => +c.dataset.rank <= 3).length; return (100 * top3 / cells.length); }
+function arpOf(cells) { return cells.reduce((a, c) => a + +c.dataset.rank, 0) / cells.length; }
+function band(s) { return s >= 70 ? 'dominant' : s >= 40 ? 'competitive' : s >= 15 ? 'present' : 'invisible'; }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2400); }
+function countUp(el, to, fmt, ms = 900) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = fmt(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0); }
+/* simulate a 9x9 x N keyword run: calls per tick */
+function simulateRun({ grids, onPoint, onDone, speed = 4 }) {
+  const all = []; grids.forEach((cells, k) => cells.forEach((c, i) => all.push({ c, k, i })));
+  let i = 0; const total = all.length;
+  const h = setInterval(() => {
+    for (let n = 0; n < speed && i < total; n++, i++) { revealCell(all[i].c); }
+    onPoint(i, total);
+    if (i >= total) { clearInterval(h); onDone(); }
+  }, 60);
+  return () => clearInterval(h);
+}
+const MAP_PINS = [{ x: 50, y: 50, cls: 'you', label: 'Smile Dental of Boulder' }, { x: 62, y: 38, cls: 'comp', label: 'Boulder Smile Design' }, { x: 36, y: 44, cls: 'comp', label: 'Flatirons Family' }, { x: 58, y: 66, cls: 'comp', label: 'Pearl Street' }, { x: 30, y: 70, cls: 'comp', label: 'Table Mesa' }];
+function drawMap(el, extra = []) { el.querySelectorAll('.pin,.ring').forEach(n => n.remove()); const ring = document.createElement('div'); ring.className = 'ring'; const s = Math.min(el.clientWidth, el.clientHeight) * .72; ring.style.cssText = `width:${s}px;height:${s}px;left:calc(50% - ${s/2}px);top:calc(50% - ${s/2}px)`; el.appendChild(ring); [...MAP_PINS, ...extra].forEach(p => { const d = document.createElement('div'); d.className = 'pin ' + p.cls; d.style.left = p.x + '%'; d.style.top = p.y + '%'; d.innerHTML = `<span>${p.label}</span>`; el.appendChild(d); }); }
+</script>
+</body>
+</html>
