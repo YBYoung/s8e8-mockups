@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: editing the questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grad:linear-gradient(100deg,#4F46E5,#9333EA); --near:#7C3AED; --near-tint:#F3EEFF; }
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+button, input { font:inherit; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:28px 28px 140px; }
+.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.logo { position:relative; width:26px; height:26px; border-radius:50%; background:var(--grad); }
+.logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.how { color:var(--a-ink); font:600 13px Inter; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.madlib { margin:12px 0 8px; max-width:980px; font:800 42px/1.28 Inter; letter-spacing:-.025em; color:var(--ink); }
+.blank { color:var(--a-ink); border-bottom:4px dotted var(--a); padding:0 4px; cursor:pointer; }
+.blank.ok { border-bottom-style:solid; }
+.blank.ok::after { content:' ✓'; font-size:.5em; vertical-align:.6em; color:var(--up); }
+.panel { max-width:820px; border:1px solid var(--line); border-radius:18px; padding:20px 22px; box-shadow:0 20px 50px rgba(11,16,32,.10); margin:18px 0 26px; background:#fff; }
+.ph { font:700 13px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--a-ink); margin-bottom:6px; }
+.sub { margin:0 0 12px; color:var(--muted); font-size:14px; }
+.btn { font:600 14px Inter; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); transition:transform .12s, box-shadow .2s; }
+.btn:active { transform:scale(.97); }
+.btn.go { background:var(--a); color:#fff; border-color:transparent; box-shadow:0 6px 18px var(--a-glow); }
+.btn.sm { padding:6px 11px; font-size:13px; border-radius:8px; }
+.btn:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+
+/* the mix: how many questions name the city, how many say near me */
+.mix { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:10px 12px; border-radius:12px; background:var(--soft); margin-bottom:12px; font-size:13px; }
+.mixbar { flex:1; min-width:180px; height:8px; border-radius:4px; background:#E4E7EC; overflow:hidden; display:flex; }
+.mixbar i { display:block; height:100%; transition:width .35s; }
+.mixbar .c { background:var(--a); } .mixbar .n { background:var(--near); } .mixbar .b { background:#B6BCC8; }
+.key { display:inline-flex; align-items:center; gap:6px; color:var(--body); white-space:nowrap; }
+.key s { display:inline-block; width:9px; height:9px; border-radius:3px; text-decoration:none; }
+.qhelp { color:var(--a-ink); font-weight:600; cursor:help; border-bottom:1px dotted var(--a); }
+
+.warn { display:flex; gap:10px; align-items:flex-start; background:#FEF9C3; color:#713F12; border-radius:12px; padding:10px 12px; font-size:13.5px; margin-bottom:12px; }
+
+.list { max-height:460px; overflow:auto; padding-right:4px; }
+.group { font:700 11px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:14px 0 6px; display:flex; justify-content:space-between; }
+.q { display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin-bottom:6px; transition:background .15s, border-color .15s; }
+.q:hover { border-color:#D5D9E2; }
+.q.off .text { color:var(--faint); text-decoration:line-through; }
+.q.new { animation:fresh 1.2s ease; }
+@keyframes fresh { from { background:var(--a-tint); } to { background:#fff; } }
+.chk { flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid #D0D5DD; background:#fff; cursor:pointer; display:grid; place-items:center; padding:0; }
+.chk.on { background:var(--a); border-color:var(--a); }
+.chk.on::after { content:''; width:8px; height:4px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+.text { flex:1; min-width:0; cursor:text; border-radius:6px; padding:3px 6px; margin:-3px 0; color:var(--body); }
+.text:hover { background:var(--soft); }
+.edit { flex:1; display:flex; gap:6px; align-items:center; }
+.edit input { flex:1; border:1px solid var(--a); border-radius:8px; padding:6px 9px; outline:none; box-shadow:0 0 0 4px var(--a-tint); color:var(--ink); }
+.hint { font-size:11.5px; color:var(--faint); white-space:nowrap; }
+.type { flex:none; border:1px solid transparent; border-radius:6px; padding:2px 8px; font:600 11.5px Inter; cursor:pointer; background:var(--a-tint); color:var(--a-ink); transition:background .2s, color .2s; }
+.type.near { background:var(--near-tint); color:var(--near); }
+.type.brand { background:var(--soft); color:var(--muted); cursor:default; }
+.type:not(.brand):hover { border-color:currentColor; }
+.addrow { display:flex; align-items:center; gap:8px; margin:2px 0 4px; }
+.addlink { background:none; border:0; color:var(--a-ink); font:600 13px Inter; cursor:pointer; padding:4px 2px; }
+.addform { display:flex; gap:8px; align-items:center; width:100%; border:1px dashed #C7CBF5; border-radius:10px; padding:8px 10px; background:#FBFBFF; }
+.addform input { flex:1; border:1px solid var(--line); border-radius:8px; padding:6px 9px; outline:none; }
+.addform input:focus { border-color:var(--a); box-shadow:0 0 0 4px var(--a-tint); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; flex:none; }
+.seg button { border:0; background:#fff; padding:5px 9px; font:600 12px Inter; color:var(--muted); cursor:pointer; }
+.seg button.on { background:var(--a-tint); color:var(--a-ink); }
+.seg button.on.n { background:var(--near-tint); color:var(--near); }
+.foot { display:flex; justify-content:space-between; align-items:center; margin-top:12px; }
+.runbar { display:flex; align-items:center; gap:16px; margin-top:8px; }
+.runbar .btn.go { padding:14px 22px; font-size:16px; }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:310px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; }
+.tip b { color:var(--ink); }
+.toast { position:fixed; left:50%; bottom:76px; transform:translateX(-50%) translateY(10px); background:var(--ink); color:#fff; padding:10px 14px; border-radius:10px; font-size:13px; opacity:0; transition:all .25s; z-index:85; }
+.toast.on { opacity:1; transform:translateX(-50%); }
+.toast button { background:none; border:0; color:#A5B4FC; font-weight:700; cursor:pointer; margin-left:8px; }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:80; display:flex; gap:4px; background:rgba(11,16,32,.88); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+@media (max-width:760px) { .madlib { font-size:28px; } .shell { padding:20px 16px 140px; } .hint { display:none; } }
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+<div class="shell">
+  <div class="top">
+    <div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div>
+    <div style="display:flex;gap:14px;align-items:center;font-size:13px"><span class="how">● How we measure</span><b style="color:var(--ink)">Bothell Family Dentistry</b></div>
+  </div>
+  <div class="eyebrow">New check</div>
+  <h1 class="madlib">Check how AI talks about <span class="blank ok">Bothell Family Dentistry</span> in <span class="blank ok">Bothell</span>, across <span class="blank" id="nq">30 questions</span> patients ask, next to <span class="blank">8 nearby practices</span>.</h1>
+
+  <div class="panel">
+    <div class="ph">What patients ask</div>
+    <p class="sub">Written from the website, in patients' words. Click a question to change its words, tap the box to leave it out, click its label to switch between naming the city and near me.</p>
+    <div class="warn" id="warn" hidden><span>⚠</span><span>This practice has 2 earlier Snapshots. Once the questions change, new results won't line up with those question for question. The headline can still be compared.</span></div>
+    <div class="mix">
+      <div class="mixbar" id="mixbar"><i class="c"></i><i class="n"></i><i class="b"></i></div>
+      <span class="key"><s style="background:var(--a)"></s><span id="kc"></span></span>
+      <span class="key"><s style="background:var(--near)"></s><span id="kn"></span></span>
+      <span class="key"><s style="background:#B6BCC8"></s><span id="kb"></span></span>
+      <span class="qhelp" data-tip="<b>Names the city</b> goes to every AI.<br><br><b>Near me</b> leaves the city out, the way many patients ask. Gemini, AI Overviews and AI Mode are asked from Bothell; Perplexity gets the city added after the question; ChatGPT gets these through its near-me line with the city set. The main ChatGPT line can't be set to a city, so it skips them.<br><br>Near me questions cost a little more to ask.">How they're asked</span>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="foot"><span class="mono" style="color:var(--muted);font-size:13px" id="count"></span><span id="min" style="color:var(--down);font-size:13px" hidden>Keep at least 8 questions.</span><button class="btn go sm" id="use">Use these</button></div>
+  </div>
+
+  <div class="runbar"><button class="btn go" id="run" disabled>Run it</button><span style="color:var(--muted);font-size:14px" id="runhelp">Confirm the 2 dotted blanks first.</span></div>
+</div>
+
+<div class="statebar"><span>Prototype</span><button class="on" data-s="first">First check</button><button data-s="after">After a Snapshot</button></div>
+
+<script>
+const CITY = 'Bothell';
+const G = (service, rows) => rows.map(([text, kind]) => ({ service, text, kind, on: true }));
+let Q = [
+  ...G('Emergency Dentistry', [['I cracked a tooth, who can see me fast in Bothell?', 'city'], ['Best emergency dentist in Bothell', 'city'], ['Emergency dentist near me', 'near']]),
+  ...G('Teeth Cleanings', [['New patient exam and cleaning in Bothell', 'city'], ['Which dentist in Bothell is good for regular cleanings?', 'city'], ['Dentist near me for a cleaning', 'near']]),
+  ...G("Kids' Dentistry", [['Gentle dentist for a nervous child in Bothell', 'city'], ['Best family dentist in Bothell for kids', 'city'], ['Family dentist near me for my kids', 'near']]),
+  ...G('Dental Implants', [['Who does dental implants well in Bothell?', 'city'], ['Best place for a single tooth implant in Bothell', 'city'], ['Dental implants near me', 'near']]),
+  ...G('Invisalign', [['Who is a good Invisalign dentist in Bothell?', 'city'], ['Invisalign for adults in Bothell: where should I go?', 'city'], ['Invisalign dentist near me', 'near']]),
+  ...G('Veneers', [['Who does natural looking veneers in Bothell?', 'city'], ['How much do porcelain veneers cost in Bothell?', 'city'], ['Veneers dentist near me', 'near']]),
+  ...G('Teeth Whitening', [['Professional teeth whitening in Bothell', 'city'], ['Best teeth whitening dentist in Bothell', 'city'], ['Teeth whitening near me', 'near']]),
+  ...G('Sedation Dentistry', [['Sedation dentistry for anxious patients in Bothell', 'city'], ['Who offers nitrous oxide at the dentist in Bothell?', 'city'], ['Best sleep dentistry in Bothell', 'city']]),
+  ...G('General', [['Best dentist in Bothell', 'city'], ['Top rated dentists in Bothell', 'city'], ['Which dentist in Bothell should I choose?', 'city']]),
+  ...G('Branded', [['Is Bothell Family Dentistry good?', 'brand'], ['Bothell Family Dentistry reviews', 'brand'], ['What do people say about Bothell Family Dentistry?', 'brand']]),
+];
+let editing = null, adding = null, addKind = 'city', after = false, touched = false, lastRemoved = null;
+const LABEL = { city: 'Names the city', near: 'Near me', brand: 'Branded' };
+// Per ask, from the price list (ChatGPT .004, Gemini .004, AI Overviews .003, AI Mode .004, Perplexity .0017, ChatGPT near me .03), 5 rounds.
+const PER = { city: 0.0167 * 5, brand: 0.0167 * 5, near: 0.0427 * 5 };
+
+// Switching the type rewrites the words to match: "in Bothell" <-> "near me".
+function switchText(text, to) {
+  if (to === 'near') {
+    if (/near me/i.test(text)) return text;
+    const t = text.replace(/\s+in Bothell(?=[\s?:.,]|$)/i, ' near me');
+    return t !== text ? t : text.replace(/[?.]?$/, (m) => ' near me' + m);
+  }
+  if (/near me/i.test(text)) return text.replace(/near me/i, 'in ' + CITY);
+  return /bothell/i.test(text) ? text : text.replace(/[?.]?$/, (m) => ' in ' + CITY + m);
+}
+
+const $ = (id) => document.getElementById(id);
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+
+function render() {
+  const groups = [...new Set(Q.map((q) => q.service))];
+  $('list').innerHTML = groups.map((g) => {
+    const rows = Q.map((q, i) => ({ q, i })).filter((x) => x.q.service === g);
+    const isBrand = g === 'Branded';
+    return `<div class="group"><span>${g}</span>${isBrand ? '<span style="text-transform:none;letter-spacing:0;font-weight:500">kept out of the headline</span>' : ''}</div>`
+      + rows.map(({ q, i }) => row(q, i)).join('')
+      + (isBrand ? '' : addRow(g));
+  }).join('');
+  wire();
+  tally();
+}
+
+function row(q, i) {
+  const body = editing === i
+    ? `<div class="edit"><input id="ed" value="${esc(q.text)}"><span class="hint">Enter saves · Esc cancels</span></div>`
+    : `<span class="text" data-edit="${i}" title="Click to change the words">${esc(q.text)}</span>`;
+  const tag = q.kind === 'brand'
+    ? `<span class="type brand">Branded</span>`
+    : `<button class="type ${q.kind === 'near' ? 'near' : ''}" data-switch="${i}" data-tip="Switch to <b>${q.kind === 'near' ? 'Names the city' : 'Near me'}</b>. The words change to match.">${LABEL[q.kind]}</button>`;
+  return `<div class="q ${q.on ? '' : 'off'} ${q.fresh ? 'new' : ''}"><button class="chk ${q.on ? 'on' : ''}" data-tog="${i}" aria-label="Keep this question"></button>${body}${tag}</div>`;
+}
+
+function addRow(g) {
+  if (adding !== g) return `<div class="addrow"><button class="addlink" data-add="${esc(g)}">+ Add a question</button></div>`;
+  return `<div class="addrow"><div class="addform"><input id="addin" placeholder="In patients' words, e.g. ${g === 'General' ? 'Dentist open on Saturdays in Bothell' : 'Same day crown near me'}">`
+    + `<div class="seg"><button data-k="city" class="${addKind === 'city' ? 'on' : ''}">Names the city</button><button data-k="near" class="n ${addKind === 'near' ? 'on' : ''}">Near me</button></div>`
+    + `<button class="btn go sm" id="addok">Add</button><button class="btn sm" id="addno">Cancel</button></div></div>`;
+}
+
+function wire() {
+  document.querySelectorAll('[data-tog]').forEach((b) => b.onclick = () => { const q = Q[+b.dataset.tog]; q.on = !q.on; change(); });
+  document.querySelectorAll('[data-edit]').forEach((s) => s.onclick = () => { editing = +s.dataset.edit; adding = null; render(); const e = $('ed'); e.focus(); e.select(); });
+  document.querySelectorAll('[data-switch]').forEach((b) => b.onclick = () => {
+    const q = Q[+b.dataset.switch]; const to = q.kind === 'near' ? 'city' : 'near';
+    q.text = switchText(q.text, to); q.kind = to; q.fresh = true; change(); toast(`Now ${LABEL[to].toLowerCase()}: “${q.text}”`);
+  });
+  document.querySelectorAll('[data-add]').forEach((b) => b.onclick = () => { adding = b.dataset.add; editing = null; addKind = 'city'; render(); $('addin').focus(); });
+  document.querySelectorAll('.seg [data-k]').forEach((b) => b.onclick = () => { addKind = b.dataset.k; const v = $('addin').value; render(); $('addin').value = v; $('addin').focus(); });
+  const ed = $('ed');
+  if (ed) ed.onkeydown = (e) => {
+    if (e.key === 'Escape') { editing = null; render(); }
+    if (e.key === 'Enter') {
+      const v = ed.value.trim(); const q = Q[editing];
+      if (v && v !== q.text) { q.text = v; q.fresh = true; editing = null; change(); toast('Question changed'); }
+      else if (!v) { lastRemoved = { q, i: editing }; Q.splice(editing, 1); editing = null; change(); toast('Question removed', true); }
+      else { editing = null; render(); }
+    }
+  };
+  const ai = $('addin');
+  if (ai) {
+    const add = () => {
+      const v = ai.value.trim(); if (!v) return ai.focus();
+      const at = Q.map((q) => q.service).lastIndexOf(adding);
+      Q.splice(at + 1, 0, { service: adding, text: addKind === 'near' ? switchText(v, 'near') : v, kind: addKind, on: true, fresh: true });
+      adding = null; change(); toast('Question added');
+    };
+    ai.onkeydown = (e) => { if (e.key === 'Enter') add(); if (e.key === 'Escape') { adding = null; render(); } };
+    $('addok').onclick = add; $('addno').onclick = () => { adding = null; render(); };
+  }
+}
+
+function change() { touched = true; render(); setTimeout(() => Q.forEach((q) => delete q.fresh), 1200); }
+
+function tally() {
+  const kept = Q.filter((q) => q.on);
+  const n = { city: 0, near: 0, brand: 0 }; kept.forEach((q) => n[q.kind]++);
+  const total = kept.length || 1;
+  const bars = $('mixbar').children;
+  bars[0].style.width = (n.city / total * 100) + '%'; bars[1].style.width = (n.near / total * 100) + '%'; bars[2].style.width = (n.brand / total * 100) + '%';
+  $('kc').textContent = `${n.city} name the city`; $('kn').textContent = `${n.near} near me`; $('kb').textContent = `${n.brand} branded`;
+  $('count').textContent = `${kept.length} question${kept.length === 1 ? '' : 's'}`;
+  $('nq').textContent = `${kept.length} questions`;
+  $('min').hidden = kept.length >= 8; $('use').disabled = kept.length < 8;
+  const usd = kept.reduce((t, q) => t + PER[q.kind], 0);
+  $('run').textContent = `Run it · $${usd.toFixed(2)}`;
+  $('warn').hidden = !(after && touched);
+}
+
+let tt;
+function toast(msg, undo) {
+  const t = $('toast'); t.innerHTML = esc(msg) + (undo ? '<button id="undo">Undo</button>' : ''); t.classList.add('on');
+  if (undo) $('undo').onclick = () => { Q.splice(lastRemoved.i, 0, lastRemoved.q); lastRemoved = null; t.classList.remove('on'); render(); };
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+$('use').onclick = () => { $('nq').classList.add('ok'); $('runhelp').textContent = 'Confirm the 1 dotted blank first.'; toast('Questions set'); };
+document.addEventListener('mouseover', (e) => { const el = e.target.closest('[data-tip]'); const tip = $('tip'); if (!el) return tip.classList.remove('on'); tip.innerHTML = el.dataset.tip; tip.classList.add('on'); const r = el.getBoundingClientRect(); tip.style.left = Math.min(r.left, innerWidth - 330) + 'px'; tip.style.top = (r.bottom + 8) + 'px'; });
+document.querySelectorAll('.statebar [data-s]').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.statebar button').forEach((x) => x.classList.toggle('on', x === b));
+  after = b.dataset.s === 'after'; touched = after; render();
+});
+render();
+</script>
+</body>
+</html>
