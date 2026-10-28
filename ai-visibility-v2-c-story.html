@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --page:#FFFFFF; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grad:linear-gradient(100deg,#4F46E5,#9333EA); }
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--page); color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+button { font:inherit; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.btn { font:600 14px Inter; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); transition:transform .12s, box-shadow .2s, background .2s; }
+.btn:active { transform:scale(.97); }
+.btn.go { background:var(--a); color:#fff; border-color:transparent; box-shadow:0 6px 18px var(--a-glow); }
+.btn.go:hover { box-shadow:0 8px 24px var(--a-glow); }
+.btn.soft { background:var(--a-tint); color:var(--a-ink); border-color:transparent; }
+.btn.sm { padding:6px 11px; font-size:13px; border-radius:8px; }
+.btn:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.input { border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:14px Inter; color:var(--ink); width:100%; outline:none; background:#fff; transition:border-color .15s, box-shadow .15s; }
+.input:focus { border-color:var(--a); box-shadow:0 0 0 4px var(--a-tint); }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.lane { display:flex; flex-wrap:wrap; gap:3px; }
+.lane i { width:8px; height:8px; border-radius:50%; background:#E4E7EC; display:block; transition:background .35s, transform .35s; }
+.lane i.hit { background:var(--a); }
+.lane i.drop { animation:drop .45s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes drop { from { transform:translateY(-14px) scale(.4); opacity:0; } to { transform:none; opacity:1; } }
+.lane.big i { width:10px; height:10px; }
+.lane.tiny { gap:2px; } .lane.tiny i { width:5px; height:5px; }
+.reveal { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity:1; transform:none; }
+.fade-swap { animation:fs .35s ease both; } @keyframes fs { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.typing::after { content:'▍'; color:var(--a); animation:blink 1s steps(1) infinite; } @keyframes blink { 50% { opacity:0; } }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:80; display:flex; gap:4px; background:rgba(11,16,32,.88); backdrop-filter:blur(8px); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+.chk { display:inline-flex; width:18px; height:18px; border-radius:5px; border:1.5px solid var(--line); align-items:center; justify-content:center; flex:none; transition:all .2s; }
+.chk.on { background:var(--a); border-color:var(--a); }
+.chk.on::after { content:''; width:8px; height:4px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } .reveal { opacity:1; transform:none; } }
+
+.wrap { max-width:1180px; margin:0 auto; padding:26px 32px 140px; }
+.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:40px; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:50%; background:var(--grad); position:relative; }
+.brand .logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.grad { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.madlib { font:800 46px/1.28 Inter; letter-spacing:-.025em; color:var(--ink); max-width:980px; margin:30px 0 30px; }
+.blank { display:inline-block; border-bottom:4px solid var(--a); color:var(--a-ink); cursor:pointer; padding:0 4px; transition:background .2s; border-radius:6px 6px 0 0; }
+.blank:hover { background:var(--a-tint); } .blank.open { background:var(--a-tint); }
+.pop { max-width:720px; border:1px solid var(--line); border-radius:18px; padding:18px 20px; box-shadow:0 20px 50px rgba(11,16,32,.12); margin:-6px 0 26px; animation:fs .3s ease both; background:#fff; }
+.pop .row { display:flex; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:14px; cursor:pointer; }
+.runline { display:flex; align-items:center; gap:18px; }
+.runline .p { font:900 34px Inter; color:var(--ink); }
+.story { display:grid; grid-template-columns:1fr 520px; gap:56px; }
+.chap { min-height:86vh; display:flex; flex-direction:column; justify-content:center; padding:20px 0; opacity:.25; transition:opacity .4s; }
+.chap.active { opacity:1; }
+.chap .k { font:700 12px Inter; letter-spacing:.14em; text-transform:uppercase; color:var(--a-ink); margin-bottom:12px; }
+.chap h2 { font:900 42px/1.1 Inter; letter-spacing:-.025em; color:var(--ink); margin:0 0 16px; }
+.chap p { font-size:18px; line-height:1.6; color:var(--body); max-width:520px; margin:0 0 14px; }
+.chap .acts { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.fig { position:sticky; top:8vh; height:84vh; display:flex; flex-direction:column; justify-content:center; }
+.fig svg { width:100%; height:auto; overflow:visible; }
+.fig circle { transition:cx .9s cubic-bezier(.2,.8,.2,1), cy .9s cubic-bezier(.2,.8,.2,1), fill .5s, r .5s; }
+.fig text { font-family:Inter; transition:opacity .5s; }
+.figcap { font-size:13px; color:var(--muted); text-align:center; margin-top:10px; min-height:20px; }
+.ans { border-left:3px solid var(--line); padding:4px 0 4px 16px; margin:14px 0; }
+.ans .q { font:700 15px Inter; color:var(--ink); } .ans pre { white-space:pre-wrap; font:14px/1.6 Inter; margin:6px 0 0; color:var(--body); }
+.nx { display:grid; grid-template-columns:24px 1fr auto; gap:14px; align-items:start; padding:14px 0; border-bottom:1px solid var(--line); }
+.nx b { color:var(--ink); }
+.ring-wrap { display:grid; grid-template-columns:420px 1fr; gap:50px; align-items:center; margin-top:10px; }
+.ring-wrap svg circle { transition:fill .35s; }
+.feed .it { padding:10px 0; border-bottom:1px solid var(--line); font-size:14px; animation:fs .35s ease both; }
+.toast { position:fixed; left:50%; bottom:76px; transform:translateX(-50%) translateY(10px); background:var(--ink); color:#fff; padding:10px 14px; border-radius:10px; font-size:13px; opacity:0; transition:all .25s; z-index:85; }
+.toast.on { opacity:1; transform:translateX(-50%); }
+@media (max-width:980px) { .story, .ring-wrap { grid-template-columns:1fr; } .fig { position:relative; height:auto; top:0; } .madlib { font-size:30px; } .chap { min-height:auto; opacity:1; } }
+
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="wrap"><div class="top"><div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div><div id="topr" style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)"></div></div><div id="main"></div></div><div class="toast" id="toast"></div><script>
+const PRACTICE = { name: 'Bothell Family Dentistry', short: 'Bothell Family', domain: 'bothellfamilydentistry.com', city: 'Bothell, WA', address: '19515 N Creek Pkwy S, Bothell' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', k: 52, n: 135, how: 'app, logged out, United States' },
+  { key: 'gemini', name: 'Gemini', k: 61, n: 135, how: 'app, logged out, Bothell' },
+  { key: 'aio', name: 'AI Overviews', k: 14, n: 45, how: 'Google results, Bothell', note: 'An Overview showed on 9 of 27 questions' },
+  { key: 'aimode', name: 'AI Mode', k: 47, n: 135, how: 'Google AI Mode, Bothell' },
+  { key: 'perplexity', name: 'Perplexity', k: 70, n: 135, how: 'API, city in the question' },
+  { key: 'near', name: 'ChatGPT near me', k: 4, n: 15, how: 'API with the city set', note: 'A city-level near-me search can\'t be properly simulated on ChatGPT; this is the closest stand-in.' },
+];
+AIS.forEach(a => a.asks = a.key === 'chatgpt' ? 135 : a.key === 'near' ? 15 : 150);
+const pct = (k, n) => n ? Math.round(100 * k / n) : 0;
+const range = (k, n) => { const p = k / n; return Math.round(196 * Math.sqrt(p * (1 - p) / n)); };
+const RIVALS = [
+  { name: PRACTICE.name, you: true, rate: 39 },
+  { name: 'Accent Dental Center Bothell', rate: 47, byAi: [47, 52, 40, 44, 58, 33] },
+  { name: 'Bothell Smiles Family Dentistry', rate: 36, byAi: [36, 30, 22, 41, 39, 27] },
+  { name: 'Hello Kids Dentistry', rate: 24, byAi: [24, 31, 18, 20, 29, 13] },
+  { name: 'Annigan Dental', rate: 16, byAi: [16, 12, 9, 19, 14, 7] },
+];
+RIVALS[0].byAi = AIS.map(a => pct(a.k, a.n));
+const SERVICES = [
+  { svc: 'Kids', rate: 61, state: 'strong', page: '/family-dentistry' },
+  { svc: 'Cleanings', rate: 57, state: 'strong', page: '/preventive-care' },
+  { svc: 'Whitening', rate: 52, state: 'strong', page: '/teeth-whitening' },
+  { svc: 'Invisalign', rate: 48, state: 'ok', page: '/invisalign' },
+  { svc: 'Veneers', rate: 39, state: 'ok', page: '/cosmetic' },
+  { svc: 'Sedation', rate: 21, state: 'gap', page: null },
+  { svc: 'Emergency', rate: 12, state: 'gap', page: '/contact', thin: true },
+  { svc: 'Implants', rate: 8, state: 'gap', page: null },
+];
+const QUESTIONS = [
+  ['Implants', 'Who does dental implants well in Bothell?', 0], ['Implants', 'Best place for a single tooth implant near Bothell, WA', 1], ['Implants', 'Are implants or bridges better, and who in Bothell does both?', 0],
+  ['Invisalign', 'Who is a good Invisalign dentist in Bothell?', 3], ['Invisalign', 'Invisalign for adults in Bothell, WA: where should I go?', 2], ['Invisalign', 'Cheapest clear aligners in Bothell', 2],
+  ['Emergency', 'Emergency dentist near me', 0], ['Emergency', 'I cracked a tooth, who can see me fast in Bothell?', 1], ['Emergency', 'Weekend emergency dental care Bothell WA', 1],
+  ['Kids', 'Family dentist near me for my kids', 3], ['Kids', 'Gentle dentist for a nervous 6 year old in Bothell', 4], ['Kids', 'Pediatric or family dentist in Bothell: which is better?', 3],
+  ['Veneers', 'Who does natural looking veneers in Bothell?', 2], ['Veneers', 'Porcelain veneers cost Bothell WA', 1], ['Veneers', 'Cosmetic dentist Bothell for a smile makeover', 3],
+  ['Whitening', 'Professional teeth whitening in Bothell', 3], ['Whitening', 'Is in-office whitening worth it, Bothell dentists', 2], ['Whitening', 'Best whitening dentist Bothell WA', 3],
+  ['Cleanings', 'Dentist near me for a cleaning', 3], ['Cleanings', 'Dentist in Bothell that takes Delta Dental', 3], ['Cleanings', 'New patient exam and cleaning Bothell', 2],
+  ['Sedation', 'Sedation dentistry for anxious patients in Bothell', 1], ['Sedation', 'Who offers nitrous oxide at the dentist in Bothell?', 1], ['Sedation', 'Sleep dentistry near Bothell WA', 1],
+  ['General', 'Best dentist in Bothell, WA', 2], ['General', 'Top rated dentists in Bothell', 3], ['General', 'Which Bothell dentist should I choose?', 2],
+  ['Branded', 'Is Bothell Family Dentistry good?', 5], ['Branded', 'Bothell Family Dentistry reviews', 5], ['Branded', 'What do people say about Bothell Family Dentistry?', 4],
+].map(([svc, text, base], i) => ({ id: i, svc, text, near: /near me/i.test(text), byAi: AIS.slice(0, 5).map((_, j) => Math.max(0, Math.min(5, base + ((i * 7 + j * 3) % 3) - 1))) }));
+const SOURCES = [['yelp.com', 41, 'listed'], ['healthgrades.com', 27, 'missing'], ['bothellfamilydentistry.com', 31, 'you'], ['zocdoc.com', 19, 'missing'], ['reddit.com', 14, 'mentioned'], ['google.com/maps', 11, 'listed']];
+const CHANGES = [
+  { up: true, text: 'Gemini now names you for Invisalign', detail: '2 of 15 answers a month ago, 9 of 15 this week' },
+  { up: false, text: 'Accent Dental started showing up in AI Overviews', detail: 'named in 6 of the 9 Overviews this week, none last week' },
+  { up: true, text: 'Healthgrades began citing you', detail: 'your profile appeared in 4 ChatGPT sources' },
+];
+const NEXT = [
+  { kind: 'page', title: 'Plan a page: dental implants', why: 'AI almost never names you for implants (8%). You have no implants page.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'page', title: 'Plan a page: sedation dentistry', why: '21% and no page. Anxious patients ask about it often.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'optimize', title: 'Strengthen your emergency page', why: '12%. Your /contact page mentions emergencies in one line.', cta: 'Optimize this page', where: 'opens On-Page' },
+  { kind: 'task', title: 'Claim your Healthgrades profile', why: 'AI cites Healthgrades in 27 answers; you are not on it.', cta: 'Make a task', where: 'adds an Asana task' },
+];
+function lit(k, n, seed = 1) { const on = new Set(); let s = seed * 97 + k; while (on.size < k) { s = (s * 9301 + 49297) % 233280; on.add(Math.floor(s / 233280 * n)); } return on; }
+function laneHtml(k, n, cls = '', seed = 1) { const on = lit(k, n, seed); let h = `<div class="lane ${cls}">`; for (let i = 0; i < n; i++) h += `<i class="${on.has(i) ? 'hit' : ''}"></i>`; return h + '</div>'; }
+function answerFor(q, ai, named) {
+  const others = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', q.svc === 'Kids' ? 'Hello Kids Dentistry' : 'Annigan Dental'];
+  const list = named ? [others[0], PRACTICE.name, others[1]] : others;
+  const intro = { chatgpt: 'Here are a few well-reviewed options in Bothell:', gemini: 'Based on reviews and services, these Bothell practices stand out:', aio: 'Top options near Bothell, WA include', aimode: 'For this in Bothell, people often look at:', perplexity: 'Several Bothell dentists are frequently recommended:' }[ai.key] || 'Options in Bothell:';
+  const body = list.map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}${i === 0 ? ': many recent reviews and same-week appointments.' : n === PRACTICE.name ? ': patients mention clear explanations and a gentle approach.' : ': offers evening hours.'}`).join('\n');
+  return `${intro}\n\n${body}`;
+}
+const tipEl = document.getElementById('tip');
+function tip(e, html) { tipEl.innerHTML = html; tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }
+function untip() { tipEl.classList.remove('on'); }
+function bindTips(root = document) { root.querySelectorAll('[data-tip]').forEach(n => { if (n._t) return; n._t = 1; n.addEventListener('mousemove', e => tip(e, n.dataset.tip)); n.addEventListener('mouseleave', untip); }); }
+function countUp(el, to, { ms = 900, suffix = '%' } = {}) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix; if (p < 1) requestAnimationFrame(f); })(t0); }
+function revealAll(root = document) { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); e.target.querySelectorAll('[data-count]').forEach(c => countUp(c, +c.dataset.count, { suffix: c.dataset.suffix ?? '%' })); } }), { threshold: .15 }); root.querySelectorAll('.reveal').forEach(n => io.observe(n)); }
+function typeText(el, text, ms = 18) { return new Promise(res => { el.textContent = ''; el.classList.add('typing'); let i = 0; const h = setInterval(() => { el.textContent = text.slice(0, ++i); if (i >= text.length) { clearInterval(h); el.classList.remove('typing'); res(); } }, ms); }); }
+/* Simulated Snapshot: rounds of answers dropping into lanes. onRound(round, ai, k, n) */
+function runSim({ onAnswer, onRound, onDone, speed = 14 }) {
+  const per = AIS.map(a => ({ a, n: a.asks / 5, k: a.k / a.n * a.asks / 5 })); let round = 1, idx = 0; const queue = [];
+  for (let r = 1; r <= 5; r++) per.forEach(({ a, n, k }, j) => { const on = lit(Math.round(k), Math.round(n), r * 13 + j); for (let i = 0; i < Math.round(n); i++) queue.push({ r, a, j, hit: on.has(i) }); });
+  const h = setInterval(() => { for (let s = 0; s < speed && idx < queue.length; s++, idx++) { const q = queue[idx]; if (q.r !== round) { onRound && onRound(round); round = q.r; } onAnswer(q, idx, queue.length); } if (idx >= queue.length) { clearInterval(h); onRound && onRound(5); onDone && onDone(); } }, 60);
+  return () => clearInterval(h);
+}
+function stateBar(states, initial, onPick) {
+  const bar = document.createElement('div'); bar.className = 'statebar';
+  bar.innerHTML = '<span>Prototype</span>' + states.map(([k, l]) => `<button data-k="${k}">${l}</button>`).join('');
+  document.body.appendChild(bar);
+  const set = k => { bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); onPick(k); };
+  bar.querySelectorAll('button').forEach(b => b.addEventListener('click', () => set(b.dataset.k)));
+  set(initial);
+}
+
+const main = document.getElementById('main'); let stop = null, TRACKED = false;
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); }
+
+/* ---------- Setup: one sentence with blanks ---------- */
+function setup() {
+  document.getElementById('topr').innerHTML = '<a class="btn sm" href="#">Paid Snapshots</a>';
+  let nQ = 30, nR = 4, open = null;
+  const draw = () => {
+    main.innerHTML = `<div class="eyebrow">New check</div>
+    <div class="madlib">Check how AI talks about <span class="blank" data-b="p">${PRACTICE.name}</span> in <span class="blank" data-b="c">Bothell, WA</span>, across <span class="blank" data-b="q">${nQ} questions</span> patients ask, next to <span class="blank" data-b="r">${nR} nearby practices</span>.</div>
+    <div id="popslot"></div>
+    <div class="runline"><button class="btn go" id="run" style="padding:14px 22px;font-size:16px">Run it · $${(nQ * .0785).toFixed(2)}</button><span style="color:var(--muted)">About an hour. Every question goes to six AIs, five times each, a few minutes apart.</span></div>`;
+    main.querySelectorAll('.blank').forEach(b => b.onclick = () => { open = open === b.dataset.b ? null : b.dataset.b; draw(); });
+    if (open) main.querySelector(`.blank[data-b="${open}"]`).classList.add('open');
+    const slot = main.querySelector('#popslot');
+    if (open === 'p') slot.innerHTML = `<div class="pop"><input class="input" value="${PRACTICE.name}"><div class="row" style="cursor:default"><span class="chk on"></span><b style="color:var(--ink)">${PRACTICE.name}</b><span style="color:var(--muted)">${PRACTICE.address} · client</span></div></div>`;
+    if (open === 'c') slot.innerHTML = `<div class="pop">Asked from Bothell on Gemini, AI Overviews and AI Mode. ChatGPT can only be set to the United States, so its questions name the city, and its near-me questions use the API with the city set.</div>`;
+    if (open === 'q') { slot.innerHTML = `<div class="pop" style="max-height:340px;overflow:auto">${QUESTIONS.map(q => `<div class="row" data-id="${q.id}"><span class="chk on"></span>${q.text}<span style="margin-left:auto;color:var(--faint);font-size:12px">${q.svc}</span></div>`).join('')}</div>`; slot.querySelectorAll('.row').forEach(r => r.onclick = () => { const c = r.querySelector('.chk'); c.classList.toggle('on'); nQ += c.classList.contains('on') ? 1 : -1; const keep = open; draw(); open = keep; }); }
+    if (open === 'r') slot.innerHTML = `<div class="pop">${RIVALS.slice(1).map(r => `<div class="row"><span class="chk on"></span>${r.name}</div>`).join('')}<div class="row" style="color:var(--a-ink);font-weight:600">+ add one by name</div></div>`;
+    main.querySelector('#run').onclick = () => go('running');
+  };
+  draw();
+}
+
+/* ---------- Running: a ring of 750 answers ---------- */
+function running() {
+  document.getElementById('topr').innerHTML = `<b style="color:var(--ink)">${PRACTICE.name}</b> · running`;
+  const N = 750, R0 = 120; let dots = '';
+  for (let i = 0; i < N; i++) { const ring = i % 5, idx = Math.floor(i / 5), ang = idx / (N / 5) * Math.PI * 2 - Math.PI / 2, r = R0 + ring * 13; dots += `<circle cx="${200 + Math.cos(ang) * r}" cy="${200 + Math.sin(ang) * r}" r="3.4" fill="#EEF0F4" data-i="${i}"/>`; }
+  main.innerHTML = `<div class="eyebrow" id="rnd">Round 1 of 5</div><h2 style="font:900 40px/1.1 Inter;letter-spacing:-.025em;color:var(--ink);margin:8px 0 0">750 answers on the way.</h2>
+    <div class="ring-wrap"><svg viewBox="0 0 400 400" id="ring">${dots}<text x="200" y="196" text-anchor="middle" font-size="54" font-weight="900" fill="#0B1020" id="rp">0%</text><text x="200" y="226" text-anchor="middle" font-size="13" fill="#667085" id="rc">named you · early</text></svg>
+    <div><p style="font-size:18px;color:var(--body)">Each dot is one answer from one AI. It lights up when the answer names ${PRACTICE.short}. The number in the middle settles as more answers land; it stays marked early until all five rounds are in.</p><div class="feed" id="feed"></div></div></div>`;
+  const circles = [...main.querySelectorAll('#ring circle')]; let k = 0;
+  stop = runSim({ speed: 3, onAnswer: (q, i, total) => { const c = circles[Math.floor(i * N / total)]; if (c) c.setAttribute('fill', q.hit ? '#4F46E5' : '#CDD2DC'); if (q.hit) k++; main.querySelector('#rp').textContent = pct(k, i + 1) + '%';
+      if (q.hit && i % 23 === 0) { const f = main.querySelector('#feed'); const it = document.createElement('div'); it.className = 'it'; it.innerHTML = `<b>${q.a.name}</b> named you: “${QUESTIONS[i % 27].text}”`; f.prepend(it); if (f.children.length > 5) f.lastChild.remove(); } },
+    onRound: r => { main.querySelector('#rnd').textContent = r >= 5 ? 'All five rounds in' : `Round ${r + 1} of 5`; if (r >= 5) main.querySelector('#rc').textContent = 'named you · 750 answers'; }, onDone: () => setTimeout(() => go('story'), 1200) });
+}
+
+/* ---------- Story: chapters + one sticky figure of dots ---------- */
+const DOTS = 150;
+function layouts() {
+  const L = {};
+  // 1: a ring, 59 lit (39%)
+  L.ring = Array.from({ length: DOTS }, (_, i) => { const a = i / DOTS * Math.PI * 2 - Math.PI / 2, r = 150 + (i % 3) * 14; return { x: 250 + Math.cos(a) * r, y: 230 + Math.sin(a) * r, on: lit(59, DOTS, 4).has(i) }; });
+  // 2: services, 8 clusters, lit share = service rate
+  L.svc = []; SERVICES.forEach((s, g) => { const per = Math.round(DOTS / 8), on = Math.round(per * s.rate / 100); for (let j = 0; j < per && L.svc.length < DOTS; j++) L.svc.push({ x: 20 + (j % 6) * 11 + (g % 4) * 125, y: 70 + Math.floor(j / 6) * 11 + Math.floor(g / 4) * 190, on: j < on, g }); }); while (L.svc.length < DOTS) L.svc.push({ x: -40, y: -40, on: false });
+  // 3: rivals, rows of dots = rate
+  L.riv = []; RIVALS.forEach((r, g) => { const n = Math.round(r.rate * .62); for (let j = 0; j < n; j++) L.riv.push({ x: 150 + (j % 30) * 11, y: 60 + g * 84 + Math.floor(j / 30) * 11, on: !!r.you, mute: !r.you }); }); while (L.riv.length < DOTS) L.riv.push({ x: 250, y: 520, on: false, hide: true });
+  // 4: sources, columns
+  L.src = []; SOURCES.forEach(([d, n, st], g) => { for (let j = 0; j < n && L.src.length < DOTS; j++) L.src.push({ x: 40 + g * 78 + (j % 4) * 11, y: 420 - Math.floor(j / 4) * 11, on: st === 'you', mute: st !== 'you', miss: st === 'missing' }); }); while (L.src.length < DOTS) L.src.push({ x: 250, y: 520, hide: true });
+  // 5: trend, 8 weekly columns, lit count rising
+  L.trend = []; [33, 35, 34, 36, 35, 38, 41, 44].forEach((r, w) => { const n = 18, on = Math.round(n * (r - 20) / 26); for (let j = 0; j < n && L.trend.length < DOTS; j++) L.trend.push({ x: 40 + w * 58 + (j % 3) * 11, y: 420 - Math.floor(j / 3) * 11, on: j < on }); }); while (L.trend.length < DOTS) L.trend.push({ x: 250, y: 520, hide: true });
+  return L;
+}
+const LABELS = {
+  ring: [[250, 222, '39%', 64, 900, '#0B1020'], [250, 252, 'of answers name you', 14, 500, '#667085']],
+  svc: SERVICES.map((s, g) => [20 + (g % 4) * 125, 50 + Math.floor(g / 4) * 190, `${s.svc} ${s.rate}%`, 13, 700, s.state === 'gap' ? '#E11D48' : '#0B1020']),
+  riv: RIVALS.map((r, g) => [0, 64 + g * 84, r.name.replace('Family Dentistry', 'Family').replace(' Center Bothell', ''), 12.5, r.you ? 800 : 600, r.you ? '#4338CA' : '#273043']).concat(RIVALS.map((r, g) => [150 + 30 * 11 + 8, 64 + g * 84, r.rate + '%', 12.5, 700, '#0B1020'])),
+  src: SOURCES.map(([d, n, st], g) => [40 + g * 78, 446, st === 'you' ? 'your site' : d.replace('.com', ''), 11, st === 'you' ? 800 : 600, st === 'missing' ? '#E11D48' : st === 'you' ? '#4338CA' : '#273043']),
+  trend: ['Sep 8', '', '', '', '', '', '', 'Oct 27'].map((w, i) => [40 + i * 58, 446, w, 11, 600, '#667085']).concat([[250, 300, '33% → 44%', 30, 900, '#0B1020']]),
+};
+const CAPS = { ring: '150 of the 750 answers, drawn to scale: lit dots named you.', svc: 'Each cluster is one service. Red names mean AI rarely names you there.', riv: 'Each row is one practice; dots = how often AI names it.', src: 'Each column is a site AI cites. Red = you are not on it.', trend: 'Each column is one week of ChatGPT answers (tracked clients).' };
+function story() {
+  document.getElementById('topr').innerHTML = `<b style="color:var(--ink)">${PRACTICE.name}</b> · Snapshot Oct 27 <button class="btn sm">Share report</button>${TRACKED ? '' : '<button class="btn go sm" id="trk">Keep watching, $28/mo</button>'}`;
+  document.getElementById('trk')?.addEventListener('click', () => { TRACKED = true; toast('Tracking starts tonight: twice a day.'); story(); });
+  const chapters = [
+    ['ring', 'Long story short', `AI names you in about <span class="grad">4 of 10</span> answers.`, `<p>Accent Dental Center comes up in about 5. Perplexity names you most; Google's AI Overviews, which showed on only 9 of 27 questions, least.</p><p style="font-size:14px;color:var(--muted)">${AIS.map(a => `${a.name} ${pct(a.k, a.n)}%`).join(' · ')}. The ChatGPT near-me line is a stand-in: a city-level near-me search can't be properly simulated on ChatGPT.</p>`],
+    ...(TRACKED ? [['trend', 'Since you started watching', 'Up 11 points in eight weeks.', `<p>${CHANGES.map(c => `${c.up ? '↑' : '↓'} ${c.text}.`).join('<br>')}</p>`]] : []),
+    ['svc', 'Where patients find you', 'Strong on kids and cleanings. <span style="color:var(--down)">Invisible for implants.</span>', `<p>When patients ask about implants, sedation or emergencies, AI names other practices. You have no implants page and no sedation page.</p><div class="acts"><button class="btn go sm" data-a="Drafted a calendar item: implants page.">Plan an implants page</button><button class="btn soft sm" data-a="Drafted a calendar item: sedation page.">Plan a sedation page</button><button class="btn soft sm" data-a="Opened in On-Page optimization.">Optimize the emergency page</button></div>`],
+    ['riv', 'Who AI names instead', 'Accent Dental leads, but not everywhere.', `<p>Accent comes up in 47% of answers to your 39%. On AI Mode it drops to 44%, close to you. Hello Kids Dentistry wins most kids questions on ChatGPT.</p><div class="ans"><div class="q">“Best dentist in Bothell, WA” · ChatGPT</div><pre>${answerFor(QUESTIONS[24], AIS[0], true)}</pre></div>`],
+    ['src', 'What AI reads', 'Healthgrades shapes the answers. You are not on it.', `<p>AI cites Healthgrades in 27 answers and Zocdoc in 19. Listings there are the fastest way into those answers.</p><div class="acts"><button class="btn go sm" data-a="Asana task added: claim Healthgrades.">Claim Healthgrades</button><button class="btn soft sm" data-a="Asana task added: Zocdoc listing.">Get on Zocdoc</button></div>`],
+    ['ring', 'Next steps', 'Four things worth doing this month.', NEXT.map((n, i) => `<div class="nx"><span class="chk" id="n${i}"></span><div><b>${n.title}</b><div style="color:var(--muted);font-size:14px">${n.why}</div></div><button class="btn go sm" data-n="${i}">${n.cta}</button></div>`).join('') + `<p style="margin-top:18px;font-size:14px;color:var(--muted)"><a href="#" style="color:var(--a-ink);font-weight:600">Read all 750 answers →</a></p>`],
+  ];
+  main.innerHTML = `<div class="story"><div>${chapters.map(([f, k, h, body], i) => `<div class="chap" data-f="${f}" data-i="${i}"><div class="k">${String(i + 1).padStart(2, '0')} · ${k}</div><h2>${h}</h2>${body}</div>`).join('')}</div>
+    <div class="fig"><svg viewBox="0 0 500 470" id="fig"></svg><div class="figcap" id="cap"></div></div></div>`;
+  const svg = main.querySelector('#fig'), L = layouts();
+  svg.innerHTML = Array.from({ length: DOTS }, (_, i) => `<circle r="4.2" cx="${L.ring[i].x}" cy="${L.ring[i].y}" fill="#E4E7EC"/>`).join('') + '<g id="lbl"></g>';
+  const cs = [...svg.querySelectorAll('circle')];
+  const show = f => { L[f].forEach((p, i) => { const c = cs[i]; c.style.cx = p.x; c.style.cy = p.y; c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.style.fill = p.hide ? 'transparent' : p.on ? '#4F46E5' : p.miss ? '#FBCFD8' : p.mute ? '#B6BCC8' : '#E4E7EC'; });
+    svg.querySelector('#lbl').innerHTML = LABELS[f].map(([x, y, t, s, w, c]) => `<text x="${x}" y="${y}" font-size="${s}" font-weight="${w}" fill="${c}" text-anchor="${f === 'ring' || (f === 'trend' && y === 300) ? 'middle' : 'start'}" class="fade-swap">${t}</text>`).join(''); main.querySelector('#cap').textContent = CAPS[f]; };
+  show('ring');
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { main.querySelectorAll('.chap').forEach(c => c.classList.toggle('active', c === e.target)); show(e.target.dataset.f); } }), { rootMargin: '-45% 0px -45% 0px' });
+  main.querySelectorAll('.chap').forEach(c => io.observe(c));
+  main.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { b.textContent = 'Added ✓'; b.disabled = true; toast(b.dataset.a); });
+  main.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { main.querySelector('#n' + b.dataset.n).classList.add('on'); b.textContent = 'Done ✓'; b.disabled = true; toast(NEXT[+b.dataset.n].where + '.'); });
+}
+
+function go(k) { if (stop) { stop(); stop = null; } window.scrollTo({ top: 0 }); document.querySelectorAll('.statebar button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+  if (k === 'watch') { TRACKED = true; k = 'story'; } ({ setup, running, story })[k](); }
+stateBar([['setup', 'Setup'], ['running', 'Live run'], ['story', 'Story'], ['watch', 'Tracked client']], 'setup', go);
+</script>
+</body>
+</html>

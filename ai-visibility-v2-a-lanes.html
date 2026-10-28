@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Lanes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --page:#FFFFFF; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#2F5BFF; --a-ink:#1E44E6; --a-tint:#EAF0FF; --a-glow:rgba(47,91,255,.28); }
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--page); color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+button { font:inherit; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.btn { font:600 14px Inter; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); transition:transform .12s, box-shadow .2s, background .2s; }
+.btn:active { transform:scale(.97); }
+.btn.go { background:var(--a); color:#fff; border-color:transparent; box-shadow:0 6px 18px var(--a-glow); }
+.btn.go:hover { box-shadow:0 8px 24px var(--a-glow); }
+.btn.soft { background:var(--a-tint); color:var(--a-ink); border-color:transparent; }
+.btn.sm { padding:6px 11px; font-size:13px; border-radius:8px; }
+.btn:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.input { border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:14px Inter; color:var(--ink); width:100%; outline:none; background:#fff; transition:border-color .15s, box-shadow .15s; }
+.input:focus { border-color:var(--a); box-shadow:0 0 0 4px var(--a-tint); }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.lane { display:flex; flex-wrap:wrap; gap:3px; }
+.lane i { width:8px; height:8px; border-radius:50%; background:#E4E7EC; display:block; transition:background .35s, transform .35s; }
+.lane i.hit { background:var(--a); }
+.lane i.drop { animation:drop .45s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes drop { from { transform:translateY(-14px) scale(.4); opacity:0; } to { transform:none; opacity:1; } }
+.lane.big i { width:10px; height:10px; }
+.lane.tiny { gap:2px; } .lane.tiny i { width:5px; height:5px; }
+.reveal { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity:1; transform:none; }
+.fade-swap { animation:fs .35s ease both; } @keyframes fs { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.typing::after { content:'▍'; color:var(--a); animation:blink 1s steps(1) infinite; } @keyframes blink { 50% { opacity:0; } }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:80; display:flex; gap:4px; background:rgba(11,16,32,.88); backdrop-filter:blur(8px); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+.chk { display:inline-flex; width:18px; height:18px; border-radius:5px; border:1.5px solid var(--line); align-items:center; justify-content:center; flex:none; transition:all .2s; }
+.chk.on { background:var(--a); border-color:var(--a); }
+.chk.on::after { content:''; width:8px; height:4px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } .reveal { opacity:1; transform:none; } }
+
+.shell { max-width:1080px; margin:0 auto; padding:28px 28px 120px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:26px; }
+.brand { display:flex; align-items:center; gap:10px; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:8px; background:var(--a); display:grid; place-items:center; }
+.brand .logo i { width:6px; height:6px; border-radius:50%; background:#fff; box-shadow:9px 0 0 rgba(255,255,255,.55), -9px 0 0 rgba(255,255,255,.55); }
+.who { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted); }
+.who b { color:var(--ink); }
+.tabs { display:flex; gap:26px; border-bottom:1px solid var(--line); margin:6px 0 34px; position:relative; }
+.tabs button { border:0; background:none; padding:12px 0; font:600 15px Inter; color:var(--muted); cursor:pointer; }
+.tabs button.on { color:var(--ink); }
+.tabs .ink { position:absolute; bottom:-1px; height:2px; background:var(--a); transition:left .3s cubic-bezier(.2,.8,.2,1), width .3s; }
+h1.big { font:900 44px/1.08 Inter; letter-spacing:-.025em; color:var(--ink); margin:0 0 10px; }
+h2.sec { font:800 26px/1.15 Inter; letter-spacing:-.015em; color:var(--ink); margin:0 0 6px; }
+.lede { font-size:17px; color:var(--body); max-width:640px; margin:0 0 26px; }
+section.block { padding:46px 0; border-top:1px solid var(--line); }
+section.block:first-of-type { border-top:0; padding-top:6px; }
+.lanes { display:grid; gap:14px; }
+.lanerow { display:grid; grid-template-columns:150px 1fr 70px; align-items:center; gap:18px; }
+.lanerow .nm { font:600 14px Inter; color:var(--ink); }
+.lanerow .nm small { display:block; font:500 11px Inter; color:var(--faint); }
+.lanerow .val { font:800 22px Inter; color:var(--ink); text-align:right; }
+.lanerow .val small { display:block; font:500 11px 'JetBrains Mono'; color:var(--faint); }
+.svc { display:grid; grid-template-columns:120px 1fr 54px 170px; align-items:center; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+.svc .nm { font-weight:600; color:var(--ink); }
+.svc .pc { font:800 16px Inter; color:var(--ink); text-align:right; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+.colh { font:700 12px Inter; letter-spacing:.1em; text-transform:uppercase; margin-bottom:6px; }
+.answer { border:1px solid var(--line); border-radius:16px; padding:22px 24px; background:var(--soft); min-height:220px; }
+.answer .q { font:700 18px Inter; color:var(--ink); margin:6px 0 14px; }
+.answer pre { white-space:pre-wrap; font:15px/1.65 Inter; margin:0; color:var(--body); }
+.carousel-nav { display:flex; gap:8px; align-items:center; margin-top:14px; }
+.race { position:relative; }
+.racer { position:absolute; left:0; right:0; display:grid; grid-template-columns:260px 1fr 52px; gap:14px; align-items:center; height:44px; transition:top .55s cubic-bezier(.2,.8,.2,1); }
+.racer .bar { height:10px; border-radius:5px; background:#E4E7EC; overflow:hidden; } .racer .bar i { display:block; height:100%; border-radius:5px; background:#98A2B3; transition:width .55s cubic-bezier(.2,.8,.2,1); }
+.racer.you .bar i { background:var(--a); } .racer.you .nm { color:var(--a-ink); font-weight:700; }
+.seg { display:inline-flex; gap:2px; background:var(--soft); border-radius:10px; padding:3px; margin-bottom:18px; flex-wrap:wrap; }
+.seg button { border:0; background:none; padding:6px 11px; border-radius:8px; font:600 13px Inter; color:var(--muted); cursor:pointer; }
+.seg button.on { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(11,16,32,.1); }
+.src { display:grid; grid-template-columns:220px 1fr 160px; gap:16px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
+.next { display:grid; grid-template-columns:28px 1fr auto; gap:16px; align-items:start; padding:18px 0; border-bottom:1px solid var(--line); }
+.next .t { font:700 16px Inter; color:var(--ink); } .next .w { color:var(--muted); font-size:14px; margin-top:2px; }
+.done-pill { font:600 13px Inter; color:var(--up); }
+.change { display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--line); }
+.change .arrow { width:28px; height:28px; border-radius:8px; display:grid; place-items:center; font-weight:800; flex:none; }
+.change .arrow.up { background:#E8F6EE; color:var(--up); } .change .arrow.down { background:#FDECEF; color:var(--down); }
+.steps { display:grid; gap:14px; max-width:820px; }
+.step { border:1px solid var(--line); border-radius:16px; overflow:hidden; transition:box-shadow .25s, border-color .25s; }
+.step.open { border-color:transparent; box-shadow:0 0 0 2px var(--a), 0 14px 40px rgba(47,91,255,.12); }
+.step .hd { display:flex; align-items:center; gap:14px; padding:18px 22px; cursor:pointer; }
+.step .num { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font:800 13px Inter; background:var(--soft); color:var(--muted); flex:none; transition:all .25s; }
+.step.open .num { background:var(--a); color:#fff; } .step.done .num { background:#E8F6EE; color:var(--up); }
+.step .ttl { font:700 16px Inter; color:var(--ink); } .step .sum { color:var(--muted); font-size:14px; margin-left:auto; text-align:right; }
+.step .bd { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.2,.8,.2,1); }
+.step.open .bd { grid-template-rows:1fr; } .step .bd > div { overflow:hidden; } .step .bd .in { padding:0 22px 22px 64px; }
+.step.locked { opacity:.5; } .step.locked .hd { cursor:not-allowed; }
+.found { display:flex; gap:16px; align-items:center; padding:16px; border-radius:12px; background:var(--soft); }
+.found .pin { width:42px; height:42px; border-radius:12px; background:var(--a-tint); display:grid; place-items:center; color:var(--a); font:800 18px Inter; }
+.qgroup { margin-bottom:14px; } .qgroup .g { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+.qcard { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:6px; font-size:14px; animation:fs .3s ease both; cursor:pointer; }
+.qcard.off { color:var(--faint); text-decoration:line-through; }
+.price { display:flex; align-items:baseline; gap:10px; }
+.price b { font:900 30px Inter; color:var(--ink); }
+.runhero { display:grid; grid-template-columns:1fr 280px; gap:40px; align-items:start; }
+.ticker { border:1px solid var(--line); border-radius:16px; padding:18px; background:var(--soft); min-height:240px; }
+.ticker .item { animation:fs .35s ease both; font-size:13px; padding:8px 0; border-bottom:1px solid var(--line); }
+.early { font:700 10px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.ans-grid { display:grid; grid-template-columns:320px 1fr; gap:28px; }
+.ans-list { max-height:560px; overflow:auto; border-right:1px solid var(--line); padding-right:12px; }
+.ans-row { display:flex; gap:10px; align-items:flex-start; padding:10px; border-radius:10px; cursor:pointer; font-size:13.5px; }
+.ans-row:hover { background:var(--soft); } .ans-row.on { background:var(--a-tint); }
+.ans-row .d { width:10px; height:10px; border-radius:50%; margin-top:5px; flex:none; background:#E4E7EC; } .ans-row .d.hit { background:var(--a); }
+.weeks { display:grid; gap:10px; }
+.week { display:grid; grid-template-columns:90px 1fr 60px; gap:14px; align-items:center; }
+.toast { position:fixed; left:50%; bottom:76px; transform:translateX(-50%) translateY(10px); background:var(--ink); color:#fff; padding:10px 14px; border-radius:10px; font-size:13px; opacity:0; transition:all .25s; z-index:85; }
+.toast.on { opacity:1; transform:translateX(-50%); }
+@media (max-width:860px) { .two, .ans-grid, .runhero { grid-template-columns:1fr; } .lanerow { grid-template-columns:110px 1fr 56px; } .svc { grid-template-columns:100px 1fr 46px; } .svc .act { grid-column:1/-1; } h1.big { font-size:32px; } }
+
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="shell">
+<div class="topbar"><div class="brand"><span class="logo"><i></i></span>AI Visibility <span class="sample">sample data</span></div>
+<div class="who" id="who"></div></div>
+<div id="screen"></div></div><div class="toast" id="toast"></div><script>
+const PRACTICE = { name: 'Bothell Family Dentistry', short: 'Bothell Family', domain: 'bothellfamilydentistry.com', city: 'Bothell, WA', address: '19515 N Creek Pkwy S, Bothell' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', k: 52, n: 135, how: 'app, logged out, United States' },
+  { key: 'gemini', name: 'Gemini', k: 61, n: 135, how: 'app, logged out, Bothell' },
+  { key: 'aio', name: 'AI Overviews', k: 14, n: 45, how: 'Google results, Bothell', note: 'An Overview showed on 9 of 27 questions' },
+  { key: 'aimode', name: 'AI Mode', k: 47, n: 135, how: 'Google AI Mode, Bothell' },
+  { key: 'perplexity', name: 'Perplexity', k: 70, n: 135, how: 'API, city in the question' },
+  { key: 'near', name: 'ChatGPT near me', k: 4, n: 15, how: 'API with the city set', note: 'A city-level near-me search can\'t be properly simulated on ChatGPT; this is the closest stand-in.' },
+];
+AIS.forEach(a => a.asks = a.key === 'chatgpt' ? 135 : a.key === 'near' ? 15 : 150);
+const pct = (k, n) => n ? Math.round(100 * k / n) : 0;
+const range = (k, n) => { const p = k / n; return Math.round(196 * Math.sqrt(p * (1 - p) / n)); };
+const RIVALS = [
+  { name: PRACTICE.name, you: true, rate: 39 },
+  { name: 'Accent Dental Center Bothell', rate: 47, byAi: [47, 52, 40, 44, 58, 33] },
+  { name: 'Bothell Smiles Family Dentistry', rate: 36, byAi: [36, 30, 22, 41, 39, 27] },
+  { name: 'Hello Kids Dentistry', rate: 24, byAi: [24, 31, 18, 20, 29, 13] },
+  { name: 'Annigan Dental', rate: 16, byAi: [16, 12, 9, 19, 14, 7] },
+];
+RIVALS[0].byAi = AIS.map(a => pct(a.k, a.n));
+const SERVICES = [
+  { svc: 'Kids', rate: 61, state: 'strong', page: '/family-dentistry' },
+  { svc: 'Cleanings', rate: 57, state: 'strong', page: '/preventive-care' },
+  { svc: 'Whitening', rate: 52, state: 'strong', page: '/teeth-whitening' },
+  { svc: 'Invisalign', rate: 48, state: 'ok', page: '/invisalign' },
+  { svc: 'Veneers', rate: 39, state: 'ok', page: '/cosmetic' },
+  { svc: 'Sedation', rate: 21, state: 'gap', page: null },
+  { svc: 'Emergency', rate: 12, state: 'gap', page: '/contact', thin: true },
+  { svc: 'Implants', rate: 8, state: 'gap', page: null },
+];
+const QUESTIONS = [
+  ['Implants', 'Who does dental implants well in Bothell?', 0], ['Implants', 'Best place for a single tooth implant near Bothell, WA', 1], ['Implants', 'Are implants or bridges better, and who in Bothell does both?', 0],
+  ['Invisalign', 'Who is a good Invisalign dentist in Bothell?', 3], ['Invisalign', 'Invisalign for adults in Bothell, WA: where should I go?', 2], ['Invisalign', 'Cheapest clear aligners in Bothell', 2],
+  ['Emergency', 'Emergency dentist near me', 0], ['Emergency', 'I cracked a tooth, who can see me fast in Bothell?', 1], ['Emergency', 'Weekend emergency dental care Bothell WA', 1],
+  ['Kids', 'Family dentist near me for my kids', 3], ['Kids', 'Gentle dentist for a nervous 6 year old in Bothell', 4], ['Kids', 'Pediatric or family dentist in Bothell: which is better?', 3],
+  ['Veneers', 'Who does natural looking veneers in Bothell?', 2], ['Veneers', 'Porcelain veneers cost Bothell WA', 1], ['Veneers', 'Cosmetic dentist Bothell for a smile makeover', 3],
+  ['Whitening', 'Professional teeth whitening in Bothell', 3], ['Whitening', 'Is in-office whitening worth it, Bothell dentists', 2], ['Whitening', 'Best whitening dentist Bothell WA', 3],
+  ['Cleanings', 'Dentist near me for a cleaning', 3], ['Cleanings', 'Dentist in Bothell that takes Delta Dental', 3], ['Cleanings', 'New patient exam and cleaning Bothell', 2],
+  ['Sedation', 'Sedation dentistry for anxious patients in Bothell', 1], ['Sedation', 'Who offers nitrous oxide at the dentist in Bothell?', 1], ['Sedation', 'Sleep dentistry near Bothell WA', 1],
+  ['General', 'Best dentist in Bothell, WA', 2], ['General', 'Top rated dentists in Bothell', 3], ['General', 'Which Bothell dentist should I choose?', 2],
+  ['Branded', 'Is Bothell Family Dentistry good?', 5], ['Branded', 'Bothell Family Dentistry reviews', 5], ['Branded', 'What do people say about Bothell Family Dentistry?', 4],
+].map(([svc, text, base], i) => ({ id: i, svc, text, near: /near me/i.test(text), byAi: AIS.slice(0, 5).map((_, j) => Math.max(0, Math.min(5, base + ((i * 7 + j * 3) % 3) - 1))) }));
+const SOURCES = [['yelp.com', 41, 'listed'], ['healthgrades.com', 27, 'missing'], ['bothellfamilydentistry.com', 31, 'you'], ['zocdoc.com', 19, 'missing'], ['reddit.com', 14, 'mentioned'], ['google.com/maps', 11, 'listed']];
+const CHANGES = [
+  { up: true, text: 'Gemini now names you for Invisalign', detail: '2 of 15 answers a month ago, 9 of 15 this week' },
+  { up: false, text: 'Accent Dental started showing up in AI Overviews', detail: 'named in 6 of the 9 Overviews this week, none last week' },
+  { up: true, text: 'Healthgrades began citing you', detail: 'your profile appeared in 4 ChatGPT sources' },
+];
+const NEXT = [
+  { kind: 'page', title: 'Plan a page: dental implants', why: 'AI almost never names you for implants (8%). You have no implants page.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'page', title: 'Plan a page: sedation dentistry', why: '21% and no page. Anxious patients ask about it often.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'optimize', title: 'Strengthen your emergency page', why: '12%. Your /contact page mentions emergencies in one line.', cta: 'Optimize this page', where: 'opens On-Page' },
+  { kind: 'task', title: 'Claim your Healthgrades profile', why: 'AI cites Healthgrades in 27 answers; you are not on it.', cta: 'Make a task', where: 'adds an Asana task' },
+];
+function lit(k, n, seed = 1) { const on = new Set(); let s = seed * 97 + k; while (on.size < k) { s = (s * 9301 + 49297) % 233280; on.add(Math.floor(s / 233280 * n)); } return on; }
+function laneHtml(k, n, cls = '', seed = 1) { const on = lit(k, n, seed); let h = `<div class="lane ${cls}">`; for (let i = 0; i < n; i++) h += `<i class="${on.has(i) ? 'hit' : ''}"></i>`; return h + '</div>'; }
+function answerFor(q, ai, named) {
+  const others = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', q.svc === 'Kids' ? 'Hello Kids Dentistry' : 'Annigan Dental'];
+  const list = named ? [others[0], PRACTICE.name, others[1]] : others;
+  const intro = { chatgpt: 'Here are a few well-reviewed options in Bothell:', gemini: 'Based on reviews and services, these Bothell practices stand out:', aio: 'Top options near Bothell, WA include', aimode: 'For this in Bothell, people often look at:', perplexity: 'Several Bothell dentists are frequently recommended:' }[ai.key] || 'Options in Bothell:';
+  const body = list.map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}${i === 0 ? ': many recent reviews and same-week appointments.' : n === PRACTICE.name ? ': patients mention clear explanations and a gentle approach.' : ': offers evening hours.'}`).join('\n');
+  return `${intro}\n\n${body}`;
+}
+const tipEl = document.getElementById('tip');
+function tip(e, html) { tipEl.innerHTML = html; tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }
+function untip() { tipEl.classList.remove('on'); }
+function bindTips(root = document) { root.querySelectorAll('[data-tip]').forEach(n => { if (n._t) return; n._t = 1; n.addEventListener('mousemove', e => tip(e, n.dataset.tip)); n.addEventListener('mouseleave', untip); }); }
+function countUp(el, to, { ms = 900, suffix = '%' } = {}) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix; if (p < 1) requestAnimationFrame(f); })(t0); }
+function revealAll(root = document) { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); e.target.querySelectorAll('[data-count]').forEach(c => countUp(c, +c.dataset.count, { suffix: c.dataset.suffix ?? '%' })); } }), { threshold: .15 }); root.querySelectorAll('.reveal').forEach(n => io.observe(n)); }
+function typeText(el, text, ms = 18) { return new Promise(res => { el.textContent = ''; el.classList.add('typing'); let i = 0; const h = setInterval(() => { el.textContent = text.slice(0, ++i); if (i >= text.length) { clearInterval(h); el.classList.remove('typing'); res(); } }, ms); }); }
+/* Simulated Snapshot: rounds of answers dropping into lanes. onRound(round, ai, k, n) */
+function runSim({ onAnswer, onRound, onDone, speed = 14 }) {
+  const per = AIS.map(a => ({ a, n: a.asks / 5, k: a.k / a.n * a.asks / 5 })); let round = 1, idx = 0; const queue = [];
+  for (let r = 1; r <= 5; r++) per.forEach(({ a, n, k }, j) => { const on = lit(Math.round(k), Math.round(n), r * 13 + j); for (let i = 0; i < Math.round(n); i++) queue.push({ r, a, j, hit: on.has(i) }); });
+  const h = setInterval(() => { for (let s = 0; s < speed && idx < queue.length; s++, idx++) { const q = queue[idx]; if (q.r !== round) { onRound && onRound(round); round = q.r; } onAnswer(q, idx, queue.length); } if (idx >= queue.length) { clearInterval(h); onRound && onRound(5); onDone && onDone(); } }, 60);
+  return () => clearInterval(h);
+}
+function stateBar(states, initial, onPick) {
+  const bar = document.createElement('div'); bar.className = 'statebar';
+  bar.innerHTML = '<span>Prototype</span>' + states.map(([k, l]) => `<button data-k="${k}">${l}</button>`).join('');
+  document.body.appendChild(bar);
+  const set = k => { bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); onPick(k); };
+  bar.querySelectorAll('button').forEach(b => b.addEventListener('click', () => set(b.dataset.k)));
+  set(initial);
+}
+
+const screen = document.getElementById('screen');
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); }
+let stopSim = null, TAB = 'story', TRACKED = false;
+function who(html) { document.getElementById('who').innerHTML = html; }
+
+/* ---------- Setup: four folding steps ---------- */
+function setup() {
+  who('<span>New check</span><a class="btn sm" href="#">Paid Snapshots</a>');
+  screen.innerHTML = `<h1 class="big">Check how AI talks<br>about a practice.</h1><p class="lede">Four short steps. Nothing is asked of any AI until you press Run.</p>
+  <div class="steps" id="steps">
+    <div class="step open" data-i="0"><div class="hd"><span class="num">1</span><span class="ttl">Which practice</span><span class="sum"></span></div><div class="bd"><div><div class="in">
+      <input class="input" value="Bothell Family Dentistry" style="margin-bottom:12px">
+      <div class="found"><span class="pin">B</span><div><b style="color:var(--ink)">${PRACTICE.name}</b><div style="color:var(--muted);font-size:14px">${PRACTICE.address} · ${PRACTICE.domain} · client</div></div><button class="btn go sm" style="margin-left:auto" data-next>That's the one</button></div>
+    </div></div></div></div>
+    <div class="step locked" data-i="1"><div class="hd"><span class="num">2</span><span class="ttl">What patients ask</span><span class="sum"></span></div><div class="bd"><div><div class="in">
+      <p style="margin:0 0 14px;color:var(--muted)">Written from the website, in patients' words. Tap one to leave it out.</p><div id="qs"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span id="qcount" class="mono" style="color:var(--muted)"></span><button class="btn go sm" data-next>Use these</button></div>
+    </div></div></div></div>
+    <div class="step locked" data-i="2"><div class="hd"><span class="num">3</span><span class="ttl">Who you're up against</span><span class="sum"></span></div><div class="bd"><div><div class="in">
+      <p style="margin:0 0 12px;color:var(--muted)">Your real Google Maps neighbours, the same list as your Grid Scan.</p>
+      <div id="rivals"></div><button class="btn sm" style="margin-top:6px">+ Add one by name</button>
+      <div style="text-align:right;margin-top:10px"><button class="btn go sm" data-next>Looks right</button></div>
+    </div></div></div></div>
+    <div class="step locked" data-i="3"><div class="hd"><span class="num">4</span><span class="ttl">Run</span><span class="sum"></span></div><div class="bd"><div><div class="in">
+      <div class="price"><b id="price">$2.35</b><span style="color:var(--muted)">about an hour · you can leave and come back</span></div>
+      <p style="color:var(--muted);margin:10px 0 16px">Each question goes to six AIs, five times each, a few minutes apart, so one lucky or unlucky answer can't fool you.</p>
+      <button class="btn go" id="runbtn">Run the Snapshot</button>
+    </div></div></div></div>
+  </div>`;
+  const steps = [...document.querySelectorAll('.step')];
+  const sums = ['Bothell Family Dentistry, Bothell', '', '4 practices', ''];
+  let qsDone = false, off = new Set();
+  function openStep(i) {
+    steps.forEach((s, j) => { s.classList.toggle('open', j === i); s.classList.toggle('done', j < i); s.classList.toggle('locked', j > i); s.querySelector('.sum').textContent = j < i ? sums[j] : ''; });
+    if (i === 1 && !qsDone) { qsDone = true; streamQuestions(); }
+    if (i === 2) document.getElementById('rivals').innerHTML = RIVALS.slice(1).map((r, k) => `<label style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer"><span class="chk on"></span>${r.name}<span style="margin-left:auto;color:var(--faint);font-size:13px">${(0.2 + k * .3).toFixed(1)} mi</span></label>`).join('');
+  }
+  async function streamQuestions() {
+    const box = document.getElementById('qs'); const groups = [...new Set(QUESTIONS.map(q => q.svc))];
+    for (const g of groups) { const wrap = document.createElement('div'); wrap.className = 'qgroup'; wrap.innerHTML = `<div class="g">${g}${g === 'Branded' ? ' · kept out of the headline' : ''}</div>`; box.appendChild(wrap);
+      for (const q of QUESTIONS.filter(x => x.svc === g)) { const c = document.createElement('div'); c.className = 'qcard'; c.innerHTML = `<span class="chk on"></span><span class="t"></span>`; wrap.appendChild(c); await typeText(c.querySelector('.t'), q.text, 6);
+        c.addEventListener('click', () => { c.classList.toggle('off'); c.querySelector('.chk').classList.toggle('on'); c.classList.contains('off') ? off.add(q.id) : off.delete(q.id); upd(); }); upd(); } }
+  }
+  function upd() { const n = document.querySelectorAll('.qcard').length - off.size; document.getElementById('qcount').textContent = `${n} questions · $${(n * 0.0785).toFixed(2)}`; sums[1] = `${n} questions`; document.getElementById('price').textContent = '$' + (n * 0.0785).toFixed(2); }
+  steps.forEach((s, i) => { s.querySelector('[data-next]')?.addEventListener('click', e => { e.stopPropagation(); openStep(i + 1); }); s.querySelector('.hd').addEventListener('click', () => { if (!s.classList.contains('locked')) openStep(i); }); });
+  document.getElementById('runbtn').addEventListener('click', () => go('running'));
+}
+
+/* ---------- Running: lanes fill with dots ---------- */
+function running() {
+  who(`<b>${PRACTICE.name}</b><span>Snapshot running</span>`);
+  screen.innerHTML = `<div class="runhero"><div><div class="eyebrow" id="rnd">Round 1 of 5</div><h1 class="big" style="font-size:36px;margin-top:8px">Asking six AIs<br>30 questions, 5 times each.</h1>
+    <p class="lede">Every dot is one answer. Blue means the answer named ${PRACTICE.short}. You can close this page; it keeps going.</p>
+    <div class="lanes" id="lanes">${AIS.map(a => `<div class="lanerow"><div class="nm">${a.name}<small>${a.how}</small></div><div class="lane" data-k="${a.key}"></div><div class="val"><span data-v="${a.key}">·</span><small data-c="${a.key}"></small></div></div>`).join('')}</div></div>
+    <div class="ticker"><div class="eyebrow" style="margin-bottom:6px">Just in</div><div id="tick"></div></div></div>`;
+  const got = {}; AIS.forEach(a => got[a.key] = { k: 0, n: 0 });
+  stopSim = runSim({ speed: 3, onAnswer: (q, i) => {
+    const lane = screen.querySelector(`.lane[data-k="${q.a.key}"]`); const d = document.createElement('i'); d.className = 'drop' + (q.hit ? ' hit' : ''); lane.appendChild(d);
+    const g = got[q.a.key]; g.n++; if (q.hit) g.k++;
+    screen.querySelector(`[data-v="${q.a.key}"]`).textContent = pct(g.k, g.n) + '%'; screen.querySelector(`[data-c="${q.a.key}"]`).textContent = `${g.k} of ${g.n}${g.n < q.a.asks ? ' · early' : ''}`;
+    if (q.hit && i % 9 === 0) { const qq = QUESTIONS[i % 27]; const t = document.getElementById('tick'); const it = document.createElement('div'); it.className = 'item'; it.innerHTML = `<b>${q.a.name}</b> · “${qq.text}”<br><span style="color:var(--muted)">…3. <mark>${PRACTICE.name}</mark>: patients mention…</span>`; t.prepend(it); if (t.children.length > 4) t.lastChild.remove(); }
+  }, onRound: r => { document.getElementById('rnd').textContent = r >= 5 ? 'All 5 rounds in' : `Round ${r + 1} of 5`; }, onDone: () => setTimeout(() => go('story'), 900) });
+}
+
+/* ---------- Results shell with tabs ---------- */
+function results(tab) {
+  TAB = tab;
+  who(`<b>${PRACTICE.name}</b><span>${TRACKED ? 'Tracked twice a day' : 'Snapshot · Oct 27'}</span><button class="btn sm">Share report</button>${TRACKED ? '' : '<button class="btn go sm" id="track">Keep watching, $28/mo</button>'}`);
+  document.getElementById('track')?.addEventListener('click', () => { TRACKED = true; toast('Tracking starts tonight: twice a day, every AI.'); results('watch'); });
+  screen.innerHTML = `<div class="tabs" id="tabs">${[['story', 'Story'], ['answers', 'Answers'], ['watch', 'Watch']].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${l}</button>`).join('')}<span class="ink"></span></div><div id="pane" class="fade-swap"></div>`;
+  const ink = screen.querySelector('.ink'), on = screen.querySelector('.tabs button.on'); ink.style.left = on.offsetLeft + 'px'; ink.style.width = on.offsetWidth + 'px';
+  screen.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => go(b.dataset.t)));
+  ({ story, answers, watch })[tab](document.getElementById('pane'));
+  bindTips(); revealAll();
+}
+
+function story(p) {
+  const you = RIVALS[0], top = RIVALS[1];
+  p.innerHTML = `
+  <section class="block reveal"><div class="eyebrow">Long story short</div>
+    <h1 class="big" style="margin-top:10px">AI names you in about<br><span style="color:var(--a)">4 of every 10</span> answers.</h1>
+    <p class="lede">Accent Dental Center comes up in about 5. Perplexity names you most; Google's AI Overviews least.</p>
+    <div class="lanes">${AIS.map((a, j) => `<div class="lanerow" data-tip="<b>${a.name}</b><br>Named in ${a.k} of ${a.n} answers. Could fairly sit anywhere from ${Math.max(0, pct(a.k, a.n) - range(a.k, a.n))}% to ${pct(a.k, a.n) + range(a.k, a.n)}%.${a.note ? '<br><br>' + a.note : ''}"><div class="nm">${a.name}<small>${a.note ? (a.key === 'near' ? 'stand-in, see note' : a.note) : a.how}</small></div>${laneHtml(a.k, a.n, '', j + 3)}<div class="val"><span data-count="${pct(a.k, a.n)}">0%</span><small>${a.k} of ${a.n}</small></div></div>`).join('')}</div>
+  </section>
+  ${TRACKED ? `<section class="block reveal"><div class="eyebrow">Since last week</div><h2 class="sec" style="margin-top:8px">Three things moved.</h2><div>${CHANGES.map(c => `<div class="change"><span class="arrow ${c.up ? 'up' : 'down'}">${c.up ? '↑' : '↓'}</span><div><b style="color:var(--ink)">${c.text}</b><div style="color:var(--muted);font-size:14px">${c.detail}</div></div></div>`).join('')}</div></section>` : ''}
+  <section class="block reveal"><div class="eyebrow">Where patients find you, and where they don't</div><h2 class="sec" style="margin-top:8px">Strong on kids and cleanings.<br>Invisible for implants.</h2>
+    <div style="margin-top:18px">${SERVICES.map((s, i) => `<div class="svc"><span class="nm">${s.svc}</span>${laneHtml(Math.round(s.rate * .75), 75, 'tiny', i + 11)}<span class="pc" data-count="${s.rate}">0%</span><span class="act">${s.state === 'gap' ? `<button class="btn soft sm" data-act="${s.page && s.thin ? 'Optimize this page' : 'Plan a page'}">${s.page && s.thin ? 'Optimize this page' : 'Plan a page'}</button>` : `<span style="color:var(--faint);font-size:13px">${s.page}</span>`}</span></div>`).join('')}</div>
+  </section>
+  <section class="block reveal"><div class="eyebrow">What patients see</div><h2 class="sec" style="margin-top:8px">The answers, word for word.</h2><div id="car"></div></section>
+  <section class="block reveal"><div class="eyebrow">Who AI names instead</div><h2 class="sec" style="margin-top:8px">Accent Dental leads on most AIs.</h2>
+    <div class="seg" id="raceSeg">${AIS.map((a, j) => `<button data-j="${j}" class="${j === 0 ? 'on' : ''}">${a.name}</button>`).join('')}</div><div class="race" id="race" style="height:${RIVALS.length * 46}px"></div></section>
+  <section class="block reveal"><div class="eyebrow">What AI reads</div><h2 class="sec" style="margin-top:8px">The sites behind the answers.</h2>
+    ${SOURCES.map(([d, n, st]) => `<div class="src"><span style="font-weight:600;color:var(--ink)">${d}</span><div class="lane tiny">${'<i class="hit"></i>'.repeat(n)}</div><span style="text-align:right">${st === 'missing' ? '<button class="btn soft sm" data-act="Make a task">You\'re not on it · Make a task</button>' : st === 'you' ? '<span style="color:var(--a-ink);font-weight:600">Your site</span>' : '<span style="color:var(--muted)">You\'re listed</span>'}</span></div>`).join('')}</section>
+  <section class="block reveal"><div class="eyebrow">Next steps</div><h2 class="sec" style="margin-top:8px">Four things worth doing.</h2>
+    ${NEXT.map((n, i) => `<div class="next"><span class="chk" id="nk${i}"></span><div><div class="t">${n.title}</div><div class="w">${n.why}</div></div><button class="btn go sm" data-next-i="${i}">${n.cta}</button></div>`).join('')}</section>`;
+  // carousel
+  let ci = 0; const picks = [[10, 0], [0, 0], [3, 1], [24, 4]];
+  const car = document.getElementById('car');
+  const drawCar = () => { const [qi, aj] = picks[ci], q = QUESTIONS[qi], a = AIS[aj], named = q.byAi[aj] >= 2; car.innerHTML = `<div class="answer fade-swap"><div class="eyebrow">${a.name} · answer 2 of 5 · ${named ? 'named you' : 'did not name you'}</div><div class="q">“${q.text}”</div><pre>${answerFor(q, a, named)}</pre></div><div class="carousel-nav"><button class="btn sm" id="prev">←</button><button class="btn sm" id="nxt">→</button><span style="color:var(--muted);font-size:13px">${ci + 1} of ${picks.length} · <a href="#" id="allans" style="color:var(--a-ink)">see all 750 answers</a></span></div>`;
+    car.querySelector('#prev').onclick = () => { ci = (ci + picks.length - 1) % picks.length; drawCar(); }; car.querySelector('#nxt').onclick = () => { ci = (ci + 1) % picks.length; drawCar(); }; car.querySelector('#allans').onclick = e => { e.preventDefault(); go('answers'); }; };
+  drawCar();
+  // race with FLIP-style reorder
+  const race = document.getElementById('race');
+  race.innerHTML = RIVALS.map((r, i) => `<div class="racer${r.you ? ' you' : ''}" data-i="${i}"><span class="nm">${r.name}${r.you ? ' (you)' : ''}</span><div class="bar"><i></i></div><span class="mono" style="font-weight:600;text-align:right"></span></div>`).join('');
+  const drawRace = j => { const order = RIVALS.map((r, i) => [i, r.byAi[j]]).sort((a, b) => b[1] - a[1]); order.forEach(([i, v], pos) => { const el = race.querySelector(`[data-i="${i}"]`); el.style.top = pos * 46 + 'px'; el.querySelector('.bar i').style.width = v * 1.5 + '%'; el.querySelector('.mono').textContent = v + '%'; }); };
+  setTimeout(() => drawRace(0), 200);
+  document.querySelectorAll('#raceSeg button').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('#raceSeg button').forEach(x => x.classList.toggle('on', x === b)); drawRace(+b.dataset.j); }));
+  p.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => { b.textContent = 'Added ✓'; b.disabled = true; toast(b.dataset.act === 'Plan a page' ? 'Drafted a calendar item: new page.' : b.dataset.act === 'Optimize this page' ? 'Opened in On-Page optimization.' : 'Asana task added for the SEO.'); }));
+  p.querySelectorAll('[data-next-i]').forEach(b => b.addEventListener('click', () => { const n = NEXT[+b.dataset.nextI]; document.getElementById('nk' + b.dataset.nextI).classList.add('on'); b.textContent = 'Done ✓'; b.disabled = true; toast(n.where.charAt(0).toUpperCase() + n.where.slice(1) + '.'); }));
+}
+
+function answers(p) {
+  let aj = 0, svc = 'All', named = 'all', sel = 0, ask = 0;
+  const draw = () => {
+    const rows = QUESTIONS.filter(q => (svc === 'All' || q.svc === svc) && (named === 'all' || (named === 'yes' ? q.byAi[aj] > 0 : q.byAi[aj] === 0)));
+    const cur = rows[sel], hit = cur && ask < cur.byAi[aj];
+    p.innerHTML = `<div class="seg">${AIS.slice(0, 5).map((a, j) => `<button data-aj="${j}" class="${j === aj ? 'on' : ''}">${a.name}</button>`).join('')}</div>
+      <div class="seg" style="margin-left:8px">${['all', 'yes', 'no'].map(v => `<button data-nm="${v}" class="${v === named ? 'on' : ''}">${{ all: 'Every question', yes: 'Named you at least once', no: 'Never named you' }[v]}</button>`).join('')}</div>
+      <div class="seg">${['All', ...new Set(QUESTIONS.map(q => q.svc))].map(v => `<button data-sv="${v}" class="${v === svc ? 'on' : ''}">${v}</button>`).join('')}</div>
+      <div class="ans-grid"><div class="ans-list">${rows.map((q, i) => `<div class="ans-row${i === sel ? ' on' : ''}" data-i="${i}"><div style="flex:1"><b style="color:var(--ink);font-weight:600">${q.text}</b><div style="display:flex;gap:4px;margin-top:6px;align-items:center">${[0, 1, 2, 3, 4].map(r => `<span class="d${r < q.byAi[aj] ? ' hit' : ''}" style="margin:0"></span>`).join('')}<span style="color:var(--faint);font-size:12px;margin-left:6px">${q.byAi[aj]} of 5 · ${q.svc}</span></div></div></div>`).join('')}</div>
+      <div>${cur ? `<div style="display:flex;gap:6px;margin-bottom:10px">${[0, 1, 2, 3, 4].map(r => `<button class="btn sm${r === ask ? ' soft' : ''}" data-ask="${r}">Ask ${r + 1}${r < cur.byAi[aj] ? ' ●' : ''}</button>`).join('')}</div>
+        <div class="answer fade-swap"><div class="eyebrow">${AIS[aj].name} · ask ${ask + 1} of 5 · Oct 27, ${10 + ask}:${ask * 12 % 60 || '05'} am · ${hit ? 'named you' : 'did not name you'}</div><div class="q">“${cur.text}”</div><pre>${answerFor(cur, AIS[aj], hit)}</pre></div>
+        <div style="margin-top:14px;font-size:13px;color:var(--muted)"><b style="color:var(--ink)">Sources it cited</b><br>yelp.com · healthgrades.com · reddit.com/r/bothell</div>` : '<p>No questions match.</p>'}</div></div>`;
+    p.querySelectorAll('[data-aj]').forEach(b => b.onclick = () => { aj = +b.dataset.aj; sel = 0; ask = 0; draw(); });
+    p.querySelectorAll('[data-nm]').forEach(b => b.onclick = () => { named = b.dataset.nm; sel = 0; ask = 0; draw(); });
+    p.querySelectorAll('[data-sv]').forEach(b => b.onclick = () => { svc = b.dataset.sv; sel = 0; ask = 0; draw(); });
+    p.querySelectorAll('.ans-row').forEach(r => r.onclick = () => { sel = +r.dataset.i; ask = 0; draw(); });
+    p.querySelectorAll('[data-ask]').forEach(b => b.onclick = () => { ask = +b.dataset.ask; draw(); });
+  };
+  draw();
+}
+
+function watch(p) {
+  if (!TRACKED) { p.innerHTML = `<section class="block reveal"><h2 class="sec">Watch this practice over time.</h2><p class="lede">Twice a day, every AI, the same questions. You'll see what moves, and why, instead of one day's luck.</p><button class="btn go" id="tw">Keep watching, about $28 a month</button><p style="color:var(--muted);font-size:13px;margin-top:10px">Clients only. Prospects get Snapshots.</p></section>`; p.querySelector('#tw').onclick = () => { TRACKED = true; toast('Tracking starts tonight.'); results('watch'); }; return; }
+  const weeks = ['Sep 8', 'Sep 15', 'Sep 22', 'Sep 29', 'Oct 6', 'Oct 13', 'Oct 20', 'Oct 27'], rates = [33, 35, 34, 36, 35, 38, 41, 44];
+  p.innerHTML = `<section class="block reveal"><div class="eyebrow">ChatGPT · rolling 7 days</div><h1 class="big" style="margin-top:10px"><span data-count="44">0%</span> <span style="font-size:22px;color:var(--up)">↑ 11 pts in 8 weeks</span></h1>
+    <p class="lede">Each row is one week: 378 answers, blue where you were named. A change bigger than the row-to-row wobble is a real change.</p>
+    <div class="seg">${AIS.slice(0, 5).map((a, j) => `<button class="${j === 0 ? 'on' : ''}">${a.name}</button>`).join('')}</div>
+    <div class="weeks">${weeks.map((w, i) => `<div class="week reveal" style="transition-delay:${i * 60}ms"><span style="color:var(--muted);font-size:13px">${w}${i === 4 ? '<br><span style="color:var(--a-ink);font-size:11px;font-weight:600">questions edited</span>' : ''}</span>${laneHtml(Math.round(rates[i] * .9), 90, 'tiny', i + 30)}<span class="mono" style="font-weight:600;text-align:right">${rates[i]}%</span></div>`).join('')}</div></section>
+    <section class="block reveal"><div class="eyebrow">What moved</div><div>${CHANGES.map(c => `<div class="change"><span class="arrow ${c.up ? 'up' : 'down'}">${c.up ? '↑' : '↓'}</span><div><b style="color:var(--ink)">${c.text}</b><div style="color:var(--muted);font-size:14px">${c.detail}</div></div></div>`).join('')}</div>
+    <p style="color:var(--muted);font-size:13px;margin-top:14px">$21.90 spent this month · <a href="#" style="color:var(--a-ink)">Stop watching</a></p></section>`;
+}
+
+function go(k) { if (stopSim) { stopSim(); stopSim = null; } window.scrollTo({ top: 0 }); document.querySelectorAll('.statebar button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); ({ setup, running, story: () => results('story'), answers: () => results('answers'), watch: () => results('watch') })[k](); }
+stateBar([['setup', 'Setup'], ['running', 'Live run'], ['story', 'Story'], ['answers', 'Answers'], ['watch', 'Watch']], 'setup', go);
+</script>
+</body>
+</html>

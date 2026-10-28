@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Conversation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --page:#FFFFFF; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#7C3AED; --a-ink:#6D28D9; --a-tint:#F2EBFF; --a-glow:rgba(124,58,237,.28); }
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+html { scroll-behavior:smooth; }
+body { margin:0; background:var(--page); color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+button { font:inherit; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.btn { font:600 14px Inter; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); transition:transform .12s, box-shadow .2s, background .2s; }
+.btn:active { transform:scale(.97); }
+.btn.go { background:var(--a); color:#fff; border-color:transparent; box-shadow:0 6px 18px var(--a-glow); }
+.btn.go:hover { box-shadow:0 8px 24px var(--a-glow); }
+.btn.soft { background:var(--a-tint); color:var(--a-ink); border-color:transparent; }
+.btn.sm { padding:6px 11px; font-size:13px; border-radius:8px; }
+.btn:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+.input { border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:14px Inter; color:var(--ink); width:100%; outline:none; background:#fff; transition:border-color .15s, box-shadow .15s; }
+.input:focus { border-color:var(--a); box-shadow:0 0 0 4px var(--a-tint); }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.lane { display:flex; flex-wrap:wrap; gap:3px; }
+.lane i { width:8px; height:8px; border-radius:50%; background:#E4E7EC; display:block; transition:background .35s, transform .35s; }
+.lane i.hit { background:var(--a); }
+.lane i.drop { animation:drop .45s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes drop { from { transform:translateY(-14px) scale(.4); opacity:0; } to { transform:none; opacity:1; } }
+.lane.big i { width:10px; height:10px; }
+.lane.tiny { gap:2px; } .lane.tiny i { width:5px; height:5px; }
+.reveal { opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity:1; transform:none; }
+.fade-swap { animation:fs .35s ease both; } @keyframes fs { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.typing::after { content:'▍'; color:var(--a); animation:blink 1s steps(1) infinite; } @keyframes blink { 50% { opacity:0; } }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:80; display:flex; gap:4px; background:rgba(11,16,32,.88); backdrop-filter:blur(8px); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+.chk { display:inline-flex; width:18px; height:18px; border-radius:5px; border:1.5px solid var(--line); align-items:center; justify-content:center; flex:none; transition:all .2s; }
+.chk.on { background:var(--a); border-color:var(--a); }
+.chk.on::after { content:''; width:8px; height:4px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } .reveal { opacity:1; transform:none; } }
+
+body { background:#FBFAFD; }
+.app { display:grid; grid-template-columns:360px 1fr; height:100vh; }
+.left { border-right:1px solid var(--line); background:#fff; display:flex; flex-direction:column; min-height:0; }
+.left .hd { padding:20px 20px 12px; border-bottom:1px solid var(--line); }
+.brand { display:flex; align-items:center; gap:10px; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:8px; background:var(--a); position:relative; }
+.brand .logo::after { content:''; position:absolute; left:6px; top:7px; width:14px; height:10px; border-radius:5px 5px 5px 1px; background:#fff; }
+.prac { margin-top:14px; font-size:13px; color:var(--muted); } .prac b { color:var(--ink); font-size:15px; display:block; }
+.qlist { overflow:auto; flex:1; padding:8px 10px 90px; }
+.qg { font:700 10.5px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); padding:14px 10px 6px; }
+.qi { display:flex; gap:10px; align-items:flex-start; padding:10px; border-radius:12px; cursor:pointer; transition:background .15s; animation:fs .3s ease both; }
+.qi:hover { background:#F7F5FB; } .qi.on { background:var(--a-tint); }
+.qi .t { font-size:14px; color:var(--ink); line-height:1.35; }
+.qi .m { display:flex; gap:3px; margin-top:6px; }
+.qi .m i { width:14px; height:4px; border-radius:2px; background:#E4E7EC; } .qi .m i.hit { background:var(--a); } .qi .m i.part { background:#C4B5FD; }
+.qi .sc { margin-left:auto; font:700 12px 'JetBrains Mono'; color:var(--muted); flex:none; }
+.right { overflow:auto; min-width:0; }
+.top { position:sticky; top:0; z-index:5; background:rgba(251,250,253,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:14px 32px; display:flex; align-items:center; gap:18px; }
+.top .tabs { display:flex; gap:4px; background:#F1EEF7; border-radius:10px; padding:3px; }
+.top .tabs button { white-space:nowrap; border:0; background:none; padding:7px 13px; border-radius:8px; font:600 13px Inter; color:var(--muted); cursor:pointer; }
+.top .tabs button.on { background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(11,16,32,.1); }
+.sumline { font-size:14px; color:var(--body); white-space:nowrap; } .top .btn { white-space:nowrap; } @media (max-width:1200px) { .sumline { display:none; } } .sumline b { color:var(--a-ink); }
+.conv { max-width:820px; margin:0 auto; padding:30px 32px 120px; }
+.patient { display:flex; justify-content:flex-end; margin-bottom:26px; }
+.patient .bub { background:var(--ink); color:#fff; border-radius:20px 20px 6px 20px; padding:14px 18px; font:600 17px/1.4 Inter; max-width:520px; }
+.patient .who { font:600 11px Inter; color:var(--faint); text-align:right; margin-top:6px; }
+.reply { display:grid; grid-template-columns:40px 1fr; gap:12px; margin-bottom:18px; animation:fs .4s ease both; }
+.av { width:40px; height:40px; border-radius:12px; display:grid; place-items:center; font:800 13px Inter; color:#fff; }
+.reply .bub { background:#fff; border:1px solid var(--line); border-radius:6px 20px 20px 20px; padding:14px 18px; }
+.reply .bub.hit { border-color:#DDD0FB; box-shadow:0 0 0 3px #F4EEFF; }
+.reply .meta { display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted); margin-bottom:8px; }
+.reply .meta b { color:var(--ink); font-size:13px; }
+.asks { display:inline-flex; gap:4px; margin-left:auto; }
+.asks button { width:22px; height:22px; border-radius:7px; border:1px solid var(--line); background:#fff; font:700 10px 'JetBrains Mono'; color:var(--muted); cursor:pointer; padding:0; }
+.asks button.hit { background:var(--a-tint); border-color:#DDD0FB; color:var(--a-ink); } .asks button.cur { outline:2px solid var(--a); outline-offset:1px; }
+.reply pre { white-space:pre-wrap; margin:0; font:14.5px/1.65 Inter; color:var(--body); }
+.typing-dots { display:inline-flex; gap:4px; padding:6px 0; } .typing-dots i { width:7px; height:7px; border-radius:50%; background:#C9CED8; animation:bob 1s infinite; }
+.typing-dots i:nth-child(2) { animation-delay:.15s; } .typing-dots i:nth-child(3) { animation-delay:.3s; } @keyframes bob { 0%,100% { transform:none; opacity:.5; } 50% { transform:translateY(-4px); opacity:1; } }
+.takeaway { margin-top:26px; padding:18px 20px; border-radius:16px; background:linear-gradient(135deg,#F4EEFF,#FFFFFF); border:1px solid #E7DCFD; }
+.takeaway b { color:var(--ink); }
+.cards { max-width:900px; margin:0 auto; padding:30px 32px 120px; display:grid; gap:18px; }
+.card { background:#fff; border:1px solid var(--line); border-radius:18px; padding:22px 24px; }
+.card h3 { font:800 20px Inter; color:var(--ink); margin:4px 0 12px; letter-spacing:-.01em; }
+.row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); } .row:last-child { border-bottom:0; }
+.meter { flex:1; height:8px; border-radius:4px; background:#EEE9F6; overflow:hidden; } .meter i { display:block; height:100%; background:var(--a); border-radius:4px; width:0; transition:width .8s cubic-bezier(.2,.8,.2,1); }
+.big { font:900 40px/1.1 Inter; letter-spacing:-.025em; color:var(--ink); margin:0; }
+.chat-setup { max-width:720px; margin:0 auto; padding:40px 32px 140px; }
+.sys { display:grid; grid-template-columns:40px 1fr; gap:12px; margin-bottom:18px; animation:fs .4s ease both; }
+.sys .bub { background:#fff; border:1px solid var(--line); border-radius:6px 20px 20px 20px; padding:14px 18px; font-size:15px; }
+.me { display:flex; justify-content:flex-end; margin-bottom:18px; animation:fs .3s ease both; } .me .bub { background:var(--a); color:#fff; border-radius:20px 20px 6px 20px; padding:12px 16px; font-weight:600; }
+.composer { position:fixed; left:360px; right:0; bottom:0; padding:16px 32px 74px; background:linear-gradient(transparent,#FBFAFD 30%); }
+.composer .box { max-width:720px; margin:0 auto; display:flex; gap:8px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:8px; box-shadow:0 10px 30px rgba(11,16,32,.08); }
+.composer input { border:0; outline:none; flex:1; font:15px Inter; padding:8px 10px; }
+.opt { display:inline-flex; margin:8px 8px 0 0; }
+.toast { position:fixed; left:calc(50% + 180px); bottom:76px; transform:translateX(-50%) translateY(10px); background:var(--ink); color:#fff; padding:10px 14px; border-radius:10px; font-size:13px; opacity:0; transition:all .25s; z-index:85; }
+.toast.on { opacity:1; transform:translateX(-50%); }
+@media (max-width:900px) { .app { grid-template-columns:1fr; height:auto; } .left { max-height:46vh; } .composer { left:0; } }
+
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="app"><aside class="left"><div class="hd"><div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div><div class="prac" id="prac"></div></div><div class="qlist" id="qlist"></div></aside>
+<main class="right" id="right"></main></div><div class="toast" id="toast"></div><script>
+const PRACTICE = { name: 'Bothell Family Dentistry', short: 'Bothell Family', domain: 'bothellfamilydentistry.com', city: 'Bothell, WA', address: '19515 N Creek Pkwy S, Bothell' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', k: 52, n: 135, how: 'app, logged out, United States' },
+  { key: 'gemini', name: 'Gemini', k: 61, n: 135, how: 'app, logged out, Bothell' },
+  { key: 'aio', name: 'AI Overviews', k: 14, n: 45, how: 'Google results, Bothell', note: 'An Overview showed on 9 of 27 questions' },
+  { key: 'aimode', name: 'AI Mode', k: 47, n: 135, how: 'Google AI Mode, Bothell' },
+  { key: 'perplexity', name: 'Perplexity', k: 70, n: 135, how: 'API, city in the question' },
+  { key: 'near', name: 'ChatGPT near me', k: 4, n: 15, how: 'API with the city set', note: 'A city-level near-me search can\'t be properly simulated on ChatGPT; this is the closest stand-in.' },
+];
+AIS.forEach(a => a.asks = a.key === 'chatgpt' ? 135 : a.key === 'near' ? 15 : 150);
+const pct = (k, n) => n ? Math.round(100 * k / n) : 0;
+const range = (k, n) => { const p = k / n; return Math.round(196 * Math.sqrt(p * (1 - p) / n)); };
+const RIVALS = [
+  { name: PRACTICE.name, you: true, rate: 39 },
+  { name: 'Accent Dental Center Bothell', rate: 47, byAi: [47, 52, 40, 44, 58, 33] },
+  { name: 'Bothell Smiles Family Dentistry', rate: 36, byAi: [36, 30, 22, 41, 39, 27] },
+  { name: 'Hello Kids Dentistry', rate: 24, byAi: [24, 31, 18, 20, 29, 13] },
+  { name: 'Annigan Dental', rate: 16, byAi: [16, 12, 9, 19, 14, 7] },
+];
+RIVALS[0].byAi = AIS.map(a => pct(a.k, a.n));
+const SERVICES = [
+  { svc: 'Kids', rate: 61, state: 'strong', page: '/family-dentistry' },
+  { svc: 'Cleanings', rate: 57, state: 'strong', page: '/preventive-care' },
+  { svc: 'Whitening', rate: 52, state: 'strong', page: '/teeth-whitening' },
+  { svc: 'Invisalign', rate: 48, state: 'ok', page: '/invisalign' },
+  { svc: 'Veneers', rate: 39, state: 'ok', page: '/cosmetic' },
+  { svc: 'Sedation', rate: 21, state: 'gap', page: null },
+  { svc: 'Emergency', rate: 12, state: 'gap', page: '/contact', thin: true },
+  { svc: 'Implants', rate: 8, state: 'gap', page: null },
+];
+const QUESTIONS = [
+  ['Implants', 'Who does dental implants well in Bothell?', 0], ['Implants', 'Best place for a single tooth implant near Bothell, WA', 1], ['Implants', 'Are implants or bridges better, and who in Bothell does both?', 0],
+  ['Invisalign', 'Who is a good Invisalign dentist in Bothell?', 3], ['Invisalign', 'Invisalign for adults in Bothell, WA: where should I go?', 2], ['Invisalign', 'Cheapest clear aligners in Bothell', 2],
+  ['Emergency', 'Emergency dentist near me', 0], ['Emergency', 'I cracked a tooth, who can see me fast in Bothell?', 1], ['Emergency', 'Weekend emergency dental care Bothell WA', 1],
+  ['Kids', 'Family dentist near me for my kids', 3], ['Kids', 'Gentle dentist for a nervous 6 year old in Bothell', 4], ['Kids', 'Pediatric or family dentist in Bothell: which is better?', 3],
+  ['Veneers', 'Who does natural looking veneers in Bothell?', 2], ['Veneers', 'Porcelain veneers cost Bothell WA', 1], ['Veneers', 'Cosmetic dentist Bothell for a smile makeover', 3],
+  ['Whitening', 'Professional teeth whitening in Bothell', 3], ['Whitening', 'Is in-office whitening worth it, Bothell dentists', 2], ['Whitening', 'Best whitening dentist Bothell WA', 3],
+  ['Cleanings', 'Dentist near me for a cleaning', 3], ['Cleanings', 'Dentist in Bothell that takes Delta Dental', 3], ['Cleanings', 'New patient exam and cleaning Bothell', 2],
+  ['Sedation', 'Sedation dentistry for anxious patients in Bothell', 1], ['Sedation', 'Who offers nitrous oxide at the dentist in Bothell?', 1], ['Sedation', 'Sleep dentistry near Bothell WA', 1],
+  ['General', 'Best dentist in Bothell, WA', 2], ['General', 'Top rated dentists in Bothell', 3], ['General', 'Which Bothell dentist should I choose?', 2],
+  ['Branded', 'Is Bothell Family Dentistry good?', 5], ['Branded', 'Bothell Family Dentistry reviews', 5], ['Branded', 'What do people say about Bothell Family Dentistry?', 4],
+].map(([svc, text, base], i) => ({ id: i, svc, text, near: /near me/i.test(text), byAi: AIS.slice(0, 5).map((_, j) => Math.max(0, Math.min(5, base + ((i * 7 + j * 3) % 3) - 1))) }));
+const SOURCES = [['yelp.com', 41, 'listed'], ['healthgrades.com', 27, 'missing'], ['bothellfamilydentistry.com', 31, 'you'], ['zocdoc.com', 19, 'missing'], ['reddit.com', 14, 'mentioned'], ['google.com/maps', 11, 'listed']];
+const CHANGES = [
+  { up: true, text: 'Gemini now names you for Invisalign', detail: '2 of 15 answers a month ago, 9 of 15 this week' },
+  { up: false, text: 'Accent Dental started showing up in AI Overviews', detail: 'named in 6 of the 9 Overviews this week, none last week' },
+  { up: true, text: 'Healthgrades began citing you', detail: 'your profile appeared in 4 ChatGPT sources' },
+];
+const NEXT = [
+  { kind: 'page', title: 'Plan a page: dental implants', why: 'AI almost never names you for implants (8%). You have no implants page.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'page', title: 'Plan a page: sedation dentistry', why: '21% and no page. Anxious patients ask about it often.', cta: 'Plan a page', where: 'drafts a calendar item' },
+  { kind: 'optimize', title: 'Strengthen your emergency page', why: '12%. Your /contact page mentions emergencies in one line.', cta: 'Optimize this page', where: 'opens On-Page' },
+  { kind: 'task', title: 'Claim your Healthgrades profile', why: 'AI cites Healthgrades in 27 answers; you are not on it.', cta: 'Make a task', where: 'adds an Asana task' },
+];
+function lit(k, n, seed = 1) { const on = new Set(); let s = seed * 97 + k; while (on.size < k) { s = (s * 9301 + 49297) % 233280; on.add(Math.floor(s / 233280 * n)); } return on; }
+function laneHtml(k, n, cls = '', seed = 1) { const on = lit(k, n, seed); let h = `<div class="lane ${cls}">`; for (let i = 0; i < n; i++) h += `<i class="${on.has(i) ? 'hit' : ''}"></i>`; return h + '</div>'; }
+function answerFor(q, ai, named) {
+  const others = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', q.svc === 'Kids' ? 'Hello Kids Dentistry' : 'Annigan Dental'];
+  const list = named ? [others[0], PRACTICE.name, others[1]] : others;
+  const intro = { chatgpt: 'Here are a few well-reviewed options in Bothell:', gemini: 'Based on reviews and services, these Bothell practices stand out:', aio: 'Top options near Bothell, WA include', aimode: 'For this in Bothell, people often look at:', perplexity: 'Several Bothell dentists are frequently recommended:' }[ai.key] || 'Options in Bothell:';
+  const body = list.map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}${i === 0 ? ': many recent reviews and same-week appointments.' : n === PRACTICE.name ? ': patients mention clear explanations and a gentle approach.' : ': offers evening hours.'}`).join('\n');
+  return `${intro}\n\n${body}`;
+}
+const tipEl = document.getElementById('tip');
+function tip(e, html) { tipEl.innerHTML = html; tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }
+function untip() { tipEl.classList.remove('on'); }
+function bindTips(root = document) { root.querySelectorAll('[data-tip]').forEach(n => { if (n._t) return; n._t = 1; n.addEventListener('mousemove', e => tip(e, n.dataset.tip)); n.addEventListener('mouseleave', untip); }); }
+function countUp(el, to, { ms = 900, suffix = '%' } = {}) { const t0 = performance.now(); (function f(t) { const p = Math.min(1, (t - t0) / ms); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix; if (p < 1) requestAnimationFrame(f); })(t0); }
+function revealAll(root = document) { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); e.target.querySelectorAll('[data-count]').forEach(c => countUp(c, +c.dataset.count, { suffix: c.dataset.suffix ?? '%' })); } }), { threshold: .15 }); root.querySelectorAll('.reveal').forEach(n => io.observe(n)); }
+function typeText(el, text, ms = 18) { return new Promise(res => { el.textContent = ''; el.classList.add('typing'); let i = 0; const h = setInterval(() => { el.textContent = text.slice(0, ++i); if (i >= text.length) { clearInterval(h); el.classList.remove('typing'); res(); } }, ms); }); }
+/* Simulated Snapshot: rounds of answers dropping into lanes. onRound(round, ai, k, n) */
+function runSim({ onAnswer, onRound, onDone, speed = 14 }) {
+  const per = AIS.map(a => ({ a, n: a.asks / 5, k: a.k / a.n * a.asks / 5 })); let round = 1, idx = 0; const queue = [];
+  for (let r = 1; r <= 5; r++) per.forEach(({ a, n, k }, j) => { const on = lit(Math.round(k), Math.round(n), r * 13 + j); for (let i = 0; i < Math.round(n); i++) queue.push({ r, a, j, hit: on.has(i) }); });
+  const h = setInterval(() => { for (let s = 0; s < speed && idx < queue.length; s++, idx++) { const q = queue[idx]; if (q.r !== round) { onRound && onRound(round); round = q.r; } onAnswer(q, idx, queue.length); } if (idx >= queue.length) { clearInterval(h); onRound && onRound(5); onDone && onDone(); } }, 60);
+  return () => clearInterval(h);
+}
+function stateBar(states, initial, onPick) {
+  const bar = document.createElement('div'); bar.className = 'statebar';
+  bar.innerHTML = '<span>Prototype</span>' + states.map(([k, l]) => `<button data-k="${k}">${l}</button>`).join('');
+  document.body.appendChild(bar);
+  const set = k => { bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === k)); onPick(k); };
+  bar.querySelectorAll('button').forEach(b => b.addEventListener('click', () => set(b.dataset.k)));
+  set(initial);
+}
+
+const AV = { chatgpt: ['#111827', 'GPT'], gemini: ['#4F6BED', 'Ge'], aio: ['#0F9D58', 'AO'], aimode: ['#1A73E8', 'AM'], perplexity: ['#20808D', 'Px'], near: ['#6B7280', 'GPT'] };
+let SEL = 9, VIEW = 'conv', stop = null, TRACKED = false;
+const qlist = document.getElementById('qlist'), right = document.getElementById('right');
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2200); }
+const score = q => q.byAi.reduce((a, b) => a + b, 0);
+function drawList(progress = null) {
+  const groups = [...new Set(QUESTIONS.map(q => q.svc))];
+  qlist.innerHTML = groups.map(g => `<div class="qg">${g}${g === 'Branded' ? ' · not in the headline' : ''}</div>` + QUESTIONS.filter(q => q.svc === g).map(q => `<div class="qi${q.id === SEL ? ' on' : ''}" data-id="${q.id}"><div style="flex:1"><div class="t">${q.text}</div><div class="m">${q.byAi.map(v => `<i class="${progress ? (progress > q.id ? (v >= 3 ? 'hit' : v >= 1 ? 'part' : '') : '') : v >= 3 ? 'hit' : v >= 1 ? 'part' : ''}"></i>`).join('')}</div></div><span class="sc">${progress && progress <= q.id ? '…' : score(q) + '/25'}</span></div>`).join('')).join('');
+  qlist.querySelectorAll('.qi').forEach(n => n.onclick = () => { SEL = +n.dataset.id; if (VIEW !== 'conv') VIEW = 'conv'; render(); });
+}
+function header(extra = '') {
+  return `<div class="top"><div class="tabs">${[['conv', 'Answers'], ['summary', 'Summary'], ['watch', 'Over time']].map(([k, l]) => `<button data-v="${k}" class="${VIEW === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <span class="sumline">AI names you in about <b>4 of 10</b> answers</span><span style="margin-left:auto;display:flex;gap:8px">${extra}<button class="btn sm">Share report</button>${TRACKED ? '' : '<button class="btn go sm" id="trk">Keep watching</button>'}</span></div>`;
+}
+function bindHeader() { right.querySelectorAll('.top .tabs button').forEach(b => b.onclick = () => { VIEW = b.dataset.v; render(); }); right.querySelector('#trk')?.addEventListener('click', () => { TRACKED = true; toast('Tracking starts tonight: twice a day.'); VIEW = 'watch'; render(); }); }
+
+function conv() {
+  const q = QUESTIONS[SEL], ais = AIS.slice(0, 5).concat(q.near ? [AIS[5]] : []);
+  const named = ais.filter((a, j) => (q.byAi[Math.min(j, 4)] ?? 0) >= 3).length;
+  right.innerHTML = header() + `<div class="conv fade-swap"><div class="patient"><div><div class="bub">${q.text}</div><div class="who">a patient in Bothell · ${q.svc}</div></div></div>
+    ${ais.map((a, j) => { const k = q.byAi[Math.min(j, 4)] ?? 0; return `<div class="reply" style="animation-delay:${j * 90}ms" data-j="${j}"><span class="av" style="background:${AV[a.key][0]}">${AV[a.key][1]}</span><div class="bub${k >= 1 ? ' hit' : ''}"><div class="meta"><b>${a.name}</b><span>named you in ${k} of 5 asks</span><span class="asks">${[0, 1, 2, 3, 4].map(r => `<button class="${r < k ? 'hit' : ''}${r === 0 ? ' cur' : ''}" data-r="${r}">${r + 1}</button>`).join('')}</span></div><pre>${answerFor(q, a, k > 0)}</pre>${a.key === 'near' ? `<div style="margin-top:10px;font-size:12px;color:var(--muted)">${a.note}</div>` : ''}</div></div>`; }).join('')}
+    <div class="takeaway"><b>${named >= 3 ? 'You usually come up for this question.' : named >= 1 ? 'You come up sometimes, not reliably.' : 'AI does not name you for this question.'}</b> <span style="color:var(--body)">${named >= 3 ? 'Keep the page that earns it strong.' : 'A page that answers it directly is the usual fix.'}</span>
+      ${named < 3 ? `<div style="margin-top:12px"><button class="btn go sm" id="plan">${q.svc === 'Emergency' ? 'Optimize the emergency page' : 'Plan a page for this'}</button></div>` : ''}</div></div>`;
+  bindHeader();
+  right.querySelectorAll('.asks button').forEach(b => b.onclick = () => { const rep = b.closest('.reply'), j = +rep.dataset.j, r = +b.dataset.r; rep.querySelectorAll('.asks button').forEach(x => x.classList.toggle('cur', x === b)); rep.querySelector('pre').textContent = ''; rep.querySelector('pre').innerHTML = answerFor(q, ais[j], r < (q.byAi[Math.min(j, 4)] ?? 0)); rep.querySelector('pre').classList.add('fade-swap'); });
+  right.querySelector('#plan')?.addEventListener('click', e => { e.target.textContent = 'Added ✓'; e.target.disabled = true; toast(q.svc === 'Emergency' ? 'Opened in On-Page optimization.' : 'Drafted a calendar item: new page.'); });
+}
+
+function summary() {
+  right.innerHTML = header() + `<div class="cards">
+    <div class="card reveal"><div class="eyebrow">Long story short</div><p class="big" style="margin-top:8px">AI names you in about <span style="color:var(--a)">4 of 10</span> answers.</p>
+      <div style="margin-top:16px">${AIS.map(a => `<div class="row" data-tip="<b>${a.name}</b><br>${a.k} of ${a.n} answers · could fairly be ${Math.max(0, pct(a.k, a.n) - range(a.k, a.n))} to ${pct(a.k, a.n) + range(a.k, a.n)}%"><span style="width:150px;font-weight:600;color:var(--ink)">${a.name}</span><span class="meter"><i data-w="${pct(a.k, a.n)}"></i></span><span class="mono" style="width:52px;text-align:right;font-weight:600" data-count="${pct(a.k, a.n)}">0%</span></div>`).join('')}</div></div>
+    ${TRACKED ? `<div class="card reveal"><div class="eyebrow">Since last week</div><h3>Three things moved</h3>${CHANGES.map(c => `<div class="row"><b style="color:${c.up ? 'var(--up)' : 'var(--down)'};width:20px">${c.up ? '↑' : '↓'}</b><div><b style="color:var(--ink)">${c.text}</b><div style="color:var(--muted);font-size:13px">${c.detail}</div></div></div>`).join('')}</div>` : ''}
+    <div class="card reveal"><div class="eyebrow">Where patients find you, and where they don't</div><h3>Strong on kids. Invisible for implants.</h3>${SERVICES.map(s => `<div class="row"><span style="width:110px;font-weight:600;color:var(--ink)">${s.svc}</span><span class="meter"><i data-w="${s.rate}"></i></span><span class="mono" style="width:44px;text-align:right">${s.rate}%</span><span style="width:160px;text-align:right">${s.state === 'gap' ? `<button class="btn soft sm" data-act="${s.thin ? 'o' : 'p'}">${s.thin ? 'Optimize page' : 'Plan a page'}</button>` : ''}</span></div>`).join('')}</div>
+    <div class="card reveal"><div class="eyebrow">Who AI names instead</div><h3>Accent Dental comes up more often.</h3>${RIVALS.map(r => `<div class="row"><span style="width:250px;font-weight:${r.you ? 700 : 500};color:${r.you ? 'var(--a-ink)' : 'var(--ink)'}">${r.name}${r.you ? ' (you)' : ''}</span><span class="meter"><i data-w="${r.rate}" style="${r.you ? '' : 'background:#B6BCC8'}"></i></span><span class="mono" style="width:44px;text-align:right">${r.rate}%</span></div>`).join('')}</div>
+    <div class="card reveal"><div class="eyebrow">Next steps</div><h3>Four things worth doing.</h3>${NEXT.map((n, i) => `<div class="row"><span class="chk" id="c${i}"></span><div style="flex:1"><b style="color:var(--ink)">${n.title}</b><div style="color:var(--muted);font-size:13px">${n.why}</div></div><button class="btn go sm" data-i="${i}">${n.cta}</button></div>`).join('')}</div></div>`;
+  bindHeader(); bindTips(right); revealAll(right);
+  setTimeout(() => right.querySelectorAll('.meter i').forEach(i => i.style.width = i.dataset.w + '%'), 250);
+  right.querySelectorAll('[data-act]').forEach(b => b.onclick = () => { b.textContent = 'Added ✓'; b.disabled = true; toast(b.dataset.act === 'o' ? 'Opened in On-Page optimization.' : 'Drafted a calendar item: new page.'); });
+  right.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { document.getElementById('c' + b.dataset.i).classList.add('on'); b.textContent = 'Done ✓'; b.disabled = true; toast(NEXT[+b.dataset.i].where + '.'); });
+}
+
+function watch() {
+  if (!TRACKED) { right.innerHTML = header() + `<div class="cards"><div class="card"><h3>See how the answers change.</h3><p>Twice a day, the same questions, every AI. Each question on the left gets its own history.</p><button class="btn go" id="tw">Keep watching, about $28 a month</button><p style="color:var(--muted);font-size:13px">Clients only. Prospects get Snapshots.</p></div></div>`; bindHeader(); right.querySelector('#tw').onclick = () => { TRACKED = true; render(); }; return; }
+  const q = QUESTIONS[SEL], days = 8, hist = Array.from({ length: days }, (_, d) => Math.max(0, Math.min(5, q.byAi[0] - 1 + Math.round(d / 4))));
+  right.innerHTML = header() + `<div class="conv fade-swap"><div class="patient"><div><div class="bub">${q.text}</div><div class="who">the same question, asked twice a day</div></div></div>
+    ${AIS.slice(0, 5).map((a, j) => `<div class="reply"><span class="av" style="background:${AV[a.key][0]}">${AV[a.key][1]}</span><div class="bub"><div class="meta"><b>${a.name}</b><span>last 8 weeks, one row a week</span></div><div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px">${hist.map((v, w) => `<div title="week ${w + 1}" style="height:${12 + (v + j % 2) * 9}px;align-self:end;border-radius:6px;background:${v + j % 2 >= 3 ? 'var(--a)' : '#DDD6EE'};transition:height .5s"></div>`).join('')}</div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:4px"><span>Sep 8</span><span>Oct 27</span></div></div></div>`).join('')}
+    <div class="takeaway"><b>Across every question:</b> ChatGPT names you in 44% of the last 7 days' answers, up from 36% a month ago. $21.90 spent this month.</div></div>`;
+  bindHeader();
+}
+
+function setup() {
+  document.getElementById('prac').innerHTML = '<b>New check</b>Answer three questions and we will write the rest.';
+  qlist.innerHTML = '<div style="padding:30px 16px;color:var(--faint);font-size:14px">Patient questions will appear here as they are written.</div>';
+  right.innerHTML = `<div class="chat-setup" id="cs"></div><div class="composer"><div class="box"><input id="cin" placeholder="Type a practice name or website"><button class="btn go sm" id="csend">Send</button></div></div>`;
+  const cs = document.getElementById('cs');
+  const sys = html => { const d = document.createElement('div'); d.className = 'sys'; d.innerHTML = `<span class="av" style="background:var(--a)">AI</span><div class="bub">${html}</div>`; cs.appendChild(d); d.scrollIntoView({ behavior: 'smooth', block: 'end' }); return d; };
+  const me = t => { const d = document.createElement('div'); d.className = 'me'; d.innerHTML = `<div class="bub">${t}</div>`; cs.appendChild(d); };
+  sys('Which practice should we check? A client name or a website works.');
+  let stage = 0;
+  const send = async () => {
+    const v = document.getElementById('cin').value.trim() || 'Bothell Family Dentistry'; document.getElementById('cin').value = '';
+    if (stage === 0) { me(v); stage = 1; await new Promise(r => setTimeout(r, 400));
+      const d = sys(`Found it: <b>${PRACTICE.name}</b>, ${PRACTICE.address}. A client, ${PRACTICE.domain}.<div><button class="btn soft sm opt" id="yes">That's the one</button><button class="btn sm opt">Not quite</button></div>`);
+      d.querySelector('#yes').onclick = async () => { me("That's the one"); document.getElementById('prac').innerHTML = `<b>${PRACTICE.name}</b>${PRACTICE.city} · client`;
+        sys('Writing the questions patients ask, from your website. Watch the list on the left.'); qlist.innerHTML = '';
+        const groups = [...new Set(QUESTIONS.map(q => q.svc))];
+        for (const g of groups) { const h = document.createElement('div'); h.className = 'qg'; h.textContent = g; qlist.appendChild(h); for (const q of QUESTIONS.filter(x => x.svc === g)) { const n = document.createElement('div'); n.className = 'qi'; n.innerHTML = `<span class="chk on"></span><div class="t"></div>`; qlist.appendChild(n); await typeText(n.querySelector('.t'), q.text, 5); n.onclick = () => { n.style.opacity = n.style.opacity === '.4' ? 1 : .4; n.querySelector('.chk').classList.toggle('on'); }; } }
+        const d2 = sys('30 questions, grouped by service. Tap any on the left to leave it out. Next: I found 4 nearby practices on Google Maps to compare against: Accent Dental Center Bothell, Bothell Smiles Family Dentistry, Hello Kids Dentistry, Annigan Dental.<div><button class="btn soft sm opt" id="ok2">Compare against those</button><button class="btn sm opt">Add another</button></div>');
+        d2.querySelector('#ok2').onclick = () => { me('Compare against those'); const d3 = sys(`Ready. Each question goes to six AIs, five times each, a few minutes apart: <b>$2.35</b>, about an hour. You can leave; I'll keep going.<div><button class="btn go sm opt" id="run">Run the Snapshot, $2.35</button></div>`); d3.querySelector('#run').onclick = () => go('running'); };
+      };
+    }
+  };
+  document.getElementById('csend').onclick = send; document.getElementById('cin').onkeydown = e => { if (e.key === 'Enter') send(); };
+}
+
+function running() {
+  VIEW = 'conv'; SEL = 9;
+  document.getElementById('prac').innerHTML = `<b>${PRACTICE.name}</b>Snapshot running · round <span id="rr">1</span> of 5`;
+  drawList(1);
+  const q = QUESTIONS[SEL], ais = AIS.slice(0, 5).concat([AIS[5]]);
+  right.innerHTML = `<div class="top"><span class="sumline">Asking six AIs every question, five times each. Replies land below as they come in.</span><span class="mono" style="margin-left:auto;color:var(--muted)" id="cnt">0 of 750</span></div>
+    <div class="conv"><div class="patient"><div><div class="bub">${q.text}</div><div class="who">a patient in Bothell · ${q.svc}</div></div></div>${ais.map((a, j) => `<div class="reply" data-j="${j}"><span class="av" style="background:${AV[a.key][0]}">${AV[a.key][1]}</span><div class="bub"><div class="meta"><b>${a.name}</b><span class="st">asking…</span></div><div class="typing-dots"><i></i><i></i><i></i></div></div></div>`).join('')}</div>`;
+  let shown = 0;
+  stop = runSim({ speed: 4, onAnswer: (x, i, total) => { document.getElementById('cnt').textContent = `${i + 1} of ${total}`; const prog = Math.floor((i + 1) / total * 30) + 1; if (prog % 3 === 0) drawList(prog);
+      if (i % 40 === 20 && shown < ais.length) { const rep = right.querySelector(`.reply[data-j="${shown}"]`); const k = q.byAi[Math.min(shown, 4)]; rep.querySelector('.typing-dots').outerHTML = `<pre class="fade-swap">${answerFor(q, ais[shown], k > 0)}</pre>`; rep.querySelector('.st').textContent = k > 0 ? 'named you' : 'did not name you'; if (k > 0) rep.querySelector('.bub').classList.add('hit'); shown++; } },
+    onRound: r => { const n = document.getElementById('rr'); if (n) n.textContent = Math.min(5, r + 1); }, onDone: () => setTimeout(() => go('result'), 900) });
+}
+
+function render() { document.getElementById('prac').innerHTML = `<b>${PRACTICE.name}</b>${PRACTICE.city} · ${TRACKED ? 'watched twice a day' : 'Snapshot Oct 27 · 750 answers'}`; drawList(); ({ conv, summary, watch })[VIEW](); }
+function go(k) { if (stop) { stop(); stop = null; } document.querySelectorAll('.statebar button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+  if (k === 'setup') return setup(); if (k === 'running') return running();
+  if (k === 'result') { VIEW = 'conv'; } if (k === 'summary') VIEW = 'summary'; if (k === 'watch') { TRACKED = true; VIEW = 'watch'; } render(); }
+stateBar([['setup', 'Setup'], ['running', 'Live run'], ['result', 'Answers'], ['summary', 'Summary'], ['watch', 'Over time']], 'setup', go);
+</script>
+</body>
+</html>
