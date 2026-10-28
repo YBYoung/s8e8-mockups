@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Market Trends: Past checks (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F7F9; --card: #FFFFFF; --line: #E5E7EB; --line-soft: #F1F2F4;
+    --ink: #0F172A; --body: #1F2937; --muted: #6B7280; --faint: #9CA3AF;
+    --teal: #0F766E; --teal-tint: #E6F4F1; --green: #22C55E; --red: #E11D48;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); font-family: Inter, -apple-system, system-ui, sans-serif; color: var(--body); font-size: 14px; }
+  .mock-note { background: #0F172A; color: #fff; font-size: 12px; padding: 8px 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .mock-note b { font-weight: 600; }
+  .mock-note button { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.35); border-radius: 6px; padding: 3px 9px; font: inherit; cursor: pointer; }
+  .mock-note button.on { background: #fff; color: #0F172A; }
+  .shell { display: flex; min-height: calc(100vh - 34px); }
+  .rail { width: 64px; flex: none; background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 14px; padding-top: 22px; }
+  .rail i { width: 22px; height: 22px; border: 1.5px solid #64748B; border-radius: 5px; display: block; opacity: .55; }
+  .rail i.on { background: #0F172A; border-color: #0F172A; opacity: 1; width: 40px; height: 32px; border-radius: 8px; }
+  main { flex: 1; min-width: 0; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 64px; }
+  .title { display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
+  .title svg { width: 26px; height: 26px; fill: none; stroke: var(--teal); stroke-width: 1.5; }
+  h1 { margin: 0; font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .grid { display: grid; grid-template-columns: 360px 1fr; gap: 18px; align-items: start; }
+  .grid.settled { grid-template-columns: 264px 1fr; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .setup { padding: 16px; }
+  .setup h3 { margin: 0 0 12px; font-size: 14px; color: var(--ink); display: flex; justify-content: space-between; align-items: center; }
+  .tag { font-size: 11px; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+  .step { display: flex; gap: 10px; border-radius: 6px; padding: 9px 10px; }
+  .step.on { background: var(--teal-tint); }
+  .num { width: 20px; height: 20px; flex: none; border-radius: 50%; border: 1.5px solid #D1D5DB; color: var(--muted); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+  .step.on .num { border-color: var(--teal); color: var(--teal); }
+  .num.done { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .step-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .step-sum { font-size: 12px; color: var(--muted); }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--ink); margin: 10px 0 4px; }
+  label .req { color: var(--red); }
+  .input { width: 100%; border: 1px solid #D1D5DB; border-radius: 6px; padding: 7px 10px; font: inherit; font-size: 13px; color: var(--ink); background: #fff; }
+  .input::placeholder { color: var(--faint); }
+  .primary { margin-top: 12px; width: 100%; border: 0; border-radius: 6px; background: var(--teal); color: #fff; font: inherit; font-size: 13px; font-weight: 600; padding: 9px; cursor: pointer; }
+  .run-head { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .run-head .grow { flex: 1; min-width: 0; }
+  .status { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #9CA3AF; display: inline-block; }
+  .dot.ok { background: var(--green); }
+  .bar { margin-top: 8px; height: 6px; background: #EEF0F3; border-radius: 3px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--teal); }
+  .btn-run { flex: none; border: 0; border-radius: 6px; background: var(--teal); color: #fff; font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; cursor: pointer; }
+  .btn-run:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-ghost { flex: none; border: 1px solid #D1D5DB; background: #fff; border-radius: 6px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); padding: 8px 12px; cursor: pointer; }
+
+  /* Past checks */
+  .past { padding: 14px 16px 16px; }
+  .past-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  .past-top h2 { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); flex: 1; }
+  .past-top h2 small { font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+  .past-lead { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+  .combo { position: relative; }
+  .combo-btn { display: inline-flex; align-items: center; gap: 8px; min-width: 220px; justify-content: space-between; border: 1px solid #D1D5DB; background: #fff; border-radius: 6px; padding: 6px 10px; font: inherit; font-size: 13px; color: var(--ink); cursor: pointer; }
+  .combo-btn:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(15,118,110,.15); }
+  .combo-btn svg { width: 12px; height: 12px; stroke: var(--muted); fill: none; stroke-width: 2; }
+  .combo-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 5; width: 280px; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 24px rgba(15,23,42,.10); padding: 6px; display: none; }
+  .combo-menu.open { display: block; }
+  .combo-menu input { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; font-size: 12px; margin-bottom: 4px; }
+  .combo-opt { display: flex; justify-content: space-between; padding: 6px 8px; border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--body); }
+  .combo-opt:hover { background: var(--teal-tint); }
+  .combo-opt.sel { color: var(--teal); font-weight: 600; }
+  .combo-opt span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .switch { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); font-weight: 500; cursor: pointer; background: none; border: 0; padding: 0; font-family: inherit; }
+  .switch i { position: relative; width: 30px; height: 16px; border-radius: 6px; background: #D1D5DB; display: inline-block; transition: background .15s; }
+  .switch i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .switch.on i { background: var(--teal); }
+  .switch.on i::after { left: 16px; }
+  .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 11px 10px; margin: 0 -10px; border-bottom: 1px solid var(--line-soft); border-radius: 6px; cursor: pointer; }
+  .row:hover { background: #F8FAFC; }
+  .row:hover .open-cue { opacity: 1; }
+  .who { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .who em { font-style: normal; font-weight: 400; color: var(--muted); margin-left: 6px; font-size: 12px; }
+  .prospect { font-size: 11px; font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; margin-left: 6px; }
+  .topics { font-size: 12px; color: var(--muted); grid-column: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meta { grid-row: 1 / span 2; grid-column: 2; display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); }
+  .meta .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .meta .stat { display: inline-flex; align-items: center; gap: 5px; }
+  .open-cue { opacity: 0; font-size: 12px; font-weight: 600; color: var(--teal); transition: opacity .12s; }
+  .failed { color: var(--red); }
+  .empty { padding: 22px 4px 6px; font-size: 13px; color: var(--muted); }
+  .more { margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--teal); background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+
+  /* Opened state */
+  .rail-topics h4 { margin: 14px 0 4px; font-size: 13px; color: var(--ink); display: flex; justify-content: space-between; }
+  .rail-topics h4 span { font-size: 12px; font-weight: 500; color: var(--muted); }
+  .rt { display: flex; justify-content: space-between; padding: 6px 8px; margin: 0 -8px; border-radius: 6px; font-size: 13px; }
+  .rt.on { background: var(--teal-tint); color: var(--teal); font-weight: 600; }
+  .rt .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+  .link { font-size: 12px; font-weight: 600; color: var(--teal); background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+  .practice { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .practice b { display: block; font-size: 14px; color: var(--ink); margin-bottom: 2px; }
+  .topic-card { margin: 14px 16px 16px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .tc-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .tc-head small { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .tc-head h4 { margin: 0; flex: 1; font-size: 15px; color: var(--ink); }
+  .score { border: 1px solid var(--line); background: #F8FAFC; border-radius: 6px; padding: 3px 9px; }
+  .score b { font-family: Montserrat, sans-serif; font-size: 17px; color: #475569; }
+  .score small { font-size: 11px; color: var(--muted); letter-spacing: 0; text-transform: none; }
+  .chart { display: block; width: calc(100% - 32px); height: 170px; margin: 12px 16px 16px; }
+  .back { margin: 0 0 12px; font-size: 12px; }
+  .hidden { display: none !important; }
+  @media (max-width: 860px) { .grid, .grid.settled { grid-template-columns: 1fr; } .rail { display: none; } .meta { grid-row: auto; grid-column: 1; } }
+</style>
+</head>
+<body>
+<div class="mock-note">
+  <b>Mockup, sample data.</b> Market Trends with Past checks on arrival.
+  <span>Show:</span>
+  <button type="button" data-view="arrive" class="on">1. Arriving</button>
+  <button type="button" data-view="opened">2. After opening a check</button>
+</div>
+<div class="shell">
+  <nav class="rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i></nav>
+  <main>
+    <div class="wrap">
+      <div class="title">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>
+        <h1>Market Trends</h1>
+      </div>
+      <p class="sub">How demand for a topic is moving where a practice is, for any client or prospect, with no strategy in flight.</p>
+
+      <!-- 1. Arriving -->
+      <div class="grid" id="view-arrive">
+        <div class="card setup">
+          <h3>Set up this practice <span class="tag">new</span></h3>
+          <div class="step on">
+            <span class="num">1</span>
+            <div style="flex:1;min-width:0">
+              <div class="step-title">Practice</div>
+              <div class="step-sum">Who the check is for</div>
+              <label>Client</label>
+              <input class="input" placeholder="Search clients, or leave empty for a prospect">
+              <label>Domain <span class="req">*</span></label>
+              <input class="input" placeholder="smiledental.com">
+              <label>Business name <span class="req">*</span></label>
+              <input class="input" placeholder="As it reads on Google">
+              <label>City or state <span class="req">*</span></label>
+              <input class="input" placeholder="Boulder, CO">
+              <button class="primary" type="button">Find the listing</button>
+            </div>
+          </div>
+          <div class="step"><span class="num">2</span><div><div class="step-title">Listing</div><div class="step-sum">Their Google listing</div></div></div>
+        </div>
+
+        <div class="card">
+          <div class="run-head">
+            <div class="grow"><b style="color:var(--ink)">Run</b> <span class="status"><span class="dot"></span>finish the setup on the left, or open a past check</span><div class="bar"><i style="width:0"></i></div></div>
+            <button class="btn-run" type="button" disabled>Run for $0.00</button>
+          </div>
+          <div class="past">
+            <div class="past-top">
+              <h2>Past checks<small id="count"></small></h2>
+              <button type="button" class="switch" id="clientsOnly" role="switch" aria-checked="false"><i></i>Clients only</button>
+              <div class="combo">
+                <button type="button" class="combo-btn" id="comboBtn"><span id="comboLabel">All clients and prospects</span><svg viewBox="0 0 12 12"><polyline points="2 4 6 8 10 4"/></svg></button>
+                <div class="combo-menu" id="comboMenu">
+                  <input placeholder="Search clients" id="comboSearch">
+                  <div id="comboOpts"></div>
+                </div>
+              </div>
+            </div>
+            <p class="past-lead">Open one to see its cards, edit its topics and phrases, or check it again.</p>
+            <ul class="rows" id="rows"></ul>
+            <div class="empty hidden" id="empty"></div>
+            <button class="more" type="button" id="more">Show 20 more</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. After opening a check -->
+      <div class="grid settled hidden" id="view-opened">
+        <div class="card setup">
+          <div class="practice"><b id="oName">Pinecrest Dental</b><span id="oWhere">pinecrestdental.com · 1200 Pearl St, Boulder, CO</span> · <button class="link" type="button">edit setup</button></div>
+          <div class="rail-topics">
+            <h4>Topics <span id="oTopicCount">5 of 10</span></h4>
+            <div id="oTopics"></div>
+            <button class="link" type="button" style="margin-top:4px">edit topics and phrases</button>
+          </div>
+          <div class="rail-topics">
+            <h4>History <span id="oDomain">pinecrestdental.com</span></h4>
+            <div id="oHist" style="font-size:12px;color:var(--muted)"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="run-head">
+            <div class="grow"><b style="color:var(--ink)">Run</b> <span class="status"><span class="dot ok"></span><span id="oStatus">check #20 complete · 5 topics · 14 phrases · read as of 2026-09</span></span><div class="bar"><i style="width:100%"></i></div></div>
+            <button class="btn-ghost" type="button">Share report</button>
+            <button class="btn-run" type="button" id="oAgain">Check again for $0.19</button>
+          </div>
+          <p class="back" style="padding:12px 16px 0;margin:0"><button class="link" type="button" id="backBtn">← All past checks</button></p>
+          <div class="topic-card">
+            <div class="tc-head"><small>Topic 1 of <span id="oTot">5</span></small><h4 id="oFirst">dental implants</h4><span class="score"><b id="oScore">2</b> <small>/10</small></span></div>
+            <svg class="chart" viewBox="0 0 600 170" preserveAspectRatio="none" aria-hidden="true">
+              <rect x="0" y="0" width="600" height="170" fill="#F8FAFC"/>
+              <polyline fill="none" stroke="#94A3B8" stroke-width="1.5" points="0,90 50,95 100,104 150,70 200,62 250,64 300,48 350,47 400,40 450,58 500,63 550,74 600,80"/>
+              <polyline fill="none" stroke="#0F766E" stroke-width="2.5" points="0,115 50,120 100,118 150,112 200,82 250,80 300,72 350,74 400,64 450,70 500,88 550,110 600,118"/>
+              <polyline fill="none" stroke="#DB2777" stroke-width="2" points="50,70 100,90 150,82 200,70 250,66 300,58 350,48 400,62 450,32 500,76 550,95 600,104"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const CHECKS = [
+  { id: 20, client: 'Pinecrest Dental', domain: 'pinecrestdental.com', prospect: false, when: 'Today', topics: ['dental implants', 'clear aligners', 'sedation dentistry', 'same day crowns', 'preventative dental care'], phrases: 14, cost: '0.19', status: 'complete' },
+  { id: 18, client: 'Harbor Family Dentistry', domain: 'harborfamilydentistry.com', prospect: true, when: 'Yesterday', topics: ['Dental implants', 'Invisalign'], phrases: 6, cost: '0.09', status: 'complete' },
+  { id: 17, client: 'Summit Smiles', domain: 'summitsmiles.com', prospect: false, when: 'Oct 26', topics: ['emergency dentist', 'root canal', 'dental crowns', 'teeth whitening'], phrases: 12, cost: '0.17', status: 'complete' },
+  { id: 16, client: 'Pinecrest Dental', domain: 'pinecrestdental.com', prospect: false, when: 'Oct 24', topics: ['dental implants', 'clear aligners', 'sedation dentistry'], phrases: 9, cost: '0.13', status: 'complete' },
+  { id: 15, client: 'Riverbend Dental', domain: 'riverbenddental.com', prospect: false, when: 'Oct 23', topics: ['porcelain veneers', 'cosmetic dentistry', 'smile makeover', 'dental bonding', 'teeth whitening', 'gum contouring'], phrases: 17, cost: '0.22', status: 'complete' },
+  { id: 14, client: 'Cedar Park Dentistry', domain: 'cedarparkdentistry.com', prospect: false, when: 'Oct 22', topics: ['dental implants', 'all on 4'], phrases: 5, cost: '0.09', status: 'failed' },
+  { id: 13, client: 'Lakeside Smiles', domain: 'lakesidesmiles.com', prospect: true, when: 'Oct 21', topics: ['pediatric dentist', 'braces', 'sealants'], phrases: 8, cost: '0.12', status: 'complete' },
+  { id: 12, client: 'Old Town Dental', domain: 'oldtowndental.com', prospect: false, when: 'Oct 20', topics: ['invisalign', 'dental cleaning', 'wisdom teeth'], phrases: 9, cost: '0.13', status: 'complete' },
+];
+const WHERE = { 'pinecrestdental.com': '1200 Pearl St, Boulder, CO', 'summitsmiles.com': 'Fort Collins, CO', 'harborfamilydentistry.com': 'Bothell, WA', 'riverbenddental.com': 'Chicago, IL', 'cedarparkdentistry.com': 'Seattle, WA', 'lakesidesmiles.com': 'Madison, WI', 'oldtowndental.com': 'Chicago, IL' };
+let filter = null, clientsOnly = false;
+
+function visible() { return CHECKS.filter((c) => (!filter || c.client === filter) && (!clientsOnly || !c.prospect)); }
+function topicLine(t) { return t.length <= 3 ? t.join(', ') : `${t.slice(0, 3).join(', ')} +${t.length - 3} more`; }
+
+function render() {
+  const list = visible();
+  document.getElementById('count').textContent = `${list.length} ${list.length === 1 ? 'check' : 'checks'}`;
+  document.getElementById('rows').innerHTML = list.map((c) => `
+    <li class="row" data-id="${c.id}">
+      <div class="who">${c.client}${c.prospect ? '<span class="prospect">prospect</span>' : ''}<em>${c.domain}</em></div>
+      <div class="meta">
+        <span class="stat">${c.status === 'failed' ? '<span class="dot" style="background:var(--red)"></span><span class="failed">failed</span>' : '<span class="dot ok"></span>' + c.topics.length + ' topics · ' + c.phrases + ' phrases'}</span>
+        <span>${c.when}</span><span class="mono">$${c.cost}</span><span class="open-cue">Open →</span>
+      </div>
+      <div class="topics">${topicLine(c.topics)}</div>
+    </li>`).join('');
+  const empty = document.getElementById('empty');
+  empty.classList.toggle('hidden', list.length > 0);
+  empty.textContent = filter ? `No checks for ${filter} yet. Set one up on the left; it lands here.` : 'No checks yet. Set one up on the left; it lands here.';
+  document.getElementById('more').classList.toggle('hidden', list.length < 8);
+  document.querySelectorAll('.row').forEach((r) => r.addEventListener('click', () => openCheck(Number(r.dataset.id))));
+  renderOpts('');
+}
+
+function renderOpts(q) {
+  const names = [...new Set(CHECKS.map((c) => c.client))].sort();
+  const opts = [{ label: 'All clients and prospects', value: null, n: CHECKS.length }, ...names.map((n) => ({ label: n, value: n, n: CHECKS.filter((c) => c.client === n).length }))]
+    .filter((o) => !q || o.label.toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('comboOpts').innerHTML = opts.map((o) => `<div class="combo-opt ${o.value === filter ? 'sel' : ''}" data-v="${o.value ?? ''}">${o.label}<span>${o.n}</span></div>`).join('');
+  document.querySelectorAll('.combo-opt').forEach((el) => el.addEventListener('click', () => {
+    filter = el.dataset.v || null;
+    document.getElementById('comboLabel').textContent = filter || 'All clients and prospects';
+    document.getElementById('comboMenu').classList.remove('open');
+    render();
+  }));
+}
+
+function openCheck(id) {
+  const c = CHECKS.find((x) => x.id === id);
+  document.getElementById('oName').textContent = c.client;
+  document.getElementById('oWhere').textContent = `${c.domain} · ${WHERE[c.domain] || ''}`;
+  document.getElementById('oDomain').textContent = c.domain;
+  document.getElementById('oTopicCount').textContent = `${c.topics.length} of 10`;
+  const ratings = [2, 2, 2, 2, 2, 3];
+  document.getElementById('oTopics').innerHTML = c.topics.map((t, i) => `<div class="rt ${i === 0 ? 'on' : ''}"><span>${t}</span><span class="mono">${c.status === 'failed' ? '' : ratings[i % ratings.length] + '/10'}</span></div>`).join('');
+  const same = CHECKS.filter((x) => x.domain === c.domain);
+  document.getElementById('oHist').innerHTML = same.map((x) => `<div style="display:flex;justify-content:space-between;padding:4px 0;${x.id === c.id ? 'color:var(--teal);font-weight:600' : ''}"><span>${x.when} · #${x.id}</span><span class="mono" style="font-family:'JetBrains Mono',monospace;font-size:11px">$${x.cost}</span></div>`).join('');
+  document.getElementById('oStatus').textContent = c.status === 'failed' ? `check #${c.id} failed: Google Trends did not answer` : `check #${c.id} complete · ${c.topics.length} topics · ${c.phrases} phrases · read as of 2026-09`;
+  document.getElementById('oAgain').textContent = `Check again for $${c.cost}`;
+  document.getElementById('oFirst').textContent = c.topics[0];
+  document.getElementById('oTot').textContent = c.topics.length;
+  show('opened');
+}
+
+function show(view) {
+  document.getElementById('view-arrive').classList.toggle('hidden', view !== 'arrive');
+  document.getElementById('view-opened').classList.toggle('hidden', view !== 'opened');
+  document.querySelectorAll('[data-view]').forEach((b) => b.classList.toggle('on', b.dataset.view === view));
+}
+
+document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => (b.dataset.view === 'opened' ? openCheck(20) : show('arrive'))));
+document.getElementById('backBtn').addEventListener('click', () => show('arrive'));
+document.getElementById('comboBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('comboMenu').classList.toggle('open'); document.getElementById('comboSearch').focus(); });
+document.getElementById('comboSearch').addEventListener('input', (e) => renderOpts(e.target.value));
+document.getElementById('comboMenu').addEventListener('click', (e) => e.stopPropagation());
+document.addEventListener('click', () => document.getElementById('comboMenu').classList.remove('open'));
+document.getElementById('clientsOnly').addEventListener('click', (e) => { clientsOnly = !clientsOnly; e.currentTarget.classList.toggle('on', clientsOnly); e.currentTarget.setAttribute('aria-checked', String(clientsOnly)); render(); });
+render();
+</script>
+</body>
+</html>
