@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility C: surfaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#0F172A; --body:#1F2937; --muted:#6B7280; --faint:#9CA3AF; --border:#E5E7EB; --border-strong:#D1D5DB;
+  --page:#F6F7F9; --card:#FFFFFF; --up:#15803D; --down:#E11D48; --live:#22C55E;
+  --s1:#2a78d6; --s2:#1baf7a; --s3:#6250d6; --s4:#e87ba4;
+  --q1:#cde2fb; --q2:#9ec5f4; --q3:#6da7ec; --q4:#3987e5; --q5:#256abf; --q6:#184f95;
+  --accent:#5B4BF5; --accent-ink:#4936E0; --accent-tint:#EEECFF; --accent-fill:linear-gradient(135deg,#4F46E5 0%,#8B5CF6 100%);
+}
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+body { margin:0; background:var(--page); color:var(--body); font:14px/1.5 Inter,system-ui,sans-serif; }
+.app { display:grid; grid-template-columns:64px 1fr; min-height:100vh; }
+.rail { background:#0B0B0C; display:flex; flex-direction:column; align-items:center; padding:14px 0; gap:14px; }
+.rail b { width:28px; height:28px; border-radius:7px; background:#1F1F22; display:block; }
+.rail b.on { background:var(--accent); }
+.main { min-width:0; }
+.wrap { max-width:1240px; margin:0 auto; padding:22px 24px 80px; }
+.top { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.title { display:flex; align-items:center; gap:12px; }
+.title h1 { font:800 22px/1.1 Montserrat,sans-serif; letter-spacing:.04em; text-transform:uppercase; color:var(--ink); margin:0; }
+.title svg { width:26px; height:26px; stroke:var(--accent); fill:none; stroke-width:1.5; }
+.sub { color:var(--muted); margin:2px 0 18px; }
+.paid { font-size:12px; color:var(--muted); }
+.paid a { color:var(--accent-ink); font-weight:600; text-decoration:none; }
+.states { display:flex; gap:4px; background:#fff; border:1px solid var(--border); border-radius:8px; padding:3px; margin:0 0 16px; width:max-content; }
+.states button { border:0; background:none; font:600 12px Inter; color:var(--muted); padding:6px 11px; border-radius:6px; cursor:pointer; }
+.states button.on { background:var(--accent-tint); color:var(--accent-ink); }
+.sample { font:600 10px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:2px 6px; margin-left:8px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+.pad { padding:16px 18px; }
+.h2 { font:700 14px Inter; color:var(--ink); margin:0 0 2px; }
+.hint { font-size:12px; color:var(--muted); margin:0 0 12px; }
+.label { font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.mono { font-family:'JetBrains Mono',monospace; }
+.btn { font:600 13px Inter; border-radius:8px; padding:8px 14px; cursor:pointer; border:1px solid var(--border-strong); background:#fff; color:var(--ink); }
+.btn.primary { background:var(--accent-fill); border-color:transparent; color:#fff; box-shadow:0 1px 2px rgba(15,23,42,.12); }
+.btn.primary:hover { filter:brightness(1.06); }
+.btn.ghost { border-color:transparent; background:var(--accent-tint); color:var(--accent-ink); }
+.btn.small { padding:5px 10px; font-size:12px; }
+.input { border:1px solid var(--border-strong); border-radius:8px; padding:8px 11px; font:13px Inter; color:var(--ink); background:#fff; width:100%; outline:none; }
+.input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-tint); }
+.req { color:var(--down); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { text-align:left; padding:8px 10px; border-bottom:1px solid var(--border); font:600 11px/1 Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+td { padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tr:last-child td { border-bottom:0; }
+.you { color:var(--accent-ink); font:600 10px Inter; letter-spacing:.06em; text-transform:uppercase; margin-left:6px; }
+.dot { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+.k5 { display:inline-flex; gap:2px; vertical-align:middle; }
+.k5 i { width:7px; height:7px; border-radius:2px; background:#E5E7EB; display:block; }
+.k5 i.y { background:var(--s1); }
+.note { font-size:12px; color:var(--muted); background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:8px 10px; }
+.tip { position:fixed; pointer-events:none; z-index:50; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 24px rgba(15,23,42,.14); padding:8px 10px; font-size:12px; color:var(--body); max-width:280px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+.hov { border-bottom:1px dotted var(--faint); cursor:help; }
+.strip { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:12px 16px; border-radius:10px; background:var(--accent-tint); color:var(--accent-ink); font-weight:600; font-size:13px; }
+.prog { flex:1; min-width:160px; height:6px; border-radius:3px; background:rgba(255,255,255,.7); overflow:hidden; }
+.prog i { display:block; height:100%; background:var(--accent-fill); width:0; transition:width .4s; }
+.early { font:600 10px Inter; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px dashed var(--border-strong); border-radius:4px; padding:1px 5px; margin-left:6px; }
+.chip { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:6px; padding:4px 8px; font-size:12px; background:#fff; margin:0 6px 6px 0; }
+.chip.off { color:var(--faint); text-decoration:line-through; }
+.grp { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:10px 0 6px; }
+.drawer { position:fixed; top:0; right:0; bottom:0; width:min(520px,100%); background:#fff; border-left:1px solid var(--border); box-shadow:-12px 0 32px rgba(15,23,42,.12); transform:translateX(100%); transition:transform .25s; z-index:40; overflow:auto; }
+.drawer.on { transform:none; }
+.drawer .answer { font-size:13px; line-height:1.6; white-space:pre-wrap; background:#FAFAFA; border:1px solid var(--border); border-radius:8px; padding:12px; }
+mark { background:var(--accent-tint); color:var(--accent-ink); padding:0 2px; border-radius:3px; font-weight:600; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:900px) { .grid2 { grid-template-columns:1fr; } .app { grid-template-columns:1fr; } .rail { display:none; } }
+
+.tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:14px 0 18px; }
+.tile { position:relative; text-align:left; border:1px solid var(--border); background:#fff; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:4px; cursor:pointer; font:inherit; transition:box-shadow .15s, border-color .15s; }
+.tile:hover { box-shadow:0 4px 14px rgba(79,70,229,.10); }
+.tile.on { border-color:transparent; box-shadow:0 0 0 2px #6D5BF6, 0 6px 18px rgba(79,70,229,.14); }
+.tile .big { font:800 34px/1.05 Montserrat; color:var(--ink); }
+.tile .rng { font-size:12px; color:var(--muted); } .tile .cav { font-size:11px; color:var(--muted); }
+.detail-h { display:flex; justify-content:space-between; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-bottom:12px; }
+@media (max-width:900px) { .tiles { grid-template-columns:repeat(2,1fr); } }
+
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="app"><aside class="rail"><b></b><b></b><b></b><b></b><b></b><b class="on"></b><b></b><b></b><b></b><b></b></aside><div class="main"><div class="wrap"><div class="top"><div><div class="title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/><path d="M4.5 9h15M4.5 15h15"/></svg><h1>AI Visibility</h1><span class="sample">sample data</span></div>
+<p class="sub">How often AI answers name a practice, asked many times so the number holds up. For any client or prospect.</p></div>
+<div class="paid">Looking for the $297 prospect product? <a href="#">Paid Snapshots →</a></div></div>
+<div class="states" id="states"><button data-s="setup">Setup</button><button data-s="running">Running</button><button data-s="result" class=on>Result</button><button data-s="tracking">Tracking</button></div><div id="root"></div></div></div></div><div class="drawer" id="drawer"></div><script>
+const PRACTICE = { name: 'Bothell Family Dentistry', domain: 'bothellfamilydentistry.com', city: 'Bothell, WA' };
+const SURFACES = [
+  { key: 'chatgpt', name: 'ChatGPT', how: 'app, logged out, United States', k: 52, n: 135 },
+  { key: 'near', name: 'ChatGPT, near-me questions', how: 'OpenAI API, city set to Bothell', k: 4, n: 15,
+    caveat: 'A city-level "near me" search cannot be properly simulated on ChatGPT. This line asks through OpenAI\'s API with the city set: the closest stand-in, not the app a patient uses.' },
+  { key: 'gemini', name: 'Gemini', how: 'app, logged out, Bothell', k: 61, n: 135 },
+  { key: 'aio', name: 'Google AI Overviews', how: 'Google results, Bothell', k: 14, n: 45, shown: 'An Overview showed on 9 of 27 questions; named in 14 of those 45 answers.' },
+  { key: 'aimode', name: 'Google AI Mode', how: 'Google AI Mode, Bothell', k: 47, n: 135 },
+  { key: 'perplexity', name: 'Perplexity', how: 'API, city in the question', k: 70, n: 135 },
+];
+const pct = (k, n) => n ? 100 * k / n : 0;
+const half = (k, n) => { const p = k / n; return 196 * Math.sqrt(p * (1 - p) / n); };
+const fmtRate = (k, n) => `${pct(k, n).toFixed(0)}%`;
+const fmtRange = (k, n) => `±${half(k, n).toFixed(0)} pts`;
+const SERVICES = ['Implants', 'Invisalign', 'Emergency', 'Kids', 'Veneers', 'Whitening', 'Cleanings', 'Sedation'];
+let _s = 11; const rnd = () => (_s = (_s * 9301 + 49297) % 233280) / 233280;
+const BY_SERVICE = SERVICES.map((svc, i) => ({ svc, cells: SURFACES.filter(s => s.key !== 'near').map(s => {
+  const base = { chatgpt: .38, gemini: .45, aio: .3, aimode: .35, perplexity: .52 }[s.key];
+  const lift = [-.25, .1, -.3, .2, .05, .12, .18, -.15][i];
+  const k = Math.max(0, Math.min(15, Math.round(15 * Math.max(0, Math.min(1, base + lift + (rnd() - .5) * .2)))));
+  return { key: s.key, k, n: 15 };
+}) }));
+const COMPETITORS = [
+  { name: PRACTICE.name, you: true, color: 'var(--s1)', k: 52, cited: 31, rec: 19 },
+  { name: 'Accent Dental Center Bothell', color: 'var(--s2)', k: 64, cited: 22, rec: 27 },
+  { name: 'Bothell Smiles Family Dentistry', color: 'var(--s3)', k: 49, cited: 18, rec: 15 },
+  { name: 'Hello Kids Dentistry', color: 'var(--s4)', k: 33, cited: 12, rec: 14 },
+  { name: 'Annigan Dental', k: 21, cited: 6, rec: 5 },
+  { name: 'Bothell Dental Care', k: 12, cited: 3, rec: 2 },
+];
+const ALSO_NAMED = [{ name: 'Smile Sanctuary', k: 17 }, { name: 'Bothell Everett Kids Dentistry', k: 11 }];
+const PROMPTS = [
+  ['Implants', 'Who does dental implants well in Bothell?'], ['Implants', 'Best place for a single tooth implant near Bothell, WA'], ['Implants', 'Are implants or bridges better, and who in Bothell does both?'],
+  ['Invisalign', 'Who is a good Invisalign dentist in Bothell?'], ['Invisalign', 'Invisalign for adults in Bothell, WA: where should I go?'], ['Invisalign', 'Cheapest clear aligners in Bothell'],
+  ['Emergency', 'Emergency dentist open today in Bothell'], ['Emergency', 'I cracked a tooth, who can see me fast in Bothell?'], ['Emergency', 'Weekend emergency dental care Bothell WA'],
+  ['Kids', 'Best family dentist for kids in Bothell'], ['Kids', 'Gentle dentist for a nervous 6 year old in Bothell'], ['Kids', 'Pediatric or family dentist in Bothell: which is better?'],
+  ['Veneers', 'Who does natural looking veneers in Bothell?'], ['Veneers', 'Porcelain veneers cost Bothell WA'], ['Veneers', 'Cosmetic dentist Bothell for a smile makeover'],
+  ['Whitening', 'Professional teeth whitening in Bothell'], ['Whitening', 'Is in-office whitening worth it, Bothell dentists'], ['Whitening', 'Best whitening dentist Bothell WA'],
+  ['Cleanings', 'Good dentist for regular cleanings in Bothell'], ['Cleanings', 'Dentist in Bothell that takes Delta Dental'], ['Cleanings', 'New patient exam and cleaning Bothell'],
+  ['Sedation', 'Sedation dentistry for anxious patients in Bothell'], ['Sedation', 'Who offers nitrous oxide at the dentist in Bothell?'], ['Sedation', 'Sleep dentistry near Bothell WA'],
+  ['General', 'Best dentist in Bothell, WA'], ['General', 'Top rated dentists in Bothell'], ['General', 'Which Bothell dentist should I choose?'],
+  ['Branded', 'Is Bothell Family Dentistry good?'], ['Branded', 'Bothell Family Dentistry reviews'], ['Branded', 'What do people say about Bothell Family Dentistry?'],
+].map(([svc, text], i) => ({ svc, text, kind: svc === 'Branded' ? 'branded' : svc === 'General' ? 'general' : 'discovery',
+  near: [6, 9, 18].includes(i), runs: SURFACES.filter(s => s.key !== 'near').map(() => Math.round(rnd() * 5)) }));
+PROMPTS[6].text = 'Emergency dentist near me'; PROMPTS[9].text = 'Family dentist near me for my kids'; PROMPTS[18].text = 'Dentist near me for a cleaning';
+const SOURCES = [['yelp.com', 41], ['bothellfamilydentistry.com', 31], ['healthgrades.com', 27], ['zocdoc.com', 19], ['reddit.com', 14], ['accentdentalbothell.com', 13], ['google.com/maps', 11], ['bothellsmiles.com', 9]];
+const HISTORY = [
+  ['Oct 27', 'Snapshot', '30 prompts', 'Complete', '$2.34'], ['Oct 1', 'Tracking started', '30 prompts', 'Tracking', '$21.90 this month'], ['Sep 30', 'Snapshot', '30 prompts', 'Complete', '$2.31'],
+];
+const ANSWER = `Here are a few well-reviewed family dentists in Bothell, WA:
+
+1. Accent Dental Center Bothell: known for same-week appointments and a large review count.
+2. Bothell Family Dentistry: patients mention gentle care for kids and clear explanations of treatment.
+3. Bothell Smiles Family Dentistry: offers evening hours.
+
+If you have dental anxiety, ask each office about sedation options before you book.`;
+
+const tip = document.getElementById('tip');
+function showTip(e, html) { tip.innerHTML = html; tip.classList.add('on'); const x = Math.min(e.clientX + 14, innerWidth - 300); tip.style.left = x + 'px'; tip.style.top = (e.clientY + 14) + 'px'; }
+function hideTip() { tip.classList.remove('on'); }
+function bindTips(root) { root.querySelectorAll('[data-tip]').forEach(n => { n.addEventListener('mousemove', e => showTip(e, n.dataset.tip)); n.addEventListener('mouseleave', hideTip); }); }
+const ns = 'http://www.w3.org/2000/svg';
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
+/* Dot and whisker: the practice's named rate per surface with its 95% range. */
+function rangeChart(el, { early = false, rounds = 5 } = {}) {
+  const rows = SURFACES.map(s => { const f = early ? rounds / 5 : 1; const n = Math.max(1, Math.round(s.n * f)); const k = Math.round(s.k * f); return { ...s, k, n }; });
+  const W = Math.max(420, el.clientWidth || 640), rowH = 34, L = Math.min(230, W * .36), R = 70, H = rows.length * rowH + 28;
+  const x = v => L + (W - L - R) * v / 100;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Named rate per AI with its range">`;
+  [0, 25, 50, 75, 100].forEach(v => s += `<line x1="${x(v)}" x2="${x(v)}" y1="4" y2="${H - 22}" stroke="#EEF0F3"/><text x="${x(v)}" y="${H - 6}" font-size="10" fill="#9CA3AF" text-anchor="middle" font-family="JetBrains Mono">${v}%</text>`);
+  rows.forEach((r, i) => {
+    const y = 14 + i * rowH, p = pct(r.k, r.n), h = half(r.k, r.n);
+    const t = `<b>${r.name}</b><br>Named in ${r.k} of ${r.n} answers: ${p.toFixed(0)}%, ${fmtRange(r.k, r.n)}<br><span style="color:#6B7280">${r.how}</span>`;
+    s += `<g data-tip="${t.replace(/"/g, '&quot;')}"><rect x="0" y="${y - 14}" width="${W}" height="${rowH}" fill="transparent"/>`;
+    s += `<text x="0" y="${y + 4}" font-size="12" fill="#1F2937" font-family="Inter">${r.name}${r.key === 'near' ? ' *' : ''}</text>`;
+    s += `<line x1="${x(Math.max(0, p - h))}" x2="${x(Math.min(100, p + h))}" y1="${y}" y2="${y}" stroke="var(--s1)" stroke-width="2" stroke-linecap="round" opacity=".45"/>`;
+    s += `<circle cx="${x(p)}" cy="${y}" r="5" fill="var(--s1)" stroke="#fff" stroke-width="2"/>`;
+    s += `<text x="${W - R + 10}" y="${y + 4}" font-size="12" fill="#0F172A" font-family="JetBrains Mono" font-weight="600">${p.toFixed(0)}%</text>`;
+    s += `<text x="${W - 4}" y="${y + 4}" font-size="10" fill="#6B7280" font-family="JetBrains Mono" text-anchor="end">±${h.toFixed(0)}</text></g>`;
+  });
+  el.innerHTML = s + '</svg>';
+  bindTips(el);
+}
+
+/* Service x surface heatmap: one blue ramp, k of 15 in every cell. */
+function heatmap(el, { tracking = false } = {}) {
+  const ramp = ['var(--q1)', 'var(--q2)', 'var(--q3)', 'var(--q4)', 'var(--q5)', 'var(--q6)'];
+  const cols = SURFACES.filter(s => s.key !== 'near');
+  let h = `<table class="heat"><thead><tr><th>Service</th>${cols.map(c => `<th style="text-align:center">${c.name.replace('Google ', '')}</th>`).join('')}</tr></thead><tbody>`;
+  BY_SERVICE.forEach(r => {
+    h += `<tr><td>${r.svc}</td>` + r.cells.map((c, j) => {
+      const n = tracking ? 168 : c.n, kk = tracking ? Math.round(c.k * 168 / 15) : c.k; const p = pct(kk, n), step = Math.min(5, Math.floor(p / 17)), dark = step >= 3;
+      const t = `<b>${r.svc}, ${cols[j].name}</b><br>Named in ${kk} of ${n} answers (${p.toFixed(0)}%, ${fmtRange(Math.max(kk, .5), n)})<br><span style="color:#6B7280">${tracking ? '3 questions, twice a day, last 28 days' : '3 questions, 5 asks each'}</span>`;
+      return `<td data-tip="${esc(t)}" style="text-align:center;padding:3px"><div style="background:${ramp[step]};border-radius:5px;padding:7px 0;font:600 11px JetBrains Mono;color:${dark ? '#fff' : '#0F172A'}">${tracking ? p.toFixed(0) + '%' : kk + '/' + n}</div></td>`;
+    }).join('') + '</tr>';
+  });
+  el.innerHTML = h + '</tbody></table><div class="hint" style="margin:8px 0 0">' + (tracking ? 'Darker = named more often. Each cell pools one service\'s 3 questions on one AI over the last 28 days (168 answers, about ±7 pts).' : 'Darker = named more often. Each cell pools one service\'s 3 questions on one AI; ranges are wide at 15 answers, so read the pattern, not a cell.') + '</div>';
+  bindTips(el);
+}
+
+/* Named with you: table with a small range bar per practice. */
+function brands(el, surfaceKey = 'chatgpt') {
+  const sf = SURFACES.find(x => x.key === surfaceKey) || SURFACES[0], base = SURFACES[0];
+  const n = sf.n, scale = pct(sf.k, sf.n) / pct(base.k, base.n) * n / base.n;
+  const rows = COMPETITORS.map(c => ({ ...c, k: Math.min(n, Math.round(c.k * scale)), cited: Math.round(c.cited * scale), rec: Math.round(c.rec * scale) }));
+  let h = '<table><thead><tr><th>Practice</th><th>Named</th><th>Range</th><th>Cited</th><th>Recommended</th></tr></thead><tbody>';
+  rows.forEach(c => {
+    const p = pct(c.k, n), hh = half(Math.max(c.k, .5), n);
+    h += `<tr><td>${c.color ? `<span class="dot" style="background:${c.color}"></span>` : '<span class="dot" style="background:#CBD5E1"></span>'}${c.name}${c.you ? '<span class="you">you</span>' : ''}</td>
+      <td class="mono" style="font-weight:600">${p.toFixed(0)}%</td>
+      <td><svg width="120" height="10" data-tip="<b>${c.name}</b><br>${c.k} of ${n} answers, ${fmtRange(c.k, n)}"><rect x="0" y="4" width="120" height="2" fill="#EEF0F3"/><rect x="${1.2 * Math.max(0, p - hh)}" y="3" width="${1.2 * 2 * hh}" height="4" rx="2" fill="${c.color || '#94A3B8'}" opacity=".5"/><circle cx="${1.2 * p}" cy="5" r="3.5" fill="${c.color || '#94A3B8'}"/></svg></td>
+      <td class="mono">${pct(c.cited, n).toFixed(0)}%</td><td class="mono">${pct(c.rec, n).toFixed(0)}%</td></tr>`;
+  });
+  h += '</tbody></table>';
+  h += `<div class="grp" style="margin-top:14px">Also named by AI</div>` + ALSO_NAMED.map(a => `<span class="chip">${a.name} <span class="mono" style="color:#6B7280">${a.k} answers</span> <button class="btn small ghost" style="padding:2px 7px">Track</button></span>`).join('');
+  el.innerHTML = h; bindTips(el);
+}
+
+/* Prompts with k of 5 per surface. */
+function prompts(el, { filter = null } = {}) {
+  const cols = SURFACES.filter(s => s.key !== 'near');
+  let h = `<table><thead><tr><th>Question</th>${cols.map(c => `<th style="text-align:center">${c.name.replace('Google ', '')}</th>`).join('')}</tr></thead><tbody>`;
+  let last = '';
+  PROMPTS.filter(p => !filter || p.svc === filter).forEach(p => {
+    if (p.svc !== last) { h += `<tr><td colspan="${cols.length + 1}" style="background:#F8FAFC;font:700 10px Inter;letter-spacing:.1em;text-transform:uppercase;color:#6B7280">${p.svc}${p.kind === 'branded' ? ': kept out of the headline' : ''}</td></tr>`; last = p.svc; }
+    h += `<tr><td>${p.text}${p.near ? ' <span class="chip" style="margin:0 0 0 6px;padding:1px 6px" data-tip="On ChatGPT this one is asked through the API with the city set; a near-me search cannot be properly simulated on the ChatGPT app.">near me</span>' : ''}</td>` +
+      p.runs.map((k, j) => `<td style="text-align:center" data-tip="<b>${cols[j].name}</b><br>Named in ${k} of 5 answers. Click to read them."><span class="k5" onclick="openAnswer()">${[0, 1, 2, 3, 4].map(i => `<i class="${i < k ? 'y' : ''}"></i>`).join('')}</span></td>`).join('') + '</tr>';
+  });
+  el.innerHTML = h + '</tbody></table>'; bindTips(el);
+}
+
+/* Sources: the domains AI answers cite, one series. */
+function sources(el) {
+  const max = SOURCES[0][1];
+  el.innerHTML = SOURCES.map(([d, n]) => `<div data-tip="<b>${d}</b><br>Cited in ${n} answers" style="display:grid;grid-template-columns:200px 1fr 40px;align-items:center;gap:10px;margin:6px 0;font-size:13px">
+    <span>${d}${d === PRACTICE.domain ? '<span class="you">you</span>' : ''}</span><span style="height:10px;background:#F1F5F9;border-radius:4px"><span style="display:block;height:10px;width:${100 * n / max}%;background:var(--s1);border-radius:0 4px 4px 0"></span></span><span class="mono" style="font-size:12px;text-align:right">${n}</span></div>`).join('');
+  bindTips(el);
+}
+
+/* Tracking: rolling 7-day named rate per practice, the practice's range as a band, a method-change marker. */
+function trend(el) {
+  const days = 56, W = Math.max(480, el.clientWidth || 720), H = 260, L = 34, R = 170, T = 12, B = 26;
+  const x = d => L + (W - L - R) * d / (days - 1), y = v => T + (H - T - B) * (1 - v / 70);
+  const series = COMPETITORS.slice(0, 4).map((c, ci) => { let v = [38, 47, 36, 24][ci]; return { c, pts: Array.from({ length: days }, (_, d) => { v += (rnd() - .5) * 2.2 + (ci === 0 && d > 30 ? .22 : 0); return Math.max(4, Math.min(66, v)); }) }; });
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Rolling 7-day named rate">`;
+  [0, 20, 40, 60].forEach(v => s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${L - 6}" y="${y(v) + 3}" font-size="10" fill="#9CA3AF" text-anchor="end" font-family="JetBrains Mono">${v}%</text>`);
+  s += `<line x1="${x(30)}" x2="${x(30)}" y1="${T}" y2="${H - B}" stroke="#94A3B8" stroke-dasharray="3 3"/><text x="${x(30) + 4}" y="${T + 10}" font-size="10" fill="#6B7280" font-family="Inter">prompts changed: new series</text>`;
+  const you = series[0];
+  const band = you.pts.map((v, d) => [x(d), y(Math.min(70, v + 4.8))]).concat(you.pts.map((v, d) => [x(d), y(Math.max(0, v - 4.8))]).reverse());
+  s += `<polygon points="${band.map(p => p.join(',')).join(' ')}" fill="var(--s1)" opacity=".12"/>`;
+  const order = series.map((sr, i) => [i, y(sr.pts[days - 1]) + 4]).sort((a, b) => a[1] - b[1]);
+  const labelY = []; let prev = -1e9; order.forEach(([i, yy]) => { const v = Math.max(yy, prev + 15); labelY[i] = v; prev = v; });
+  series.forEach(({ c, pts }, i) => {
+    const seg = (a, b) => pts.slice(a, b).map((v, d) => `${x(d + a)},${y(v)}`).join(' ');
+    s += `<polyline points="${seg(0, 30)}" fill="none" stroke="${c.color}" stroke-width="2" stroke-linejoin="round"/><polyline points="${seg(30, days)}" fill="none" stroke="${c.color}" stroke-width="2" stroke-linejoin="round"/>`;
+    const last = pts[days - 1];
+    s += `<text x="${W - R + 8}" y="${labelY[i]}" font-size="11" fill="#1F2937" font-family="Inter">${c.you ? 'You' : c.name.split(' ').slice(0, 2).join(' ')} <tspan font-family="JetBrains Mono" font-weight="600">${last.toFixed(0)}%</tspan></text>`;
+  });
+  s += `<line id="xh" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="#94A3B8" opacity="0"/><rect x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent" id="hit"/>`;
+  s += `<text x="${L}" y="${H - 6}" font-size="10" fill="#9CA3AF" font-family="JetBrains Mono">Sep 2</text><text x="${W - R}" y="${H - 6}" font-size="10" fill="#9CA3AF" font-family="JetBrains Mono" text-anchor="end">Oct 27</text>`;
+  el.innerHTML = s + '</svg>';
+  const svg = el.querySelector('svg'), hit = svg.querySelector('#hit'), xh = svg.querySelector('#xh');
+  hit.addEventListener('mousemove', e => { const r = svg.getBoundingClientRect(); const px = (e.clientX - r.left) * W / r.width; const d = Math.max(0, Math.min(days - 1, Math.round((px - L) / (W - L - R) * (days - 1)))); xh.setAttribute('x1', x(d)); xh.setAttribute('x2', x(d)); xh.setAttribute('opacity', 1);
+    showTip(e, `<b>7 days to day ${d + 1}</b><br>` + series.map(({ c, pts }) => `<span class="dot" style="background:${c.color}"></span>${c.you ? 'You' : c.name}: <b>${pts[d].toFixed(0)}%</b>${c.you ? ' ±5 pts, 420 answers' : ''}`).join('<br>')); });
+  hit.addEventListener('mouseleave', () => { xh.setAttribute('opacity', 0); hideTip(); });
+}
+
+function surfaceTiles(el, { early = false, rounds = 5, onPick = null, active = null, tracking = false } = {}) {
+  el.innerHTML = SURFACES.map(s => { const f = early ? rounds / 5 : tracking ? 14 / 5 : 1; const n = Math.max(1, Math.round(s.n * f)), k = Math.round(s.k * f);
+    return `<button class="tile${active === s.key ? ' on' : ''}" data-key="${s.key}" data-tip="${esc(`<b>${s.name}</b><br>${s.how}${s.caveat ? '<br><br>' + s.caveat : ''}${s.shown ? '<br><br>' + s.shown : ''}`)}">
+      <span class="label">${s.name}</span>
+      <span class="big">${fmtRate(k, n)}${early ? '<span class="early">early</span>' : ''}</span>${tracking ? '<span class="label" style="font-size:9px">last 7 days</span>' : ''}
+      <span class="mono rng">${fmtRange(k, n)}<br>${k} of ${n} answers</span>
+      ${s.caveat ? '<span class="cav">Stand-in: can\'t be properly simulated on ChatGPT</span>' : s.shown ? '<span class="cav">Overview shown on 9 of 27</span>' : `<span class="cav">${s.how}</span>`}
+    </button>`; }).join('');
+  bindTips(el);
+  if (onPick) el.querySelectorAll('.tile').forEach(t => t.addEventListener('click', () => onPick(t.dataset.key)));
+}
+
+function setupBlock(el) {
+  const groups = [...new Set(PROMPTS.map(p => p.svc))];
+  el.innerHTML = `<div class="grid2">
+    <div><div class="label" style="margin-bottom:8px">Practice</div>
+      <div style="display:grid;gap:8px"><input class="input" placeholder="Pick a client, or leave empty for a prospect" value="Bothell Family Dentistry (client)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input class="input" value="${PRACTICE.domain}"><input class="input" value="${PRACTICE.city}"></div>
+      <div class="note">Asked from Bothell, WA on Gemini, AI Overviews and AI Mode. ChatGPT can only be set to the United States, so its questions name the city; its near-me questions go through the API with the city set.</div></div>
+      <div class="label" style="margin:16px 0 8px">Competitors <span style="text-transform:none;letter-spacing:0;font-weight:500">from Google Maps around the office, same list as the Grid Scan</span></div>
+      ${COMPETITORS.slice(1).map((c, i) => `<span class="chip${i === 4 ? ' off' : ''}">${c.name}</span>`).join('')}<span class="chip" style="border-style:dashed;color:#6B7280">+ add by name</span>
+    </div>
+    <div><div class="label" style="margin-bottom:8px">Questions <span style="text-transform:none;letter-spacing:0;font-weight:500">30 proposed from the site, edit freely (8 to 30)</span></div>
+      <div style="max-height:300px;overflow:auto;border:1px solid var(--border);border-radius:8px;padding:4px 10px 10px">${groups.map(g => `<div class="grp">${g}${g === 'Branded' ? ', kept out of the headline' : ''}</div>` + PROMPTS.filter(p => p.svc === g).map(p => `<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:3px 0"><span>${p.text}</span><span style="color:#9CA3AF;cursor:pointer">✕</span></div>`).join('')).join('')}</div>
+    </div></div>`;
+}
+
+function historyBlock(el) {
+  el.innerHTML = `<div class="label" style="margin-bottom:6px">History ${PRACTICE.domain}</div>` + HISTORY.map(r => `<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)"><span>${r[0]} · ${r[1]} · ${r[2]} · <b style="color:${r[3] === 'Tracking' ? 'var(--up)' : 'var(--ink)'}">${r[3]}</b></span><span class="mono" style="font-size:12px">${r[4]}</span></div>`).join('');
+}
+
+function openAnswer() { document.getElementById('drawer').classList.add('on'); }
+function drawerHtml() {
+  const a = ANSWER.replace(PRACTICE.name, `<mark>${PRACTICE.name}</mark>`);
+  return `<div class="pad" style="padding:20px 22px"><div style="display:flex;justify-content:space-between;align-items:center"><div class="h2">ChatGPT · answer 3 of 5</div><button class="btn small" onclick="document.getElementById('drawer').classList.remove('on')">Close</button></div>
+    <p class="hint">Asked Oct 27, 10:24 am · app, logged out, United States · method v1</p>
+    <div class="label" style="margin:12px 0 6px">Question</div><div style="font-size:13px">Best family dentist for kids in Bothell</div>
+    <div style="display:flex;gap:6px;margin:12px 0"><span class="chip" style="background:var(--accent-tint);color:var(--accent-ink);border-color:transparent">Named</span><span class="chip">Listed, not recommended</span><span class="chip">Not cited</span></div>
+    <div class="label" style="margin:12px 0 6px">The answer, as returned</div><div class="answer">${a}</div>
+    <div class="label" style="margin:14px 0 6px">Sources it cited</div>${['yelp.com/biz/accent-dental-center-bothell', 'healthgrades.com/dentistry/bothell-wa', 'reddit.com/r/bothell/comments/dentist'].map(u => `<div class="mono" style="font-size:12px;padding:4px 0;color:#374151">${u}</div>`).join('')}
+    <div class="label" style="margin:14px 0 6px">Also named</div><div style="font-size:13px">Accent Dental Center Bothell, Bothell Smiles Family Dentistry</div></div>`;
+}
+
+function strip(el, round) {
+  const done = round * 150, spend = (2.34 * round / 5).toFixed(2);
+  el.innerHTML = `<span>Round ${round} of 5</span><span class="prog"><i style="width:${round * 20}%"></i></span><span class="mono">${done} of 750 answers</span><span class="mono">$${spend} so far</span><span style="font-weight:500">Next round in 9 min. You can leave this page; the Snapshot keeps running.</span>`;
+}
+
+const RUN_BAR = "<div style=\"display:flex;align-items:center;gap:12px;flex-wrap:wrap\">\n<button class=\"btn primary\" id=\"run\">Run Snapshot, $2.35</button>\n<span class=\"hint\" style=\"margin:0\">30 questions, each asked 5 times on each AI, in 5 rounds about 12 minutes apart (about an hour).</span></div>";
+
+let STATE = 'result';
+function setState(s) { STATE = s; document.querySelectorAll('#states button').forEach(b => b.classList.toggle('on', b.dataset.s === s)); render(); }
+document.querySelectorAll('#states button').forEach(b => b.addEventListener('click', () => setState(b.dataset.s)));
+document.getElementById('drawer').innerHTML = drawerHtml();
+
+let ACTIVE = 'chatgpt';
+function render() {
+  const r = document.getElementById('root');
+  const top = `<div class="card pad" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><div class="h2">Bothell Family Dentistry <span class="you">client</span></div><div class="hint" style="margin:0">bothellfamilydentistry.com · Bothell, WA</div></div><div style="display:flex;gap:8px;align-items:center">${STATE === 'tracking' ? '<span style="font-size:12px;color:var(--up);font-weight:600">● Tracking</span><span class="mono" style="font-size:12px">$21.90 this month</span>' : STATE === 'result' ? '<button class="btn small">Share report</button><button class="btn small primary">Start tracking, about $28/month</button>' : ''}</div></div>`;
+  if (STATE === 'setup') { r.innerHTML = top + '<div class="card pad" style="margin-top:14px"><div id="sb"></div><div style="margin-top:16px">' + RUN_BAR + '</div></div><div class="card pad" style="margin-top:14px" id="hb"></div>'; setupBlock(document.getElementById('sb')); historyBlock(document.getElementById('hb')); return; }
+  const early = STATE === 'running', s = SURFACES.find(x => x.key === ACTIVE);
+  let h = top + (early ? '<div class="strip" id="strip" style="margin-top:14px"></div>' : '') + '<div class="tiles" id="tiles"></div>';
+  h += `<div class="card pad"><div class="detail-h"><div><div class="h2">${s.name}</div><div class="hint" style="margin:0">${s.how}</div></div>${s.caveat ? `<div class="note" style="max-width:520px">${s.caveat}</div>` : s.shown ? `<div class="note">${s.shown}</div>` : ''}</div>`;
+  h += STATE === 'tracking' ? '<div id="trend"></div>' : '<div class="grid2"><div><div class="label" style="margin-bottom:8px">Named with you</div><div id="brands"></div></div><div><div class="label" style="margin-bottom:8px">What it cites</div><div id="sources"></div></div></div>';
+  h += '</div>';
+  if (!early) h += '<div class="card pad" style="margin-top:14px"><div class="h2">By service, every AI</div><div id="heat"></div></div><div class="card pad" style="margin-top:14px"><div class="h2">Questions</div><p class="hint">Click a row of squares to read those answers.</p><div id="prompts"></div></div><div class="card pad" style="margin-top:14px" id="hb"></div>';
+  r.innerHTML = h;
+  const q = id => document.getElementById(id);
+  if (early) strip(q('strip'), 2);
+  surfaceTiles(q('tiles'), { early, rounds: 2, tracking: STATE === 'tracking', active: ACTIVE, onPick: k => { ACTIVE = k; render(); } });
+  if (q('trend')) trend(q('trend'));
+  if (q('brands')) brands(q('brands'), ACTIVE);
+  if (q('sources')) sources(q('sources'));
+  if (q('heat')) heatmap(q('heat'), { tracking: STATE === 'tracking' });
+  if (q('prompts')) prompts(q('prompts'));
+  if (q('hb')) historyBlock(q('hb'));
+}
+render();
+</script>
+</body>
+</html>
