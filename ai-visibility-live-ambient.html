@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: live run, quiet motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --grad:linear-gradient(100deg,#4F46E5,#9333EA); }
+* { box-sizing:border-box; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:28px 28px 140px; }
+.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:30px; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.logo { position:relative; width:26px; height:26px; border-radius:50%; background:var(--grad); flex:none; }
+.logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.right { display:flex; gap:14px; align-items:center; font-size:13px; }
+.btn { font:600 13px Inter; border-radius:10px; padding:8px 12px; border:1px solid var(--line); background:#fff; color:var(--ink); }
+.grid { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:40px; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:9px; }
+/* 3: the turning brand dot */
+.spin { position:relative; width:14px; height:14px; border-radius:50%; background:var(--grad); flex:none; }
+.spin::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:1.5px dotted #A5B4FC; animation:turn 6s linear infinite; }
+@keyframes turn { to { transform:rotate(360deg); } }
+.hero { display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; margin-top:8px; }
+.hero b { font:900 88px/1 Inter; letter-spacing:-.04em; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero span { color:var(--muted); }
+/* 2: now asking */
+.asking { height:30px; margin-top:12px; font-size:13.5px; color:var(--muted); }
+.asking span { display:inline-block; transition:opacity .6s ease, transform .6s ease; }
+.asking span.out { opacity:0; transform:translateY(4px); }
+.asking b { color:var(--ink); font-weight:600; }
+/* B's search shimmer, under the line: quiet proof the search is in flight */
+.wire { position:relative; height:2px; width:min(420px,100%); margin-top:5px; border-radius:1px; background:#EEF0F5; overflow:hidden; }
+.wire::after { content:''; position:absolute; inset:0; width:35%; background:linear-gradient(90deg,transparent,#A5B4FC,transparent); animation:sweep 2.2s ease-in-out infinite; }
+@keyframes sweep { from { transform:translateX(-100%); } to { transform:translateX(300%); } }
+.off-2 .wire { visibility:hidden; }
+.lede { margin:10px 0 22px; max-width:640px; font-size:17px; color:var(--body); }
+.lane { display:grid; grid-template-columns:150px minmax(0,1fr) 110px; gap:18px; align-items:center; padding:8px 0; }
+.lane .nm { font:600 14px Inter; color:var(--ink); }
+.lane .how { font:500 11px Inter; color:var(--faint); }
+.dots { display:flex; flex-wrap:wrap; gap:3px; }
+.dots i { display:block; width:10px; height:10px; border-radius:50%; background:#E4E7EC; transition:background .45s ease, box-shadow .45s ease, transform .45s ease; }
+.dots i.on { background:var(--a); }
+.dots i.land { transform:scale(1.35); }
+/* 1: waiting dots, a slow staggered breath */
+.dots i.wait { background:transparent; box-shadow:inset 0 0 0 1.5px #C7CBF5; animation:breathe 2.8s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { opacity:.35; } 50% { opacity:.9; } }
+.saw { text-align:right; }
+.saw small { display:block; font:500 11px 'JetBrains Mono'; color:var(--faint); }
+.saw b { font:800 18px Inter; color:var(--ink); }
+.foot { margin-top:16px; font:500 12px 'JetBrains Mono'; color:var(--faint); }
+.justin { background:var(--soft); border-radius:16px; padding:20px; min-height:240px; font-size:13px; }
+.justin h4 { margin:0 0 10px; font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.ji { border-bottom:1px solid var(--line); padding:10px 0; animation:fadein .6s ease both; }
+.ji:last-child { border:0; }
+.ji b { color:var(--ink); }
+.ji mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; border-radius:3px; padding:0 2px; }
+@keyframes fadein { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+.off-1 .dots i.wait { animation:none; opacity:0; width:0; margin-left:-3px; }
+.off-2 .asking { visibility:hidden; }
+.off-3 .spin { display:none; }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:80; display:flex; gap:4px; background:rgba(11,16,32,.88); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); flex-wrap:wrap; justify-content:center; }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+@media (max-width:900px) { .grid { grid-template-columns:1fr; } .lane { grid-template-columns:110px minmax(0,1fr) 80px; } .hero b { font-size:64px; } .shell { padding:20px 16px 140px; } }
+</style>
+</head>
+<body>
+<div class="shell" id="page">
+  <div class="top">
+    <div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div>
+    <div class="right"><span style="color:var(--a-ink);font-weight:600">● How we measure</span><b style="color:var(--ink)">Expedition Pediatric Dentistry</b><span style="color:var(--muted)">Snapshot running</span><span class="btn">New check</span></div>
+  </div>
+  <div class="grid">
+    <div>
+      <div class="eyebrow"><span class="spin"></span>Round 1 of 5</div>
+      <div class="hero"><b id="big">1 in 10</b><span>answers name the practice so far</span></div>
+      <div class="asking"><span id="ask"></span><div class="wire"></div></div>
+      <p class="lede">Every dot is one answer. It lights up when the answer names Expedition Pediatric Dentistry. The number settles as the rounds come in.</p>
+      <div id="lanes"></div>
+      <div class="foot" id="foot"></div>
+    </div>
+    <aside class="justin"><h4>Just in</h4><div id="ji"></div></aside>
+  </div>
+</div>
+
+<div class="statebar"><span>Quiet motion</span>
+  <button class="on" data-t="1">Waiting dots</button><button class="on" data-t="2">Now asking</button><button class="on" data-t="3">Turning dot</button>
+</div>
+
+<script>
+const LANES = [
+  ['chatgpt', 'ChatGPT', 'app, logged out, United States', 24],
+  ['gemini', 'Gemini', 'app, logged out, the city set', 30],
+  ['aio', 'AI Overviews', 'Google results, the city set', 30],
+  ['aimode', 'AI Mode', 'Google AI Mode, the city set', 30],
+  ['perplexity', 'Perplexity', 'API, the city in the question', 30],
+  ['near', 'ChatGPT near me', 'API with the city set', 6],
+];
+const Q = ['Best family dentist in Bellevue for kids', 'Gentle dentist for a nervous child in Bellevue', 'Where can I get frenectomy in Bellevue?', 'Kids dentist near me', 'Best pediatric dentist in Bellevue', 'Emergency dentist for kids near me', 'Which pediatric dentist in Bellevue takes Premera?', 'Sedation dentistry for kids in Bellevue'];
+let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+const state = LANES.map(([k, n, how, total]) => ({ k, n, how, total, done: [] }));
+const $ = (id) => document.getElementById(id);
+$('lanes').innerHTML = state.map((l, j) => `<div class="lane"><div><div class="nm">${l.n}</div><div class="how">${l.how}</div></div>
+  <div class="dots" id="d${j}">${Array.from({ length: l.total }, (_, i) => `<i class="wait" style="animation-delay:${(-(i * 0.37) % 2.8).toFixed(2)}s"></i>`).join('')}</div>
+  <div class="saw"><small>We saw</small><b id="s${j}">0 of 0</b></div></div>`).join('');
+
+function land() {
+  const open = state.map((l, j) => [l, j]).filter(([l]) => l.done.length < l.total);
+  if (!open.length) { setTimeout(reset, 4000); return; }
+  const [l, j] = open[Math.floor(rnd() * open.length)];
+  const named = rnd() < (l.k === 'perplexity' || l.k === 'near' ? 0.08 : 0.2);
+  const dot = $('d' + j).children[l.done.length];
+  l.done.push(named);
+  dot.className = (named ? 'on' : '') + ' land'; setTimeout(() => dot.classList.remove('land'), 450);
+  $('s' + j).textContent = `${l.done.filter(Boolean).length} of ${l.done.length}`;
+  const k = state.reduce((t, x) => t + x.done.filter(Boolean).length, 0), n = state.reduce((t, x) => t + x.done.length, 0);
+  $('big').textContent = `${n ? Math.round(k / n * 10) : 0} in 10`;
+  $('foot').textContent = `${n} of 150 answers this round · $${(n * 0.0042).toFixed(2)} spent so far · keeps going if this page is closed`;
+  if (named) {
+    const q = Q[Math.floor(rnd() * Q.length)];
+    const div = document.createElement('div'); div.className = 'ji';
+    div.innerHTML = `<b>${l.n}</b> · “${q}”<div style="color:var(--muted)">…my top pick is <mark>Expedition Pediatric Dentistry</mark> on 112th Ave NE…</div>`;
+    $('ji').prepend(div); while ($('ji').children.length > 4) $('ji').lastChild.remove();
+  }
+  // real rounds: answers arrive seconds apart, with quiet stretches in between
+  setTimeout(land, rnd() < 0.15 ? 4000 + rnd() * 3000 : 700 + rnd() * 1800);
+}
+function reset() { state.forEach((l, j) => { l.done = []; [...$('d' + j).children].forEach((d) => d.className = 'wait'); $('s' + j).textContent = '0 of 0'; }); $('ji').innerHTML = ''; land(); }
+
+let qi = 0;
+function asking() {
+  const open = state.filter((l) => l.done.length < l.total);
+  const span = $('ask');
+  span.classList.add('out');
+  setTimeout(() => {
+    const l = open.length ? open[qi % open.length] : null;
+    const q = Q[(qi * 3) % Q.length];
+    span.classList.remove('out'); qi += 1;
+    if (!l) { span.textContent = 'Round done; the next one starts about 3:42 PM'; return; }
+    let n = 0;
+    const type = () => { span.innerHTML = `Asking <b>${l.n}</b>: “${q.slice(0, n)}${n < q.length ? '' : '”'}`; if (n++ < q.length) setTimeout(type, 22); };
+    type();
+  }, 600);
+  setTimeout(asking, 4200);
+}
+document.querySelectorAll('.statebar [data-t]').forEach((b) => b.onclick = () => { b.classList.toggle('on'); $('page').classList.toggle('off-' + b.dataset.t, !b.classList.contains('on')); });
+land(); asking();
+</script>
+</body>
+</html>
