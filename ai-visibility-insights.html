@@ -120,7 +120,9 @@ h2.mid { margin:8px 0 10px; font:800 28px/1.2 Inter; letter-spacing:-.02em; colo
 .chip { font:500 12px 'JetBrains Mono',monospace; color:var(--body); background:var(--soft); border:1px solid var(--line); border-radius:5px; padding:2px 7px; }
 .page { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:10px 0; border-top:1px solid var(--line); font-size:14px; }
 .page:first-child { border-top:0; }
-.page .p { font:500 13.5px 'JetBrains Mono',monospace; color:var(--ink); }
+.page .p { font:500 13.5px 'JetBrains Mono',monospace; color:var(--ink); text-decoration-color:#C7CBF5; }
+.page a.p:hover { color:var(--a-ink); }
+a.chip { text-decoration:none; } a.chip:hover { border-color:#C7CBF5; color:var(--a-ink); }
 .page .why { font-size:12.5px; color:var(--muted); }
 .page .c { font-weight:700; color:var(--ink); white-space:nowrap; }
 
@@ -404,11 +406,11 @@ document.getElementById('qNever').innerHTML = NEVER.map((t) => `<div class="qrow
 document.getElementById('moreNever').onclick = (e) => { const el = document.getElementById('qNever'); el.hidden = !el.hidden; e.target.textContent = el.hidden ? 'Show them' : 'Hide them'; e.target.classList.toggle('open', !el.hidden); };
 
 const PAGES = [['/dental-services/frenectomies',22,'Gemini 10 · ChatGPT 6 · Perplexity 5 · AI Overviews 1'],['/smile-care',5,'ChatGPT 5'],['/',4,'ChatGPT 4'],['/dental-services/get-pediatric-dental-sedation',1,'ChatGPT 1']];
-document.getElementById('pageList').innerHTML = PAGES.map(([p,k,w]) => `<div class="page"><div><div class="p">${p}</div><div class="why">${w}</div></div><div class="c">${k} answer${k === 1 ? "" : "s"}</div></div>`).join('');
+document.getElementById('pageList').innerHTML = PAGES.map(([p,k,w]) => `<div class="page"><div><a class="p" href="https://expeditionpediatricdentistry.com${p}" target="_blank" rel="noopener">${p} ↗</a><div class="why">${w}</div></div><div class="c">${k} answer${k === 1 ? "" : "s"}</div></div>`).join('');
 
 const SRC = [['Other practices\' sites',404,'lifetimesmilesbellevue.com 102 · bellevuedentist.us 95 · bellevuefamilydentist.com 64'],['Directories',285,'zocdoc.com 88 · opencare.com 65 · yelp.com 57'],['Ranking sites',168,'dentistsranked.com 153'],
   ['Booking pages',61,'schedule.jarvisanalytics.com 30 · flexbook.me 14'],['The practice\'s own site',27,'expeditionpediatricdentistry.com','me'],['Health info',25,'veneersauthority.com 11 · dentalcosts.hellopearl.com 5'],['Social and video',14,'facebook.com 11 · youtube.com 4'],['Forums',7,'reddit.com 7'],['Tracked rivals\' sites',7,'anabelladentistry.com 7']];
-document.getElementById('srcRows').innerHTML = SRC.map(([l,k,ex,me]) => `<div class="rw ${me||''}" data-tip="${l}: cited in ${k} of 592 answers. ${ex}."><span>${l}</span><span class="track"><span class="fill" style="display:block;width:${k/404*100}%"></span></span><span class="n">${k}</span></div><div class="chips" style="margin:-2px 0 6px 164px">${ex.split(' · ').map(c=>`<span class="chip">${c}</span>`).join('')}</div>`).join('');
+document.getElementById('srcRows').innerHTML = SRC.map(([l,k,ex,me]) => `<div class="rw ${me||''}" data-tip="${l}: cited in ${k} of 592 answers. ${ex}."><span>${l}</span><span class="track"><span class="fill" style="display:block;width:${k/404*100}%"></span></span><span class="n">${k}</span></div><div class="chips" style="margin:-2px 0 6px 164px">${ex.split(' · ').map(c=>{ const host=c.split(' ')[0]; return host.includes('.') ? `<a class="chip" href="https://${host}" target="_blank" rel="noopener">${c}</a>` : `<span class="chip">${c}</span>`; }).join('')}</div>`).join('');
 
 /* tabs, jumps, drawer, tooltip */
 function show(view) { document.querySelectorAll('.tab[data-view]').forEach(t => t.classList.toggle('on', t.dataset.view === view));
