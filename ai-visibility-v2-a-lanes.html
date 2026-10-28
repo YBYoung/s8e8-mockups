@@ -278,7 +278,7 @@ function running() {
     const lane = screen.querySelector(`.lane[data-k="${q.a.key}"]`); const d = document.createElement('i'); d.className = 'drop' + (q.hit ? ' hit' : ''); lane.appendChild(d);
     const g = got[q.a.key]; g.n++; if (q.hit) g.k++;
     screen.querySelector(`[data-v="${q.a.key}"]`).textContent = pct(g.k, g.n) + '%'; screen.querySelector(`[data-c="${q.a.key}"]`).textContent = `${g.k} of ${g.n}${g.n < q.a.asks ? ' · early' : ''}`;
-    if (q.hit && i % 9 === 0) { const qq = QUESTIONS[i % 27]; const t = document.getElementById('tick'); const it = document.createElement('div'); it.className = 'item'; it.innerHTML = `<b>${q.a.name}</b> · “${qq.text}”<br><span style="color:var(--muted)">…3. <mark>${PRACTICE.name}</mark>: patients mention…</span>`; t.prepend(it); if (t.children.length > 4) t.lastChild.remove(); }
+    if (q.hit && i % 9 === 0) { const nearQs = QUESTIONS.filter(x => x.near), qq = q.a.key === 'near' ? nearQs[i % nearQs.length] : QUESTIONS[i % 27]; const t = document.getElementById('tick'); const it = document.createElement('div'); it.className = 'item'; it.innerHTML = `<b>${q.a.name}</b> · “${qq.text}”<br><span style="color:var(--muted)">…3. <mark>${PRACTICE.name}</mark>: patients mention…</span>`; t.prepend(it); if (t.children.length > 4) t.lastChild.remove(); }
   }, onRound: r => { document.getElementById('rnd').textContent = r >= 5 ? 'All 5 rounds in' : `Round ${r + 1} of 5`; }, onDone: () => setTimeout(() => go('story'), 900) });
 }
 
