@@ -324,9 +324,9 @@ function running() {
 /* ---------- Results shell: A's tabs ---------- */
 function results(tab) {
   TAB = tab;
-  who(`<b>${PRACTICE.name}</b><span>${TRACKED ? 'Tracked twice a day' : 'Snapshot · Oct 27'}</span><button class="btn sm">Share report</button>${TRACKED ? '' : '<button class="btn go sm" id="track">Keep watching, $28/mo</button>'}`);
+  who(`<b>${PRACTICE.name}</b><span>${TRACKED ? 'Tracked twice a day' : 'Snapshot · Oct 27'}</span><button class="btn sm">Share report</button>${TRACKED ? '' : '<button class="btn go sm" id="track">Start tracking, $28/mo</button>'}`);
   document.getElementById('track')?.addEventListener('click', () => { TRACKED = true; toast('Tracking starts tonight: twice a day, every AI.'); results(TAB); });
-  screen.innerHTML = `<div class="tabs" id="tabs">${[['story', 'Story'], ['answers', 'Answers'], ['watch', 'Watch']].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${l}</button>`).join('')}<span class="ink"></span></div><div id="pane" class="fade-swap"></div>`;
+  screen.innerHTML = `<div class="tabs" id="tabs">${[['story', 'Story'], ['answers', 'Answers'], ['watch', 'Tracking']].map(([k, l]) => `<button data-t="${k}" class="${k === tab ? 'on' : ''}">${l}</button>`).join('')}<span class="ink"></span></div><div id="pane" class="fade-swap"></div>`;
   const ink = screen.querySelector('.ink'), on = screen.querySelector('.tabs button.on'); ink.style.left = on.offsetLeft + 'px'; ink.style.width = on.offsetWidth + 'px';
   screen.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => go(b.dataset.t)));
   ({ story, answers, watch })[tab](document.getElementById('pane'));
@@ -361,7 +361,7 @@ function story(p) {
   let qi = 10; const picks = [10, 0, 3, 24];
   const chapters = [
     ['lanes', 'Long story short', `AI names you in about <span class="grad">4 of every 10</span> answers.`, `<p>Accent Dental Center comes up in about 5. Perplexity names you most; Google's AI Overviews, which showed on only 9 of 27 questions, least.</p><p style="font-size:14px;color:var(--muted)">The ChatGPT near-me row is a stand-in: a city-level near-me search can't be properly simulated on ChatGPT.</p>`],
-    ...(TRACKED ? [['trend', 'Since you started watching', 'Up 11 points in eight weeks.', `<p>${CHANGES.map(c => `<span style="color:${c.up ? 'var(--up)' : 'var(--down)'};font-weight:800">${c.up ? '↑' : '↓'}</span> ${c.text}.`).join('<br>')}</p>`]] : []),
+    ...(TRACKED ? [['trend', 'Since tracking started', 'Up 11 points in eight weeks.', `<p>${CHANGES.map(c => `<span style="color:${c.up ? 'var(--up)' : 'var(--down)'};font-weight:800">${c.up ? '↑' : '↓'}</span> ${c.text}.`).join('<br>')}</p>`]] : []),
     ['svc', 'Where patients find you', 'Strong on kids and cleanings. <span style="color:var(--down)">Invisible for implants.</span>', `<p>When patients ask about implants, sedation or emergencies, AI names other practices. You have no implants page and no sedation page.</p><div class="acts"><button class="btn go sm" data-a="Drafted a calendar item: implants page.">Plan an implants page</button><button class="btn soft sm" data-a="Drafted a calendar item: sedation page.">Plan a sedation page</button><button class="btn soft sm" data-a="Opened in On-Page optimization.">Optimize the emergency page</button></div>`],
     ['ans', 'What patients see', 'The answers, word for word.', `<div class="ansbox" id="ansbox"></div><div class="carousel-nav"><button class="btn sm" id="prev">←</button><button class="btn sm" id="nxt">→</button><span style="color:var(--muted);font-size:13px" id="anspos"></span><a href="#" id="allans" style="color:var(--a-ink);font-size:13px;font-weight:600;margin-left:auto">All 750 answers →</a></div>`],
     ['riv', 'Who AI names instead', 'Accent Dental leads, but not everywhere.', `<p>Accent comes up in 47% of answers to your 39%. On AI Mode it drops to 44%, close to you. Hello Kids Dentistry wins most kids questions on ChatGPT.</p>`],
@@ -409,21 +409,21 @@ function answers(p) {
 }
 
 function watch(p) {
-  if (!TRACKED) { p.innerHTML = `<section class="block reveal"><h2 class="sec">Watch this practice over time.</h2><p class="lede">Twice a day, every AI, the same questions. You'll see what moves, and why, instead of one day's luck.</p><button class="btn go" id="tw">Keep watching, about $28 a month</button><p style="color:var(--muted);font-size:13px;margin-top:10px">Clients only. Prospects get Snapshots.</p></section>`; p.querySelector('#tw').onclick = () => { TRACKED = true; toast('Tracking starts tonight.'); results('watch'); }; return; }
+  if (!TRACKED) { p.innerHTML = `<section class="block reveal"><h2 class="sec">Track this practice over time.</h2><p class="lede">Twice a day, every AI, the same questions. You'll see what moves, and why, instead of one day's luck.</p><button class="btn go" id="tw">Start tracking, about $28 a month</button><p style="color:var(--muted);font-size:13px;margin-top:10px">Clients only. Prospects get Snapshots.</p></section>`; p.querySelector('#tw').onclick = () => { TRACKED = true; toast('Tracking starts tonight.'); results('watch'); }; return; }
   const weeks = ['Sep 8', 'Sep 15', 'Sep 22', 'Sep 29', 'Oct 6', 'Oct 13', 'Oct 20', 'Oct 27'], rates = [33, 35, 34, 36, 35, 38, 41, 44];
   p.innerHTML = `<section class="block reveal"><div class="eyebrow">ChatGPT · rolling 7 days</div><h1 class="big" style="margin-top:10px"><span data-count="44">0%</span> <span style="font-size:22px;color:var(--up)">↑ 11 pts in 8 weeks</span></h1>
     <p class="lede">Each row is one week: 378 answers, blue where you were named. A change bigger than the row-to-row wobble is a real change.</p>
     <div class="seg">${AIS.slice(0, 5).map((a, j) => `<button class="${j === 0 ? 'on' : ''}">${a.name}</button>`).join('')}</div>
     <div class="weeks">${weeks.map((w, i) => `<div class="week reveal" style="transition-delay:${i * 60}ms"><span style="color:var(--muted);font-size:13px">${w}${i === 4 ? '<br><span style="color:var(--a-ink);font-size:11px;font-weight:600">questions edited</span>' : ''}</span>${laneHtml(Math.round(rates[i] * .9), 90, 'tiny', i + 30)}<span class="mono" style="font-weight:600;text-align:right">${rates[i]}%</span></div>`).join('')}</div></section>
     <section class="block reveal"><div class="eyebrow">What moved</div><div>${CHANGES.map(c => `<div class="change"><span class="arrow ${c.up ? 'up' : 'down'}">${c.up ? '↑' : '↓'}</span><div><b style="color:var(--ink)">${c.text}</b><div style="color:var(--muted);font-size:14px">${c.detail}</div></div></div>`).join('')}</div>
-    <p style="color:var(--muted);font-size:13px;margin-top:14px">$21.90 spent this month · <a href="#" style="color:var(--a-ink)">Stop watching</a></p></section>`;
+    <p style="color:var(--muted);font-size:13px;margin-top:14px">$21.90 spent this month · <a href="#" style="color:var(--a-ink)">Stop tracking</a></p></section>`;
 }
 
 
 function go(k) { if (stopSim) { stopSim(); stopSim = null; } window.scrollTo({ top: 0 }); document.querySelectorAll('.statebar button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
   if (k === 'tracked') { TRACKED = true; k = 'story'; }
   ({ setup, running, story: () => results('story'), answers: () => results('answers'), watch: () => results('watch') })[k](); }
-stateBar([['setup', 'Setup'], ['running', 'Live run'], ['story', 'Story'], ['answers', 'Answers'], ['watch', 'Watch'], ['tracked', 'Tracked client']], 'setup', go);
+stateBar([['setup', 'Setup'], ['running', 'Live run'], ['story', 'Story'], ['answers', 'Answers'], ['watch', 'Tracking'], ['tracked', 'Tracked client']], 'setup', go);
 </script>
 </body>
 </html>
