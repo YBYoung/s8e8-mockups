@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: How we measure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --near:#7C3AED; --grad:linear-gradient(100deg,#4F46E5,#9333EA); }
+* { box-sizing:border-box; }
+body { margin:0; background:rgba(11,16,32,.42); color:var(--body); font:15px/1.6 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh; }
+.win { position:relative; max-width:860px; margin:5vh auto; background:#fff; border-radius:16px; border:1px solid var(--line); box-shadow:0 24px 60px rgba(11,16,32,.18); padding:26px 30px 10px; }
+.kick { font:700 13px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--a-ink); }
+h1 { margin:4px 0 6px; font:900 28px Inter; letter-spacing:-.02em; color:var(--ink); }
+.x { position:absolute; right:22px; top:20px; border:0; background:none; font-size:22px; color:var(--muted); cursor:pointer; }
+.sec { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:26px; align-items:center; border-top:1px solid var(--line); padding:20px 0; }
+.sec h2 { margin:0 0 6px; font:700 16.5px Inter; color:var(--ink); }
+.sec p { margin:6px 0; font-size:15px; }
+.fig { height:200px; border-radius:14px; background:var(--soft); position:relative; overflow:hidden; }
+.cap { font-size:12px; color:var(--muted); margin-top:7px; text-align:center; }
+svg text { font-family:Inter; }
+.chip { font:600 11px Inter; }
+@media (max-width:760px) { .sec { grid-template-columns:1fr; } .win { margin:0; border-radius:0; padding:22px 16px 10px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+
+/* 1: five asks over the hour */
+.tl-dot { transition:fill .4s, r .3s; }
+/* 3: the answer with marks */
+.ans { position:absolute; inset:14px; font-size:12.5px; line-height:1.65; color:var(--body); }
+.ans .hl { border-radius:4px; padding:0 2px; transition:background .35s, color .35s, box-shadow .35s; }
+.ans .hl.yes { background:var(--a-tint); color:var(--a-ink); font-weight:700; box-shadow:0 0 0 1.5px #A5B4FC; }
+.ans .hl.no { background:#FDECEF; color:#9F1239; box-shadow:0 0 0 1.5px #F3B4C0; }
+.verdict { position:absolute; left:14px; right:14px; bottom:12px; display:flex; gap:8px; align-items:center; font:600 12px Inter; color:var(--ink); min-height:24px; }
+.tag { border-radius:6px; padding:3px 8px; font:700 11px Inter; white-space:nowrap; flex:none; }
+.tag.y { background:var(--a-tint); color:var(--a-ink); }
+.tag.n { background:#FDECEF; color:#9F1239; }
+.tag.g { background:#ECFDF3; color:var(--up); }
+</style>
+</head>
+<body>
+<div class="win" role="dialog" aria-label="How we measure">
+  <div class="kick">AI Visibility</div>
+  <h1>How we measure</h1>
+  <button class="x" aria-label="Close">×</button>
+
+  <section class="sec">
+    <div>
+      <h2>Why a Snapshot takes about an hour</h2>
+      <p>AI tools do not give the same answer twice. Ask ChatGPT the same question a few minutes apart and the practices it names can change. One answer is a coin toss, not a measurement.</p>
+      <p>So a Snapshot asks every question 5 times on each AI, in 5 rounds that start about 12 minutes apart. The wait is the price of numbers that hold up; the page fills in live and keeps going if it is closed.</p>
+    </div>
+    <div><div class="fig"><svg viewBox="0 0 300 200" width="100%" height="100%" id="f1"></svg></div><div class="cap">One question, asked 5 times over the hour.</div></div>
+  </section>
+
+  <section class="sec">
+    <div>
+      <h2>What we ask, and where</h2>
+      <p>The questions are written from the practice's website, in the words patients use. The SEO can change the words, leave some out, add new ones, and switch each between naming the city and near me.</p>
+      <p>Each question goes to ChatGPT, Gemini, Google's AI Overviews, Google's AI Mode and Perplexity, each set to the practice's city where it allows. Near-me questions skip the main ChatGPT line, which can't be set to a city, and go to its near-me line instead.</p>
+    </div>
+    <div><div class="fig"><svg viewBox="0 0 300 200" width="100%" height="100%" id="f2"></svg></div><div class="cap" id="c2">A question goes out to every AI line.</div></div>
+  </section>
+
+  <section class="sec">
+    <div>
+      <h2>What counts as named</h2>
+      <p>An answer names the practice when it uses the full name, a safe short form of it, or the website. A practice with a similar name never counts.</p>
+      <p>Cited means the practice's own website is among the answer's sources. A small AI model also labels each answer that names the practice: recommended, listed among options, or mentioned in passing.</p>
+    </div>
+    <div><div class="fig">
+      <div class="ans">For a gentle cleaning in Bothell, <span class="hl" data-k="full">Bothell Family Dentistry</span> gets strong reviews; <span class="hl" data-k="short">Bothell Family</span> also takes most insurance. Another option is <span class="hl" data-k="other">Bothell Smiles Family Dentistry</span>. Source: <span class="hl" data-k="site">bothellfamilydentistry.com</span></div>
+      <div class="verdict" id="v3"></div>
+    </div><div class="cap">What the reader checks in every answer.</div></div>
+  </section>
+
+  <section class="sec">
+    <div>
+      <h2>The two numbers for each AI</h2>
+      <p>Every AI gets two numbers, side by side in the table. The first is simply what happened: how many of the answers collected named the practice, for example 73 of 120.</p>
+      <p>The second is the best estimate of how often the practice really comes up: out of every 100 times a patient asks, about how many answers would name it. A Snapshot only collects a sample, so this is a range, for example 52 to 69. The more answers come in, the tighter the range.</p>
+    </div>
+    <div><div class="fig"><svg viewBox="0 0 300 200" width="100%" height="100%" id="f4"></svg></div><div class="cap">Every 100 times a patient asks.</div></div>
+  </section>
+
+  <section class="sec">
+    <div>
+      <h2>Rivals and the sites AI reads</h2>
+      <p>Rivals are counted the same way as the practice, in the same answers, so the comparison is fair. Practices AI names that are not on the rivals list show up under Also named by AI.</p>
+      <p>The sites AI cites are counted once per answer. Google's own search and map links are left out.</p>
+    </div>
+    <div><div class="fig"><svg viewBox="0 0 300 200" width="100%" height="100%" id="f5"></svg></div><div class="cap">The same answers, counted for everyone.</div></div>
+  </section>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs, parent, text) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; parent && parent.appendChild(e); return e; };
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const INK = '#0B1020', MUTED = '#667085', A = '#4F46E5', OFF = '#E4E7EC';
+
+/* 1. Five asks along the hour: each lights or not; a coin flip, then the honest count. */
+(function () {
+  const s = document.getElementById('f1');
+  el('line', { x1: 30, y1: 120, x2: 270, y2: 120, stroke: '#D0D5DD', 'stroke-width': 2, 'stroke-dasharray': '3 5' }, s);
+  const xs = [40, 95, 150, 205, 260], lit = [true, false, true, true, false];
+  const dots = xs.map((x, i) => {
+    el('text', { x, y: 150, 'text-anchor': 'middle', 'font-size': 11, fill: MUTED }, s, ['0', '12', '24', '36', '48'][i] + ' min');
+    el('text', { x, y: 88, 'text-anchor': 'middle', 'font-size': 10.5, fill: MUTED, 'font-weight': 600 }, s, 'ask ' + (i + 1));
+    return el('circle', { cx: x, cy: 120, r: 9, fill: OFF, class: 'tl-dot' }, s);
+  });
+  const head = el('text', { x: 150, y: 46, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: INK }, s, '');
+  const sub = el('text', { x: 150, y: 182, 'text-anchor': 'middle', 'font-size': 11.5, fill: MUTED }, s, '');
+  function play() {
+    dots.forEach((d) => { d.setAttribute('fill', OFF); d.setAttribute('r', 9); });
+    head.textContent = 'Asked once: a coin toss'; sub.textContent = '';
+    dots.forEach((d, i) => setTimeout(() => { d.setAttribute('fill', lit[i] ? A : '#C3C8D2'); d.setAttribute('r', 11); setTimeout(() => d.setAttribute('r', 9), 250);
+      if (i === 0) sub.textContent = 'Named this time…'; if (i === 1) sub.textContent = '…not this time.'; }, 500 + i * 700));
+    setTimeout(() => { head.textContent = 'Named in 3 of 5 asks'; sub.textContent = 'The pattern only shows across the hour.'; }, 500 + 5 * 700);
+    setTimeout(play, 8200);
+  }
+  reduce ? (dots.forEach((d, i) => d.setAttribute('fill', lit[i] ? A : '#C3C8D2')), head.textContent = 'Named in 3 of 5 asks') : play();
+})();
+
+/* 2. One question out to six lines; near me skips the main ChatGPT line and drops a city pin. */
+(function () {
+  const s = document.getElementById('f2'), cap = document.getElementById('c2');
+  const LINES = ['ChatGPT', 'Gemini', 'AI Overviews', 'AI Mode', 'Perplexity', 'ChatGPT near me'];
+  const located = [false, true, true, true, true, true];
+  const qbox = el('rect', { x: 6, y: 80, width: 118, height: 40, rx: 9, fill: '#fff', stroke: '#C7CBF5' }, s);
+  const qtxt = el('text', { x: 65, y: 104, 'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': 700, fill: INK }, s, '');
+  const rows = LINES.map((n, i) => {
+    const y = 18 + i * 31;
+    const g = el('g', {}, s);
+    const r = el('rect', { x: 168, y: y - 11, width: 122, height: 24, rx: 7, fill: '#fff', stroke: '#E7E9EE' }, g);
+    const t = el('text', { x: 178, y: y + 5, 'font-size': 11, 'font-weight': 600, fill: INK, class: 'chip' }, g, n);
+    const pin = el('circle', { cx: 278, cy: y + 1, r: 3.6, fill: A, stroke: '#C7CBF5', 'stroke-width': 3, opacity: 0 }, g);   // the city is set
+    const path = el('path', { d: `M124 100 C 140 100, 140 ${y}, 168 ${y}`, fill: 'none', stroke: A, 'stroke-width': 1.6, opacity: 0, 'stroke-dasharray': 120, 'stroke-dashoffset': 120 }, s);
+    path.style.transition = 'stroke-dashoffset .6s ease-out, opacity .2s';
+    return { r, t, pin, path };
+  });
+  const Q = [{ text: 'Best dentist in Bothell', near: false }, { text: 'Dentist near me', near: true }];
+  let k = 0;
+  function play() {
+    const q = Q[k % 2]; k += 1;
+    qtxt.textContent = q.text; qbox.setAttribute('stroke', q.near ? '#C4B5FD' : '#C7CBF5');
+    cap.textContent = q.near ? 'Near me: every line but the main ChatGPT line, each set to the city.' : 'Names the city: every line but the ChatGPT near-me line.';
+    rows.forEach((row, i) => { row.path.setAttribute('opacity', 0); row.path.setAttribute('stroke-dashoffset', 120); row.r.setAttribute('stroke', '#E7E9EE'); row.r.setAttribute('fill', '#fff'); row.t.setAttribute('fill', INK); row.pin.setAttribute('opacity', 0); });
+    rows.forEach((row, i) => {
+      const goes = q.near ? i !== 0 : i !== 5;
+      setTimeout(() => {
+        if (!goes) { row.t.setAttribute('fill', '#C3C8D2'); row.r.setAttribute('fill', '#F6F7FA'); return; }
+        row.path.setAttribute('stroke', q.near ? '#7C3AED' : A); row.path.setAttribute('opacity', 1); row.path.setAttribute('stroke-dashoffset', 0);
+        setTimeout(() => { row.r.setAttribute('stroke', q.near ? '#C4B5FD' : '#A5B4FC'); if (located[i]) row.pin.setAttribute('opacity', 1); }, 550);
+      }, 400 + i * 220);
+    });
+    setTimeout(play, 4800);
+  }
+  if (reduce) { qtxt.textContent = Q[1].text; rows.forEach((row, i) => { if (i === 0) row.t.setAttribute('fill', '#C3C8D2'); else row.pin.setAttribute('opacity', located[i] ? 1 : 0); }); } else play();
+})();
+
+/* 3. Each mark in the answer, checked in turn. */
+(function () {
+  const hl = (k) => document.querySelector(`.hl[data-k="${k}"]`), v = document.getElementById('v3');
+  const STEPS = [
+    ['full', 'yes', '<span class="tag y">Named</span> the full name'],
+    ['short', 'yes', '<span class="tag y">Named</span> a safe short form'],
+    ['other', 'no', '<span class="tag n">Not the practice</span> a similar name never counts'],
+    ['site', 'yes', '<span class="tag y">Cited</span> its own website is a source'],
+    [null, null, '<span class="tag g">Recommended</span> the label for this answer'],
+  ];
+  let i = 0;
+  function step() {
+    document.querySelectorAll('.hl').forEach((h) => h.className = 'hl');
+    const [k, kind, text] = STEPS[i % STEPS.length]; i += 1;
+    if (k) hl(k).className = 'hl ' + kind; else ['full', 'short', 'site'].forEach((x) => hl(x).className = 'hl yes');
+    v.innerHTML = text;
+    setTimeout(step, 1900);
+  }
+  if (reduce) { ['full', 'short', 'site'].forEach((x) => hl(x).className = 'hl yes'); hl('other').className = 'hl no'; v.innerHTML = STEPS[4][2]; } else step();
+})();
+
+/* 4. Every 100 asks as 100 squares: solid = almost certainly names the practice, light = maybe, grey = no.
+   More answers, fewer maybes. Same maths as the page (Wilson), shown as squares instead of a scale. */
+(function () {
+  const s = document.getElementById('f4');
+  const saw = el('text', { x: 16, y: 26, 'font-size': 12.5, 'font-weight': 800, fill: INK }, s, '');
+  const real = el('text', { x: 16, y: 44, 'font-size': 11.5, 'font-weight': 600, fill: A }, s, '');
+  const sq = [];
+  for (let i = 0; i < 100; i += 1) {
+    const r = el('rect', { x: 16 + (i % 20) * 13.4, y: 58 + Math.floor(i / 20) * 13.4, width: 11, height: 11, rx: 2.5, fill: OFF }, s);
+    r.style.transition = 'fill .45s ease';
+    sq.push(r);
+  }
+  const key = el('g', {}, s);
+  [['Names it', A, 16], ['Maybe', '#C7CBF5', 92], ['Does not', OFF, 160]].forEach(([t, c, x]) => {
+    el('rect', { x, y: 136, width: 10, height: 10, rx: 2.5, fill: c }, key);
+    el('text', { x: x + 15, y: 145, 'font-size': 10.5, fill: MUTED }, key, t);
+  });
+  const note = el('text', { x: 16, y: 176, 'font-size': 11, fill: MUTED }, s, '');
+  const wilson = (k, n) => { const z = 1.96, ph = k / n, d = 1 + z * z / n, c = (ph + z * z / (2 * n)) / d, h = z * Math.sqrt(ph * (1 - ph) / n + z * z / (4 * n * n)) / d; return [Math.max(0, c - h), Math.min(1, c + h)]; };
+  const STAGES = [[3, 5], [10, 15], [25, 40], [49, 80], [73, 120]];
+  function draw([k, n]) {
+    const [lo, hi] = wilson(k, n), L = Math.round(lo * 100), H = Math.round(hi * 100);
+    sq.forEach((r, i) => r.setAttribute('fill', i < L ? A : i < H ? '#C7CBF5' : OFF));
+    saw.textContent = `${k} of ${n} answers named the practice`;
+    real.textContent = `Out of every 100 times a patient asks: ${L} to ${H}`;
+    note.textContent = n < 40 ? 'Few answers so far: lots of maybes.' : 'More answers: fewer maybes.';
+  }
+  let i = 0;
+  function play() { draw(STAGES[i % STAGES.length]); i += 1; setTimeout(play, i % STAGES.length === 0 ? 3200 : 1700); }
+  reduce ? draw(STAGES[4]) : play();
+})();
+
+/* 5. The same answers counted for the practice and each rival; sites once per answer. */
+(function () {
+  const s = document.getElementById('f5');
+  const ROWS = [['Bothell Family Dentistry', 0.6, A], ['Annigan Dental', 0.45, '#8B93A7'], ['Accent Dental Center', 0.3, '#8B93A7']];
+  const N = 20;
+  const ans = Array.from({ length: N }, (_, i) => el('rect', { x: 20 + i * 11, y: 18, width: 8.5, height: 14, rx: 2.5, fill: '#fff', stroke: '#C3C8D2' }, s));
+  el('text', { x: 20, y: 48, 'font-size': 10, fill: MUTED }, s, '20 answers');
+  const rows = ROWS.map(([name, rate, color], j) => {
+    const y = 74 + j * 36;
+    el('text', { x: 20, y, 'font-size': 10.5, 'font-weight': 700, fill: j === 0 ? '#4338CA' : INK }, s, name);
+    const dots = Array.from({ length: N }, (_, i) => el('circle', { cx: 24 + i * 11, cy: y + 12, r: 3.8, fill: OFF }, s));
+    const count = el('text', { x: 288, y: y + 16, 'text-anchor': 'end', 'font-size': 11, 'font-weight': 800, fill: INK }, s, '');
+    return { rate, color, dots, count };
+  });
+  function play() {
+    rows.forEach((r) => { r.dots.forEach((d) => d.setAttribute('fill', OFF)); r.count.textContent = ''; });
+    ans.forEach((a) => a.setAttribute('fill', '#fff'));
+    const tallies = rows.map(() => 0);
+    ans.forEach((a, i) => setTimeout(() => {
+      a.setAttribute('fill', '#EEF0FF');
+      rows.forEach((r, j) => { if (((i * (7 + j * 3)) % 20) / 20 < r.rate) { r.dots[i].setAttribute('fill', r.color); tallies[j] += 1; } r.count.textContent = `${tallies[j]} of ${i + 1}`; });
+    }, 300 + i * 160));
+    setTimeout(play, 300 + N * 160 + 2600);
+  }
+  if (reduce) { ans.forEach((a) => a.setAttribute('fill', '#EEF0FF')); rows.forEach((r, j) => { let t = 0; r.dots.forEach((d, i) => { if (((i * (7 + j * 3)) % 20) / 20 < r.rate) { d.setAttribute('fill', r.color); t += 1; } }); r.count.textContent = `${t} of ${N}`; }); } else play();
+})();
+</script>
+</body>
+</html>

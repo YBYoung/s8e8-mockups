@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: rivals map and loading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --up:#15803D; --down:#E11D48; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grad:linear-gradient(100deg,#4F46E5,#9333EA); }
+* { box-sizing:border-box; } [hidden] { display:none !important; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+button, input { font:inherit; }
+.mono { font-family:'JetBrains Mono',monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:28px 28px 150px; }
+.top { display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.logo { position:relative; width:26px; height:26px; border-radius:50%; background:var(--grad); flex:none; }
+.logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.madlib { margin:12px 0 8px; max-width:980px; font:800 42px/1.28 Inter; letter-spacing:-.025em; color:var(--ink); }
+.blank { color:var(--a-ink); border-bottom:4px dotted var(--a); padding:0 4px; }
+.blank.ok { border-bottom-style:solid; }
+.blank.ok::after { content:' ✓'; font-size:.5em; vertical-align:.6em; color:var(--up); }
+.panel { max-width:1100px; border:1px solid var(--line); border-radius:18px; padding:20px 22px; box-shadow:0 20px 50px rgba(11,16,32,.10); margin:18px 0 26px; background:#fff; animation:rise .3s ease both; }
+@keyframes rise { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+.ph { font:700 13px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--a-ink); margin-bottom:6px; }
+.sub { margin:0 0 14px; color:var(--muted); font-size:14px; }
+.btn { font:600 14px Inter; border-radius:10px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:#fff; color:var(--ink); }
+.btn.go { background:var(--a); color:#fff; border-color:transparent; box-shadow:0 6px 18px var(--a-glow); }
+.btn.sm { padding:7px 12px; font-size:13px; border-radius:8px; }
+
+/* rivals: list left, map right */
+.rivals { display:grid; grid-template-columns:minmax(0,1fr) 460px; gap:20px; align-items:start; }
+.list { display:flex; flex-direction:column; gap:6px; }
+.rv { display:grid; grid-template-columns:18px 26px minmax(0,1fr) auto; gap:10px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:10px 12px; cursor:pointer; transition:border-color .15s, background .15s, opacity .2s; }
+.rv:hover, .rv.hot { border-color:#C7CBF5; background:#FBFBFF; }
+.rv.off { opacity:.55; }
+.rv.off .nm { text-decoration:line-through; color:var(--faint); }
+.chk { width:18px; height:18px; border-radius:5px; border:1.5px solid #D0D5DD; background:#fff; display:grid; place-items:center; }
+.chk.on { background:var(--a); border-color:var(--a); }
+.chk.on::after { content:''; width:8px; height:4px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+.num { width:24px; height:24px; border-radius:7px; background:var(--a-tint); color:var(--a-ink); font:800 12px Inter; display:grid; place-items:center; }
+.rv.off .num { background:var(--soft); color:var(--faint); }
+.nm { font:600 14.5px Inter; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ad { font-size:12.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.meta { text-align:right; font-size:12.5px; color:var(--muted); white-space:nowrap; }
+.meta b { color:var(--ink); font-weight:700; }
+.star { color:#4F46E5; }
+.note { grid-column:3 / 5; font-size:12px; color:var(--muted); margin-top:-2px; }
+.mapbox { position:sticky; top:16px; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--soft); }
+#map { height:430px; }
+.mapcap { display:flex; gap:14px; flex-wrap:wrap; padding:9px 12px; font-size:12px; color:var(--muted); border-top:1px solid var(--line); background:#fff; }
+.mapcap i { display:inline-block; vertical-align:-2px; margin-right:5px; }
+.pin { width:26px; height:26px; border-radius:8px; background:#fff; border:2px solid var(--a); color:var(--a-ink); font:800 12px Inter; display:grid; place-items:center; box-shadow:0 4px 12px rgba(11,16,32,.18); transform:translate(-50%,-50%); transition:transform .2s, background .2s, color .2s, border-color .2s; }
+.pin.off { border-color:#C3C8D2; color:var(--faint); }
+.pin.hot { transform:translate(-50%,-50%) scale(1.25); background:var(--a); color:#fff; border-color:var(--a); }
+.home { position:relative; width:30px; height:30px; border-radius:50%; background:var(--grad); box-shadow:0 0 0 6px rgba(79,70,229,.18), 0 6px 16px rgba(79,70,229,.35); transform:translate(-50%,-50%); }
+.home::after { content:''; position:absolute; inset:8px; border-radius:50%; border:2px dotted #fff; }
+.home-l { transform:translate(-50%,22px); white-space:nowrap; font:800 12px Inter; color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:2px 7px; box-shadow:0 2px 6px rgba(11,16,32,.08); }
+.foot { display:flex; justify-content:space-between; align-items:center; margin-top:14px; }
+
+/* loading states */
+.loader { display:flex; gap:16px; align-items:flex-start; }
+.orb { position:relative; width:44px; height:44px; flex:none; }
+.orb .core { position:absolute; inset:9px; border-radius:50%; background:var(--grad); animation:breathe 1.6s ease-in-out infinite; }
+.orb .ring { position:absolute; inset:0; border-radius:50%; border:2px dotted #A5B4FC; animation:spin 2.4s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes breathe { 50% { transform:scale(.86); opacity:.85; } }
+.steps { list-style:none; margin:2px 0 0; padding:0; display:flex; flex-direction:column; gap:7px; }
+.steps li { display:flex; gap:10px; align-items:center; font-size:14.5px; color:var(--faint); transition:color .3s; }
+.steps li .st { width:16px; height:16px; border-radius:50%; border:1.5px solid #D0D5DD; flex:none; display:grid; place-items:center; transition:all .3s; }
+.steps li.now { color:var(--ink); font-weight:600; }
+.steps li.now .st { border-color:var(--a); border-top-color:transparent; animation:spin .8s linear infinite; }
+.steps li.done { color:var(--body); }
+.steps li.done .st { background:var(--up); border-color:var(--up); }
+.steps li.done .st::after { content:''; width:6px; height:3px; border:1.6px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(.5px,-1px); }
+.steps .t { font:500 12px 'JetBrains Mono'; color:var(--faint); margin-left:auto; }
+.mapsearch { position:relative; height:150px; border-radius:12px; overflow:hidden; background:linear-gradient(135deg,#F3F4F7 25%,#EEF0F4 25%,#EEF0F4 50%,#F3F4F7 50%,#F3F4F7 75%,#EEF0F4 75%); background-size:28px 28px; border:1px solid var(--line); }
+.ripple { position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px; border-radius:50%; background:var(--a); }
+.ripple::before, .ripple::after { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--a); animation:ping 1.8s ease-out infinite; }
+.ripple::after { animation-delay:.9s; }
+@keyframes ping { from { transform:scale(.6); opacity:.9; } to { transform:scale(7); opacity:0; } }
+.found { position:absolute; width:10px; height:10px; border-radius:3px; background:#fff; border:2px solid var(--a); opacity:0; animation:pop .4s ease forwards; }
+@keyframes pop { from { opacity:0; transform:scale(.3); } to { opacity:1; transform:none; } }
+.runbtn { position:relative; overflow:hidden; }
+.runbtn.working { background:#A5B4FC; box-shadow:none; color:#fff; }
+.runbtn.working::after { content:''; position:absolute; inset:0; background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%); transform:translateX(-100%); animation:sheen 1.3s ease-in-out infinite; }
+@keyframes sheen { to { transform:translateX(100%); } }
+.skel { border:1px solid var(--line); border-radius:16px; background:var(--soft); padding:16px 18px; max-width:540px; }
+.bar { height:11px; border-radius:6px; margin:9px 0; background:linear-gradient(90deg,#E8EAEF 25%,#F4F5F8 50%,#E8EAEF 75%); background-size:200% 100%; animation:shimmer 1.4s linear infinite; }
+@keyframes shimmer { to { background-position:-200% 0; } }
+.gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; max-width:1100px; }
+.card { border:1px solid var(--line); border-radius:16px; padding:18px 20px; background:#fff; }
+.card h3 { margin:0 0 4px; font:800 15px Inter; color:var(--ink); }
+.card p.why { margin:0 0 14px; font-size:13px; color:var(--muted); }
+.statebar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:900; display:flex; gap:4px; background:rgba(11,16,32,.88); padding:5px; border-radius:12px; box-shadow:0 10px 30px rgba(11,16,32,.25); }
+.statebar button { border:0; background:none; color:#C7CBD6; font:600 12px Inter; padding:7px 12px; border-radius:8px; cursor:pointer; }
+.statebar button.on { background:#fff; color:var(--ink); }
+.statebar span { color:#7D8496; font:600 10px Inter; letter-spacing:.1em; text-transform:uppercase; align-self:center; padding:0 6px 0 8px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+@media (max-width:980px) { .rivals, .gallery { grid-template-columns:1fr; } .mapbox { position:relative; top:0; } #map { height:300px; } .madlib { font-size:28px; } .shell { padding:20px 16px 150px; } }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div>
+    <div style="font-size:13px"><b style="color:var(--ink)">Bothell Family Dentistry</b></div>
+  </div>
+
+  <section id="v-rivals">
+    <div class="eyebrow">New check</div>
+    <h1 class="madlib">Check how AI talks about <span class="blank ok">Bothell Family Dentistry</span> in <span class="blank ok">Bothell</span>, across <span class="blank ok">30 questions</span> patients ask, next to <span class="blank" id="nr">8 nearby practices</span>.</h1>
+    <div class="panel">
+      <div class="ph">Who the practice is up against</div>
+      <p class="sub">Real Google Maps neighbours, the same list as the practice's Grid Scan when it has one. Untick one to leave it out; point at a row to find it on the map.</p>
+      <div class="rivals">
+        <div>
+          <div class="list" id="list"></div>
+          <div class="foot"><button class="btn sm">+ Add one by name</button><button class="btn go sm">Looks right</button></div>
+        </div>
+        <div class="mapbox"><div id="map"></div>
+          <div class="mapcap"><span><i class="logo" style="width:12px;height:12px"></i>Bothell Family Dentistry</span><span><i style="width:12px;height:12px;border:2px solid var(--a);border-radius:4px"></i>Rival, numbered as in the list</span><span><i style="width:12px;height:12px;border:1.5px dashed #A5B4FC;border-radius:50%"></i>One mile</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-loading" hidden>
+    <div class="eyebrow" style="margin-bottom:6px">Waiting, done properly</div>
+    <h1 class="madlib" style="font-size:32px;margin-bottom:22px">Every wait in setup says what it is doing, and moves.</h1>
+    <div class="gallery">
+      <div class="card">
+        <h3>Finding the practice</h3>
+        <p class="why">Google Maps lookup, about 2 seconds. Today: a grey line of text.</p>
+        <div class="mapsearch" id="ms"><span class="ripple"></span></div>
+        <p style="margin:10px 0 0;font-size:14px;color:var(--ink);font-weight:600">Looking for Bothell Family Dentistry on Google Maps…</p>
+      </div>
+      <div class="card">
+        <h3>Reading the practice</h3>
+        <p class="why">Website, nearby practices and the questions, 5 to 15 seconds. Each step ticks off as it lands.</p>
+        <div class="loader"><div class="orb"><span class="ring"></span><span class="core"></span></div>
+          <ul class="steps" id="steps">
+            <li data-i="0"><span class="st"></span>Reading bothellfamilydentistry.com<span class="t"></span></li>
+            <li data-i="1"><span class="st"></span>Finding the nearby practices on Google Maps<span class="t"></span></li>
+            <li data-i="2"><span class="st"></span>Writing questions in patients' words<span class="t"></span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Saving and pricing</h3>
+        <p class="why">Saves the setup, then asks the server for the price. The Run button itself shows the work.</p>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+          <button class="btn go runbtn working" id="run" style="padding:14px 22px;font-size:16px">Getting the price</button>
+          <span style="color:var(--muted);font-size:14px" id="runhelp">Saving the setup…</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Opening an answer</h3>
+        <p class="why">Answers tab and the Story's answer card. A shimmering placeholder in the answer's shape.</p>
+        <div class="skel">
+          <div style="font:700 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">ChatGPT · ask 2 of 5</div>
+          <div style="font:700 16px Inter;color:var(--ink);margin:4px 0 8px">“Best emergency dentist in Bothell”</div>
+          <div class="bar" style="width:92%"></div><div class="bar" style="width:84%"></div><div class="bar" style="width:88%"></div><div class="bar" style="width:46%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="statebar"><span>Prototype</span><button class="on" data-v="rivals">Rivals and map</button><button data-v="loading">Loading states</button></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const HOME = { title: 'Bothell Family Dentistry', lat: 47.7748, lng: -122.1905 };
+const RIVALS = [
+  ['Accent Dental Center Bothell', '11511 NE 195th St #104, Bothell, WA 98011', 47.7686516, -122.1863214, 4.8, 247],
+  ['Annigan Dental', '19115 112th Ave NE b101, Bothell, WA 98011', 47.7658843, -122.1912614, 4.7, 144],
+  ['Beardslee Dental', '18807 Beardslee Blvd Unit 105, Bothell, WA 98011', 47.7641978, -122.193752, 4.8, 114],
+  ['Northshore Dental Center', '18404 104th Ave NE, Bothell, WA 98011', 47.7613895, -122.2012198, 4.9, 21],
+  ['Bothell Dental Care', '10036 NE 185th St, Bothell, WA 98011', 47.7618659, -122.2058935, 4.7, 96],
+  ['Crisafulli Dental', '18920 Bothell Way NE Ste 200, Bothell, WA 98011', 47.7655333, -122.20862, 4.7, 378],
+  ['Creekside Dental', '19214 Bothell Way NE C, Bothell, WA 98011', 47.767304, -122.2099931, 5.0, 22],
+  ['Accent Dental Center: Dr. Isabel Perez, DDS, PS', '11511 NE 195th St #104, Bothell, WA 98011', 47.7685933, -122.1861671, 5.0, 2, true],
+].map(([title, address, lat, lng, rating, reviews, person], i) => ({ n: i + 1, title, address, lat, lng, rating, reviews, person: !!person, on: true }));
+const miles = (a, b) => { const R = 3958.8, r = (d) => d * Math.PI / 180, dl = r(b.lat - a.lat), dg = r(b.lng - a.lng);
+  return 2 * R * Math.asin(Math.sqrt(Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dg / 2) ** 2)); };
+RIVALS.forEach((r) => { r.mi = miles(HOME, r); });
+RIVALS.sort((a, b) => a.mi - b.mi).forEach((r, i) => { r.n = i + 1; });
+
+const $ = (id) => document.getElementById(id);
+const pins = {};
+let map;
+
+function renderList() {
+  $('list').innerHTML = RIVALS.map((r) => `<div class="rv ${r.on ? '' : 'off'}" data-n="${r.n}">
+      <span class="chk ${r.on ? 'on' : ''}"></span><span class="num">${r.n}</span>
+      <div style="min-width:0"><div class="nm" title="${r.title}">${r.title}</div><div class="ad">${r.address}</div></div>
+      <div class="meta"><b>${r.mi.toFixed(1)} mi</b><br><span class="star">★</span> ${r.rating.toFixed(1)} · ${r.reviews} reviews</div>
+      ${r.person ? '<div class="note">A dentist\'s own listing. AI answers rarely use this name; the practice listing above counts for it.</div>' : ''}
+    </div>`).join('');
+  document.querySelectorAll('.rv').forEach((el) => {
+    const r = RIVALS.find((x) => x.n === +el.dataset.n);
+    el.onclick = () => { r.on = !r.on; renderList(); paintPins(); $('nr').textContent = `${RIVALS.filter((x) => x.on).length} nearby practices`; };
+    el.onmouseenter = () => hot(r.n, true); el.onmouseleave = () => hot(r.n, false);
+  });
+}
+
+function paintPins() { RIVALS.forEach((r) => { const el = pins[r.n]?.getElement()?.firstChild; if (el) el.classList.toggle('off', !r.on); }); }
+function hot(n, on) {
+  const el = pins[n]?.getElement()?.firstChild; if (el) el.classList.toggle('hot', on);
+  document.querySelector(`.rv[data-n="${n}"]`)?.classList.toggle('hot', on);
+  if (on && pins[n]) pins[n].setZIndexOffset(1000); else if (pins[n]) pins[n].setZIndexOffset(0);
+}
+
+function drawMap() {
+  if (!window.L) { $('map').innerHTML = '<p style="padding:20px;color:var(--muted)">The map needs a connection.</p>'; return; }
+  map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Tiles &copy; Esri' }).addTo(map);
+  L.circle([HOME.lat, HOME.lng], { radius: 1609, color: '#A5B4FC', weight: 1.5, dashArray: '4 5', fill: false }).addTo(map);
+  L.marker([HOME.lat, HOME.lng], { icon: L.divIcon({ className: '', html: `<div class="home"></div>`, iconSize: [0, 0] }), zIndexOffset: 2000 }).addTo(map);
+  L.marker([HOME.lat, HOME.lng], { icon: L.divIcon({ className: '', html: `<div class="home-l">${HOME.title}</div>`, iconSize: [0, 0] }), zIndexOffset: 1999, interactive: false }).addTo(map);
+  RIVALS.forEach((r, i) => {
+    // two listings at one address: nudge the second so both pins show
+    const twin = RIVALS.findIndex((x) => x !== r && Math.abs(x.lat - r.lat) < 0.0003 && Math.abs(x.lng - r.lng) < 0.0003);
+    const dx = twin >= 0 && twin < i ? 0.0011 : 0;   // side by side, not stacked
+    const m = L.marker([r.lat, r.lng + dx], { icon: L.divIcon({ className: '', html: `<div class="pin">${r.n}</div>`, iconSize: [0, 0] }) }).addTo(map);
+    m.on('mouseover', () => hot(r.n, true)); m.on('mouseout', () => hot(r.n, false));
+    pins[r.n] = m;
+  });
+  map.fitBounds(L.latLngBounds([[HOME.lat, HOME.lng], ...RIVALS.map((r) => [r.lat, r.lng])]).pad(0.3));
+}
+
+// loading states: replay so the motion can be watched
+let timers = [];
+function playLoading() {
+  timers.forEach(clearTimeout); timers = [];
+  const ms = $('ms'); ms.querySelectorAll('.found').forEach((f) => f.remove());
+  [[30, 32], [64, 40], [44, 70], [70, 66], [24, 62]].forEach(([x, y], i) => timers.push(setTimeout(() => {
+    const f = document.createElement('span'); f.className = 'found'; f.style.left = x + '%'; f.style.top = y + '%'; ms.appendChild(f); }, 700 + i * 380)));
+  const li = [...$('steps').children]; li.forEach((l) => { l.className = ''; l.querySelector('.t').textContent = ''; });
+  const at = [0, 2600, 5400, 8200]; const took = ['2s', '3s', '3s'];
+  li.forEach((l, i) => { timers.push(setTimeout(() => { l.className = 'now'; }, at[i])); timers.push(setTimeout(() => { l.className = 'done'; l.querySelector('.t').textContent = took[i]; }, at[i + 1])); });
+  const run = $('run'), help = $('runhelp');
+  run.className = 'btn go runbtn working'; run.textContent = 'Getting the price'; help.textContent = 'Saving the setup…';
+  timers.push(setTimeout(() => { help.textContent = 'Working out the price…'; }, 1500));
+  timers.push(setTimeout(() => { run.className = 'btn go runbtn'; run.textContent = 'Run it · $3.41'; help.textContent = 'About an hour. It keeps going if this page is closed.'; }, 3200));
+  timers.push(setTimeout(playLoading, 11000));
+}
+
+document.querySelectorAll('.statebar [data-v]').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.statebar button').forEach((x) => x.classList.toggle('on', x === b));
+  $('v-rivals').hidden = b.dataset.v !== 'rivals'; $('v-loading').hidden = b.dataset.v !== 'loading';
+  if (b.dataset.v === 'loading') playLoading(); else { timers.forEach(clearTimeout); setTimeout(() => map && map.invalidateSize(), 50); }
+});
+renderList(); drawMap();
+</script>
+</body>
+</html>

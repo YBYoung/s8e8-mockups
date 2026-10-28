@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Search: Search Wire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grey:#E4E7EC; --grey-2:#C9CED8; --grad:linear-gradient(100deg,#4F46E5,#9333EA); --ease:cubic-bezier(.2,.8,.2,1); }
+* { box-sizing:border-box; }
+html, body { overflow-x:hidden; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:26px 32px 80px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; margin-bottom:38px; flex-wrap:wrap; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:50%; background:var(--grad); position:relative; flex:none; }
+.brand .logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.who { font-size:13px; color:var(--muted); } .who b { color:var(--ink); font-weight:600; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.grad { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.headline { display:flex; align-items:baseline; gap:10px 18px; flex-wrap:wrap; margin:10px 0 8px; }
+.hero-n { font:900 88px/1 Inter; letter-spacing:-.04em; }
+.hc { font-size:17px; color:var(--muted); line-height:1.35; max-width:240px; }
+.prog { font-size:12.5px; color:var(--muted); margin:0 0 28px; display:flex; gap:8px 14px; align-items:center; flex-wrap:wrap; min-height:20px; }
+.prog .bar { flex:0 0 160px; height:4px; border-radius:2px; background:var(--soft); overflow:hidden; }
+.prog .bar i { display:block; height:100%; width:0; background:var(--a); transition:width .4s var(--ease); }
+.prog .wait { color:var(--a-ink); font-weight:600; }
+.stage { border:1px solid var(--line); border-radius:18px; background:#fff; padding:24px; position:relative; overflow:hidden; }
+.cap { font-size:14px; color:var(--muted); margin:14px 2px 0; max-width:780px; }
+.legend { display:flex; gap:8px 18px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin-top:16px; }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.legend i { width:10px; height:10px; border-radius:50%; background:var(--grey); display:inline-block; }
+.legend i.named { background:var(--a); } .legend i.none { background:#fff; border:1.5px dashed var(--grey-2); } .legend i.fly { background:var(--a-tint); box-shadow:0 0 0 2px #fff, 0 0 0 3px var(--a-tint); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+@media (max-width:640px) { .shell { padding:18px 16px 60px; } .hero-n { font-size:58px; } .hc { font-size:15px; } .stage { padding:14px; border-radius:14px; } .topbar { margin-bottom:26px; } }
+
+/* ---------- Concept ---------- */
+.stage { padding:8px 24px; }
+.row { display:grid; grid-template-columns:150px minmax(0,1fr) 128px; gap:22px; align-items:center; padding:18px 0; border-bottom:1px solid var(--line); }
+.row:last-child { border-bottom:0; }
+.ai { font:700 15px Inter; color:var(--ink); line-height:1.25; }
+.ai small { display:block; white-space:nowrap; font:500 11.5px Inter; color:var(--faint); margin-top:2px; }
+.tally { font-size:11.5px; color:var(--muted); margin-top:6px; }
+.tally b { color:var(--a-ink); font-weight:600; }
+.ask { position:relative; display:flex; align-items:center; gap:10px; background:var(--soft); border-radius:10px; padding:10px 14px; min-height:42px; overflow:hidden; }
+.ask svg { flex:none; color:var(--faint); }
+.qtext { font:500 15px Inter; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+.qtext.idle { color:var(--faint); font-weight:400; }
+.qtext.typing::after { content:''; display:inline-block; width:2px; height:1.05em; background:var(--a); margin-left:2px; vertical-align:-2px; animation:blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.ask::after { content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:linear-gradient(90deg, transparent, rgba(79,70,229,.7), transparent); background-size:40% 100%; background-repeat:no-repeat; opacity:0; transition:opacity .3s; }
+.ask.searching::after { opacity:1; animation:sweep 1.25s cubic-bezier(.45,0,.55,1) infinite; }
+@keyframes sweep { from { background-position:-40% 0; } to { background-position:140% 0; } }
+.res { font-size:13.5px; color:var(--muted); margin-top:8px; min-height:21px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.res.in { animation:rise .38s var(--ease) both; }
+@keyframes rise { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+.res .lbl { font-weight:700; color:var(--ink); margin-right:8px; }
+.res.named .lbl { color:var(--a-ink); }
+.res.not { color:var(--faint); }
+.res.searching { color:var(--faint); }
+.shimmer { background:linear-gradient(90deg, var(--faint) 0%, var(--faint) 40%, var(--ink) 50%, var(--faint) 60%, var(--faint) 100%); background-size:250% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shim 1.4s linear infinite; }
+@keyframes shim { from { background-position:100% 0; } to { background-position:-150% 0; } }
+.trail { display:flex; flex-wrap:wrap; gap:4px; align-content:center; }
+.trail i { width:8px; height:8px; border-radius:50%; background:var(--grey); animation:pop .45s var(--ease) both; }
+.trail i.named { background:var(--a); } .trail i.none { background:#fff; border:1.2px dashed var(--grey-2); } .trail i.fail { background:#fff; border:1.2px solid var(--grey-2); }
+@keyframes pop { from { transform:scale(.3); opacity:0; } to { transform:none; opacity:1; } }
+@media (max-width:760px) {
+  .stage { padding:4px 14px; }
+  .row { grid-template-columns:minmax(0,1fr) auto; gap:8px 12px; padding:14px 0; }
+  .who2 { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .ai small { display:inline; margin-left:4px; } .tally { margin:0; }
+  .wire { grid-column:1 / -1; grid-row:2; }
+  .trail { grid-column:2; grid-row:1; max-width:130px; justify-content:flex-end; }
+  .trail i { width:6px; height:6px; }
+  .qtext { font-size:14px; }
+  .res { white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+}
+@media (prefers-reduced-motion: reduce) { .ask.searching::after, .shimmer, .qtext.typing::after, .trail i, .res.in { animation:none; } .shimmer { color:var(--faint); background:none; } }
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="shell">
+<div class="topbar"><div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div><div class="who">Concept B <b>Search wire</b></div></div>
+<section>
+<div class="eyebrow" id="rnd">Round 2 of 5</div>
+<div class="headline"><span class="hero-n grad" id="hn">4 in 10</span><span class="hc">answers name the practice so far</span></div>
+<div class="prog mono" id="prog"><span class="bar"><i id="pbar"></i></span><span id="ptxt">0 of 150 answers in this round</span></div>
+</section>
+
+<div class="stage" id="rows"></div>
+<div class="legend"><span><i class="named"></i>Named the practice</span><span><i></i>Did not name it</span><span><i class="none"></i>No AI Overview showed</span></div>
+<p class="cap">Each line is one AI: the patient question types in, the AI searches, and the answer lands with Bothell Family Dentistry highlighted when it is named (shown faster than real time).</p>
+</div>
+<script>
+/* ---------- Shared sample run: Bothell Family Dentistry, round 2 of 5 ---------- */
+const PRACTICE = { name: 'Bothell Family Dentistry', city: 'Bothell, WA' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', lines: ['ChatGPT'] },
+  { key: 'gemini', name: 'Gemini', lines: ['Gemini'] },
+  { key: 'aio', name: 'AI Overviews', sub: 'Google', lines: ['AI', 'Overviews'] },
+  { key: 'aimode', name: 'AI Mode', sub: 'Google', lines: ['AI Mode'] },
+  { key: 'perplexity', name: 'Perplexity', lines: ['Perplexity'] },
+  { key: 'near', name: 'ChatGPT near me', lines: ['ChatGPT', 'near me'] },
+];
+const QUESTIONS = [
+  ['Best emergency dentist in Bothell', 'city'], ['Family dentist near me for my kids', 'near'], ['Who does dental implants well in Bothell?', 'city'],
+  ['Invisalign dentist in Bothell for adults', 'city'], ['Is Bothell Family Dentistry good?', 'brand'], ['Emergency dentist near me', 'near'],
+  ['Gentle dentist for a nervous 6 year old in Bothell', 'city'], ['Natural looking veneers in Bothell', 'city'], ['Professional teeth whitening in Bothell', 'city'],
+  ['Dentist near me for a cleaning', 'near'], ['Dentist in Bothell that takes Delta Dental', 'city'], ['Sedation dentistry for anxious patients in Bothell', 'city'],
+  ['Best dentist in Bothell, WA', 'city'], ['Bothell Family Dentistry reviews', 'brand'], ['Invisalign near me', 'near'],
+  ['Cheapest clear aligners in Bothell', 'city'], ['Weekend emergency dental care in Bothell', 'city'], ['Porcelain veneers cost in Bothell, WA', 'city'],
+  ['Cosmetic dentist in Bothell for a smile makeover', 'city'], ['Dentist near me that is open late', 'near'], ['New patient exam and cleaning in Bothell', 'city'],
+  ['Who offers nitrous oxide at the dentist in Bothell?', 'city'], ['Top rated family dentists in Bothell', 'city'], ['Does Bothell Family Dentistry take new patients?', 'brand'],
+  ['Teeth whitening near me', 'near'], ['Which Bothell dentist should I choose?', 'city'], ['Dentist open Saturdays in Bothell', 'city'],
+  ['Single tooth implant in Bothell, WA', 'city'], ['Root canal specialist or general dentist in Bothell?', 'city'], ['Spanish speaking dentist in Bothell', 'city'],
+].map(([text, kind], i) => ({ i, text, kind }));
+const RIVALS = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', 'Hello Kids Dentistry', 'Annigan Dental', 'North Creek Dental'];
+const ROUND_TIMES = ['3:18 PM', '3:30 PM', '3:42 PM', '3:54 PM', '4:06 PM'];
+const PRIOR = { named: 57, counted: 141 }; // round 1, already in
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function asks(q, a) { if (a.key === 'near') return q.kind === 'near'; if (a.key === 'chatgpt') return q.kind !== 'near'; return true; }
+const AIHUE = { chatgpt: 'ChatGPT', gemini: 'Gemini', aio: 'AI Overviews', aimode: 'AI Mode', perplexity: 'Perplexity', near: 'ChatGPT near me' };
+
+/* One round = 150 asks. opts.perAI: each AI line works through its own list one at a time. Otherwise a shared pool of workers. */
+function buildRound(seed, opts = {}) {
+  const r = rng(seed), list = [];
+  QUESTIONS.forEach(q => AIS.forEach((a, ai) => {
+    if (!asks(q, a)) return;
+    let outcome; const x = r();
+    if (x < .014) outcome = 'fail';
+    else if (a.key === 'aio' && r() < .38) outcome = 'none';
+    else outcome = r() < (q.kind === 'brand' ? .86 : .36) ? 'named' : 'not';
+    list.push({ q, a, ai, outcome, rank: 1 + Math.floor(r() * 3), seed: Math.floor(r() * 1e6) });
+  }));
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  const [d0, d1] = opts.dur || [600, 5400];
+  if (opts.perAI) {
+    const free = AIS.map(() => 300 + r() * 500);
+    list.forEach(k => { k.launch = free[k.ai]; k.land = k.launch + d0 + r() * (d1 - d0); free[k.ai] = k.land + (opts.gap || 0); });
+  } else {
+    const w = Array.from({ length: opts.workers || 8 }, (_, i) => i * 140);
+    list.forEach(k => { let m = 0; w.forEach((v, i) => { if (v < w[m]) m = i; }); k.launch = w[m]; k.land = k.launch + d0 + r() * (d1 - d0); w[m] = k.land + 40; });
+  }
+  list.forEach((k, n) => k.id = n);
+  return list;
+}
+
+function snippet(k) {
+  const others = RIVALS.filter((_, i) => (i + k.seed) % 5 < 3).slice(0, 3);
+  if (k.outcome === 'none') return 'Google showed no AI Overview for this search.';
+  if (k.outcome === 'fail') return 'No answer came back this time.';
+  const names = others.slice();
+  if (k.outcome === 'named') names.splice(Math.min(k.rank - 1, names.length), 0, PRACTICE.name);
+  return names.slice(0, 4).map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}`).join('&nbsp;&nbsp; ');
+}
+function outcomeWords(k) { return { named: 'named the practice', not: 'did not name it', none: 'showed no Overview', fail: 'did not answer' }[k.outcome]; }
+
+/* Header: big number, round line, progress */
+const Header = (() => {
+  const hn = document.getElementById('hn'), ptxt = document.getElementById('ptxt'), pbar = document.getElementById('pbar'), rnd = document.getElementById('rnd');
+  let last = '';
+  return {
+    set(st, total) {
+      const tenths = Math.round(10 * (PRIOR.named + st.named) / (PRIOR.counted + st.counted));
+      const t = `${st.landed} of ${total} answers in this round` + (st.flying ? `, ${st.flying} still searching` : '');
+      if (t !== last) { last = t; ptxt.textContent = t; ptxt.className = ''; pbar.style.width = (100 * st.landed / total) + '%'; hn.textContent = `${tenths} in 10`; }
+    },
+    wait() { rnd.textContent = 'Round 2 of 5 is in'; ptxt.textContent = `Next round about ${ROUND_TIMES[2]}`; ptxt.className = 'wait'; last = ''; },
+    run() { rnd.textContent = 'Round 2 of 5'; },
+  };
+})();
+
+/* Plays a round on a steady clock, then waits, then replays. Hooks: launch(k, instant), land(k, instant), frame(t), wait(), reset() */
+function play(list, h, opts = {}) {
+  const ev = []; list.forEach(a => { ev.push({ t: a.launch, k: 0, a }); ev.push({ t: a.land, k: 1, a }); }); ev.sort((x, y) => x.t - y.t || x.k - y.k);
+  const end = ev[ev.length - 1].t, st = { named: 0, counted: 0, landed: 0, flying: 0 };
+  const apply = (e, instant) => {
+    if (e.k === 0) { st.flying++; h.launch && h.launch(e.a, instant, st); return; }
+    st.flying--; st.landed++;
+    if (e.a.outcome === 'named') { st.named++; st.counted++; } else if (e.a.outcome === 'not') st.counted++;
+    h.land && h.land(e.a, instant, st);
+  };
+  if (REDUCED) { const T = end * (opts.stillAt || .6); ev.filter(e => e.t <= T).forEach(e => apply(e, true)); Header.set(st, list.length); h.frame && h.frame(T, true); return; }
+  let i = 0, t = 0, last = null, phase = 'run', wt = 0;
+  (function loop(now) {
+    const dt = last == null ? 16 : Math.min(64, now - last); last = now;
+    if (phase === 'run') {
+      t += dt; while (i < ev.length && ev[i].t <= t) apply(ev[i++], false);
+      Header.set(st, list.length); h.frame && h.frame(t, false);
+      if (i >= ev.length && t > end + 900) { phase = 'wait'; wt = 0; Header.wait(); h.wait && h.wait(); }
+    } else {
+      wt += dt; if (wt > (opts.waitMs || 5200)) { phase = 'run'; i = 0; t = 0; Object.assign(st, { named: 0, counted: 0, landed: 0, flying: 0 }); h.reset && h.reset(); Header.run(); }
+    }
+    requestAnimationFrame(loop);
+  })(performance.now());
+}
+
+const tipEl = document.getElementById('tip');
+function bindTip(el, fn) { el.addEventListener('mousemove', e => { tipEl.innerHTML = fn(); tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }); el.addEventListener('mouseleave', () => tipEl.classList.remove('on')); }
+
+/* ---------- Concept ---------- */
+const ROUND = buildRound(77, { perAI: true, dur: [1500, 3100], gap: 900 });
+const SUB = { aio: 'Google', aimode: 'Google', near: 'near-me questions', chatgpt: 'questions naming the city' };
+const MAG = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5" stroke-linecap="round"/></svg>';
+const rowsEl = document.getElementById('rows');
+const R = AIS.map((a, j) => {
+  const total = ROUND.filter(k => k.ai === j).length;
+  const row = document.createElement('div'); row.className = 'row';
+  row.innerHTML = `<div class="who2"><div class="ai">${a.name}${SUB[a.key] ? `<small>${SUB[a.key]}</small>` : ''}</div><div class="tally mono"></div></div>
+    <div class="wire"><div class="ask">${MAG}<span class="qtext idle"></span></div><div class="res"></div></div><div class="trail"></div>`;
+  rowsEl.appendChild(row);
+  const o = { a, total, row, ask: row.querySelector('.ask'), q: row.querySelector('.qtext'), res: row.querySelector('.res'), tally: row.querySelector('.tally'), trail: row.querySelector('.trail'), cur: null, named: 0, back: 0 };
+  return o;
+});
+function idle(o) { o.q.className = 'qtext idle'; o.q.textContent = 'Waiting to ask'; o.res.className = 'res'; o.res.textContent = ''; o.tally.innerHTML = `<b>0</b> named of 0`; }
+R.forEach(idle);
+function setRes(o, cls, html, animate) { o.res.className = 'res ' + cls; o.res.innerHTML = html; if (animate) { void o.res.offsetWidth; o.res.classList.add('in'); } }
+play(ROUND, {
+  launch(k, instant) {
+    const o = R[k.ai]; o.cur = k; o.landed = false; o.typeMs = Math.min((k.land - k.launch) * .5, k.q.text.length * 24);
+    o.q.className = 'qtext typing'; o.q.textContent = ''; o.ask.classList.remove('searching'); setRes(o, '', '', false);
+  },
+  land(k, instant) {
+    const o = R[k.ai]; o.landed = true; o.back++; if (k.outcome === 'named') o.named++;
+    o.q.className = 'qtext'; o.q.textContent = k.q.text; o.ask.classList.remove('searching');
+    const lbl = { named: 'Named', not: 'Not named', none: 'No Overview', fail: 'No answer' }[k.outcome];
+    setRes(o, k.outcome === 'named' ? 'named' : 'not', `<span class="lbl">${lbl}</span>${snippet(k)}`, !instant);
+    o.tally.innerHTML = `<b>${o.named}</b> named of ${o.back}`;
+    const d = document.createElement('i'); d.className = k.outcome; o.trail.appendChild(d);
+    if (o.back === o.total) o.doneAt = k.land;
+  },
+  frame(t) {
+    R.forEach(o => {
+      const k = o.cur; if (!k) return;
+      if (!o.landed) {
+        const e = REDUCED ? Infinity : t - k.launch;
+        if (e < o.typeMs) { const n = Math.ceil(k.q.text.length * e / o.typeMs); if (o.q.textContent.length !== n) o.q.textContent = k.q.text.slice(0, n); }
+        else if (!o.ask.classList.contains('searching')) { o.q.className = 'qtext'; o.q.textContent = k.q.text; o.ask.classList.add('searching'); setRes(o, 'searching', `<span class="shimmer">Searching ${k.a.name}</span>`, true); }
+      } else if (o.doneAt && t > o.doneAt + 1800 && !o.doneShown) {
+        o.doneShown = true; o.q.className = 'qtext idle'; o.q.textContent = `All ${o.total} questions asked this round`;
+      }
+    });
+  },
+  wait() { R.forEach(o => { o.q.className = 'qtext idle'; o.q.textContent = `Next round about ${ROUND_TIMES[2]}`; }); },
+  reset() { R.forEach(o => { o.cur = null; o.named = o.back = 0; o.doneAt = 0; o.doneShown = false; o.trail.innerHTML = ''; idle(o); }); },
+}, { stillAt: .55 });
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Search: Constellation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grey:#E4E7EC; --grey-2:#C9CED8; --grad:linear-gradient(100deg,#4F46E5,#9333EA); --ease:cubic-bezier(.2,.8,.2,1); }
+* { box-sizing:border-box; }
+html, body { overflow-x:hidden; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:26px 32px 80px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; margin-bottom:38px; flex-wrap:wrap; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:50%; background:var(--grad); position:relative; flex:none; }
+.brand .logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.who { font-size:13px; color:var(--muted); } .who b { color:var(--ink); font-weight:600; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.grad { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.headline { display:flex; align-items:baseline; gap:10px 18px; flex-wrap:wrap; margin:10px 0 8px; }
+.hero-n { font:900 88px/1 Inter; letter-spacing:-.04em; }
+.hc { font-size:17px; color:var(--muted); line-height:1.35; max-width:240px; }
+.prog { font-size:12.5px; color:var(--muted); margin:0 0 28px; display:flex; gap:8px 14px; align-items:center; flex-wrap:wrap; min-height:20px; }
+.prog .bar { flex:0 0 160px; height:4px; border-radius:2px; background:var(--soft); overflow:hidden; }
+.prog .bar i { display:block; height:100%; width:0; background:var(--a); transition:width .4s var(--ease); }
+.prog .wait { color:var(--a-ink); font-weight:600; }
+.stage { border:1px solid var(--line); border-radius:18px; background:#fff; padding:24px; position:relative; overflow:hidden; }
+.cap { font-size:14px; color:var(--muted); margin:14px 2px 0; max-width:780px; }
+.legend { display:flex; gap:8px 18px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin-top:16px; }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.legend i { width:10px; height:10px; border-radius:50%; background:var(--grey); display:inline-block; }
+.legend i.named { background:var(--a); } .legend i.none { background:#fff; border:1.5px dashed var(--grey-2); } .legend i.fly { background:var(--a-tint); box-shadow:0 0 0 2px #fff, 0 0 0 3px var(--a-tint); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+@media (max-width:640px) { .shell { padding:18px 16px 60px; } .hero-n { font-size:58px; } .hc { font-size:15px; } .stage { padding:14px; border-radius:14px; } .topbar { margin-bottom:26px; } }
+
+/* ---------- Concept ---------- */
+#sky { display:block; width:100%; overflow:visible; }
+#sky text { font-family:Inter,system-ui,sans-serif; }
+.ring { fill:none; stroke:var(--line); stroke-width:1; }
+.qdot { transition:fill .5s var(--ease), r .5s var(--ease), stroke .5s; cursor:default; }
+.qlab { font-size:11.5px; fill:var(--muted); opacity:0; transition:opacity .45s var(--ease); pointer-events:none; }
+.qlab.on { opacity:1; }
+.wire { stroke:rgba(79,70,229,.2); stroke-width:1; }
+.hub .face { fill:#fff; stroke:var(--line); stroke-width:1.5; transition:stroke .4s; }
+.hub.busy .face { stroke:rgba(79,70,229,.45); }
+.hub .halo { opacity:0; transform-box:fill-box; transform-origin:center; }
+.hub .nm { font-weight:700; fill:var(--ink); text-anchor:middle; }
+.hub .tl { font-family:'JetBrains Mono',monospace; fill:var(--faint); text-anchor:middle; }
+.ctr1 { font:700 14px Inter; fill:var(--ink); text-anchor:middle; }
+.ctr2 { font:500 12.5px Inter; fill:var(--muted); text-anchor:middle; }
+.ctr2.named { fill:var(--a-ink); font-weight:700; }
+.pulse { pointer-events:none; }
+.latest { display:none; font-size:13px; color:var(--muted); margin-top:10px; min-height:40px; }
+.latest b { color:var(--ink); } .latest .n { color:var(--a-ink); font-weight:700; }
+@media (max-width:640px) { .latest { display:block; } }
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="shell">
+<div class="topbar"><div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div><div class="who">Concept A <b>Question constellation</b></div></div>
+<section>
+<div class="eyebrow" id="rnd">Round 2 of 5</div>
+<div class="headline"><span class="hero-n grad" id="hn">4 in 10</span><span class="hc">answers name the practice so far</span></div>
+<div class="prog mono" id="prog"><span class="bar"><i id="pbar"></i></span><span id="ptxt">0 of 150 answers in this round</span></div>
+</section>
+
+<div class="stage" id="stage">
+  <svg id="sky" role="img" aria-label="Thirty patient questions on an outer ring, six AIs in the middle, answers travelling back"></svg>
+  <div class="latest" id="latest">Asking 30 questions on 6 AIs.</div>
+  <div class="legend"><span><i class="named"></i>Answer named the practice</span><span><i></i>Answer did not name it</span><span><i class="none"></i>No AI Overview showed</span></div>
+</div>
+<p class="cap">Each dot on the outer ring is one patient question; a faint line reaches an AI while it searches, and the answer travels back indigo if it named Bothell Family Dentistry, grey if not (shown faster than real time).</p>
+</div>
+<script>
+/* ---------- Shared sample run: Bothell Family Dentistry, round 2 of 5 ---------- */
+const PRACTICE = { name: 'Bothell Family Dentistry', city: 'Bothell, WA' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', lines: ['ChatGPT'] },
+  { key: 'gemini', name: 'Gemini', lines: ['Gemini'] },
+  { key: 'aio', name: 'AI Overviews', sub: 'Google', lines: ['AI', 'Overviews'] },
+  { key: 'aimode', name: 'AI Mode', sub: 'Google', lines: ['AI Mode'] },
+  { key: 'perplexity', name: 'Perplexity', lines: ['Perplexity'] },
+  { key: 'near', name: 'ChatGPT near me', lines: ['ChatGPT', 'near me'] },
+];
+const QUESTIONS = [
+  ['Best emergency dentist in Bothell', 'city'], ['Family dentist near me for my kids', 'near'], ['Who does dental implants well in Bothell?', 'city'],
+  ['Invisalign dentist in Bothell for adults', 'city'], ['Is Bothell Family Dentistry good?', 'brand'], ['Emergency dentist near me', 'near'],
+  ['Gentle dentist for a nervous 6 year old in Bothell', 'city'], ['Natural looking veneers in Bothell', 'city'], ['Professional teeth whitening in Bothell', 'city'],
+  ['Dentist near me for a cleaning', 'near'], ['Dentist in Bothell that takes Delta Dental', 'city'], ['Sedation dentistry for anxious patients in Bothell', 'city'],
+  ['Best dentist in Bothell, WA', 'city'], ['Bothell Family Dentistry reviews', 'brand'], ['Invisalign near me', 'near'],
+  ['Cheapest clear aligners in Bothell', 'city'], ['Weekend emergency dental care in Bothell', 'city'], ['Porcelain veneers cost in Bothell, WA', 'city'],
+  ['Cosmetic dentist in Bothell for a smile makeover', 'city'], ['Dentist near me that is open late', 'near'], ['New patient exam and cleaning in Bothell', 'city'],
+  ['Who offers nitrous oxide at the dentist in Bothell?', 'city'], ['Top rated family dentists in Bothell', 'city'], ['Does Bothell Family Dentistry take new patients?', 'brand'],
+  ['Teeth whitening near me', 'near'], ['Which Bothell dentist should I choose?', 'city'], ['Dentist open Saturdays in Bothell', 'city'],
+  ['Single tooth implant in Bothell, WA', 'city'], ['Root canal specialist or general dentist in Bothell?', 'city'], ['Spanish speaking dentist in Bothell', 'city'],
+].map(([text, kind], i) => ({ i, text, kind }));
+const RIVALS = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', 'Hello Kids Dentistry', 'Annigan Dental', 'North Creek Dental'];
+const ROUND_TIMES = ['3:18 PM', '3:30 PM', '3:42 PM', '3:54 PM', '4:06 PM'];
+const PRIOR = { named: 57, counted: 141 }; // round 1, already in
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function asks(q, a) { if (a.key === 'near') return q.kind === 'near'; if (a.key === 'chatgpt') return q.kind !== 'near'; return true; }
+const AIHUE = { chatgpt: 'ChatGPT', gemini: 'Gemini', aio: 'AI Overviews', aimode: 'AI Mode', perplexity: 'Perplexity', near: 'ChatGPT near me' };
+
+/* One round = 150 asks. opts.perAI: each AI line works through its own list one at a time. Otherwise a shared pool of workers. */
+function buildRound(seed, opts = {}) {
+  const r = rng(seed), list = [];
+  QUESTIONS.forEach(q => AIS.forEach((a, ai) => {
+    if (!asks(q, a)) return;
+    let outcome; const x = r();
+    if (x < .014) outcome = 'fail';
+    else if (a.key === 'aio' && r() < .38) outcome = 'none';
+    else outcome = r() < (q.kind === 'brand' ? .86 : .36) ? 'named' : 'not';
+    list.push({ q, a, ai, outcome, rank: 1 + Math.floor(r() * 3), seed: Math.floor(r() * 1e6) });
+  }));
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  const [d0, d1] = opts.dur || [600, 5400];
+  if (opts.perAI) {
+    const free = AIS.map(() => 300 + r() * 500);
+    list.forEach(k => { k.launch = free[k.ai]; k.land = k.launch + d0 + r() * (d1 - d0); free[k.ai] = k.land + (opts.gap || 0); });
+  } else {
+    const w = Array.from({ length: opts.workers || 8 }, (_, i) => i * 140);
+    list.forEach(k => { let m = 0; w.forEach((v, i) => { if (v < w[m]) m = i; }); k.launch = w[m]; k.land = k.launch + d0 + r() * (d1 - d0); w[m] = k.land + 40; });
+  }
+  list.forEach((k, n) => k.id = n);
+  return list;
+}
+
+function snippet(k) {
+  const others = RIVALS.filter((_, i) => (i + k.seed) % 5 < 3).slice(0, 3);
+  if (k.outcome === 'none') return 'Google showed no AI Overview for this search.';
+  if (k.outcome === 'fail') return 'No answer came back this time.';
+  const names = others.slice();
+  if (k.outcome === 'named') names.splice(Math.min(k.rank - 1, names.length), 0, PRACTICE.name);
+  return names.slice(0, 4).map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}`).join('&nbsp;&nbsp; ');
+}
+function outcomeWords(k) { return { named: 'named the practice', not: 'did not name it', none: 'showed no Overview', fail: 'did not answer' }[k.outcome]; }
+
+/* Header: big number, round line, progress */
+const Header = (() => {
+  const hn = document.getElementById('hn'), ptxt = document.getElementById('ptxt'), pbar = document.getElementById('pbar'), rnd = document.getElementById('rnd');
+  let last = '';
+  return {
+    set(st, total) {
+      const tenths = Math.round(10 * (PRIOR.named + st.named) / (PRIOR.counted + st.counted));
+      const t = `${st.landed} of ${total} answers in this round` + (st.flying ? `, ${st.flying} still searching` : '');
+      if (t !== last) { last = t; ptxt.textContent = t; ptxt.className = ''; pbar.style.width = (100 * st.landed / total) + '%'; hn.textContent = `${tenths} in 10`; }
+    },
+    wait() { rnd.textContent = 'Round 2 of 5 is in'; ptxt.textContent = `Next round about ${ROUND_TIMES[2]}`; ptxt.className = 'wait'; last = ''; },
+    run() { rnd.textContent = 'Round 2 of 5'; },
+  };
+})();
+
+/* Plays a round on a steady clock, then waits, then replays. Hooks: launch(k, instant), land(k, instant), frame(t), wait(), reset() */
+function play(list, h, opts = {}) {
+  const ev = []; list.forEach(a => { ev.push({ t: a.launch, k: 0, a }); ev.push({ t: a.land, k: 1, a }); }); ev.sort((x, y) => x.t - y.t || x.k - y.k);
+  const end = ev[ev.length - 1].t, st = { named: 0, counted: 0, landed: 0, flying: 0 };
+  const apply = (e, instant) => {
+    if (e.k === 0) { st.flying++; h.launch && h.launch(e.a, instant, st); return; }
+    st.flying--; st.landed++;
+    if (e.a.outcome === 'named') { st.named++; st.counted++; } else if (e.a.outcome === 'not') st.counted++;
+    h.land && h.land(e.a, instant, st);
+  };
+  if (REDUCED) { const T = end * (opts.stillAt || .6); ev.filter(e => e.t <= T).forEach(e => apply(e, true)); Header.set(st, list.length); h.frame && h.frame(T, true); return; }
+  let i = 0, t = 0, last = null, phase = 'run', wt = 0;
+  (function loop(now) {
+    const dt = last == null ? 16 : Math.min(64, now - last); last = now;
+    if (phase === 'run') {
+      t += dt; while (i < ev.length && ev[i].t <= t) apply(ev[i++], false);
+      Header.set(st, list.length); h.frame && h.frame(t, false);
+      if (i >= ev.length && t > end + 900) { phase = 'wait'; wt = 0; Header.wait(); h.wait && h.wait(); }
+    } else {
+      wt += dt; if (wt > (opts.waitMs || 5200)) { phase = 'run'; i = 0; t = 0; Object.assign(st, { named: 0, counted: 0, landed: 0, flying: 0 }); h.reset && h.reset(); Header.run(); }
+    }
+    requestAnimationFrame(loop);
+  })(performance.now());
+}
+
+const tipEl = document.getElementById('tip');
+function bindTip(el, fn) { el.addEventListener('mousemove', e => { tipEl.innerHTML = fn(); tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }); el.addEventListener('mouseleave', () => tipEl.classList.remove('on')); }
+
+/* ---------- Concept ---------- */
+const svg = document.getElementById('sky'), latest = document.getElementById('latest'), NS = 'http://www.w3.org/2000/svg';
+const ROUND = buildRound(2026, { workers: 8, dur: [900, 5200] });
+const S = { qNamed: Array(30).fill(0), qBack: Array(30).fill(0), qFly: Array(30).fill(0), hNamed: Array(6).fill(0), hBack: Array(6).fill(0), hBusy: Array(6).fill(0), flying: new Map(), wires: new Map() };
+let G, E = {};
+function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.appendChild(e); return e; }
+function qFill(i) { return S.qBack[i] === 0 ? '#fff' : S.qNamed[i] ? `rgba(79,70,229,${(.3 + .7 * S.qNamed[i] / 5).toFixed(2)})` : '#E4E7EC'; }
+function paintQ(i) { const c = E.q[i]; c.setAttribute('fill', qFill(i)); c.setAttribute('stroke', S.qBack[i] ? 'none' : '#C9CED8'); c.setAttribute('r', G.qr + Math.min(3, S.qBack[i] * .6)); E.lab[i].classList.toggle('on', S.qFly[i] > 0 && !G.narrow); }
+function paintH(j) { E.h[j].g.classList.toggle('busy', S.hBusy[j] > 0); E.h[j].tl.textContent = `${S.hNamed[j]} named`; }
+function layout() {
+  const W = Math.round(svg.getBoundingClientRect().width) || 900, narrow = W < 600, H = narrow ? W + 6 : 600;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.height = H + 'px';
+  const cx = W / 2, cy = H / 2, qR = narrow ? W / 2 - 10 : 250, hR = narrow ? qR * .52 : 124, hr = narrow ? 28 : 40;
+  G = { W, H, cx, cy, qR, hR, hr, narrow, qr: narrow ? 3.5 : 5, q: [], h: [] };
+  QUESTIONS.forEach((q, i) => { const t = -Math.PI / 2 + (i + .5) * 2 * Math.PI / 30; G.q.push({ x: cx + qR * Math.cos(t), y: cy + qR * Math.sin(t), t }); });
+  AIS.forEach((a, j) => { const t = -Math.PI / 2 + j * Math.PI / 3; G.h.push({ x: cx + hR * Math.cos(t), y: cy + hR * Math.sin(t) }); });
+  draw();
+}
+function draw() {
+  svg.innerHTML = '';
+  el('circle', { class: 'ring', cx: G.cx, cy: G.cy, r: G.qR }, svg);
+  E.wires = el('g', {}, svg); E.pulses = el('g', {}, svg);
+  E.h = AIS.map((a, j) => {
+    const p = G.h[j], g = el('g', { class: 'hub' }, svg);
+    const halo = el('circle', { class: 'halo', cx: p.x, cy: p.y, r: G.hr, fill: '#4F46E5' }, g);
+    el('circle', { class: 'face', cx: p.x, cy: p.y, r: G.hr }, g);
+    const fs = G.narrow ? 9.5 : 12, top = p.y - (a.lines.length - 1) * fs * .55 - (G.narrow ? 3 : 5);
+    a.lines.forEach((ln, k) => { const t = el('text', { class: 'nm', x: p.x, y: top + k * fs * 1.1, 'font-size': fs }, g); t.textContent = ln; });
+    const tl = el('text', { class: 'tl', x: p.x, y: top + a.lines.length * fs * 1.1 + (G.narrow ? 1 : 3), 'font-size': G.narrow ? 8.5 : 10 }, g);
+    bindTip(g, () => `<b>${a.name}</b><br>${S.hBack[j]} answers back this round, ${S.hNamed[j]} named the practice`);
+    return { g, halo, tl };
+  });
+  E.q = []; E.lab = [];
+  QUESTIONS.forEach((q, i) => {
+    const p = G.q[i], c = el('circle', { class: 'qdot', cx: p.x, cy: p.y, r: G.qr, 'stroke-width': 1.2 }, svg);
+    bindTip(c, () => `<b>${q.text}</b><br>${q.kind === 'near' ? 'Near-me question' : q.kind === 'brand' ? 'Question with the practice name in it' : 'Names the city'}. ${S.qBack[i]} of 5 answers back, ${S.qNamed[i]} named the practice.`);
+    const cos = Math.cos(p.t), sin = Math.sin(p.t), off = Math.abs(cos) < .2 ? 26 : 12, lx = G.cx + (G.qR + off) * cos + (Math.abs(cos) < .3 ? (cos >= 0 ? 4 : -4) : 0), ly = G.cy + (G.qR + off) * sin;
+    const lab = el('text', { class: 'qlab', x: lx, y: ly + (sin > .85 ? 10 : sin < -.85 ? -4 : 4), 'text-anchor': cos >= 0 ? 'start' : 'end' }, svg);
+    lab.textContent = q.text.length > 40 ? q.text.slice(0, 38) + '…' : q.text;
+    E.q.push(c); E.lab.push(lab);
+  });
+  E.c1 = el('text', { class: 'ctr1', x: G.cx, y: G.cy - 3 }, svg); E.c2 = el('text', { class: 'ctr2', x: G.cx, y: G.cy + 16 }, svg);
+  if (G.narrow) { E.c1.style.display = E.c2.style.display = 'none'; }
+  center('Asking 30 questions', 'on 6 AIs', false);
+  QUESTIONS.forEach((_, i) => paintQ(i)); AIS.forEach((_, j) => paintH(j));
+  S.wires.clear(); S.flying.forEach(k => addWire(k));
+}
+function center(a, b, named) { E.c1.textContent = a; E.c2.textContent = b; E.c2.classList.toggle('named', !!named); }
+function addWire(k) { const q = G.q[k.q.i], h = G.h[k.ai]; S.wires.set(k.id, el('line', { class: 'wire', x1: q.x, y1: q.y, x2: h.x, y2: h.y }, E.wires)); }
+function travel(from, to, attrs, ms, done) {
+  const c = el('circle', Object.assign({ class: 'pulse', cx: 0, cy: 0 }, attrs), E.pulses);
+  const an = c.animate([{ transform: `translate(${from.x}px,${from.y}px)` }, { transform: `translate(${to.x}px,${to.y}px)` }], { duration: ms, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+  an.onfinish = () => { c.remove(); done && done(); };
+}
+layout();
+play(ROUND, {
+  launch(k, instant) {
+    S.flying.set(k.id, k); S.qFly[k.q.i]++; S.hBusy[k.ai]++; addWire(k); paintQ(k.q.i); paintH(k.ai);
+    if (!instant) travel(G.q[k.q.i], G.h[k.ai], { r: 2.5, fill: '#4F46E5', opacity: .55 }, 700);
+  },
+  land(k, instant) {
+    S.flying.delete(k.id); const w = S.wires.get(k.id); w && w.remove(); S.wires.delete(k.id);
+    S.hBusy[k.ai]--; S.hBack[k.ai]++; if (k.outcome === 'named') S.hNamed[k.ai]++; paintH(k.ai);
+    const settle = () => { S.qFly[k.q.i]--; S.qBack[k.q.i]++; if (k.outcome === 'named') S.qNamed[k.q.i]++; paintQ(k.q.i); };
+    const named = k.outcome === 'named';
+    center(k.a.name, outcomeWords(k), named);
+    latest.innerHTML = `<b>${k.a.name}</b> answered “${k.q.text}” and <span class="${named ? 'n' : ''}">${outcomeWords(k)}</span>.`;
+    if (instant) return settle();
+    const hub = E.h[k.ai]; hub.halo.setAttribute('fill', named ? '#4F46E5' : '#C9CED8');
+    hub.halo.animate([{ opacity: named ? .32 : .5, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.45)' }], { duration: 900, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    const attrs = k.outcome === 'none' ? { r: 3.5, fill: '#fff', stroke: '#C9CED8', 'stroke-width': 1.2, 'stroke-dasharray': '2 2' } : { r: named ? 4 : 3.5, fill: named ? '#4F46E5' : '#C9CED8' };
+    travel(G.h[k.ai], G.q[k.q.i], attrs, 760, settle);
+  },
+  wait() { center('Round 2 is in', `next round about ${ROUND_TIMES[2]}`, false); latest.textContent = `Round 2 is in. Next round about ${ROUND_TIMES[2]}.`; },
+  reset() { ['qNamed', 'qBack', 'qFly'].forEach(n => S[n].fill(0)); ['hNamed', 'hBack', 'hBusy'].forEach(n => S[n].fill(0)); S.flying.clear(); draw(); },
+});
+let rz, lastW = innerWidth; addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(rz); rz = setTimeout(layout, 150); });
+</script>
+</body>
+</html>

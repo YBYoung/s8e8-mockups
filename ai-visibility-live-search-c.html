@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Search: The Loom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0B1020; --body:#273043; --muted:#667085; --faint:#98A2B3; --line:#E7E9EE; --soft:#F6F7FA; --a:#4F46E5; --a-ink:#4338CA; --a-tint:#EEF0FF; --a-glow:rgba(79,70,229,.3); --grey:#E4E7EC; --grey-2:#C9CED8; --grad:linear-gradient(100deg,#4F46E5,#9333EA); --ease:cubic-bezier(.2,.8,.2,1); }
+* { box-sizing:border-box; }
+html, body { overflow-x:hidden; }
+body { margin:0; background:#fff; color:var(--body); font:15px/1.55 Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+.mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+.shell { max-width:1180px; margin:0 auto; padding:26px 32px 80px; }
+.topbar { display:flex; align-items:center; justify-content:space-between; gap:12px 16px; margin-bottom:38px; flex-wrap:wrap; }
+.brand { display:flex; gap:10px; align-items:center; font:800 15px Inter; color:var(--ink); }
+.brand .logo { width:26px; height:26px; border-radius:50%; background:var(--grad); position:relative; flex:none; }
+.brand .logo::after { content:''; position:absolute; inset:7px; border-radius:50%; border:2px dotted #fff; }
+.sample { font:700 10px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:4px; padding:2px 6px; }
+.who { font-size:13px; color:var(--muted); } .who b { color:var(--ink); font-weight:600; }
+.eyebrow { font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.grad { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.headline { display:flex; align-items:baseline; gap:10px 18px; flex-wrap:wrap; margin:10px 0 8px; }
+.hero-n { font:900 88px/1 Inter; letter-spacing:-.04em; }
+.hc { font-size:17px; color:var(--muted); line-height:1.35; max-width:240px; }
+.prog { font-size:12.5px; color:var(--muted); margin:0 0 28px; display:flex; gap:8px 14px; align-items:center; flex-wrap:wrap; min-height:20px; }
+.prog .bar { flex:0 0 160px; height:4px; border-radius:2px; background:var(--soft); overflow:hidden; }
+.prog .bar i { display:block; height:100%; width:0; background:var(--a); transition:width .4s var(--ease); }
+.prog .wait { color:var(--a-ink); font-weight:600; }
+.stage { border:1px solid var(--line); border-radius:18px; background:#fff; padding:24px; position:relative; overflow:hidden; }
+.cap { font-size:14px; color:var(--muted); margin:14px 2px 0; max-width:780px; }
+.legend { display:flex; gap:8px 18px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); margin-top:16px; }
+.legend span { display:inline-flex; align-items:center; gap:7px; }
+.legend i { width:10px; height:10px; border-radius:50%; background:var(--grey); display:inline-block; }
+.legend i.named { background:var(--a); } .legend i.none { background:#fff; border:1.5px dashed var(--grey-2); } .legend i.fly { background:var(--a-tint); box-shadow:0 0 0 2px #fff, 0 0 0 3px var(--a-tint); }
+mark { background:var(--a-tint); color:var(--a-ink); font-weight:700; padding:0 3px; border-radius:4px; }
+.tip { position:fixed; pointer-events:none; z-index:90; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 12px 32px rgba(11,16,32,.14); padding:9px 11px; font-size:12.5px; max-width:300px; opacity:0; transition:opacity .12s; }
+.tip.on { opacity:1; } .tip b { color:var(--ink); }
+@media (max-width:640px) { .shell { padding:18px 16px 60px; } .hero-n { font-size:58px; } .hc { font-size:15px; } .stage { padding:14px; border-radius:14px; } .topbar { margin-bottom:26px; } }
+
+/* ---------- Concept ---------- */
+.now { font-size:14px; color:var(--muted); margin:0 0 18px; min-height:22px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.now b { color:var(--ink); } .now .n { color:var(--a-ink); font-weight:700; }
+.now.in { animation:rise .35s var(--ease) both; }
+@keyframes rise { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:none; } }
+.wrapL { position:relative; }
+.loom { display:grid; grid-template-columns:168px repeat(30, minmax(0,1fr)); gap:4px; align-items:center; }
+.loom > * { grid-column:var(--dc); grid-row:var(--dr); }
+.rl { font:600 13px Inter; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:8px; }
+.rl small { color:var(--faint); font-weight:500; }
+.ch, .ql, .rh-m { display:none; }
+.cell { aspect-ratio:1; border-radius:5px; background:var(--soft); transition:background .5s var(--ease); }
+.cell.na { background:transparent; position:relative; }
+.cell.na::after { content:''; position:absolute; left:50%; top:50%; width:3px; height:3px; margin:-1.5px; border-radius:50%; background:var(--line); }
+.cell.fly { background:var(--a-tint); animation:breathe 1.5s ease-in-out infinite; }
+@keyframes breathe { 0%,100% { box-shadow:inset 0 0 0 1.5px rgba(79,70,229,.12); } 50% { box-shadow:inset 0 0 0 1.5px rgba(79,70,229,.5); } }
+.cell.named { background:var(--a); animation:settle .55s var(--ease) both; }
+.cell.not { background:var(--grey); animation:settle .55s var(--ease) both; }
+.cell.none { background:#fff; border:1.5px dashed var(--grey-2); }
+.cell.fail { background:#fff; border:1.5px solid var(--grey-2); }
+@keyframes settle { from { transform:scale(.72); } to { transform:none; } }
+.lt { grid-column:1 / -1 !important; font:700 11px Inter; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); padding:20px 0 4px; border-top:1px solid var(--line); margin-top:14px; }
+.rh { font:500 12px Inter; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:8px; }
+.rh b { color:var(--ink); font-weight:600; }
+.seg { height:6px; border-radius:2px; background:var(--soft); transition:background .6s var(--ease); }
+.seg.later { background:repeating-linear-gradient(90deg, var(--line) 0 3px, transparent 3px 6px); height:2px; }
+.sweep { position:absolute; top:0; bottom:0; left:0; width:22%; pointer-events:none; opacity:0; background:linear-gradient(90deg, transparent, rgba(79,70,229,.10), transparent); }
+@media (max-width:760px) {
+  .loom { grid-template-columns:minmax(0,1fr) repeat(6,20px) 4px repeat(5,6px); gap:3px; }
+  .loom > * { grid-column:var(--mc); grid-row:var(--mr); }
+  .rl, .rh, .lt { display:none; }
+  .ch, .rh-m { display:block; writing-mode:vertical-rl; transform:rotate(180deg); font:600 11px Inter; color:var(--ink); justify-self:center; align-self:end; white-space:nowrap; padding-top:6px; }
+  .rh-m { font:500 9.5px Inter; color:var(--muted); }
+  .ql { display:block; font-size:12px; color:var(--body); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:4px; }
+  .seg { height:auto; align-self:stretch; width:6px; }
+  .seg.later { background:repeating-linear-gradient(180deg, var(--line) 0 3px, transparent 3px 6px); height:auto; width:2px; justify-self:center; }
+  .sweep { width:auto; left:0; right:0; height:16%; bottom:auto; background:linear-gradient(180deg, transparent, rgba(79,70,229,.10), transparent); }
+  .now { white-space:normal; }
+}
+@media (prefers-reduced-motion: reduce) { .cell.fly, .cell.named, .cell.not, .now.in { animation:none; } .cell.fly { box-shadow:inset 0 0 0 1.5px rgba(79,70,229,.4); } }
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div class="shell">
+<div class="topbar"><div class="brand"><span class="logo"></span>AI Visibility <span class="sample">sample data</span></div><div class="who">Concept C <b>The loom</b></div></div>
+<section>
+<div class="eyebrow" id="rnd">Round 2 of 5</div>
+<div class="headline"><span class="hero-n grad" id="hn">4 in 10</span><span class="hc">answers name the practice so far</span></div>
+<div class="prog mono" id="prog"><span class="bar"><i id="pbar"></i></span><span id="ptxt">0 of 150 answers in this round</span></div>
+</section>
+
+<div class="stage">
+  <div class="now" id="now">Asking 30 questions across 6 AIs.</div>
+  <div class="wrapL"><div class="loom" id="loom"></div><div class="sweep" id="sweep"></div></div>
+  <div class="legend"><span><i class="named"></i>Named the practice</span><span><i></i>Did not name it</span><span><i class="fly"></i>Searching</span><span><i class="none"></i>No AI Overview showed</span></div>
+</div>
+<p class="cap">Every square is one patient question asked on one AI; it glows while the AI searches and settles indigo when the answer names Bothell Family Dentistry, while the thin round lines build up the five rounds over the hour (shown faster than real time).</p>
+</div>
+<script>
+/* ---------- Shared sample run: Bothell Family Dentistry, round 2 of 5 ---------- */
+const PRACTICE = { name: 'Bothell Family Dentistry', city: 'Bothell, WA' };
+const AIS = [
+  { key: 'chatgpt', name: 'ChatGPT', lines: ['ChatGPT'] },
+  { key: 'gemini', name: 'Gemini', lines: ['Gemini'] },
+  { key: 'aio', name: 'AI Overviews', sub: 'Google', lines: ['AI', 'Overviews'] },
+  { key: 'aimode', name: 'AI Mode', sub: 'Google', lines: ['AI Mode'] },
+  { key: 'perplexity', name: 'Perplexity', lines: ['Perplexity'] },
+  { key: 'near', name: 'ChatGPT near me', lines: ['ChatGPT', 'near me'] },
+];
+const QUESTIONS = [
+  ['Best emergency dentist in Bothell', 'city'], ['Family dentist near me for my kids', 'near'], ['Who does dental implants well in Bothell?', 'city'],
+  ['Invisalign dentist in Bothell for adults', 'city'], ['Is Bothell Family Dentistry good?', 'brand'], ['Emergency dentist near me', 'near'],
+  ['Gentle dentist for a nervous 6 year old in Bothell', 'city'], ['Natural looking veneers in Bothell', 'city'], ['Professional teeth whitening in Bothell', 'city'],
+  ['Dentist near me for a cleaning', 'near'], ['Dentist in Bothell that takes Delta Dental', 'city'], ['Sedation dentistry for anxious patients in Bothell', 'city'],
+  ['Best dentist in Bothell, WA', 'city'], ['Bothell Family Dentistry reviews', 'brand'], ['Invisalign near me', 'near'],
+  ['Cheapest clear aligners in Bothell', 'city'], ['Weekend emergency dental care in Bothell', 'city'], ['Porcelain veneers cost in Bothell, WA', 'city'],
+  ['Cosmetic dentist in Bothell for a smile makeover', 'city'], ['Dentist near me that is open late', 'near'], ['New patient exam and cleaning in Bothell', 'city'],
+  ['Who offers nitrous oxide at the dentist in Bothell?', 'city'], ['Top rated family dentists in Bothell', 'city'], ['Does Bothell Family Dentistry take new patients?', 'brand'],
+  ['Teeth whitening near me', 'near'], ['Which Bothell dentist should I choose?', 'city'], ['Dentist open Saturdays in Bothell', 'city'],
+  ['Single tooth implant in Bothell, WA', 'city'], ['Root canal specialist or general dentist in Bothell?', 'city'], ['Spanish speaking dentist in Bothell', 'city'],
+].map(([text, kind], i) => ({ i, text, kind }));
+const RIVALS = ['Accent Dental Center Bothell', 'Bothell Smiles Family Dentistry', 'Hello Kids Dentistry', 'Annigan Dental', 'North Creek Dental'];
+const ROUND_TIMES = ['3:18 PM', '3:30 PM', '3:42 PM', '3:54 PM', '4:06 PM'];
+const PRIOR = { named: 57, counted: 141 }; // round 1, already in
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function asks(q, a) { if (a.key === 'near') return q.kind === 'near'; if (a.key === 'chatgpt') return q.kind !== 'near'; return true; }
+const AIHUE = { chatgpt: 'ChatGPT', gemini: 'Gemini', aio: 'AI Overviews', aimode: 'AI Mode', perplexity: 'Perplexity', near: 'ChatGPT near me' };
+
+/* One round = 150 asks. opts.perAI: each AI line works through its own list one at a time. Otherwise a shared pool of workers. */
+function buildRound(seed, opts = {}) {
+  const r = rng(seed), list = [];
+  QUESTIONS.forEach(q => AIS.forEach((a, ai) => {
+    if (!asks(q, a)) return;
+    let outcome; const x = r();
+    if (x < .014) outcome = 'fail';
+    else if (a.key === 'aio' && r() < .38) outcome = 'none';
+    else outcome = r() < (q.kind === 'brand' ? .86 : .36) ? 'named' : 'not';
+    list.push({ q, a, ai, outcome, rank: 1 + Math.floor(r() * 3), seed: Math.floor(r() * 1e6) });
+  }));
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  const [d0, d1] = opts.dur || [600, 5400];
+  if (opts.perAI) {
+    const free = AIS.map(() => 300 + r() * 500);
+    list.forEach(k => { k.launch = free[k.ai]; k.land = k.launch + d0 + r() * (d1 - d0); free[k.ai] = k.land + (opts.gap || 0); });
+  } else {
+    const w = Array.from({ length: opts.workers || 8 }, (_, i) => i * 140);
+    list.forEach(k => { let m = 0; w.forEach((v, i) => { if (v < w[m]) m = i; }); k.launch = w[m]; k.land = k.launch + d0 + r() * (d1 - d0); w[m] = k.land + 40; });
+  }
+  list.forEach((k, n) => k.id = n);
+  return list;
+}
+
+function snippet(k) {
+  const others = RIVALS.filter((_, i) => (i + k.seed) % 5 < 3).slice(0, 3);
+  if (k.outcome === 'none') return 'Google showed no AI Overview for this search.';
+  if (k.outcome === 'fail') return 'No answer came back this time.';
+  const names = others.slice();
+  if (k.outcome === 'named') names.splice(Math.min(k.rank - 1, names.length), 0, PRACTICE.name);
+  return names.slice(0, 4).map((n, i) => `${i + 1}. ${n === PRACTICE.name ? `<mark>${n}</mark>` : n}`).join('&nbsp;&nbsp; ');
+}
+function outcomeWords(k) { return { named: 'named the practice', not: 'did not name it', none: 'showed no Overview', fail: 'did not answer' }[k.outcome]; }
+
+/* Header: big number, round line, progress */
+const Header = (() => {
+  const hn = document.getElementById('hn'), ptxt = document.getElementById('ptxt'), pbar = document.getElementById('pbar'), rnd = document.getElementById('rnd');
+  let last = '';
+  return {
+    set(st, total) {
+      const tenths = Math.round(10 * (PRIOR.named + st.named) / (PRIOR.counted + st.counted));
+      const t = `${st.landed} of ${total} answers in this round` + (st.flying ? `, ${st.flying} still searching` : '');
+      if (t !== last) { last = t; ptxt.textContent = t; ptxt.className = ''; pbar.style.width = (100 * st.landed / total) + '%'; hn.textContent = `${tenths} in 10`; }
+    },
+    wait() { rnd.textContent = 'Round 2 of 5 is in'; ptxt.textContent = `Next round about ${ROUND_TIMES[2]}`; ptxt.className = 'wait'; last = ''; },
+    run() { rnd.textContent = 'Round 2 of 5'; },
+  };
+})();
+
+/* Plays a round on a steady clock, then waits, then replays. Hooks: launch(k, instant), land(k, instant), frame(t), wait(), reset() */
+function play(list, h, opts = {}) {
+  const ev = []; list.forEach(a => { ev.push({ t: a.launch, k: 0, a }); ev.push({ t: a.land, k: 1, a }); }); ev.sort((x, y) => x.t - y.t || x.k - y.k);
+  const end = ev[ev.length - 1].t, st = { named: 0, counted: 0, landed: 0, flying: 0 };
+  const apply = (e, instant) => {
+    if (e.k === 0) { st.flying++; h.launch && h.launch(e.a, instant, st); return; }
+    st.flying--; st.landed++;
+    if (e.a.outcome === 'named') { st.named++; st.counted++; } else if (e.a.outcome === 'not') st.counted++;
+    h.land && h.land(e.a, instant, st);
+  };
+  if (REDUCED) { const T = end * (opts.stillAt || .6); ev.filter(e => e.t <= T).forEach(e => apply(e, true)); Header.set(st, list.length); h.frame && h.frame(T, true); return; }
+  let i = 0, t = 0, last = null, phase = 'run', wt = 0;
+  (function loop(now) {
+    const dt = last == null ? 16 : Math.min(64, now - last); last = now;
+    if (phase === 'run') {
+      t += dt; while (i < ev.length && ev[i].t <= t) apply(ev[i++], false);
+      Header.set(st, list.length); h.frame && h.frame(t, false);
+      if (i >= ev.length && t > end + 900) { phase = 'wait'; wt = 0; Header.wait(); h.wait && h.wait(); }
+    } else {
+      wt += dt; if (wt > (opts.waitMs || 5200)) { phase = 'run'; i = 0; t = 0; Object.assign(st, { named: 0, counted: 0, landed: 0, flying: 0 }); h.reset && h.reset(); Header.run(); }
+    }
+    requestAnimationFrame(loop);
+  })(performance.now());
+}
+
+const tipEl = document.getElementById('tip');
+function bindTip(el, fn) { el.addEventListener('mousemove', e => { tipEl.innerHTML = fn(); tipEl.classList.add('on'); tipEl.style.left = Math.min(e.clientX + 14, innerWidth - 310) + 'px'; tipEl.style.top = (e.clientY + 14) + 'px'; }); el.addEventListener('mouseleave', () => tipEl.classList.remove('on')); }
+
+/* ---------- Concept ---------- */
+const ROUND = buildRound(2026, { workers: 8, dur: [900, 5200] });
+const R1 = buildRound(1118);
+const loom = document.getElementById('loom'), nowEl = document.getElementById('now'), sweep = document.getElementById('sweep');
+const SHORT = { aio: ' <small>Google</small>', aimode: ' <small>Google</small>' };
+function add(cls, html, dc, dr, mc, mr) { const d = document.createElement('div'); d.className = cls; if (html) d.innerHTML = html; d.style.cssText = `--dc:${dc};--dr:${dr};--mc:${mc};--mr:${mr}`; loom.appendChild(d); return d; }
+AIS.forEach((a, j) => { add('rl', a.name + (SHORT[a.key] || ''), 1, j + 1, 1, 1); add('ch', a.name, 1, 1, j + 2, 1); });
+const cells = QUESTIONS.map((q, i) => { add('ql', q.text, 1, 1, 1, i + 2); return AIS.map((a, j) => {
+  const c = add('cell' + (asks(q, a) ? '' : ' na'), '', i + 2, j + 1, j + 2, i + 2);
+  c._st = asks(q, a) ? 'wait' : 'na';
+  bindTip(c, () => `<b>${a.name}</b><br>${q.text}<br><span style="color:var(--muted)">${c._st === 'na' ? (a.key === 'near' ? 'This line only gets the near-me questions.' : 'Near-me questions go to the near-me line instead.') : { wait: 'Not asked yet this round', fly: 'Searching now', named: 'Named the practice', not: 'Did not name it', none: 'No AI Overview showed', fail: 'No answer came back' }[c._st]}</span>`);
+  return c; }); });
+add('lt', 'Five rounds, about 12 minutes apart', 1, 7, 1, 1);
+add('rh-m', 'Rounds 1 to 5', 1, 1, '9 / span 5', 1);
+const segs = [];
+for (let r = 0; r < 5; r++) {
+  add('rh', r === 1 ? `<b>Round 2</b> · now` : r === 0 ? `<b>Round 1</b> · ${ROUND_TIMES[0]}` : `Round ${r + 1} · about ${ROUND_TIMES[r]}`, 1, 8 + r, 1, 1);
+  segs.push(QUESTIONS.map((q, i) => add('seg' + (r > 1 ? ' later' : ''), '', i + 2, 8 + r, 9 + r, i + 2)));
+}
+function shade(n, c) { return c ? `rgba(79,70,229,${(.14 + .86 * n / c).toFixed(2)})` : ''; }
+QUESTIONS.forEach((q, i) => { const ks = R1.filter(k => k.q.i === i), c = ks.filter(k => k.outcome === 'named' || k.outcome === 'not').length; segs[0][i].style.background = shade(ks.filter(k => k.outcome === 'named').length, c) || 'var(--grey)'; });
+const live = QUESTIONS.map(() => ({ n: 0, c: 0 }));
+function paintSeg(i) { const s = live[i]; segs[1][i].style.background = shade(s.n, s.c); }
+function setCell(k, st) { const c = cells[k.q.i][k.ai]; c._st = st; c.className = 'cell ' + st; }
+function doSweep() { if (REDUCED) return; const m = innerWidth <= 760; sweep.animate(m ? [{ opacity: 1, transform: 'translateY(-100%)' }, { opacity: 1, transform: 'translateY(620%)' }] : [{ opacity: 1, transform: 'translateX(-100%)' }, { opacity: 1, transform: 'translateX(460%)' }], { duration: 1800, easing: 'cubic-bezier(.4,0,.2,1)' }); }
+play(ROUND, {
+  launch(k) { setCell(k, 'fly'); },
+  land(k, instant) {
+    setCell(k, k.outcome);
+    if (k.outcome === 'named' || k.outcome === 'not') { live[k.q.i].c++; if (k.outcome === 'named') live[k.q.i].n++; paintSeg(k.q.i); }
+    nowEl.innerHTML = `<b>${k.a.name}</b> · ${k.q.text} · <span class="${k.outcome === 'named' ? 'n' : ''}">${outcomeWords(k)}</span>`;
+    if (!instant) { nowEl.classList.remove('in'); void nowEl.offsetWidth; nowEl.classList.add('in'); }
+  },
+  wait() { nowEl.textContent = `Round 2 is in. Next round about ${ROUND_TIMES[2]}.`; },
+  reset() { cells.forEach(row => row.forEach(c => { if (c._st !== 'na') { c._st = 'wait'; c.className = 'cell'; } })); live.forEach((s, i) => { s.n = s.c = 0; segs[1][i].style.background = ''; }); nowEl.textContent = 'Asking 30 questions across 6 AIs.'; doSweep(); },
+}, { stillAt: .6 });
+setTimeout(doSweep, 200);
+</script>
+</body>
+</html>
