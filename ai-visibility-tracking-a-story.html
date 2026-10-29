@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility Tracking A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<style>
+.story { display:grid; grid-template-columns:minmax(0,1fr) 500px; gap:56px; }
+.chap { min-height:86vh; display:flex; flex-direction:column; justify-content:center; padding:20px 0; opacity:.25; transition:opacity .4s; }
+.chap.on { opacity:1; }
+.kick { font:700 12px Inter; letter-spacing:.14em; text-transform:uppercase; color:var(--a-ink); margin-bottom:12px; }
+.chap h2 { margin:0; font:900 42px/1.1 Inter; letter-spacing:-.025em; color:var(--ink); }
+.chap p { font-size:18px; line-height:1.6; max-width:520px; margin:16px 0 0; }
+.chap .links { display:flex; gap:18px; margin-top:16px; font-size:15px; }
+.figwrap { position:sticky; top:124px; height:calc(100vh - 144px); display:flex; flex-direction:column; justify-content:center; }
+.fig svg { width:100%; overflow:visible; }
+.fig circle { transition:transform .9s cubic-bezier(.2,.8,.2,1), fill .5s, opacity .5s; }
+.fig .lbl { transition:opacity .35s; }
+.figcap { text-align:center; font-size:13px; color:var(--muted); min-height:20px; margin-top:8px; }
+.end { padding:40px 0; border-top:1px solid var(--line); display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); }
+@media (max-width:980px) { .story { grid-template-columns:1fr; } .figwrap { position:relative; top:0; height:auto; } .chap { min-height:0; opacity:1; padding:40px 0; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="pane"></main>
+<script>
+const T = window.TRK;
+T.topbar(document.getElementById('top'), { mock: 'A, The Story continues' });
+const pane = document.getElementById('pane');
+const N = T.ANSWERS_PER_WEEK, DOTS = 80, OFF = '#E4E7EC', ON = '#4F46E5';
+const veneers = T.SERVICES.find((s) => s.name === 'Veneers'), emergency = T.SERVICES.find((s) => s.name === 'Emergency');
+
+// Formations: where the 80 dots sit for each chapter, plus that chapter's labels and caption.
+const hide = () => ({ x: 250, y: 500, fill: OFF, o: 0 });
+const pad = (d) => d.concat(Array.from({ length: DOTS - d.length }, hide));
+function columns(w, title, flag) {
+  const dots = [], labels = [];
+  w.forEach((v, c) => { const lit = Math.round(v / 10); for (let r = 0; r < 10; r += 1) dots.push({ x: 50 + c * 58, y: 380 - r * 30, fill: r < lit ? ON : OFF, o: 1 }); labels.push({ x: 50 + c * 58, y: 420, t: T.WEEKS[c], a: 'middle', c: '#98A2B3', s: 11 }); labels.push({ x: 50 + c * 58, y: 40, t: `${lit}`, a: 'middle', c: lit ? '#4338CA' : '#98A2B3', s: 14, w: 800 }); });
+  labels.push({ x: 0, y: 12, t: title, c: '#667085', s: 11, w: 700 });
+  if (flag) labels.push({ x: 50 + flag.at * 58, y: 448, t: flag.t, a: 'middle', c: flag.c, s: 11.5, w: 700, mark: flag.c });
+  return { dots: pad(dots), labels };
+}
+function lanes() {
+  const dots = [], labels = [];
+  T.AIS.forEach((a, j) => {
+    const top = 30 + j * 82;
+    a.w.forEach((v, i) => dots.push({ x: 130 + i * 36, y: top + 50 - (v / 60) * 50, fill: a.dot, o: 1 }));
+    labels.push({ x: 0, y: top + 34, t: a.name, c: '#273043', s: 13, w: 700 });
+    labels.push({ x: 500, y: top + 34, t: `${Math.round(a.w[0] / 10)} → ${Math.round(a.w[7] / 10)} in 10`, a: 'end', c: T.realChange(a.w, 378) === 'up' ? '#15803D' : '#667085', s: 13, w: 700 });
+  });
+  labels.push({ x: 130 + 5.14 * 36, y: 452, t: 'Perplexity updated', a: 'middle', c: '#667085', s: 11, w: 600, mark: '#98A2B3' });
+  return { dots: pad(dots), labels };
+}
+function rivals() {
+  const dots = [], labels = [], rows = [T.RIVALS[0], T.RIVALS[2], T.RIVALS[1]];
+  const y = (v) => 360 - (v / 12) * 300;
+  rows.forEach((r, j) => {
+    const fill = r.me ? ON : j === 1 ? '#DB2777' : '#F9A8D4';
+    r.w.forEach((v, i) => dots.push({ x: 40 + i * 52, y: y(v / 10), fill, o: 1 }));
+    labels.push({ x: 40 + 7 * 52 + 16, y: y(r.w[7] / 10) + 4, t: `${r.name.replace(' Dental Studio', '')} ${Math.round(r.w[7] / 10)}`, c: r.me ? '#4338CA' : '#9D174D', s: 12.5, w: 700 });
+  });
+  T.WEEKS.forEach((w, i) => labels.push({ x: 40 + i * 52, y: 400, t: w, a: 'middle', c: '#98A2B3', s: 11 }));
+  labels.push({ x: 0, y: 12, t: 'Out of every 100 times AI named a dentist', c: '#667085', s: 11, w: 700 });
+  return { dots: pad(dots), labels };
+}
+const F = {
+  since: { ...columns(T.OVERALL, 'Each week: how many of every 10 answers named the practice'), cap: 'Each column is one week of answers from all five AIs; lit dots out of 10.' },
+  veneers: { ...columns(veneers.w, 'Veneers questions: out of every 10 answers', { at: 3.71, t: 'Veneers page live, Nov 27', c: '#4F46E5' }), cap: 'Each column is one week of answers to the 3 veneers questions.' },
+  ais: { ...lanes(), cap: 'Each row is one AI; each dot is one week, higher means named more often.' },
+  rivals: { ...rivals(), cap: 'Each dot is one week. Indigo: the practice. Rose: tracked rivals.' },
+  missing: { ...columns(emergency.w, 'Emergency questions: out of every 10 answers'), cap: 'Each column is one week of answers to the 3 emergency questions.' },
+};
+
+function full() {
+  const [lo, hi] = T.range(T.OVERALL[7], N), [flo, fhi] = T.range(T.OVERALL[0], N);
+  const chap = (k, i, kick, h, body, extra = '') => `<section class="chap" data-k="${k}"><div class="kick">${String(i).padStart(2, '0')} · ${kick}</div><h2>${h}</h2>${body.map((b) => `<p>${b}</p>`).join('')}${extra}</section>`;
+  pane.innerHTML = `<div class="story"><div>
+    ${chap('since', 1, 'Since tracking started', `AI names ${T.PRACTICE} <span class="grad">more often than 8 weeks ago</span>: about 4 in every 10 answers, up from 3.`,
+      [`The week of Dec 20 it was named <span class="tip">${lo} to ${hi} times in every 100<span class="tipbox">${T.rangeTip(T.OVERALL[7], N)}</span></span> answers; the first week, ${flo} to ${fhi}. The two don't overlap, so this is a real rise, not a lucky week.`])}
+    ${chap('veneers', 2, 'What moved', `Veneers went from <span class="grad">about 2 in every 10 answers to 6</span>, after the veneers page went live.`,
+      ['The rise starts the week after Nov 27, when the page was published through OpenedQueries. Gemini and AI Mode quote its wording on natural-looking results.'],
+      `<div class="links"><a href="#">See the veneers answers →</a><a href="#">Open the page →</a></div>`)}
+    ${chap('ais', 3, 'Each AI', `Gemini and AI Mode moved most. ChatGPT already named ${T.PRACTICE} most and stayed there.`,
+      ["Perplexity's dip on Dec 7 hit every practice at once: Perplexity moved to a newer version of its search that day. The grey flag marks it, so it isn't read as a drop for the practice."])}
+    ${chap('rivals', 4, 'Rivals', `Smile Cape Coral is catching up, mostly on sedation questions.`,
+      [`It went from about 4 to 6 of every 100 times AI named a dentist. ${T.PRACTICE} is still named most, about 10, and Cape Dental Care held at 7.`],
+      `<div class="links"><a href="#">See the sedation answers →</a><a href="#">Compare in Insights →</a></div>`)}
+    ${chap('missing', 5, 'Still missing', `Emergency questions: <span style="color:var(--down)">about 0 in every 10, all 8 weeks</span>.`,
+      ['"I cracked a tooth, who can see me fast in Cape Coral?" AI names Coast Dental Cape Coral and Cape Dental Care instead. Nothing on the site answers it yet.'],
+      `<p><button class="btn go">Plan an emergency page</button></p>`)}
+  </div><div class="figwrap"><div class="fig"><svg viewBox="0 0 500 470" id="svg"></svg></div><div class="figcap" id="cap"></div></div></div>
+  <div class="end"><span>Next asks this evening at 6 · 30 questions on 5 AIs</span><span>$27.80 spent this month, about $${T.PRICE} a month · <a href="#">Stop tracking</a></span></div>`;
+  const svg = pane.querySelector('#svg');
+  svg.innerHTML = Array.from({ length: DOTS }, () => '<circle r="5" cx="0" cy="0"/>').join('') + '<g class="lbl"></g>';
+  const show = (k) => {
+    const f = F[k];
+    svg.querySelectorAll('circle').forEach((c, i) => { const d = f.dots[i]; c.style.transform = `translate(${d.x}px, ${d.y}px)`; c.style.fill = d.fill; c.style.opacity = d.o; });
+    const g = svg.querySelector('.lbl'); g.style.opacity = 0;
+    setTimeout(() => {
+      g.innerHTML = f.labels.map((l) => `${l.mark ? `<rect x="${l.x - 5}" y="${l.y - 26}" width="10" height="10" rx="2" fill="${l.mark}"/><line x1="${l.x}" x2="${l.x}" y1="${l.y - 16}" y2="60" stroke="${l.mark}" stroke-dasharray="3 3" opacity=".6"/>` : ''}<text x="${l.x}" y="${l.y}" font-size="${l.s}" font-weight="${l.w || 500}" fill="${l.c}" text-anchor="${l.a || 'start'}" font-family="Inter">${l.t}</text>`).join('');
+      g.style.opacity = 1;
+    }, 250);
+    pane.querySelector('#cap').textContent = f.cap;
+    pane.querySelectorAll('.chap').forEach((c) => c.classList.toggle('on', c.dataset.k === k));
+  };
+  show('since');
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) show(e.target.dataset.k); }), { rootMargin: '-45% 0px -45% 0px' });
+  pane.querySelectorAll('.chap').forEach((c) => io.observe(c));
+}
+
+T.stateBar([['off', 'Not tracking'], ['first', 'Day 3'], ['full', '8 weeks in']], 'full', (k) => {
+  document.querySelector('[data-live]').hidden = k === 'off';
+  if (k === 'off') { pane.innerHTML = T.startCard(); pane.querySelector('[data-start]').onclick = () => document.querySelector('.statebar [data-k="first"]').click(); }
+  else if (k === 'first') pane.innerHTML = T.firstDays();
+  else full();
+});
+</script>
+</body>
+</html>
