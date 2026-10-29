@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Three Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+.cards { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:18px; margin-top:42px; }
+.card { border:1px solid var(--line); border-radius:12px; padding:20px 22px 16px; display:flex; flex-direction:column; background:#fff; transition:box-shadow .2s; }
+.card.on { box-shadow:0 8px 24px rgba(16,24,40,.08); }
+.card .eyebrow { display:flex; align-items:center; margin-bottom:12px; }
+.li { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:7px 0; border-top:1px solid #F0F2F5; font-size:14.5px; color:var(--ink); } .li:first-of-type { border-top:0; }
+.hero { font:900 44px/1 Inter; letter-spacing:-.03em; color:var(--ink); } .hero small { font:700 18px Inter; color:var(--muted); letter-spacing:0; }
+.card .open { margin-top:auto; padding:14px 0 0; background:none; border:0; text-align:left; color:var(--a-ink); font-weight:600; font-size:14px; }
+.sug { font-size:14px; color:var(--body); padding:8px 0; border-top:1px solid #F0F2F5; } .sug:first-of-type { border-top:0; } .sug b { color:var(--ink); }
+.drawer { display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1); } .drawer.on { grid-template-rows:1fr; } .drawer > div { overflow:hidden; }
+.dbody { margin-top:18px; padding:24px; background:#FAFAFB; border-radius:12px; }
+.dgrid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:26px 30px; }
+.dgrid .q { background:#fff; } .dgrid .q.warn { background:var(--warn-tint); }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 12px; } .byai b { color:var(--ink); }
+.strip { display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:22px; margin-top:44px; padding-top:28px; border-top:1px solid var(--line); }
+.strip .nm { font-size:14px; color:var(--ink); margin-bottom:6px; } .strip .b { display:flex; gap:2px; height:10px; border-radius:3px; overflow:hidden; } .strip .t { font-size:12.5px; color:var(--muted); margin-top:4px; }
+@media (max-width:900px) { .cards, .dgrid { grid-template-columns:1fr; } .strip { grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const { D, ai, quote, lower, head, total, offers, listed } = DK;
+TRK.topbar(document.getElementById('top'), { mock: '5 of 5: three cards', tab: 'Insights', note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const pay = D.concerns[0];
+const cards = [
+  { id: 'praise', html: `<div class="eyebrow" style="color:var(--praise)"><span class="sw" style="background:var(--praise)"></span>What AI praises</div>
+      ${D.themes.slice(0, 3).map((t) => `<div class="li"><span>${t.name}</span><span class="ct"><b>${t.answers}</b></span></div>`).join('')}
+      <div class="li" style="color:var(--muted)"><span>and ${D.themes.length - 3} more</span><span></span></div>`, open: 'What AI said' },
+  { id: 'warn', html: `<div class="eyebrow" style="color:var(--warn)"><span class="sw" style="background:var(--warn)"></span>What AI warns about</div>
+      <div class="hero">${pay.answers}<small> of ${pay.of}</small></div><p class="sub" style="margin:8px 0 6px">answers to questions about the practice by name bring up <b style="color:var(--ink)">${lower(pay.name)}</b>.</p>
+      ${D.concerns.slice(1).map((c) => `<div class="li"><span>${c.name}</span><span class="ct"><b>${c.answers}</b> of ${c.of}</span></div>`).join('')}`, open: 'How AI put it' },
+  { id: 'do', html: `<div class="eyebrow"><span class="sw" style="background:var(--a)"></span>Worth doing</div>
+      ${D.concerns.filter((c) => c.suggestion).slice(0, 2).map((c) => `<div class="sug"><b>${c.name}:</b> ${c.suggestion}</div>`).join('')}`, open: 'Make the tasks' },
+];
+const detail = {
+  praise: () => `<div class="dgrid">${D.themes.map((t) => `<div><div class="h3" style="font-size:16px">${t.name} <span class="ct" style="font-weight:500">in ${t.answers} answers</span></div><div style="margin-top:8px">${t.quotes.slice(0, 1).map((q) => quote(q)).join('')}</div></div>`).join('')}<div>${listed()}</div></div>`,
+  warn: () => `<div class="dgrid">${D.concerns.map((c) => `<div><div class="h3" style="font-size:16px">${c.name}</div><div class="byai" style="margin-top:6px">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div>${c.quotes.slice(0, 2).map((q) => quote(q, true)).join('')}</div>`).join('')}</div>`,
+  do: () => `${D.concerns.filter((c) => c.suggestion).map((c) => `<div class="worth" style="background:#fff;margin-bottom:10px"><span><b>${c.name}:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>`).join('')}`,
+};
+document.getElementById('m').innerHTML = `<section class="sec">${head()}
+  <div class="cards">${cards.map((c) => `<div class="card" data-id="${c.id}">${c.html}<button class="open" type="button" data-open="${c.id}">${c.open} ↓</button></div>`).join('')}</div>
+  <div class="drawer" id="drawer"><div><div class="dbody" id="dbody"></div></div></div>
+  <div class="strip">${D.by_ai.map((r) => { const t = total(r); return `<div><div class="nm">${ai(r.surface)}</div><div class="b"><i style="width:${r.positive / t * 100}%;background:var(--praise)"></i><i style="width:${r.neutral / t * 100}%;background:var(--list)"></i></div><div class="t">praises <b style="color:var(--ink)">${r.positive}</b>, lists <b style="color:var(--ink)">${r.neutral}</b></div></div>`; }).join('')}</div>
+  <div style="max-width:420px;margin-top:40px">${offers()}</div></section>`;
+let cur = null;
+const drawer = document.getElementById('drawer'), dbody = document.getElementById('dbody');
+document.querySelectorAll('[data-open]').forEach((b) => { b.onclick = () => {
+  const id = b.dataset.open; cur = cur === id ? null : id;
+  document.querySelectorAll('.card').forEach((c) => c.classList.toggle('on', c.dataset.id === cur));
+  document.querySelectorAll('[data-open]').forEach((x) => { const c = cards.find((k) => k.id === x.dataset.open); x.textContent = `${c.open} ${x.dataset.open === cur ? '↑' : '↓'}`; });
+  if (cur) dbody.innerHTML = detail[cur](); drawer.classList.toggle('on', !!cur);
+}; });
+</script>
+</body>
+</html>

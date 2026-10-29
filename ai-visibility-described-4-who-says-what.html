@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Who Says What</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+.mx { max-width:1000px; margin:42px auto 0; }
+.mrow { display:grid; grid-template-columns:250px repeat(5, minmax(0,1fr)) 90px; align-items:center; }
+.mrow.h { font-size:13px; color:var(--muted); padding-bottom:8px; } .mrow.h span { text-align:center; } .mrow.h span:first-child, .mrow.h span:last-child { text-align:left; }
+.mrow.h span:last-child { text-align:right; }
+.grp { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:18px 0 6px; border-bottom:1px solid var(--line); }
+.mrow.d { border-bottom:1px solid #F0F2F5; cursor:pointer; border-radius:6px; }
+.mrow.d:hover { background:#FAFAFB; } .mrow.d.on { background:var(--a-tint); }
+.mrow.d .nm { font:600 14.5px Inter; color:var(--ink); padding:12px 8px; }
+.cell { height:48px; display:grid; place-items:center; position:relative; }
+.dot { border-radius:50%; box-shadow:0 0 0 2px #fff; }
+.cell .n { position:absolute; right:calc(50% - 30px); bottom:4px; font:600 11px Inter; color:var(--muted); }
+.tot { text-align:right; font-size:13.5px; color:var(--muted); padding-right:8px; } .tot b { color:var(--ink); }
+.key { display:flex; gap:20px; justify-content:center; font-size:12.5px; color:var(--muted); margin-top:14px; }
+.panel { max-width:1000px; margin:30px auto 0; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0 14px; }
+.panel .ph { grid-column:1 / -1; margin-bottom:10px; }
+.tipf { position:fixed; pointer-events:none; z-index:40; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 10px 30px rgba(16,24,40,.12); padding:9px 12px; font-size:13px; max-width:260px; display:none; } .tipf b { color:var(--ink); }
+.foot { max-width:1000px; margin:56px auto 0; padding-top:30px; border-top:1px solid var(--line); display:grid; grid-template-columns:1fr 1fr; gap:44px; }
+@media (max-width:900px) { .mrow { grid-template-columns:140px repeat(5, minmax(0,1fr)) 60px; } .panel, .foot { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<div class="tipf" id="tip"></div>
+<script>
+const { D, AI, ai, quote, lower, head, offers, listed } = DK; const BY = window.DV2_BY_AI;
+TRK.topbar(document.getElementById('top'), { mock: '4 of 5: who says what', tab: 'Insights', note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const AIS = ['chatgpt', 'gemini', 'aio', 'aimode', 'perplexity'];
+const MAX = 34;   // a dot's widest size: every answer of that AI says it
+const rows = [
+  { grp: 'Praises it for' },
+  ...D.themes.map((t, i) => ({ id: `t${i}`, name: t.name, by: BY.themes[t.name] || {}, color: 'var(--praise)', total: `<b>${t.answers}</b>`, verb: `praise it for ${lower(t.name)}` })),
+  { grp: 'Warns about' },
+  ...D.concerns.map((c, i) => ({ id: `c${i}`, name: c.name, by: BY.concerns[c.name] || {}, color: 'var(--warn)', total: `<b>${c.answers + c.elsewhere}</b>`, verb: `bring up ${lower(c.name)}` })),
+  { grp: 'Just lists it' },
+  { id: 'list', name: 'Listed, not praised', by: Object.fromEntries(D.by_ai.map((r) => [r.surface, r.neutral])), color: 'var(--list)', total: `<b>${D.tone.neutral}</b>`, verb: 'just list it' },
+];
+const cell = (r, k) => { const n = r.by[k] || 0, of = BY.named_by_ai[k], s = n ? Math.max(6, Math.sqrt(n / of) * MAX) : 0;
+  return `<span class="cell" data-tip="<b>${AI[k][0]}</b>: ${n} of its ${of} answers that name the practice ${r.verb}">${n ? `<i class="dot" style="width:${s}px;height:${s}px;background:${r.color}"></i>` : '<span style="color:var(--faint)">·</span>'}</span>`; };
+document.getElementById('m').innerHTML = `<section class="sec">${head()}
+  <div class="mx" id="mx"><div class="mrow h"><span></span>${AIS.map((k) => `<span>${ai(k)}</span>`).join('')}<span>answers</span></div>
+  ${rows.map((r) => r.grp ? `<div class="grp">${r.grp}</div>` : `<div class="mrow d" data-id="${r.id}"><span class="nm">${r.name}</span>${AIS.map((k) => cell(r, k)).join('')}<span class="tot">${r.total}</span></div>`).join('')}
+  <div class="key"><span>Dot size: how many of that AI's answers say it</span><span><span class="sw" style="background:var(--praise)"></span>praise</span><span><span class="sw" style="background:var(--warn)"></span>concern</span><span><span class="sw" style="background:var(--list)"></span>listing</span></div></div>
+  <div class="panel" id="panel"></div>
+  <div class="foot"><div>${offers()}</div><div></div></div></section>`;
+const panel = document.getElementById('panel');
+function open(id) {
+  document.querySelectorAll('.mrow.d').forEach((r) => r.classList.toggle('on', r.dataset.id === id));
+  if (id === 'list') { panel.innerHTML = `<div class="ph">${listed()}</div>`; return; }
+  const x = id[0] === 't' ? D.themes[+id.slice(1)] : D.concerns[+id.slice(1)], warn = id[0] === 'c';
+  panel.innerHTML = `<div class="ph"><div class="h3">${x.name}</div>${warn ? `<p class="sub">Asked about the practice by name: ${x.answers} of ${x.of} answers.</p>` : ''}</div>
+    ${x.quotes.slice(0, warn ? 4 : 2).map((q) => quote(q, warn)).join('')}${warn && x.suggestion ? `<div class="worth" style="grid-column:1/-1"><span><b>Worth doing:</b> ${x.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}`;
+}
+document.querySelectorAll('.mrow.d').forEach((r) => { r.onclick = () => open(r.dataset.id); });
+const tip = document.getElementById('tip');
+document.querySelectorAll('[data-tip]').forEach((c) => {
+  c.onmousemove = (e) => { tip.innerHTML = c.dataset.tip; tip.style.display = 'block'; tip.style.left = `${e.clientX + 14}px`; tip.style.top = `${e.clientY + 14}px`; };
+  c.onmouseleave = () => { tip.style.display = 'none'; };
+});
+open('t0');
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Answer Bar</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+.chartwrap { max-width:960px; margin:40px auto 0; }
+.lbl { display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); margin:0 0 6px; } .lbl b { color:var(--ink); }
+.big { display:flex; gap:2px; height:44px; }
+.seg { border:0; padding:0; height:100%; position:relative; transition:opacity .2s; }
+.seg:first-child { border-radius:6px 0 0 6px; } .seg:last-child { border-radius:0 6px 6px 0; }
+.seg span { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#fff; font:700 14px Inter; white-space:nowrap; }
+.seg.on::after { content:''; position:absolute; left:0; right:0; bottom:-9px; height:3px; border-radius:2px; background:var(--ink); }
+.seg[data-k="list"] span { color:var(--ink); }
+.crow.on > span:first-child { font-weight:700; }
+.cbar.on { box-shadow:inset 0 0 0 1px #FBCFD8; }
+.crow { display:grid; grid-template-columns:180px minmax(0,1fr) 120px; gap:14px; align-items:center; margin-top:12px; font-size:14px; color:var(--ink); }
+.cbar { border:0; padding:0; background:var(--soft); height:14px; border-radius:3px; display:block; width:100%; text-align:left; }
+.cbar .fill { display:block; height:100%; background:var(--warn); border-radius:3px 4px 4px 3px; transition:opacity .2s; }
+.crow .ct { text-align:right; }
+.hint { text-align:center; margin:26px 0 0; font-size:13.5px; color:var(--muted); }
+.panel { max-width:960px; margin:34px auto 0; padding-top:30px; border-top:1px solid var(--line); }
+.cols { display:grid; grid-template-columns:320px minmax(0,1fr); gap:40px; }
+.pick { width:100%; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; background:none; border:0; border-radius:8px; padding:10px 12px; text-align:left; font:600 15px Inter; color:var(--ink); }
+.pick:hover { background:#FAFAFB; } .pick.on { background:var(--a-tint); color:var(--a-ink); }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 12px; } .byai b { color:var(--ink); }
+.tipf { position:fixed; pointer-events:none; z-index:40; background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 10px 30px rgba(16,24,40,.12); padding:9px 12px; font-size:13px; max-width:260px; display:none; } .tipf b { color:var(--ink); }
+@media (max-width:900px) { .cols { grid-template-columns:1fr; } .crow { grid-template-columns:120px minmax(0,1fr) 90px; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<div class="tipf" id="tip"></div>
+<script>
+const { D, ai, quote, lower, head, toneRows, offers } = DK;
+TRK.topbar(document.getElementById('top'), { mock: '2 of 5: the answer bar', tab: 'Insights', note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const N = D.named;
+const segs = [['praise', 'Praises it', D.tone.positive, 'var(--praise)'], ['list', 'Just lists it', D.tone.neutral, 'var(--list)'], ['warn', 'Mostly a warning', D.tone.negative, 'var(--warn)']].filter((s) => s[2]);
+document.getElementById('m').innerHTML = `<section class="sec">${head(false)}
+  <div class="chartwrap" id="chart">
+    <div class="lbl"><span>The <b>${N}</b> answers that name the practice</span><span>Click any bar</span></div>
+    <div class="big">${segs.map(([k, l, n, c]) => `<button class="seg" data-k="${k}" data-tip="<b>${l}</b>: ${n} of ${N} answers" style="flex:${n};background:${c}"><span>${l} · ${n}</span></button>`).join('')}</div>
+    <div style="margin-top:26px" class="lbl"><span>Of those, how many also bring up a concern</span><span></span></div>
+    ${D.concerns.map((c, i) => `<div class="crow"><span>${c.name}</span><button class="cbar" data-k="c${i}" data-tip="<b>${c.name}</b> comes up in ${c.answers + c.elsewhere} of ${N} answers; ${c.answers} of the ${c.of} that answer questions asking about it by name"><span class="fill" style="width:${(c.answers + c.elsewhere) / N * 100}%"></span></button><span class="ct"><b>${c.answers + c.elsewhere}</b> answers</span></div>`).join('')}
+  </div>
+  <div class="panel" id="panel"></div></section>`;
+
+function praisePanel(sel = 0) {
+  const t = D.themes[sel];
+  return `<div class="cols"><div><div class="h3" style="margin-bottom:8px">What AI praises</div>${D.themes.map((x, i) => `<button class="pick${i === sel ? ' on' : ''}" data-t="${i}"><span>${x.name}</span><span class="ct">${x.answers}</span></button>`).join('')}</div>
+    <div><p class="sub" style="margin-top:4px">${t.name}: in <b style="color:var(--ink)">${t.answers}</b> answers, ${t.ais === 5 ? 'all 5 AIs' : `${t.ais} AIs`}.</p>${t.quotes.map((q) => quote(q)).join('')}</div></div>`;
+}
+const listPanel = () => `<div class="cols"><div>${toneRows()}</div><div><div class="h3">Listed, not praised</div><p class="sub">${D.tone.neutral} answers name the practice like a directory: name, services, address, phone. Not a bad sign: a listing still sends people.</p>${quote(D.listed.example)}<div style="margin-top:26px">${offers()}</div></div></div>`;
+const concernPanel = (c) => `<div class="cols"><div><div class="h3">${c.name}</div><p class="sub">Asked about the practice by name, AI brought up ${lower(c.name)} in <b style="color:var(--ink)">${c.answers} of the ${c.of}</b> answers${c.elsewhere ? `, and in ${c.elsewhere} other answers` : ''}.</p>
+  <div class="byai">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div></div>
+  <div>${c.quotes.slice(0, 3).map((q) => quote(q, true)).join('')}${c.suggestion ? `<div class="worth"><span><b>Worth doing:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}</div></div>`;
+
+const chart = document.getElementById('chart'), panel = document.getElementById('panel');
+function show(k) {
+  chart.querySelectorAll('[data-k]').forEach((b) => b.classList.toggle('on', b.dataset.k === k));
+  chart.querySelectorAll('.cbar').forEach((b) => b.parentElement.classList.toggle('on', b.dataset.k === k));
+  panel.innerHTML = k === 'praise' ? praisePanel() : k === 'list' ? listPanel() : concernPanel(D.concerns[+k.slice(1)]);
+  panel.querySelectorAll('[data-t]').forEach((b) => { b.onclick = () => { panel.innerHTML = praisePanel(+b.dataset.t); bindPicks(); }; });
+}
+function bindPicks() { panel.querySelectorAll('[data-t]').forEach((b) => { b.onclick = () => { panel.innerHTML = praisePanel(+b.dataset.t); bindPicks(); }; }); }
+chart.querySelectorAll('[data-k]').forEach((b) => { b.onclick = () => { show(b.dataset.k); bindPicks(); }; });
+const tip = document.getElementById('tip');
+chart.querySelectorAll('[data-tip]').forEach((b) => {
+  b.onmousemove = (e) => { tip.innerHTML = b.dataset.tip; tip.style.display = 'block'; tip.style.left = `${e.clientX + 14}px`; tip.style.top = `${e.clientY + 14}px`; };
+  b.onmouseleave = () => { tip.style.display = 'none'; };
+});
+show('praise'); bindPicks();
+</script>
+</body>
+</html>

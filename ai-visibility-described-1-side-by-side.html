@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Side by Side</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+.two { display:grid; grid-template-columns:1fr 1fr; gap:56px; margin-top:44px; }
+.colh { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.row { border-top:1px solid #F0F2F5; }
+.row > button { width:100%; display:grid; grid-template-columns:minmax(0,1fr) 110px 96px; gap:14px; align-items:center; background:none; border:0; padding:13px 4px; text-align:left; border-radius:6px; }
+.row > button:hover { background:#FAFAFB; }
+.nm { font:600 15px Inter; color:var(--ink); }
+.bar { display:block; height:8px; background:var(--soft); border-radius:4px; overflow:hidden; } .bar i { display:block; height:100%; border-radius:0 4px 4px 0; }
+.more { display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1); } .row.open .more { grid-template-rows:1fr; } .more > div { overflow:hidden; }
+.more > div > div:first-child { padding-top:2px; }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 10px; } .byai b { color:var(--ink); }
+.strip { display:grid; grid-template-columns:1fr 1fr 1fr; gap:44px; margin-top:60px; padding-top:34px; border-top:1px solid var(--line); }
+@media (max-width:900px) { .two, .strip { grid-template-columns:1fr; gap:36px; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const { D, ai, quote, lower, head, toneRows, offers, listed } = DK;
+TRK.topbar(document.getElementById('top'), { mock: '1 of 5: side by side', tab: 'Insights', note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const theme = (t, i) => `<div class="row${i === 0 ? ' open' : ''}"><button type="button"><span class="nm">${t.name}</span>
+  <span class="bar"><i style="width:${t.answers / D.named * 100}%;background:var(--praise)"></i></span><span class="ct"><b>${t.answers}</b> answers</span></button>
+  <div class="more"><div>${t.quotes.map((q) => quote(q)).join('')}</div></div></div>`;
+const concern = (c, i) => `<div class="row${i === 0 ? ' open' : ''}"><button type="button"><span class="nm">${c.name}</span>
+  <span class="bar"><i style="width:${c.answers / c.of * 100}%;background:var(--warn)"></i></span><span class="ct"><b>${c.answers}</b> of ${c.of}</span></button>
+  <div class="more"><div><div class="byai">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div>
+  ${c.quotes.slice(0, 2).map((q) => quote(q, true)).join('')}
+  ${c.suggestion ? `<div class="worth"><span><b>Worth doing:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}<div style="height:12px"></div></div></div></div>`;
+document.getElementById('m').innerHTML = `<section class="sec">${head()}
+  <div class="two">
+    <div><div class="colh"><div class="h3"><span class="sw" style="background:var(--praise)"></span>What AI praises</div><span class="small">answers, of ${D.named}</span></div>
+      ${D.themes.map(theme).join('')}</div>
+    <div><div class="colh"><div class="h3"><span class="sw" style="background:var(--warn)"></span>What AI warns about</div><span class="small">asked about it by name</span></div>
+      ${D.concerns.map(concern).join('')}</div>
+  </div>
+  <div class="strip"><div>${toneRows()}</div><div>${offers()}</div><div>${listed()}</div></div></section>`;
+document.querySelectorAll('.row > button').forEach((b) => { b.onclick = () => b.parentElement.classList.toggle('open'); });
+</script>
+</body>
+</html>

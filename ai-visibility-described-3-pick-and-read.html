@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Pick and Read</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+.reader { display:grid; grid-template-columns:330px minmax(0,1fr); gap:44px; margin-top:44px; align-items:start; }
+.index { position:sticky; top:120px; }
+.grp { margin:18px 0 4px; font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); } .grp:first-child { margin-top:0; }
+.pick { width:100%; display:grid; grid-template-columns:14px minmax(0,1fr) auto; gap:10px; align-items:center; background:none; border:0; border-radius:8px; padding:9px 10px; text-align:left; font:600 14.5px Inter; color:var(--ink); }
+.pick:hover { background:#FAFAFB; } .pick.on { background:var(--a-tint); color:var(--a-ink); }
+.pick .sw { margin:0; }
+.detail { min-height:520px; }
+.detail h3 { margin:0 0 6px; font:800 24px/1.25 Inter; letter-spacing:-.01em; color:var(--ink); }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 14px; } .byai b { color:var(--ink); }
+.qs { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+@media (max-width:900px) { .reader { grid-template-columns:1fr; } .index { position:static; } .qs { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const { D, ai, quote, lower, head, toneRows, offers } = DK;
+TRK.topbar(document.getElementById('top'), { mock: '3 of 5: pick and read', tab: 'Insights', note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const items = [
+  ...D.themes.map((t, i) => ({ id: `t${i}`, grp: 'What AI praises', name: t.name, ct: t.answers, c: 'var(--praise)' })),
+  ...D.concerns.map((c, i) => ({ id: `c${i}`, grp: 'What AI warns about', name: c.name, ct: `${c.answers} of ${c.of}`, c: 'var(--warn)' })),
+  { id: 'list', grp: 'Everything else', name: 'Listed, not praised', ct: D.tone.neutral, c: 'var(--list)' },
+  { id: 'ai', grp: 'Everything else', name: 'How each AI describes it', ct: '5 AIs', c: 'var(--a)' },
+  { id: 'offers', grp: 'Everything else', name: 'What AI says it offers', ct: D.offers.length, c: 'var(--a)' },
+];
+let lastGrp = '';
+const index = items.map((x) => { const g = x.grp !== lastGrp ? `<div class="grp">${x.grp}</div>` : ''; lastGrp = x.grp;
+  return `${g}<button class="pick" data-id="${x.id}"><span class="sw" style="background:${x.c}"></span><span>${x.name}</span><span class="ct">${x.ct}</span></button>`; }).join('');
+document.getElementById('m').innerHTML = `<section class="sec">${head()}<div class="reader"><nav class="index">${index}</nav><div class="detail fade" id="d"></div></div></section>`;
+
+function detail(id) {
+  if (id[0] === 't') { const t = D.themes[+id.slice(1)];
+    return `<div class="eyebrow" style="color:var(--praise)">Praised for</div><h3>${t.name}</h3><p class="sub">In <b style="color:var(--ink)">${t.answers}</b> of the ${D.named} answers that name the practice, ${t.ais === 5 ? 'all 5 AIs' : `${t.ais} AIs`}.</p><div class="qs">${t.quotes.map((q) => quote(q)).join('')}</div>`; }
+  if (id[0] === 'c') { const c = D.concerns[+id.slice(1)];
+    return `<div class="eyebrow" style="color:var(--warn)">Warned about</div><h3>${c.name}</h3><p class="sub">Asked about the practice by name, AI brought up ${lower(c.name)} in <b style="color:var(--ink)">${c.answers} of the ${c.of}</b> answers${c.elsewhere ? `, and in ${c.elsewhere} other answers` : ''}.</p>
+      <div class="byai">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div>
+      <div class="qs">${c.quotes.slice(0, 4).map((q) => quote(q, true)).join('')}</div>${c.suggestion ? `<div class="worth"><span><b>Worth doing:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}`; }
+  if (id === 'list') return `<div class="eyebrow grey">Listed, not praised</div><h3>${D.tone.neutral} answers name it like a directory</h3><p class="sub">Name, services, address, phone, and no opinion. Not a bad sign: a listing still sends people.</p>${quote(D.listed.example)}`;
+  if (id === 'ai') return `<h3 style="margin-bottom:16px">How each AI describes it</h3>${toneRows()}`;
+  return `<h3 style="margin-bottom:16px">What AI says it offers</h3><p class="sub">Services, not praise: kept apart so the praise stays praise.</p>${offers()}`;
+}
+const d = document.getElementById('d');
+function pick(id) {
+  document.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.id === id));
+  d.classList.remove('fade'); void d.offsetWidth; d.classList.add('fade'); d.innerHTML = detail(id);
+}
+document.querySelectorAll('.pick').forEach((b) => { b.onclick = () => pick(b.dataset.id); });
+pick('t0');
+</script>
+</body>
+</html>
