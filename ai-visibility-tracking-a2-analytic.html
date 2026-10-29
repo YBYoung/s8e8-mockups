@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility Tracking A2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-tracking-data2.js"></script>
+<style>
+.layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:44px; padding-top:34px; }
+.rail { position:sticky; top:118px; align-self:start; display:flex; flex-direction:column; gap:2px; }
+.rail a { text-decoration:none; color:var(--muted); font-size:14px; padding:6px 10px; border-radius:6px; }
+.rail a.on { color:var(--a-ink); background:var(--a-tint); font-weight:600; }
+.rail .sep { height:1px; background:var(--line); margin:8px 0; }
+.controls { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-bottom:8px; font-size:13.5px; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; padding:3px; gap:2px; }
+.seg button { background:none; border:0; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); }
+.seg button.on { background:var(--a-tint); color:var(--a-ink); }
+section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-margin-top:120px; }
+.stat { display:flex; flex-wrap:wrap; gap:8px 26px; font-size:14px; margin:4px 0 16px; } .stat b { color:var(--ink); }
+.box { border:1px solid var(--line); border-radius:12px; padding:16px 18px 10px; }
+.key { display:flex; flex-wrap:wrap; gap:16px; font-size:12.5px; color:var(--muted); margin-top:6px; }
+.key i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+/* range rows: dot = this period, line = likely range, hollow dot = the period compared with */
+.fr { display:grid; grid-template-columns:220px minmax(0,1fr) 80px 170px 90px; gap:14px; align-items:center; padding:9px 6px; border-top:1px solid #F2F4F7; font-size:14px; cursor:pointer; border-radius:6px; }
+.fr:hover { background:#FAFAFF; } .fr.sub { padding-left:26px; font-size:13.5px; } .fr.sub2 { padding-left:46px; font-size:13px; cursor:default; }
+.fr .nm { color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .fr.sub2 .nm { white-space:normal; color:var(--body); }
+.trk { position:relative; height:22px; }
+.trk::before { content:''; position:absolute; left:0; right:0; top:10px; height:2px; background:#F2F4F7; }
+.trk .rg { position:absolute; top:7px; height:8px; border-radius:4px; background:#C7CBF5; }
+.trk .pv { position:absolute; top:5px; width:12px; height:12px; margin-left:-6px; border-radius:50%; border:2px solid #98A2B3; background:#fff; }
+.trk .nw { position:absolute; top:4px; width:14px; height:14px; margin-left:-7px; border-radius:50%; background:var(--a); border:2px solid #fff; }
+.fr .v { font-weight:800; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
+.fr .c { font-size:13px; } .c.steady { color:var(--faint); }
+.fr .n { font-size:12.5px; color:var(--faint); text-align:right; }
+.axis { display:grid; grid-template-columns:220px minmax(0,1fr) 80px 170px 90px; gap:14px; font-size:11.5px; color:var(--faint); padding:0 6px 6px; }
+.axis span:nth-child(2) { display:flex; justify-content:space-between; }
+.strip { display:inline-flex; gap:3px; vertical-align:middle; } .strip i { width:8px; height:8px; border-radius:50%; background:#E4E7EC; } .strip i.on { background:var(--a); }
+.cols { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.col h4 { margin:0 0 8px; font:700 14px Inter; color:var(--ink); }
+.src { border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px; font-size:13.5px; }
+.src b { color:var(--ink); } .src .act { margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
+.mini { font-size:12.5px; padding:5px 10px; white-space:nowrap; }
+.wf { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 150px 120px; gap:14px; padding:12px 6px; border-top:1px solid #F2F4F7; font-size:13.5px; align-items:start; }
+.wf .said { color:var(--down); font-weight:700; } .gone { color:var(--up); font-weight:600; }
+.ok { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; } .ok span { background:var(--up-tint); color:#166534; border-radius:6px; padding:6px 10px; font-size:13px; }
+.al { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-top:1px solid #F2F4F7; font-size:14px; }
+.sw { width:36px; height:20px; border-radius:10px; background:#D0D5DD; position:relative; border:0; } .sw::after { content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; }
+.sw.on { background:var(--a); } .sw.on::after { left:18px; }
+.foot { margin-top:26px; display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); }
+@media (max-width:1000px) { .layout { grid-template-columns:1fr; } .rail { display:none; } .fr, .axis { grid-template-columns:130px 1fr 60px; } .fr .c, .fr .n, .axis span:nth-child(n+4) { display:none; } .cols { grid-template-columns:1fr; } .wf { grid-template-columns:1fr 1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="pane"></main>
+<script>
+const T = window.TRK, D = window.TRK2;
+T.topbar(document.getElementById('top'), { mock: 'A2, Tracking for the SEO',
+  note: 'Sample data, 8 weeks in. Real from the Oct 28 Snapshot: the cited sites and their counts, the phone, address and doctors, "Dr. Kinn", the questions. The weekly movement, alerts and work log are sample.' });
+const pane = document.getElementById('pane');
+let PERIOD = 'week', COMPARE = 'start';
+const PER = { week: { label: 'Last 7 days', weeks: 1 }, month: { label: 'Last 28 days', weeks: 4 }, quarter: { label: 'This quarter', weeks: 8 } };
+const avg = (a) => a.reduce((t, v) => t + v, 0) / a.length;
+/** This period's rate and the one it is compared with, from a weekly series. */
+function pair(w) {
+  const k = PER[PERIOD].weeks, now = avg(w.slice(-k));
+  const prev = COMPARE === 'start' ? w[0] : PERIOD === 'quarter' ? w[0] : avg(w.slice(-2 * k, -k));
+  return { now, prev };
+}
+function row(name, w, nWeek, cls = '', extra = '', id = '') {
+  const k = PER[PERIOD].weeks, n = nWeek * k, { now, prev } = pair(w), [lo, hi] = T.range(now, n);
+  const ch = T.realChange([prev, now], n), prevN = nWeek * (COMPARE === 'start' ? 1 : k);
+  const label = ch === 'up' ? `<span class="c up">↑ up from ${Math.round(prev / 10)} in 10</span>` : ch === 'down' ? `<span class="c down">↓ down from ${Math.round(prev / 10)} in 10</span>` : '<span class="c steady">within normal swing</span>';
+  return `<div class="fr ${cls}" ${id ? `data-open="${id}"` : ''}><span class="nm">${name}</span>
+    <span class="trk tip" style="border:0"><span class="rg" style="left:${lo}%;width:${hi - lo}%"></span><span class="pv" style="left:${prev}%"></span><span class="nw" style="left:${now}%"></span>
+      <span class="tipbox"><b>Likely ${lo} to ${hi} times in every 100</b>From ${n.toLocaleString()} answers. The hollow dot is ${COMPARE === 'start' ? 'the first week' : 'the period before'} (${Math.round(prev)} in every 100, from ${prevN.toLocaleString()} answers). A change counts only when it clears the shaded range.</span></span>
+    <span class="v">${Math.round(now / 10)} in 10</span>${label}<span class="n">${n.toLocaleString()} answers</span></div>${extra}`;
+}
+const AXIS_ = () => `<div class="axis"><span></span><span><span>0 in 10</span><span>5</span><span>10 in 10</span></span><span></span><span>${COMPARE === 'start' ? 'Since tracking started' : 'Since the period before'}</span><span></span></div>`;
+const svcFor = (ai, s) => s.w.map((v, i) => Math.max(0, Math.min(95, v + (ai.w[i] - T.OVERALL[i]) * 1.2)));
+
+function full() {
+  const { now, prev } = pair(T.OVERALL), n = T.ANSWERS_PER_WEEK * PER[PERIOD].weeks, [lo, hi] = T.range(now, n), ch = T.realChange([prev, now], n);
+  pane.innerHTML = `<div class="layout"><nav class="rail" id="rail">
+      ${[['overview', 'Overview'], ['ais', 'By AI'], ['services', 'Services and questions'], ['rivals', 'Rivals'], ['sources', 'Sources'], ['facts', 'Wrong facts'], ['steady', 'Steadiness'], ['alerts', 'Alerts']].map(([k, l], i) => `${i === 4 ? '<span class="sep"></span>' : ''}<a href="#${k}" data-k="${k}">${l}</a>`).join('')}
+    </nav><div>
+    <div class="controls"><div class="seg" id="per">${Object.entries(PER).map(([k, p]) => `<button data-p="${k}" class="${k === PERIOD ? 'on' : ''}">${p.label}</button>`).join('')}</div>
+      <span>compared with</span><div class="seg" id="cmp"><button data-c="prev" class="${COMPARE === 'prev' ? 'on' : ''}">the period before</button><button data-c="start" class="${COMPARE === 'start' ? 'on' : ''}">when tracking started</button></div></div>
+    <section class="s" id="overview" style="padding-top:20px"><div class="eyebrow">Overview · ${PER[PERIOD].label.toLowerCase()}</div>
+      <h2 class="mid">AI named ${T.PRACTICE} in about ${Math.round(now / 10)} in every 10 answers: ${ch === 'up' ? 'a real rise' : ch === 'down' ? 'a real drop' : 'within the normal swing'}.</h2>
+      <div class="stat"><span>Named in <b>${Math.round((now / 100) * n).toLocaleString()} of ${n.toLocaleString()}</b> answers</span><span><span class="tip">Likely <b>${lo} to ${hi}</b> in every 100<span class="tipbox">${T.rangeTip(now, n)}</span></span></span><span>${COMPARE === 'start' ? 'First week' : 'Period before'}: <b>${T.range(prev, n).join(' to ')}</b></span><span>Named first in <b>274</b> answers</span></div>
+      <div class="box"><div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow grey">Each week, out of every 10 answers</span><div class="seg" id="view"><button class="on" data-v="all">All AIs</button><button data-v="each">Each AI</button></div></div><div id="main"></div><div class="key" id="key"></div></div>
+    </section>
+    <section class="s" id="ais"><div class="eyebrow">By AI</div><h2 class="mid">${movers(T.AIS.map((a) => [a.name, a.w, 378]), 'AI')}</h2><p class="small">Click an AI for its services. The bar is the likely range; the hollow dot is the period it's compared with.</p>
+      ${AXIS_()}${T.AIS.map((a) => row(`<span class="aidot" style="background:${a.dot}"></span>${a.name}`, a.w, 378, '', `<div class="kids" data-kids="${a.key}" hidden>${T.SERVICES.map((s) => row(s.name, svcFor(a, s), s.q * 14, 'sub')).join('')}</div>`, a.key)).join('')}
+      <p class="small" style="margin-top:12px">Perplexity: a grey flag on Dec 7. ${T.MARKERS[1].detail}</p></section>
+    <section class="s" id="services"><div class="eyebrow">Services and questions</div><h2 class="mid">${movers(T.SERVICES.map((x) => [x.name, x.w, x.q * 70]), 'service')} Emergency is still about 0 in 10.</h2><p class="small">Click a service for its questions. Each question shows its last 14 asks on Gemini (lit: named).</p>
+      ${AXIS_()}${T.SERVICES.map((s) => row(s.name, s.w, s.q * 70, '', `<div class="kids" data-kids="${s.name}" hidden>${D.QUESTIONS.filter((q) => q.service === s.name).map((q) => `<div class="fr sub2"><span class="nm">${q.text}<br><a href="#" style="font-size:12.5px">See the answers →</a></span><span><span class="strip">${[...q.last14].map((b) => `<i class="${b === '1' ? 'on' : ''}"></i>`).join('')}</span></span><span class="v">${Math.round(q.rate / 10)} in 10</span><span class="c steady">${steadiness(q.last14)}</span><span class="n">${70 * PER[PERIOD].weeks} answers</span></div>`).join('') || '<p class="small" style="padding-left:46px">Questions shown for the sample services only.</p>'}</div>`, s.name)).join('')}
+    </section>
+    <section class="s" id="rivals"><div class="eyebrow">Rivals</div><h2 class="mid">Smile Cape Coral is gaining, mostly on sedation.</h2>
+      <div class="box"><span class="eyebrow grey">Out of every 100 times AI named a dentist</span><div id="share"></div><div class="key">${T.RIVALS.slice(0, 3).map((r, i) => `<span><i style="background:${['#4F46E5', '#F9A8D4', '#DB2777'][i]};border-radius:50%"></i>${r.name}</span>`).join('')}</div></div>
+      <div style="margin-top:18px">${D.NAMED_FIRST.map((r) => `<div class="wf" style="grid-template-columns:minmax(0,1fr) 160px 200px"><span style="font-weight:${r.me ? 800 : 600};color:${r.me ? 'var(--a-ink)' : r.rival ? 'var(--rose-ink)' : 'var(--ink)'}">${r.name}</span><span>named in ${r.named} answers</span><span class="tip">named first in ${r.first}<span class="tipbox"><b>Named first</b>How many answers put this practice before any other. A count, not a rank: the order inside an answer changes almost every time, so only the count over many answers means anything.</span></span></div>`).join('')}</div></section>
+    <section class="s" id="sources"><div class="eyebrow">Sources · last 28 days</div><h2 class="mid">Four sites AI cites mostly when it names someone else.</h2><p class="small">Sources change fast from one ask to the next, so this section always reads 28 days.</p>
+      <div class="cols"><div class="col"><h4>Cites rivals, rarely the practice</h4>${D.SOURCES.rivalOnly.map((s) => `<div class="src"><b>${s.domain}</b><div>${s.note}</div><div class="act"><a href="#">${s.act} →</a><button class="btn mini">Make a task</button></div></div>`).join('')}</div>
+        <div class="col"><h4>Newly cited</h4>${D.SOURCES.gained.map((s) => `<div class="src"><b>${s.domain}</b><div>${s.note}</div><div class="small">${s.cites} answers</div></div>`).join('')}</div>
+        <div class="col"><h4>No longer cited</h4>${D.SOURCES.lost.map((s) => `<div class="src"><b>${s.domain}</b><div>${s.note}</div><div class="small">was ${s.was} answers</div></div>`).join('')}</div></div></section>
+    <section class="s" id="facts"><div class="eyebrow">Wrong facts</div><h2 class="mid">One slip still showing: "Dr. Kinn".</h2>
+      <div class="ok">${D.FACTS.checked.map((f) => `<span>${f.what} right in ${f.k} of ${f.n} answers that gave it</span>`).join('')}</div>
+      <div class="wf" style="font-size:12px;color:var(--faint);border:0;padding-bottom:0"><span>AI said</span><span>Our data (CRM)</span><span>Seen</span><span></span></div>
+      ${D.FACTS.wrong.map((f) => `<div class="wf"><span><span class="said">${f.said}</span><div class="small">${f.ais} · ${f.answers} answers · source: ${f.source}</div></span><span>${f.right}</span><span>${f.first} to ${f.last}<div class="${f.status.startsWith('gone') ? 'gone' : 'small'}">${f.status}</div></span><span>${f.status.startsWith('gone') ? '' : '<button class="btn mini">Make a task</button>'}</span></div>`).join('')}</section>
+    <section class="s" id="steady"><div class="eyebrow">Steadiness</div><h2 class="mid">How much to trust each question.</h2><p class="small">Each row is one question's last 14 asks on Gemini. Steady questions give a clear reading in a week; swinging ones need a month.</p>
+      ${[...D.QUESTIONS].sort((a, b) => flips(b.last14) - flips(a.last14)).slice(0, 8).map((q) => `<div class="wf" style="grid-template-columns:minmax(0,1fr) 150px 160px;align-items:center"><span>${q.text}</span><span class="strip">${[...q.last14].map((b) => `<i class="${b === '1' ? 'on' : ''}"></i>`).join('')}</span><span class="small">${steadiness(q.last14)}</span></div>`).join('')}</section>
+    <section class="s" id="alerts" style="border:0"><div class="eyebrow">Alerts</div><h2 class="mid">Tell the SEO only when something really moves.</h2><p class="small">An alert fires when a change clears the normal swing, never on one day.</p>
+      ${[['A real rise or drop for the practice', true], ['A service moves past its normal swing', true], ['A new wrong fact appears', true], ['A tracked rival gains for 2 weeks running', false], ['Monday summary of the week', true]].map(([t, on]) => `<div class="al"><span>${t}</span><button class="sw ${on ? 'on' : ''}" aria-label="${t}"></button></div>`).join('')}
+      <p class="small" style="margin-top:12px">Sent to the client's SEO in Slack. <a href="#">Add a work marker</a> (a listing fixed, a page published) so the chart explains itself.</p></section>
+    <div class="foot"><span>Next asks this evening at 6 · 30 questions on 5 AIs</span><span>$27.80 spent this month, about $${T.PRICE} a month · <a href="#">Stop tracking</a></span></div>
+  </div></div>`;
+  wire();
+}
+/** A headline from what really moved in this period and comparison. */
+function movers(rows, what) {
+  const k = PER[PERIOD].weeks, ch = (r) => T.realChange([pair(r[1]).prev, pair(r[1]).now], r[2] * k);
+  const up = rows.filter((r) => ch(r) === 'up').map((r) => r[0]), down = rows.filter((r) => ch(r) === 'down').map((r) => r[0]);
+  const list = (a) => (a.length > 1 ? `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}` : a[0]);
+  const since = COMPARE === 'start' ? 'since tracking started' : 'since the period before';
+  if (!up.length && !down.length) return `No ${what} moved past its normal swing ${since}.`;
+  return [up.length ? `${list(up)} rose ${since}.` : '', down.length ? `${list(down)} dropped${down.includes('Perplexity') ? ' (Perplexity after its Dec 7 update)' : ''}.` : ''].join(' ').trim();
+}
+function flips(s) { let f = 0; for (let i = 1; i < s.length; i += 1) if (s[i] !== s[i - 1]) f += 1; return f; }
+function steadiness(s) { const f = flips(s); return f <= 2 ? 'steady: a week is enough' : f <= 6 ? 'some swing' : 'swings: read the month'; }
+function drawMain(v) {
+  const el = pane.querySelector('#main'), key = pane.querySelector('#key');
+  if (v === 'all') { T.trend(el, { lines: [{ name: 'All five AIs', w: T.OVERALL, color: '#4F46E5', lead: true }], n: T.ANSWERS_PER_WEEK, days: T.days(T.OVERALL, 6), max: 60, height: 220 }); key.innerHTML = '<span><i style="background:#4F46E5"></i>Each week</span><span><i style="background:#C7CBF5;border-radius:50%"></i>Each day</span><span><i style="background:#E0E3FF"></i>Likely range</span><span><i style="background:#4F46E5"></i>Work we did</span><span><i style="background:#98A2B3"></i>An AI changed</span>'; }
+  else { T.trend(el, { lines: T.AIS.map((a, i) => ({ name: a.name, w: a.w, color: a.dot, lead: i === 0, band: '#F2F4F7' })), n: 378, max: 60, height: 220 }); key.innerHTML = T.AIS.map((a) => `<span><i style="background:${a.dot};border-radius:50%"></i>${a.name}</span>`).join(''); }
+}
+function wire() {
+  drawMain('all');
+  pane.querySelector('#view').onclick = (e) => { const v = e.target.dataset.v; if (!v) return; pane.querySelectorAll('#view button').forEach((b) => b.classList.toggle('on', b.dataset.v === v)); drawMain(v); };
+  pane.querySelector('#per').onclick = (e) => { if (e.target.dataset.p) { PERIOD = e.target.dataset.p; full(); } };
+  pane.querySelector('#cmp').onclick = (e) => { if (e.target.dataset.c) { COMPARE = e.target.dataset.c; full(); } };
+  pane.querySelectorAll('[data-open]').forEach((r) => { r.onclick = () => { const k = pane.querySelector(`[data-kids="${r.dataset.open}"]`); if (k) k.hidden = !k.hidden; }; });
+  pane.querySelectorAll('.sw').forEach((b) => { b.onclick = () => b.classList.toggle('on'); });
+  T.trend(pane.querySelector('#share'), { lines: [{ name: T.PRACTICE, w: T.RIVALS[0].w.map((v) => v / 10), color: '#4F46E5' }, { name: 'Cape Dental Care', w: T.RIVALS[1].w.map((v) => v / 10), color: '#F9A8D4' }, { name: 'Smile Cape Coral', w: T.RIVALS[2].w.map((v) => v / 10), color: '#DB2777', lead: true }],
+    n: 2400, height: 200, markers: [], max: 14, fmt: (v) => `about ${Math.round(v)} of every 100`, axis: (v) => `${Math.round(v)} of 100`, unit: 'times AI named a dentist' });
+  const links = pane.querySelectorAll('.rail a');
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a) => a.classList.toggle('on', a.dataset.k === e.target.id)); }), { rootMargin: '-30% 0px -60% 0px' });
+  pane.querySelectorAll('section.s').forEach((s) => io.observe(s));
+}
+T.stateBar([['off', 'Not tracking'], ['first', 'Day 3'], ['full', '8 weeks in']], 'full', (k) => {
+  document.querySelector('[data-live]').hidden = k === 'off';
+  if (k === 'off') { pane.innerHTML = T.startCard(); pane.querySelector('[data-start]').onclick = () => document.querySelector('.statebar [data-k="first"]').click(); }
+  else if (k === 'first') pane.innerHTML = T.firstDays();
+  else full();
+});
+</script>
+</body>
+</html>

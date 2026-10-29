@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility Story C2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-tracking-data2.js"></script>
+<style>
+.pick { position:sticky; top:105px; z-index:15; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 0; border-bottom:1px solid var(--line); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; padding:3px; gap:2px; }
+.seg button { background:none; border:0; border-radius:6px; padding:6px 14px; font-size:13.5px; font-weight:600; color:var(--muted); }
+.seg button.on { background:var(--a-tint); color:var(--a-ink); }
+.nav { display:flex; align-items:center; gap:10px; font-size:14px; } .nav b { color:var(--ink); } .nav button { border:1px solid var(--line); background:#fff; border-radius:6px; width:30px; height:30px; color:var(--muted); }
+.read { max-width:780px; }
+.opener { padding:48px 0 14px; }
+.verdict { display:inline-flex; gap:8px; align-items:center; font-weight:700; font-size:14px; border-radius:6px; padding:5px 10px; margin-bottom:12px; }
+.verdict.up { background:var(--up-tint); color:#166534; } .verdict.hold { background:var(--soft); color:var(--body); }
+.box { border:1px solid var(--line); border-radius:12px; padding:14px 18px 8px; margin:18px 0 6px; }
+section.p { padding:30px 0 6px; border-top:1px solid var(--line); margin-top:26px; }
+.ok { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; } .ok span { background:var(--up-tint); color:#166534; border-radius:6px; padding:6px 10px; font-size:13.5px; }
+.slip { background:var(--down-tint); color:#9F1239; border-radius:10px; padding:12px 16px; font-size:14.5px; }
+.named { display:grid; grid-template-columns:minmax(0,1fr) 220px; padding:10px 0; border-bottom:1px solid #F2F4F7; font-size:15px; }
+.named span:last-child { text-align:right; color:var(--muted); }
+.theme { padding:14px 0; border-bottom:1px solid #F2F4F7; }
+.theme b { color:var(--ink); font-size:17px; } .theme blockquote { margin:6px 0 0; padding:0; color:var(--body); font-size:15px; }
+.theme .by { font-size:12.5px; color:var(--muted); margin-top:4px; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+.list div { padding:10px 0; border-bottom:1px solid #F2F4F7; font-size:14.5px; } .list .d { color:var(--muted); font-size:12.5px; }
+.ev { display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px; padding:14px 0; border-bottom:1px solid #F2F4F7; }
+.ev .ic { width:26px; height:26px; border-radius:7px; display:grid; place-items:center; font-weight:800; font-size:13px; }
+.ic.new { background:var(--rose-tint); color:var(--rose); } .ic.source { background:var(--a-tint); color:var(--a-ink); } .ic.fact { background:var(--down-tint); color:var(--down); }
+.ev b { color:var(--ink); }
+.quote { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:12px; } .quote .q { font-size:12.5px; color:var(--muted); margin-bottom:4px; }
+.foot { margin-top:30px; padding-top:14px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); display:flex; justify-content:space-between; gap:20px; }
+@media (max-width:900px) { .pick { flex-direction:column; align-items:flex-start; top:96px; } .two { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell"><div class="pick" id="pick"></div><div class="read" id="pane"></div></main>
+<script>
+const T = window.TRK, D = window.TRK2;
+T.topbar(document.getElementById('top'), { mock: 'C2, the Story for a period', tab: 'Story',
+  note: 'Sample data, 8 weeks into tracking. Real from the Oct 28 Snapshot: the phone, address and doctors, "Dr. Kinn", the cited sites, the quotes. The period numbers, work log, and the Day page (events and quotes) are sample. Pick a period at the top.' });
+const pane = document.getElementById('pane'), pick = document.getElementById('pick');
+let P = 'month';
+const LABEL = { day: 'Day', week: 'Week', month: 'Month', quarter: 'Quarter' };
+
+function drawPick() {
+  const cur = P === 'day' ? { label: D.DAY.label, span: `${D.DAY.answers} answers` } : D.PERIODS[P];
+  pick.innerHTML = `<div class="seg">${Object.entries(LABEL).map(([k, l]) => `<button data-p="${k}" class="${k === P ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="nav"><button aria-label="Earlier">‹</button><span><b>${cur.label}</b> · ${cur.span}</span><button aria-label="Later">›</button></div>
+    <div style="display:flex;gap:8px"><button class="btn">Download PDF</button><button class="btn go" style="padding:9px 14px">Share with the practice</button></div>`;
+  pick.querySelector('.seg').onclick = (e) => { if (e.target.dataset.p) { P = e.target.dataset.p; render(); } };
+}
+
+function period() {
+  const p = D.PERIODS[P], ch = T.realChange([p.prev, p.rate], Math.min(p.n, p.prevN) * 2);
+  const verdict = ch === 'up' ? `<span class="verdict up">↑ Up from ${Math.round(p.prev / 10)} in 10 in ${p.prevLabel}</span>` : `<span class="verdict hold">Holding steady compared with ${p.prevLabel}</span>`;
+  const when = P === 'week' ? 'This week' : P === 'month' ? 'In December' : 'So far in Q4';
+  const sc = (k) => Math.max(1, Math.round((k * p.scale) / 4));
+  pane.innerHTML = `
+  <section class="opener">${verdict}
+    <h1 class="big">${when}, AI named ${T.PRACTICE} in <span class="grad">about ${Math.round(p.rate / 10)} in every 10</span> answers to patient questions.</h1>
+    <p class="lede">${ch === 'up' ? `That's a real rise: more than the normal ups and downs of AI answers.` : (p.rate > p.prev ? `Up a little from ${p.prev} to ${p.rate} times in every 100 since ${p.prevLabel}, but that's within the normal ups and downs of AI answers${P === 'quarter' ? ' (the Snapshot was one day, 674 answers)' : ''}, so it reads as steady.` : `About level with ${p.prevLabel}, within the normal ups and downs of AI answers.`)} ${P === 'quarter' ? 'December is up from November; the quarter as a whole is about level with the Oct 28 Snapshot.' : ''}</p>
+    <div class="box"><span class="eyebrow grey">Each week, out of every 10 answers</span><div id="chart"></div></div>
+  </section>
+  <section class="p"><div class="eyebrow">Facts AI gives about ${T.PRACTICE}</div><h2 class="mid">AI gets the basics right, with one slip.</h2>
+    <div class="ok">${D.FACTS.checked.map((f) => `<span>${f.what}: right in ${sc(f.k)} of ${sc(f.n)} answers</span>`).join('')}</div>
+    <div class="slip"><b>"Dr. Kinn":</b> Perplexity spelled Dr. Kari Mann's name wrong in ${P === 'week' ? 1 : 3} answers. We're tracing where it comes from.</div>
+  </section>
+  <section class="p"><div class="eyebrow">Who else AI names</div><h2 class="mid">${T.PRACTICE} is named more than any other practice.</h2>
+    <div class="named"><b style="color:var(--a-ink)">${T.PRACTICE}</b><span>named in ${Math.round((p.rate / 100) * p.n).toLocaleString()} answers</span></div>
+    ${p.named.map(([nm, k, rival]) => `<div class="named"><span style="color:${rival ? 'var(--rose-ink)' : 'var(--ink)'}">${nm}</span><span>named in ${k.toLocaleString()} answers</span></div>`).join('')}
+    <p class="small">Rose: practices we track as rivals.${P !== 'week' ? ' Smile Cape Coral is named more than last month, mostly on sedation questions.' : ''}</p>
+  </section>
+  <section class="p"><div class="eyebrow">How AI describes ${T.PRACTICE}</div><h2 class="mid">A friendly, gentle team that puts nervous patients at ease.</h2>
+    ${D.THEMES.map((t) => `<div class="theme"><b>${t.theme}</b><blockquote>"${t.quote}"</blockquote><div class="by">${t.ai} · one of ${sc(t.count)} answers that say this</div></div>`).join('')}
+  </section>
+  <section class="p"><div class="two"><div class="list"><div class="eyebrow" style="border:0">What we did</div>${D.WORK.map((w) => `<div><b style="color:var(--ink)">${w.text}</b><div class="d">${w.date} · <a href="#">${w.link}</a></div></div>`).join('')}</div>
+    <div class="list"><div class="eyebrow" style="border:0">What's next</div>${D.NEXT.map((n) => `<div>${n.text}</div>`).join('')}</div></div></section>
+  <div class="foot"><span>Based on ${p.n.toLocaleString()} answers from ChatGPT, Gemini, AI Overviews, AI Mode and Perplexity, ${p.span}. Branded questions are left out of the count.</span><span>${P === 'week' ? '' : 'Perplexity updated its search on Dec 7.'}</span></div>`;
+  T.trend(pane.querySelector('#chart'), { lines: [{ name: 'All five AIs', w: p.trend, color: '#4F46E5', lead: true }], labels: T.WEEKS.slice(8 - p.trend.length), n: T.ANSWERS_PER_WEEK, max: 60, height: 180,
+    markers: T.MARKERS.map((m) => ({ ...m, at: m.at - (8 - p.trend.length) })).filter((m) => m.at >= 0) });
+}
+
+function day() {
+  const d = D.DAY;
+  pane.innerHTML = `
+  <section class="opener"><div class="eyebrow">What AI said on ${d.label}</div>
+    <h1 class="big">Three things happened, and two answers worth reading.</h1>
+    <p class="lede">One day is ${d.answers} answers: too few for a number that holds up, so the day shows what AI said, not a rate. <a href="#" data-go="week">See the week's number →</a></p></section>
+  <section class="p"><div class="eyebrow">What happened</div>${d.events.map((e) => `<div class="ev"><span class="ic ${e.kind}">${e.kind === 'new' ? '+' : e.kind === 'source' ? '↗' : '!'}</span><div><b>${e.text}</b><div class="small">${e.detail}</div></div></div>`).join('')}</section>
+  <section class="p"><div class="eyebrow">Answers worth reading</div>${d.quotes.map((q) => `<div class="quote"><div class="q">${q.ai} · "${q.q}"</div>"${q.text}"<div style="margin-top:8px;font-size:13px"><a href="#">Open the full answer →</a></div></div>`).join('')}</section>
+  <div class="foot"><span>${d.answers} answers from 5 AIs, morning and evening asks.</span></div>`;
+  pane.querySelector('[data-go]').onclick = (e) => { e.preventDefault(); P = 'week'; render(); };
+}
+
+function render() { drawPick(); window.scrollTo({ top: 0 }); if (P === 'day') day(); else period(); }
+T.stateBar([['off', 'Not tracking'], ['first', 'Day 3'], ['full', '8 weeks in']], 'full', (k) => {
+  document.querySelector('[data-live]').hidden = k === 'off';
+  pick.hidden = k !== 'full';
+  if (k === 'off') pane.innerHTML = T.startCard();
+  else if (k === 'first') pane.innerHTML = T.firstDays();
+  else render();
+});
+</script>
+</body>
+</html>

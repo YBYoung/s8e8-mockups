@@ -116,11 +116,11 @@ h2.mid { margin:8px 0 10px; font:800 28px/1.2 Inter; letter-spacing:-.02em; colo
     return b0 > a1 ? 'up' : b1 < a0 ? 'down' : 'steady';
   }
 
-  function topbar(el, { mock, onMeasure }) {
-    el.innerHTML = `<div class="mocknote"><b>Mockup ${mock}.</b> Sample data: what Kari Mann Dental Studio's Tracking could look like 8 weeks in (Nov 1 to Dec 26), starting from the real Oct 28 Snapshot. Use the bar at the bottom to switch states.</div>
+  function topbar(el, { mock, onMeasure, note, tab = 'Tracking' }) {
+    el.innerHTML = `<div class="mocknote"><b>Mockup ${mock}.</b> ${note || 'Sample data: what Kari Mann Dental Studio\'s Tracking could look like 8 weeks in (Nov 1 to Dec 26), starting from the real Oct 28 Snapshot. Use the bar at the bottom to switch states.'}</div>
     <div class="top"><div class="topin"><div class="bar"><div class="brand"><span class="logo"></span>AI Visibility</div>
       <div class="who"><button class="measure">How we measure</button><span><b>${PRACTICE}</b> · Snapshot Oct 28</span></div></div>
-      <div class="tabs">${['Story', 'Answers', 'Insights', 'Tracking'].map((t) => `<button class="tab ${t === 'Tracking' ? 'on' : ''}">${t}${t === 'Tracking' ? '<span class="live" data-live></span>' : ''}</button>`).join('')}</div></div></div>`;
+      <div class="tabs">${['Story', 'Answers', 'Insights', 'Tracking'].map((t) => `<button class="tab ${t === tab ? 'on' : ''}">${t}${t === 'Tracking' ? '<span class="live" data-live></span>' : ''}</button>`).join('')}</div></div></div>`;
     el.querySelector('.measure').onclick = onMeasure || measure;
   }
 
