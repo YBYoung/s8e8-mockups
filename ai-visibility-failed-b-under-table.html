@@ -6,13 +6,13 @@
 <title>Failed Answers Note B</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="ai-visibility-tracking-common.js"></script>
-<script src="ai-visibility-failed-kit.js?v=1029a"></script>
+<script src="ai-visibility-failed-kit.js?v=1029b"></script>
 </head>
 <body>
 <div id="top"></div>
 <main class="shell" id="m"></main>
 <script>
-TRK.topbar(document.getElementById('top'), { mock: 'failed answers note B, under the table', tab: 'Story', note: 'Story chapter 01 for Kari Mann Dental Studio, Snapshot of Oct 28 (real numbers). One AI Overviews search failed (Google returned an error twice), which is why the lede says 134 searches. Switch states at the bottom.' });
+TRK.topbar(document.getElementById('top'), { mock: 'failed answers note B, under the table', tab: 'Story', note: 'Story chapter 01 for Kari Mann Dental Studio, Snapshot of Oct 28 (real numbers). One AI Overviews search never came back (our search provider failed to fetch the page twice), which is why the lede says 134 searches. Switch states at the bottom.' });
 TRK.stateBar(FK.STATES, '1', (k) => FK.chapter(document.getElementById('m'), { place: 'foot', failed: +k }));
 </script>
 </body>

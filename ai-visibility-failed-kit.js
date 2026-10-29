@@ -21,15 +21,15 @@ table.rt { margin-top:22px; width:100%; max-width:540px; border-collapse:collaps
   const ROWS = [['chatgpt', 'ChatGPT', '#10A37F', 48, 105, '37 to 55'], ['gemini', 'Gemini', '#3B82F6', 39, 135, '22 to 37'], ['aio', 'AI Overviews', '#EA4335', 34, 69, '38 to 61'],
     ['aimode', 'AI Mode', '#8B5CF6', 49, 135, '29 to 45'], ['perplexity', 'Perplexity', '#64748B', 59, 135, '36 to 52'], ['chatgpt_near', 'ChatGPT near me', '#34D399', 0, 30, null]];
   const searches = (n) => (n === 1 ? '1 AI Overviews search' : `${n} AI Overviews searches`);
-  const tip = (n) => `<span class="tipbox"><b>Didn't come back</b>We asked AI Overviews ${ASKED} times. For ${n === 1 ? 'one of those searches' : `${n} of them`} Google returned an error, even after a second try, so there is no answer to count. ${n === 1 ? 'It is' : 'They are'} left out, not counted as "not named".</span>`;
+  const tip = (n) => `<span class="tipbox"><b>Didn't come back</b>We ran ${ASKED} AI Overviews searches. ${n === 1 ? 'One' : n} never came back: our search provider failed to fetch Google's results page, even after a second try, so there is no result of any kind to count. ${n === 1 ? 'It is' : 'They are'} left out, not counted as "not named". This is different from a search that got normal Google results without an AI Overview.</span>`;
   function chapter(el, { place, failed }) {
     const counted = ASKED - failed;
     const caveat = place === 'note' && failed
-      ? ` ${searches(failed)} didn't come back: Google returned an error even after a second try, so AI Overviews counts ${counted} searches, not ${ASKED}.` : '';
+      ? ` ${searches(failed)} didn't come back at all: our search provider failed to fetch Google's page, even after a second try, so AI Overviews counts ${counted} searches, not ${ASKED}.` : '';
     el.innerHTML = `<section class="ch"><div>
       <div class="eyebrow">01 · Long story short</div>
       <h2>AI names ${P} in about 4 of every 10 answers.</h2>
-      <p class="lede">Cape Dental Care comes up in about 3 of every 10. AI Overviews names ${P} most; Gemini, least. Google showed an AI Overview on only 69 of ${counted} searches.</p>
+      <p class="lede">Cape Dental Care comes up in about 3 of every 10. AI Overviews names ${P} most; Gemini, least. Google showed an AI Overview on 69 of ${counted} searches; the other ${counted - 69} got normal Google results, with no Overview.</p>
       <p class="small">The ChatGPT near-me row is a stand-in: a city-level near-me search can't be properly simulated on ChatGPT.${caveat}</p>
       <table class="rt"><thead><tr><th>AI</th><th><span class="tip">We saw</span></th><th><span class="tip">In reality, likely shows up</span></th></tr></thead><tbody>
       ${ROWS.map(([k, n, c, a, b, r]) => `<tr><td><span class="aidot" style="background:${c}"></span>${n}</td>
