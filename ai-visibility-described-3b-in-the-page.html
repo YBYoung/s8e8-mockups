@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: In the Page</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js"></script>
+<script src="ai-visibility-described-kit.js"></script>
+<style>
+/* the Insights tab as it is live: contents rail on the left, sections in the standard frame */
+.tabpage { display:grid; grid-template-columns:210px minmax(0,1fr); gap:36px; align-items:start; }
+.rail { position:sticky; top:120px; padding-top:48px; }
+.rail .eyebrow { margin:0 0 10px 10px; }
+.ri { display:grid; grid-template-columns:20px minmax(0,1fr); gap:6px; padding:8px 10px; border-radius:8px; font:600 14px/1.3 Inter; color:var(--ink); }
+.ri small { display:block; font:500 12.5px Inter; color:var(--muted); margin-top:2px; } .ri small.alert { color:#BE123C; }
+.ri .n { display:inline-grid; place-items:center; width:18px; height:18px; border-radius:5px; font:700 11px Inter; color:var(--muted); }
+.ri.on { background:var(--a-tint); } .ri.on .n { background:var(--a); color:#fff; } .ri.on { color:var(--a-ink); }
+.isec { display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:40px; padding:48px 0; border-top:1px solid var(--line); align-items:start; }
+.isec .eyebrow { display:flex; align-items:center; }
+.isec h2 { margin:8px 0 10px; font:800 28px/1.2 Inter; letter-spacing:-.02em; color:var(--ink); max-width:700px; }
+.isec .lede { font-size:16px; max-width:600px; }
+.faded { opacity:.45; }
+/* section 3: the figure on the right is the list you pick from */
+.figh { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:18px 0 4px; } .figh:first-child { margin-top:0; }
+.pick { width:100%; display:grid; grid-template-columns:minmax(0,1fr) 92px 64px; gap:10px; align-items:center; background:none; border:0; border-radius:8px; padding:8px 10px; text-align:left; font:600 14px Inter; color:var(--ink); }
+.pick:hover { background:#FAFAFB; } .pick.on { background:var(--a-tint); color:var(--a-ink); }
+.pick .bar { display:block; height:8px; background:var(--soft); border-radius:4px; overflow:hidden; } .pick .bar i { display:block; height:100%; border-radius:0 4px 4px 0; }
+.pick .ct { text-align:right; }
+.read { margin-top:26px; padding-top:22px; border-top:1px solid #F0F2F5; min-height:430px; }
+.read .tag { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; }
+.read h3 { margin:4px 0 6px; font:800 20px/1.3 Inter; color:var(--ink); }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 14px; } .byai b { color:var(--ink); }
+.sov { display:grid; grid-template-columns:minmax(0,1fr) 120px 40px; gap:10px; align-items:center; font-size:13.5px; color:var(--ink); padding:5px 0; }
+.sov .bar { height:10px; border-radius:0 4px 4px 0; display:block; }
+@media (max-width:1100px) { .tabpage { grid-template-columns:1fr; } .rail { display:none; } }
+@media (max-width:900px) { .isec { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const { D, ai, quote, lower, toneRows, offers } = DK;
+TRK.topbar(document.getElementById('top'), { mock: '3 in the page', tab: 'Insights', note: 'Pick and read inside the Insights tab as it is live: the contents rail, the end of section 2, the start of section 4. Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const rail = [['Facts AI gets wrong', '19 wrong facts', 'alert'], ['AI Share of Voice', 'about 9 of every 100'], ['How AI describes it', `${D.tone.positive} of ${D.named} praise it`],
+  ['Every time, sometimes, never', '25 to win'], ['Own pages AI cites', '15 pages'], ['Where sources come from', 'coastdental.com leads']];
+const items = [
+  ...D.themes.map((t, i) => ({ id: `t${i}`, grp: 'What AI praises', name: t.name, w: t.answers / D.named, c: 'var(--praise)', ct: `${t.answers}` })),
+  ...D.concerns.map((c, i) => ({ id: `c${i}`, grp: 'What AI warns about', name: c.name, w: c.answers / c.of, c: 'var(--warn)', ct: `${c.answers} of ${c.of}` })),
+  { id: 'list', grp: 'Everything else', name: 'Listed, not praised', w: D.tone.neutral / D.named, c: 'var(--list)', ct: `${D.tone.neutral}` },
+  { id: 'ai', grp: 'Everything else', name: 'How each AI describes it', w: 0, ct: '5 AIs' },
+  { id: 'offers', grp: 'Everything else', name: 'What AI says it offers', w: 0, ct: `${D.offers.length}` },
+];
+let g = '';
+const figure = items.map((x) => { const h = x.grp !== g ? `<div class="figh">${x.grp}</div>` : ''; g = x.grp;
+  return `${h}<button class="pick" data-id="${x.id}"><span>${x.name}</span>${x.w ? `<span class="bar"><i style="width:${x.w * 100}%;background:${x.c}"></i></span>` : '<span></span>'}<span class="ct">${x.ct}</span></button>`; }).join('');
+const sovRows = [['Kari Mann Dental Studio', 229, 'var(--a)'], ['Cape Dental Care', 170, 'var(--rose)'], ['Sunset Harbor Dental', 157, 'var(--rose)'], ['Coast Dental Cape Coral', 106, 'var(--rose)']];
+
+document.getElementById('m').innerHTML = `<div class="tabpage">
+  <nav class="rail"><div class="eyebrow grey">On this page</div>${rail.map(([n, v, a], i) => `<div class="ri${i === 2 ? ' on' : ''}"><span class="n">${i + 1}</span><span>${n}<small class="${a || ''}">${v}</small></span></div>`).join('')}</nav>
+  <div>
+    <section class="isec faded"><div><div class="eyebrow"><span class="num">2</span>AI Share of Voice</div>
+      <h2>AI names Kari Mann Dental Studio more than any other dentist: 229 times, ahead of Cape Dental Care (170).</h2>
+      <p class="lede">That is about 9 of every 100 times AI named a dentist, the biggest share among the 243 practices it named.</p></div>
+      <div>${sovRows.map(([n, v, c]) => `<div class="sov"><span>${n}</span><span class="bar" style="width:${v / 229 * 120}px;background:${c}"></span><span>${v}</span></div>`).join('')}</div></section>
+
+    <section class="isec" id="s3"><div><div class="eyebrow"><span class="num">3</span>How AI describes it</div>
+      <h2>${D.verdict}</h2>
+      <p class="lede">Of the ${D.named} answers that name Kari Mann Dental Studio, ${D.tone.positive} praise it and ${D.tone.neutral} just list it. Pick anything on the right to read what AI said.</p>
+      <div class="read fade" id="read"></div></div>
+      <div>${figure}</div></section>
+
+    <section class="isec faded"><div><div class="eyebrow"><span class="num">4</span>Named every time, sometimes, or never</div>
+      <h2>AI names Kari Mann Dental Studio only sometimes on 25 questions: the easiest ground to win.</h2>
+      <p class="lede">When AI already names a practice now and then, a little more evidence (a page, reviews that say it, a listing) can make it every time.</p></div>
+      <div class="small">Who does dental implants well in Cape Coral? &nbsp;<b style="color:var(--ink)">17 of 23</b></div></section>
+  </div></div>`;
+
+function read(id) {
+  if (id[0] === 't') { const t = D.themes[+id.slice(1)];
+    return `<div class="tag" style="color:var(--praise)">Praised for</div><h3>${t.name}</h3><p class="sub">In <b style="color:var(--ink)">${t.answers}</b> of the ${D.named} answers that name the practice, ${t.ais === 5 ? 'all 5 AIs' : `${t.ais} AIs`}.</p>${t.quotes.map((q) => quote(q)).join('')}`; }
+  if (id[0] === 'c') { const c = D.concerns[+id.slice(1)];
+    return `<div class="tag" style="color:var(--warn)">Warned about</div><h3>${c.name}</h3><p class="sub">Asked about the practice by name, AI brought up ${lower(c.name)} in <b style="color:var(--ink)">${c.answers} of the ${c.of}</b> answers${c.elsewhere ? `, and in ${c.elsewhere} other answers` : ''}.</p>
+      <div class="byai">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div>
+      ${c.quotes.slice(0, 2).map((q) => quote(q, true)).join('')}${c.suggestion ? `<div class="worth"><span><b>Worth doing:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}`; }
+  if (id === 'list') return `<div class="tag" style="color:var(--muted)">Listed, not praised</div><h3>${D.tone.neutral} answers name it like a directory</h3><p class="sub">Name, services, address, phone, and no opinion. Not a bad sign: a listing still sends people.</p>${quote(D.listed.example)}`;
+  if (id === 'ai') return `<h3 style="margin-bottom:14px">How each AI describes it</h3>${toneRows()}`;
+  return `<h3 style="margin-bottom:6px">What AI says it offers</h3><p class="sub">Services, not praise: kept apart so the praise stays praise.</p>${offers()}`;
+}
+const r = document.getElementById('read');
+function pick(id) {
+  document.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.id === id));
+  r.classList.remove('fade'); void r.offsetWidth; r.classList.add('fade'); r.innerHTML = read(id);
+}
+document.querySelectorAll('.pick').forEach((b) => { b.onclick = () => pick(b.dataset.id); });
+pick('t0');
+window.scrollTo(0, 0);
+</script>
+</body>
+</html>
