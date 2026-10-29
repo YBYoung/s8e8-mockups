@@ -6,8 +6,8 @@
 <title>Described: Read in Place</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="ai-visibility-tracking-common.js"></script>
-<script src="ai-visibility-described-data.js"></script>
-<script src="ai-visibility-described-kit.js"></script>
+<script src="ai-visibility-described-data.js?v=1029d"></script>
+<script src="ai-visibility-described-kit.js?v=1029d"></script>
 <style>
 /* the Insights tab as it is live: contents rail on the left, sections in the standard frame */
 .tabpage { display:grid; grid-template-columns:210px minmax(0,1fr); gap:36px; align-items:start; }
@@ -62,7 +62,7 @@
 <main class="shell" id="m"></main>
 <script>
 const { D, ai, lower, toneRows, offers } = DK;
-const FULL = window.DV2_ANSWERS, PRACTICE = 'Kari Mann Dental Studio';
+const FULL = window.DV2_ANSWERS || null, PRACTICE = 'Kari Mann Dental Studio';
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 /** A line as the quote was cleaned: links to their words, citation marks, bold and code marks gone, long dashes as commas. */
 const plain = (t) => t.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\[\d+\]/g, '').replace(/\*\*|__|`/g, '').replace(/\\([^\w\s])/g, '$1')
@@ -104,6 +104,7 @@ document.addEventListener('click', (e) => {
   const box = e.target.closest('.q');
   if (open) {
     const a = box.querySelector('.ans');
+    if (!FULL || !FULL[box.dataset.a]) { a.innerHTML = '<p>This answer did not load. Reload the page to read it here.</p>'; box.classList.add('open'); return; }
     if (!a.innerHTML) a.innerHTML = answerHtml(+box.dataset.a, box.dataset.quote.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>'), box.dataset.kind);
     box.classList.add('open');
     setTimeout(() => { const hl = a.querySelector('[data-hl]'); if (hl) { const r = hl.getBoundingClientRect(); if (r.top < 90 || r.bottom > innerHeight - 40) hl.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }, 380);
