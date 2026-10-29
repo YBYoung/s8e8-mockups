@@ -175,8 +175,8 @@ h2.mid { margin:8px 0 10px; font:800 28px/1.2 Inter; letter-spacing:-.02em; colo
     const band = lead.w.map((v) => range(v, n));
     const area = band.map(([lo], i) => `${x(i)},${y(lo)}`).concat(band.map(([, hi], i) => `${x(i)},${y(hi)}`).reverse()).join(' ');
     const dayDots = dayVals ? dayVals.slice(0, 7 * (labels.length - 1) + 1).map((v, d) => `<circle cx="${x(d / 7)}" cy="${y(v)}" r="2" fill="#C7CBF5"/>`).join('') : '';
-    const mk = markers.map((m) => `<g><line x1="${x(m.at)}" x2="${x(m.at)}" y1="${T - 14}" y2="${H - B}" stroke="${m.kind === 'work' ? '#A5B4FC' : '#D0D5DD'}" stroke-dasharray="3 3"/>
-      <rect x="${x(m.at) - 5}" y="${T - 22}" width="10" height="10" rx="2" fill="${m.kind === 'work' ? '#4F46E5' : '#98A2B3'}"/></g>`).join('');
+    const mk = markers.map((m) => `<g><line x1="${x(m.at)}" x2="${x(m.at)}" y1="${T - 14}" y2="${H - B}" stroke="${m.kind === 'work' ? '#A5B4FC' : m.kind === 'track' ? '#667085' : '#D0D5DD'}" stroke-dasharray="3 3"/>
+      <rect x="${x(m.at) - 5}" y="${T - 22}" width="10" height="10" rx="2" fill="${m.kind === 'work' ? '#4F46E5' : m.kind === 'track' ? '#0B1020' : '#98A2B3'}" ${m.kind === 'track' ? `transform="rotate(45 ${x(m.at)} ${T - 17})"` : ''}/></g>`).join('');
     const grid = [0, 0.5, 1].map((f) => { const v = Math.round(top * f); return `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#F2F4F7"/><text x="${W - R + 8}" y="${y(v) + 4}" font-size="${fs}" fill="#98A2B3">${axis(v)}</text>`; }).filter((_, k) => !mini || k !== 1).join('');
     const paths = lines.map((l) => `<polyline points="${l.w.map((v, i) => `${x(i)},${y(v)}`).join(' ')}" fill="none" stroke="${l.color}" stroke-width="${l.lead ? 2.5 : 2}" stroke-linejoin="round"/>
       ${l.w.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="${l.lead ? 4 : 3}" fill="${l.color}" stroke="#fff" stroke-width="2"/>`).join('')}`).join('');

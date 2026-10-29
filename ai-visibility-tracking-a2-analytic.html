@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="ai-visibility-tracking-common.js"></script>
 <script src="ai-visibility-tracking-data2.js"></script>
+<script src="ai-visibility-tracking-setup.js"></script>
 <style>
 .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:44px; padding-top:34px; }
 .rail { position:sticky; top:118px; align-self:start; display:flex; flex-direction:column; gap:2px; }
@@ -49,6 +50,11 @@ section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-mar
 .al { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-top:1px solid #F2F4F7; font-size:14px; }
 .sw { width:36px; height:20px; border-radius:10px; background:#D0D5DD; position:relative; border:0; } .sw::after { content:''; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .2s; }
 .sw.on { background:var(--a); } .sw.on::after { left:18px; }
+.lfl { font-size:13px; color:var(--muted); margin:4px 0 0; } .lfl b { color:var(--ink); }
+.aiol { display:block; font-size:12.5px; color:var(--muted); margin-top:3px; } .aiol .aio { font-size:12.5px; }
+.log { display:grid; grid-template-columns:90px minmax(0,1fr) 150px; gap:14px; padding:12px 0; border-top:1px solid #F2F4F7; font-size:14px; } .log .d { color:var(--muted); } .log .p { text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+.now { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin:6px 0 18px; } .now b { color:var(--ink); }
+.toast { position:fixed; left:50%; top:20px; transform:translateX(-50%); z-index:60; background:var(--ink); color:#fff; border-radius:10px; padding:10px 16px; font-size:14px; box-shadow:0 10px 30px rgba(16,24,40,.25); }
 .foot { margin-top:26px; display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); }
 @media (max-width:1000px) { .layout { grid-template-columns:1fr; } .rail { display:none; } .fr, .axis { grid-template-columns:130px 1fr 60px; } .fr .c, .fr .n, .axis span:nth-child(n+4) { display:none; } .cols { grid-template-columns:1fr; } .wf { grid-template-columns:1fr 1fr; } }
 </style>
@@ -59,8 +65,37 @@ section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-mar
 <script>
 const T = window.TRK, D = window.TRK2;
 T.topbar(document.getElementById('top'), { mock: 'A2, Tracking for the SEO',
-  note: 'Sample data, 8 weeks in. Real from the Oct 28 Snapshot: the cited sites and their counts, the phone, address and doctors, "Dr. Kinn", the questions. The weekly movement, alerts and work log are sample.' });
-const pane = document.getElementById('pane');
+  note: 'Sample data, 8 weeks in. Real from the Oct 28 Snapshot: the 30 questions, what each AI costs per answer (the prices), AI Overviews\' shown and named counts on the setup screen, the cited sites, the phone, address and doctors, "Dr. Kinn". The weekly movement, the Dec 14 change and its 2 new questions, alerts and work log are sample. Not tracking = the setup screen; 8 weeks in = What we track, at the end, with Change what we track.' });
+const pane = document.getElementById('pane'), S = window.TRK_SETUP;
+const ALL_AIS = S.AIS.map((a) => a.key);
+// What's tracked now: since Dec 14 (sample), 2 questions added and "Top rated dentists" stopped.
+let TRACK = { ais: [...ALL_AIS], qids: [...S.ORIGINAL.filter((id) => id !== 56), 901, 902] };
+const LOG = [
+  { d: 'Dec 14', what: 'Added 2 questions: "Veneers before and after: who in Cape Coral does the best work?" and "Same day emergency dentist in Cape Coral". Stopped "Top rated dentists in Cape Coral".', note: 'Client starting a veneers push. Google showed no Overview on Top rated in any search.', before: S.price(ALL_AIS, S.ORIGINAL).total, after: S.price(ALL_AIS, TRACK.qids).total },
+  { d: 'Nov 1', what: 'Tracking started: 30 questions on all 5 AIs.', note: '', before: null, after: S.price(ALL_AIS, S.ORIGINAL).total },
+];
+T.MARKERS.push({ week: 6, at: 6 + 1 / 7, kind: 'track', text: 'Tracking changed (Dec 14): 2 questions added, 1 stopped', detail: 'Compared like for like on the 29 questions tracked before and after.' });
+const kept = () => S.ORIGINAL.filter((id) => TRACK.qids.includes(id)).length;
+const nameOf = (k) => S.AIS.find((a) => a.key === k).name;
+const aioFor = (text) => S.QUESTIONS.find((q) => q.text === text);
+/** Sample weekly AI Overviews pair for a question, scaled from its real Snapshot rates. */
+function aioLine(text) {
+  const q = aioFor(text); if (!q || !q.ok) return '';
+  const n = 14 * PER[PERIOD].weeks, shown = Math.round((n * q.shown) / q.ok), named = q.shown ? Math.round((shown * q.named) / q.shown) : 0;
+  const tail = 'A change counts only when it moves past this range.';
+  return `<span class="aiol"><span class="aidot" style="background:#EA4335"></span>AI Overviews: Overview shown on ${S.seen(shown, n, 'shown', tail)} searches${shown ? `; when it did, named ${T.PRACTICE} in ${S.seen(named, shown, 'named', tail)}` : ''}</span>`;
+}
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3200); }
+function change() {
+  S.chooser(pane, { mode: 'change', now: TRACK, onCancel: () => { full(); document.getElementById('track').scrollIntoView(); },
+    onSave: (r) => {
+      const parts = [r.addQ.length && `added ${r.addQ.length} question${r.addQ.length > 1 ? 's' : ''}`, r.stopQ.length && `stopped ${r.stopQ.length} question${r.stopQ.length > 1 ? 's' : ''}`, r.addA.length && `started ${r.addA.map(nameOf).join(' and ')}`, r.stopA.length && `stopped ${r.stopA.map(nameOf).join(' and ')}`].filter(Boolean);
+      TRACK = { ais: r.ais, qids: r.qids };
+      LOG.unshift({ d: 'Dec 21', what: `${parts.join(', ').replace(/^./, (c) => c.toUpperCase())}. Starts with tomorrow morning's asks.`, note: r.note, before: r.before, after: r.after });
+      T.MARKERS.push({ week: 7, at: 7, kind: 'track', text: `Tracking changes (Dec 21): ${parts.join(', ')}`, detail: '' });
+      full(); document.getElementById('track').scrollIntoView(); toast('Saved. The change starts with tomorrow morning\'s asks.');
+    } });
+}
 let PERIOD = 'week', COMPARE = 'start';
 const PER = { week: { label: 'Last 7 days', weeks: 1 }, month: { label: 'Last 28 days', weeks: 4 }, quarter: { label: 'This quarter', weeks: 8 } };
 const avg = (a) => a.reduce((t, v) => t + v, 0) / a.length;
@@ -85,10 +120,11 @@ const svcFor = (ai, s) => s.w.map((v, i) => Math.max(0, Math.min(95, v + (ai.w[i
 function full() {
   const { now, prev } = pair(T.OVERALL), n = T.ANSWERS_PER_WEEK * PER[PERIOD].weeks, [lo, hi] = T.range(now, n), ch = T.realChange([prev, now], n);
   pane.innerHTML = `<div class="layout"><nav class="rail" id="rail">
-      ${[['overview', 'Overview'], ['ais', 'By AI'], ['services', 'Services and questions'], ['rivals', 'Rivals'], ['sources', 'Sources'], ['facts', 'Wrong facts'], ['steady', 'Steadiness'], ['alerts', 'Alerts']].map(([k, l], i) => `${i === 4 ? '<span class="sep"></span>' : ''}<a href="#${k}" data-k="${k}">${l}</a>`).join('')}
+      ${[['overview', 'Overview'], ['ais', 'By AI'], ['services', 'Services and questions'], ['rivals', 'Rivals'], ['sources', 'Sources'], ['facts', 'Wrong facts'], ['steady', 'Steadiness'], ['alerts', 'Alerts'], ['track', 'What we track']].map(([k, l], i) => `${i === 4 ? '<span class="sep"></span>' : ''}<a href="#${k}" data-k="${k}">${l}</a>`).join('')}
     </nav><div>
     <div class="controls"><div class="seg" id="per">${Object.entries(PER).map(([k, p]) => `<button data-p="${k}" class="${k === PERIOD ? 'on' : ''}">${p.label}</button>`).join('')}</div>
       <span>compared with</span><div class="seg" id="cmp"><button data-c="prev" class="${COMPARE === 'prev' ? 'on' : ''}">the period before</button><button data-c="start" class="${COMPARE === 'start' ? 'on' : ''}">when tracking started</button></div></div>
+    <p class="lfl tip" style="display:inline-block;border:0">Like for like: <b>${kept()} questions</b> tracked both before and after the Dec 14 change, on ${TRACK.ais.length === 5 ? 'all 5 AIs' : `${TRACK.ais.length} AIs`}. <a href="#track">What changed</a><span class="tipbox"><b>Like for like</b>When the questions or AIs change, a week before the change and a week after are compared only on what was tracked in both. Questions added on Dec 14 have their own line from Dec 14 on; the stopped question's weeks stay in its own history.</span></p>
     <section class="s" id="overview" style="padding-top:20px"><div class="eyebrow">Overview · ${PER[PERIOD].label.toLowerCase()}</div>
       <h2 class="mid">AI named ${T.PRACTICE} in about ${Math.round(now / 10)} in every 10 answers: ${ch === 'up' ? 'a real rise' : ch === 'down' ? 'a real drop' : 'within the normal swing'}.</h2>
       <div class="stat"><span>Named in <b>${Math.round((now / 100) * n).toLocaleString()} of ${n.toLocaleString()}</b> answers</span><span><span class="tip">Likely <b>${lo} to ${hi}</b> in every 100<span class="tipbox">${T.rangeTip(now, n)}</span></span></span><span>${COMPARE === 'start' ? 'First week' : 'Period before'}: <b>${T.range(prev, n).join(' to ')}</b></span><span>Named first in <b>274</b> answers</span></div>
@@ -97,8 +133,8 @@ function full() {
     <section class="s" id="ais"><div class="eyebrow">By AI</div><h2 class="mid">${movers(T.AIS.map((a) => [a.name, a.w, 378]), 'AI')}</h2><p class="small">Click an AI for its services. The bar is the likely range; the hollow dot is the period it's compared with.</p>
       ${AXIS_()}${T.AIS.map((a) => row(`<span class="aidot" style="background:${a.dot}"></span>${a.name}`, a.w, 378, '', `<div class="kids" data-kids="${a.key}" hidden>${T.SERVICES.map((s) => row(s.name, svcFor(a, s), s.q * 14, 'sub')).join('')}</div>`, a.key)).join('')}
       <p class="small" style="margin-top:12px">Perplexity: a grey flag on Dec 7. ${T.MARKERS[1].detail}</p></section>
-    <section class="s" id="services"><div class="eyebrow">Services and questions</div><h2 class="mid">${movers(T.SERVICES.map((x) => [x.name, x.w, x.q * 70]), 'service')} Emergency is still about 0 in 10.</h2><p class="small">Click a service for its questions. Each question shows its last 14 asks on Gemini (lit: named).</p>
-      ${AXIS_()}${T.SERVICES.map((s) => row(s.name, s.w, s.q * 70, '', `<div class="kids" data-kids="${s.name}" hidden>${D.QUESTIONS.filter((q) => q.service === s.name).map((q) => `<div class="fr sub2"><span class="nm">${q.text}<br><a href="#" style="font-size:12.5px">See the answers →</a></span><span><span class="strip">${[...q.last14].map((b) => `<i class="${b === '1' ? 'on' : ''}"></i>`).join('')}</span></span><span class="v">${Math.round(q.rate / 10)} in 10</span><span class="c steady">${steadiness(q.last14)}</span><span class="n">${70 * PER[PERIOD].weeks} answers</span></div>`).join('') || '<p class="small" style="padding-left:46px">Questions shown for the sample services only.</p>'}</div>`, s.name)).join('')}
+    <section class="s" id="services"><div class="eyebrow">Services and questions</div><h2 class="mid">${movers(T.SERVICES.map((x) => [x.name, x.w, x.q * 70]), 'service')} Emergency is still about 0 in 10.</h2><p class="small">Click a service for its questions. Each question shows its last 14 asks on Gemini (lit: named), and for AI Overviews two numbers: how often Google showed an Overview, and when it did, how often it named ${T.PRACTICE}.</p>
+      ${AXIS_()}${T.SERVICES.map((s) => row(s.name, s.w, s.q * 70, '', `<div class="kids" data-kids="${s.name}" hidden>${D.QUESTIONS.filter((q) => q.service === s.name).map((q) => `<div class="fr sub2"><span class="nm">${q.text}${aioLine(q.text)}<a href="#" style="font-size:12.5px;display:inline-block;margin-top:3px">See the answers →</a></span><span><span class="strip">${[...q.last14].map((b) => `<i class="${b === '1' ? 'on' : ''}"></i>`).join('')}</span></span><span class="v">${Math.round(q.rate / 10)} in 10</span><span class="c steady">${steadiness(q.last14)}</span><span class="n">${70 * PER[PERIOD].weeks} answers</span></div>`).join('') || '<p class="small" style="padding-left:46px">Questions shown for the sample services only.</p>'}</div>`, s.name)).join('')}
     </section>
     <section class="s" id="rivals"><div class="eyebrow">Rivals</div><h2 class="mid">Smile Cape Coral is gaining, mostly on sedation.</h2>
       <div class="box"><span class="eyebrow grey">Out of every 100 times AI named a dentist</span><div id="share"></div><div class="key">${T.RIVALS.slice(0, 3).map((r, i) => `<span><i style="background:${['#4F46E5', '#F9A8D4', '#DB2777'][i]};border-radius:50%"></i>${r.name}</span>`).join('')}</div></div>
@@ -116,7 +152,16 @@ function full() {
     <section class="s" id="alerts" style="border:0"><div class="eyebrow">Alerts</div><h2 class="mid">Tell the SEO only when something really moves.</h2><p class="small">An alert fires when a change clears the normal swing, never on one day.</p>
       ${[['A real rise or drop for the practice', true], ['A service moves past its normal swing', true], ['A new wrong fact appears', true], ['A tracked rival gains for 2 weeks running', false], ['Monday summary of the week', true]].map(([t, on]) => `<div class="al"><span>${t}</span><button class="sw ${on ? 'on' : ''}" aria-label="${t}"></button></div>`).join('')}
       <p class="small" style="margin-top:12px">Sent to the client's SEO in Slack. <a href="#">Add a work marker</a> (a listing fixed, a page published) so the chart explains itself.</p></section>
-    <div class="foot"><span>Next asks this evening at 6 · 30 questions on 5 AIs</span><span>$27.80 spent this month, about $${T.PRICE} a month · <a href="#">Stop tracking</a></span></div>
+    <section class="s" id="track" style="border:0"><div class="eyebrow">What we track</div><h2 class="mid">${TRACK.qids.length} questions on ${TRACK.ais.length === 5 ? 'all 5 AIs' : `${TRACK.ais.length} AIs`}, about ${S.usd(S.price(TRACK.ais, TRACK.qids).total)} a month.</h2>
+      <div class="now"><span>${TRACK.ais.map((k) => { const a = S.AIS.find((x) => x.key === k); return `<span class="aidot" style="background:${a.dot}"></span>${a.name}`; }).join(' &nbsp; ')}</span><button class="btn go" data-change>Change what we track</button></div>
+      <p class="small">Every change starts with the next morning's asks, goes on every chart as a dark diamond, and keeps what came before.</p>
+      <h4 style="margin:22px 0 4px;color:var(--ink)">Changes</h4>
+      ${LOG.map((l) => `<div class="log"><span class="d">${l.d}</span><span>${l.what}${l.note ? `<div class="small">Why: ${l.note}</div>` : ''}</span><span class="p">${l.before == null ? `about ${S.usd(l.after)} a month` : `${S.usd(l.before)} → ${S.usd(l.after)} a month`}</span></div>`).join('')}
+      <h4 style="margin:22px 0 4px;color:var(--ink)">No longer tracked</h4>
+      ${(() => { const qs = S.ORIGINAL.filter((id) => !TRACK.qids.includes(id)).map(S.byId), ais = ALL_AIS.filter((k) => !TRACK.ais.includes(k));
+        return qs.length + ais.length ? [...ais.map((k) => `<div class="log"><span class="d">AI</span><span>${nameOf(k)}<div class="small">Stops Dec 21. Its weeks stay on the By AI chart, ending there.</div></span><span class="p"><a href="#" data-again-ai="${k}">Track again</a></span></div>`), ...qs.map((q) => `<div class="log"><span class="d">Question</span><span>${q.text}<div class="small">${q.id === 56 ? 'Tracked Nov 1 to Dec 13: 6 weeks of answers kept.' : 'Stops Dec 21: 8 weeks of answers kept.'} <a href="#">See its history</a></div></span><span class="p"><a href="#" data-again="${q.id}">Track again</a></span></div>`)].join('') : '<p class="small">Nothing stopped yet.</p>'; })()}
+    </section>
+    <div class="foot"><span>Next asks this evening at 6 · ${TRACK.qids.length} questions on ${TRACK.ais.length} AIs</span><span>$27.80 spent this month, about ${S.usd(S.price(TRACK.ais, TRACK.qids).total)} a month · <a href="#">Stop tracking</a></span></div>
   </div></div>`;
   wire();
 }
@@ -143,6 +188,9 @@ function wire() {
   pane.querySelector('#cmp').onclick = (e) => { if (e.target.dataset.c) { COMPARE = e.target.dataset.c; full(); } };
   pane.querySelectorAll('[data-open]').forEach((r) => { r.onclick = () => { const k = pane.querySelector(`[data-kids="${r.dataset.open}"]`); if (k) k.hidden = !k.hidden; }; });
   pane.querySelectorAll('.sw').forEach((b) => { b.onclick = () => b.classList.toggle('on'); });
+  pane.querySelector('[data-change]').onclick = change;
+  pane.querySelectorAll('[data-again]').forEach((a) => { a.onclick = (e) => { e.preventDefault(); change(); }; });
+  pane.querySelectorAll('[data-again-ai]').forEach((a) => { a.onclick = (e) => { e.preventDefault(); change(); }; });
   T.trend(pane.querySelector('#share'), { lines: [{ name: T.PRACTICE, w: T.RIVALS[0].w.map((v) => v / 10), color: '#4F46E5' }, { name: 'Cape Dental Care', w: T.RIVALS[1].w.map((v) => v / 10), color: '#F9A8D4' }, { name: 'Smile Cape Coral', w: T.RIVALS[2].w.map((v) => v / 10), color: '#DB2777', lead: true }],
     n: 2400, height: 200, markers: [], max: 14, fmt: (v) => `about ${Math.round(v)} of every 100`, axis: (v) => `${Math.round(v)} of 100`, unit: 'times AI named a dentist' });
   const links = pane.querySelectorAll('.rail a');
@@ -151,7 +199,7 @@ function wire() {
 }
 T.stateBar([['off', 'Not tracking'], ['first', 'Day 3'], ['full', '8 weeks in']], 'full', (k) => {
   document.querySelector('[data-live]').hidden = k === 'off';
-  if (k === 'off') { pane.innerHTML = T.startCard(); pane.querySelector('[data-start]').onclick = () => document.querySelector('.statebar [data-k="first"]').click(); }
+  if (k === 'off') S.chooser(pane, { mode: 'start', now: { ais: [...ALL_AIS], qids: [...S.ORIGINAL] }, onSave: () => document.querySelector('.statebar [data-k="first"]').click() });
   else if (k === 'first') pane.innerHTML = T.firstDays();
   else full();
 });
