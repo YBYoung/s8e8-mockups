@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracking Line Charts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-tracking-lines.js"></script>
+<style>
+.ctl { position:sticky; top:96px; z-index:15; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:14px 0; margin-bottom:8px; font-size:13.5px; color:var(--muted); border-bottom:1px solid var(--line); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; padding:3px; gap:2px; position:relative; }
+.seg button { position:relative; z-index:1; background:none; border:0; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); transition:color .25s; }
+.seg button.on { color:var(--a-ink); }
+.seg .pill { position:absolute; top:3px; bottom:3px; border-radius:6px; background:var(--a-tint); transition:left .35s cubic-bezier(.4,0,.2,1), width .35s cubic-bezier(.4,0,.2,1); }
+.intro { padding:30px 0 10px; }
+.cmp { font-weight:600; color:var(--ink); }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell">
+  <section class="intro"><div class="eyebrow">Tracking chart · 5 line versions</div>
+    <h2 class="mid">Five ways to draw the same line. Pick one, or parts of two.</h2>
+    <p class="small" style="max-width:760px">Same sample data in all five (Kari Mann Dental Studio, 8 weeks, yesterday = Dec 26). The controls change all five at once, so the transitions can be compared. Hover any chart: the numbers show in the strip above it, never on top of the line.</p></section>
+  <div class="ctl"><div class="seg" id="per"><span class="pill"></span><button data-p="yday">Yesterday</button><button data-p="week" class="on">Last 7 days</button><button data-p="month">Last 28 days</button></div>
+    <span>compared with <span class="cmp" id="cmpl"></span></span>
+    <div class="seg" id="mode" style="margin-left:auto"><span class="pill"></span><button data-m="all" class="on">All AIs</button><button data-m="each">Each AI</button></div></div>
+  <div id="list"></div>
+</main>
+<script>
+const T = window.TRK, LN = window.LINES;
+T.topbar(document.getElementById('top'), { mock: 'Line chart versions for Tracking', note: 'Five line charts on the same sample data. Owner 10/29: lines, not steps, bars or columns.' });
+const V = [
+  ['band', 'Line and likely range', 'One smooth line, one point per week. The soft band around it is the likely range: where the week\'s true number most likely sits. Days only show when hovered.'],
+  ['daywk', 'Day and week lines', 'Two lines, told apart by weight: the thin light line is each day (about 258 answers, so it wiggles), the bold line is each week (about 1,800 answers, so it\'s steady). Each is labelled at its end.'],
+  ['area', 'Area', 'The weekly line with a soft fill under it. The likely range is two faint dashed lines, the likely high and the likely low.'],
+  ['focus', 'Now against before', 'The whole line in grey, with the two stretches being compared drawn bold: indigo for now, dark grey for what it\'s compared with, each labelled with its number. Change the period and both move.'],
+  ['roll', 'Rolling 7 days', 'One line that moves every day: each point is the 7 days ending that day. Smooth like a week, current like a day, with nothing to tell apart. The band is its likely range.'],
+];
+const PER = { yday: { label: 'Yesterday', p: [55, 55], c: [48, 54], cl: 'the 7 days before' }, week: { label: 'Last 7 days', p: [49, 55], c: [42, 48], cl: 'the 7 days before' }, month: { label: 'Last 28 days', p: [28, 55], c: [0, 27], cl: 'the 28 days before' } };
+let st = { per: 'week', mode: 'all' };
+document.getElementById('list').innerHTML = V.map(([k, t, h], i) => `<div class="lv"><div class="num">Version ${i + 1}</div><h3>${t}</h3><p class="how">${h}</p><div data-c="${k}"></div></div>`).join('');
+const charts = V.map(([k]) => LN.chart(document.querySelector(`[data-c="${k}"]`), k));
+const pill = (seg) => { const on = seg.querySelector('button.on'), p = seg.querySelector('.pill'); p.style.left = `${on.offsetLeft}px`; p.style.width = `${on.offsetWidth}px`; };
+function apply() {
+  const P = PER[st.per];
+  document.getElementById('cmpl').textContent = `${P.cl} (${LN.span(...P.c)})`;
+  document.querySelectorAll('#per button').forEach((b) => b.classList.toggle('on', b.dataset.p === st.per));
+  document.querySelectorAll('#mode button').forEach((b) => b.classList.toggle('on', b.dataset.m === st.mode));
+  pill(document.getElementById('per')); pill(document.getElementById('mode'));
+  charts.forEach((c) => c.set({ mode: st.mode, period: P.p, compare: P.c, label: P.label }));
+}
+document.getElementById('per').onclick = (e) => { if (e.target.dataset.p) { st.per = e.target.dataset.p; apply(); } };
+document.getElementById('mode').onclick = (e) => { if (e.target.dataset.m) { st.mode = e.target.dataset.m; apply(); } };
+apply();
+</script>
+</body>
+</html>

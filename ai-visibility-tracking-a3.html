@@ -163,13 +163,14 @@ function setRow(el, s) {
   const q = (k) => el.querySelector(k);
   Object.assign(q('.rg').style, { left: pos(lo), width: `calc(${pos(hi)} - ${pos(lo)})` });
   q('.was').style.left = pos(s.prev); q('.nw').style.left = pos(s.now);
-  const ln = q('.ln'); ln.className = `ln ${v}`; Object.assign(ln.style, { left: pos(a), width: `calc(${pos(b)} - ${pos(a)})` });
+  const ln = q('.ln'); ln.className = `ln ${v}`; const gap = v === 'none' ? 0 : 10;
+  Object.assign(ln.style, s.now >= s.prev ? { left: pos(a), width: `max(0px, calc(${pos(b)} - ${pos(a)} - ${gap}px))` } : { left: `calc(${pos(a)} + ${gap}px)`, width: `max(0px, calc(${pos(b)} - ${pos(a)} - ${gap}px))` });
   q('.v').textContent = `${inTen(s.now)} in 10`;
   const c = q('.c'); c.className = `c tip ${v}`; q('.c .t').textContent = `${v === 'up' ? '↑ ' : v === 'down' ? '↓ ' : ''}${VERDICT[v]}`;
   q('.c .tipbox').innerHTML = `<b>${VERDICT[v][0].toUpperCase()}${VERDICT[v].slice(1)}</b>Now likely ${lo} to ${hi} in every 100 (${s.n.toLocaleString()} answers); ${cmpLabel()} likely ${C.range(s.prev, s.nPrev).join(' to ')} (${s.nPrev.toLocaleString()} answers). ${VTIP[v]}`;
   q('.n').textContent = `${s.n.toLocaleString()} answers`;
 }
-const rkey = () => `<div class="rkey"><span><span class="sw" style="width:3px;height:14px;background:#98A2B3;border-radius:2px;display:inline-block"></span>${cmpLabel()}</span><span><span class="sw" style="width:12px;height:12px;border-radius:50%;background:var(--a);display:inline-block"></span>${P().label.toLowerCase()}</span><span><span class="sw" style="width:26px;height:10px;border-radius:5px;background:#DADDFB;display:inline-block"></span>likely range now</span><span><span class="sw" style="width:22px;height:2px;background:var(--a);display:inline-block"></span>arrow: a real change</span><span><span class="sw" style="width:22px;height:2px;background:repeating-linear-gradient(90deg,#98A2B3 0 3px,transparent 3px 6px);display:inline-block"></span>dotted: no real change</span></div>`;
+const rkey = () => `<div class="rkey"><span><span class="sw" style="width:3px;height:14px;background:#98A2B3;border-radius:2px;display:inline-block"></span>${cmpLabel()}</span><span><span class="sw" style="width:12px;height:12px;border-radius:50%;background:var(--a);display:inline-block"></span>${P().label.toLowerCase()}</span><span><span class="sw" style="width:26px;height:10px;border-radius:5px;background:#DADDFB;display:inline-block"></span>likely range now</span><span><svg class="sw" width="26" height="10" viewBox="0 0 26 10" style="display:inline-block"><path d="M1 5H19" stroke="#4F46E5" stroke-width="2"/><path d="M18 1l7 4-7 4z" fill="#4F46E5"/></svg>arrow: a real change</span><span><span class="sw" style="width:22px;height:2px;background:repeating-linear-gradient(90deg,#98A2B3 0 3px,transparent 3px 6px);display:inline-block"></span>dotted: no real change</span></div>`;
 const axis = () => `<div class="axis"><span></span><span></span><span class="sc">${[0, 20, 40, 60].map((v) => `<span style="left:${pos(v)}">${v ? `${v / 10} in 10` : 0}</span>`).join('')}</span><span></span><span>Against ${cmpLabel().split(' (')[0]}</span><span></span></div>`;
 
 function questionsFor(svc) {
