@@ -80,6 +80,7 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
 /* chart controls */
 .ctl{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:6px}
 .ctl .grp{display:flex;align-items:center;gap:8px}
+.ctl .rnote{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
 .ctl .eb{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--axis)}
 .seg{position:relative;display:inline-flex;border-radius:8px;border:1px solid #E5E7EB;background:#F1F3F5;padding:3px}
 .seg button{position:relative;z-index:1;border:0;background:none;border-radius:6px;padding:4px 11px;font-size:12px;font-weight:600;color:#6B7280;transition:color .2s;white-space:nowrap}
@@ -146,11 +147,6 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
 /* searches */
 .sr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
 @media (max-width:1000px){.sr-row{grid-template-columns:1fr}}
-.opt{font:700 10.5px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-.big{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
-.big-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
-.split{font-size:12.5px;color:var(--body);margin-top:6px}
-.split b{color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* season strip */
 .strip{display:grid;grid-template-columns:230px repeat(12,minmax(0,1fr)) 210px;gap:2px;align-items:center}
@@ -220,10 +216,10 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
 <div class="mock"><span class="mk">Mockup</span><b>Market Trends charts, round 2.</b> Real data only: Bothell Family Dentistry check #23 (read for the US, with a Washington side read), Expedition Pediatric Dentistry check #22 (read for Washington) and Expedition's strategy check #16 for the many-topics view. All checks read on 10/29 and 10/24, called on September 2026.
 <ul>
 <li>What changed vs live: October 2026 is dotted and every end mark sits on September, so lines no longer dive at the end; the readout lives in a fixed bar above the plot and never moves the chart.</li>
-<li>The approved Topic Cards chrome is back: last 12 / 12 before bands with level lines, 0 / 50 / 100 grid, and a 12 / 24 / 5 year switch that zooms instead of jumping.</li>
+<li>Every topic chart opens on 24 months with the two July to September windows the verdict compares, labelled "this year" and "last year", each with its average as a level line. The Shade switch is gone. 0 / 50 / 100 grid, and a 12 / 24 / 5 year switch that zooms instead of jumping.</li>
 <li>The Washington line wears its phrase's colour, dashed, and is only drawn when the state read is readable (T10); more than 4 topics become small multiples; seasons use the repeat rule (T6).</li>
 <li>Chart A gains the rose "Our practices combined" chip: all our clients' Search Console showings on the lead phrase, averaged per practice a week, on its own rose scale (data starts Sep 2025; a backfill to Nov 2024 is planned). Expedition's own site is a second chip with its own dashed panel; Bothell has no Search Console yet. Expedition's own line needs a new read in the check (cheap: same table, one client).</li>
-<li>Owner questions are marked <span class="oq">Owner question</span> in grey notes: bands, searches line or bars, the rating on prospect checks.</li>
+<li>Searches a month: the approved Topic Cards bars only. Owner questions are marked <span class="oq">Owner question</span> in grey notes: a caution line on the falling searches a month, and the rating on prospect checks.</li>
 </ul></div>
 <div class="app">
 <aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item is-active" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside>
@@ -246,27 +242,27 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
 <p>Clearly means more than 15 in every 100 ahead or behind, comparing July to September with the same three months a year earlier. Example: if dental searches overall stay flat and a topic grows 20 in every 100, it is 20 in every 100 ahead, so it is Rising.</p></div></div>
 
   <section class="sec" id="b-A"><div class="sec-h"><span class="lt">A</span><h3>The topic card chart, rebuilt to spec</h3></div>
-    <p class="sec-lede">Point at a chart, use the arrow keys after clicking it, switch 12 / 24 months / 5 years, toggle a phrase or our practices, and flip Shade between "Last 12 months vs the 12 before" and "Jul to Sep vs a year ago". Hover either for what it shades.</p>
+    <p class="sec-lede">Point at a chart, use the arrow keys after clicking it, switch 12 / 24 months / 5 years, or toggle a phrase or our practices. Each chart shades July to September this year and last year, the months compared for Rising, Steady or Fading.</p>
     <div class="duo"><div class="cards"></div><div class="side-notes"></div></div></section>
 
   <section class="sec" id="b-B"><div class="sec-h"><span class="lt">B</span><h3>Before and after, same data</h3></div>
-    <p class="sec-lede">Dental Implants, Bothell #23, 5 years. Top: the live card as shipped (TrendChart.tsx and TopicCardView.tsx rebuilt line for line). Bottom: the same card rebuilt to spec.</p>
+    <p class="sec-lede">Dental Implants, Bothell #23, both on 24 months. Top: the live card as shipped (TrendChart.tsx and TopicCardView.tsx rebuilt line for line). Bottom: the same card rebuilt to spec.</p>
     <div class="ba"><div>
         <div class="ba-tag">Live today</div><div class="live-card"></div>
         <div class="ba-tag" style="margin-top:22px">Rebuilt to spec</div><div class="new-card"></div></div>
       <div><div class="card"><div class="kick" style="margin-bottom:6px">What changed</div><ol class="calls">
         <li><span><b>No dive at the end.</b> Live plots October 2026, which is not over, as a full month, so every line drops and the end dot and labels sit on the drop. Now October is dotted and the end marks sit on September.</span></li>
         <li><span><b>The readout never moves the chart.</b> Live: a wrapping row that grows to two lines and pushes the plot down on every hover. Now: a fixed 48px bar with one slot per line, idle on September's values instead of "Point at the chart".</span></li>
-        <li><span><b>Direction has a picture.</b> The approved last 12 / 12 before bands come back, each with its average as a level line, so "Steady, about 9 in every 100 higher than a year ago" is visible.</span></li>
+        <li><span><b>The comparison has a picture.</b> July to September is shaded this year and last year, labelled in words, each with its average as a level line: 67 this year, 61 last year. That is the comparison behind "Steady, about 9 in every 100 higher than a year ago".</span></li>
         <li><span><b>Washington is the phrase's own colour, dashed.</b> Live uses cyan #0891B2, too close to the teal lead to tell apart. Tooth implant's Washington line is added; tooth whitening's is left out as too thin.</span></li>
         <li><span><b>Calmer chrome, approved values.</b> Grid at 0 / 50 / 100 not five lines, 10.5px light axis type with ticks, a 4.0 casing not 5.4, the dark dashed hover guide with a big dot on the lead only, and no legend that repeats the end labels.</span></li>
         <li><span><b>5 years reads the trend.</b> A thin raw month under a bold 3-month average, and switching range zooms the same drawing instead of redrawing it.</span></li>
       </ol></div></div></div></section>
 
   <section class="sec" id="b-D"><div class="sec-h"><span class="lt">D</span><h3>Searches a month</h3></div>
-    <p class="sec-lede">The number leads, the line supports it. Topic totals, both phrases summed.</p>
-    <div class="mnote"><span class="oq">Owner question</span>Searches a month as the number and a line (option 1, spec 03 section 11), or the approved Topic Cards bars (option 2, SearchBarsPlot, ruled 10/23)? Option 2 keeps the approved bars but moves the hover into the bar above, so it never covers the chart.</div>
-    <div class="mnote"><b>T13</b>: the stored 12 months fall for nearly every phrase (dental implants topic 21,065 to 14,378) while Trends calls it Steady. Not headlined until DataForSEO's clickstream method is checked; only 12 months are stored, so there is no year-before comparison yet.</div>
+    <p class="sec-lede">The approved Topic Cards bars: one bar a month, US estimates from DataForSEO, both phrases of each topic added together. The count for a month shows in the readout line above the chart, never in a box over it.</p>
+    <div class="sr-row"></div>
+    <div class="mnote"><span class="oq">Owner question</span>The bars show US searches for dental implants falling from about 21,000 a month to about 14,000 over the year. Google Trends calls the same topic Steady. The fall may come from how DataForSEO estimates searches, not from fewer patients. Show a caution line under the bars, or check DataForSEO's numbers first?</div>
   </section>
 
   <section class="sec" id="b-F"><div class="sec-h"><span class="lt">F</span><h3>Topics tab with an Insights rail</h3></div>
@@ -430,7 +426,7 @@ function fillReadout(ro, month, scale, slots) {
 }
 
 // ---------- A: the topic card chart, rebuilt to spec ----------
-// o: { months, lines:[{key,label,short,values,color,width,dash,lead,kind,on}], range, bands, peak:{index}, scale, place, cur, prev, offChips:[{label,note}] }
+// o: { months, lines:[{key,label,short,values,color,width,dash,lead,kind,on}], range, peak:{index}, scale, place, cur, prev, offChips:[{label,note}] }
 function topicChart(host, o) {
   host.classList.add('tc');
   const id = 'tc' + (++UID);
@@ -447,7 +443,7 @@ function topicChart(host, o) {
   const nameOf = (l, i) => (l.nameAt ? l.nameAt(i) : l.short || l.label);
   const s0 = (r) => 60 - r, RX = (i, r) => PL + (i - s0(r)) * STEP * (60 / r);
   const tf = (r) => { const k = 60 / r, t = PL - k * X(s0(r)); return `translate(${t.toFixed(2)}px,0px) scale(${k.toFixed(4)},1)`; };
-  let range = o.range || 24, bands = o.bands || 'year', hover = null, drag = null, dragging = false;
+  let range = o.range || 24, hover = null, drag = null, dragging = false;
   const shown = () => lines.filter((l) => l.on !== false);
   const lead = lines.find((l) => l.lead);
   const path = (vals, a, b, py = Y) => { let d = '', pen = false; for (let i = a; i <= b; i++) { const v = vals[i]; if (v == null) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(i).toFixed(1)},${py(v).toFixed(1)}`; pen = true; } return d; };
@@ -467,7 +463,7 @@ function topicChart(host, o) {
 
   host.innerHTML = `
     <div class="ctl"><div class="grp"><span class="eb">Show</span><div class="rg"></div></div>
-      <div class="grp"><span class="eb">Shade</span><div class="bg"></div></div></div>
+      <span class="rnote"></span></div>
     ${readoutHTML()}
     <svg class="plot" viewBox="0 0 ${CW} ${CH}" tabindex="0" role="img" aria-label="Google interest by month">
       <defs>
@@ -498,19 +494,18 @@ function topicChart(host, o) {
   function drawChrome() {
     const half = (RX(1, range) - RX(0, range)) / 2;
     let out = '';
-    const band = (i0, i1, fill, label) => {
+    const band = (i0, i1, fill, label, word, anchor) => {
       if (i1 < s0(range)) return '';
-      const a = Math.max(i0, s0(range));
-      return `<rect x="${RX(a, range) - half}" y="${PT}" width="${RX(i1, range) - RX(a, range) + 2 * half}" height="${CH0 - PT - PB}" fill="${fill}"/>
-        <text x="${(RX(a, range) + RX(i1, range)) / 2}" y="${CH0 - PB - 5}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
+      const a = Math.max(i0, s0(range)), xl = RX(a, range) - half, xr = RX(i1, range) + half, xm = (xl + xr) / 2;
+      const xw = anchor === 'end' ? xr - 3 : xm;
+      return `<rect x="${xl}" y="${PT}" width="${xr - xl}" height="${CH0 - PT - PB}" fill="${fill}"/>
+        <text x="${xw}" y="${PT + 12}" text-anchor="${anchor}" font-size="10.5" font-weight="700" fill="${word === 'this year' ? '#0F766E' : '#475569'}" paint-order="stroke" stroke="#fff" stroke-width="3">${word}</text>
+        <text x="${xw}" y="${CH0 - PB - 5}" text-anchor="${anchor}" font-size="10" fill="#6B7280">${label}</text>`;
     };
-    if (bands === 'year') {
-      if (range > 12) out += band(LAST_FULL - 23, LAST_FULL - 12, '#F3F4F6', '12 before');
-      out += band(LAST_FULL - 11, LAST_FULL, '#E3F2EE', 'last 12');
-    } else {
-      out += band(LAST_FULL - 14, LAST_FULL - 12, '#F3F4F6', range === 60 ? "'25" : "Jul to Sep '25");
-      out += band(LAST_FULL - 2, LAST_FULL, '#E3F2EE', range === 60 ? "'26" : "Jul to Sep '26");
-    }
+    // the two windows the verdict compares, always on: July to September this year and last year, labelled in words
+    const five = range === 60;
+    out += band(LAST_FULL - 14, LAST_FULL - 12, '#F3F4F6', five ? "'25" : "Jul to Sep '25", 'last year', 'middle');
+    out += band(LAST_FULL - 2, LAST_FULL, '#E3F2EE', five ? "'26" : "Jul to Sep '26", 'this year', 'end');
     const tFrom = RX(LAST_FULL, range) + half, tTo = CW - PR;
     if (tTo > tFrom) out += `<rect x="${tFrom}" y="${PT}" width="${tTo - tFrom}" height="${CH0 - PT - PB}" fill="url(#${id}-tail)"/>`;
     [0, 50, 100].forEach((v) => { out += `<line x1="${PL}" x2="${CW - PR}" y1="${Y(v)}" y2="${Y(v)}" stroke="#EEF0F3"/><text x="${PL - 6}" y="${Y(v) + 3}" text-anchor="end" font-size="10.5" fill="#9CA3AF">${v}</text>`; });
@@ -538,18 +533,17 @@ function topicChart(host, o) {
       }
     }
     chrome.innerHTML = out;
-    // level lines on top of the bands, for the lead (03 spec 12): the gap between them is the direction
+    $('.rnote', host).textContent = range === 12 ? "Last year's July to September is off this view; switch to 24 months." : 'Shaded: July to September, this year and last year.';
+    // level lines on top of the two windows, for the lead (03 spec 12): the gap between them is the change the verdict reads
     let lv = '';
     if (lead.on !== false) {
-      const mean = (a, b) => { const v = lead.values.slice(a, b + 1).filter((x) => x != null); return v.reduce((s, x) => s + x, 0) / v.length; };
-      const pairs = bands === 'year'
-        ? [[LAST_FULL - 23, LAST_FULL - 12, mean(LAST_FULL - 23, LAST_FULL - 12), 'avg'], [LAST_FULL - 11, LAST_FULL, mean(LAST_FULL - 11, LAST_FULL), 'avg']]
-        : [[LAST_FULL - 14, LAST_FULL - 12, o.prev, ''], [LAST_FULL - 2, LAST_FULL, o.cur, '']];
-      pairs.forEach(([a, b, v, w], k) => {
-        if (v == null || b < s0(range) || (bands === 'year' && k === 0 && range === 12)) return;
+      // o.prev / o.cur: the lead phrase's July to September averages the verdict uses
+      const pairs = [[LAST_FULL - 14, LAST_FULL - 12, o.prev, 'avg'], [LAST_FULL - 2, LAST_FULL, o.cur, 'avg']];
+      pairs.forEach(([a, b, v, w]) => {
+        if (v == null || b < s0(range)) return;
         const xa = RX(Math.max(a, s0(range)), range) - half, xb = RX(b, range) + half;
         lv += `<line x1="${xa}" x2="${xb}" y1="${Y(v)}" y2="${Y(v)}" stroke="#0F172A" stroke-opacity=".4"/>
-          <text x="${xa + 4}" y="${Y(v) - 4}" text-anchor="start" font-size="10.5" fill="#0F172A" font-weight="600" paint-order="stroke" stroke="#fff" stroke-width="3">${w ? w + ' ' : ''}${Math.round(v)}</text>`;
+          <text x="${range === 60 ? xa - 3 : xa + 4}" y="${Y(v) - 4}" text-anchor="${range === 60 ? 'end' : 'start'}" font-size="10.5" fill="#0F172A" font-weight="600" paint-order="stroke" stroke="#fff" stroke-width="3">${w ? w + ' ' : ''}${Math.round(v)}</text>`;
       });
     }
     lvl.innerHTML = lv;
@@ -612,7 +606,8 @@ function topicChart(host, o) {
   }
   function showAt(i) {
     const notOver = i === NOW_IDX;
-    fillReadout(ro, `${monthLong(o.months[i])}${notOver ? ' <small>not over yet</small>' : ''}`, scale, slotsAt(i));
+    const win = i >= LAST_FULL - 2 && i <= LAST_FULL ? " <small>this year's July to September</small>" : i >= LAST_FULL - 14 && i <= LAST_FULL - 12 ? " <small>last year's July to September</small>" : '';
+    fillReadout(ro, `${monthLong(o.months[i])}${notOver ? ' <small>not over yet</small>' : win}`, scale, slotsAt(i));
     const x = RX(i, range);
     hv.innerHTML = `<line x1="${x}" x2="${x}" y1="${PT}" y2="${HB}" stroke="#475569" stroke-dasharray="2 2"/>` +
       shown().map((l) => { if (l.values[i] == null) return ''; const r = l.lead ? 4.2 : l.kind === 'corpus' ? 4.5 : 2.6, ring = l.lead ? 1.5 : l.kind === 'corpus' ? 2 : 0; return `<circle cx="${x}" cy="${l.py(l.values[i])}" r="${r}" fill="${l.color}" ${ring ? `stroke="#fff" stroke-width="${ring}"` : ''}/>`; }).join('');
@@ -680,11 +675,6 @@ function topicChart(host, o) {
     range = +v; drag = null; sel.innerHTML = ''; hv.innerHTML = '';
     zoom.style.transform = tf(range); applyLines(); drawChrome(); drawMarks(); idle(); renderTable();
   });
-  seg($('.bg', host), [
-    { v: 'year', l: 'Last 12 months vs the 12 before', tip: 'Shades the last 12 full months, Oct 2025 to Sep 2026, against the 12 before, each with its average as a level line.' },
-    { v: 'call', l: 'Jul to Sep vs a year ago', tip: 'Shades July to September 2026 against the same 3 months of 2025: the two stretches compared for Rising, Steady or Fading.' },
-  ], bands, (v) => { bands = v; drawChrome(); });
-
   applyLines(); drawChrome(); drawMarks(); drawLabels(); idle();
   // draw-in on first view: a left-to-right reveal of every line, 900ms house ease (03 spec motion)
   if (!REDUCE && 'IntersectionObserver' in window) revealOnView(svg, $(`#${id}-clip rect`, svg), PL, CW - PL - PR);
@@ -780,7 +770,10 @@ function smallMultiples(host, set) {
       <div class="vd"><span class="${wordClass(word)}">${word}</span>, ${changeWords(lp.yoy)}</div>
       <svg viewBox="0 0 ${W} ${H}" class="plot" style="margin-top:4px">
         <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".12"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
-        <rect x="${X(LAST_FULL - 11) - half}" y="${PT}" width="${X(LAST_FULL) - X(LAST_FULL - 11) + 2 * half}" height="${H - PT - PB}" fill="#E3F2EE" opacity=".7"/>
+        <rect x="${X(LAST_FULL - 14) - half}" y="${PT}" width="${X(LAST_FULL - 12) - X(LAST_FULL - 14) + 2 * half}" height="${H - PT - PB}" fill="#F3F4F6"/>
+        <rect x="${X(LAST_FULL - 2) - half}" y="${PT}" width="${X(LAST_FULL) - X(LAST_FULL - 2) + 2 * half}" height="${H - PT - PB}" fill="#E3F2EE"/>
+        <text x="${X(LAST_FULL - 13)}" y="${PT + 10}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#475569" paint-order="stroke" stroke="#fff" stroke-width="3">last year</text>
+        <text x="${X(LAST_FULL) + half - 2}" y="${PT + 10}" text-anchor="end" font-size="9.5" font-weight="700" fill="#0F766E" paint-order="stroke" stroke="#fff" stroke-width="3">this year</text>
         <line x1="${PL}" x2="${W - PR}" y1="${Y(0)}" y2="${Y(0)}" stroke="#E5E7EB"/>
         <path d="${path(S0, LAST_FULL)}L${X(LAST_FULL)},${Y(0)}L${X(S0)},${Y(0)}Z" fill="url(#${gid})"/>
         <path d="${path(S0, LAST_FULL)}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
@@ -813,46 +806,14 @@ function smallMultiples(host, set) {
     hit.addEventListener('pointerleave', () => { show.h = false; show(LAST_FULL); });
   });
   show.h = false; show(LAST_FULL);
-  $('.cap', host).textContent = `Shared scale: every panel is the topic's weighted line on its own 0 to 100 from Google Trends, where 100 is the phrase's busiest week in five years, so compare shapes, not heights. Same 24 months in every panel; the green band is the last 12 full months; October 2026 is dotted, not over yet. One colour per panel, in the order the check listed the topics.`;
+  $('.cap', host).textContent = `Shared scale: every panel is the topic's weighted line on its own 0 to 100 from Google Trends, where 100 is the phrase's busiest week in five years, so compare shapes, not heights. Same 24 months in every panel. Shaded: July to September this year and last year, the months each topic is judged on. October 2026 is dotted, not over yet. One colour per panel, in the order the check listed the topics.`;
 }
 
-// ---------- D: searches a month (03 spec 11) and the approved bars (SearchBarsPlot) ----------
+// ---------- D: searches a month, the approved Topic Cards bars (SearchBarsPlot; owner picked option 2, 10/29) ----------
 function topicSearches(t) {
   const months = t.phrases[0].clicks.map((c) => c.m);
   const sum = months.map((m) => t.phrases.reduce((s, p) => s + ((p.clicks.find((c) => c.m === m) || {}).v || 0), 0));
   return { months, sum };
-}
-function searchesLine(host, t, place) {
-  const { months, sum } = topicSearches(t);
-  const avg = sum.reduce((a, b) => a + b, 0) / sum.length;
-  const W = 400, H = 120, PL = 6, PR = 64, PT = 12, PB = 20, n = months.length - 1;
-  const max = Math.max(...sum) * 1.08;
-  const X = (k) => PL + (k / n) * (W - PL - PR), Y = (v) => PT + (1 - v / max) * (H - PT - PB);
-  const d = sum.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join('');
-  const split = t.phrases.filter((p) => p.clicks.length).map((p) => `${esc(p.term)} <b>${fmtN(about(p.clicks.reduce((s, c) => s + c.v, 0) / p.clicks.length))}</b>`).join(' · ');
-  host.innerHTML = `<div class="big">About ${fmtN(about(avg))} searches a month</div>
-    <div class="big-sub">across the US, DataForSEO estimate, average of ${monthShort(months[0], true)} to ${monthShort(months[n], true)}</div>
-    <div class="split">${split}</div>
-    <div style="margin-top:12px">${readoutHTML()}
-    <svg class="plot" viewBox="0 0 ${W} ${H}">
-      <line x1="${PL}" x2="${W - PR}" y1="${Y(0)}" y2="${Y(0)}" stroke="#EEF0F3"/>
-      <path d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-      <path d="${d}" fill="none" stroke="#0F766E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${X(n)}" cy="${Y(sum[n])}" r="4" fill="#0F766E" stroke="#fff" stroke-width="2"/>
-      <text x="${X(n) + 8}" y="${Y(sum[n]) + 4}" font-size="11.5" font-weight="600" fill="#0F172A">${fmtN(sum[n])}</text>
-      ${months.map((m, k) => { const cm = +m.split('-')[1] - 1; return (cm % 3 === 0 || k === 0 || k === n) && !(k === n - 1) ? `<text x="${X(k)}" y="${H - 4}" font-size="10.5" fill="#9CA3AF" text-anchor="${k === 0 ? 'start' : k === n ? 'end' : 'middle'}">${monthShort(m, cm === 0 || k === 0)}</text>` : ''; }).join('')}
-      <g class="hv"></g>
-      <rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent" style="cursor:crosshair"/>
-    </svg></div>
-    <p class="cap">Estimates for the whole US, smoothed by DataForSEO. Only these 12 months are stored, so there is no year-before line yet.</p>`;
-  const ro = $('.ro', host), svg = $('svg', host), hv = $('.hv', host);
-  const show = (k, h) => {
-    fillReadout(ro, monthLong(months[k]), 'searches a month, US', [{ sw: swatch('#0F766E', 2), value: fmtN(sum[k]), name: `${t.topic}, ${t.phrases.length > 1 ? 'all phrases' : t.phrases[0].term}` }]);
-    hv.innerHTML = h ? `<line x1="${X(k)}" x2="${X(k)}" y1="${PT}" y2="${H - PB}" stroke="#475569" stroke-dasharray="2 2"/><circle cx="${X(k)}" cy="${Y(sum[k])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>` : '';
-  };
-  $('.hit', host).addEventListener('pointermove', (e) => { const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W; show(Math.max(0, Math.min(n, Math.round(((px - PL) / (W - PL - PR)) * n))), true); });
-  $('.hit', host).addEventListener('pointerleave', () => show(n, false));
-  show(n, false);
 }
 function fmtK(n) { if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`; if (n >= 10000) return `${Math.round(n / 1000)}k`; if (n >= 1000) return `${(n / 1000).toFixed(1)}k`; return String(Math.round(n)); }
 function searchBars(host, t) {
@@ -1004,7 +965,7 @@ function chartConfig(set, t) {
   }
   const peak = ['fading', 'spike_confirmed', 'step_up_held'].includes(lead.spike) && lead.peakMonth ? { index: set.months.indexOf(lead.peakMonth) } : null;
   const where = set.place === 'Washington' ? 'Washington' : 'the US';
-  const caption = `Google interest for each phrase on its own 0 to 100, where 100 is that phrase's busiest week in five years; a month is the average of its weeks, so monthly lines rarely reach 100. Read for ${where}${lines.some((l) => l.kind === 'state') ? `; dashed lines are the same phrase read for ${st}` : ''}. From 2025 Google’s scores for every dental search about doubled, so Rising, Steady and Fading are judged against dental searches overall, not against that jump. Dotted end: October 2026, not over yet; the judgement uses months up to September. Drag across the 24 month or 5 year view to read a span.${cp ? ` Rose: our practices combined, every client's Search Console showings averaged per practice a week, on its own rose scale; it starts Sep 2025; adding the months back to Nov 2024 is planned.${cp.own ? ` Dashed rose panel: ${set.practice.split(' ')[0]}’s own site, one practice, off until switched on.` : ''}` : ''}`;
+  const caption = `Google interest for each phrase on its own 0 to 100, where 100 is that phrase's busiest week in five years; a month is the average of its weeks, so monthly lines rarely reach 100. Read for ${where}${lines.some((l) => l.kind === 'state') ? `; dashed lines are the same phrase read for ${st}` : ''}. Shaded: July to September this year and last year, the months compared for Rising, Steady or Fading; each level line is ${esc(lead.term)}’s average over those months, ${Math.round(lead.cur)} this year and ${Math.round(lead.prev)} last year. On 12 months last year’s July to September is off the chart. From 2025 Google’s scores for every dental search about doubled, so Rising, Steady and Fading are judged against dental searches overall, not against that jump. Dotted end: October 2026, not over yet; the judgement uses months up to September. Drag across the 24 month or 5 year view to read a span.${cp ? ` Rose: our practices combined, every client's Search Console showings averaged per practice a week, on its own rose scale; it starts Sep 2025; adding the months back to Nov 2024 is planned.${cp.own ? ` Dashed rose panel: ${set.practice.split(' ')[0]}’s own site, one practice, off until switched on.` : ''}` : ''}`;
   return { months: set.months, lines, peak, offChips, caption, cur: lead.cur, prev: lead.prev, scale: `Google interest, 0 to 100, read for ${where}`, lead };
 }
 function verdictSentence(set, t) {
@@ -1035,7 +996,7 @@ function topicsTab(host, set, prefix) {
     if (p.state && !p.state.drawn) notes.push(`<b>${esc(p.term)} in ${set.state}</b>: ${p.state.zeros12} of the last 12 months at zero, too thin to read in ${set.state}, so no ${set.state} line is drawn.`);
   }));
   if (set.place === 'Washington') notes.push(`<b>Read for Washington.</b> Every Trends line on this check, including the 5 common dental searches behind dental searches overall, is read for Washington; only searches a month are US estimates.`);
-  notes.push(`<b>Every dental search about doubled on Google Trends from 2024 to 2026</b>, dental searches overall included: about ${set.place === 'Washington' ? '27 in 2024 and 44' : '25 in 2024 and 42'} in January to September 2026, on Google’s 0 to 100. Google Trends alone cannot tell more patients from a change of scale, so each topic is judged against dental searches overall.`);
+  notes.push(`<b>Every dental search about doubled on Google Trends from 2024 to 2026</b>, dental searches overall included: about ${set.place === 'Washington' ? '26 in 2024 and 41' : '25 in 2024 and 42'} in January to September 2026, on Google’s 0 to 100. Google Trends alone cannot tell more patients from a change of scale, so each topic is judged against dental searches overall.`);
   if (set.place !== 'Washington') notes.push(`<b>No Search Console line</b>: ${esc(set.practice)} has no rows in our Search Console data yet, so its own line cannot be drawn.`);
   notes.push(`<b>October 2026 is not over</b>: it is drawn dotted and left out; the judgement uses months up to September.`);
   const items = [
@@ -1055,7 +1016,7 @@ function topicsTab(host, set, prefix) {
     sec.innerHTML = `<div class="kick">Topic ${k + 1} of ${tops.length}</div><h4>${esc(t.topic)}</h4><p class="lede">${verdictSentence(set, t)}</p><div class="ch"></div>
       <div class="cfoot"><span>About <b>${fmtN(about(topicSearches(t).sum.reduce((a, b) => a + b, 0) / 12))}</b> searches a month across the US</span><span>Season: <b>${esc(seasonVerdict(t).short || 'no repeating season')}</b></span><span>Rating <b>2</b>/10, search demand +2</span></div>`;
     body.appendChild(sec);
-    const c = chartConfig(set, t); topicChart($('.ch', sec), { ...c, range: 24, bands: 'year' });
+    const c = chartConfig(set, t); topicChart($('.ch', sec), { ...c, range: 24 });
   });
   const ns = document.createElement('section'); ns.className = 'tsec'; ns.id = `${prefix}-near`;
   const RX0 = 0.7, RX1 = 1.4, rw = 400, rh = 26, rxp = (v) => 8 + ((Math.max(RX0, Math.min(RX1, v)) - RX0) / (RX1 - RX0)) * (rw - 16);
@@ -1092,16 +1053,15 @@ function topicsTab(host, set, prefix) {
 // ---------- assemble the page ----------
 const B = DATA.bothell, E = DATA.expedition, S = DATA.strategy;
 const CARRIED = `<div class="mnote"><b>Carried over from the approved charts</b><br>
-  Demand chart: 640 x 270 box, padding L30 T20 B26, lead #0F766E on a white casing, other phrases #8B98A9 solid and #475569 dashed 4 3, combined #0D9488 dashed 6 4, grid only at 0 / 50 / 100 in #EEF0F3, 10.5px #9CA3AF axis type with 4px ticks, last 12 / 12 before bands, dotted not-over month with the band fading across it, one CSS transform zoom for 12 / 24 / 5 years at .7s, chrome cross-fade 350ms, peak marker, non-scaling strokes, chips with line keys and the tinted "drives the verdict" lead chip.<br>
+  Demand chart: 640 x 270 box, padding L30 T20 B26, lead #0F766E on a white casing, other phrases #8B98A9 solid and #475569 dashed 4 3, combined #0D9488 dashed 6 4, grid only at 0 / 50 / 100 in #EEF0F3, 10.5px #9CA3AF axis type with 4px ticks, dotted not-over month with a pale fade across it, one CSS transform zoom for 12 / 24 / 5 years at .7s, chrome cross-fade 350ms, peak marker, non-scaling strokes, chips with line keys and the tinted "drives the verdict" lead chip.<br>
   Performance chart: the readout bar ABOVE the plot, never a floating box; grey idle state; drag across to read a span.</div>
-  <div class="mnote"><b>New to spec 03</b><br>Readout fixed at 48px with one slot per line, idle on September 2026 (the newest full month). Keyboard: focus the chart, then left and right arrows. End labels on September with spread and elbow leaders. Washington lines only when the state read has no zero month in the last 12 (T10). Level lines with each band's average. 5 years: thin raw month under a bold 3-month average. "Show as a table" under every chart.</div>`;
-const Q_BANDS = `<div class="mnote"><span class="oq">Owner question</span>Shade: the approved "Last 12 months vs the 12 before" bands, or "Jul to Sep vs a year ago", the two 3-month stretches compared for Rising, Steady or Fading? Both are wired to the "Shade" switch on every chart, each with a one-line hover; level lines move with them.</div>`;
+  <div class="mnote"><b>New to spec 03</b><br>Readout fixed at 48px with one slot per line, idle on September 2026 (the newest full month). Keyboard: focus the chart, then left and right arrows. End labels on September with spread and elbow leaders. Washington lines only when the state read has no zero month in the last 12 (T10). July to September this year and last year always shaded and labelled in words, each with the lead phrase's average as a level line (the Shade switch and the last 12 / 12 before bands are gone, owner 10/29). Every topic chart opens on 24 months; on 12 months a quiet line says last year's window is off the view. 5 years: thin raw month under a bold 3-month average. "Show as a table" under every chart.</div>`;
 
 function topicCardEl(set, t, k, n, opts = {}) {
   const el = document.createElement('div'); el.className = 'card';
   el.innerHTML = `<div class="kick">Topic ${k + 1} of ${n}</div><h4>${esc(t.topic)}</h4><p class="verdict">${verdictSentence(set, t)}</p><div class="ch"></div>`;
   const c = chartConfig(set, t);
-  topicChart($('.ch', el), { ...c, range: opts.range || 24, bands: 'year' });
+  topicChart($('.ch', el), { ...c, range: opts.range || 24 });
   return el;
 }
 function partA(id, set, side) {
@@ -1112,11 +1072,11 @@ function partA(id, set, side) {
 }
 
 // A, Bothell
-partA('b-A', B, CARRIED + Q_BANDS);
+partA('b-A', B, CARRIED);
 // A, Expedition (read for Washington)
 partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every line on this check, dental searches overall included, is read for Washington, so no state line is drawn and every sentence says "in Washington". Searches a month are US estimates.</div>
   <div class="mnote"><b>Too few searches (T9)</b><br>ankyloglossia and children's dentist have a reading in only 3 and 18 of 262 weeks: no line, a grey chip says why, and the topic's "spike that collapsed" flag, which comes from ankyloglossia, is never narrated.</div>
-  <div class="mnote"><b>Peak marker</b><br>Only on pediatric dentist: its stored shape is a step up that held (about 3 times its usual level in August 2025, still up).</div>` + Q_BANDS);
+  <div class="mnote"><b>Peak marker</b><br>Only on pediatric dentist: its stored shape is a step up that held (about 3 times its usual level in August 2025, still up).</div>`);
 
 // B, before vs after (Bothell, Dental Implants)
 (function () {
@@ -1134,14 +1094,14 @@ partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every lin
       <h3 style="margin:0;flex:1;font-size:22px;font-weight:800;color:#0B1020">Dental Implants</h3><span style="font-size:14px;color:#667085"><b style="font-size:22px;font-weight:900;color:#0B1020">2</b>/10</span></div>
     <p style="margin:6px 0 4px;font-size:16px;color:#273043"><b style="color:#273043">Steady</b> across the US: up about a tenth on a year ago.</p>
     <div style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px"><div style="display:flex;gap:6px"><button class="lchip lead">dental implants</button><button class="lchip">tooth implant</button></div>
-      <div class="lseg"><button data-r="12">12 months</button><button data-r="24">24 months</button><button data-r="60" class="on">5 years</button></div></div>
+      <div class="lseg"><button data-r="12">12 months</button><button data-r="24" class="on">24 months</button><button data-r="60">5 years</button></div></div>
     <div class="lc" style="margin-top:8px"></div>
     <p style="margin:12px 0 0;font-size:14px;color:#273043">About ${fmtN(Math.round(topicSearches(t).sum.reduce((a, b) => a + b, 0) / 12 / 10) * 10)} searches a month in the US.</p>
     <ul style="margin:12px 0 0;padding:12px 0 0;list-style:none;border-top:1px solid #E7E9EE;font-size:13px;color:#667085"><li>search demand <b style="color:#0B1020">+2</b></li></ul>`;
-  const lc = liveTrendChart($('.lc', card), months, lines, 60, 'Point at the chart to read a month · Google interest across the US and in Washington, 0 to 100');
+  const lc = liveTrendChart($('.lc', card), months, lines, 24, 'Point at the chart to read a month · Google interest across the US and in Washington, 0 to 100');
   card.querySelectorAll('.lseg button').forEach((b) => b.addEventListener('click', () => { card.querySelectorAll('.lseg button').forEach((x) => x.classList.toggle('on', x === b)); lc.setRange(+b.dataset.r); }));
   const nc = $('.new-card', host);
-  nc.appendChild(topicCardEl(B, t, 0, 2, { range: 60 }));
+  nc.appendChild(topicCardEl(B, t, 0, 2, { range: 24 }));
 })();
 
 // C, many topics (strategy check #16)
@@ -1149,14 +1109,12 @@ smallMultiples($('#e-C .smhost'), S);
 
 // D, searches a month (Bothell)
 (function () {
-  const host = document.getElementById('b-D');
+  const row = $('#b-D .sr-row');
   B.topics.forEach((t) => {
-    const row = document.createElement('div'); row.className = 'sr-row';
-    row.innerHTML = `<div class="card" style="margin:0"><div class="opt">Option 1 · the number, then a 12-month line</div><div class="kick">${esc(t.topic)}</div><div class="o1" style="margin-top:4px"></div></div>
-      <div class="card" style="margin:0"><div class="opt">Option 2 · the approved Topic Cards bars</div><div class="kick">${esc(t.topic)}</div><div class="o2" style="margin-top:4px"></div></div>`;
-    host.appendChild(row);
-    searchesLine($('.o1', row), t, 'the US');
-    searchBars($('.o2', row), t);
+    const card = document.createElement('div'); card.className = 'card'; card.style.margin = '0';
+    card.innerHTML = `<div class="o2"></div>`;
+    row.appendChild(card);
+    searchBars($('.o2', card), t);
   });
 })();
 
