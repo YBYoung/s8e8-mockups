@@ -709,7 +709,7 @@ a{color:var(--aInk)}
 .pr .sb{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr .d{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}
 .pr.own .nm{color:#0F766E;font-weight:800}
-.pr.riv .nm{color:#6D28D9;font-weight:700}
+.pr.riv .nm{color:#C2410C;font-weight:700}
 .pr.hot{background:#F6F7FA}
 .more{margin:6px 0 2px;padding-top:5px;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-top:1px dashed #D0D5DD}
 .pr4{display:grid;grid-template-columns:30px minmax(0,1fr) 92px;gap:8px;font-size:11.5px;color:var(--muted);padding:1.5px 4px}
@@ -717,7 +717,7 @@ a{color:var(--aInk)}
 .pr4 .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--body)}
 .pr4 .v{text-align:right;white-space:nowrap}
 .pr4.own .n{color:#0F766E;font-weight:800}
-.pr4.riv .n{color:#6D28D9;font-weight:700}
+.pr4.riv .n{color:#C2410C;font-weight:700}
 .kr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:4px 4px;border-top:1px solid #F0F1F4}
 .kr .v{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kr .s{font-size:11.5px;color:var(--muted)}
@@ -738,14 +738,14 @@ a{color:var(--aInk)}
 .mock-bar details{display:inline}
 .mock-bar summary{display:inline;cursor:pointer;color:var(--aInk,#0F766E);font-weight:600;margin-left:6px}
 
-/* r5 (owner 10/29): head-to-head rival = light violet fill #A78BFA, violet ink #6D28D9 for its name (Map tab only; the Leaderboard does not use these) */
-.nm-riv{color:#6D28D9}
-.tag.riv{background:#A78BFA;color:#2E1065}
+/* r5 (owner 10/29): head-to-head rival = light orange fill #FB923C, orange ink #C2410C for its name (Map tab only; the Leaderboard does not use these) */
+.nm-riv{color:#C2410C}
+.tag.riv{background:#FB923C;color:#431407}
 </style></head><body>
-<div class="mock-bar"><b>Mockup · gs2-map · Grid Scan result, Map tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 search phrases from 81 spots = 405 searches, $0.81), real top 20 at every spot. <details><summary>What changed</summary><ul><li>Owner feedback 10/29, round 5: squares now the Story's size (34px, 4px corners) so the map shows between them; Head to head rival is light violet against the practice's deep teal, with a white gap between the five stripes.</li><li>Owner feedback 10/29: subtle practice mark (thin teal ring + corner house glyph, no name plate), full business names in bold wherever businesses are compared or picked, page tightened so headline, controls, map and panel fit at 1440x900.</li><li>One map, 81 tiles that keep their identity: switching the phrase, the business or the view re-colours them in place (0.5s, staggered from where the change starts). Opens on "All 5 phrases", the Story's 141 of 405 searches, not the old averaged-rank map.</li>
-<li>Any business's map ("Map of", plus every one of the 127 others) and "Head to head" (teal vs light violet, any rival). Comes from the stored top 20s: <span class="ep">listingGrids endpoint, built, unused today</span>.</li>
+<div class="mock-bar"><b>Mockup · gs2-map · Grid Scan result, Map tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 search phrases from 81 spots = 405 searches, $0.81), real top 20 at every spot. <details><summary>What changed</summary><ul><li>Owner feedback 10/29, round 5: squares now the Story's size (34px, 4px corners) so the map shows between them; Head to head rival is light orange (owner OK for orange) against the practice's deep teal, with a white gap between the five stripes.</li><li>Owner feedback 10/29: subtle practice mark (thin teal ring + corner house glyph, no name plate), full business names in bold wherever businesses are compared or picked, page tightened so headline, controls, map and panel fit at 1440x900.</li><li>One map, 81 tiles that keep their identity: switching the phrase, the business or the view re-colours them in place (0.5s, staggered from where the change starts). Opens on "All 5 phrases", the Story's 141 of 405 searches, not the old averaged-rank map.</li>
+<li>Any business's map ("Map of", plus every one of the 127 others) and "Head to head" (teal vs light orange, any rival). Comes from the stored top 20s: <span class="ep">listingGrids endpoint, built, unused today</span>.</li>
 <li>Hover a tile: the reserved panel lists that spot's top 3, the practice's place and places 4 onward, with stars, reviews and distance; numbered pins show where they are. Click keeps it. <span class="ep">full top 20 per spot needs a small read endpoint</span> over local_grid_scan_points.</li>
-<li>The practice is always the teal tab with its short name on the office tile; the listing being looked at is the one violet tab. Basemap and Leaflet load from the network, as in the approved v1.</li></ul></details></div>
+<li>The practice is always the teal tab with its short name on the office tile; the listing being looked at is the one orange tab. Basemap and Leaflet load from the network, as in the approved v1.</li></ul></details></div>
 <div id="page"></div>
 <script>/* gs2-map: the Grid Scan Map tab for Bothell scan #2. One Leaflet basemap, 81 tiles made once and
    only re-coloured (0.5s, staggered) when the search, the listing or the view changes. */
@@ -760,8 +760,8 @@ a{color:var(--aInk)}
   const ACC = GS.idx('Accent Dental Center Bothell'); const ANN = GS.idx('Annigan Dental'); const JUDE = GS.idx('Dr. Jude Brooks Emergency Dentist Bothell');
   const BDC = GS.idx('Bothell Dental Care');
   const QUICK = [OWN, ACC, ANN, JUDE];
-  /* rival colour (r5, owner 10/29): light violet vs the practice's deep teal, apart in hue AND lightness; dark ink on it */
-  const RIV = '#A78BFA'; const RIVINK = '#2E1065';
+  /* rival colour (r5, owner 10/29): light orange vs the practice's deep teal, apart in hue AND lightness; dark ink on it */
+  const RIV = '#FB923C'; const RIVINK = '#431407';
   const byTotal = L.map((_, i) => i).filter((i) => i !== OWN).sort((a, b) => GS.t3all(b) - GS.t3all(a) || L[a].t.localeCompare(L[b].t));
   const nm = (i) => (i === OWN ? P.t : L[i].t);
   const sh = (i) => nm(i); /* owner 10/29: full names everywhere, short names could collide */
@@ -836,11 +836,11 @@ a{color:var(--aInk)}
   const ownTag = FL.h(`<div class="own-glyph" data-tip-h="${esc(P.t)}" data-tip="${esc(`The practice. ${GS.reviews(OWN)}. The centre square is its office.`)}">${GS.HOUSE}</div>`);
   const OWN_TAG = { x: C.x + RW / 2 - 2, y: C.y - RW / 2 + 2 }; ownTag.style.left = `${OWN_TAG.x}px`; ownTag.style.top = `${OWN_TAG.y}px`; ovl.appendChild(ownTag);
   const ownBox = () => ({ x1: OWN_TAG.x - 8, x2: OWN_TAG.x + 8, y1: OWN_TAG.y - 8, y2: OWN_TAG.y + 8 });
-  /* one violet tag for the listing being looked at (its true spot marked with a small square) */
+  /* one orange tag for the listing being looked at (its true spot marked with a small square) */
   const rivTag = FL.h('<div class="tag riv" style="opacity:0"></div>'); ovl.appendChild(rivTag);
   const rivDot = FL.h(`<div class="tdot" style="opacity:0;background:${RIV}"></div>`); ovl.appendChild(rivDot);
   const NS = 'http://www.w3.org/2000/svg';
-  const rivLine = document.createElementNS(NS, 'line'); rivLine.setAttribute('class', 'lead'); rivLine.style.stroke = '#6D28D9'; rivLine.style.opacity = 0; svg.appendChild(rivLine);
+  const rivLine = document.createElementNS(NS, 'line'); rivLine.setAttribute('class', 'lead'); rivLine.style.stroke = '#C2410C'; rivLine.style.opacity = 0; svg.appendChild(rivLine);
   const clampPt = (i) => { const t = xy([L[i].lat, L[i].lng]); const x = Math.max(14, Math.min(MS - 14, t.x)); const y = Math.max(14, Math.min(MS - 14, t.y)); return { x, y, edge: x !== t.x || y !== t.y }; };
   const overlap = (a, b, m = 4) => !(a.x2 + m < b.x1 || b.x2 + m < a.x1 || a.y2 + m < b.y1 || b.y2 + m < a.y1);
   let rivBox = null;
@@ -1064,7 +1064,7 @@ a{color:var(--aInk)}
       }
     });
     document.getElementById('minit').textContent = 'Phrase by phrase';
-    document.getElementById('minic').textContent = S.mode === 'ranks' ? 'colour = place' : 'teal or violet = who ranks higher';
+    document.getElementById('minic').textContent = S.mode === 'ranks' ? 'colour = place' : 'teal or orange = who ranks higher';
   }
 
   /* ---------------- apply a state: same 81 tiles, new colours, staggered by what changed ---------------- */
