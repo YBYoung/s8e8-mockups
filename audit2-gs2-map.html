@@ -677,13 +677,13 @@ a{color:var(--aInk)}
 .gs-mapbox .lf{position:absolute;inset:0}
 .ovl{position:absolute;inset:0;z-index:500;pointer-events:none}
 .ovl svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.tl{position:absolute;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:5px;pointer-events:auto;cursor:pointer;background:#E4E7EC;
+.tl{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:4px;pointer-events:auto;cursor:pointer;background:#E4E7EC;
   box-shadow:0 1px 2px rgba(11,16,32,.18);transition:box-shadow .12s}
-.tl i{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid transparent;transition:background-color .5s ease,border-color .5s ease}
+.tl i{position:absolute;top:0;bottom:0;border-left:2px solid transparent;transition:background-color .5s ease,border-color .5s ease}
 .tl i:first-child{border-left:0}
 .tl{overflow:hidden}
-.tl::after{content:'';position:absolute;inset:0;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(11,16,32,.10);pointer-events:none}
-.tl b{position:absolute;inset:0;display:grid;place-items:center;font:800 14px Inter,sans-serif;font-variant-numeric:tabular-nums;transition:opacity .35s,color .35s;pointer-events:none}
+.tl::after{content:'';position:absolute;inset:0;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(11,16,32,.10);pointer-events:none}
+.tl b{position:absolute;inset:0;display:grid;place-items:center;font:800 13px Inter,sans-serif;font-variant-numeric:tabular-nums;transition:opacity .35s,color .35s;pointer-events:none}
 .tl.hov{box-shadow:0 0 0 2px #0B1020,0 2px 8px rgba(11,16,32,.3)}
 .tl.kept{box-shadow:0 0 0 3px #0B1020,0 0 0 5px #fff,0 2px 8px rgba(11,16,32,.3)}
 .mp-key{flex:none;min-height:58px}
@@ -709,7 +709,7 @@ a{color:var(--aInk)}
 .pr .sb{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pr .d{font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}
 .pr.own .nm{color:#0F766E;font-weight:800}
-.pr.riv .nm{color:#2B44A8;font-weight:700}
+.pr.riv .nm{color:#6D28D9;font-weight:700}
 .pr.hot{background:#F6F7FA}
 .more{margin:6px 0 2px;padding-top:5px;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-top:1px dashed #D0D5DD}
 .pr4{display:grid;grid-template-columns:30px minmax(0,1fr) 92px;gap:8px;font-size:11.5px;color:var(--muted);padding:1.5px 4px}
@@ -717,7 +717,7 @@ a{color:var(--aInk)}
 .pr4 .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--body)}
 .pr4 .v{text-align:right;white-space:nowrap}
 .pr4.own .n{color:#0F766E;font-weight:800}
-.pr4.riv .n{color:#2B44A8;font-weight:700}
+.pr4.riv .n{color:#6D28D9;font-weight:700}
 .kr{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:4px 4px;border-top:1px solid #F0F1F4}
 .kr .v{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
 .kr .s{font-size:11.5px;color:var(--muted)}
@@ -737,11 +737,15 @@ a{color:var(--aInk)}
 
 .mock-bar details{display:inline}
 .mock-bar summary{display:inline;cursor:pointer;color:var(--aInk,#0F766E);font-weight:600;margin-left:6px}
+
+/* r5 (owner 10/29): head-to-head rival = light violet fill #A78BFA, violet ink #6D28D9 for its name (Map tab only; the Leaderboard does not use these) */
+.nm-riv{color:#6D28D9}
+.tag.riv{background:#A78BFA;color:#2E1065}
 </style></head><body>
-<div class="mock-bar"><b>Mockup · gs2-map · Grid Scan result, Map tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 search phrases from 81 spots = 405 searches, $0.81), real top 20 at every spot. <details><summary>What changed</summary><ul><li>Owner feedback 10/29: subtle practice mark (thin teal ring + corner house glyph, no name plate), full business names in bold wherever businesses are compared or picked, page tightened so headline, controls, map and panel fit at 1440x900.</li><li>One map, 81 tiles that keep their identity: switching the phrase, the business or the view re-colours them in place (0.5s, staggered from where the change starts). Opens on "All 5 phrases", the Story's 141 of 405 searches, not the old averaged-rank map.</li>
-<li>Any business's map ("Map of", plus every one of the 127 others) and "Head to head" (teal vs blue, any rival). Comes from the stored top 20s: <span class="ep">listingGrids endpoint, built, unused today</span>.</li>
+<div class="mock-bar"><b>Mockup · gs2-map · Grid Scan result, Map tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 search phrases from 81 spots = 405 searches, $0.81), real top 20 at every spot. <details><summary>What changed</summary><ul><li>Owner feedback 10/29, round 5: squares now the Story's size (34px, 4px corners) so the map shows between them; Head to head rival is light violet against the practice's deep teal, with a white gap between the five stripes.</li><li>Owner feedback 10/29: subtle practice mark (thin teal ring + corner house glyph, no name plate), full business names in bold wherever businesses are compared or picked, page tightened so headline, controls, map and panel fit at 1440x900.</li><li>One map, 81 tiles that keep their identity: switching the phrase, the business or the view re-colours them in place (0.5s, staggered from where the change starts). Opens on "All 5 phrases", the Story's 141 of 405 searches, not the old averaged-rank map.</li>
+<li>Any business's map ("Map of", plus every one of the 127 others) and "Head to head" (teal vs light violet, any rival). Comes from the stored top 20s: <span class="ep">listingGrids endpoint, built, unused today</span>.</li>
 <li>Hover a tile: the reserved panel lists that spot's top 3, the practice's place and places 4 onward, with stars, reviews and distance; numbered pins show where they are. Click keeps it. <span class="ep">full top 20 per spot needs a small read endpoint</span> over local_grid_scan_points.</li>
-<li>The practice is always the teal tab with its short name on the office tile; the listing being looked at is the one blue tab. Basemap and Leaflet load from the network, as in the approved v1.</li></ul></details></div>
+<li>The practice is always the teal tab with its short name on the office tile; the listing being looked at is the one violet tab. Basemap and Leaflet load from the network, as in the approved v1.</li></ul></details></div>
 <div id="page"></div>
 <script>/* gs2-map: the Grid Scan Map tab for Bothell scan #2. One Leaflet basemap, 81 tiles made once and
    only re-coloured (0.5s, staggered) when the search, the listing or the view changes. */
@@ -756,6 +760,8 @@ a{color:var(--aInk)}
   const ACC = GS.idx('Accent Dental Center Bothell'); const ANN = GS.idx('Annigan Dental'); const JUDE = GS.idx('Dr. Jude Brooks Emergency Dentist Bothell');
   const BDC = GS.idx('Bothell Dental Care');
   const QUICK = [OWN, ACC, ANN, JUDE];
+  /* rival colour (r5, owner 10/29): light violet vs the practice's deep teal, apart in hue AND lightness; dark ink on it */
+  const RIV = '#A78BFA'; const RIVINK = '#2E1065';
   const byTotal = L.map((_, i) => i).filter((i) => i !== OWN).sort((a, b) => GS.t3all(b) - GS.t3all(a) || L[a].t.localeCompare(L[b].t));
   const nm = (i) => (i === OWN ? P.t : L[i].t);
   const sh = (i) => nm(i); /* owner 10/29: full names everywhere, short names could collide */
@@ -813,26 +819,28 @@ a{color:var(--aInk)}
   lmap.fitBounds(L_.latLngBounds([ptLL(0), ptLL(80)]), { paddingTopLeft: [40, 44], paddingBottomRight: [40, 40] });
   const ovl = document.getElementById('ovl'); const svg = document.getElementById('ovsvg');
   const xy = (ll) => lmap.latLngToContainerPoint(ll);
+  /* 34px squares like the Story; five 5.2px stripes with 2px white gaps in Head to head */
+  const TS = 34; const SG = 2; const SW = (TS - 4 * SG) / 5;
   const tiles = Array.from({ length: 81 }, (_, n) => {
     const el = FL.h(`<div class="tl" data-n="${n}">${'<i></i>'.repeat(5)}<b></b></div>`);
     const p = xy(ptLL(n)); el.style.left = `${p.x}px`; el.style.top = `${p.y}px`;
     ovl.appendChild(el);
-    const st = [...el.querySelectorAll('i')]; st.forEach((x, k) => { x.style.left = `${k * 20}%`; });
+    const st = [...el.querySelectorAll('i')]; st.forEach((x, k) => { x.style.left = `${k ? k * (SW + SG) - SG : 0}px`; x.style.width = `${SW + (k ? SG : 0)}px`; });
     return { el, st, dg: el.querySelector('b'), p };
   });
   const pitch = tiles[1].p.x - tiles[0].p.x; const pitchY = tiles[9].p.y - tiles[0].p.y;
   const C = tiles[40].p;
   /* the practice: a thin teal ring on the office square + a small teal house glyph in its top-right corner;
      no name plate on the map (the name lives in the legend, headline and panel). Same mark on every page. */
-  const ring = FL.h('<div class="own-ring"></div>'); const RW = 46; ring.style.cssText += `left:${C.x - RW / 2}px;top:${C.y - RW / 2}px;width:${RW}px;height:${RW}px`; ovl.appendChild(ring);
+  const ring = FL.h('<div class="own-ring"></div>'); const RW = 40; /* same frame as the Story */ ring.style.cssText += `left:${C.x - RW / 2}px;top:${C.y - RW / 2}px;width:${RW}px;height:${RW}px`; ovl.appendChild(ring);
   const ownTag = FL.h(`<div class="own-glyph" data-tip-h="${esc(P.t)}" data-tip="${esc(`The practice. ${GS.reviews(OWN)}. The centre square is its office.`)}">${GS.HOUSE}</div>`);
   const OWN_TAG = { x: C.x + RW / 2 - 2, y: C.y - RW / 2 + 2 }; ownTag.style.left = `${OWN_TAG.x}px`; ownTag.style.top = `${OWN_TAG.y}px`; ovl.appendChild(ownTag);
   const ownBox = () => ({ x1: OWN_TAG.x - 8, x2: OWN_TAG.x + 8, y1: OWN_TAG.y - 8, y2: OWN_TAG.y + 8 });
-  /* one blue tag for the listing being looked at (its true spot marked with a small square) */
+  /* one violet tag for the listing being looked at (its true spot marked with a small square) */
   const rivTag = FL.h('<div class="tag riv" style="opacity:0"></div>'); ovl.appendChild(rivTag);
-  const rivDot = FL.h(`<div class="tdot" style="opacity:0;background:${GS.BLUE}"></div>`); ovl.appendChild(rivDot);
+  const rivDot = FL.h(`<div class="tdot" style="opacity:0;background:${RIV}"></div>`); ovl.appendChild(rivDot);
   const NS = 'http://www.w3.org/2000/svg';
-  const rivLine = document.createElementNS(NS, 'line'); rivLine.setAttribute('class', 'lead'); rivLine.style.stroke = GS.BLUE; rivLine.style.opacity = 0; svg.appendChild(rivLine);
+  const rivLine = document.createElementNS(NS, 'line'); rivLine.setAttribute('class', 'lead'); rivLine.style.stroke = '#6D28D9'; rivLine.style.opacity = 0; svg.appendChild(rivLine);
   const clampPt = (i) => { const t = xy([L[i].lat, L[i].lng]); const x = Math.max(14, Math.min(MS - 14, t.x)); const y = Math.max(14, Math.min(MS - 14, t.y)); return { x, y, edge: x !== t.x || y !== t.y }; };
   const overlap = (a, b, m = 4) => !(a.x2 + m < b.x1 || b.x2 + m < a.x1 || a.y2 + m < b.y1 || b.y2 + m < a.y1);
   let rivBox = null;
@@ -901,9 +909,9 @@ a{color:var(--aInk)}
     }
     if (S.kw !== 'all') {
       const kk = K[S.kw]; const w = h2hAt(kk, n); const a = GS.ranks(OWN, kk)[n]; const b = GS.ranks(S.rival, kk)[n];
-      return w === 0 ? { c: GS.NONE, d: '', ink: '#667085' } : w === 1 ? { c: GS.TEAL, d: String(a), ink: '#fff' } : { c: GS.BLUE, d: String(b), ink: '#fff' };
+      return w === 0 ? { c: GS.NONE, d: '', ink: '#667085' } : w === 1 ? { c: GS.TEAL, d: String(a), ink: '#fff' } : { c: RIV, d: String(b), ink: RIVINK };
     }
-    return { c: GS.ORDER.map((kw) => [GS.NONE, GS.TEAL, GS.BLUE][h2hAt(K[kw], n)]), d: '', ink: '#fff', split: true };
+    return { c: GS.ORDER.map((kw) => [GS.NONE, GS.TEAL, RIV][h2hAt(K[kw], n)]), d: '', ink: '#fff', split: true };
   }
 
   /* ---------------- headline, legend, caption (fixed heights; text swaps out then in) ---------------- */
@@ -956,7 +964,7 @@ a{color:var(--aInk)}
     let a = 0; let b = 0; let z = 0;
     kwList().forEach((kk) => { for (let n = 0; n < 81; n++) { const w = h2hAt(kk, n); if (w === 1) a++; else if (w === 2) b++; else z++; } });
     const u = S.kw === 'all' ? 'searches' : 'spots'; const of = S.kw === 'all' ? 405 : 81;
-    return `${it(GS.TEAL, '#fff', '', `${B(OWN)} ranks higher in`, `${a} of ${of} ${u}`)}${it(GS.BLUE, '#fff', '', `${B(S.rival)} ranks higher in`, `${b}`)}${it(GS.NONE, '', '', 'neither in the top 20:', z)}`;
+    return `${it(GS.TEAL, '#fff', '', `${B(OWN)} ranks higher in`, `${a} of ${of} ${u}`)}${it(RIV, RIVINK, '', `${B(S.rival)} ranks higher in`, `${b}`)}${it(GS.NONE, '', '', 'neither in the top 20:', z)}`;
   }
   function swap(id, html) {
     const el = document.getElementById(id); if (el.dataset.v === html) return; el.dataset.v = html;
@@ -1051,12 +1059,12 @@ a{color:var(--aInk)}
         b.querySelector('.c').textContent = `top 3: ${GS.t3(S.who, kk)} of 81`;
       } else {
         let a = 0; let c = 0;
-        for (let n = 0; n < 81; n++) { const w = h2hAt(kk, n); cells[n].style.backgroundColor = w === 0 ? GS.NONE : w === 1 ? GS.TEAL : GS.BLUE; if (w === 1) a++; if (w === 2) c++; }
+        for (let n = 0; n < 81; n++) { const w = h2hAt(kk, n); cells[n].style.backgroundColor = w === 0 ? GS.NONE : w === 1 ? GS.TEAL : RIV; if (w === 1) a++; if (w === 2) c++; }
         b.querySelector('.c').innerHTML = `<span class="nm-own">${a}</span> : <span class="nm-riv">${c}</span> spots`;
       }
     });
     document.getElementById('minit').textContent = 'Phrase by phrase';
-    document.getElementById('minic').textContent = S.mode === 'ranks' ? 'colour = place' : 'teal or blue = who ranks higher';
+    document.getElementById('minic').textContent = S.mode === 'ranks' ? 'colour = place' : 'teal or violet = who ranks higher';
   }
 
   /* ---------------- apply a state: same 81 tiles, new colours, staggered by what changed ---------------- */
