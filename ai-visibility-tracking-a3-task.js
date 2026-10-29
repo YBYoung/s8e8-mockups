@@ -14,7 +14,7 @@
 .xa .ctk-x { margin-left:auto; border:0; background:var(--chip); color:var(--sub); width:28px; height:28px; border-radius:8px; font-size:15px; flex:none; }
 .xa .ctk-bd { padding:10px 22px 4px; }
 .xa .ctk-when { margin:2px 0 10px; padding:9px 12px; border-radius:10px; background:var(--chip); color:var(--sub); font-size:12.5px; line-height:1.5; } .xa .ctk-when b { color:var(--ink); }
-.xa .ctk-row { display:grid; grid-template-columns:104px 1fr; gap:12px; align-items:center; padding:7px 0; } .xa .ctk-row.top { align-items:start; }
+.xa .ctk-row { display:grid; grid-template-columns:118px 1fr; gap:12px; align-items:center; padding:7px 0; } .xa .ctk-row.top { align-items:start; }
 .xa .ctk-row > .k { font:600 10px var(--tmono); letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
 .xa .ctk-row.top > .k { padding-top:10px; }
 .xa .ctk-row .with { display:flex; align-items:center; flex-wrap:wrap; gap:4px; } .xa .hint { font-size:11.5px; color:var(--muted); margin-left:8px; }
@@ -66,15 +66,14 @@
       <div class="ctk-ft"><span class="sum"></span><button class="cs-btn" data-x>Cancel</button><button class="cs-btn pri" data-x>${t.action || 'Save'}</button></div></div>`;
     const close = () => { m.classList.remove('in'); setTimeout(() => m.remove(), 220); };
     m.onclick = (e) => { if (e.target === m || e.target.closest('[data-x]')) close(); };
-    // Week: off until clicked on (owner 10/29); the Weekly Workload section and estimate only apply on a week.
+    // Week: No week until clicked on (owner 10/29). No week = on Weekly Workload with the Week field empty: section and estimate stay.
     const WEEKS = [['none', 'No week'], ['this', 'This week'], ['next', 'Next week']];
     let week = t.week || 'none';
     const tog = m.querySelector('.wwp-tog'), ww = m.querySelector('[data-ww]');
     const paint = () => {
       tog.innerHTML = WEEKS.map(([k, l]) => (k === week ? `<span class="on">${k === 'none' ? '' : CAL}${l}</span>` : `<button type="button" data-w="${k}">${k === 'none' ? l : `+ ${l}`}</button>`)).join('');
-      ww.querySelectorAll('.ctk-row').forEach((r) => r.classList.toggle('off', week === 'none'));
-      m.querySelector('.step').textContent = week === 'none' ? t.step.replace('Weekly Workload task', 'Asana task') : t.step;
-      m.querySelector('.ctk-ft .sum').textContent = week === 'none' ? t.sumNoWeek || 'Creates the task in Asana and posts the comment. Not on a Weekly Workload week.' : t.sum;
+      m.querySelector('.step').textContent = t.step;
+      m.querySelector('.ctk-ft .sum').textContent = week === 'none' ? t.sumNoWeek || 'Creates the task on Weekly Workload with no week yet, and posts the comment.' : t.sum;
     };
     tog.onclick = (e) => { const b = e.target.closest('[data-w]'); if (b) { week = b.dataset.w; paint(); } };
     paint();

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How AI Describes It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-sentiment-data.js"></script>
+<script src="ai-visibility-tracking-a3-task.js?v=1029b"></script>
+<style>
+:root { --praise:#15803D; --praise-tint:#ECFDF3; --list:#98A2B3; --warn:#E11D48; --warn-tint:#FDECEF; }
+.ins { display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:48px; padding:44px 0 40px; align-items:start; }
+.num { display:inline-grid; place-items:center; width:20px; height:20px; border-radius:5px; background:var(--a-tint); color:var(--a-ink); font:700 11px Inter; margin-right:8px; letter-spacing:0; }
+h2.mid { max-width:680px; }
+.lede { font-size:16.5px; max-width:640px; }
+.seen { display:flex; flex-wrap:wrap; gap:6px 22px; font-size:14px; margin:6px 0 4px; } .seen b { color:var(--ink); }
+.sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:7px; vertical-align:-1px; }
+.block { margin-top:34px; }
+.block h3 { margin:0 0 4px; font:800 18px Inter; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.block .sub { margin:0 0 12px; font-size:14px; color:var(--muted); max-width:640px; }
+/* praise themes: one line each, open for two real quotes */
+.th { border-top:1px solid #F0F2F5; }
+.th > button { width:100%; display:grid; grid-template-columns:18px minmax(0,1fr) auto; gap:10px; align-items:center; background:none; border:0; padding:12px 4px; text-align:left; border-radius:6px; }
+.th > button:hover { background:#FAFAFB; }
+.th .chev { width:14px; height:14px; stroke:var(--muted); fill:none; stroke-width:2; transition:transform .25s; }
+.th.open .chev { transform:rotate(90deg); }
+.th .nm { font:600 15px Inter; color:var(--ink); }
+.th .ct { font-size:13.5px; color:var(--muted); white-space:nowrap; } .th .ct b { color:var(--ink); }
+.th .body { display:grid; grid-template-rows:0fr; transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1); }
+.th.open .body { grid-template-rows:1fr; } .th .body > div { overflow:hidden; }
+.q { margin:2px 0 12px 32px; padding:12px 14px; background:var(--soft); border-radius:10px; font-size:14.5px; color:var(--ink); line-height:1.55; }
+.q cite { display:block; margin-top:7px; font:500 12.5px Inter; font-style:normal; color:var(--muted); }
+.q.warn { background:var(--warn-tint); } .q.kind { background:var(--praise-tint); }
+.q .tag { font:700 10.5px Inter; letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+.q.warn .tag { color:var(--warn); } .q.kind .tag { color:var(--praise); } .q.mild .tag { color:var(--muted); }
+/* the concern */
+.concern { border:1px solid var(--line); border-radius:12px; padding:18px 20px 8px; }
+.concern .head { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:baseline; }
+.concern .q { margin-left:0; }
+.byai { display:flex; flex-wrap:wrap; gap:4px 16px; font-size:13px; color:var(--muted); margin:2px 0 14px; } .byai b { color:var(--ink); }
+.full { margin:6px 0 14px; padding:14px 16px; border:1px solid var(--line); border-radius:10px; font-size:14.5px; color:var(--ink); }
+.full p { margin:0 0 10px; } .full p.hl { background:var(--warn-tint); margin:0 -8px 10px; padding:8px; border-radius:8px; }
+.full cite { display:block; font:500 12.5px Inter; font-style:normal; color:var(--muted); }
+.next { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:4px 0 12px; padding:12px 14px; background:var(--soft); border-radius:10px; font-size:14px; }
+.next b { color:var(--ink); } .next .btn { margin-left:auto; }
+.linkbtn { background:none; border:0; padding:0; color:var(--a-ink); font-weight:600; font-size:14px; }
+/* right column */
+.side .eyebrow { margin-bottom:10px; }
+.row { display:grid; grid-template-columns:96px minmax(0,1fr); gap:12px; align-items:center; padding:7px 0; font-size:14px; }
+.row .nm { color:var(--ink); white-space:nowrap; }
+.split { display:flex; height:10px; border-radius:3px; overflow:hidden; gap:2px; }
+.split i { display:block; height:100%; transition:width .6s cubic-bezier(.2,.8,.2,1); }
+.row .nums { grid-column:2; font-size:12.5px; color:var(--muted); margin-top:-2px; } .row .nums b { color:var(--ink); }
+.key { display:flex; gap:16px; font-size:12.5px; color:var(--muted); margin:10px 0 0; }
+.offers { margin-top:30px; }
+.offer { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; padding:8px 0; border-top:1px solid #F0F2F5; font-size:14px; color:var(--ink); }
+.offer span:last-child { color:var(--muted); }
+.ex { margin-top:30px; }
+@media (max-width:980px) { .ins { grid-template-columns:1fr; gap:30px; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const T = window.TRK, S = window.SENT;
+T.topbar(document.getElementById('top'), { mock: 'Insights section 3, How AI describes it (sentiment with reasons)', tab: 'Insights',
+  note: 'Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28 (401 answers name it). Tone and phrases come from the reader; quotes are copied from the answers. The payment count is a text search for this mockup; the build has the reader mark each concern and keep the sentence it came from (one re-read, about $0.30 a Snapshot). Praise and services are now kept apart (the chapter 05 fix).' });
+const ai = (k) => `<span class="aidot" style="background:${S.AI[k][1]}"></span>${S.AI[k][0]}`;
+const cite = (k, q) => `<cite>${S.AI[k][0]}, asked "${q}"</cite>`;
+const chev = '<svg class="chev" viewBox="0 0 14 14"><path d="M5 3l4 4-4 4"/></svg>';
+const TAG = { warn: 'Warns', mild: 'Notes', kind: 'Says it kindly' };
+const p = S.payment;
+const qHtml = ([k, q, s, tone]) => `<div class="q ${tone}"><span class="tag">${TAG[tone]}</span>"${s}"${cite(k, q)}</div>`;
+
+document.getElementById('m').innerHTML = `
+<div class="ins">
+  <div>
+    <div class="eyebrow"><span class="num">3</span>How AI describes it</div>
+    <h2 class="mid">AI speaks well of Kari Mann Dental Studio. The one thing it warns about is payment.</h2>
+    <p class="lede">AI praises a gentle team that is good with nervous patients. When people ask about the practice by name, most answers also bring up paying: fee-for-service, out of network, paying upfront.</p>
+    <div class="seen">
+      <span><span class="sw" style="background:var(--praise)"></span><span class="tip">Praises it in <b>${S.praise}</b><span class="tipbox"><b>Praises it</b>The answer says something good about Kari Mann Dental Studio: its team, its care, its office, its ratings.</span></span></span>
+      <span><span class="sw" style="background:var(--list)"></span><span class="tip">Just lists it in <b>${S.list}</b><span class="tipbox"><b>Just lists it</b>The answer names the practice with its services, address or phone, and no opinion either way. Not a bad sign: a listing still sends people.</span></span></span>
+      <span><span class="sw" style="background:var(--warn)"></span><span class="tip">Mostly a warning in <b>${S.warnTone}</b><span class="tipbox"><b>Mostly a warning</b>The answer's main point about the practice is a concern. Concerns also come up inside answers that praise it: those are counted under payment below.</span></span></span>
+      <span class="small">of the ${S.named} answers that name it</span>
+    </div>
+
+    <div class="block">
+      <h3>What AI praises</h3>
+      <p class="sub">The same five things come up across the AIs. Open one for what AI actually said.</p>
+      <div id="themes">${S.praised.map((t, i) => `<div class="th${i === 0 ? ' open' : ''}"><button type="button">${chev}<span class="nm">${t.theme}</span><span class="ct">in <b>${t.n}</b> answers, ${t.ais === 5 ? 'all 5 AIs' : `${t.ais} AIs`}</span></button>
+        <div class="body"><div>${t.quotes.map(([k, q, s]) => `<div class="q">"${s}"${cite(k, q)}</div>`).join('')}</div></div></div>`).join('')}</div>
+    </div>
+
+    <div class="block">
+      <div class="concern">
+        <div class="head"><h3><span class="sw" style="background:var(--warn);margin:0"></span>What AI warns about: payment</h3></div>
+        <p class="sub" style="margin-bottom:6px">Asked about Kari Mann Dental Studio by name, AI brought up payment in <b style="color:var(--ink)">${p.n} of the ${p.of}</b> answers. Mostly as a thing to check before booking; a few call it a complaint, one says it kindly.</p>
+        <div class="byai">${p.byAi.map(([k, n]) => `<span>${ai(k)} <b>${n}</b> of 15</span>`).join('')}</div>
+        ${p.quotes.slice(0, 2).map(qHtml).join('')}
+        <div class="th" id="fullWrap" style="border:0"><div class="body"><div>
+          ${p.quotes.slice(2).map(qHtml).join('')}
+          <p class="small" style="margin:4px 0 6px">The one answer that is mostly a warning, in full:</p>
+          <div class="full">${p.full[2].map((t, i) => `<p class="${i === 1 ? 'hl' : ''}">"${t}"</p>`).join('')}${cite(p.full[0], p.full[1])}</div></div></div></div>
+        <p style="margin:0 0 12px"><button type="button" class="linkbtn" id="fullBtn">How the others put it, and the one warning in full ↓</button></p>
+        <div class="next"><span><b>Worth doing:</b> a plain page on the site about fee-for-service and how out-of-network reimbursement works, so AI can quote the practice's own words on payment.</span><button class="btn" type="button">Make a task</button></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Listed, not praised</h3>
+      <p class="sub">${S.list} answers name the practice the way a directory would. Perplexity does this most: 44 of its 79 answers that name it. For example:</p>
+      <div class="q" style="margin-left:0">"${S.listed[2]}"${cite(S.listed[0], S.listed[1])}</div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="eyebrow grey">How each AI describes it</div>
+    <div id="byai">${S.byAi.map(([k, pr, li, wa]) => { const t = pr + li + wa;
+      return `<div class="row"><span class="nm">${ai(k)}</span><span class="split"><i style="width:${(pr / t) * 100}%;background:var(--praise)"></i><i style="width:${(li / t) * 100}%;background:var(--list)"></i>${wa ? `<i style="width:${Math.max(2, (wa / t) * 100)}%;background:var(--warn)"></i>` : ''}</span>
+        <span class="nums">praises <b>${pr}</b>, lists <b>${li}</b>${wa ? `, warns <b>${wa}</b>` : ''}</span></div>`; }).join('')}</div>
+    <div class="key"><span><span class="sw" style="background:var(--praise)"></span>praises</span><span><span class="sw" style="background:var(--list)"></span>lists</span><span><span class="sw" style="background:var(--warn)"></span>mostly a warning</span></div>
+
+    <div class="offers">
+      <div class="eyebrow grey">What AI says it offers</div>
+      <p class="small" style="margin:0 0 6px">Services, not praise: kept apart so the praise above stays praise.</p>
+      ${S.offers.map(([o, n]) => `<div class="offer"><span>${o}</span><span>${n} answers</span></div>`).join('')}
+    </div>
+  </div>
+</div>`;
+
+document.querySelectorAll('#themes .th > button').forEach((b) => { b.onclick = () => b.parentElement.classList.toggle('open'); });
+const fw = document.getElementById('fullWrap'), fb = document.getElementById('fullBtn');
+fb.onclick = () => { fw.classList.toggle('open'); fb.textContent = fw.classList.contains('open') ? 'Show less ↑' : 'How the others put it, and the one warning in full ↓'; };
+document.querySelector('.next .btn').onclick = () => window.A3T.open({ step: 'Weekly Workload task · preview', title: 'Write a payment and insurance page for Kari Mann Dental Studio',
+  from: '<b>Kari Mann Dental Studio</b> · AI Visibility · how AI describes it', when: '<b>Made when the SEO clicks Make a task.</b> It opens on No week.', assignee: "Kari Mann's SEO", due: 'Thu, Nov 5', section: 'Task Organization/General', estimate: 60,
+  sum: 'Creates the task in Asana and posts the comment.', action: 'Create task',
+  description: `Asked about Kari Mann Dental Studio by name, AI brought up payment in 49 of 75 answers (Snapshot of Oct 28): fee-for-service, out of network, paying upfront. A few call it a complaint (ChatGPT: "estimates changing or costs not being clearly explained upfront"; AI Mode: "strict upfront payment policies for new patients").\n\nWrite a plain page: how fee-for-service works here, what new patients pay at the visit, how out-of-network claims and reimbursement work, financing. Link it from the footer and the new-patient page.`,
+  comment: '<span class="at">@Kari Mann\'s SEO</span> AI Visibility found AI warns about payment. <span class="at">@Kari Mann\'s MS</span> is following. Made by OpenedQueries from AI Visibility.' });
+</script>
+</body>
+</html>
