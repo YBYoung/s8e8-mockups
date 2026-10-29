@@ -101,8 +101,6 @@ section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-mar
 .ck.on { background:var(--a); border-color:var(--a); } .ck.on::after { content:''; width:9px; height:5px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
 .ask { color:var(--a-ink); font-weight:600; }
 .now { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin:6px 0 10px; }
-.vbar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:40; display:flex; gap:4px; align-items:center; background:#0B1020; border-radius:10px; padding:5px; box-shadow:0 10px 30px rgba(16,24,40,.25); }
-.vbar span { color:#98A2B3; font-size:12px; padding:0 8px 0 6px; } .vbar button { background:none; border:0; color:#D0D5DD; border-radius:7px; padding:7px 12px; font-size:13px; font-weight:600; } .vbar button.on { background:#fff; color:var(--ink); }
 .foot { margin-top:26px; display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); flex-wrap:wrap; gap:8px; }
 @media (max-width:1000px) { .layout { grid-template-columns:1fr; } .rail { display:none; } .fr, .axis { grid-template-columns:20px 120px 1fr 56px; } .fr .c, .fr .n, .axis > :nth-child(n+5) { display:none; } .tcards { grid-template-columns:1fr; } .rule { grid-template-columns:22px 1fr; } .rule .w { grid-column:2; } .wf .top { grid-template-columns:1fr; } .qrow { grid-template-columns:1fr; } .qrow .nm { padding-left:0; } }
 </style>
@@ -112,8 +110,9 @@ section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-mar
 <main class="shell" id="pane"></main>
 <script>
 const T = window.TRK, D2 = window.TRK2, S = window.TRK_SETUP, C = window.A3C;
+[T.AIS, S.AIS].forEach((list) => { list.find((a) => a.key === 'perplexity').dot = C.PERPLEXITY; });
 T.topbar(document.getElementById('top'), { mock: 'A3, Tracking for the SEO',
-  note: 'A2 reworked from the owner\'s Oct 29 notes: Yesterday, dated comparisons, two chart versions (switch at the bottom), transitions, readouts above charts, "no real change" defined, rivals evidence, sources as a table, wrong facts traced, Alerts replaced by Weekly Workload tasks, Steadiness dropped. Real: the questions, prices, AI Overviews counts, the rival list, the Perplexity sedation quote. Everything else is sample, 8 weeks in (yesterday = Dec 26).' });
+  note: 'A2 reworked from the owner\'s Oct 29 notes: Yesterday, dated comparisons, the chart redrawn as day and week lines (Refined + Zoom and drag from round 2; hover keeps working after a drag), Share of Voice as lines, transitions, readouts above charts, "no real change" defined, rivals evidence, sources as a table, wrong facts traced, Alerts replaced by Weekly Workload tasks, Steadiness dropped. Real: the questions, prices, AI Overviews counts, the rival list, the Perplexity sedation quote. Everything else is sample, 8 weeks in (yesterday = Dec 26).' });
 const pane = document.getElementById('pane');
 const ALL = S.AIS.map((a) => a.key);
 let TRACK = { ais: [...ALL], qids: [...S.ORIGINAL.filter((id) => id !== 56), 901, 902] };
@@ -126,7 +125,7 @@ const PERIODS = {
   quarter: { label: 'This quarter', range: [0, 55], before: null, beforeLabel: 'the quarter before' },
 };
 const FIRST = [0, 6];
-let st = { period: 'week', compare: 'before', mode: 'all', version: 'A' };
+let st = { period: 'week', compare: 'before', mode: 'all' };
 const P = () => PERIODS[st.period];
 const eff = () => (st.compare === 'first' || !P().before ? 'first' : 'before');
 const cmpRange = () => (eff() === 'first' ? FIRST : P().before);
@@ -144,7 +143,7 @@ let chart;
 
 function summaryHtml() {
   const s = stats('all'), [lo, hi] = C.range(s.now, s.n);
-  return `<span class="dt">${P().label}, ${C.span(...P().range)}</span><span><b>about ${inTen(s.now)} in every 10</b> answers named ${T.PRACTICE}</span><span>likely ${lo} to ${hi} in every 100, from ${s.n.toLocaleString()} answers</span><span class="mk">Hover the chart for a day or a week.</span>`;
+  return `<span class="dt">${P().label}, ${C.span(...P().range)}</span><span><b>about ${inTen(s.now)} in every 10</b> answers named ${T.PRACTICE} (likely ${lo} to ${hi} in 100)</span><span class="mute">from ${s.n.toLocaleString()} answers</span>`;
 }
 /** now / compared rates and answer counts for 'all', an AI key, or a service. */
 function stats(key, svc) {
@@ -200,7 +199,7 @@ function full() {
         <span class="tip"><b id="lbM"></b> mentioned in passing<span class="tipbox"><b>Mentioned in passing</b>Named as a side note, or only in a source or a caveat, never offered as a choice. Still counts as named.</span></span></div>
       <div class="note" id="ydNote" hidden></div>
       <div class="box"><div class="boxhd"><div class="key" id="ckey"></div><div class="seg" id="view"><span class="pill"></span><button data-v="all">All AIs</button><button data-v="each">Each AI</button></div></div>
-        <div id="main"></div>
+        <div id="main" tabindex="-1" style="outline:none"></div>
         <div class="mks">${MARKERS.map((m) => `<span><i style="background:${m.kind === 'work' ? '#4F46E5' : m.kind === 'track' ? '#0B1020' : '#98A2B3'};${m.kind === 'track' ? 'transform:rotate(45deg);width:8px;height:8px;' : ''}"></i>${m.text.slice(2)}</span>`).join('')}</div></div>
     </section>
     <section class="s" id="ais"><div class="eyebrow">By AI</div><h2 class="mid" id="aiH"></h2><p class="small">Click an AI to see its services.</p>
@@ -211,7 +210,7 @@ function full() {
       <div id="svKey"></div><div id="svAxis"></div>
       ${T.SERVICES.map((s) => `${rowHtml(`sv-${s.name}`, s.name, true)}<div class="kids" data-kids="sv-${s.name}"><div><div class="in" data-qs="${s.name}"></div></div></div>`).join('')}</section>
     <section class="s" id="rivals"><div class="eyebrow">Rivals</div><h2 class="mid">Smile Cape Coral is gaining, mostly on sedation.</h2>
-      <p class="small">Out of every 100 times AI named any dentist for these questions. Each week is a flat step.</p>
+      <p class="small">Out of every 100 times AI named any dentist for these questions. One line per practice, a point for each week.</p>
       <div class="box"><div id="share"></div><div class="key" style="margin-top:6px">${[['Kari Mann Dental Studio', '#4F46E5'], ['Cape Dental Care', '#F9A8D4'], ['Smile Cape Coral', '#DB2777']].map(([n, c]) => `<span><span class="sw" style="width:16px;height:3px;background:${c};display:inline-block"></span>${n}</span>`).join('')}</div></div>
       <button class="evbtn" id="evb">The evidence: where Smile Cape Coral gained <svg viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3"/></svg></button>
       <div class="kids" id="ev"><div><div class="in">
@@ -278,7 +277,7 @@ function update() {
   q('#cmp .v').textContent = cmpLabel();
   q('#cmp .menu').innerHTML = `<button data-c="before" class="${eff() === 'before' ? 'on' : ''}" ${P().before ? '' : 'disabled'}>${P().before ? `${P().beforeLabel[0].toUpperCase()}${P().beforeLabel.slice(1)} (${C.span(...P().before)})` : 'The quarter before'}<small>${P().before ? 'Is this better than last time?' : 'Not yet: tracking started Nov 1'}</small></button>
     <button data-c="first" class="${eff() === 'first' ? 'on' : ''}">The first week (${C.span(...FIRST)})<small>Is this better than where we started?</small></button>`;
-  chart.set({ mode: st.mode, version: st.version, period: P().range, compare: cmpRange() });
+  chart.set({ mode: st.mode, period: P().range, compare: cmpRange() });
   const s = stats('all'), v = C.verdict(s.now, s.n, s.prev, s.nPrev), [lo, hi] = C.range(s.now, s.n);
   q('#ovEye').textContent = `Overview · ${P().label.toLowerCase()}, ${C.span(...P().range)}`;
   q('#ovH').textContent = `AI named ${T.PRACTICE} in about ${inTen(s.now)} in every 10 answers ${st.period === 'yday' ? 'yesterday' : ''}: ${v === 'none' ? `no real change from ${cmpLabel().split(' (')[0]}` : `a ${VERDICT[v]} from ${cmpLabel().split(' (')[0]}`}.`.replace('  ', ' ').replace(' :', ':');
@@ -287,9 +286,10 @@ function update() {
   q('#lbR').textContent = Math.round(named * 0.41).toLocaleString(); q('#lbL').textContent = Math.round(named * 0.49).toLocaleString(); q('#lbM').textContent = (named - Math.round(named * 0.41) - Math.round(named * 0.49)).toLocaleString();
   const yd = q('#ydNote'); yd.hidden = st.period !== 'yday';
   yd.innerHTML = `<b>One day is about ${N.all} answers</b>, so its likely range is wide (${lo} to ${hi}). A week of answers narrows it to about 4 points. Yesterday is compared with the 7 days before it, because two single days are both too loose to tell apart.`;
-  q('#ckey').innerHTML = st.mode === 'each' ? T.AIS.map((a) => `<span><span class="sw" style="${st.version === 'A' ? 'width:16px;height:3px' : 'width:10px;height:10px;border-radius:2px'};background:${a.dot};display:inline-block"></span>${a.name}</span>`).join('')
-    : st.version === 'A' ? `<span><span class="sw" style="width:5px;height:14px;background:#C7CBF5;border-radius:1px;display:inline-block"></span>each day: about ${N.all} answers, swings a lot</span><span><span class="sw" style="width:22px;height:3px;background:#4338CA;display:inline-block"></span>each week: 7 days together, about ${(N.all * 7).toLocaleString()} answers</span><span><span class="sw" style="width:22px;height:10px;background:rgba(79,70,229,.16);display:inline-block"></span>likely range of the week</span>`
-      : `<span><span class="sw" style="width:12px;height:14px;background:#C7CBF5;border-radius:2px;display:inline-block"></span>each week, about ${(N.all * 7).toLocaleString()} answers</span><span><span class="sw" style="width:2px;height:14px;background:#312E81;display:inline-block"></span>likely range of the week</span><span><span class="sw" style="width:6px;height:6px;border-radius:50%;background:#4338CA;display:inline-block"></span>hover a week for its days</span>`;
+  const lk = (c, h) => `<span class="sw" style="width:16px;height:${h}px;background:${c};border-radius:1px;display:inline-block"></span>`, bk = (c) => `<span class="sw" style="width:12px;height:12px;background:${c};border-radius:2px;display:inline-block"></span>`;
+  q('#ckey').innerHTML = (st.mode === 'each' ? T.AIS.map((a) => `<span>${lk(a.dot, 2)}${a.name}, each week</span>`).join('')
+    : `<span>${lk('#4338CA', 2.5)}each week: 7 days together, about ${(N.all * 7).toLocaleString()} answers</span><span>${lk('#A5B4FC', 1.5)}each day: about ${N.all} answers, swings a lot</span>`)
+    + `<span>${bk('#EEF0FF')}now</span><span>${bk('#F3F4F6')}compared with</span>`;
   ['aiKey', 'svKey'].forEach((k) => { q(`#${k}`).innerHTML = rkey(); }); ['aiAxis', 'svAxis'].forEach((k) => { q(`#${k}`).innerHTML = axis(); });
   const moved = (rows) => { const up = rows.filter((r) => r.v === 'up').map((r) => r.n), dn = rows.filter((r) => r.v === 'down').map((r) => r.n); const l = (a) => (a.length > 1 ? `${a.slice(0, -1).join(', ')} and ${a.at(-1)}` : a[0]);
     return !up.length && !dn.length ? `No real change on any one ${rows.kind} against ${cmpLabel().split(' (')[0]}.` : `${up.length ? `${l(up)} rose` : ''}${up.length && dn.length ? '; ' : ''}${dn.length ? `${l(dn)} dropped` : ''}, against ${cmpLabel().split(' (')[0]}.`; };
@@ -367,13 +367,7 @@ Check: is the practice listed on Opencare? Are its services (implants, sedation,
     comment: COMMENT('AI often reads Opencare when it names other dentists.') }),
 };
 
-function vbar() {
-  const b = document.createElement('div'); b.className = 'vbar';
-  b.innerHTML = '<span>Chart</span><button data-v="A" class="on">A: weeks as steps, days as bars</button><button data-v="B">B: weeks as columns</button>';
-  b.onclick = (e) => { const v = e.target.dataset?.v; if (!v) return; st.version = v; b.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.v === v)); if (chart) update(); };
-  document.body.appendChild(b);
-}
-vbar(); full();
+full();
 </script>
 </body>
 </html>
