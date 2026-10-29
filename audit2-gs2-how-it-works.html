@@ -731,7 +731,7 @@ a{color:var(--aInk)}
     const lab = mk('g', {}, svg); tr(lab, 'opacity .45s'); lab.style.opacity = 0;
     D.kw.forEach((kk, k) => { txt(lab, SLOT(k) + 22, 112, String(GS.top3(kk)), { size: 13, w: 800, anchor: 'middle', fill: GS.top3(kk) ? INK : '#98A2B3' }); txt(lab, SLOT(k) + 22, 125, GS.short[kk.kw], { size: 9, fill: MUTED, anchor: 'middle' }); });
     const tot = D.kw.reduce((a, kk) => a + GS.top3(kk), 0);
-    txt(lab, 150, 152, `${D.kw.map((kk) => GS.top3(kk)).join(' + ')} = ${tot} top 3 readings`, { size: 10, w: 600, anchor: 'middle', fill: '#273043' });
+    txt(lab, 150, 152, `${D.kw.map((kk) => GS.top3(kk)).join(' + ')} = ${tot} top 3 places`, { size: 10, w: 600, anchor: 'middle', fill: '#273043' });
     txt(lab, 150, 172, `÷ ${D.kw.length} searches = ${Math.round(tot / D.kw.length)} of 81, the headline`, { size: 11.5, w: 800, anchor: 'middle', fill: TEAL });
     const foot = txt(svg, 16, 192, '“dentist near me”, Bothell scan #2: the real grid', { size: 9.5, fill: MUTED }); tr(foot, 'opacity .35s');
     let ticker = null;
