@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracking Line Charts 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-tracking-lines2.js"></script>
+<style>
+.ctl { position:sticky; top:96px; z-index:15; background:rgba(255,255,255,.96); backdrop-filter:blur(6px); display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:14px 0; margin-bottom:8px; font-size:13.5px; color:var(--muted); border-bottom:1px solid var(--line); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; padding:3px; gap:2px; position:relative; }
+.seg button { position:relative; z-index:1; background:none; border:0; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); transition:color .25s; }
+.seg button.on { color:var(--a-ink); }
+.seg .pill { position:absolute; top:3px; bottom:3px; border-radius:6px; background:var(--a-tint); transition:left .35s cubic-bezier(.4,0,.2,1), width .35s cubic-bezier(.4,0,.2,1); }
+.intro { padding:30px 0 10px; }
+.cmp { font-weight:600; color:var(--ink); }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell">
+  <section class="intro"><div class="eyebrow">Tracking chart · round 2 · 5 versions of "day and week lines"</div>
+    <h2 class="mid">Day and week lines, five ways.</h2>
+    <p class="small" style="max-width:760px">All five start from round 1's version 2 and borrow from the approved charts: the Performance page's readout bar above the chart and drag to read a stretch; the Topic Cards chart's white-cased lead line with an end dot, soft area, range zoom and dashed hover guide. Same sample data in all five; the controls change all five at once. <a href="ai-visibility-tracking-line-charts.html">Round 1</a></p></section>
+  <div class="ctl"><div class="seg" id="per"><span class="pill"></span><button data-p="yday">Yesterday</button><button data-p="week" class="on">Last 7 days</button><button data-p="month">Last 28 days</button><button data-p="quarter">This quarter</button></div>
+    <span>compared with <span class="cmp" id="cmpl"></span></span>
+    <div class="seg" id="mode" style="margin-left:auto"><span class="pill"></span><button data-m="all" class="on">All AIs</button><button data-m="each">Each AI</button></div></div>
+  <div id="list"></div>
+</main>
+<script>
+const T = window.TRK, LN = window.LINES2;
+T.topbar(document.getElementById('top'), { mock: 'Line chart versions for Tracking, round 2', note: 'Owner 10/29 picked round 1 version 2 (day and week lines): "go more in that direction... we\'re going for a clean look." Perplexity is cyan here: its old grey failed the colour check (reads as grey, and clashes with the grey markers).' });
+const V = [
+  [{}, 'Refined', 'Round 1\'s version 2 cleaned to the approved charts: the week line has a white casing and an end dot, the day line sits quietly behind it, labels sit at the end in grey ink, the grid is a hairline.'],
+  [{ area: true }, 'Soft area', 'The same, with the faint fill under the week line that the Topic Cards chart uses under its main phrase.'],
+  [{ zoom: true, drag: true }, 'Zoom and drag', 'The period buttons zoom into the window, like the Topic Cards 12, 24 and 5-year range. Drag across the chart to read any stretch, like the Performance page.'],
+  [{ focus: true }, 'Now and before', 'Only the two stretches being compared stay strong; the rest of the week line fades. Change the period and the strong stretches slide.'],
+  [{ multiples: true }, 'Small charts for each AI', 'All AIs looks like version 1. Each AI becomes five small charts on the same scale instead of five crossing lines, which is easier to read once lines cross.'],
+];
+const PER = { yday: { label: 'Yesterday', p: [55, 55], c: [48, 54], cl: 'the 7 days before' }, week: { label: 'Last 7 days', p: [49, 55], c: [42, 48], cl: 'the 7 days before' }, month: { label: 'Last 28 days', p: [28, 55], c: [0, 27], cl: 'the 28 days before' }, quarter: { label: 'This quarter', p: [0, 55], c: [0, 6], cl: 'the first week' } };
+let st = { per: 'week', mode: 'all' };
+document.getElementById('list').innerHTML = V.map(([, t, h], i) => `<div class="l2"><div class="num">Version ${i + 1}</div><h3>${t}</h3><p class="how">${h}</p><div data-c="${i}"></div></div>`).join('');
+const charts = V.map(([o], i) => LN.chart(document.querySelector(`[data-c="${i}"]`), o));
+const pill = (seg) => { const on = seg.querySelector('button.on'), p = seg.querySelector('.pill'); p.style.left = `${on.offsetLeft}px`; p.style.width = `${on.offsetWidth}px`; };
+function apply() {
+  const P = PER[st.per];
+  document.getElementById('cmpl').textContent = `${P.cl} (${LN.span(...P.c)})`;
+  document.querySelectorAll('#per button').forEach((b) => b.classList.toggle('on', b.dataset.p === st.per));
+  document.querySelectorAll('#mode button').forEach((b) => b.classList.toggle('on', b.dataset.m === st.mode));
+  pill(document.getElementById('per')); pill(document.getElementById('mode'));
+  charts.forEach((c) => c.set({ mode: st.mode, period: P.p, compare: P.c, label: P.label }));
+}
+document.getElementById('per').onclick = (e) => { if (e.target.dataset.p) { st.per = e.target.dataset.p; apply(); } };
+document.getElementById('mode').onclick = (e) => { if (e.target.dataset.m) { st.mode = e.target.dataset.m; apply(); } };
+apply();
+</script>
+</body>
+</html>
