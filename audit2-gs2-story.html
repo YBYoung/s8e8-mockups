@@ -567,7 +567,7 @@ a{color:var(--aInk)}
   };
   G.ord = (v) => (v > 20 ? 'not in top 20' : `${v}${v % 10 === 1 && v !== 11 ? 'st' : v % 10 === 2 && v !== 12 ? 'nd' : v % 10 === 3 && v !== 13 ? 'rd' : 'th'}`);
   G.stars = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} from ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`);
-  G.starsShort = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} · ${FL.fmt(l.n)}`);
+  G.starsShort = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} stars · ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`);
   G.trunc = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
   /* read order: rings out from the office (the order the scan reads points) */
   G.readOrder = Array.from({ length: 81 }, (_, n) => n).sort((a, b) => {
@@ -626,10 +626,12 @@ a{color:var(--aInk)}
 .tl.hov{box-shadow:0 0 0 2px #0B1020,0 2px 6px rgba(11,16,32,.3)}
 /* the practice's marker: same teal + white house everywhere (map, lists, readout, legend) */
 .me-mk{position:absolute;z-index:4;width:0;height:0;pointer-events:none}
-.me-frame{position:absolute;width:44px;height:44px;left:-22px;top:-22px;border:3px solid #0F766E;border-radius:7px;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(11,16,32,.25)}
-.me-tag{position:absolute;left:0;top:22px;transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;height:16px;padding:0 6px 0 4px;background:#0F766E;color:#fff;border-radius:4px;font:800 10px/16px Inter,sans-serif;letter-spacing:.01em;white-space:nowrap;pointer-events:auto;cursor:default;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(11,16,32,.25);outline:none;transition:box-shadow .15s}
-.me-tag.hot,.me-tag:focus-visible{box-shadow:0 0 0 2px #fff,0 0 0 4px #0F766E,0 2px 8px rgba(11,16,32,.3)}
-.gs-ovl .me-tag svg,.me-chip svg{position:static;inset:auto;width:11px;height:11px;flex:none;overflow:visible}
+.me-frame{position:absolute;width:40px;height:40px;left:-20px;top:-20px;border:2px solid #0F766E;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.95)}
+.me-tag{position:absolute;left:18px;top:-18px;transform:translate(-50%,-50%);display:grid;place-items:center;width:15px;height:15px;background:#0F766E;border-radius:4px;pointer-events:auto;cursor:default;box-shadow:0 0 0 1.5px #fff;outline:none;transition:box-shadow .15s}
+.me-tag.hot,.me-tag:focus-visible{box-shadow:0 0 0 1.5px #fff,0 0 0 3.5px #0F766E}
+.me-mk.hot .me-frame,.me-tag.hot~.me-frame{border-width:3px}
+.gs-ovl .me-tag svg{position:static;inset:auto;width:9px;height:9px;flex:none;overflow:visible}
+.me-chip svg{position:static;inset:auto;width:11px;height:11px;flex:none;overflow:visible}
 .me-chip{display:inline-grid;place-items:center;width:22px;height:20px;border-radius:4px;background:#0F766E;box-shadow:0 0 0 1px #0F766E;flex:none;vertical-align:middle}
 .me-leg{gap:5px}
 .me-leg .me-chip{width:20px;height:20px}
@@ -709,11 +711,11 @@ a{color:var(--aInk)}
 .gs-tbl tr.hot td{background:#F6F7FA}
 .gs-brow.me .no{display:flex;align-items:center}
 </style></head><body>
-<div class="mock-bar"><b>Mockup · gs2-story · Grid Scan result, Story tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 searches, 405 searches from 81 spots, $0.81), real top 20 at every spot. Scan twice note uses scans #3 and #4 (same day pair).
+<div class="mock-bar"><b>Mockup · gs2-story · Grid Scan result, Story tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 search phrases from 81 spots = 405 searches, $0.81), real top 20 at every spot. Scan twice note uses scans #3 and #4 (same day pair).
 <ul><li>Round 3 (10/29): point at, or tab to, any numbered pin and the panel beside the map names that listing: what its number means, stars and reviews, distance and direction from the office, top 3 count on each phrase, whether it is a tracked rival, and why a pin is dashed or moved. Matching rows light up too.</li>
 <li>The practice now has one marker everywhere: a teal frame on its own spot with a teal name tag (white house mark, "Bothell Family"), always on top; pins are kept off it. The same teal house chip marks it in every list, readout and legend.</li>
 <li>Wording pass over the whole Story: "spots" explained once, no "pack", "readings" or "average rank" without saying what it means. Every change listed in mt-design-audit/06-gs-wording-changes.md.</li>
-<li>Kept from round 2: map on "top 3 on k of 5 phrases" per spot (adds up to 141 = 28 of 81); one map, 81 squares that keep identity; spot hover <span class="ep">needs a small read endpoint</span> over local_grid_scan_points.</li></ul></div>
+<li>Plain-words pass (10/29, second round): the headline counts searches, 141 of 405, instead of an averaged "28 of 81 spots"; usual place now means the same thing on every tab (the middle place where listed: 4th); log in mt-design-audit/08-gs-copy-changes.md.</li><li>Kept from round 2: map on "top 3 on k of 5 phrases" per spot (adds up to 141 of 405); one map, 81 squares that keep identity; spot hover <span class="ep">needs a small read endpoint</span> over local_grid_scan_points.</li></ul></div>
 <div id="page"></div>
 <script>/* gs2 Story: the Grid Scan result Story for Bothell scan #2. One map, 81 squares keyed by
    spot and never remade; each chapter re-colours, re-sizes and re-labels them.
@@ -768,6 +770,13 @@ a{color:var(--aInk)}
   const fromOffice = (i) => (i === OWN ? 'the office' : `${L[i].mi} mi ${BRG[L[i].brg] || ''}`.trim());
   const times = (v) => (v === 1 ? '1 time' : `${v} times`);
   const spots = (v) => (v === 1 ? '1 spot' : `${v} spots`);
+  /* one shared vocabulary: a search = one phrase typed from one spot (405 in all); top 3 counted in searches */
+  const rk = (kk, n, i) => GS.rankOf(kk, n, i);
+  const t3all = (i) => D.kw.reduce((a, kk) => a + kk.top.filter((_, n) => rk(kk, n, i) <= 3).length, 0);
+  /* usual place: the middle of its places in the searches where it is in Google's top 20 (same rule as the Map and Leaderboard tabs) */
+  const usual = (i, kws) => { const v = []; kws.forEach((kk) => { for (let n = 0; n < 81; n++) { const r = rk(kk, n, i); if (r <= 20) v.push(r); } }); v.sort((a, b) => a - b); return { listed: v.length, mid: v.length ? v[Math.floor((v.length - 1) / 2)] : null }; };
+  const usualTxt = (i, kws) => { const u = usual(i, kws); return u.mid ? GS.ord(u.mid) : 'not in the top 20'; };
+  const srch = (v) => (v === 1 ? '1 search' : `${v} searches`);
 
   /* ---------------- the practice's marker: one design everywhere ---------------- */
   const SHORT = P.t.replace(/ Dentistry$/, '');
@@ -806,79 +815,80 @@ a{color:var(--aInk)}
   const CH = [
     {
       key: 'short', kick: `In short · ${NK} search phrases`,
-      head: `On a typical search, ${esc(P.t)} shows in Google’s top 3 from <span class="grad">${avg81} of the 81 spots</span> checked.`,
+      head: `Across its ${NK} search phrases, ${esc(P.t)} is in Google’s top 3 from about <span class="grad">${Math.round(hits / NK)} of the 81 spots</span>.`,
       body: [
-        `The scan searched Google Maps from 81 spots around the office: a 9 by 9 grid, each spot a quarter mile from the next, about 2 miles across. From every spot it ran ${NK} search phrases, the way a patient standing there would. That is ${LOOKUPS} searches in all.`,
-        `The top 3 are the three practices Maps lists first, before the “More places” link. ${esc(P.t)} was in them in ${hits} of the ${LOOKUPS} searches, about ${per100} in every 100. “Typical” means the average over the ${NK} phrases: ${hits} ÷ ${NK} = ${avg81}.`,
-        `Two phrases do most of the work: ${q('dentist in bothell')} puts it in the top 3 from ${GS.top3(DIB)} of 81 spots, and ${q('dentist near me')} from ${GS.top3(DNM)}. On ${q('emergency dentist bothell')} it comes 4th or 5th from ${em45} spots, just behind the top 3. Med spas and orthodontists win ${q('botox bothell')} and ${q('invisalign bothell')}.`,
+        `The scan searched Google Maps from 81 spots around the office: a 9 by 9 grid, each spot a quarter mile from the next, about 2 miles across. From every spot it typed the same ${NK} search phrases, the way a patient standing there would. One phrase from one spot is one search: ${LOOKUPS} searches in all.`,
+        `The top 3 are the three businesses Google Maps lists first, before the “More places” link. ${esc(P.t)} was in them in ${hits} of the ${LOOKUPS} searches, about ${per100} in every 100.`,
+        `Two phrases do most of the work. On ${q('dentist in bothell')} it is in the top 3 from ${GS.top3(DIB)} of the 81 spots. On ${q('dentist near me')} it is in the top 3 from ${GS.top3(DNM)}. On ${q('emergency dentist bothell')} it is 4th or 5th from ${em45} spots, just behind the top 3. Med spas win ${q('botox bothell')}, and orthodontists win ${q('invisalign bothell')}.`,
       ],
-      extra: `<table class="gs-tbl"><thead><tr><th>Search phrase</th><th style="text-align:right">Top 3 at</th><th style="text-align:right">1st at</th><th style="text-align:right">Usual place</th></tr></thead><tbody>${ORDER.map((kw) => { const kk = K[kw]; return `<tr><td>${esc(kw)}</td><td class="n">${GS.top3(kk)} of 81</td><td class="n">${GS.first(kk)} of 81</td><td class="n">${kk.arp > 20 ? 'past 20th' : kk.arp.toFixed(1)}</td></tr>`; }).join('')}</tbody></table>
-        <p class="note">Usual place: where the practice sits in Google’s list, averaged over the 81 spots; not in the top 20 counts as 21st. In the top 3 on 3 or more phrases at ${k3plus} spots: the office and spots to the ${dirWords(GS.kOf5.map((v, n) => (v >= 3 && n !== 40 ? n : -1)).filter((n) => n >= 0))}. In the top 3 on no phrase at ${zeroPts.length} spots, all about a mile ${dirWords(zeroPts)}. Usual place across all ${LOOKUPS} searches: ${M.arp.toFixed(1)}. Scanned Oct 27 for ${FL.money(D.cost)}.</p>`,
+      extra: `<table class="gs-tbl"><thead><tr><th>Search phrase</th><th style="text-align:right;white-space:nowrap">Spots in top 3</th><th style="text-align:right;white-space:nowrap">Spots at 1st</th><th style="text-align:right;white-space:nowrap">Usual place</th></tr></thead><tbody>${ORDER.map((kw) => { const kk = K[kw]; return `<tr><td>${esc(kw)}</td><td class="n">${GS.top3(kk)} of 81</td><td class="n">${GS.first(kk)} of 81</td><td class="n" style="padding-left:18px;white-space:nowrap">${usualTxt(OWN, [kk])}</td></tr>`; }).join('')}</tbody></table>
+        <p class="note">Usual place: the middle of the practice’s places in the searches where it shows up in Google’s top 20, so half the time it is there or higher. Across all ${LOOKUPS} searches its usual place is ${usualTxt(OWN, D.kw)}, and it shows up in the top 20 in ${usual(OWN, D.kw).listed} of them. It is in the top 3 on 3 or more phrases at ${k3plus} spots: the office and spots to the ${dirWords(GS.kOf5.map((v, n) => (v >= 3 && n !== 40 ? n : -1)).filter((n) => n >= 0))}. It is in the top 3 on no phrase at ${zeroPts.length} spots, all about a mile ${dirWords(zeroPts)}. Scanned Oct 27 for ${FL.money(D.cost)}.</p>`,
       title: `How many of the ${NK} phrases put it in the top 3, from each spot`,
       cap: `One square = one spot. Number = how many of the ${NK} phrases put ${P.t} in the top 3 there.`,
-      legend: () => `${[0, 1, 2, 3, 4, 5].map((v) => `<span><b class="sw" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b></span>`).join('')}<span>phrases of ${NK} in the top 3</span>${meLegend}`,
+      legend: () => `${[0, 1, 2, 3, 4, 5].map((v) => `<span><b class="sw" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b></span>`).join('')}<span>phrases, of ${NK}, in the top 3</span>${meLegend}`,
       tile: (n) => ({ c: GREEN[GS.kOf5[n]], d: String(GS.kOf5[n]), ink: GINK[GS.kOf5[n]] }),
       delay: (n) => GS.readPos[n] * 9,
       pins: [], hover: 'all',
-      idle: () => `<h4>How the map adds up</h4><div class="ph">${hits} top 3 results ÷ ${NK} phrases = ${avg81} of 81 spots</div>${[5, 4, 3, 2, 1, 0].map((v) => `<div class="kr"><b class="chip" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b><span>${v === 1 ? '1 phrase' : `${v} phrases`}</span><span class="v">${kDist[v]}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Right column: number of spots. Point at a square to see that spot’s ${NK} results.</p>`,
+      idle: () => `<h4>How the map adds up</h4><div class="ph">The squares add up to ${hits} searches in the top 3</div>${[5, 4, 3, 2, 1, 0].map((v) => `<div class="kr"><b class="chip" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b><span>${v === 1 ? '1 phrase' : `${v} phrases`}</span><span class="v">${kDist[v]}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Right column: how many spots have that number. Point at a square to see its ${NK} results.</p>`,
     },
     {
       key: 'five', kick: 'Five phrases, five different maps',
-      head: 'Each phrase draws its own map: top 3 almost everywhere on two, mostly 4th to 10th on two, nowhere in the top 20 on one.',
+      head: 'Each search phrase draws a different map.',
       body: [
-        `Each square now has ${NK} thin stripes, one per phrase, strongest phrase on the left. ${esc(P.t)} is listed 1st from ${GS.first(DIB)} spots on ${q('dentist in bothell')} and from ${GS.first(DNM)} on ${q('dentist near me')}. On ${q('dentist near me')} it drops out of the top 20 at ${spots(dnmMiss.length)} ${GS.dir(dnmMiss[0])} of the office, where ${esc(nm(DNM.top[dnmMiss[0]][0]))} and ${esc(nm(DNM.top[dnmMiss[0]][1]))} come 1st and 2nd.`,
-        `On ${q('emergency dentist bothell')} it is between ${GS.ord(Math.min(...EM.rank))} and ${GS.ord(Math.max(...EM.rank))} everywhere and never 1st. On ${q('invisalign bothell')} it is 5th to 9th from ${INV.rank.filter((v) => v >= 5 && v <= 9).length} spots and in the top 3 at ${spots(GS.top3(INV))}. On ${q('botox bothell')} it is not in the top 20 from any spot.`,
+        `Two phrases put the practice in the top 3 almost everywhere. Two leave it mostly 4th to 10th. On one it is not in the top 20 from any spot.`,
+        `Each square now has ${NK} thin stripes, one per phrase, strongest phrase on the left. ${esc(P.t)} is 1st from ${GS.first(DIB)} of the 81 spots on ${q('dentist in bothell')} and from ${GS.first(DNM)} on ${q('dentist near me')}. On ${q('dentist near me')} it drops out of the top 20 at ${spots(dnmMiss.length)} ${GS.dir(dnmMiss[0])} of the office, where ${esc(nm(DNM.top[dnmMiss[0]][0]))} and ${esc(nm(DNM.top[dnmMiss[0]][1]))} come 1st and 2nd.`,
+        `On ${q('emergency dentist bothell')} it is between ${GS.ord(Math.min(...EM.rank))} and ${GS.ord(Math.max(...EM.rank))} from every spot, and never 1st. On ${q('invisalign bothell')} it is 5th to 9th from ${INV.rank.filter((v) => v >= 5 && v <= 9).length} spots and in the top 3 from ${spots(GS.top3(INV))}. On ${q('botox bothell')} it is not in the top 20 from any spot.`,
       ],
       extra: strip(),
-      title: `${NK} results per spot: one stripe per phrase`,
+      title: `Each square: ${NK} stripes, one per phrase`,
       cap: 'Stripes, left to right: dentist in bothell, dentist near me, emergency, invisalign, botox.',
       legend: () => `${legendRank()}${meLegend}`,
       tile: (n) => ({ c: ORDER.map((kw) => RS(K[kw].rank[n]).bg), split: true, d: '', ink: '#fff' }),
       delay: (n, s) => s * 110 + (n % 9) * 14,
       pins: [], hover: 'all',
-      idle: () => `<h4>Stripe order</h4><div class="ph">Strongest phrase on the left</div>${ORDER.map((kw, s) => `<div class="kr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">${s + 1}</b><span>${esc(PH[kw])}</span><span class="v">${GS.top3(K[kw])}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Right column: spots, of 81, with the practice in the top 3.</p>`,
+      idle: () => `<h4>Stripe order</h4><div class="ph">Strongest phrase on the left</div>${ORDER.map((kw, s) => `<div class="kr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">${s + 1}</b><span>${esc(PH[kw])}</span><span class="v">${GS.top3(K[kw])}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Right column: spots, of 81, where the practice is in the top 3.</p>`,
     },
     {
       key: 'best', kick: 'Best search phrase',
-      head: `On ${q('dentist in bothell')} it is listed 1st from <span class="grad">${GS.first(DIB)} of 81</span> spots and is in the top 3 from ${GS.top3(DIB)}.`,
+      head: `On ${q('dentist in bothell')}, the practice is 1st from <span class="grad">${GS.first(DIB)} of the 81 spots</span>.`,
       body: [
-        `The ${dibWeak.length} spots where it misses the top 3 are all ${Math.min(...weakDist)} to ${Math.max(...weakDist)} miles ${dirWords(dibWeak)} of the office, toward ${esc(nm(BDC))}, ${L[BDC].mi} mi away, and ${esc(nm(CRIS))}, ${L[CRIS].mi} mi away. From those spots it comes ${GS.ord(Math.min(...dibWeak.map((n) => DIB.rank[n])))} to ${GS.ord(Math.max(...dibWeak.map((n) => DIB.rank[n])))}.`,
-        `Listed 1st at those ${dibWeak.length} spots: ${weakFirst.map(([i, c], k) => `${esc(nm(i))} at ${k === 0 ? spots(c) : c}`).join(', ')}. ${esc(nm(ACC))} is in the top 3 from ${GS.top3Count(DIB, ACC)} spots on this phrase but never 1st; ${esc(P.t)} is above it from all ${ahead(DIB, OWN, ACC)}.`,
+        `It is in the top 3 from ${GS.top3(DIB)} spots. The ${dibWeak.length} spots where it misses the top 3 are all ${Math.min(...weakDist)} to ${Math.max(...weakDist)} miles ${dirWords(dibWeak)} of the office, toward ${esc(nm(BDC))}, ${L[BDC].mi} mi away, and ${esc(nm(CRIS))}, ${L[CRIS].mi} mi away. From those spots it comes ${GS.ord(Math.min(...dibWeak.map((n) => DIB.rank[n])))} to ${GS.ord(Math.max(...dibWeak.map((n) => DIB.rank[n])))}.`,
+        `1st at those ${dibWeak.length} spots: ${weakFirst.map(([i, c], k) => `${esc(nm(i))} at ${k === 0 ? spots(c) : c}`).join(', ')}. ${esc(nm(ACC))} is in the top 3 from ${GS.top3Count(DIB, ACC)} spots on this phrase but never 1st. ${esc(P.t)} is above it from all ${ahead(DIB, OWN, ACC)} spots.`,
       ],
-      extra: `<p class="note">Only ${DIB.density.top3} different practices ever reach the top 3 on this phrase; ${DIB.density.top20} show up somewhere in a top 20. Usual place on this phrase: ${DIB.arp.toFixed(1)}.</p>`,
-      title: '“dentist in bothell”: 1st almost everywhere, 5 spots lost to the south-west',
+      extra: `<p class="note">Only ${DIB.density.top3} different businesses ever reach the top 3 on this phrase, and ${DIB.density.top20} show up somewhere in a top 20. The practice’s usual place on this phrase: ${usualTxt(OWN, [DIB])}.</p>`,
+      title: '“dentist in bothell”: 1st almost everywhere; 5 spots to the south-west miss the top 3',
       cap: 'Each square: the practice’s place in Google’s list from that spot. Bigger squares: the 5 spots outside the top 3.',
       legend: () => `${legendRank(bandCounts(DIB))}${meLegend}`,
       tile: (n) => { const v = DIB.rank[n]; const s = RS(v); return { c: s.bg, d: s.t, ink: s.ink, s: v > 3 ? 1.14 : 0.92 }; },
       delay: (n) => (n % 9) * 45,
       pins: [CRIS, BDC, JUDE], hover: 'dentist in bothell',
       pinMeaning: (i) => { const f = weakFirst.find(([x]) => x === i)?.[1] || 0; const t3 = dibWeak.filter((n) => DIB.top[n].slice(0, 3).includes(i)).length; return f ? `1st at ${f} of the ${dibWeak.length} spots where the practice misses the top 3 on this phrase.` : `In the top 3 at ${t3} of the ${dibWeak.length} spots the practice misses on this phrase, never 1st.`; },
-      idle: () => `<h4>Who wins the 5 missed spots</h4><div class="ph">Numbered pins on the map</div>${[CRIS, BDC, JUDE].map((i, k) => `<div class="pr" data-pk="${i}"><b class="chip pinchip">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${L[i].mi} mi · ${GS.starsShort(L[i])} · 1st at ${weakFirst.find(([x]) => x === i)?.[1] || 0} of 5</span></span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Point at a pin for its details.</p>`,
+      idle: () => `<h4>Who is 1st where it misses</h4><div class="ph">Numbered pins on the map</div>${[CRIS, BDC, JUDE].map((i, k) => `<div class="pr" data-pk="${i}"><b class="chip pinchip">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${L[i].mi} mi · ${GS.starsShort(L[i])} · 1st at ${weakFirst.find(([x]) => x === i)?.[1] || 0} of the 5 spots</span></span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Point at a pin for its details.</p>`,
     },
     {
       key: 'pack', kick: 'Just missing the top 3',
-      head: `On emergency searches, the same three practices take the top 3 from <span class="grad">${held.length} of 81</span> spots. ${esc(P.t)} comes next, in 4th.`,
+      head: `On emergency searches, the practice is <span class="grad">usually 4th</span>, just behind the same three rivals.`,
       body: [
-        `On ${q('emergency dentist bothell')}, wherever those three hold the top 3, the order never changes: ${esc(nm(JUDE))}, then ${esc(nm(ACC))}, then ${esc(nm(ANN))}. The first has ${L[JUDE].r.toFixed(1)} stars from just ${L[JUDE].n} reviews, is ${L[JUDE].mi} miles south-west, and has the search words in its name. It is listed 1st from ${GS.firstCount(EM, JUDE)} of 81 spots.`,
-        `${esc(P.t)} has ${P.r} stars from ${P.n} reviews: more reviews than ${esc(nm(ANN))}, which has ${L[ANN].n}, and close to ${esc(nm(ACC))}, which has ${L[ACC].n}. It comes 4th from ${em4} spots and 4th or 5th from ${em45}. At ${heldAt4} of the ${held.length} spots the three hold, it is the very next practice in the list. It makes the top 3 from only ${GS.top3(EM)} spots: the office and spots to the east and north-east.`,
+        `On ${q('emergency dentist bothell')}, the same three rivals hold the top 3 from ${held.length} of the 81 spots, always in the same order: ${esc(nm(JUDE))}, then ${esc(nm(ACC))}, then ${esc(nm(ANN))}. The first has ${L[JUDE].r.toFixed(1)} stars from just ${L[JUDE].n} reviews, is ${L[JUDE].mi} miles south-west, and has the search words in its name. It is 1st from ${GS.firstCount(EM, JUDE)} of the 81 spots.`,
+        `${esc(P.t)} has ${P.r} stars from ${P.n} reviews: more reviews than ${esc(nm(ANN))}, which has ${L[ANN].n}, and close to ${esc(nm(ACC))}, which has ${L[ACC].n}. It comes 4th from ${em4} spots and 4th or 5th from ${em45}. At ${heldAt4} of the ${held.length} spots the three hold, it is the very next business in the list. It makes the top 3 from only ${GS.top3(EM)} spots: the office and spots to the east and north-east.`,
         `${esc(nm(ACC))} and ${esc(nm(ANN))} both list ${q('Emergency dental service')} as a category on their Google profile. ${esc(P.t)}’s profile does not; it lists ${prof(OWN).other_categories.length} other categories.`,
       ],
-      extra: `<p class="note">Only ${EM.density.top3} different practices ever reach the top 3 on this phrase, against ${DIB.density.top3} and ${DNM.density.top3} on the other two dentist phrases, so the top 3 here rarely changes hands. Two scans run two minutes apart on Oct 27 disagreed on this phrase at 15 of 81 spots: the practice was in the top 3 on one run and out on the other. No other phrase moved that much, so these are close calls. Usual place: ${EM.arp.toFixed(1)}.</p>`,
+      extra: `<p class="note">Only ${EM.density.top3} different businesses ever reach the top 3 on this phrase, so the top 3 here rarely changes hands. On the other two dentist phrases, ${DIB.density.top3} and ${DNM.density.top3} do. Two scans run two minutes apart on Oct 27 disagreed on this phrase at 15 of the 81 spots: the practice was in the top 3 on one run and out on the other. No other phrase moved that much, so these are close calls. The practice’s usual place on this phrase: ${usualTxt(OWN, [EM])}.</p>`,
       title: 'The same three hold the top 3; the practice is 4th behind them',
       cap: `Full-size squares: the ${held.length} spots those three hold. Number: the practice’s place in the list there.`,
       legend: () => `${legendRank(bandCounts(EM))}${meLegend}`,
       tile: (n) => { const v = EM.rank[n]; const s = RS(v); const h = heldSet.has(n); return { c: s.bg, d: s.t, ink: s.ink, s: h ? 1 : 0.6, o: h ? 1 : 0.5 }; },
       delay: (n, s, px) => px.dist(n, JUDE) * 2.2,
       pins: [JUDE, ACC, ANN], hover: 'emergency dentist bothell',
-      pinMeaning: (i) => `Always ${GS.ord(trio.indexOf(i) + 1)} of the three at the ${held.length} spots they hold together. 1st from ${GS.firstCount(EM, i)} of 81 spots on emergency.`,
-      idle: () => `<h4>Google’s list at most of the ${held.length} spots</h4><div class="ph">emergency dentist bothell</div>${trio.map((i, k) => `<div class="pr" data-pk="${i}"><b class="chip" style="background:${RS(1).bg};color:#fff">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${GS.starsShort(L[i])} reviews · ${L[i].mi} mi</span></span></div>`).join('')}<div class="more">More places</div>${meRow(4, `4th at ${heldAt4} of these ${held.length}`)}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Pins 1 to 3 on the map are these three.</p>`,
+      pinMeaning: (i) => `Always ${GS.ord(trio.indexOf(i) + 1)} at the ${held.length} spots where the three hold the top 3. 1st from ${GS.firstCount(EM, i)} of 81 spots on emergency searches.`,
+      idle: () => `<h4>Google’s list at those ${held.length} spots</h4><div class="ph">emergency dentist bothell</div>${trio.map((i, k) => `<div class="pr" data-pk="${i}"><b class="chip" style="background:${RS(1).bg};color:#fff">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${GS.starsShort(L[i])} · ${L[i].mi} mi</span></span></div>`).join('')}<div class="more">More places</div>${meRow(4, `4th at ${heldAt4} of these ${held.length}`)}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Pins 1 to 3 on the map are these three.</p>`,
     },
     {
       key: 'market', kick: 'Phrases won by other kinds of business',
-      head: `On ${q('botox bothell')} it is <span class="warnword">not in the top 20 from any spot</span>; med spas hold that map.`,
+      head: `On ${q('botox bothell')} the practice is <span class="warnword">not in the top 20 from any spot</span>. Med spas win it.`,
       body: [
         `${LETTERS['botox bothell'].keyed.map((x) => `${esc(nm(x.i))} is 1st from ${x.n} spots: ${stars(L[x.i])}, ${L[x.i].mi} mi away`).join('. ')}. The letter on each square shows who is 1st from that spot.`,
-        `Orthodontists win ${q('invisalign bothell')}: ${LETTERS['invisalign bothell'].keyed.map((x) => `${esc(nm(x.i))} is 1st from ${x.n}`).join(', ')}. ${esc(P.t)} does show up there, mostly 5th to 9th, and makes the top 3 from ${spots(GS.top3(INV))}.`,
+        `Orthodontists win ${q('invisalign bothell')}: ${LETTERS['invisalign bothell'].keyed.map((x, k) => `${esc(nm(x.i))} is 1st from ${x.n}${k ? '' : ' spots'}`).join(', ')}. ${esc(P.t)} does show up there, mostly 5th to 9th, and makes the top 3 from ${spots(GS.top3(INV))}.`,
       ],
       extra: `<div class="gs-seg" id="mktseg"></div><p class="note">Neither phrase is a race between dentists. Both stay in the scan because the practice’s homepage names both services. On botox, Google listed fewer than 20 businesses at ${BOT.top.filter((t) => t.length < 20).length} spots.</p>`,
       title: () => (S.mkt === 'botox bothell' ? '“botox bothell”: not in the top 20 anywhere; letters show who is 1st' : '“invisalign bothell”: listed, but behind three orthodontists'),
@@ -888,39 +898,39 @@ a{color:var(--aInk)}
       delay: (n) => Math.floor(n / 9) * 50,
       pins: () => LETTERS[S.mkt].keyed.map((x) => x.i), hover: () => S.mkt,
       pinMeaning: (i) => { const lt = LETTERS[S.mkt]; const k = lt.keyed.findIndex((x) => x.i === i); return `1st from ${lt.keyed[k].n} of 81 spots on this phrase, ${k === 0 ? 'more than any other business' : k === 1 ? 'the second most' : 'the third most'}.`; },
-      idle: () => { const lt = LETTERS[S.mkt]; return `<h4>Who is 1st, by spot</h4><div class="ph">${esc(S.mkt)}</div>${lt.keyed.map((x) => `<div class="pr" data-pk="${x.i}"><b class="chip pinchip">${x.letter}</b><span><span class="nm" style="display:block">${esc(nm(x.i))}</span><span class="sb">1st at ${x.n} · ${GS.starsShort(L[x.i])} · ${L[x.i].mi} mi</span></span></div>`).join('')}${lt.otherN > 0 ? `<div class="pr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">+</b><span><span class="nm" style="display:block">${lt.otherN} others</span><span class="sb">1st at ${lt.other} spots between them</span></span></div>` : ''}`; },
+      idle: () => { const lt = LETTERS[S.mkt]; return `<h4>Who is 1st, by spot</h4><div class="ph">${esc(S.mkt)}</div>${lt.keyed.map((x) => `<div class="pr" data-pk="${x.i}"><b class="chip pinchip">${x.letter}</b><span><span class="nm" style="display:block">${esc(nm(x.i))}</span><span class="sb">1st from ${x.n} spots · ${GS.starsShort(L[x.i])} · ${L[x.i].mi} mi</span></span></div>`).join('')}${lt.otherN > 0 ? `<div class="pr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">+</b><span><span class="nm" style="display:block">${lt.otherN} others</span><span class="sb">1st from ${lt.other} spots between them</span></span></div>` : ''}`; },
     },
     {
       key: 'gaps', kick: 'Who is in the top 3 when the practice is not',
-      head: `When the practice misses the top 3, <span style="color:#2B44A8">${esc(nm(ACC))}</span> is most often there instead: ${gapBy.get(ACC).n} times, ${gapBy.get(ACC).by['emergency dentist bothell']} of them on emergency searches.`,
+      head: `When the practice misses the top 3, <span style="color:#2B44A8">${esc(nm(ACC))}</span> is the rival most often there instead.`,
       body: [
-        `${esc(P.t)} misses the top 3 in ${gapMiss} of the ${LOOKUPS} searches. No single rival takes all of them; it depends on the phrase. ${esc(nm(ACC))} is ${L[ACC].mi} miles away, with ${stars(L[ACC])}. It is above the practice from all ${ahead(EM, ACC, OWN)} spots on emergency searches. The practice is above it from all ${ahead(DIB, OWN, ACC)} spots on ${q('dentist in bothell')} and from ${ahead(DNM, OWN, ACC)} on ${q('dentist near me')}.`,
+        `${esc(P.t)} misses the top 3 in ${gapMiss} of the ${LOOKUPS} searches. ${esc(nm(ACC))} is in the top 3 in ${gapBy.get(ACC).n} of those, ${gapBy.get(ACC).by['emergency dentist bothell']} of them emergency searches. No single rival takes all of the misses; it depends on the phrase. ${esc(nm(ACC))} is ${L[ACC].mi} miles away, with ${stars(L[ACC])}. It is above the practice from all ${ahead(EM, ACC, OWN)} spots on emergency searches. The practice is above it from all ${ahead(DIB, OWN, ACC)} spots on ${q('dentist in bothell')} and from ${ahead(DNM, OWN, ACC)} on ${q('dentist near me')}.`,
       ],
-      extra: `<table class="gs-tbl"><thead><tr><th>In the top 3 instead</th><th style="text-align:right">Times</th><th>Mostly on</th></tr></thead><tbody>${gapTop.map(([i, g]) => { const top = Object.entries(g.by).sort((a, b) => b[1] - a[1])[0]; return `<tr data-i="${i}"><td>${esc(nm(i))}<div class="m" style="color:var(--muted);font-size:12px">${L[i].mi} mi · ${GS.starsShort(L[i])} · ${kindOf(nm(i))}</div></td><td class="n">${g.n}</td><td class="m">${esc(PH[top[0]])}, ${top[1]}</td></tr>`; }).join('')}</tbody></table><p class="note">Times: how many of the ${gapMiss} missed searches had that listing in the top 3. One search counts for up to three listings.</p>`,
+      extra: `<table class="gs-tbl"><thead><tr><th>In the top 3 instead</th><th style="text-align:right">Searches</th><th>Mostly on</th></tr></thead><tbody>${gapTop.map(([i, g]) => { const top = Object.entries(g.by).sort((a, b) => b[1] - a[1])[0]; return `<tr data-i="${i}"><td>${esc(nm(i))}<div class="m" style="color:var(--muted);font-size:12px">${L[i].mi} mi · ${GS.starsShort(L[i])} · ${kindOf(nm(i))}</div></td><td class="n">${g.n}</td><td class="m">${esc(PH[top[0]])}, ${top[1]}</td></tr>`; }).join('')}</tbody></table><p class="note">Searches: how many of the ${gapMiss} missed searches had that business in the top 3. Each of those searches has three businesses in its top 3, so the column adds up to more than ${gapMiss}.</p>`,
       title: `Spots where ${nm(ACC)} is in the top 3 and the practice is not`,
       cap: `Blue number: how many of the ${NK} phrases put ${nm(ACC)} in the top 3 from that spot while ${P.t} is not.`,
-      legend: () => `${[0, 1, 2, 3].map((v) => `<span><b class="sw" style="background:${BLUE[v]};color:${BINK[v]}">${v}</b></span>`).join('')}<span>phrases of ${NK} · ${gapGrid.filter((v) => v).length} of 81 spots light up</span>${meLegend}`,
+      legend: () => `${[0, 1, 2, 3].map((v) => `<span><b class="sw" style="background:${BLUE[v]};color:${BINK[v]}">${v}</b></span>`).join('')}<span>phrases, of ${NK} · blue at ${gapGrid.filter((v) => v).length} of 81 spots</span>${meLegend}`,
       tile: (n) => { const v = gapGrid[n]; return { c: BLUE[v], d: v ? String(v) : '', ink: BINK[v], s: v ? 1 : 0.5, o: v ? 1 : 0.7 }; },
       delay: (n, s, px) => px.dist(n, ACC) * 2.4,
       pins: [ACC], blue: true, hover: 'gaps',
-      pinMeaning: (i) => `In the top 3 instead of the practice ${times(gapBy.get(i).n)}, more than any other listing.`,
-      idle: () => `<h4>The rival</h4><div class="ph">${esc(nm(ACC))}</div>${kv('Distance', fromOffice(ACC))}${kv('Stars', `${L[ACC].r} from ${L[ACC].n} reviews`)}${kv('In the top 3 instead', times(gapBy.get(ACC).n))}${kv('Top 3, average of 5 searches', `${of81(L[ACC].solv)} of 81 spots`)}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">${hasEmCat(ACC) ? 'Lists “Emergency dental service” on its Google profile.' : 'Does not list “Emergency dental service” on its Google profile.'} Point at a square to compare the two there.</p>`,
+      pinMeaning: (i) => `In the top 3 instead of the practice in ${srch(gapBy.get(i).n)}, more than any other rival.`,
+      idle: () => `<h4>The rival</h4><div class="ph">${esc(nm(ACC))}</div>${kv('Distance', fromOffice(ACC))}${kv('Stars', `${L[ACC].r} stars, ${L[ACC].n} reviews`)}${kv('In the top 3 instead', srch(gapBy.get(ACC).n))}${kv('In the top 3, all searches', `${t3all(ACC)} of ${LOOKUPS}`)}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">${hasEmCat(ACC) ? 'Lists “Emergency dental service” on its Google profile.' : 'Does not list “Emergency dental service” on its Google profile.'} Point at a square to compare the two there.</p>`,
     },
     {
       key: 'field', kick: 'Everyone Google showed',
       head: `${esc(P.t)} is <span class="grad">${GS.ord(M.position)} of the ${M.field_size}</span> businesses Google showed, behind ${esc(nm(ACC))}.`,
       body: [
-        `Ranked by how many of the 81 spots each one reaches the top 3 from, averaged over the 5 searches. Besides the practice, ${M.competitors_in_top20} others showed up somewhere in a top 20, and ${M.competitors_ever_top3} of them made a top 3 at least once.`,
+        `Ranked by how many of the ${LOOKUPS} searches put each business in the top 3. Besides the practice, ${M.competitors_in_top20} others showed up somewhere in a top 20, and ${M.competitors_ever_top3} of them made a top 3 at least once.`,
       ],
-      extra: () => `<div class="gs-ro" id="boardro"></div><div class="gs-board" id="board">${field.map((f, k) => { const l = L[f.i]; const me = f.i === OWN; const max = of81(field[0].solv); return `<div class="gs-brow ${me ? 'me' : ''}" data-i="${f.i}"><span class="no">${me ? meChip : k + 1}</span><span class="nm">${esc(me ? P.t : l.t)}</span><span class="v">${of81(f.solv)} of 81</span><span class="bar"><i style="width:${Math.max(3, (of81(f.solv) / max) * 210)}px"></i><span>${me ? 'the office' : `${l.mi} mi`} · ${GS.starsShort(me ? P : l)}</span></span><span class="kind">${me ? '' : kindOf(l.t)}</span></div>`; }).join('')}</div>
+      extra: () => `<div class="gs-ro" id="boardro"></div><div class="gs-board" id="board">${field.map((f, k) => { const l = L[f.i]; const me = f.i === OWN; const max = t3all(field[0].i); return `<div class="gs-brow ${me ? 'me' : ''}" data-i="${f.i}"><span class="no">${me ? meChip : k + 1}</span><span class="nm">${esc(me ? P.t : l.t)}</span><span class="v">${t3all(f.i)} of ${LOOKUPS}</span><span class="bar"><i style="width:${Math.max(3, (t3all(f.i) / max) * 210)}px"></i><span>${me ? 'the office' : `${l.mi} mi`} · ${GS.starsShort(me ? P : l)}</span></span><span class="kind">${me ? '' : kindOf(l.t)}</span></div>`; }).join('')}</div>
         <p class="note">${field.filter((f) => f.i !== OWN && kindOf(L[f.i].t) !== 'dentist').length} of the top 10 rivals are orthodontists or med spas; they come from the invisalign and botox phrases. ${esc(nm(JUDE))} is ${GS.ord(fieldNo(JUDE))}, but it is not one of the practice’s ${TRACKED.size} tracked rivals, so the head to head view cannot show it yet.</p>`,
-      title: `Everyone Google showed: the top ${field.length - 1} rivals by spots in the top 3`,
+      title: `The top ${field.length - 1} rivals, by searches in the top 3`,
       cap: 'Pin number: that rival’s place in the list at left. Squares faded so the pins are easy to see.',
       legend: () => `${meLegend}<span><b class="sw pinchip">1</b>rival, by place</span><span><b class="sw pinchip" style="border-style:dashed">7</b>farther than the map shows</span><span><svg width="20" height="10" style="margin-right:5px"><line x1="2" y1="5" x2="18" y2="5" stroke="#475569"/><circle cx="2" cy="5" r="2.2" fill="#0B1020"/></svg>line to its real spot</span>`,
       tile: (n) => ({ c: GREEN[GS.kOf5[n]], d: '', ink: '#fff', s: 0.34, o: 0.55 }),
       delay: (n) => (80 - GS.readPos[n]) * 5,
       pins: field.filter((f) => f.i !== OWN).map((f) => f.i), pinNo: fieldNo, hover: 'all',
-      pinMeaning: (i) => `${GS.ord(fieldNo(i))} of ${M.field_size}: in the top 3 from ${of81(L[i].solv)} of 81 spots averaged over the 5 searches.`,
+      pinMeaning: (i) => `${GS.ord(fieldNo(i))} of the ${M.field_size} businesses: in the top 3 in ${t3all(i)} of ${LOOKUPS} searches.`,
       idle: () => `<h4>Pins on the map</h4><div class="ph">Top ${field.length - 1} rivals</div>${field.map((f) => (f.i === OWN ? `<div class="kr me" data-pk="${OWN}" style="padding:2px 0">${meChip}<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px">${esc(P.t)}</span><span class="v" style="font-size:11px">office</span></div>` : `<div class="kr" data-pk="${f.i}" style="padding:2px 0"><b class="chip pinchip" style="height:18px">${fieldNo(f.i)}</b><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px">${esc(nm(f.i))}</span><span class="v" style="font-size:11px">${L[f.i].mi}</span></div>`)).join('')}<p style="margin:6px 0 0;font-size:11px;color:var(--muted)">Right column: miles from the office.</p>`,
     },
   ];
@@ -930,8 +940,8 @@ a{color:var(--aInk)}
   /* ---------------- page ---------------- */
   const page = document.getElementById('page');
   page.innerHTML = `<div id="rtabs"></div><div class="gs-story"><div id="chs">${CH.map((c, i) => `<section class="gs-ch ${i === 0 ? 'on' : ''}" data-ch="${i}"><div class="k">${String(i + 1).padStart(2, '0')} · ${c.kick}</div><h2>${c.head}</h2>${c.body.map((b) => `<p>${b}</p>`).join('')}${val(c.extra) || ''}</section>`).join('')}
-      <div class="gs-end"><h3>Next for ${esc(P.t)}</h3><p style="margin:0;font-size:15px;max-width:520px">Emergency searches are the closest win. The practice is 4th from ${em4} spots, right behind three practices, and one of them has only ${L[JUDE].n} reviews. Compare ${esc(nm(JUDE))} with the practice, or open the map on that phrase.</p>
-      <div class="acts"><button class="btn btn-go">Add ${esc(G0(nm(JUDE)))} to head to head</button><button class="btn btn-line">Open the map on “emergency dentist bothell”</button><button class="btn-link" onclick="scrollTo({top:0,behavior:'smooth'})">Back to the top</button></div></div></div>
+      <div class="gs-end"><h3>Next for ${esc(P.t)}</h3><p style="margin:0;font-size:15px;max-width:520px">Emergency searches are the closest win. The practice is 4th from ${em4} spots, right behind three rivals, and one of them has only ${L[JUDE].n} reviews. Compare ${esc(nm(JUDE))} with the practice, or open the map on that phrase.</p>
+      <div class="acts"><button class="btn btn-go">Add ${esc(nm(JUDE))} to head to head</button><button class="btn btn-line">Open the map on “emergency dentist bothell”</button><button class="btn-link" onclick="scrollTo({top:0,behavior:'smooth'})">Back to the top</button></div></div></div>
     <div><div class="gs-fig"><div class="gs-ftitle" id="ftitle"></div><div class="gs-frow"><div class="gs-map" id="gmap"><div class="lf" id="lf"></div><div class="gs-ovl" id="ovl"><svg id="ovsvg"></svg></div></div><div class="gs-panel" id="panel"><div class="pv" id="pv" aria-live="polite"></div></div></div><div class="gs-legend" id="legend"></div><div class="gs-cap" id="cap"></div></div></div></div>`;
   function G0(s) { return s.replace(/ Emergency Dentist Bothell$/, ''); }
   FL.tabs(document.getElementById('rtabs'), { tabs: [{ key: 'story', label: 'Story' }, { key: 'map', label: 'Map' }, { key: 'board', label: 'Leaderboard' }], value: 'story', onChange: () => {} });
@@ -970,7 +980,7 @@ a{color:var(--aInk)}
   }
 
   /* the practice's marker: teal frame on its own spot + a teal name tag above, always on top */
-  const office = FL.h(`<div class="me-mk"><div class="me-frame"></div><div class="me-tag" role="button" tabindex="0" aria-label="${esc(P.t)}, the practice's office">${HOUSE}<span>${esc(SHORT)}</span></div></div>`);
+  const office = FL.h(`<div class="me-mk"><div class="me-frame"></div><div class="me-tag" role="button" tabindex="0" aria-label="${esc(P.t)}, the practice's office">${HOUSE}</div></div>`);
   office.style.left = `${tiles[40].p.x}px`; office.style.top = `${tiles[40].p.y}px`; ovl.appendChild(office);
   const meTag = office.querySelector('.me-tag');
   const showMe = () => { meTag.classList.add('hot'); markRows(OWN, true); paint(meHtml()); };
@@ -1070,32 +1080,32 @@ a{color:var(--aInk)}
   function hotPin(i, on) { if (on) pinEls.forEach((q, j) => { if (j !== i) { q.el.classList.remove('hot'); markRows(j, false); } }); const p = pinEls.get(i); if (p) p.el.classList.toggle('hot', on); markRows(i, on); }
   const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
   const curKw = () => { const h = val(CH[S.active].hover); return K[h] ? h : null; };
-  const top3Rows = (i) => { const cur = curKw(); return `<div class="kvh">Top 3 from how many of 81 spots</div>${ORDER.map((kw) => kv(`<span class="${kw === cur ? 'cur' : ''}">${esc(PH[kw])}</span>`, i === OWN ? GS.top3(K[kw]) : GS.top3Count(K[kw], i))).join('')}`; };
+  const top3Rows = (i) => { const cur = curKw(); return `<div class="kvh">Spots, of 81, in the top 3</div>${ORDER.map((kw) => kv(`<span class="${kw === cur ? 'cur' : ''}">${esc(PH[kw])}</span>`, i === OWN ? GS.top3(K[kw]) : GS.top3Count(K[kw], i))).join('')}`; };
   function pinHtml(i) {
     const c = CH[S.active]; const o = lay.get(i); const l = L[i];
     const tracked = TRACKED.has(l.t);
     let why = '';
     if (o.edge) why = `<p class="pn"><b>Dashed:</b> it is ${l.mi} miles away, past the edge of this map, so the pin waits at the edge in its direction.</p>`;
     else if (o.moved) why = c.key !== 'field' ? '<p class="pn"><b>Pin spot:</b> moved into a gap between squares so it hides no number.</p>' : `<p class="pn"><b>Thin line:</b> the pin was moved off ${Math.hypot(o.tx - tiles[40].p.x, o.ty - tiles[40].p.y) < 40 ? 'the practice’s marker' : 'another pin'}; the dot is its real spot.</p>`;
-    return `<h4>Pin ${o.no}</h4><div class="ph">${esc(l.t)}</div><div class="pm">${esc(c.pinMeaning ? c.pinMeaning(i) : '')}</div>${kv('Stars', l.r == null ? 'no reviews yet' : `${Number(l.r).toFixed(1)} from ${FL.fmt(l.n)} reviews`)}${kv('Distance', fromOffice(i))}${kv(`One of the ${TRACKED.size} tracked rivals`, tracked ? 'yes' : 'no')}${top3Rows(i)}${why}`;
+    return `<h4>Pin ${o.no}</h4><div class="ph">${esc(l.t)}</div><div class="pm">${esc(c.pinMeaning ? c.pinMeaning(i) : '')}</div>${kv('Stars', l.r == null ? 'no reviews yet' : `${Number(l.r).toFixed(1)} stars, ${FL.fmt(l.n)} reviews`)}${kv('Distance', fromOffice(i))}${kv(`One of the ${TRACKED.size} tracked rivals`, tracked ? 'yes' : 'no')}${top3Rows(i)}${why}`;
   }
   function meHtml() {
     const c = CH[S.active]; const kw = curKw();
-    const place = kw ? `On “${kw}” it is ${GS.ord(Math.min(...K[kw].rank))} at best and in the top 3 from ${GS.top3(K[kw])} of 81 spots.` : `${GS.ord(M.position)} of the ${M.field_size} businesses Google showed. In the top 3 from ${avg81} of 81 spots averaged over the 5 searches.`;
-    return `<h4 class="meh">${meChip} The practice</h4><div class="ph" style="color:var(--aInk)">${esc(P.t)}</div><div class="pm">The teal marker sits on its office, the centre spot of the map. ${esc(place)}</div>${kv('Stars', `${P.r} · ${P.n} reviews`)}${kv('Place of 128', GS.ord(M.position))}${c.key === 'gaps' ? kv('Missed top 3', `${gapMiss} of ${LOOKUPS}`) : ''}${top3Rows(OWN)}`;
+    const place = kw ? (usual(OWN, [K[kw]]).mid ? `On “${kw}” it is in the top 3 from ${GS.top3(K[kw])} of 81 spots, and usually ${usualTxt(OWN, [K[kw]])}.` : `On “${kw}” it is not in the top 20 from any spot.`) : `${GS.ord(M.position)} of the ${M.field_size} businesses Google showed. In the top 3 in ${hits} of ${LOOKUPS} searches.`;
+    return `<h4 class="meh">${meChip} The practice</h4><div class="ph" style="color:var(--aInk)">${esc(P.t)}</div><div class="pm">The teal marker sits on its office, the centre spot of the map. ${esc(place)}</div>${kv('Stars', `${P.r} stars, ${P.n} reviews`)}${kv('Overall place', `${GS.ord(M.position)} of ${M.field_size}`)}${c.key === 'gaps' ? kv('Searches it missed the top 3', `${gapMiss} of ${LOOKUPS}`) : ''}${top3Rows(OWN)}`;
   }
   function showPin(i) { hotPin(i, true); if (lay.has(i)) paint(pinHtml(i)); }
 
-  const rowHtml = (rank, i, me) => (me ? meRow(rank) : `<div class="pr">${chipHtml(rank)}<span><span class="nm" style="display:block">${esc(L[i].t)}</span><span class="sb">${GS.starsShort(L[i])} reviews · ${L[i].mi} mi</span></span></div>`);
+  const rowHtml = (rank, i, me) => (me ? meRow(rank) : `<div class="pr">${chipHtml(rank)}<span><span class="nm" style="display:block">${esc(L[i].t)}</span><span class="sb">${GS.starsShort(L[i])} · ${L[i].mi} mi</span></span></div>`);
   function hoverHtml(n) {
     const c = CH[S.active]; const mode = val(c.hover);
     const where = n === 40 ? 'The office' : `${GS.dir(n).replace(/^./, (m) => m.toUpperCase())} of the office`;
     const head = `<h4>From this spot</h4><div class="ph">${where}</div>`;
     if (mode === 'all' || mode === 'gaps') {
-      return `${head}${ORDER.map((kw) => { const kk = K[kw]; const v = kk.rank[n]; const first = kk.top[n][0]; const sub = mode === 'gaps' ? `Accent: ${GS.ord(GS.rankOf(kk, n, ACC))}` : `1st: ${first === OWN ? 'the practice' : esc(G0(nm(first)))}`; return `<div class="pr">${chipHtml(v)}<span><span class="nm" style="display:block">${esc(kw)}</span><span class="sb">${sub}</span></span></div>`; }).join('')}<p style="margin:6px 0 0;font-size:11px;color:var(--muted)">Chips: ${esc(P.t)}’s place in the list. In the top 3 on ${GS.kOf5[n]} of ${NK} phrases here.${mode === 'gaps' ? ` Accent is in the top 3 instead on ${gapGrid[n]} of them.` : ''}</p>`;
+      return `${head}${ORDER.map((kw) => { const kk = K[kw]; const v = kk.rank[n]; const first = kk.top[n][0]; const sub = mode === 'gaps' ? `<b>${esc(nm(ACC))}</b>: ${GS.ord(GS.rankOf(kk, n, ACC))}` : `1st: ${first === OWN ? `<b>${esc(P.t)}</b>` : `<b>${esc(nm(first))}</b>`}`; return `<div class="pr">${chipHtml(v)}<span><span class="nm" style="display:block">${esc(kw)}</span><span class="sb">${sub}</span></span></div>`; }).join('')}<p style="margin:6px 0 0;font-size:11px;color:var(--muted)">Chips: <b>${esc(P.t)}</b>’s place in the list. In the top 3 on ${GS.kOf5[n]} of ${NK} phrases here.${mode === 'gaps' ? ` <b>${esc(nm(ACC))}</b> is in the top 3 instead on ${gapGrid[n]} of them.` : ''}</p>`;
     }
     const kk = K[mode]; const v = kk.rank[n]; const t3 = kk.top[n].slice(0, 3);
-    return `${head}<div style="font-size:11.5px;color:var(--muted);margin:-4px 0 4px">${esc(mode)}</div>${t3.map((i, k) => rowHtml(k + 1, i, i === OWN)).join('')}${v > 3 ? `<div class="more">${v > 20 ? 'Not in the first 20' : 'More places'}</div>${rowHtml(v, OWN, true)}` : ''}`;
+    return `${head}<div style="font-size:11.5px;color:var(--muted);margin:-4px 0 4px">${esc(mode)}</div>${t3.map((i, k) => rowHtml(k + 1, i, i === OWN)).join('')}${v > 3 ? `<div class="more">${v > 20 ? 'Not in the top 20' : 'More places'}</div>${rowHtml(v, OWN, true)}` : ''}`;
   }
   tiles.forEach((t, n) => {
     t.el.addEventListener('mouseenter', () => { tiles.forEach((x) => x.el.classList.remove('hov')); t.el.classList.add('hov'); paint(hoverHtml(n)); });
@@ -1105,11 +1115,11 @@ a{color:var(--aInk)}
   /* board rows: hover tints the row, says it in the readout above the board, lights the pin */
   function bindBoard() {
     const ro = document.getElementById('boardro'); if (!ro) return;
-    const def = () => { ro.innerHTML = `<span><b>${esc(P.t)}</b>: in the top 3 from <b>${avg81} of 81</b> spots averaged over the 5 searches; usual place ${M.arp.toFixed(1)}</span>`; };
+    const def = () => { ro.innerHTML = `<span><b>${esc(P.t)}</b>: in the top 3 in <b>${hits} of ${LOOKUPS}</b> searches · usually ${usualTxt(OWN, D.kw)}</span>`; };
     def();
     document.querySelectorAll('.gs-brow').forEach((r) => {
       const i = +r.dataset.i;
-      r.onmouseenter = () => { const l = L[i]; ro.innerHTML = `<span><b>${esc(i === OWN ? P.t : l.t)}</b>: in the top 3 from <b>${of81(l.solv)} of 81</b> spots; usual place ${l.arp.toFixed(1)}${i === OWN ? '' : `; ${fromOffice(i)}`}</span>`; if (i === OWN) meTag.classList.add('hot'); else hotPin(i, true); };
+      r.onmouseenter = () => { const l = L[i]; ro.innerHTML = `<span><b>${esc(i === OWN ? P.t : l.t)}</b>: in the top 3 in <b>${t3all(i)} of ${LOOKUPS}</b> searches · usually ${usualTxt(i, D.kw)}${i === OWN ? '' : ` · ${fromOffice(i)}`}</span>`; if (i === OWN) meTag.classList.add('hot'); else hotPin(i, true); };
       r.onmouseleave = () => { def(); if (i === OWN) meTag.classList.remove('hot'); else hotPin(i, false); };
     });
     document.querySelectorAll('.gs-tbl tr[data-i]').forEach((r) => { const i = +r.dataset.i; r.onmouseenter = () => hotPin(i, true); r.onmouseleave = () => hotPin(i, false); });

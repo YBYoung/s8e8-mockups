@@ -615,6 +615,7 @@ a{color:var(--aInk)}
   GS.ordn = (v) => `${v}${v % 10 === 1 && v !== 11 ? 'st' : v % 10 === 2 && v !== 12 ? 'nd' : v % 10 === 3 && v !== 13 ? 'rd' : 'th'}`;
   GS.GREEN = ['#E4E7EC', '#CDEBD8', '#8ED3A6', '#3DA866', '#15803D', '#0D5C2B'];
   GS.GINK = ['#667085', '#0B1020', '#0B1020', '#fff', '#fff', '#fff'];
+  GS.HOUSE = '<svg viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>';
   GS.TEAL = '#0F766E'; GS.BLUE = '#3B5BDB'; GS.BLUEINK = '#2B44A8'; GS.NONE = '#E4E7EC';
   GS.reviews = (i) => { const l = i === OWN ? GS.P : L[i]; return l.r == null ? 'no reviews yet' : `${Number(l.r).toFixed(1)} stars, ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`; };
   GS.ORDER = [...D.kw].sort((a, b) => GS.top3(b) - GS.top3(a) || GS.avgRank(a) - GS.avgRank(b)).map((k) => k.kw);
@@ -646,7 +647,9 @@ a{color:var(--aInk)}
 .tag.own{background:#0F766E;z-index:30}
 .tag.riv{background:#3B5BDB;z-index:29}
 .tag.edge{outline:1.5px dashed #fff;outline-offset:-4px}
-.own-ring{position:absolute;border:2.5px solid #0F766E;border-radius:8px;box-shadow:0 0 0 2px rgba(255,255,255,.95);pointer-events:none;z-index:28}
+.own-ring{position:absolute;border:2px solid #0F766E;border-radius:7px;box-shadow:0 0 0 1px rgba(255,255,255,.95);pointer-events:none;z-index:28}
+.own-glyph{position:absolute;width:15px;height:15px;margin:-7.5px 0 0 -7.5px;border-radius:4px;background:#0F766E;box-shadow:0 0 0 1.5px #fff;display:grid;place-items:center;z-index:31;pointer-events:auto;cursor:default}
+.own-glyph svg{display:block}
 .tdot{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:2px;border:2px solid #fff;box-shadow:0 1px 3px rgba(11,16,32,.3);pointer-events:none;transition:left .9s cubic-bezier(.2,.8,.2,1),top .9s cubic-bezier(.2,.8,.2,1),opacity .35s;z-index:27}
 .npin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:4px;background:#fff;border:2px solid #0B1020;display:grid;place-items:center;font:800 10.5px Inter,sans-serif;color:#0B1020;
   box-shadow:0 2px 6px rgba(11,16,32,.25);opacity:0;transition:opacity .25s,background .15s,color .15s;pointer-events:auto;cursor:default;z-index:26}
@@ -743,7 +746,7 @@ a{color:var(--aInk)}
 .side p{margin:0 0 8px}
 .side .acts{position:absolute;left:16px;right:16px;bottom:14px;display:flex;gap:14px}
 .side .acts a{font-size:12.5px;font-weight:600;color:var(--aInk);text-decoration:underline;text-underline-offset:2px}
-.side .key{display:grid;grid-template-columns:24px minmax(0,1fr) 30px;gap:6px;align-items:center;padding:3px 4px;border-radius:4px;font-size:12px}
+.side .key{display:grid;grid-template-columns:24px minmax(0,1fr) 30px;gap:6px;align-items:center;padding:2px 4px;border-radius:4px;font-size:12px}
 .side .key.hot{background:#F6F7FA}
 .side .key .k{display:grid;place-items:center;height:18px;border-radius:4px;border:1.5px solid #0B1020;font-size:10.5px;font-weight:800;color:#0B1020}
 .side .key .k.own{border-color:#0F766E;color:#0F766E}
@@ -755,7 +758,11 @@ a{color:var(--aInk)}
 .field .lf{position:absolute;inset:0}
 .field .area{position:absolute;border:1.5px dashed #98A2B3;border-radius:4px;pointer-events:none}
 .field .area span{position:absolute;left:6px;top:4px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#667085;background:rgba(255,255,255,.85);padding:0 4px;border-radius:3px}
-.field .sp{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:1px;background:#98A2B3;opacity:.6;pointer-events:none}
+.field .sp{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:2px;background:#98A2B3;opacity:.9;pointer-events:none;box-shadow:0 0 0 1px rgba(255,255,255,.9);transition:background-color .3s,opacity .3s,transform .3s}
+.field .sp.lit{transform:scale(1.25)}
+.fpin.own{border:2px solid #0F766E;color:#0F766E;z-index:22;transition:none}
+.fpin.own.hot{background:#0F766E;color:#fff}
+.fpin.own .own-glyph{position:absolute;right:-7px;top:-7px;margin:0;width:14px;height:14px}
 .fpin{position:absolute;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:5px;background:#fff;border:2px solid #0B1020;display:grid;place-items:center;font:800 11px Inter,sans-serif;color:#0B1020;box-shadow:0 2px 6px rgba(11,16,32,.25);pointer-events:auto;cursor:default;z-index:20;
   transition:left .9s var(--ease),top .9s var(--ease),opacity .35s,background .15s,color .15s}
 .fpin.hot{background:#0B1020;color:#fff}
@@ -796,9 +803,9 @@ a{color:var(--aInk)}
 .brow .nmb{min-width:0;display:flex;flex-direction:column}
 .brow .nt{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style></head><body>
-<div class="mock-bar"><b>Mockup · gs2-leaderboard · Grid Scan result, Leaderboard tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 405 Maps searches), all 128 listings the scan saw, real ratings, reviews, distance and direction.
-<ul><li>The board is the whole field, not the 8 chosen rivals: "number 2 of 128" replaces "number 2 of 9". The practice's row is pinned on top; sorting by a search slides the rows (no re-mount) and re-colours each 9x9 mini map in place.</li>
-<li>Hover a row: its mini map lifts and the reserved side panel says it in plain words. "Field map" places the top 15 at their real addresses with numbered markers; point at a number for the listing.</li>
+<div class="mock-bar"><b>Mockup · gs2-leaderboard · Grid Scan result, Leaderboard tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 405 searches), all 128 businesses the scan saw, real ratings, reviews, distance and direction.
+<ul><li>The board is the whole field, not the 8 chosen rivals: "2nd of 128" replaces "number 2 of 9". The practice's row is pinned on top; sorting by a phrase slides the rows (no re-mount) and re-colours each 9x9 mini map in place.</li>
+<li>Hover a row: its mini map lifts and the reserved side panel says it in plain words. "Where they are" places the top 15 at their real addresses with numbered markers; point at a number for the business.</li>
 <li>Insights rail (AIV style): each item's one-line verdict is built from the scan. Per-listing grids come from the stored top 20s: <span class="ep">listingGrids endpoint, built, unused today</span>; metrics.leaderboard already holds all 127 with distance and bearing.</li></ul></div>
 <div id="page"></div>
 <script>/* gs2-leaderboard: the Grid Scan Leaderboard tab for Bothell scan #2. Every listing the scan saw,
@@ -826,7 +833,7 @@ a{color:var(--aInk)}
   }
   let ORD = orderOf('all'); const rankNo = (i) => ORD.indexOf(i) + 1;
   const everTop3 = ALL.filter((i) => GS.t3all(i) > 0).length;
-  const sortLabel = (s) => (s === 'all' ? 'all 5 searches' : `“${s}”`);
+  const sortLabel = (s) => (s === 'all' ? 'all 5 phrases' : `“${s}”`);
 
   /* ---------------- facts for the opener, the rail and the insight sections ---------------- */
   const trio = [JUDE, ACC, ANN];
@@ -848,17 +855,17 @@ a{color:var(--aInk)}
   /* ---------------- page ---------------- */
   const page = document.getElementById('page');
   const RAIL = [
-    { id: 's-board', t: 'The board', v: `number ${rankNo(OWN)} of ${L.length}` },
-    { id: 's-pack', t: 'Just outside the top 3', v: `4th at ${em4} emergency spots` },
-    { id: 's-gaps', t: 'Who takes the spots it misses', v: `${sh(gapTop[0][0])}, ${gapTop[0][1].n} times` },
-    { id: 's-few', t: 'Few reviews, still winning', v: `${sh(few[0])}: ${L[few[0]].n} review${L[few[0]].n === 1 ? '' : 's'}` },
-    { id: 's-mkt', t: 'Other markets on the board', v: `${otherMkt.length} of the top 15` },
-    { id: 's-trk', t: 'Tracked rivals', v: `${trackedZero.length} of ${tracked.length} never top 3`, alert: trackedZero.length > 0 },
+    { id: 's-board', t: 'The board', v: `${GS.ordn(rankNo(OWN))} of ${L.length} businesses` },
+    { id: 's-pack', t: 'Just missing the top 3', v: 'usually 4th on emergency' },
+    { id: 's-gaps', t: 'Who is in the top 3 instead', v: `${nm(gapTop[0][0])}, ${gapTop[0][1].n} searches` },
+    { id: 's-few', t: 'Few reviews, still winning', v: `${nm(few[0])}: ${L[few[0]].n} review${L[few[0]].n === 1 ? '' : 's'}` },
+    { id: 's-mkt', t: 'Orthodontists and med spas', v: `${otherMkt.length} of the top 15` },
+    { id: 's-trk', t: 'Tracked rivals', v: `${trackedZero.length} of ${tracked.length} never in a top 3`, alert: trackedZero.length > 0 },
   ];
   page.innerHTML = `<div id="rtabs"></div>
-  <div class="lb-open"><div class="kick">Leaderboard · ${L.length} listings in ${FL.fmt(405)} Maps searches</div>
-    <h1><span class="nm-own">${esc(P.t)}</span> is <span class="grad">number ${rankNo(OWN)} of ${L.length}</span> listings, behind ${esc(nm(ORD[0]))}.</h1>
-    <p>Ranked by top 3 places across 405 Maps searches (5 searches from each of 81 spots). ${everTop3} listings reach a top 3 at least once; the rest only appear lower down. ${esc(P.t)} has ${GS.t3all(OWN)} top 3 places, ${esc(sh(ORD[0]))} has ${GS.t3all(ORD[0])}, and number 3, ${esc(nm(ORD[2]))}, has ${GS.t3all(ORD[2])}.</p></div>
+  <div class="lb-open"><div class="kick">Leaderboard · ${L.length} businesses in ${FL.fmt(405)} searches</div>
+    <h1><span class="nm-own">${esc(P.t)}</span> is <span class="grad">${GS.ordn(rankNo(OWN))} of ${L.length} businesses</span>, behind ${esc(nm(ORD[0]))}.</h1>
+    <p>Ranked by how many of the 405 searches put each business in the top 3. One search is one of the 5 search phrases typed from one of the 81 spots on the map. ${everTop3} businesses, the practice included, reach a top 3 at least once; the rest only show up lower down. ${esc(P.t)} is in the top 3 in ${GS.t3all(OWN)} searches, ${esc(nm(ORD[0]))} in ${GS.t3all(ORD[0])}, and ${esc(nm(ORD[2]))}, 3rd, in ${GS.t3all(ORD[2])}.</p></div>
   <div class="lb-grid">
     <nav class="rail" id="rail"><div class="ey">On this page</div>${RAIL.map((r, k) => `<a data-id="${r.id}" class="${k ? '' : 'on'}"><span class="n">${k + 1}</span><span class="t">${esc(r.t)}</span><span class="v ${r.alert ? 'alert' : ''}">${esc(r.v)}</span></a>`).join('')}
       <div class="prog"><i id="prog"></i></div><button class="top" onclick="scrollTo({top:0,behavior:'smooth'})">Back to the top ↑</button></nav>
@@ -867,9 +874,9 @@ a{color:var(--aInk)}
         <div class="lb-ctl"><span class="ctl-lab">Sort by</span><span id="segsort"></span><span style="flex:1"></span><span id="segview"></span></div>
         <div class="lb-two"><div><div id="tablev"><div class="board" id="board"></div>
           <div class="lb-more"><button class="btn btn-line" id="more"></button><span class="mnote" id="morenote"></span></div>
-          <p class="lb-note">Mini map: the 81 spots, north at the top; green where the listing is in the top 3 (all searches: darker = on more of the 5). The five small numbers: top 3 spots, of 81, on each search. Usual place: the middle place where it is listed in a top 20. Type is read from the listing name; Google's own category <span class="ep">needs the profile read</span> (stored for 4 listings).</p></div>
+          <p class="lb-note">Mini map: the 81 spots, north at the top, green where the business is in the top 3; with all 5 phrases, darker green means more of the 5. The five small numbers: spots, of 81, where it is in the top 3 on each phrase. Usual place: the middle of its places in the searches where it shows up in the top 20, so half the time it is there or higher; under it, how many of the 405 searches it shows up in. Type is read from the business name; Google's own category <span class="ep">needs the profile read</span>, stored for 4 businesses today.</p></div>
           <div id="fieldv" style="display:none"><div class="field" id="field"><div class="lf" id="flf"></div><div class="fld-ovl" id="fovl"><svg id="fsvg"></svg></div></div>
-          <p class="lb-note">The top 15 on the board, at their real addresses; numbers match the board. A dashed number sits on the map edge because the listing is further out. The dashed square is the 81 spots the scan searched from.</p></div></div>
+          <p class="lb-note" id="fleg"></p><p class="lb-note" id="fnum"></p></div></div>
           <aside class="side" id="side"><div class="pv" id="spv"></div></aside></div>
       </section>
       ${sectionHtml()}
@@ -879,7 +886,7 @@ a{color:var(--aInk)}
   /* ---------------- the board rows (made once, keyed by listing) ---------------- */
   const board = document.getElementById('board');
   const COLS = GS.ORDER;
-  board.innerHTML = `<div class="bh"><span>#</span><span>Listing</span><span>Where top 3</span><span class="cols">${COLS.map((kw) => `<button type="button" data-kw="${esc(kw)}" data-tip-h="Sort by “${esc(kw)}”" data-tip="Top 3 spots, of 81, on this search. Click to sort the board by it."><span>${esc(GS.short[kw])}</span></button>`).join('')}</span><span style="text-align:right">Usual place</span></div>
+  board.innerHTML = `<div class="bh"><span>#</span><span>Business</span><span>Where top 3</span><span class="cols">${COLS.map((kw) => `<button type="button" data-kw="${esc(kw)}" data-tip-h="Sort by “${esc(kw)}”" data-tip="Spots, of 81, where it is in the top 3 on this phrase. Click to sort the board by it."><span>${esc(GS.short[kw])}</span></button>`).join('')}</span><span style="text-align:right">Usual place</span></div>
     <div id="pinrow"></div><div id="rows"></div>`;
   const rowEl = new Map();
   const cellStyle = (k) => (k === 0 ? ['#F6F7FA', '#98A2B3'] : k < 10 ? ['#DDF1E4', '#0B1020'] : k < 40 ? ['#A7DDB9', '#0B1020'] : k < 70 ? ['#3DA866', '#fff'] : ['#15803D', '#fff']);
@@ -897,7 +904,7 @@ a{color:var(--aInk)}
     el.addEventListener('mouseenter', () => showListing(i));
     el.addEventListener('mouseleave', () => showListing(null));
     COLS.forEach((kw, k) => { const kk = K[kw]; const v = GS.t3(i, kk); const [bg, ink] = cellStyle(v); const c = rowEl.get(i).c5[k]; c.textContent = v; c.style.background = bg; c.style.color = ink;
-      c.dataset.tipH = `${GS.shortName(i)} · ${kw}`; c.dataset.tip = v ? `Top 3 at ${v} of 81 spots, first at ${GS.firsts(i, kk)}.` : `Not in the top 3 at any of the 81 spots${GS.usual(i, [kk]).listed ? `; listed in a top 20 at ${GS.usual(i, [kk]).listed}` : ''}.`; });
+      c.dataset.tipH = `${nm(i)} · ${kw}`; c.dataset.tip = v ? `In the top 3 from ${v} of 81 spots${GS.firsts(i, kk) ? `, 1st from ${GS.firsts(i, kk)}` : ', never 1st'}.` : `Not in the top 3 from any of the 81 spots.${GS.usual(i, [kk]).listed ? ` In a top 20 from ${GS.usual(i, [kk]).listed}.` : ''}`; });
   });
   function paintRow(i) {
     const r = rowEl.get(i); r.no.textContent = rankNo(i);
@@ -905,8 +912,8 @@ a{color:var(--aInk)}
     r.mm.forEach((c, n) => { c.style.backgroundColor = k5 ? GS.GREEN[k5[n]] : rk[n] <= 3 ? '#15803D' : '#E4E7EC'; });
     r.c5.forEach((c, k) => c.classList.toggle('on', COLS[k] === S.sort));
     const u = GS.usual(i, kwsOf(S.sort));
-    r.us.querySelector('b').textContent = u.mid ? GS.ordn(u.mid) : 'not listed';
-    r.us.querySelector('span').textContent = `listed ${u.listed} of ${u.of}`;
+    r.us.querySelector('b').textContent = u.mid ? GS.ordn(u.mid) : 'not in top 20';
+    r.us.querySelector('span').textContent = `top 20: ${u.listed} of ${u.of}`;
   }
   /* sort: rows slide to their new places (FLIP), nothing is re-made */
   function layout(animate) {
@@ -921,18 +928,18 @@ a{color:var(--aInk)}
       requestAnimationFrame(() => requestAnimationFrame(() => { r.el.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s,background .15s'; r.el.style.transform = ''; r.el.style.opacity = 1; }));
     });
     const more = document.getElementById('more');
-    more.textContent = S.showAll ? `Show the top ${SHOWN} only` : `Show all ${L.length - 1} other listings`;
-    document.getElementById('morenote').textContent = S.showAll ? '' : `${L.length - 1 - SHOWN} more, down to listings that appear once in a top 20.`;
+    more.textContent = S.showAll ? `Show the top ${SHOWN} only` : `Show all ${L.length - 1} other businesses`;
+    document.getElementById('morenote').textContent = S.showAll ? '' : `${L.length - 1 - SHOWN} more, down to businesses that show up in just one top 20.`;
   }
   document.getElementById('more').onclick = () => { S.showAll = !S.showAll; layout(false); };
-  const segSort = FL.segmented(document.getElementById('segsort'), { label: 'Sort by', value: 'all', options: [{ value: 'all', label: 'All 5 searches' }, ...GS.ORDER.map((kw) => ({ value: kw, label: GS.short[kw] }))], onChange: (v) => setSort(v) });
+  const segSort = FL.segmented(document.getElementById('segsort'), { label: 'Sort by', value: 'all', options: [{ value: 'all', label: 'All 5 phrases' }, ...GS.ORDER.map((kw) => ({ value: kw, label: GS.short[kw] }))], onChange: (v) => setSort(v) });
   FL.$$('.bh .cols button').forEach((b) => { b.onclick = () => { setSort(S.sort === b.dataset.kw ? 'all' : b.dataset.kw); segSort.set(S.sort); }; });
   function setSort(v) {
     S.sort = v; ORD = orderOf(v);
     FL.$$('.bh .cols button').forEach((b) => b.classList.toggle('on', b.dataset.kw === v));
     layout(true); if (S.view === 'field') placeField(); showListing(S.hover);
   }
-  FL.segmented(document.getElementById('segview'), { label: 'View', value: 'table', options: [{ value: 'table', label: 'Table' }, { value: 'field', label: 'Field map' }], onChange: (v) => setView(v) });
+  FL.segmented(document.getElementById('segview'), { label: 'View', value: 'table', options: [{ value: 'table', label: 'Table' }, { value: 'field', label: 'Where they are' }], onChange: (v) => setView(v) });
 
   /* ---------------- the reserved side panel ---------------- */
   const spv = document.getElementById('spv');
@@ -943,23 +950,23 @@ a{color:var(--aInk)}
     const cells = Array.from({ length: 81 }, (_, n) => `<i class="${n === 40 ? 'office' : ''}" style="background:${k5 ? GS.GREEN[k5[n]] : rk[n] <= 3 ? '#15803D' : '#E4E7EC'}"></i>`).join('');
     const scoreHere = score(i, S.sort);
     const OA = orderOf('all'); const lead = OA[0] === OWN ? OA[1] : OA[0];
-    const vs = own ? `Across all 5 searches it is number ${OA.indexOf(OWN) + 1}; only ${esc(sh(lead))} has more top 3 places (${GS.t3all(lead)}, ${GS.t3all(lead) - tot} more).`
-      : `Above ${esc(sh(OWN))} in ${ahead(i, OWN)} of 405 Maps searches; below it in ${ahead(OWN, i)}.`;
-    return `<h4>Number ${no} of ${L.length} · ${esc(sortLabel(S.sort))}</h4><div class="ph ${own ? 'own' : ''}">${esc(nm(i))}</div>
+    const vs = own ? `Across all 5 phrases it is ${GS.ordn(OA.indexOf(OWN) + 1)}. Only <b>${esc(nm(lead))}</b> is in the top 3 more often: ${GS.t3all(lead)} searches, ${GS.t3all(lead) - tot} more.`
+      : `Higher than <b class="nm-own">${esc(nm(OWN))}</b> in ${ahead(i, OWN)} of 405 searches. Lower in ${ahead(OWN, i)}.`;
+    return `<h4>${GS.ordn(no)} of ${L.length} · ${esc(sortLabel(S.sort))}</h4><div class="ph ${own ? 'own' : ''}">${esc(nm(i))}</div>
       <div class="ps">${own ? 'the practice' : `${GS.kind(i)} · ${GS.where(i)}`} · ${GS.reviews(i)}${GS.tracked.has(i) ? ' · tracked rival' : ''}</div>
       <div class="big">${cells}</div>
-      <div class="bigcap">${S.sort === 'all' ? `Darker green: top 3 on more of the 5 searches from that spot.` : `Green: top 3 on “${esc(S.sort)}” from that spot (${scoreHere} of 81).`} Ringed: the office.</div>
-      <p>Top 3 in <b>${tot} of 405</b> Maps searches${tot ? `: about ${Math.round(tot / 5)} of 81 spots on an average search` : ''}. By search: ${bySearch}.</p>
-      <p>${u.listed ? `Usually ${GS.ordn(u.mid)} where it is listed; listed in a top 20 in ${u.listed} of 405.` : 'Never listed in a top 20.'}</p>
+      <div class="bigcap">${S.sort === 'all' ? 'Darker green: in the top 3 on more of the 5 phrases from that spot.' : `Green: in the top 3 on “${esc(S.sort)}” from that spot, ${scoreHere} of 81 spots.`} Ringed: the office.</div>
+      <p>In the top 3 in <b>${tot} of 405</b> searches. Spots in the top 3, by phrase: ${bySearch}.</p>
+      <p>${u.listed ? `Usual place ${GS.ordn(u.mid)}. Shows up in the top 20 in ${u.listed} of 405 searches.` : 'Never in a top 20.'}</p>
       <p>${vs}</p>
       <div class="acts"><a href="gs2-map.html?who=${i}">Open its map</a>${own ? '' : `<a href="gs2-map.html?mode=h2h&who=${i}">Head to head</a>`}</div>`;
   }
   function keyHtml() {
     const top = ORD.filter((i) => i !== OWN).slice(0, SHOWN);
-    return `<h4>Field map · ${esc(sortLabel(S.sort))}</h4><div class="ph">The top ${SHOWN}, where they are</div><div class="ps">Number = place on the board. Point at a number for the listing.</div>
+    return `<h4>Where they are · ${esc(sortLabel(S.sort))}</h4><div class="ph">The top ${SHOWN} on the board</div><div class="ps">Number: its place on the board for ${esc(sortLabel(S.sort))}, ranked by how many of the ${S.sort === 'all' ? '405 searches' : '81 spots'} put it in the top 3, not an average place. Bigger marker: in the top 3 more often.</div>
       <div class="key" data-k="${OWN}"><span class="k own">${rankNo(OWN)}</span><span class="t nm-own">${esc(P.t)}</span><span class="v">${score(OWN, S.sort)}</span></div>
       ${top.map((i) => `<div class="key" data-k="${i}"><span class="k" style="${GS.tracked.has(i) ? 'border-color:#3B5BDB;color:#2B44A8' : ''}">${rankNo(i)}</span><span class="t">${esc(nm(i))}</span><span class="v">${score(i, S.sort)}</span></div>`).join('')}
-      <p class="mnote" style="margin-top:6px">Right: top 3 places${S.sort === 'all' ? ', of 405' : ', of 81'}. Blue border: a tracked rival.</p>`;
+      <p class="mnote" style="margin-top:6px">Right: ${S.sort === 'all' ? 'searches in the top 3, of 405' : 'spots in the top 3, of 81'}. Blue border: one of the ${GS.tracked.size} tracked rivals.</p>`;
   }
   function showListing(i) {
     S.hover = i;
@@ -969,7 +976,7 @@ a{color:var(--aInk)}
   function bindKeys() { FL.$$('#spv .key').forEach((r) => { const i = +r.dataset.k; r.onmouseenter = () => hotPin(i, true); r.onmouseleave = () => hotPin(i, false); }); }
 
   /* ---------------- field view: the top listings at their real addresses ---------------- */
-  let fmap = null; const fpins = new Map(); let ownTag = null; let ownDot = null;
+  let fmap = null; const fpins = new Map(); let ownTag = null;
   function setView(v) {
     S.view = v;
     document.getElementById('tablev').style.display = v === 'table' ? '' : 'none';
@@ -986,28 +993,51 @@ a{color:var(--aInk)}
     fmap.fitBounds(L_.latLngBounds([corner(1, -1), corner(-1, 1)]).pad(0.32));
     const ovl = document.getElementById('fovl'); const c1 = fmap.latLngToContainerPoint(corner(1, -1)); const c2 = fmap.latLngToContainerPoint(corner(-1, 1));
     const area = FL.h('<div class="area"><span>The 81 spots</span></div>'); area.style.cssText += `left:${c1.x}px;top:${c1.y}px;width:${c2.x - c1.x}px;height:${c2.y - c1.y}px`; ovl.appendChild(area);
-    for (let n = 0; n < 81; n++) { const p = fmap.latLngToContainerPoint([P.lat + (4 - Math.floor(n / 9)) * dLat, P.lng + ((n % 9) - 4) * dLng]); const d = FL.h('<i class="sp"></i>'); d.style.left = `${p.x}px`; d.style.top = `${p.y}px`; ovl.appendChild(d); }
+    for (let n = 0; n < 81; n++) { const p = fmap.latLngToContainerPoint([P.lat + (4 - Math.floor(n / 9)) * dLat, P.lng + ((n % 9) - 4) * dLng]); const d = FL.h('<i class="sp"></i>'); d.style.left = `${p.x}px`; d.style.top = `${p.y}px`; ovl.appendChild(d); spotEls.push(d); }
     const o = fmap.latLngToContainerPoint([P.lat, P.lng]);
-    ownDot = FL.h('<div class="tdot" style="background:#0F766E"></div>'); ownDot.style.left = `${o.x}px`; ownDot.style.top = `${o.y}px`; ovl.appendChild(ownDot);
-    ownTag = FL.h(`<div class="tag own" data-tip-h="${esc(P.t)}" data-tip="The practice, at the centre spot. ${esc(GS.reviews(OWN))}."></div>`); ownTag.style.left = `${o.x}px`; ownTag.style.top = `${o.y - 18}px`; ovl.appendChild(ownTag);
+    /* the practice: the shared subtle mark (thin teal ring + small house glyph in the corner), with its board number */
+    ownTag = FL.h(`<div class="fpin own" data-tip-h="${esc(P.t)}" data-tip="The practice, at the centre spot. ${esc(GS.reviews(OWN))}."><span class="no"></span><i class="own-glyph">${GS.HOUSE}</i></div>`); ownTag.style.left = `${o.x}px`; ownTag.style.top = `${o.y}px`; ovl.appendChild(ownTag);
+    ownTag.addEventListener('mouseenter', () => hotPin(OWN, true)); ownTag.addEventListener('mouseleave', () => hotPin(OWN, false));
+  }
+  /* the 81 spot dots: tinted by the practice's own place for the sort (all phrases: how many of the 5 put it in the top 3);
+     pointing at a business lights the spots where that business is in the top 3 */
+  const spotEls = [];
+  function paintSpots(hot) {
+    if (!spotEls.length) return;
+    const RS = FL.rankStyle; const k5 = S.sort === 'all' ? GS.kof5(OWN) : null; const rk = S.sort === 'all' ? null : GS.ranks(OWN, K[S.sort]);
+    const hk = hot == null ? null : S.sort === 'all' ? GS.kof5(hot) : GS.ranks(hot, K[S.sort]).map((v) => (v <= 3 ? 1 : 0));
+    spotEls.forEach((d, n) => {
+      if (hk) { const on = hk[n] > 0; const INK = ['#D0D5DD', '#98A2B3', '#667085', '#475467', '#1D2939', '#0B1020']; d.style.background = on ? (hot === OWN ? GS.GREEN[Math.max(2, hk[n])] : (S.sort === 'all' ? INK[hk[n]] : '#0B1020')) : '#D0D5DD'; d.style.opacity = on ? 1 : 0.5; d.classList.toggle('lit', on); return; }
+      d.classList.remove('lit'); d.style.opacity = 0.9; d.style.background = k5 ? GS.GREEN[k5[n]] : RS(rk[n]).bg;
+    });
+    const lg = document.getElementById('fleg'); if (!lg) return;
+    lg.innerHTML = hot != null ? `<b class="${hot === OWN ? 'nm-own' : ''}">${esc(nm(hot))}</b>: ${S.sort === 'all' ? 'dark dots are the spots where it is in the top 3 on at least one phrase; darker = on more of the 5' : `dark dots are the spots where it is in the top 3 on “${esc(S.sort)}”`}.`
+      : S.sort === 'all' ? `Dots: the 81 spots, coloured by how many of the 5 phrases put <b class="nm-own">${esc(P.t)}</b> in the top 3 there; darker green = more. Point at a number to light up that business's top 3 spots.`
+        : `Dots: the 81 spots, coloured by <b class="nm-own">${esc(P.t)}</b>'s place on “${esc(S.sort)}”: green top 3, yellow 4th to 10th, red 11th to 20th, grey not in the top 20. Point at a number to light up that business's top 3 spots.`;
   }
   function hotPin(i, on) {
-    const p = fpins.get(i); if (p) p.el.classList.toggle('hot', on);
+    const p = fpins.get(i); if (p) p.el.classList.toggle('hot', on); if (i === OWN && ownTag) ownTag.classList.toggle('hot', on);
     FL.$$(`#spv .key[data-k="${i}"]`).forEach((r) => r.classList.toggle('hot', on));
+    paintSpots(on ? i : null);
   }
   function placeField() {
     const ovl = document.getElementById('fovl'); const svg = document.getElementById('fsvg'); const W = ovl.clientWidth; const H = ovl.clientHeight;
     const top = ORD.filter((i) => i !== OWN).slice(0, SHOWN);
-    ownTag.textContent = `${rankNo(OWN)} · ${sh(OWN)}`;
-    const o = fmap.latLngToContainerPoint([P.lat, P.lng]); const tw = ownTag.offsetWidth;
-    const placed = [{ x1: o.x - tw / 2 - 4, x2: o.x + tw / 2 + 4, y1: o.y - 30, y2: o.y - 6 }, { x1: o.x - 7, x2: o.x + 7, y1: o.y - 7, y2: o.y + 7 }];
-    const free = (x, y) => x > 14 && x < W - 14 && y > 14 && y < H - 14 && placed.every((b) => x + 13 < b.x1 || x - 13 > b.x2 || y + 13 < b.y1 || y - 13 > b.y2);
+    ownTag.querySelector('.no').textContent = rankNo(OWN);
+    const o = fmap.latLngToContainerPoint([P.lat, P.lng]);
+    const maxS = Math.max(1, ...[OWN, ...top].map((i) => score(i, S.sort)));
+    const size = (i) => Math.round(22 + 12 * Math.sqrt(score(i, S.sort) / maxS));
+    const os = Math.max(28, size(OWN)); ownTag.style.width = `${os}px`; ownTag.style.height = `${os}px`; ownTag.style.margin = `${-os / 2}px 0 0 ${-os / 2}px`;
+    const placed = [{ x1: o.x - os / 2 - 4, x2: o.x + os / 2 + 10, y1: o.y - os / 2 - 10, y2: o.y + os / 2 + 4 }];
+    paintSpots(null);
+    document.getElementById('fnum').innerHTML = `<b>Number on a marker:</b> its place on the board for ${esc(sortLabel(S.sort))}, ranked by how many of the ${S.sort === 'all' ? '405 searches' : '81 spots'} put it in the top 3. Bigger marker: in the top 3 more often. Dashed: farther away than the map shows. The dashed square is the 81 spots the scan searched from.`;
+    const free = (x, y) => x > 14 && x < W - 14 && y > 14 && y < H - 14 && placed.every((b) => x + 17 < b.x1 || x - 17 > b.x2 || y + 17 < b.y1 || y - 17 > b.y2);
     const want = top.map((i) => { const t = fmap.latLngToContainerPoint([L[i].lat, L[i].lng]); const x = Math.max(16, Math.min(W - 16, t.x)); const y = Math.max(16, Math.min(H - 16, t.y)); return { i, t, x, y, edge: x !== t.x || y !== t.y }; });
     fpins.forEach((p, i) => { if (!top.includes(i)) { p.el.style.opacity = 0; p.el.style.pointerEvents = 'none'; p.ln.style.opacity = 0; p.dot.style.opacity = 0; } });
     want.forEach((w) => {
       let spot = free(w.x, w.y) ? { x: w.x, y: w.y } : null;
       for (let ring = 1; !spot && ring < 9; ring++) for (let a = 0; a < 16 && !spot; a++) { const ang = (a / 16) * Math.PI * 2 + 2.2; const x = w.x + Math.cos(ang) * 28 * ring; const y = w.y + Math.sin(ang) * 28 * ring; if (free(x, y)) spot = { x, y }; }
-      spot = spot || { x: w.x, y: w.y }; placed.push({ x1: spot.x - 12, x2: spot.x + 12, y1: spot.y - 12, y2: spot.y + 12 });
+      spot = spot || { x: w.x, y: w.y }; placed.push({ x1: spot.x - 16, x2: spot.x + 16, y1: spot.y - 16, y2: spot.y + 16 });
       if (!fpins.has(w.i)) {
         const el = FL.h('<div class="fpin"></div>'); ovl.appendChild(el);
         const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('class', 'lead'); svg.appendChild(ln);
@@ -1019,9 +1049,10 @@ a{color:var(--aInk)}
       }
       const p = fpins.get(w.i); const no = rankNo(w.i);
       p.el.textContent = no; p.el.className = `fpin ${GS.tracked.has(w.i) ? 'trk' : ''} ${w.edge ? 'edge' : ''}`;
+      const z = size(w.i); p.el.style.width = `${z}px`; p.el.style.height = `${z}px`; p.el.style.margin = `${-z / 2}px 0 0 ${-z / 2}px`; p.el.style.fontSize = `${z > 28 ? 12.5 : 11}px`;
       p.el.style.opacity = 1; p.el.style.pointerEvents = 'auto'; p.el.style.left = `${spot.x}px`; p.el.style.top = `${spot.y}px`;
-      p.el.dataset.tipH = `${no} · ${L[w.i].t}`;
-      p.el.dataset.tip = `${GS.kind(w.i)}, ${GS.where(w.i)} of the office. ${GS.reviews(w.i)}. Top 3 places: ${score(w.i, S.sort)} ${S.sort === 'all' ? 'of 405' : 'of 81'}.${GS.tracked.has(w.i) ? ' Tracked rival.' : ''}${w.edge ? ' Off this map, further out.' : ''}`;
+      p.el.dataset.tipH = `${GS.ordn(no)} on the board · ${L[w.i].t}`;
+      p.el.dataset.tip = `${GS.kind(w.i)}, ${GS.where(w.i)} of the office. ${GS.reviews(w.i)}. In the top 3: ${score(w.i, S.sort)} ${S.sort === 'all' ? 'of 405 searches' : 'of 81 spots'}.${GS.tracked.has(w.i) ? ' One of the tracked rivals.' : ''}${w.edge ? ' Farther away than this map shows.' : ''}`;
       const tx = Math.max(4, Math.min(W - 4, w.t.x)); const ty = Math.max(4, Math.min(H - 4, w.t.y)); const moved = Math.hypot(spot.x - tx, spot.y - ty) > 4 && !w.edge;
       p.ln.setAttribute('x1', tx); p.ln.setAttribute('y1', ty); p.ln.setAttribute('x2', spot.x); p.ln.setAttribute('y2', spot.y); p.ln.style.opacity = moved ? 0.8 : 0;
       p.dot.setAttribute('cx', tx); p.dot.setAttribute('cy', ty); p.dot.style.opacity = moved ? 1 : 0;
@@ -1031,32 +1062,32 @@ a{color:var(--aInk)}
   /* ---------------- insight sections (AIV shell: headline from the numbers, figure at right) ---------------- */
   function sectionHtml() {
     const bar = (i, v, max, note, w = 150) => `<div class="brow ${i === OWN ? 'own' : ''}" data-tip-h="${esc(nm(i))}" data-tip="${esc(`${GS.reviews(i)}. ${GS.where(i)}${i === OWN ? '' : ' of the office'}.`)}"><span class="nmb"><span class="nm">${esc(nm(i))}</span>${note ? `<span class="nt">${note}</span>` : ''}</span><span class="bar"><i style="width:${Math.max(3, (v / max) * w)}px"></i><b>${v}</b></span></div>`;
-    const packFig = `<div class="fig"><div class="ft">The Maps list at ${held.length} of 81 spots · emergency dentist bothell</div>
+    const packFig = `<div class="fig"><div class="ft">Google's list at ${held.length} of 81 spots · emergency dentist bothell</div>
       <div class="pack">${trio.map((i, k) => `<div class="r"><b class="chip" style="background:#15803D;color:#fff">${k + 1}</b><span class="n">${esc(nm(i))}</span><span class="s">${GS.reviews(i)}</span></div>`).join('')}
       <div class="more">then, at ${heldAt4} of these ${held.length} spots</div><div class="r own"><b class="chip" style="background:#F5C518;color:#0B1020">4</b><span class="n">${esc(P.t)}</span><span class="s">${GS.reviews(OWN)}</span></div></div>
-      <div class="ft" style="margin-top:4px">${esc(sh(OWN))}'s place on this search, spots of 81</div>
+      <div class="ft" style="margin-top:4px">${esc(nm(OWN))}'s place on this phrase · spots, of 81</div>
       ${emDist.map(([lab, v]) => `<div class="brow ${lab === '4th' ? 'own' : ''}"><span class="nm" style="font-weight:600;color:var(--ink)">${lab}</span><span class="bar"><i style="width:${Math.max(3, (v / 81) * 190)}px"></i><b>${v}</b></span></div>`).join('')}</div>`;
-    const gapFig = `<div class="fig"><div class="ft">Takes a top 3 spot the practice misses · times, of ${misses}</div>${gapTop.map(([i, g]) => { const top = Object.entries(g.by).sort((a, b) => b[1] - a[1])[0]; return bar(i, g.n, gapTop[0][1].n, `mostly on ${GS.short[top[0]]} (${top[1]})`, 150); }).join('')}</div>`;
-    const mktRows = GS.ORDER.map((kw) => { const kk = K[kw]; const c = new Map(); kk.top.forEach((t) => c.set(t[0], (c.get(t[0]) || 0) + 1)); const [i, n] = [...c.entries()].sort((a, b) => b[1] - a[1])[0]; return `<div class="mkt"><span class="k">${esc(GS.short[kw])}</span><span class="w"><b class="${i === OWN ? 'nm-own' : ''}">${esc(nm(i))}</b><span>${i === OWN ? 'the practice' : GS.kind(i)} · ${kk.density.top3} listings ever top 3</span></span><span class="v">${n}</span></div>`; }).join('');
-    const trkFig = `<div class="fig"><div class="ft">Tracked rivals · top 3 places, of 405</div>${tracked.map((i) => bar(i, GS.t3all(i), GS.t3all(tracked[0]), GS.where(i), 150)).join('')}
-      <div class="ft" style="margin-top:12px">Not tracked, strongest dentists</div>${untrackedStrong.map((i) => bar(i, GS.t3all(i), GS.t3all(tracked[0]), GS.where(i), 150)).join('')}</div>`;
+    const gapFig = `<div class="fig"><div class="ft">In the top 3 when the practice is not · searches, of ${misses}</div>${gapTop.map(([i, g]) => { const top = Object.entries(g.by).sort((a, b) => b[1] - a[1])[0]; return bar(i, g.n, gapTop[0][1].n, `mostly ${GS.short[top[0]]}, ${top[1]}`, 150); }).join('')}</div>`;
+    const mktRows = GS.ORDER.map((kw) => { const kk = K[kw]; const c = new Map(); kk.top.forEach((t) => c.set(t[0], (c.get(t[0]) || 0) + 1)); const [i, n] = [...c.entries()].sort((a, b) => b[1] - a[1])[0]; return `<div class="mkt"><span class="k">${esc(GS.short[kw])}</span><span class="w"><b class="${i === OWN ? 'nm-own' : ''}">${esc(nm(i))}</b><span>${i === OWN ? 'the practice' : GS.kind(i)} · ${kk.density.top3} businesses ever in a top 3</span></span><span class="v">${n}</span></div>`; }).join('');
+    const trkFig = `<div class="fig"><div class="ft">Tracked rivals · searches in the top 3, of 405</div>${tracked.map((i) => bar(i, GS.t3all(i), GS.t3all(tracked[0]), GS.where(i), 150)).join('')}
+      <div class="ft" style="margin-top:12px">Strongest dentists not tracked</div>${untrackedStrong.map((i) => bar(i, GS.t3all(i), GS.t3all(tracked[0]), GS.where(i), 150)).join('')}</div>`;
     const s = (id, no, ey, h, lede, small, fig) => `<section class="sec" id="${id}"><div class="ins"><div><div class="ey">${no} · ${ey}</div><h2>${h}</h2><p class="lede">${lede}</p>${small ? `<p class="small">${small}</p>` : ''}</div>${fig}</div></section>`;
     return [
-      s('s-pack', '02', 'Just outside the top 3', `On ${GS.q('emergency dentist bothell')}, ${esc(P.t)} is 4th at ${em4} of 81 spots, right behind the same three listings.`,
-        `${esc(nm(JUDE))}, ${esc(nm(ACC))} and ${esc(nm(ANN))} hold the top 3 together at ${held.length} spots, always in that order. The first has ${L[JUDE].n} reviews and the search words in its name. ${esc(P.t)} has ${P.n} reviews and ${P.r} stars, more than ${esc(sh(ANN))} (${L[ANN].n}).`,
-        `Only ${EM.density.top3} listings ever reach the top 3 on this search, against ${K['dentist in bothell'].density.top3} on “dentist in bothell”. It is the closest ground on the board: one place up turns ${em4} spots into top 3 spots.`, packFig),
-      s('s-gaps', '03', 'Who takes the spots it misses', `Where ${esc(P.t)} misses the top 3, ${esc(nm(gapTop[0][0]))} takes a spot most often: ${gapTop[0][1].n} times.`,
-        `Of the 405 Maps searches, ${esc(P.t)} is outside the top 3 in ${misses}. Each of those has three other listings on top; the bars count how often each listing is one of them. They split by search: dentists on emergency and the general searches, orthodontists on invisalign, med spas on botox.`,
-        `${esc(sh(gapTop[0][0]))} is ${GS.where(gapTop[0][0])} of the office with ${GS.reviews(gapTop[0][0])}.`, gapFig),
-      s('s-few', '04', 'Few reviews, still winning', `${esc(nm(few[0]))} has ${L[few[0]].n} reviews and is in the top 3 in ${GS.t3all(few[0])} of 405 Maps searches.`,
-        `${few.length} listings with fewer than ${Math.round(P.n / 4)} reviews (a quarter of the practice's ${P.n}) still reach the top 3 at least 15 times: ${few.map((i) => `${esc(sh(i))} (${L[i].n} reviews, ${GS.t3all(i)} top 3 places)`).join(', ')}. Name, category and distance carry them; reviews alone do not decide the order.`,
-        'Each dot is one listing that reached a top 3 at least once. Point at a dot for its numbers.', '<div class="fig" id="scfig"></div>'),
-      s('s-mkt', '05', 'Other markets on the board', `${otherMkt.length} of the top 15 are not general dentists: ${otherMkt.filter((i) => GS.kind(i) === 'orthodontist').length} orthodontists and ${otherMkt.filter((i) => GS.kind(i) === 'med spa').length} med spas.`,
-        `They come from two searches: “invisalign bothell” goes to orthodontists and “botox bothell” to med spas. They are not competing for the dentist searches, so the board sorted by ${GS.q('dentist in bothell')} or ${GS.q('emergency dentist bothell')} is the dentist race.`,
-        'Right: who is first at the most spots on each search, and how many spots of 81.', `<div class="fig"><div class="ft">First at the most spots, per search</div>${mktRows}</div>`),
-      s('s-trk', '06', 'Tracked rivals', `${trackedZero.length} of the ${tracked.length} tracked rivals never reach a top 3; ${esc(nm(JUDE))}, not tracked, does ${GS.t3all(JUDE)} times.`,
-        `${trackedZero.map((i) => esc(nm(i))).join('; ')}: each is a listing named for one dentist, all within ${Math.max(...trackedZero.map((i) => L[i].mi))} mi of the office. None is in a top 3 in any of the 405 Maps searches; ${trackedZero.map((i) => `${esc(sh(i))} is listed in a top 20 in ${GS.usual(i, D.kw).listed}`).join(', ')}.`,
-        `Tracking ${esc(sh(JUDE))} instead would put the emergency race into head to head; it is ${GS.where(JUDE)} of the office with ${GS.reviews(JUDE)}.`, `<div>${trkFig}<div style="margin-top:12px"><button class="btn btn-go">Track ${esc(sh(JUDE))} as a rival</button></div></div>`),
+      s('s-pack', '02', 'Just missing the top 3', `On emergency searches, ${esc(P.t)} is usually 4th, just behind the same three rivals.`,
+        `${esc(nm(JUDE))}, ${esc(nm(ACC))} and ${esc(nm(ANN))} hold the top 3 together from ${held.length} of the 81 spots, always in that order. The first has ${L[JUDE].n} reviews and the search words in its name. ${esc(P.t)} has ${P.n} reviews and ${P.r} stars: more reviews than ${esc(nm(ANN))}, which has ${L[ANN].n}. It is 4th from ${em4} spots.`,
+        `Only ${EM.density.top3} businesses ever reach the top 3 on this phrase, so the top 3 here rarely changes hands. This is the closest win on the board: one place higher would put the practice in the top 3 at ${em4} more spots.`, packFig),
+      s('s-gaps', '03', 'Who is in the top 3 instead', `When ${esc(P.t)} misses the top 3, ${esc(nm(gapTop[0][0]))} is the rival most often there instead.`,
+        `${esc(P.t)} misses the top 3 in ${misses} of the 405 searches. Each of those searches has three other businesses in its top 3; the bars count how often each business is one of them. ${esc(nm(gapTop[0][0]))} is the most frequent: ${gapTop[0][1].n} times. It depends on the phrase: dentists on emergency and the general dentist phrases, orthodontists on invisalign, med spas on botox.`,
+        `${esc(nm(gapTop[0][0]))} is ${GS.where(gapTop[0][0])} of the office with ${GS.reviews(gapTop[0][0])}.`, gapFig),
+      s('s-few', '04', 'Few reviews, still winning', `${esc(nm(few[0]))} has ${L[few[0]].n} reviews and is in the top 3 in ${GS.t3all(few[0])} of 405 searches.`,
+        `${few.length} businesses with fewer than ${Math.round(P.n / 4)} reviews, a quarter of the practice's ${P.n}, still reach the top 3 in at least 15 searches: ${few.map((i) => `${esc(nm(i))}, ${L[i].n} reviews, top 3 in ${GS.t3all(i)}`).join('; ')}. Name, category and distance carry them; reviews alone do not decide the order.`,
+        'Each dot is one business that reached a top 3 at least once. Point at a dot for its numbers.', '<div class="fig" id="scfig"></div>'),
+      s('s-mkt', '05', 'Orthodontists and med spas', `${otherMkt.length} of the top 15 rivals are not general dentists: ${otherMkt.filter((i) => GS.kind(i) === 'orthodontist').length} orthodontists and ${otherMkt.filter((i) => GS.kind(i) === 'med spa').length} med spas.`,
+        `They come from two phrases: “invisalign bothell” goes to orthodontists and “botox bothell” to med spas. They do not compete on the dentist phrases, so sorting the board by ${GS.q('dentist in bothell')} or ${GS.q('emergency dentist bothell')} shows just the race between dentists.`,
+        'Right: on each phrase, the business that is 1st from the most spots, and from how many of the 81.', `<div class="fig"><div class="ft">1st from the most spots, by phrase</div>${mktRows}</div>`),
+      s('s-trk', '06', 'Tracked rivals', `${trackedZero.length} of the ${tracked.length} tracked rivals never make a top 3.`,
+        `Tracked rivals are the ${tracked.length} practices picked for the head to head view. The ${trackedZero.length} that never make it, ${trackedZero.map((i) => esc(nm(i))).join(', ').replace(/, ([^,]*)$/, ' and $1')}, are each a listing named for one dentist, all within ${Math.max(...trackedZero.map((i) => L[i].mi))} mi of the office. None is in a top 3 in any of the 405 searches. They show up in a top 20 in ${trackedZero.map((i) => GS.usual(i, D.kw).listed).join(', ').replace(/, ([^,]*)$/, ' and $1')} of them.`,
+        `${esc(nm(JUDE))} is not tracked, yet it is in the top 3 in ${GS.t3all(JUDE)} searches. Tracking it would bring the emergency race into the head to head view. It is ${GS.where(JUDE)} of the office with ${GS.reviews(JUDE)}.`, `<div>${trkFig}<div style="margin-top:12px"><button class="btn btn-go">Track ${esc(nm(JUDE))} as a rival</button></div></div>`),
     ].join('');
   }
 
@@ -1077,8 +1108,8 @@ a{color:var(--aInk)}
       if (lab) s += `<text class="lb ${own ? 'own' : ''}" x="${x(p.n) + lab[0]}" y="${y(p.v) + lab[1]}" text-anchor="${lab[2]}">${esc(sh(p.i))}</text>`;
     });
     s += `<rect class="hit" x="0" y="0" width="${W}" height="${H}" fill="transparent"/>`;
-    const def = `<span><b class="nm-own">${esc(sh(OWN))}</b>: ${P.n} reviews, top 3 in <b>${GS.t3all(OWN)}</b> of 405</span>`;
-    host.innerHTML = `<div class="ft">Reviews left to right · top 3 places of 405, bottom to top</div><div class="ro" id="scro">${def}</div><svg class="sc" viewBox="0 0 ${W} ${H}" width="100%">${s}</svg><div class="mnote">Reviews on a stretched scale: 1, 10, 100, 1000 are evenly spaced. ${pts.length} listings; ${ALL.filter((i) => GS.t3all(i) > 0).length - pts.length} with no reviews are left off.</div>`;
+    const def = `<span><b class="nm-own">${esc(nm(OWN))}</b>: ${P.n} reviews, top 3 in <b>${GS.t3all(OWN)}</b> of 405 searches</span>`;
+    host.innerHTML = `<div class="ft">Reviews, left to right · searches in the top 3, of 405, bottom to top</div><div class="ro" id="scro">${def}</div><svg class="sc" viewBox="0 0 ${W} ${H}" width="100%">${s}</svg><div class="mnote">Reviews on a stretched scale: 1, 10, 100, 1000 are evenly spaced. ${pts.length} businesses; ${(() => { const z = ALL.filter((i) => GS.t3all(i) > 0).length - pts.length; return `${z} with no reviews ${z === 1 ? 'is' : 'are'} left off`; })()}.</div>`;
     const svgEl = host.querySelector('svg'); const ro = host.querySelector('#scro');
     svgEl.querySelector('.hit').addEventListener('mousemove', (e) => {
       const b = svgEl.getBoundingClientRect(); const mx = ((e.clientX - b.left) / b.width) * W; const my = ((e.clientY - b.top) / b.height) * H;
@@ -1086,7 +1117,7 @@ a{color:var(--aInk)}
       svgEl.querySelectorAll('circle').forEach((c) => c.setAttribute('stroke', '#fff'));
       if (best && best.d < 18) {
         const c = svgEl.querySelector(`circle[data-i="${best.p.i}"]`); c.setAttribute('stroke', '#0B1020');
-        ro.innerHTML = `<span><b class="${best.p.i === OWN ? 'nm-own' : ''}">${esc(nm(best.p.i))}</b>: ${best.p.n} reviews, top 3 in <b>${best.p.v}</b> of 405 · ${best.p.i === OWN ? 'the practice' : GS.kind(best.p.i)}</span>`;
+        ro.innerHTML = `<span><b class="${best.p.i === OWN ? 'nm-own' : ''}">${esc(nm(best.p.i))}</b>: ${best.p.n} reviews, top 3 in <b>${best.p.v}</b> of 405 searches · ${best.p.i === OWN ? 'the practice' : GS.kind(best.p.i)}</span>`;
       } else ro.innerHTML = def;
     });
     svgEl.querySelector('.hit').addEventListener('mouseleave', () => { ro.innerHTML = def; svgEl.querySelectorAll('circle').forEach((c) => c.setAttribute('stroke', '#fff')); });

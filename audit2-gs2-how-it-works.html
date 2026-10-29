@@ -567,7 +567,7 @@ a{color:var(--aInk)}
   };
   G.ord = (v) => (v > 20 ? 'not in top 20' : `${v}${v % 10 === 1 && v !== 11 ? 'st' : v % 10 === 2 && v !== 12 ? 'nd' : v % 10 === 3 && v !== 13 ? 'rd' : 'th'}`);
   G.stars = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} from ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`);
-  G.starsShort = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} · ${FL.fmt(l.n)}`);
+  G.starsShort = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} stars · ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`);
   G.trunc = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
   /* read order: rings out from the office (the order the scan reads points) */
   G.readOrder = Array.from({ length: 81 }, (_, n) => n).sort((a, b) => {
@@ -594,8 +594,8 @@ a{color:var(--aInk)}
 </style></head><body>
 <div class="mock-bar"><b>Mockup · gs2-how-it-works · Grid Scan, How it works window.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026), plus scans #3 and #4 (same day, 2 minutes apart) for scanning twice.
 <ul><li>All five figures rebuilt on real Bothell data, each with a verdict inside the picture that changes as it plays (6 to 10s loops, held end state, labels in their own bands).</li>
-<li>Two new sections: what one search returns (the real 20 listings at one point) and what it costs ($0.002 a search, $0.81 for this scan).</li>
-<li>The shipped figure sits small under each one as "live today", with what is wrong with it. Copy is third person, no percentages.</li></ul></div>
+<li>Two new sections: what one search returns (the real 20 businesses at one spot) and what it costs: $0.002 a search, $0.81 for this scan.</li>
+<li>The shipped figure sits small under each one as "live today", with what is wrong with it. Copy is third person, no percentages. Plain-words pass 10/29: spots, phrases, searches and usual place mean the same here as on the other tabs.</li></ul></div>
 <div id="page"></div>
 <script>/* gs2 How it works: seven sections, every figure drawn from the real Bothell scan #2
    (and the real same-day pair, scans #3 and #4, for scanning twice). Each figure is built
@@ -622,6 +622,9 @@ a{color:var(--aInk)}
   }
   const tr = (e, css) => { e.style.transition = css; };
   const trunc = GS.trunc;
+  /* usual place: the middle of the practice's places in the searches where it is in the top 20 (same rule on every tab) */
+  const usualOf = (kws) => { const v = []; kws.forEach((kk) => kk.rank.forEach((r) => { if (r <= 20) v.push(r); })); v.sort((a, b) => a - b); return v.length ? v[Math.floor((v.length - 1) / 2)] : null; };
+  const LOOKUPS = 81 * D.kw.length; const HITS = D.kw.reduce((a, kk) => a + GS.top3(kk), 0);
 
   /* ---------- 1. Why 81 points ---------- */
   function figPoints(el) {
@@ -630,15 +633,15 @@ a{color:var(--aInk)}
     for (let n = 0; n < 81; n++) { const r = mk('rect', { x: X(n % 9), y: Y(Math.floor(n / 9)), width: 11, height: 11, rx: 2, fill: OFF }, svg); tr(r, 'fill .45s ease'); cells.push(r); }
     const ring = mk('rect', { x: -2, y: -2, width: 15, height: 15, rx: 3, fill: 'none', stroke: INK, 'stroke-width': 2 }, svg); tr(ring, 'transform .6s cubic-bezier(.2,.8,.2,1), opacity .3s');
     mk('line', { x1: 21.5, x2: 125.5, y1: 165, y2: 165, stroke: '#98A2B3' }, svg); mk('line', { x1: 21.5, x2: 21.5, y1: 161, y2: 169, stroke: '#98A2B3' }, svg); mk('line', { x1: 125.5, x2: 125.5, y1: 161, y2: 169, stroke: '#98A2B3' }, svg);
-    txt(svg, 16, 184, '2 mi across · 0.25 mi apart', { size: 9.5, fill: MUTED });
+    txt(svg, 16, 184, '2 mi across · spots 0.25 mi apart', { size: 9.5, fill: MUTED });
     txt(svg, 290, 192, '“dentist in bothell”', { size: 9.5, fill: MUTED, anchor: 'end' });
     const card = mk('g', {}, svg); tr(card, 'opacity .35s');
     const head = txt(card, 146, 50, '', { size: 11.5, w: 800 });
     const rows = [0, 1, 2].map((k) => { const y = 64 + k * 22; const c = mk('rect', { x: 146, y, width: 16, height: 15, rx: 3, fill: RS(1).bg }, card); const n = txt(card, 154, y + 11, String(k + 1), { size: 9.5, w: 800, fill: '#fff', anchor: 'middle' }); const t = txt(card, 167, y + 11, '', { size: 10.5, w: 600 }); return { c, n, t }; });
     const me = txt(card, 146, 142, '', { size: 10.5, w: 700, fill: '#115E59' });
     const sum = mk('g', {}, svg); tr(sum, 'opacity .35s'); sum.style.opacity = 0;
-    txt(sum, 146, 82, '81', { size: 34, w: 900, fill: TEAL }); txt(sum, 146, 100, 'Maps searches per phrase,', { size: 10.5, w: 600 }); txt(sum, 146, 114, 'one from every point', { size: 10.5, w: 600 });
-    const s3 = txt(sum, 146, 140, `top 3 at ${GS.top3(DIB)} of 81 points`, { size: 10.5, w: 800, fill: '#15803D' });
+    txt(sum, 146, 82, '81', { size: 34, w: 900, fill: TEAL }); txt(sum, 146, 100, 'searches per phrase,', { size: 10.5, w: 600 }); txt(sum, 146, 114, 'one from every spot', { size: 10.5, w: 600 });
+    const s3 = txt(sum, 146, 140, `top 3 from ${GS.top3(DIB)} of 81 spots`, { size: 10.5, w: 800, fill: '#15803D' });
     const PTS = [40, 36, 64];
     const show = (n, label) => {
       const i = Math.floor(n / 9); const j = n % 9; ring.style.transform = `translate(${X(j)}px, ${Y(i)}px)`;
@@ -652,10 +655,10 @@ a{color:var(--aInk)}
         const n = PTS[s]; cells[n].style.transitionDelay = '0ms'; cells[n].setAttribute('fill', RS(DIB.rank[n]).bg);
         ring.style.opacity = 1; card.style.opacity = 1; sum.style.opacity = 0;
         show(n, s === 0 ? 'At the office' : `From ${GS.dir(n)}`);
-        V(['One spot, one answer', '1 mile west: another answer', '1.1 miles south-west: a third'][s]);
+        V(['One spot, one list', '1 mile west: a different list', '1.1 miles south-west: another list'][s]);
       } else if (s === 3) {
         GS.readOrder.forEach((n, k) => { cells[n].style.transitionDelay = `${k * 14}ms`; cells[n].setAttribute('fill', RS(DIB.rank[n]).bg); });
-        ring.style.opacity = 0; card.style.opacity = 0; sum.style.opacity = 1; V('81 spots, 81 answers');
+        ring.style.opacity = 0; card.style.opacity = 0; sum.style.opacity = 1; V('81 spots, 81 lists');
       }
     });
   }
@@ -684,7 +687,7 @@ a{color:var(--aInk)}
         if (s === 1) r.bg.setAttribute('fill', k < 3 ? '#DDF0E4' : 'transparent');
         if (s >= 2) { r.bg.setAttribute('fill', r.id === OWN ? '#FDF3C4' : k < 3 ? '#DDF0E4' : 'transparent'); r.g.style.opacity = r.id === OWN || k < 3 ? 1 : 0.45; }
       });
-      V([`One search, one spot: ${ids.length} listings kept`, 'The first 3: the map pack', `${P.t}: ${GS.ord(myRank)} here`, `${P.t}: ${GS.ord(myRank)} here`][s]);
+      V([`One search: ${ids.length} businesses, in order`, 'The first 3 are the top 3', `${P.t}: ${GS.ord(myRank)} here`, `${P.t}: ${GS.ord(myRank)} here`][s]);
     });
   }
 
@@ -704,14 +707,14 @@ a{color:var(--aInk)}
     const dig = txt(svg, 245, 89, '?', { size: 22, w: 900, fill: '#98A2B3', anchor: 'middle' });
     const l1 = txt(svg, 245, 126, '', { size: 10, w: 700, anchor: 'middle' }); const l2 = txt(svg, 245, 140, '', { size: 9.5, fill: MUTED, anchor: 'middle' });
     const cnt = [EM.rank.filter((v) => v <= 3).length, EM.rank.filter((v) => v > 3 && v <= 10).length, EM.rank.filter((v) => v > 10 && v <= 20).length, EM.rank.filter((v) => v > 20).length];
-    const leg = [[1, 'top 3'], [7, '4 to 10'], [14, '11 to 20'], [21, 'not in 20']].map(([v, lab], k) => { const g = mk('g', {}, svg); tr(g, 'opacity .35s'); const x = 10 + k * 72; mk('rect', { x, y: 180, width: 11, height: 11, rx: 2, fill: RS(v).bg }, g); txt(g, x + 15, 189.5, `${cnt[k]} ${lab}`, { size: 9.5, w: 600, fill: '#273043' }); return g; });
+    const leg = [[1, 'top 3'], [7, '4th-10th'], [14, '11th-20th'], [21, 'not in top 20']].map(([v, lab], k) => { const g = mk('g', {}, svg); tr(g, 'opacity .35s'); const x = 10 + k * 72; mk('rect', { x, y: 180, width: 11, height: 11, rx: 2, fill: RS(v).bg }, g); txt(g, x + 15, 189.5, `${cnt[k]} ${lab}`, { size: 9.5, w: 600, fill: '#273043' }); return g; });
     return seq([2200, 2600, 3400], (s) => {
       top.forEach((g) => { g.style.opacity = 1; });
       r4.style.opacity = s >= 1 ? 1 : 0; moreBg.setAttribute('fill', s === 1 ? '#E6F4F1' : 'transparent');
       if (s === 0) { tile.setAttribute('fill', '#fff'); tile.setAttribute('stroke', '#C3C8D2'); dig.textContent = '?'; dig.setAttribute('fill', '#98A2B3'); l1.textContent = 'and the practice?'; l2.textContent = 'not in the first 3'; }
-      else { tile.setAttribute('fill', RS(4).bg); tile.setAttribute('stroke', RS(4).bg); dig.textContent = String(EM.rank[SPOT]); dig.setAttribute('fill', INK); l1.textContent = 'yellow: rank 4'; l2.textContent = 'one click away'; }
+      else { tile.setAttribute('fill', RS(4).bg); tile.setAttribute('stroke', RS(4).bg); dig.textContent = String(EM.rank[SPOT]); dig.setAttribute('fill', INK); l1.textContent = 'yellow: 4th'; l2.textContent = 'one click away'; }
       leg.forEach((g, k) => { g.style.transitionDelay = s === 2 ? `${k * 250}ms` : '0ms'; g.style.opacity = s === 2 ? 1 : 0.25; });
-      V(['The top 3: the map pack', 'Rank 4: behind a click', `This search: ${cnt[0]} green, ${cnt[1]} yellow, ${cnt[2]} red`][s]);
+      V(['The top 3: listed first', '4th: behind “More places”', `All 81 spots: ${cnt[0]} green, ${cnt[1]} yellow, ${cnt[2]} red`][s]);
     });
   }
 
@@ -731,8 +734,8 @@ a{color:var(--aInk)}
     const lab = mk('g', {}, svg); tr(lab, 'opacity .45s'); lab.style.opacity = 0;
     D.kw.forEach((kk, k) => { txt(lab, SLOT(k) + 22, 112, String(GS.top3(kk)), { size: 13, w: 800, anchor: 'middle', fill: GS.top3(kk) ? INK : '#98A2B3' }); txt(lab, SLOT(k) + 22, 125, GS.short[kk.kw], { size: 9, fill: MUTED, anchor: 'middle' }); });
     const tot = D.kw.reduce((a, kk) => a + GS.top3(kk), 0);
-    txt(lab, 150, 152, `${D.kw.map((kk) => GS.top3(kk)).join(' + ')} = ${tot} top 3 places`, { size: 10, w: 600, anchor: 'middle', fill: '#273043' });
-    txt(lab, 150, 172, `÷ ${D.kw.length} searches = ${Math.round(tot / D.kw.length)} of 81, the headline`, { size: 11.5, w: 800, anchor: 'middle', fill: TEAL });
+    txt(lab, 150, 152, `${D.kw.map((kk) => GS.top3(kk)).join(' + ')} = ${tot} searches in the top 3`, { size: 10, w: 600, anchor: 'middle', fill: '#273043' });
+    txt(lab, 150, 172, `${tot} of ${LOOKUPS} searches: the headline`, { size: 11.5, w: 800, anchor: 'middle', fill: TEAL });
     const foot = txt(svg, 16, 192, '“dentist near me”, Bothell scan #2: the real grid', { size: 9.5, fill: MUTED }); tr(foot, 'opacity .35s');
     let ticker = null;
     return seq([3000, 3600, 3200], (s) => {
@@ -740,21 +743,21 @@ a{color:var(--aInk)}
       if (s === 0) {
         big.style.transform = 'none'; minis.style.opacity = 0; lab.style.opacity = 0; right.style.opacity = 1; foot.style.opacity = 1; rings.forEach((r) => { r.style.opacity = 0; });
         cells.forEach((c) => { c.style.transitionDelay = '0ms'; c.setAttribute('fill', OFF); c.style.opacity = 1; });
-        let row = 0; let k = 0; num.textContent = '0'; r1.textContent = 'of 81 points in the top 3'; r2.textContent = 'filling row by row'; r3.textContent = ''; r4.textContent = '';
-        ticker = setInterval(() => { if (row > 8) { clearInterval(ticker); r2.textContent = 'one search'; return; } for (let j = 0; j < 9; j++) { const n = row * 9 + j; cells[n].setAttribute('fill', RS(DNM.rank[n]).bg); if (DNM.rank[n] <= 3) k++; } num.textContent = String(k); row++; }, 250);
-        V(`One search: top 3 at ${GS.top3(DNM)} of 81`);
+        let row = 0; let k = 0; num.textContent = '0'; r1.textContent = 'of 81 spots in the top 3'; r2.textContent = 'filling row by row'; r3.textContent = ''; r4.textContent = '';
+        ticker = setInterval(() => { if (row > 8) { clearInterval(ticker); r2.textContent = 'one phrase'; return; } for (let j = 0; j < 9; j++) { const n = row * 9 + j; cells[n].setAttribute('fill', RS(DNM.rank[n]).bg); if (DNM.rank[n] <= 3) k++; } num.textContent = String(k); row++; }, 250);
+        V(`One phrase: top 3 from ${GS.top3(DNM)} of 81 spots`);
       } else if (s === 1) {
         cells.forEach((c, n) => c.setAttribute('fill', RS(DNM.rank[n]).bg));
         right.style.opacity = 0; foot.style.opacity = 0;
         big.style.transform = `translate(${SLOT(0)}px, 52px) scale(${5 / 13}) translate(-16px, -38px)`;
         minis.style.opacity = 1; lab.style.opacity = 1;
-        V(`Five searches: ${Math.round(tot / D.kw.length)} of 81 on average`);
+        V(`Five phrases: ${tot} of ${LOOKUPS} searches`);
       } else {
         big.style.transform = 'none'; minis.style.opacity = 0; lab.style.opacity = 0; foot.style.opacity = 1;
         cells.forEach((c, n) => { c.style.opacity = DNM.rank[n] > 20 ? 1 : 0.3; });
         rings.forEach((r) => { r.style.opacity = 1; });
-        setTimeout(() => { right.style.opacity = 1; num.textContent = DNM.arp.toFixed(1); r1.textContent = 'average rank, lower is better'; r2.textContent = `${rings.length} ringed: not in top 20,`; r3.textContent = `so each counts as 21`; r4.textContent = `all 5 searches: ${D.metrics.arp.toFixed(1)}`; }, 350);
-        V(`Average rank ${DNM.arp.toFixed(1)}: a miss counts as 21`);
+        setTimeout(() => { right.style.opacity = 1; num.textContent = GS.ord(usualOf([DNM])); r1.textContent = 'usual place on this phrase'; r2.textContent = `${rings.length} ringed: not in the top 20,`; r3.textContent = 'so they are left out'; r4.textContent = `all 5 phrases: usually ${GS.ord(usualOf(D.kw))}`; }, 350);
+        V(`Usual place on this phrase: ${GS.ord(usualOf([DNM]))}`);
       }
     });
   }
@@ -768,7 +771,7 @@ a{color:var(--aInk)}
     const ga = grid(20, A); const gb = grid(176, B);
     const flip = A.map((v, n) => (v <= 3) !== (B[n] <= 3));
     const nFlip = flip.filter(Boolean).length; const t3a = A.filter((v) => v <= 3).length; const t3b = B.filter((v) => v <= 3).length;
-    const la = txt(svg, 20, 42, `Pass 1 · top 3 at ${t3a}`, { size: 9.8, w: 700 }); const lb = txt(svg, 176, 42, `Pass 2 · top 3 at ${t3b}`, { size: 9.8, w: 700 });
+    const la = txt(svg, 20, 42, `Pass 1 · top 3: ${t3a} spots`, { size: 9.8, w: 700 }); const lb = txt(svg, 176, 42, `Pass 2 · top 3: ${t3b} spots`, { size: 9.8, w: 700 });
     const legG = mk('g', {}, svg); tr(legG, 'opacity .35s');
     mk('rect', { x: 20, y: 162, width: 10, height: 10, rx: 1.8, fill: RS(4).bg }, legG); mk('rect', { x: 20, y: 162, width: 10, height: 10, rx: 1.8, fill: 'url(#gs2flip)' }, legG);
     txt(legG, 35, 170.5, 'striped: top 3 on one pass, not the other', { size: 9.5, fill: '#273043' });
@@ -777,7 +780,7 @@ a{color:var(--aInk)}
       ga.forEach((c, n) => { c.r.style.transitionDelay = s === 1 ? `${GS.readPos[n] * 12}ms` : '0ms'; c.r.setAttribute('fill', s >= 1 ? RS(c.v).bg : OFF); c.f.setAttribute('opacity', s === 3 && flip[n] ? 1 : 0); });
       gb.forEach((c, n) => { c.r.style.transitionDelay = s === 2 ? `${GS.readPos[n] * 12}ms` : '0ms'; c.r.setAttribute('fill', s >= 2 ? RS(c.v).bg : OFF); c.f.setAttribute('opacity', s === 3 && flip[n] ? 1 : 0); });
       la.style.opacity = s >= 1 ? 1 : 0.3; lb.style.opacity = s >= 2 ? 1 : 0.3; legG.style.opacity = s === 3 ? 1 : 0.2;
-      V(['Same search, twice', `Pass 1: top 3 at ${t3a} of 81`, `2 minutes later: top 3 at ${t3b}`, `${81 - nFlip} of 81 held · ${nFlip} flipped`][s]);
+      V(['Same phrase, run twice', `Pass 1: top 3 from ${t3a} of 81 spots`, `2 minutes later: ${t3b} spots`, `${nFlip} of 81 spots changed sides`][s]);
     });
   }
 
@@ -795,7 +798,10 @@ a{color:var(--aInk)}
     /* place pins: keep the true spot if free, else the nearest free spot on rings around it */
     const placed = [{ x: C.x, y: C.y, r: 13 }];
     const spots = all.map((c) => { const t = at(c.lat, c.lng); let best = null; for (let ring = 0; ring < 6 && !best; ring++) for (let a = 0; a < (ring ? 10 : 1) && !best; a++) { const ang = (a / 10) * Math.PI * 2 + 3.6; const x = t.x + Math.cos(ang) * 15 * ring; const y = t.y + Math.sin(ang) * 15 * ring; if (placed.every((p) => Math.hypot(p.x - x, p.y - y) >= (p.r || 14))) best = { x, y }; } best = best || t; placed.push({ ...best, r: 14 }); return { ...best, tx: t.x, ty: t.y }; });
-    const office = mk('rect', { x: C.x - 6, y: C.y - 6, width: 12, height: 12, rx: 3, fill: TEAL }, svg);
+    /* the practice: the shared subtle mark, a thin teal ring with a small teal house glyph in its corner (owner 10/29) */
+    mk('rect', { x: C.x - 6, y: C.y - 6, width: 12, height: 12, rx: 2.5, fill: '#fff', stroke: TEAL, 'stroke-width': 1.6 }, svg);
+    mk('rect', { x: C.x + 2, y: C.y - 11, width: 9, height: 9, rx: 2, fill: TEAL, stroke: '#fff', 'stroke-width': 1 }, svg);
+    mk('path', { d: `M${C.x + 4.2} ${C.y - 6.2} L${C.x + 6.5} ${C.y - 8.4} L${C.x + 8.8} ${C.y - 6.2} V${C.y - 4} H${C.x + 4.2} Z`, fill: 'none', stroke: '#fff', 'stroke-width': 1.1, 'stroke-linejoin': 'round' }, svg);
     const items = all.map((c, k) => {
       const sp = spots[k]; const g = mk('g', {}, svg); tr(g, 'opacity .35s'); g.style.opacity = 0;
       if (Math.hypot(sp.x - sp.tx, sp.y - sp.ty) > 3) { mk('line', { x1: sp.tx, y1: sp.ty, x2: sp.x, y2: sp.y, stroke: '#475569', 'stroke-width': 0.8 }, g); mk('circle', { cx: sp.tx, cy: sp.ty, r: 1.6, fill: INK }, g); }
@@ -820,7 +826,7 @@ a{color:var(--aInk)}
       });
       fix.textContent = s === 3 ? 'Fix: add it by name' : '';
       const persons = comps.filter((c) => c.person).length;
-      V(['One Maps search around the office', `${comps.length} listings within about a mile`, `${persons} are a dentist's own listing: left off`, 'Missed: the top emergency rival, 0.96 mi'][s]);
+      V(['One Maps search around the office', `${comps.length} dental practices within a mile`, `${persons} are one dentist's own listing: left off`, 'Missed: the top emergency rival, 0.96 mi'][s]);
     });
   }
 
@@ -830,8 +836,8 @@ a{color:var(--aInk)}
     const per = 0.002;
     const rows = D.kw.map((kk, k) => { const y = 40 + k * 17; txt(svg, 10, y + 9, GS.short[kk.kw], { size: 9.3, w: 600, fill: '#273043' }); return GS.readOrder.map((n, p) => { const r = mk('rect', { x: 70 + p * 2.7, y, width: 2.1, height: 11, rx: 0.6, fill: OFF }, svg); tr(r, 'fill .3s'); return r; }); });
     const l1 = txt(svg, 10, 148, `Scan twice: a second full pass, ${FL.money(per * 81 * D.kw.length * 2)} in all`, { size: 10, w: 600 });
-    const l2 = txt(svg, 10, 165, `Profile read for the top listings: about ${Math.round(D.profileCost * 100)} cents`, { size: 10, w: 600 });
-    txt(svg, 10, 188, `Billed per Maps search: $0.002 · Bothell scan #2 cost ${FL.money(D.cost)}`, { size: 9.3, fill: MUTED });
+    const l2 = txt(svg, 10, 165, `Reading the top businesses' profiles: about ${Math.round(D.profileCost * 100)} cents`, { size: 10, w: 600 });
+    txt(svg, 10, 188, `Billed per search: $0.002 · Bothell scan #2 cost ${FL.money(D.cost)}`, { size: 9.3, fill: MUTED });
     return seq([1500, 1900, 2100, 2300, 1700], (s) => {
       rows.forEach((row, k) => row.forEach((r, p) => {
         const on = s === 0 ? k === 0 && p === 0 : s === 1 ? k === 0 : s >= 2;
@@ -839,7 +845,7 @@ a{color:var(--aInk)}
         r.setAttribute('fill', on ? TEAL : OFF);
       }));
       l1.style.opacity = s >= 3 ? 1 : 0; l2.style.opacity = s >= 4 ? 1 : 0;
-      V([`1 Maps search: $${per}`, `81 points: ${FL.money(per * 81)}`, `${D.kw.length} searches, ${81 * D.kw.length} points: ${FL.money(per * 81 * D.kw.length)}`, `Scan twice: ${FL.money(per * 81 * D.kw.length * 2)}`, `Bothell scan #2: ${FL.money(D.cost)}`][s]);
+      V([`1 search: $${per}`, `1 phrase from 81 spots: ${FL.money(per * 81)}`, `${D.kw.length} phrases, ${81 * D.kw.length} searches: ${FL.money(per * 81 * D.kw.length)}`, `Scan twice: ${FL.money(per * 81 * D.kw.length * 2)}`, `Bothell scan #2: ${FL.money(D.cost)}`][s]);
     });
   }
 
@@ -853,39 +859,39 @@ a{color:var(--aInk)}
   };
 
   const SECTIONS = [
-    { title: 'Why 81 points', fig: figPoints, cap: '“dentist in bothell” from three real spots, then all 81.',
-      body: [`A Google Maps search shows different practices depending on where the patient stands. From ${esc(P.t)}'s door, “dentist in bothell” puts it first. One mile west, Crisafulli Dental is first and the practice is 3rd; 1.1 miles south-west, it is 7th.`,
-        'So the scan lays a 9 by 9 grid over the area, a quarter mile between points and 2 miles across, and runs each search from every point: 81 Maps searches per search phrase.'],
+    { title: 'Why 81 spots', fig: figPoints, cap: '“dentist in bothell” from three real spots, then all 81.',
+      body: [`Google Maps shows a different list depending on where the patient stands. From ${esc(P.t)}'s door, “dentist in bothell” puts it 1st. One mile west, Crisafulli Dental is 1st and the practice is 3rd. 1.1 miles south-west, the practice is 7th.`,
+        'So the scan lays a 9 by 9 grid of spots over the area, a quarter mile apart and 2 miles across. It types each search phrase from every spot, the way a patient standing there would. One phrase from one spot is one search, so each phrase is 81 searches.'],
       live: old.ring, liveNote: 'A teal grid fading out from the centre: no scale, no answers, reads as weaker further out.' },
-    { title: 'What one search returns', isNew: true, fig: figReturns, cap: 'The real list from one point, 0.25 mi north of the office.',
-      body: ['Each point is one Google Maps search, run as if the patient were standing on that spot. Google returns up to 20 listings in order, and the scan keeps all of them with their stars and review counts, not only the practice\'s rank.',
-        `That is how the result can say who holds the top 3 at any point. Bothell's scan holds ${81 * D.kw.length} of these lists and ${D.metrics.field_size} different listings.`],
+    { title: 'What one search returns', isNew: true, fig: figReturns, cap: 'The real list from one spot, 0.25 mi north of the office.',
+      body: ['Each search returns Google\'s list for that spot: up to 20 businesses, in order. The scan keeps all of them, with their stars and review counts, not only the practice\'s place.',
+        `That is how the result can say who is in the top 3 at any spot. Bothell's scan holds ${81 * D.kw.length} of these lists, naming ${D.metrics.field_size} different businesses.`],
       live: null, liveNote: 'No such section today.' },
-    { title: 'What the colours mean', fig: figColours, cap: 'One real point on an emergency search, and the tile it becomes.',
-      body: ['Google shows 3 listings under the map before anything else: the map pack. That is where most calls go.',
-        `Green is the top 3. Yellow is 4 to 10: on the list, behind a “More places” click. Red is 11 to 20. Grey is not in the first 20 at all. From 0.25 mi north on “emergency dentist bothell”, ${esc(P.t)} is the 4th listing, so that tile is yellow.`],
-      live: old.colours, liveNote: 'Four tiles lifting in turn: repeats the legend under every map, says nothing about why the top 3 matters.' },
-    { title: 'The two numbers', fig: figNumbers, cap: 'The real “dentist near me” grid, then all five searches.',
-      body: [`The headline counts points: at how many of the 81 the practice is in the top 3. With several searches the counts are averaged: ${D.kw.map((kk) => GS.top3(kk)).join(', ')} make ${D.kw.reduce((a, kk) => a + GS.top3(kk), 0)}, or ${Math.round(D.kw.reduce((a, kk) => a + GS.top3(kk), 0) / D.kw.length)} of 81 on an average search. This is also called share of local voice.`,
-        `Average rank is the second number: the rank at every point, averaged, with not in the top 20 counted as 21. On “dentist near me” it is ${DNM.arp.toFixed(1)}; across all five searches, ${D.metrics.arp.toFixed(1)}. Lower is better.`],
-      live: old.count, liveNote: 'Real grid but unlabelled; the second number and the averaging are never drawn.' },
-    { title: 'Why rankings move, and what scanning twice is for', fig: figTwice, cap: 'Two real passes of the same search, two minutes apart.',
-      body: ['Google\'s results shift from one minute to the next. On Oct 27 Bothell was scanned twice, two minutes apart. On “emergency dentist bothell”, 15 of 81 points crossed the top 3 line between the passes; on “dentist near me” 2 did, on “dentist in bothell” 1.',
-        'Scanning twice runs a second full pass right after the first. A point counts as held when it lands on the same side of the top 3 line both times. It doubles the price, so it is worth it when a rank goes into a client report.'],
-      live: old.twice, liveNote: 'Made-up ranks; outlines 3 cells while the verdict says 2 flipped.' },
-    { title: 'How rivals are found', fig: figRivals, cap: 'The real listings at their real distances from the office.',
-      body: [`One Maps search around the listing finds the dental practices within about a mile. For Bothell it found ${D.snapComp.length}, from Norman Bolosan, DDS in the same building to Bothell Dental Care, 1.1 miles south-west.`,
-        'A dentist\'s own listing (a person, not a practice) is left off, so one practice is never counted twice. Any rival can be switched off, and any listing the scan saw can be added by name. The search misses some: Dr. Jude Brooks Emergency Dentist Bothell, 0.96 miles away and first at 71 of 81 points on emergency searches, was not on the list.'],
+    { title: 'What the colours mean', fig: figColours, cap: 'One real spot on an emergency search, and the square it becomes.',
+      body: ['Google shows 3 businesses under the map before anything else: the top 3. That is where most calls go.',
+        `Green is the top 3. Yellow is 4th to 10th: still on the list, but behind a “More places” click. Red is 11th to 20th. Grey is not in the top 20 at all. From the spot 0.25 mi north, on “emergency dentist bothell”, ${esc(P.t)} is 4th, so that square is yellow.`],
+      live: old.colours, liveNote: 'Four squares lifting in turn: repeats the legend under every map, says nothing about why the top 3 matters.' },
+    { title: 'The two numbers', fig: figNumbers, cap: 'The real “dentist near me” grid, then all five phrases.',
+      body: [`The headline counts searches: in how many of the ${LOOKUPS} the practice is in the top 3. Each phrase adds the spots where it made the top 3: ${D.kw.map((kk) => GS.top3(kk)).join(', ')}. Together that is ${HITS} of ${LOOKUPS} searches.`,
+        `Usual place is the second number: the middle of the practice's places in the searches where it shows up in the top 20, so half the time it is there or higher. Searches where it is not in the top 20 are left out. On “dentist near me” its usual place is ${GS.ord(usualOf([DNM]))}. Across all five phrases it is ${GS.ord(usualOf(D.kw))}.`],
+      live: old.count, liveNote: 'Real grid but unlabelled; the total and the usual place are never drawn.' },
+    { title: 'Why places move, and what scanning twice is for', fig: figTwice, cap: 'Two real passes of the same phrase, two minutes apart.',
+      body: ['Google\'s results shift from one minute to the next. On Oct 27 Bothell was scanned twice, two minutes apart. On “emergency dentist bothell”, 15 of the 81 spots changed sides: in the top 3 on one pass and out on the other. On “dentist near me” 2 spots did, and on “dentist in bothell” 1.',
+        'Scanning twice runs a second full pass right after the first. A spot counts as settled when both passes agree: in the top 3 both times, or out both times. It doubles the price, so it is worth it when a place goes into a client report.'],
+      live: old.twice, liveNote: 'Made-up places; outlines 3 squares while the verdict says 2 changed.' },
+    { title: 'How tracked rivals are picked', fig: figRivals, cap: 'The real practices at their real distances from the office.',
+      body: [`Tracked rivals are the practices the head to head view compares with ${esc(P.t)}. To pick them, the scan runs one Google Maps search around the office and keeps the dental practices within about a mile. For Bothell it kept ${D.snapComp.length}, from Norman Bolosan, DDS in the same building to Bothell Dental Care, 1.1 miles south-west.`,
+        'A listing for one dentist by name, rather than for the practice, is left off, so one practice is never counted twice. Any tracked rival can be switched off, and any business the scan saw can be added by name. The search misses some: Dr. Jude Brooks Emergency Dentist Bothell, 0.96 miles away and 1st from 71 of 81 spots on emergency searches, was not picked.'],
       note: 'Mockup note: scan #2 kept both practitioner listings (practitioners excluded: 0). The filter needs a fix before this sentence is true.',
       live: old.rivals, liveNote: 'Hand-placed squares; the "about a mile" label is nearly clipped.' },
-    { title: 'What it costs', isNew: true, fig: figCost, cap: 'Every Maps search the Bothell scan paid for.',
-      body: [`The scan pays per Maps search: $0.002 each. One search phrase is 81 points, ${FL.money(0.002 * 81)}. Bothell's ${D.kw.length} phrases were ${81 * D.kw.length} searches, ${FL.money(D.cost)}.`,
-        `Scanning twice doubles it to ${FL.money(D.cost * 2)}. The profile read (categories, photos, review replies) for the top listings cost about ${Math.round(D.profileCost * 100)} cents more.`],
+    { title: 'What it costs', isNew: true, fig: figCost, cap: 'Every search the Bothell scan paid for.',
+      body: [`The scan pays $0.002 for each search. One phrase from all 81 spots is ${FL.money(0.002 * 81)}. Bothell's ${D.kw.length} phrases were ${81 * D.kw.length} searches, ${FL.money(D.cost)}.`,
+        `Scanning twice doubles it to ${FL.money(D.cost * 2)}. Reading the top businesses' Google profiles, for their categories, photos and review replies, cost about ${Math.round(D.profileCost * 100)} cents more.`],
       live: null, liveNote: 'No such section today.' },
   ];
 
   /* ---------- page: the result behind, the window open ---------- */
-  document.getElementById('page').innerHTML = `<div style="opacity:.5"><div class="eyebrow">Story</div><h2 class="h-chapter" style="margin-top:10px;max-width:640px">${esc(P.t)} is in the top 3 at 28 of 81 points on an average search.</h2></div><button class="btn btn-soft" id="reopen" style="margin-top:24px">Open How it works</button>`;
+  document.getElementById('page').innerHTML = `<div style="opacity:.5"><div class="eyebrow">Story</div><h2 class="h-chapter" style="margin-top:10px;max-width:640px">Across its 5 search phrases, ${esc(P.t)} is in Google’s top 3 from about ${Math.round(HITS / 5)} of the 81 spots.</h2></div><button class="btn btn-soft" id="reopen" style="margin-top:24px">Open How it works</button>`;
   let stops = [];
   function open() {
     const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win hw" role="dialog" aria-modal="true">
