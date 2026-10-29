@@ -1,0 +1,1033 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Market Trends, V2 Topic by topic</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>.oq-rail{position:fixed;inset:0 auto 0 0;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}
+/* Market Trends Story mockups, round 2. Facelift shared look (AIV experience in OQ teal), trimmed. */
+:root{
+  --ink:#0B1020;--ink2:#0F172A;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;
+  --up:#15803D;--down:#E11D48;--rose:#DB2777;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+a{color:var(--aInk)}
+
+/* mockup bar: outside the design */
+.mockbar{background:#ECEEF1;color:#4B5563;font-size:12px;line-height:1.45;padding:7px 18px;border-bottom:1px solid #DDE1E6}
+.mockbar b{color:#111827;font-weight:700}
+.mockbar .src{color:#6B7280}
+.mockbar ul{margin:3px 0 0;padding:0 0 0 16px}
+.mockbar li{margin:0}
+.mockbar .nr{display:inline-block;margin-top:3px;color:#6B7280}
+
+/* app chrome */
+.fl-app{margin-left:56px;min-height:100vh}
+.mockbar{margin-left:56px}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1240px;margin:0 auto;padding:0 28px 120px}
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 0;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:var(--a);display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-right .who{color:var(--ink);font-weight:700}
+.fl-right .when{color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13.5px;transition:background .2s,box-shadow .2s}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.25)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative;font-size:13.5px}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:var(--a);position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12)}
+
+/* tabs */
+.tabs{position:sticky;top:55px;z-index:20;display:flex;gap:26px;margin:0 -28px 6px;padding:10px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+.tabnote{padding:60px 0;color:var(--muted);font-size:14px}
+
+/* modal (How it works) */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4)}
+.modal .win{position:relative;width:100%;max-width:880px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:rise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:6px;padding:4px 8px}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:8px;background:var(--soft)}
+.figbox svg{display:block;width:100%;height:100%}
+.figbox svg *{transition:opacity .45s, fill .45s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:300;background:var(--ink);color:#fff;border-radius:8px;padding:12px 18px;font-size:14px;box-shadow:0 12px 32px rgba(11,16,32,.25);animation:rise .25s var(--ease)}
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* Story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:44px}
+.chap{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;opacity:.25;transition:opacity .4s}
+.chap.on{opacity:1}
+.chap .k{margin-bottom:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.chap .k .act{color:var(--muted)}
+.chap h2{margin:0;font-size:36px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.chap h2 .g{color:var(--a)}
+.chap h2 .r{color:var(--down)}
+.chap p{margin:14px 0 0;max-width:540px;font-size:17px;line-height:1.6}
+.chap .note{font-size:13.5px;color:var(--muted);margin-top:12px}
+.facts{margin-top:18px;max-width:540px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.facts div{padding:9px 10px 9px 0;border-bottom:1px solid var(--line)}
+.facts b{display:block;font-size:17px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.facts span{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.qlist{margin-top:16px;max-width:540px;border-top:1px solid var(--line)}
+.qlist div{display:grid;grid-template-columns:minmax(0,1fr) 70px 54px;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.qlist div span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.qlist .h span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)!important}
+.stick{position:sticky;top:104px;height:calc(100vh - 112px);display:flex;flex-direction:column;justify-content:center}
+.ro{height:52px;padding:4px 2px 6px;border-bottom:1px solid #EEF0F3;margin-bottom:6px;overflow:hidden}
+.ro .r1{display:flex;justify-content:space-between;align-items:baseline;height:20px;font-size:13px;white-space:nowrap}
+.ro .r1 .m{font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis}
+.ro .r1 .n{color:var(--muted);font-size:12px;margin-left:12px}
+.ro .r2{display:grid;height:22px;align-items:center;gap:10px;font-size:12.5px;white-space:nowrap}
+.ro .r2 .s{display:flex;align-items:center;gap:6px;overflow:hidden;min-width:0}
+.ro .r2 .s b{color:var(--ink2);font-variant-numeric:tabular-nums}
+.ro .r2 .s span{color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.ro .r2 .s svg{flex:none}
+.ro .r2 .txt{grid-column:1/-1;color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.figsvg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.figsvg text{font-family:Inter,sans-serif}
+.figsvg .num{font-variant-numeric:tabular-nums}
+.figcap{margin-top:6px;min-height:36px;font-size:12.5px;line-height:1.45;color:var(--muted);text-align:center}
+.storyend{margin:24px 0 0;padding:28px;border:1px solid var(--line);border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.storyend.in{opacity:1;transform:none}
+.storyend h3{margin:0;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.storyend p{margin:4px 0 0;color:var(--muted);font-size:14px}
+@media (max-width:1180px){.story{grid-template-columns:minmax(0,1fr) 520px;gap:32px}}
+@media (max-width:980px){.story{grid-template-columns:1fr}.stick{position:static;height:auto}.chap{opacity:1;min-height:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item is-active" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
+<script>window.D={"months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"asOf":"2026-09","cost":0.0839,"calls":7,"place":"Washington","practice":"Expedition Pediatric Dentistry","city":"Bellevue, WA","basketMedianYoy":1.0,"phrases":{"tongue tie":{"topic":"Tongue-tie","m":[20.5,18.0,28.5,16.0,26.8,39.5,32.5,35.8,38.8,48.6,30.0,34.0,38.6,27.5,26.2,34.6,44.2,42.5,37.0,60.0,47.5,36.4,40.2,35.2,38.0,42.8,59.2,37.2,44.5,43.8,39.0,35.2,44.4,49.2,35.0,22.4,34.0,37.2,42.8,44.5,32.8,40.4,37.0,23.0,27.0,39.5,33.4,26.2,42.2,43.0,24.0,33.2,31.8,37.2,44.8,48.6,36.5,46.0,30.0,36.5,40.5],"dir":"stable","cur":37.5,"prev":33.0,"yoy":1.14,"rel":1.14,"spike":"none","peakMonth":"2026-05","peak":48.6,"base":37.1,"rise":1.3,"tail":null,"cs":[11915,11865,11765,11815,11513,11211,10960,11262,11010,10658,11061,10306],"csLatest":10306,"nullWeeks":22,"weeks":262,"breadth":15,"contrib":73,"week100":"2023-12-17"},"ankyloglossia":{"topic":"Tongue-tie","m":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,20.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,6.2],"dir":"negligible","cur":0.0,"prev":0.0,"yoy":null,"rel":null,"spike":"spike_confirmed","peakMonth":"2025-11","peak":20.0,"base":0.0,"rise":null,"tail":0.0,"cs":[6033,5681,5228,4826,4575,4273,4323,4072,3921,4122,3770,3670],"csLatest":3670,"nullWeeks":259,"weeks":262,"breadth":3,"contrib":11,"week100":"2025-11-02"},"children's dentist":{"topic":"Preventative Pediatric Dentistry","m":[0.0,0.0,0.0,0.0,17.2,0.0,0.0,13.6,0.0,0.0,54.2,34.8,20.0,0.0,0.0,0.0,0.0,19.0,0.0,0.0,19.0,0.0,0.0,0.0,0.0,0.0,0.0,17.2,0.0,15.6,0.0,19.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,39.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.8],"dir":"negligible","cur":0.0,"prev":0.0,"yoy":null,"rel":null,"spike":"spike_confirmed","peakMonth":"2026-01","peak":39.5,"base":0.0,"rise":null,"tail":0.0,"cs":[201,201,150,150,150,150,150,50,50,50,0,0],"csLatest":0,"nullWeeks":244,"weeks":262,"breadth":13,"contrib":120,"week100":"2022-10-30"},"pediatric dentist":{"topic":"Preventative Pediatric Dentistry","m":[24.5,28.0,8.2,25.4,23.0,26.8,23.8,22.6,24.0,23.6,24.0,22.0,23.6,19.0,17.2,24.8,24.0,28.8,25.6,23.0,20.8,23.0,22.2,16.8,18.2,16.2,20.2,21.8,21.0,23.2,19.8,24.0,18.6,27.8,20.5,18.2,19.2,18.5,18.6,23.5,27.8,22.0,23.8,18.2,32.2,56.8,61.4,41.8,41.8,42.0,41.2,45.0,55.2,51.8,43.5,39.0,45.2,49.8,47.2,51.5,36.8],"dir":"stable","cur":49.5,"prev":53.3,"yoy":0.93,"rel":0.93,"spike":"step_up_held","peakMonth":"2025-08","peak":61.4,"base":20.15,"rise":3.0,"tail":0.8,"cs":[10005,9804,10005,9653,9804,10156,10508,9753,9502,8949,8396,7893],"csLatest":7893,"nullWeeks":8,"weeks":262,"breadth":64,"contrib":209,"week100":"2025-08-10"},"pediatric dentistry":{"topic":"Pediatric Dentistry","m":[61.5,45.2,43.2,61.4,68.5,68.8,58.5,61.4,68.0,65.2,73.2,68.5,70.2,60.2,52.8,71.6,72.8,70.8,68.4,65.8,69.8,70.6,83.0,69.5,70.0,62.5,55.0,73.0,70.2,68.8,73.2,58.8,61.0,68.0,74.8,67.4,60.2,49.2,47.6,67.2,70.0,67.8,62.0,69.0,67.6,83.5,82.4,73.0,71.0,62.2,54.0,74.2,79.5,72.4,73.8,80.4,71.0,71.0,75.2,56.5,67.2],"dir":"stable","cur":67.6,"prev":79.6,"yoy":0.85,"rel":0.85,"spike":"none","peakMonth":"2025-07","peak":83.5,"base":67.7,"rise":1.2,"tail":null,"cs":[3418,3167,3268,3217,3418,3217,3318,3318,3117,2865,2614,2564],"csLatest":2564,"nullWeeks":0,"weeks":262,"breadth":42,"contrib":161,"week100":"2025-07-06"}},"topics":[{"topic":"Tongue-tie","terms":["tongue tie","ankyloglossia"],"weights":{"tongue tie":0.7374069834001145,"ankyloglossia":0.26259301659988554},"spike":"spike_confirmed","dir":"stable","driving":"tongue tie","combined":[15,13,21,12,20,29,24,26,29,36,22,25,28,20,19,26,33,31,27,44,35,27,30,26,28,32,44,27,33,32,29,26,33,36,26,17,25,27,32,33,24,30,27,17,20,29,25,19,31,37,18,24,23,27,33,36,27,34,22,27,31],"rating":2},{"topic":"Preventative Pediatric Dentistry","terms":["children's dentist","pediatric dentist"],"weights":{"children's dentist":0.0,"pediatric dentist":1.0},"spike":"step_up_held","dir":"stable","driving":"pediatric dentist","combined":[25,28,8.2,25,23,27,24,23,24,24,24,22,24,19,17,25,24,29,26,23,21,23,22,17,18,16,20,22,21,23,20,24,19,28,21,18,19,19,19,24,28,22,24,18,32,57,61,42,42,42,41,45,55,52,44,39,45,50,47,52,37],"rating":2},{"topic":"Pediatric Dentistry","terms":["pediatric dentistry"],"weights":{"pediatric dentistry":1.0},"spike":"none","dir":"stable","driving":"pediatric dentistry","combined":[62,45,43,61,69,69,59,61,68,65,73,69,70,60,53,72,73,71,68,66,70,71,83,70,70,63,55,73,70,69,73,59,61,68,75,67,60,49,48,67,70,68,62,69,68,84,82,73,71,62,54,74,80,72,74,80,71,71,75,57,67],"rating":2}],"basketMedian":[22.0,25.8,24.0,26.0,25.2,26.8,25.5,23.8,26.0,24.6,25.0,24.2,23.4,25.0,24.2,29.0,25.0,29.2,26.8,27.2,25.8,27.0,27.2,22.8,23.2,24.0,25.2,25.0,27.0,28.6,24.0,25.8,24.6,27.5,28.8,24.4,24.2,27.8,27.2,28.8,30.0,31.0,30.5,31.0,32.4,38.0,40.4,32.8,32.5,34.4,36.2,37.5,39.2,44.0,43.8,42.0,47.2,43.0,39.0,37.5,36.0],"basketYoy":{"teeth whitening":0.91,"invisalign":1.0,"veneers":0.76,"root canal":1.06,"wisdom teeth removal":1.35},"basketMed2024":26.2,"basketMed2026":41.5,"us16":{"months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"tongueTie":[39.0,40.5,34.8,39.6,43.2,43.8,44.5,42.8,44.2,49.2,47.5,46.0,47.2,44.0,39.2,52.2,52.2,54.0,50.4,66.8,64.0,49.6,49.8,48.8,58.6,51.2,69.0,51.2,50.2,48.0,46.5,47.8,50.8,52.8,43.8,42.6,45.2,43.5,47.8,53.5,52.5,51.0,50.2,47.2,53.2,63.0,54.6,49.5,55.2,53.8,43.0,50.8,48.8,51.8,55.0,55.2,55.2,56.0,48.8,46.5,46.0],"cur":50.4,"prev":55.7,"yoy":0.91,"rel":0.93,"basket":0.98,"created":"2026-10-24"},"corpus":{"tongue tie":{"own":[{"month":"2025-09","impressions":93,"clicks":0,"weeks":2},{"month":"2025-10","impressions":226,"clicks":1,"weeks":4},{"month":"2025-11","impressions":283,"clicks":0,"weeks":4},{"month":"2025-12","impressions":532,"clicks":0,"weeks":5},{"month":"2026-01","impressions":480,"clicks":0,"weeks":4},{"month":"2026-02","impressions":427,"clicks":1,"weeks":4},{"month":"2026-03","impressions":470,"clicks":0,"weeks":5},{"month":"2026-04","impressions":471,"clicks":0,"weeks":4},{"month":"2026-05","impressions":287,"clicks":0,"weeks":4},{"month":"2026-06","impressions":1177,"clicks":0,"weeks":5},{"month":"2026-07","impressions":1204,"clicks":1,"weeks":4},{"month":"2026-08","impressions":1412,"clicks":0,"weeks":5},{"month":"2026-09","impressions":183,"clicks":0,"weeks":1},{"month":"2026-10","impressions":431,"clicks":0,"weeks":2}],"all":[{"month":"2025-09","impressions":2210,"clicks":6,"practices":19,"weeks":2},{"month":"2025-10","impressions":5214,"clicks":9,"practices":30,"weeks":4},{"month":"2025-11","impressions":5849,"clicks":7,"practices":30,"weeks":4},{"month":"2025-12","impressions":8800,"clicks":7,"practices":29,"weeks":5},{"month":"2026-01","impressions":8296,"clicks":8,"practices":36,"weeks":4},{"month":"2026-02","impressions":8078,"clicks":11,"practices":35,"weeks":4},{"month":"2026-03","impressions":9406,"clicks":8,"practices":38,"weeks":5},{"month":"2026-04","impressions":8176,"clicks":14,"practices":34,"weeks":4},{"month":"2026-05","impressions":9172,"clicks":13,"practices":31,"weeks":4},{"month":"2026-06","impressions":16523,"clicks":12,"practices":39,"weeks":5},{"month":"2026-07","impressions":12699,"clicks":11,"practices":43,"weeks":4},{"month":"2026-08","impressions":10076,"clicks":8,"practices":43,"weeks":5},{"month":"2026-09","impressions":5530,"clicks":8,"practices":44,"weeks":4},{"month":"2026-10","impressions":2185,"clicks":3,"practices":30,"weeks":2}],"top":[{"query":"tongue tie dentist","impressions":687,"clicks":0},{"query":"laser tongue tie near me","impressions":649,"clicks":0},{"query":"tongue tie dentist near me","impressions":393,"clicks":0},{"query":"tongue tie release kirkland, wa","impressions":353,"clicks":0},{"query":"tongue tie treatment bellevue","impressions":333,"clicks":0},{"query":"lip and tongue tie release bellevue","impressions":272,"clicks":0},{"query":"infant tongue tie specialist bellevue","impressions":267,"clicks":0},{"query":"tongue tie release bellevue","impressions":257,"clicks":0}]},"pediatric dentist":{"own":[{"month":"2025-09","impressions":1682,"clicks":16,"weeks":2},{"month":"2025-10","impressions":3380,"clicks":49,"weeks":4},{"month":"2025-11","impressions":3412,"clicks":30,"weeks":4},{"month":"2025-12","impressions":5121,"clicks":28,"weeks":5},{"month":"2026-01","impressions":4027,"clicks":35,"weeks":4},{"month":"2026-02","impressions":3080,"clicks":32,"weeks":4},{"month":"2026-03","impressions":2894,"clicks":56,"weeks":5},{"month":"2026-04","impressions":3363,"clicks":38,"weeks":4},{"month":"2026-05","impressions":2834,"clicks":31,"weeks":4},{"month":"2026-06","impressions":2882,"clicks":38,"weeks":5},{"month":"2026-07","impressions":2430,"clicks":31,"weeks":4},{"month":"2026-08","impressions":2783,"clicks":52,"weeks":5},{"month":"2026-09","impressions":501,"clicks":4,"weeks":1},{"month":"2026-10","impressions":854,"clicks":15,"weeks":2}],"all":[{"month":"2025-09","impressions":45048,"clicks":641,"practices":99,"weeks":2},{"month":"2025-10","impressions":97436,"clicks":1284,"practices":113,"weeks":4},{"month":"2025-11","impressions":105348,"clicks":1283,"practices":116,"weeks":4},{"month":"2025-12","impressions":143069,"clicks":1211,"practices":126,"weeks":5},{"month":"2026-01","impressions":151387,"clicks":1499,"practices":128,"weeks":4},{"month":"2026-02","impressions":149867,"clicks":1495,"practices":140,"weeks":4},{"month":"2026-03","impressions":174382,"clicks":1648,"practices":152,"weeks":5},{"month":"2026-04","impressions":105214,"clicks":1286,"practices":138,"weeks":4},{"month":"2026-05","impressions":106655,"clicks":1352,"practices":144,"weeks":4},{"month":"2026-06","impressions":156626,"clicks":1754,"practices":152,"weeks":5},{"month":"2026-07","impressions":126769,"clicks":1669,"practices":159,"weeks":4},{"month":"2026-08","impressions":164486,"clicks":2576,"practices":166,"weeks":5},{"month":"2026-09","impressions":89916,"clicks":1462,"practices":157,"weeks":4},{"month":"2026-10","impressions":38679,"clicks":793,"practices":132,"weeks":2}],"top":[{"query":"expedition pediatric dentistry","impressions":3480,"clicks":397},{"query":"bellevue pediatric dentistry","impressions":2849,"clicks":9},{"query":"pediatric dentistry benefits","impressions":2616,"clicks":0},{"query":"emergency pediatric dentist near me","impressions":2058,"clicks":0},{"query":"pediatric dentist bellevue","impressions":1917,"clicks":15},{"query":"pediatric dentist near me","impressions":1642,"clicks":5},{"query":"pediatric dentist","impressions":1554,"clicks":4},{"query":"benefits of pediatric dentistry","impressions":1212,"clicks":0}]},"pediatric dentistry":{"own":[{"month":"2025-09","impressions":734,"clicks":15,"weeks":2},{"month":"2025-10","impressions":1432,"clicks":46,"weeks":4},{"month":"2025-11","impressions":1530,"clicks":27,"weeks":4},{"month":"2025-12","impressions":2073,"clicks":24,"weeks":5},{"month":"2026-01","impressions":1593,"clicks":31,"weeks":4},{"month":"2026-02","impressions":1466,"clicks":29,"weeks":4},{"month":"2026-03","impressions":1497,"clicks":53,"weeks":5},{"month":"2026-04","impressions":1715,"clicks":35,"weeks":4},{"month":"2026-05","impressions":1497,"clicks":28,"weeks":4},{"month":"2026-06","impressions":1215,"clicks":33,"weeks":5},{"month":"2026-07","impressions":1001,"clicks":30,"weeks":4},{"month":"2026-08","impressions":1146,"clicks":45,"weeks":5},{"month":"2026-09","impressions":179,"clicks":4,"weeks":1},{"month":"2026-10","impressions":380,"clicks":15,"weeks":2}],"all":[{"month":"2025-09","impressions":14736,"clicks":528,"practices":70,"weeks":2},{"month":"2025-10","impressions":29008,"clicks":1041,"practices":79,"weeks":4},{"month":"2025-11","impressions":30719,"clicks":1014,"practices":82,"weeks":4},{"month":"2025-12","impressions":38392,"clicks":957,"practices":89,"weeks":5},{"month":"2026-01","impressions":40464,"clicks":1150,"practices":93,"weeks":4},{"month":"2026-02","impressions":38039,"clicks":1144,"practices":103,"weeks":4},{"month":"2026-03","impressions":50814,"clicks":1255,"practices":104,"weeks":5},{"month":"2026-04","impressions":27598,"clicks":951,"practices":94,"weeks":4},{"month":"2026-05","impressions":26791,"clicks":1067,"practices":97,"weeks":4},{"month":"2026-06","impressions":37076,"clicks":1332,"practices":102,"weeks":5},{"month":"2026-07","impressions":31264,"clicks":1293,"practices":114,"weeks":4},{"month":"2026-08","impressions":46679,"clicks":2109,"practices":108,"weeks":5},{"month":"2026-09","impressions":24582,"clicks":1178,"practices":100,"weeks":4},{"month":"2026-10","impressions":12150,"clicks":634,"practices":79,"weeks":2}],"top":[{"query":"expedition pediatric dentistry","impressions":3480,"clicks":397},{"query":"bellevue pediatric dentistry","impressions":2849,"clicks":9},{"query":"pediatric dentistry benefits","impressions":2616,"clicks":0},{"query":"benefits of pediatric dentistry","impressions":1212,"clicks":0},{"query":"pediatric dentistry","impressions":759,"clicks":2},{"query":"pediatric dentistry milestones","impressions":463,"clicks":0},{"query":"expedition pediatric dentistry and orthodontics","impressions":454,"clicks":2},{"query":"preventive pediatric dentistry","impressions":425,"clicks":0}]}},"ownAll":[{"month":"2025-09","impressions":11705,"clicks":31},{"month":"2025-10","impressions":35400,"clicks":84},{"month":"2025-11","impressions":42884,"clicks":88},{"month":"2025-12","impressions":49573,"clicks":93},{"month":"2026-01","impressions":57614,"clicks":162},{"month":"2026-02","impressions":58570,"clicks":180},{"month":"2026-03","impressions":80041,"clicks":305},{"month":"2026-04","impressions":65497,"clicks":311},{"month":"2026-05","impressions":60351,"clicks":284},{"month":"2026-06","impressions":73612,"clicks":293},{"month":"2026-07","impressions":69276,"clicks":262},{"month":"2026-08","impressions":74227,"clicks":256},{"month":"2026-09","impressions":12947,"clicks":35},{"month":"2026-10","impressions":26170,"clicks":69}],"pdyWeekly":[["2021-10-24",74],["2021-10-31",49],["2021-11-07",61],["2021-11-14",47],["2021-11-21",19],["2021-11-28",54],["2021-12-05",50],["2021-12-12",64],["2021-12-19",26],["2021-12-26",33],["2022-01-02",74],["2022-01-09",50],["2022-01-16",80],["2022-01-23",45],["2022-01-30",58],["2022-02-06",61],["2022-02-13",65],["2022-02-20",65],["2022-02-27",83],["2022-03-06",77],["2022-03-13",72],["2022-03-20",53],["2022-03-27",73],["2022-04-03",66],["2022-04-10",66],["2022-04-17",44],["2022-04-24",58],["2022-05-01",68],["2022-05-08",72],["2022-05-15",63],["2022-05-22",67],["2022-05-29",37],["2022-06-05",77],["2022-06-12",48],["2022-06-19",79],["2022-06-26",68],["2022-07-03",55],["2022-07-10",73],["2022-07-17",63],["2022-07-24",66],["2022-07-31",69],["2022-08-07",64],["2022-08-14",73],["2022-08-21",84],["2022-08-28",72],["2022-09-04",79],["2022-09-11",82],["2022-09-18",68],["2022-09-25",45],["2022-10-02",61],["2022-10-09",73],["2022-10-16",70],["2022-10-23",73],["2022-10-30",74],["2022-11-06",60],["2022-11-13",79],["2022-11-20",34],["2022-11-27",68],["2022-12-04",66],["2022-12-11",60],["2022-12-18",50],["2022-12-25",35],["2023-01-01",77],["2023-01-08",67],["2023-01-15",78],["2023-01-22",70],["2023-01-29",66],["2023-02-05",74],["2023-02-12",77],["2023-02-19",61],["2023-02-26",79],["2023-03-05",73],["2023-03-12",76],["2023-03-19",65],["2023-03-26",69],["2023-04-02",54],["2023-04-09",71],["2023-04-16",78],["2023-04-23",64],["2023-04-30",75],["2023-05-07",75],["2023-05-14",63],["2023-05-21",61],["2023-05-28",64],["2023-06-04",67],["2023-06-11",62],["2023-06-18",65],["2023-06-25",85],["2023-07-02",60],["2023-07-09",60],["2023-07-16",78],["2023-07-23",64],["2023-07-30",91],["2023-08-06",89],["2023-08-13",82],["2023-08-20",82],["2023-08-27",79],["2023-09-03",68],["2023-09-10",86],["2023-09-17",59],["2023-09-24",65],["2023-10-01",80],["2023-10-08",71],["2023-10-15",70],["2023-10-22",67],["2023-10-29",62],["2023-11-05",69],["2023-11-12",78],["2023-11-19",34],["2023-11-26",69],["2023-12-03",64],["2023-12-10",62],["2023-12-17",53],["2023-12-24",33],["2023-12-31",63],["2024-01-07",78],["2024-01-14",59],["2024-01-21",72],["2024-01-28",83],["2024-02-04",73],["2024-02-11",58],["2024-02-18",72],["2024-02-25",78],["2024-03-03",60],["2024-03-10",87],["2024-03-17",74],["2024-03-24",68],["2024-03-31",55],["2024-04-07",87],["2024-04-14",69],["2024-04-21",73],["2024-04-28",64],["2024-05-05",70],["2024-05-12",56],["2024-05-19",66],["2024-05-26",43],["2024-06-02",70],["2024-06-09",65],["2024-06-16",52],["2024-06-23",81],["2024-06-30",37],["2024-07-07",62],["2024-07-14",65],["2024-07-21",65],["2024-07-28",80],["2024-08-04",68],["2024-08-11",74],["2024-08-18",64],["2024-08-25",93],["2024-09-01",91],["2024-09-08",81],["2024-09-15",53],["2024-09-22",53],["2024-09-29",59],["2024-10-06",58],["2024-10-13",51],["2024-10-20",65],["2024-10-27",67],["2024-11-03",55],["2024-11-10",54],["2024-11-17",48],["2024-11-24",40],["2024-12-01",50],["2024-12-08",54],["2024-12-15",57],["2024-12-22",31],["2024-12-29",46],["2025-01-05",64],["2025-01-12",72],["2025-01-19",72],["2025-01-26",61],["2025-02-02",71],["2025-02-09",54],["2025-02-16",65],["2025-02-23",90],["2025-03-02",75],["2025-03-09",59],["2025-03-16",65],["2025-03-23",66],["2025-03-30",74],["2025-04-06",67],["2025-04-13",47],["2025-04-20",68],["2025-04-27",66],["2025-05-04",79],["2025-05-11",67],["2025-05-18",60],["2025-05-25",70],["2025-06-01",84],["2025-06-08",49],["2025-06-15",68],["2025-06-22",72],["2025-06-29",65],["2025-07-06",100],["2025-07-13",92],["2025-07-20",76],["2025-07-27",66],["2025-08-03",74],["2025-08-10",97],["2025-08-17",88],["2025-08-24",86],["2025-08-31",67],["2025-09-07",71],["2025-09-14",78],["2025-09-21",62],["2025-09-28",81],["2025-10-05",87],["2025-10-12",68],["2025-10-19",73],["2025-10-26",56],["2025-11-02",64],["2025-11-09",71],["2025-11-16",57],["2025-11-23",38],["2025-11-30",81],["2025-12-07",56],["2025-12-14",77],["2025-12-21",44],["2025-12-28",39],["2026-01-04",79],["2026-01-11",62],["2026-01-18",67],["2026-01-25",89],["2026-02-01",77],["2026-02-08",84],["2026-02-15",77],["2026-02-22",80],["2026-03-01",64],["2026-03-08",66],["2026-03-15",91],["2026-03-22",73],["2026-03-29",68],["2026-04-05",60],["2026-04-12",74],["2026-04-19",68],["2026-04-26",93],["2026-05-03",91],["2026-05-10",88],["2026-05-17",66],["2026-05-24",74],["2026-05-31",83],["2026-06-07",87],["2026-06-14",68],["2026-06-21",78],["2026-06-28",51],["2026-07-05",79],["2026-07-12",80],["2026-07-19",74],["2026-07-26",51],["2026-08-02",83],["2026-08-09",78],["2026-08-16",68],["2026-08-23",71],["2026-08-30",76],["2026-09-06",48],["2026-09-13",61],["2026-09-20",55],["2026-09-27",62],["2026-10-04",56],["2026-10-11",61],["2026-10-18",68],["2026-10-25",84]],"ttWeeklyNulls":22,"ttRead":"0111001100001010111111111111111111111111101111111111111101111011110111111111110111111111111111111111111101111111111111111111111111111111111111111111101111111111111111111111111111111111110111101111110111110111111111111101111111111111111111111111111110111111111111","ankRead":"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000011"};</script>
+<script>/* Shared pieces for the round 2 Story mockups: frame, tabs, hovers, How it works window,
+   and a small tween engine for ONE persistent SVG (marks keyed by id, never unmounted). */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.$ = (s, r = document) => r.querySelector(s);
+  FL.$$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+  FL.round = (n, to) => Math.round(n / to) * to;
+  FL.toast = (msg) => { const t = FL.h(`<div class="toast">${FL.esc(msg)}</div>`); document.body.appendChild(t); setTimeout(() => t.remove(), 2600); };
+
+  /* ---------- frame ---------- */
+  FL.shell = function ({ mock }) {
+    const page = document.getElementById('page');
+    const bar = FL.h(`<div class="mockbar">${mock}</div>`);
+    const app = FL.h(`<div class="fl-app">
+
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>Market Trends</div>
+          <div class="fl-right"><span id="method-slot"></span><span class="who">Expedition Pediatric Dentistry</span><span class="when">Check #22 · Oct 29, 2026 · read for Washington</span>
+          <button class="btn btn-line" id="share">Share report</button><button class="btn btn-line" id="newc">New check</button></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(bar, page);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = '<button type="button" class="method-btn"><span class="dot"></span>How it works</button>';
+    FL.$('#share').onclick = () => FL.toast('Opens the client report: link, access code, PDF and email.');
+    FL.$('#newc').onclick = () => FL.toast('Starts a new check (not part of this mockup).');
+  };
+
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.innerHTML = tabs.map((t) => `<button type="button" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+  };
+
+  /* branded hover for words in the text (never over the chart) */
+  let tipEl = null; let tipFor = null; let tipT = null;
+  const hideTip = () => { clearTimeout(tipT); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return; hideTip(); if (!t) return; tipFor = t;
+    tipT = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      tipEl.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 288))}px`;
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+    }, 120);
+  });
+  addEventListener('scroll', hideTip, true);
+
+  /* How it works: teaser on hover, window on click, a looping real-data picture per section */
+  FL.method = function ({ teaser, title, sections }) {
+    const btn = FL.$('.method-btn'); let tip = null;
+    btn.addEventListener('mouseenter', () => { if (!tip) { tip = FL.h(`<span class="teaser">${FL.esc(teaser)}</span>`); btn.appendChild(tip); } });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px">
+          <div><div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)">Market Trends</div><h2 style="margin:2px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption)}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => s.figure(m.querySelector(`[data-fig="${i}"]`)));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close; m.querySelector('.x').onclick = close;
+    });
+  };
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0; fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* ---------- easing + tween engine ---------- */
+  function bez(p1x, p1y, p2x, p2y) {
+    const cx = 3 * p1x; const bx = 3 * (p2x - p1x) - cx; const ax = 1 - cx - bx;
+    const cy = 3 * p1y; const by = 3 * (p2y - p1y) - cy; const ay = 1 - cy - by;
+    const sx = (t) => ((ax * t + bx) * t + cx) * t; const sy = (t) => ((ay * t + by) * t + cy) * t; const ds = (t) => (3 * ax * t + 2 * bx) * t + cx;
+    return (x) => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const e = sx(t) - x; const d = ds(t); if (Math.abs(e) < 1e-5 || Math.abs(d) < 1e-6) break; t -= e / d; } return sy(t); };
+  }
+  FL.EASE = bez(0.2, 0.8, 0.2, 1);
+  const NS = 'http://www.w3.org/2000/svg';
+  FL.NS = NS;
+  const NUM = ['x', 'y', 'width', 'height', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'tx', 'ty', 's', 'sx'];
+  const STY = { o: 'opacity', stroke: 'stroke', fill: 'fill', sw: 'stroke-width', dash: 'stroke-dasharray', fo: 'fill-opacity' };
+  const ptsD = (p) => p.map((q, i) => `${i ? 'L' : 'M'}${q[0].toFixed(1)},${q[1].toFixed(1)}`).join('');
+
+  FL.Fig = class {
+    constructor(svg) { this.svg = svg; this.m = new Map(); this.tw = []; this.raf = null; this.lab = null; this.labHtml = null; this.labT = null; }
+    layer(name) { const g = document.createElementNS(NS, 'g'); g.setAttribute('data-layer', name); this.svg.appendChild(g); return g; }
+    /* create a mark once; init = {tag, layer, attrs (static), ...targets} */
+    mk(id, tag, layer, attrs = {}, init = {}) {
+      if (this.m.has(id)) return this.m.get(id);
+      const el = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      el.style.transition = 'opacity .5s, stroke .5s, fill .5s, stroke-width .5s';
+      layer.appendChild(el);
+      const mk = { id, el, tag, cur: {} };
+      this.m.set(id, mk);
+      this.apply(mk, init, true);
+      return mk;
+    }
+    write(mk) {
+      const c = mk.cur; const el = mk.el;
+      if (c.pts) el.setAttribute('d', ptsD(c.pts));
+      if ('tx' in c || 's' in c) el.setAttribute('transform', `translate(${(c.tx || 0).toFixed(2)},${(c.ty || 0).toFixed(2)}) scale(${(c.s ?? 1).toFixed(4)},${(c.sx ?? c.s ?? 1).toFixed(4)})`);
+      NUM.forEach((k) => { if (k in c && !['tx', 'ty', 's', 'sx'].includes(k)) el.setAttribute(k, c[k].toFixed(2)); });
+    }
+    /* move a mark to a target. Position over dur (0.9s), style by CSS (0.5s). */
+    apply(mk, t, instant = false, { dur = 900, delay = 0 } = {}) {
+      const el = mk.el;
+      if (t.attr) Object.entries(t.attr).forEach(([k, v]) => (v == null ? el.removeAttribute(k) : el.setAttribute(k, v)));
+      Object.entries(STY).forEach(([k, css]) => {
+        if (!(k in t)) return;
+        el.style.transitionDelay = instant || FL.reduce ? '0s' : `${delay}ms`;
+        if (instant) { const tr = el.style.transition; el.style.transition = 'none'; el.style.setProperty(css, t[k]); el.getBoundingClientRect(); el.style.transition = tr; } else el.style.setProperty(css, t[k]);
+      });
+      const tgt = {};
+      if (t.pts) tgt.pts = t.pts.map((p) => [p[0], p[1]]);
+      NUM.forEach((k) => { if (k in t) tgt[k] = t[k]; });
+      if (!Object.keys(tgt).length) return;
+      this.tw = this.tw.filter((w) => w.mk !== mk);
+      if (instant || FL.reduce || dur === 0) { Object.assign(mk.cur, tgt); this.write(mk); return; }
+      const from = {};
+      Object.keys(tgt).forEach((k) => {
+        if (k === 'pts') { const cp = mk.cur.pts || tgt.pts; from.pts = tgt.pts.map((_, i) => (cp[Math.min(i, cp.length - 1)] || tgt.pts[i]).slice()); } else from[k] = k in mk.cur ? mk.cur[k] : tgt[k];
+      });
+      this.tw.push({ mk, from, to: tgt, t0: performance.now() + delay, dur });
+      if (!this.raf) this.raf = requestAnimationFrame((n) => this.tick(n));
+    }
+    set(id, t, o) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, false, o); }
+    pre(id, t) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, true); }
+    tick(now) {
+      this.tw = this.tw.filter((w) => {
+        const p = Math.min(1, Math.max(0, (now - w.t0) / w.dur)); const e = FL.EASE(p); const c = w.mk.cur;
+        Object.keys(w.to).forEach((k) => {
+          if (k === 'pts') c.pts = w.to.pts.map((q, i) => [w.from.pts[i][0] + (q[0] - w.from.pts[i][0]) * e, w.from.pts[i][1] + (q[1] - w.from.pts[i][1]) * e]);
+          else c[k] = w.from[k] + (w.to[k] - w.from[k]) * e;
+        });
+        if (now >= w.t0) this.write(w.mk);
+        return p < 1;
+      });
+      this.raf = this.tw.length ? requestAnimationFrame((n) => this.tick(n)) : null;
+    }
+    stop() { this.tw = []; }
+    /* draw a path in from its start (a new mark arriving); keeps its points */
+    drawIn(id, { dur = 900, delay = 0 } = {}) {
+      const el = this.m.get(id).el; if (FL.reduce) return;
+      const len = el.getTotalLength(); const keep = el.getAttribute('stroke-dasharray');
+      el.style.strokeDasharray = `${len} ${len}`; el.style.strokeDashoffset = `${len}`; el.getBoundingClientRect();
+      const tr = el.style.transition; el.style.transition = `${tr}, stroke-dashoffset ${dur}ms cubic-bezier(.2,.8,.2,1) ${delay}ms`;
+      el.style.strokeDashoffset = '0';
+      setTimeout(() => { el.style.transition = tr; el.style.strokeDasharray = keep || ''; el.style.strokeDashoffset = ''; }, dur + delay + 30);
+    }
+    /* label layer: old labels out (0.35s), new labels in (0.35s), then count-ups */
+    labels(html, host) {
+      const g = host; if (this.labHtml === html) return; this.labHtml = html;
+      clearTimeout(this.labT);
+      g.style.transition = 'opacity .35s'; g.style.opacity = 0;
+      this.labT = setTimeout(() => {
+        g.innerHTML = html; g.getBoundingClientRect(); g.style.opacity = 1;
+        g.querySelectorAll('[data-count]').forEach((t) => FL.countTo(t, +t.dataset.count, { from: +(t.dataset.from || 0), ms: 900, fmt: (t.dataset.fmt === 'x' ? (v) => `${v.toFixed(1)} times` : (v) => FL.fmt(Math.round(v))) }));
+      }, FL.reduce ? 0 : 350);
+    }
+  };
+  FL.countTo = function (el, to, { from = 0, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (n) => { const p = Math.min(1, (n - t0) / ms); el.textContent = fmt(from + (to - from) * FL.EASE(p)); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+
+  /* ---------- the readout bar above the figure (fixed 52px, fixed slots) ---------- */
+  FL.key = (k = {}) => `<svg width="16" height="8" viewBox="0 0 16 8"><line x1="1" y1="4" x2="15" y2="4" stroke="${k.c || '#0F766E'}" stroke-width="${Math.min(2.6, k.w || 2)}" ${k.dash ? `stroke-dasharray="${k.dash}"` : ''} stroke-linecap="round"/></svg>`;
+  FL.dotKey = (c, hollow) => `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.6" fill="${hollow ? '#fff' : c}" stroke="${c}" stroke-width="1.4"/></svg>`;
+  FL.readout = function (host) {
+    host.innerHTML = '<div class="r1"><span class="m"></span><span class="n"></span></div><div class="r2"></div>';
+    const m = host.querySelector('.m'); const n = host.querySelector('.n'); const r2 = host.querySelector('.r2');
+    return {
+      set({ title = '', note = '', slots = null, text = null, cols = null }) {
+        m.textContent = title; n.textContent = note;
+        if (text != null) { r2.style.gridTemplateColumns = '1fr'; r2.innerHTML = `<span class="txt">${text}</span>`; return; }
+        const s = slots || [];
+        r2.style.gridTemplateColumns = `repeat(${cols || Math.max(1, s.length)}, minmax(0,1fr))`;
+        r2.innerHTML = s.map((x) => `<span class="s">${x.key || ''}<b>${FL.esc(x.v)}</b><span>${FL.esc(x.name)}</span></span>`).join('');
+      },
+    };
+  };
+})();
+</script>
+<script>/* Story runner: text chapters on the left, ONE persistent SVG on the right.
+   A chapter becomes active in a 10% band at mid-viewport (IntersectionObserver, -45%/-45%).
+   Each chapter returns targets for EVERY mark (base + its own changes); marks glide, never remount. */
+(function () {
+  const esc = FL.esc;
+  FL.story = function (host, cfg) {
+    const { chapters, end } = cfg;
+    host.innerHTML = `<div class="story"><div class="chs">${chapters.map((c, i) => `<section class="chap ${i === 0 ? 'on' : ''}" data-i="${i}">
+        <div class="k">${esc(String(i + 1).padStart(2, '0'))} · ${c.kick}</div>
+        <h2>${c.head}</h2>${(c.body || []).map((b) => `<p>${b}</p>`).join('')}
+        ${c.facts ? `<div class="facts">${c.facts.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}
+        ${c.extra || ''}${c.note ? `<p class="note">${c.note}</p>` : ''}</section>`).join('')}
+        <div class="storyend" id="storyend">${end}</div></div>
+      <div><div class="stick"><div class="ro" id="ro" aria-live="polite"></div>
+        <svg class="figsvg" id="fig" viewBox="0 0 640 440" role="img" aria-label=""></svg>
+        <div class="figcap" id="figcap"></div></div></div></div>`;
+    const svg = FL.$('#fig'); const fig = new FL.Fig(svg);
+    svg.insertAdjacentHTML('beforeend', `<defs>${cfg.defs || ''}</defs>`);
+    const L = {};
+    ['bg', 'grid', 'lines', 'marks', 'top', 'lab', 'hov'].forEach((n) => { L[n] = fig.layer(n); });
+    if (cfg.clip) L.lines.setAttribute('clip-path', `url(#${cfg.clip})`);
+    cfg.init(fig, L);
+    const ro = FL.readout(FL.$('#ro'));
+    let cur = -1; let timers = [];
+    const later = (ms, fn) => { timers.push(setTimeout(fn, FL.reduce ? 0 : ms)); };
+
+    const go = (i, first = false) => {
+      if (i === cur) return; const prev = cur; cur = i;
+      timers.forEach(clearTimeout); timers = [];
+      const ch = chapters[i];
+      const S = new Map(); cfg.base(S); ch.build(S, { prev: prev >= 0 ? chapters[prev].key : null, first });
+      S.forEach((v, id) => { if (v.pre) fig.pre(id, v.pre); });
+      S.forEach((v, id) => { fig.set(id, v.t, { dur: v.dur ?? 900, delay: v.delay ?? 0 }); });
+      const lab = typeof ch.labels === 'function' ? ch.labels({ first }) : ch.labels;
+      if (ch.labelsAt && !FL.reduce && !first) { fig.labels(ch.labelsPre ? ch.labelsPre() : '', L.lab); later(ch.labelsAt, () => fig.labels(lab, L.lab)); } else fig.labels(lab, L.lab);
+      if (ch.enter) ch.enter(fig, later, { first, prev: prev >= 0 ? chapters[prev].key : null, L });
+      FL.$('#figcap').textContent = ch.cap || '';
+      svg.setAttribute('aria-label', ch.cap || '');
+      idle(); clearHover();
+    };
+    const idle = () => { const c = chapters[cur]; ro.set(typeof c.idle === 'function' ? c.idle() : c.idle || { title: '', text: '' }); };
+
+    /* hover: the plot of line chapters reads into the bar; marks with data-ro-t read their own sentence */
+    const hit = document.createElementNS(FL.NS, 'rect');
+    Object.entries(cfg.hit).forEach(([k, v]) => hit.setAttribute(k, v));
+    hit.setAttribute('fill', 'transparent'); L.hov.appendChild(hit);
+    const guide = document.createElementNS(FL.NS, 'g'); L.hov.appendChild(guide);
+    const clearHover = () => { guide.innerHTML = ''; hit.style.pointerEvents = chapters[cur].hv ? 'all' : 'none'; };
+    hit.addEventListener('pointermove', (e) => {
+      const hv = chapters[cur].hv; if (!hv) return;
+      const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * 640;
+      let best = hv.i0; let bd = 1e9;
+      for (let i = hv.i0; i <= hv.i1; i++) { const d = Math.abs(hv.x(i) - px); if (d < bd) { bd = d; best = i; } }
+      const i = best; const gx = hv.x(i);
+      let g = `<line x1="${gx}" x2="${gx}" y1="${cfg.hit.y}" y2="${+cfg.hit.y + +cfg.hit.height}" stroke="#475569" stroke-dasharray="2 2"/>`;
+      hv.series.forEach((s) => {
+        const v = s.vals[i]; if (v == null || s.nodot) return;
+        const r = s.kind === 'lead' ? 4.2 : s.kind === 'rose' ? 4.5 : 2.6; const ring = s.kind === 'lead' ? 1.5 : s.kind === 'rose' ? 2 : 0;
+        g += `<circle cx="${gx}" cy="${s.y(v)}" r="${r}" fill="${s.key.c}" ${ring ? `stroke="#fff" stroke-width="${ring}"` : ''}/>`;
+      });
+      guide.innerHTML = g;
+      ro.set({ title: hv.title(i), note: hv.note, slots: hv.series.map((s) => ({ key: FL.key(s.key), v: s.vals[i] == null ? 'no data' : s.fmt(s.vals[i], i), name: s.name })), cols: hv.cols });
+    });
+    hit.addEventListener('pointerleave', () => { guide.innerHTML = ''; idle(); });
+    svg.addEventListener('pointerover', (e) => { const t = e.target.closest('[data-ro-t]'); if (!t) return; ro.set({ title: t.dataset.roT, note: t.dataset.roN || '', text: esc(t.dataset.roB || '') }); });
+    svg.addEventListener('pointerout', (e) => { const t = e.target.closest('[data-ro-t]'); if (t && !t.contains(e.relatedTarget)) idle(); });
+
+    go(0, true);
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { FL.$$('.chap').forEach((c) => c.classList.toggle('on', c === e.target)); go(+e.target.dataset.i); } }), { rootMargin: '-45% 0px -45% 0px' });
+    FL.$$('.chap').forEach((c) => io.observe(c));
+    const io2 = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.4 });
+    io2.observe(FL.$('#storyend'));
+    return { fig, go };
+  };
+
+  /* helpers for building chapter states */
+  FL.put = (S, id, t, o = {}) => { const v = S.get(id) || { t: {} }; Object.assign(v.t, t); if (o.pre) v.pre = Object.assign(v.pre || {}, o.pre); if ('dur' in o) v.dur = o.dur; if ('delay' in o) v.delay = o.delay; S.set(id, v); };
+  /* spread end labels around their own middle, clamp inside [top, bottom] */
+  FL.spread = (items, gap, top, bottom) => {
+    const a = items.map((d) => ({ ...d, ly: d.y })).sort((p, q) => p.ly - q.ly);
+    for (let pass = 0; pass < 6; pass++) {
+      for (let k = 1; k < a.length; k++) {
+        const ov = gap - (a[k].ly - a[k - 1].ly);
+        if (ov > 0) { a[k - 1].ly -= ov / 2; a[k].ly += ov / 2; }
+      }
+      a.forEach((d) => { d.ly = Math.max(top, Math.min(bottom, d.ly)); });
+    }
+    return a;
+  };
+  FL.MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  FL.MONF = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  FL.ml = (ym) => `${FL.MON[+ym.slice(5) - 1]} ${ym.slice(0, 4)}`;
+  FL.T = (x, y, txt, { s = 11, w = 500, c = '#273043', a = 'start', extra = '' } = {}) => `<text x="${(+x).toFixed(1)}" y="${(+y).toFixed(1)}" font-size="${s}" font-weight="${w}" fill="${c}" text-anchor="${a}" ${extra}>${txt}</text>`;
+})();
+</script>
+<script>/* How it works: four sections, each a looping picture drawn from Expedition check #22 (Washington). */
+(function () {
+  const D = window.D; const M = D.months; const P = D.phrases;
+  const T = (x, y, s, w, fill, txt, anchor = 'start', extra = '') => `<text x="${x}" y="${y}" font-size="${s}" font-weight="${w}" fill="${fill}" text-anchor="${anchor}" ${extra}>${txt}</text>`;
+  const st = (n) => `data-st="${n}" style="opacity:0"`; // shown from step n
+  const swap = (el, s) => {
+    el.querySelectorAll('[data-st]').forEach((e) => { const a = String(e.dataset.st).split('-').map(Number); const on = s >= a[0] && (a.length < 2 || s <= a[1]); e.style.opacity = on ? (e.dataset.op || 1) : 0; });
+    el.querySelectorAll('[data-ti]').forEach((e) => { e.style.opacity = +e.dataset.ti === s ? 1 : 0; });
+  };
+  const draw = (el) => el.querySelectorAll('.drw').forEach((p) => { if (FL.reduce) return; const L = p.getTotalLength(); p.style.transition = 'none'; p.style.strokeDasharray = `${L}`; p.style.strokeDashoffset = `${L}`; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = '0'; });
+  const titles = (arr, y = 22) => arr.map((t, i) => `<text data-ti="${i}" x="150" y="${y}" font-size="13.5" font-weight="800" fill="#0B1020" text-anchor="middle" style="opacity:0">${t}</text>`).join('');
+  const path = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('');
+
+  /* 1. the 0 to 100 scale, pediatric dentistry weekly */
+  function scaleFig(el) {
+    const w = D.pdyWeekly.filter((x) => x[0] >= '2024-01-01' && x[0] <= '2026-09-30');
+    const x = (i) => 10 + (i / (w.length - 1)) * 234; const y = (v) => 140 - v * 1.0;
+    const wk = path(w.map((q, i) => [x(i), y(q[1] ?? 0)]));
+    const mi0 = M.indexOf('2024-01'); const mv = P['pediatric dentistry'].m.slice(mi0, M.indexOf('2026-09') + 1);
+    const mx = (j) => 10 + ((j + 0.5) / mv.length) * 234;
+    const mo = path(mv.map((v, j) => [mx(j), y(v)]));
+    const i100 = w.findIndex((q) => q[1] === 100); const i50 = w.findIndex((q) => q[0] === '2024-12-01');
+    const jTop = mv.indexOf(Math.max(...mv));
+    el.innerHTML = `<svg viewBox="0 0 300 200">${titles(['Google scores each week, 0 to 100', '100 = the busiest week', '50 = about half as many searches', 'Months average the weeks'])}
+      <line x1="10" x2="244" y1="140" y2="140" stroke="#D1D5DB"/>
+      <path class="drw" d="${wk}" fill="none" stroke="#0F766E" stroke-width="1.1" stroke-opacity=".75" stroke-linejoin="round"/>
+      <g ${st(1)}><line x1="10" x2="244" y1="${y(100)}" y2="${y(100)}" stroke="#C3C8D2"/><circle cx="${x(i100)}" cy="${y(100)}" r="4" fill="#0F766E" stroke="#fff" stroke-width="2"/>${T(292, y(100) + 4, 12, 800, '#0B1020', '100', 'end')}</g>
+      <g data-st="2-2" style="opacity:0"><line x1="10" x2="244" y1="${y(50)}" y2="${y(50)}" stroke="#C3C8D2"/><circle cx="${x(i50)}" cy="${y(50)}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/>${T(292, y(50) + 4, 12, 800, '#0B1020', '50', 'end')}</g>
+      <g data-st="3" style="opacity:0"><path d="${mo}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linejoin="round"/><path d="${mo}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round"/>${T(292, y(mv[jTop]) + 4, 12, 800, '#0B1020', String(Math.round(mv[jTop])), 'end')}</g>
+      ${T(10, 160, 10, 500, '#9CA3AF', 'Jan 2024')}${T(244, 160, 10, 500, '#9CA3AF', 'Sep 2026', 'end')}
+      <g font-size="11" fill="#667085">
+        <text data-ti="0" x="10" y="186" style="opacity:0">Pediatric dentistry, Washington, 143 weeks</text>
+        <text data-ti="1" x="10" y="186" style="opacity:0">Week of Jul 6, 2025: its busiest week</text>
+        <text data-ti="2" x="10" y="186" style="opacity:0">Week of Dec 1, 2024 scored 50</text>
+        <text data-ti="3" x="10" y="186" style="opacity:0">Its best month, Jul 2025, averages 84, not 100</text></g></svg>`;
+    draw(el);
+    return FL.loop(5, 1900, (s) => { if (s === 0) draw(el); swap(el, Math.min(s, 3)); });
+  }
+
+  /* 2. the call: pediatric dentistry, Jul to Sep against a year earlier, divided by dental searches overall */
+  function callFig(el) {
+    const i0 = M.indexOf('2024-10'); const v = P['pediatric dentistry'].m.slice(i0);
+    const x = (j) => 14 + (j / 24) * 228; const y = (val) => 112 - val * 0.8;
+    const line = path(v.slice(0, 24).map((q, j) => [x(j), y(q)]));
+    const tail = path([[x(23), y(v[23])], [x(24), y(v[24])]]);
+    const ja = M.indexOf('2025-07') - i0; const jb = M.indexOf('2026-07') - i0;
+    const R = (r) => 14 + ((r - 0.7) / 0.7) * 270; const by = D.basketYoy;
+    const bk = Object.entries(by).sort((a, b) => a[1] - b[1]);
+    el.innerHTML = `<svg viewBox="0 0 300 200">${titles(['Is pediatric dentistry rising?', 'Down about 15 in 100 on a year ago', 'Dental searches overall: level', 'Steady, sitting on the Fading line'])}
+      <g ${st(1)}><rect x="${x(ja) - 3}" y="34" width="${x(ja + 2) - x(ja) + 6}" height="80" fill="#F3F4F6"/><rect x="${x(jb) - 3}" y="34" width="${x(jb + 2) - x(jb) + 6}" height="80" fill="#E3F2EE"/>
+        <line x1="${x(ja) - 3}" x2="${x(ja + 2) + 3}" y1="${y(79.6)}" y2="${y(79.6)}" stroke="#0F172A" stroke-opacity=".5"/><line x1="${x(jb) - 3}" x2="${x(jb + 2) + 3}" y1="${y(67.6)}" y2="${y(67.6)}" stroke="#0F172A" stroke-opacity=".5"/>
+        ${T(292, y(79.6) + 4, 11.5, 800, '#0B1020', '79.6', 'end')}${T(292, y(67.6) + 8, 11.5, 800, '#0B1020', '67.6', 'end')}</g>
+      <line x1="14" x2="242" y1="112" y2="112" stroke="#D1D5DB"/>
+      <path class="drw" d="${line}" fill="none" stroke="#0F766E" stroke-width="1.8" stroke-linejoin="round"/><path d="${tail}" fill="none" stroke="#0F766E" stroke-width="1.6" stroke-dasharray="2 3"/>
+      <g ${st(2)}><rect x="${R(0.85)}" y="134" width="${R(1.15) - R(0.85)}" height="22" fill="#F3F4F6"/><line x1="14" x2="284" y1="145" y2="145" stroke="#D1D5DB"/>
+        ${[0.85, 1, 1.15].map((r) => `<line x1="${R(r)}" x2="${R(r)}" y1="131" y2="159" stroke="${r === 1 ? '#0F172A' : '#98A2B3'}" stroke-width="1"/>`).join('')}
+        ${bk.map(([n, r], k) => `<circle cx="${R(r)}" cy="145" r="3.6" fill="#8B98A9" stroke="#fff" stroke-width="1"><title>${n} ${r}</title></circle>`).join('')}
+        <circle cx="${R(1)}" cy="145" r="6.5" fill="none" stroke="#0F172A" stroke-width="1.3"/>
+        ${T(R(0.85), 170, 9.5, 600, '#E11D48', 'Fading', 'end', 'dx="-2"')}${T(R(1.15), 170, 9.5, 600, '#15803D', 'Rising', 'start', 'dx="2"')}</g>
+      <g ${st(3)}><circle cx="${R(0.85)}" cy="145" r="5.5" fill="#0F766E" stroke="#fff" stroke-width="2"/></g>
+      <g font-size="11" fill="#667085">
+        <text data-ti="0" x="14" y="190" style="opacity:0">Washington, Oct 2024 to Oct 2026; October not over</text>
+        <text data-ti="1" x="14" y="190" style="opacity:0">Jul to Sep 2026 against Jul to Sep 2025: 0.85</text>
+        <text data-ti="2" x="14" y="190" style="opacity:0">Middle of 5 everyday dental phrases: 1.00</text>
+        <text data-ti="3" x="14" y="190" style="opacity:0">0.85 against level: Fading starts below 0.85</text></g></svg>`;
+    draw(el);
+    return FL.loop(5, 2000, (s) => { if (s === 0) draw(el); swap(el, Math.min(s, 3)); });
+  }
+
+  /* 3. topics and phrases: tongue tie and ankyloglossia, size and readable weeks */
+  function phraseFig(el) {
+    const tile = (k, n, filled, y0) => Array.from({ length: n }, (_, i) => `<rect x="${14 + (k + i) * 8.4}" y="${y0}" width="6.6" height="12" rx="1.5" fill="${filled ? '#0F766E' : '#fff'}" stroke="${filled ? 'none' : '#98A2B3'}" stroke-width="1.1"/>`).join('');
+    const ticks = (s, y0, c) => Array.from(s).map((b, i) => (b === '1' ? `<line x1="${(14 + i * 1.03).toFixed(1)}" x2="${(14 + i * 1.03).toFixed(1)}" y1="${y0}" y2="${y0 + 14}" stroke="${c}" stroke-width=".9"/>` : '')).join('');
+    el.innerHTML = `<svg viewBox="0 0 300 200">${titles(['Tongue-tie is read through 2 phrases', 'tongue tie: about 11,300 a month', 'ankyloglossia: about 4,500 a month', 'Google could read it 3 weeks of 262', 'The call follows tongue tie'])}
+      ${T(14, 46, 10.5, 700, '#273043', 'Searches a month across the US · one tile = about 500')}
+      <g ${st(1)}>${tile(0, 23, true, 54)}</g><g ${st(2)}>${tile(23, 9, false, 54)}</g>
+      ${T(14, 98, 10.5, 700, '#273043', 'Weeks Google could read in Washington, of 262')}
+      <rect x="14" y="106" width="270" height="14" fill="#F1F2F5"/><rect x="14" y="128" width="270" height="14" fill="#F1F2F5"/>
+      <g ${st(3)}>${ticks(D.ttRead, 106, '#0F766E')}${ticks(D.ankRead, 128, '#98A2B3')}${T(284, 117, 9.5, 700, '#fff', '240', 'end')}${T(284, 139, 9.5, 700, '#667085', '3', 'end')}</g>
+      <g font-size="11" fill="#667085">
+        <text data-ti="0" x="14" y="172" style="opacity:0">Phrases are weighed by searches a month</text>
+        <text data-ti="1" x="14" y="172" style="opacity:0">74 of every 100 topic searches say tongue tie</text>
+        <text data-ti="2" x="14" y="172" style="opacity:0">26 in 100 say ankyloglossia, the medical name</text>
+        <text data-ti="3" x="14" y="172" style="opacity:0">tongue tie 240 weeks, ankyloglossia 3: too few</text>
+        <text data-ti="4" x="14" y="172" style="opacity:0">ankyloglossia shows as too few searches to read</text></g></svg>`;
+    return FL.loop(6, 1700, (s) => swap(el, Math.min(s, 4)));
+  }
+
+  /* 4. seasons: each calendar year against its own average */
+  function seasonFig(el) {
+    const yrs = (term, ys) => ys.map((yr) => { const i = M.indexOf(`${yr}-01`); const seg = P[term].m.slice(i, i + 12); const a = seg.reduce((p, q) => p + q, 0) / 12; return seg.map((v) => v / a); });
+    const x = (k) => 18 + k * 22; const y = (r) => 130 - (r - 0.5) * 110;
+    const pd = yrs('pediatric dentistry', [2022, 2023, 2024, 2025]); const tt = yrs('tongue tie', [2022, 2023, 2024, 2025]);
+    const mean = pd[0].map((_, k) => pd.reduce((s, a) => s + a[k], 0) / pd.length);
+    const thin = (arr, n) => arr.map((a) => `<path d="${path(a.map((r, k) => [x(k), y(r)]))}" fill="none" stroke="#8B98A9" stroke-width="1.1" stroke-opacity=".7" ${st(n)}/>`).join('');
+    const MON = 'JFMAMJJASOND';
+    el.innerHTML = `<svg viewBox="0 0 300 200">${titles(['Pediatric dentistry, 2022 to 2025', 'Busiest in Jul or Aug, 4 years of 4', 'Quietest every December', 'Tongue tie: the busy month moves', 'No season for tongue tie'])}
+      <line x1="18" x2="260" y1="${y(1)}" y2="${y(1)}" stroke="#D1D5DB"/>${T(292, y(1) + 4, 10, 600, '#9CA3AF', 'average', 'end')}
+      <g data-st="0-2" style="opacity:0">${thin(pd, 0)}<path d="${path(mean.map((r, k) => [x(k), y(r)]))}" fill="none" stroke="#0F766E" stroke-width="2.2" ${st(1)}/>
+        <g ${st(1)}><circle cx="${x(7)}" cy="${y(mean[7])}" r="4.5" fill="#fff" stroke="#0F766E" stroke-width="2"/>${T(x(7), y(mean[7]) - 9, 10.5, 700, '#0B1020', 'Aug', 'middle')}</g>
+        <g ${st(2)}><circle cx="${x(11)}" cy="${y(mean[11])}" r="4.5" fill="#fff" stroke="#98A2B3" stroke-width="2"/>${T(x(11), y(mean[11]) + 17, 10.5, 700, '#0B1020', 'Dec', 'middle')}</g></g>
+      <g data-st="3" style="opacity:0">${tt.map((a, i) => `<path d="${path(a.map((r, k) => [x(k), y(Math.max(0.5, Math.min(1.5, r)))]))}" fill="none" stroke="${['#8B98A9', '#475569', '#8B98A9', '#475569'][i]}" stroke-width="1.2" ${i % 2 ? 'stroke-dasharray="4 3"' : ''}/>`).join('')}
+        ${['Jul 22', 'May 23', 'Jul 24', 'Jan 25'].map((t, i) => T(292, 98 + i * 13, 10, 600, '#273043', t, 'end')).join('')}</g>
+      ${Array.from(MON).map((c, k) => T(x(k), 156, 10, 600, '#9CA3AF', c, 'middle')).join('')}
+      <g font-size="11" fill="#667085">
+        <text data-ti="0" x="18" y="186" style="opacity:0">Each year divided by its own average month</text>
+        <text data-ti="1" x="18" y="186" style="opacity:0">About 1.2 times an average month at the peak</text>
+        <text data-ti="2" x="18" y="186" style="opacity:0">About 8 in 10 of an average month in December</text>
+        <text data-ti="3" x="18" y="186" style="opacity:0">Busiest month: Jul, May, Jul, Jan</text>
+        <text data-ti="4" x="18" y="186" style="opacity:0">A season must repeat in 2 of the last 3 years</text></g></svg>`;
+    return FL.loop(6, 1800, (s) => swap(el, Math.min(s, 4)));
+  }
+
+  window.MT_METHOD = {
+    teaser: 'Every phrase is a Google Trends read for Washington, five years back, compared with dental searches overall. Click for the whole method.',
+    title: 'How it works',
+    sections: [
+      { title: 'What the numbers on the lines mean', caption: 'Pediatric dentistry, weekly, Washington, check #22',
+        body: ['Google Trends does not share search counts. It scores every week from 0 to 100, where 100 is the busiest <b>week</b> of that read. A week that scores 50 had about half the searches of that week.', 'Monthly lines average their weeks, so they rarely touch 100. Lines compare by shape; the size comes from searches a month.'], figure: scaleFig },
+      { title: 'Rising, steady or fading', caption: 'Pediatric dentistry against 5 benchmark phrases, Washington',
+        body: ['The call compares the last 3 full months with the same 3 months a year earlier, then divides by the same comparison for 5 everyday dental phrases: teeth whitening, invisalign, veneers, root canal and wisdom teeth removal.', 'More than 15 in every 100 ahead of them is Rising, more than 15 behind is Fading, in between is Steady. October is not over, so the call is made on September.'], figure: callFig },
+      { title: 'Topics and phrases', caption: 'Tongue-tie, check #22: searches a month (US) and readable weeks (Washington)',
+        body: ['A topic is read through 1 to 5 phrases, weighed by how many people search each one a month. The phrase most people use sets the call.', 'When Google has too few searches to score a phrase in the state, it shows as "too few searches to read" and never sets a verdict.'], figure: phraseFig },
+      { title: 'Seasons', caption: 'Each calendar year against its own average, Washington',
+        body: ['A season is a peak that repeats. Each year is compared with its own average, so a year that climbed does not fake a season.', 'A month counts as the peak only when it is the busiest in at least 2 of the last 3 full years and runs at least 1.15 times an average month. A seasonal page does best live a month or two before the peak.'], figure: seasonFig },
+    ],
+  };
+})();
+</script>
+<script>/* V2 Topic by topic: overview on one ruler, then one act per topic. One persistent figure.
+   Hand-off rule: the next topic's line unfurls out of the ruler dot it held in the overview,
+   while the previous topic's line stays behind as a grey ghost. */
+(function () {
+  const D = window.D; const M = D.months; const P = D.phrases; const T = FL.T; const put = FL.put; const fmt = FL.fmt;
+  const X0 = 36; const X1 = 540; const Y0 = 58; const Y1 = 318;
+  const R = (v) => 60 + ((v - 0.7) / 0.6) * 460;
+  const yv = (v) => Y1 - (v / 100) * (Y1 - Y0);
+  const xw = (i, i0, i1) => X0 + ((i - i0) / (i1 - i0)) * (X1 - X0);
+  const avg = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+  const TEAL = '#0F766E'; const GHOST = '#C3C8D2'; const ROSE = '#DB2777';
+  const idx = (ym) => M.indexOf(ym);
+  const csAvg = (k) => avg(P[k].cs);
+  const TOP = {
+    tt: { term: 'tongue tie', name: 'tongue tie', topic: 'Tongue-tie', pal: '#0D9488', rel: P['tongue tie'].rel },
+    pd: { term: 'pediatric dentist', name: 'pediatric dentist', topic: 'Preventative Pediatric Dentistry', pal: '#3B5BDB', rel: P['pediatric dentist'].rel },
+    pdy: { term: 'pediatric dentistry', name: 'pediatric dentistry', topic: 'Pediatric Dentistry', pal: '#E0527A', rel: P['pediatric dentistry'].rel },
+  };
+  const VALS = { tt: P['tongue tie'].m, pd: P['pediatric dentist'].m, pdy: P['pediatric dentistry'].m, ank: P.ankyloglossia.m, comb: D.topics[0].combined, bk: D.basketMedian };
+  const C = D.corpus;
+  const own = (k) => { const map = {}; C[k].own.forEach((r) => { map[r.month] = r; }); return map; };
+  const OWN = { tt: own('tongue tie'), pd: own('pediatric dentist') };
+  const OWN_I0 = idx('2025-10'); const OWN_I1 = idx('2026-08');
+  const ownVals = (k) => Array.from({ length: OWN_I1 - OWN_I0 + 1 }, (_, j) => OWN[k][M[OWN_I0 + j]].impressions);
+  const sum = (arr, f) => arr.reduce((s, r) => s + f(r), 0);
+  const ownTot = (k) => sum(C[k].own, (r) => r.impressions); const ownClk = (k) => sum(C[k].own, (r) => r.clicks);
+
+  /* ---------- point builders ---------- */
+  const N = 60; // main path: months 0..59 (to September); tail: 59..60 (October, not over)
+  const linePts = (vals, i0, i1, y = yv) => Array.from({ length: N }, (_, i) => [xw(i, i0, i1), y(vals[i] ?? 0)]);
+  const tailPts = (vals, i0, i1, y = yv) => [[xw(59, i0, i1), y(vals[59])], [xw(60, i0, i1), y(vals[60])]];
+  const at = (x, y, n = N) => Array.from({ length: n }, () => [x, y]);
+  const RY_PLOT = 214; const RY_STRIP = 410; const RY_PARK = 480;
+
+  /* ---------- marks ---------- */
+  const LINES = ['bk', 'ank', 'comb', 'pd', 'pdy', 'tt'];
+  function init(fig, L) {
+    ['g0', 'g50', 'g100'].forEach((id) => fig.mk(id, 'line', L.grid, { stroke: '#EEF0F3' }, { x1: X0, x2: X1, y1: Y1, y2: Y1, o: 0 }));
+    fig.mk('base', 'line', L.grid, { stroke: '#D1D5DB' }, { x1: X0, x2: X1, y1: Y1, y2: Y1, o: 0 });
+    fig.mk('rz-st', 'rect', L.bg, { fill: '#F3F4F6' }, { x: R(0.85), width: R(1.15) - R(0.85), y: RY_PARK, height: 20, o: 0 });
+    fig.mk('rz-ri', 'rect', L.bg, { fill: '#E3F2EE' }, { x: R(1.15), width: R(1.3) - R(1.15), y: RY_PARK, height: 20, o: 0 });
+    fig.mk('rz-ax', 'line', L.grid, { stroke: '#C3C8D2' }, { x1: R(0.7), x2: R(1.3), y1: RY_PARK, y2: RY_PARK, o: 0 });
+    [['rt85', 0.85], ['rt100', 1], ['rt115', 1.15]].forEach(([id, v]) => fig.mk(id, 'line', L.grid, { stroke: v === 1 ? '#0F172A' : '#98A2B3' }, { x1: R(v), x2: R(v), y1: RY_PARK, y2: RY_PARK, o: 0 }));
+    ['win-a', 'win-b'].forEach((id) => fig.mk(id, 'rect', L.bg, { fill: id === 'win-a' ? '#F3F4F6' : '#E3F2EE' }, { x: X0, y: Y0, width: 0, height: Y1 - Y0, o: 0 }));
+    fig.mk('after', 'rect', L.bg, { fill: '#E3F2EE' }, { x: X0, y: Y0, width: 0, height: Y1 - Y0, o: 0 });
+    fig.mk('gap', 'rect', L.bg, { fill: 'url(#hatch)' }, { x: X1, y: Y0, width: 0, height: Y1 - Y0, o: 0 });
+    ['lvl-a', 'lvl-b'].forEach((id) => fig.mk(id, 'line', L.top, { stroke: '#0F172A', 'stroke-opacity': 0.45 }, { x1: X0, x2: X0, y1: Y0, y2: Y0, o: 0 }));
+    fig.mk('usual', 'line', L.top, { stroke: '#0F172A', 'stroke-opacity': 0.45 }, { x1: X0, x2: X0, y1: Y1, y2: Y1, o: 0 });
+    fig.mk('brk', 'path', L.top, { fill: 'none', stroke: '#0F172A', 'stroke-width': 1.2 }, { pts: at(X1, Y1, 4), o: 0 });
+    LINES.forEach((k) => {
+      if (['tt', 'pd', 'pdy'].includes(k)) fig.mk(`cs-${k}`, 'path', L.lines, { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(R(TOP[k].rel), RY_PLOT), o: 0 });
+      fig.mk(`ln-${k}`, 'path', L.lines, { fill: 'none', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1), o: 0, stroke: TEAL, sw: 2 });
+      fig.mk(`tl-${k}`, 'path', L.lines, { fill: 'none', 'stroke-dasharray': '2 3', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 2), o: 0, stroke: TEAL, sw: 1.6 });
+    });
+    for (let k = 0; k < 4; k++) fig.mk(`yr${k}`, 'path', L.lines, { fill: 'none', 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 12), o: 0, stroke: '#8B98A9', sw: 1.2 });
+    fig.mk('yrm-cs', 'path', L.lines, { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
+    fig.mk('yrm', 'path', L.lines, { fill: 'none', stroke: TEAL, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
+    fig.mk('own-cs', 'path', L.lines, { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 11), o: 0 });
+    fig.mk('own', 'path', L.lines, { fill: 'none', stroke: ROSE, 'stroke-width': 2.2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 11), o: 0 });
+    for (let k = 0; k < 60; k++) fig.mk(`t${k}`, 'rect', L.marks, { rx: 1.5 }, { x: 150 + k * 6, y: RY_PARK, width: 7, height: 12, o: 0, fill: TEAL, stroke: 'none' });
+    for (let k = 0; k < 46; k++) fig.mk(`c${k}`, 'circle', L.marks, { stroke: '#fff', 'stroke-width': 1.2 }, { cx: X1, cy: RY_PARK, r: 4, o: 0, fill: ROSE });
+    fig.mk('pk', 'circle', L.marks, { fill: '#fff', 'stroke-width': 2 }, { cx: X1, cy: Y0, r: 4.5, o: 0, stroke: TEAL });
+    fig.mk('dp', 'circle', L.marks, { fill: '#fff', 'stroke-width': 2 }, { cx: X1, cy: Y1, r: 4.5, o: 0, stroke: '#98A2B3' });
+    fig.mk('end', 'circle', L.marks, { stroke: '#fff', 'stroke-width': 2 }, { cx: X1, cy: Y1, r: 4, o: 0, fill: TEAL });
+    ['ank', 'chd'].forEach((k) => fig.mk(`dot-${k}`, 'circle', L.marks, { fill: '#fff', 'stroke-width': 1.5 }, { cx: 22, cy: RY_PARK, r: 4.5, o: 0, stroke: '#98A2B3' }));
+    ['tt', 'pd', 'pdy'].forEach((k) => fig.mk(`dot-${k}`, 'circle', L.marks, { stroke: '#fff', 'stroke-width': 2, style: 'cursor:default' }, { cx: R(TOP[k].rel), cy: RY_PLOT, r: 9, fill: TOP[k].pal, o: 1 }));
+  }
+
+  /* ---------- base state: every mark parked; the ruler wherever the chapter puts it ---------- */
+  let rulerY = RY_PARK;
+  function ruler(S, ry, h, o = 1) {
+    rulerY = ry;
+    put(S, 'rz-st', { y: ry - h / 2, height: h, o }); put(S, 'rz-ri', { y: ry - h / 2, height: h, o });
+    put(S, 'rz-ax', { y1: ry, y2: ry, o });
+    ['rt85', 'rt100', 'rt115'].forEach((id) => put(S, id, { y1: ry - h / 2 - 4, y2: ry + h / 2 + 4, o }));
+  }
+  function base(S) {
+    ['g0', 'g50', 'g100', 'base'].forEach((id) => put(S, id, { o: 0 }));
+    ruler(S, RY_PARK, 20, 0);
+    ['win-a', 'win-b', 'after', 'gap'].forEach((id) => put(S, id, { o: 0 }));
+    ['lvl-a', 'lvl-b', 'usual', 'brk', 'pk', 'dp', 'end', 'yrm', 'yrm-cs', 'own', 'own-cs'].forEach((id) => put(S, id, { o: 0 }));
+    for (let k = 0; k < 4; k++) put(S, `yr${k}`, { o: 0 });
+    for (let k = 0; k < 60; k++) put(S, `t${k}`, { o: 0 }, { delay: 0 });
+    for (let k = 0; k < 46; k++) put(S, `c${k}`, { o: 0 });
+    ['ank', 'chd'].forEach((k) => put(S, `dot-${k}`, { o: 0 }));
+    LINES.forEach((k) => { put(S, `ln-${k}`, { o: 0 }); put(S, `tl-${k}`, { o: 0 }); if (S.has(`cs-${k}`) || ['tt', 'pd', 'pdy'].includes(k)) put(S, `cs-${k}`, { o: 0 }); });
+  }
+  /* topic dots sit on the ruler; a hidden topic line folds back into its dot */
+  function dots(S, active, { overview = false } = {}) {
+    ['tt', 'pd', 'pdy'].forEach((k) => {
+      const on = k === active;
+      put(S, `dot-${k}`, { cx: R(TOP[k].rel), cy: rulerY, r: overview ? 9 : on ? 6.5 : 4.5, fill: overview ? TOP[k].pal : on ? TEAL : GHOST, o: rulerY >= RY_PARK ? 0 : 1,
+        attr: { 'data-ro-t': TOP[k].name, 'data-ro-n': 'in Washington', 'data-ro-b': dotSentence(k) } });
+      const p = at(R(TOP[k].rel), rulerY);
+      put(S, `ln-${k}`, { pts: p, o: 0 }); put(S, `cs-${k}`, { pts: p, o: 0 }); put(S, `tl-${k}`, { pts: at(R(TOP[k].rel), rulerY, 2), o: 0 });
+    });
+  }
+  const ahead = (r) => { const n = Math.round((r - 1) * 100); return n === 0 ? 'level' : n > 0 ? `${n} ahead` : `${-n} behind`; };
+  const dotSentence = (k) => { const p = P[TOP[k].term]; return `Jul to Sep 2026 averaged ${p.cur} against ${p.prev} a year earlier; dental searches overall level, so ${ahead(p.rel)} of them. ${p.rel >= 1.15 ? 'Rising.' : p.rel < 0.85 ? 'Fading.' : 'Steady.'}`; };
+  /* draw a phrase line in a window, lead or ghost */
+  function line(S, k, i0, i1, look = 'lead', { delay = 0, y = yv, from = null } = {}) {
+    const v = VALS[k];
+    if (from) { put(S, `ln-${k}`, {}, { pre: { pts: at(from[0], from[1]) } }); put(S, `tl-${k}`, {}, { pre: { pts: at(from[0], from[1], 2) } }); if (['tt', 'pd', 'pdy'].includes(k)) put(S, `cs-${k}`, {}, { pre: { pts: at(from[0], from[1]) } }); }
+    const st = look === 'lead' ? { stroke: TEAL, sw: 2.2, o: 1 } : look === 'ghost' ? { stroke: GHOST, sw: 1.4, o: 1 } : look === 'faint' ? { stroke: TEAL, sw: 1.6, o: 0.3 } : look;
+    put(S, `ln-${k}`, { pts: linePts(v, i0, i1, y), ...st }, { delay });
+    put(S, `tl-${k}`, { pts: tailPts(v, i0, i1, y), stroke: st.stroke, sw: Math.min(1.8, st.sw), o: st.o }, { delay });
+    if (S.has(`cs-${k}`)) put(S, `cs-${k}`, { pts: linePts(v, i0, i1, y), o: look === 'lead' ? 1 : 0 }, { delay });
+  }
+  function grid(S, o = 1) { put(S, 'g0', { y1: yv(0), y2: yv(0), o }); put(S, 'g50', { y1: yv(50), y2: yv(50), o }); put(S, 'g100', { y1: yv(100), y2: yv(100), o }); put(S, 'base', { y1: Y1, y2: Y1, o }); }
+  const hw = (i0, i1) => (X1 - X0) / (i1 - i0) / 2;
+  function windows(S, k, i0, i1) {
+    const a = idx('2025-07'); const b = idx('2026-07'); const h = hw(i0, i1); const p = P[TOP[k].term];
+    [['win-a', a, p.prev, 'lvl-a'], ['win-b', b, p.cur, 'lvl-b']].forEach(([id, i, v, lv], n) => {
+      const x = xw(i, i0, i1) - h; const w = xw(i + 2, i0, i1) + h - x;
+      put(S, id, { x, width: w, y: Y0, height: Y1 - Y0, o: 1 }, { pre: { x, width: 0, y: Y0, height: Y1 - Y0 }, delay: 700 + n * 220 });
+      put(S, lv, { x1: x, x2: x + w, y1: yv(v), y2: yv(v), o: 1 }, { pre: { x1: x, x2: x + w, y1: Y0, y2: Y0 }, delay: 1100 + n * 220 });
+    });
+  }
+  function endDot(S, k, i0, i1, c = TEAL) { put(S, 'end', { cx: xw(59, i0, i1), cy: yv(VALS[k][59]), r: 4, fill: c, o: 1 }, { delay: 300 }); }
+
+  /* ---------- text helpers ---------- */
+  const xTicks = (i0, i1, every = 3) => { let s = ''; let py = null; for (let i = i0; i <= i1; i++) { if ((i - i0) % every !== 0) continue; const m = +M[i].slice(5); const y = M[i].slice(0, 4); const lab = y !== py ? `${FL.MON[m - 1]} ${y}` : FL.MON[m - 1]; py = y; const x = xw(i, i0, i1); s += `<line x1="${x}" x2="${x}" y1="${Y1}" y2="${Y1 + 4}" stroke="#D1D5DB"/>${T(x, Y1 + 16, lab, { s: 10.5, c: '#9CA3AF', a: 'middle' })}`; } return s; };
+  const yTicks = (labels) => labels.map(([v, t]) => T(X0 - 6, v + 3.5, t, { s: 10.5, c: '#9CA3AF', a: 'end', extra: 'class="num"' })).join('');
+  const title = (t, sub) => `${T(0, 20, t, { s: 15, w: 800, c: '#0B1020' })}${sub ? T(0, 38, sub, { s: 11.5, c: '#667085' }) : ''}`;
+  const gutter = (items) => FL.spread(items, 14, Y0, Y1 + 6).map((d) => `${Math.abs(d.ly - d.y) > 2 ? `<path d="M${d.x0 + 4},${d.y} h6 L${548},${d.ly - 3.5}" fill="none" stroke="#C3C8D2"/>` : ''}${T(552, d.ly, d.t, { s: 11.5, w: d.w || 500, c: d.c || '#273043' })}`).join('');
+  const rulerLabels = (ry, { big = false, right = '' } = {}) => {
+    const y = ry + (big ? 34 : 26);
+    return `${T(R(0.85) - 4, y, big ? 'Fading below 85' : 'Fading', { s: 10.5, w: 600, c: '#E11D48', a: 'end' })}${T(R(1), y, big ? 'level with dental searches overall' : 'level', { s: 10.5, w: 600, c: '#0F172A', a: 'middle' })}${T(R(1.15) + 4, y, big ? 'Rising above 115' : 'Rising', { s: 10.5, w: 600, c: '#15803D' })}${right}`;
+  };
+  const stripHead = (t, y = 368) => T(0, y, t, { s: 10.5, w: 600, c: '#667085' });
+  const ruleRight = (k) => `${T(640, RY_STRIP + 4, ahead(TOP[k].rel), { s: 13, w: 800, c: '#0B1020', a: 'end' })}`;
+
+  /* ---------- readouts ---------- */
+  const series = (k, name, kind = 'lead', y = yv) => ({ name, vals: VALS[k], y, kind, key: kind === 'lead' ? { c: TEAL, w: 2.2 } : kind === 'ghost' ? { c: '#98A2B3', w: 1.6 } : { c: '#475569', w: 1.6, dash: '4 3' }, fmt: (v) => String(Math.round(v * 10) / 10) });
+  const hvLines = (i0, i1, ser, note = 'Google Trends, Washington, 0 to 100') => ({ i0, i1: 60, x: (i) => xw(i, i0, i1), series: ser, note, title: (i) => (i === 60 ? 'Oct 2026, not over yet' : FL.ml(M[i])) });
+  const idleLines = (ser, note = 'Google Trends, Washington, 0 to 100') => () => ({ title: 'Sep 2026, the last full month', note, slots: ser.map((s) => ({ key: FL.key(s.key), v: String(Math.round(s.vals[59] * 10) / 10), name: s.name })) });
+
+  /* ---------- the chapters ---------- */
+  const tt = P['tongue tie']; const pd = P['pediatric dentist']; const pdy = P['pediatric dentistry']; const ank = P.ankyloglossia; const chd = P["children's dentist"];
+  const W24 = [idx('2024-10'), 60]; const W12 = [idx('2025-10'), 60];
+  const csR = (k) => fmt(FL.round(csAvg(k), 100));
+  const tiles = (k) => Math.round(csAvg(k) / 500);
+
+  const chapters = [];
+  /* 01 overview */
+  chapters.push({
+    key: 'ov', kick: 'Long story short · read for Washington, September 2026',
+    head: 'All 3 topics are keeping pace with dental searches in Washington; <span class="g">tongue tie is 1 short of Rising</span>.',
+    body: [`Tongue tie runs about 14 in every 100 ahead of dental searches overall. Pediatric dentist is about 7 behind them, and pediatric dentistry about 15 behind, sitting right on the Fading line, so all three read Steady.`,
+      `Dental searches overall held level: across 5 everyday dental phrases read for Washington, the middle one came out at 100 for every 100 a year earlier (veneers 76, teeth whitening 91, invisalign 100, root canal 106, wisdom teeth removal 135).`],
+    facts: [['14 ahead', 'tongue tie: 37.5 against 33.0, Rising starts at 15'], ['7 behind', 'pediatric dentist: 49.5 against 53.3'], ['15 behind', 'pediatric dentistry: 67.6 against 79.6, on the line'],
+      [`about ${csR('tongue tie')}`, 'tongue tie searches a month, US'], [`about ${csR('pediatric dentist')}`, 'pediatric dentist searches a month, US'], [`about ${csR('pediatric dentistry')}`, 'pediatric dentistry searches a month, US']],
+    note: 'The call compares July to September 2026 with the same three months of 2025. October is not over yet. Every dental phrase about doubled on Google Trends from 2024 to 2026 (the benchmark middle went from about 26 to about 42), so the call looks at each topic against them, never at the climb itself. Below: one act per topic.',
+    cap: 'Each dot is a topic: its last 3 months against the same 3 a year earlier, next to dental searches overall in Washington. Tiles are searches a month across the US.',
+    build(S, { first }) {
+      ruler(S, RY_PLOT, 34); dots(S, null, { overview: true });
+      ['ank', 'chd'].forEach((k, n) => put(S, `dot-${k}`, { cx: 22, cy: RY_PLOT - 8 + n * 16, o: 1, attr: { 'data-ro-t': k === 'ank' ? 'ankyloglossia' : "children's dentist", 'data-ro-b': k === 'ank' ? 'Google read it in Washington in 3 of 262 weeks: too few searches to read, so it never sets a call.' : "Google read it in Washington in 18 of 262 weeks, about 100 searches a month across the US: too few to read." } }));
+      const rows = [['tt', tiles('tongue tie') + tiles('ankyloglossia')], ['pd', tiles('pediatric dentist')], ['pdy', tiles('pediatric dentistry')]];
+      let n = 0; rows.forEach(([k, c], r) => { for (let j = 0; j < c; j++, n++) put(S, `t${n}`, { x: 150 + j * 10.5, y: 358 + r * 25, width: 8, height: 12, fill: TOP[k].pal, stroke: 'none', o: 1 }, { delay: (first ? 1600 : 300) + j * 18 }); });
+    },
+    enter(fig, later, { first }) {
+      if (!first) return;
+      ['tt', 'pd', 'pdy'].forEach((k) => { fig.pre(`ln-${k}`, { pts: linePts(VALS[k], 0, 60), o: 0.9, stroke: TOP[k].pal, sw: 2 }); fig.set(`ln-${k}`, { pts: at(R(TOP[k].rel), RY_PLOT) }, { delay: 1300, dur: 1000 }); later(2150, () => fig.set(`ln-${k}`, { o: 0 })); });
+      fig.labels(`${title('Five years in Washington, one line per topic', 'Each topic against its own busiest week, Oct 2021 to Oct 2026')}`, fig.svg.querySelector('[data-layer="lab"]'));
+      later(2300, () => { fig.labels(chapters[0].labels({}), fig.svg.querySelector('[data-layer="lab"]')); });
+    },
+    labels: () => {
+      const L = [['tt', 'start', 96], ['pd', 'start', 142], ['pdy', 'end', 96]];
+      const lab = L.map(([k, a, y]) => { const x = R(TOP[k].rel); const tx = a === 'end' ? x + 6 : x - 6; return `<line x1="${x}" x2="${x}" y1="${y + 28}" y2="${RY_PLOT - 22}" stroke="#C3C8D2"/>${T(tx, y - 6, TOP[k].name, { s: 13, w: 700, c: '#0B1020', a })}${T(tx, y + 8, `${ahead(TOP[k].rel)} · Steady`, { s: 11.5, c: '#667085', a })}${T(tx, y + 22, `${P[TOP[k].term].cur} against ${P[TOP[k].term].prev}`, { s: 11, c: '#98A2B3', a, extra: 'class="num"' })}`; }).join('');
+      return `${title('Against dental searches overall, in Washington', 'Jul to Sep 2026 against the same 3 months of 2025')}${lab}${rulerLabels(RY_PLOT, { big: true })}
+        ${T(36, RY_PLOT + 62, 'ankyloglossia and children’s dentist: too few searches in Washington to read', { s: 11, c: '#667085' })}
+        ${stripHead('Searches a month across the US · one tile is about 500', 344)}
+        ${[['tt', 'Tongue-tie', fmt(FL.round(csAvg('tongue tie') + csAvg('ankyloglossia'), 100))], ['pd', 'Pediatric dentist', csR('pediatric dentist')], ['pdy', 'Pediatric dentistry', csR('pediatric dentistry')]].map(([k, n, v], r) => `${T(0, 368 + r * 25, n, { s: 12, w: 600, c: '#273043' })}${T(640, 368 + r * 25, `about ${v}`, { s: 12, w: 700, c: '#0B1020', a: 'end', extra: 'class="num"' })}`).join('')}
+        ${T(0, 436, '12-month average, Oct 2025 to Sep 2026, DataForSEO', { s: 10.5, c: '#9CA3AF' })}`;
+    },
+    idle: () => ({ title: 'Jul to Sep 2026 against Jul to Sep 2025', note: 'against dental searches overall, Washington', slots: ['tt', 'pd', 'pdy'].map((k) => ({ key: FL.dotKey(TOP[k].pal), v: ahead(TOP[k].rel), name: TOP[k].name })) }),
+  });
+
+  /* ACT 1: tongue tie */
+  chapters.push({
+    key: 'tt-call', kick: '<span class="act">Act 1 · Tongue tie ·</span> its call',
+    head: 'Tongue tie is up about a seventh on a year ago, <span class="g">1 short of Rising</span>.',
+    body: ['July to September averaged 37.5 on Google’s scale in Washington, against 33.0 for the same three months of 2025. Dental searches overall held level, so tongue tie ran 14 in every 100 ahead of them. Rising starts at 15.',
+      'One point is inside the wobble of a read this size, so it stays Steady. Its busiest month of the last two years was May 2026 at 48.6, about 1.3 times its usual level: lively, but no spike.'],
+    facts: [['37.5', 'Jul to Sep 2026 average'], ['33.0', 'Jul to Sep 2025 average'], ['14 ahead', 'of dental searches overall'], ['1', 'short of the Rising line'], ['240 of 262', 'weeks Google could read'], ['Dec 17, 2023', 'its busiest week (the 100)']],
+    note: 'Its line unfurls from the dot it held in the overview. October is dotted: not over yet.',
+    cap: 'Tongue tie, Google Trends in Washington, Oct 2024 to Oct 2026. Shaded: the two 3-month windows the call compares. Below: where that puts it.',
+    build(S) {
+      grid(S); ruler(S, RY_STRIP, 18); dots(S, 'tt');
+      line(S, 'tt', ...W24, 'lead', { delay: 300 }); windows(S, 'tt', ...W24); endDot(S, 'tt', ...W24);
+    },
+    labels: () => `${title('Steady: 14 ahead, Rising starts at 15', 'Jul to Sep 2026 against the same months of 2025, in Washington')}
+      ${T(xw(idx('2025-08'), ...W24), Y0 - 6, 'Jul to Sep 2025 · avg 33.0', { s: 10.5, w: 600, c: '#475569', a: 'middle' })}${T(xw(idx('2026-08'), ...W24) - 20, Y0 - 6, 'Jul to Sep 2026 · avg 37.5', { s: 10.5, w: 700, c: '#115E59', a: 'middle' })}
+      ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W24)}${T(xw(60, ...W24), Y1 + 28, 'not over', { s: 9.5, c: '#9CA3AF', a: 'middle' })}
+      ${gutter([{ x0: xw(59, ...W24), y: yv(tt.m[59]), t: 'tongue tie', w: 700, c: '#0B1020' }])}
+      ${stripHead('Against dental searches overall, in Washington', 380)}${rulerLabels(RY_STRIP)}${ruleRight('tt')}`,
+    hv: hvLines(...W24, [series('tt', 'tongue tie')]),
+    idle: idleLines([series('tt', 'tongue tie')]),
+  });
+  chapters.push({
+    key: 'tt-phr', kick: '<span class="act">Act 1 · Tongue tie ·</span> its phrases',
+    head: 'Tongue tie carries the topic; <span class="g">ankyloglossia</span> is too rare to read.',
+    body: [`The Tongue-tie topic is read through 2 phrases, weighed by searches a month across the US. 'tongue tie' is about ${csR('tongue tie')} a month, 74 of every 100. 'ankyloglossia', the medical name, is about ${csR('ankyloglossia')}, 26 in 100.`,
+      'In Washington Google could score ankyloglossia in only 3 of 262 weeks, so it reads as empty. Weighed in, that empty phrase pulls the topic line about a quarter below tongue tie itself. The call follows tongue tie, so it is not moved.'],
+    facts: [['74 in 100', 'searches say tongue tie'], ['26 in 100', 'say ankyloglossia'], ['3 of 262', 'weeks ankyloglossia could be read'], [csR('tongue tie'), 'tongue tie a month, US'], [csR('ankyloglossia'), 'ankyloglossia a month, US'], ['36.5 vs 27', 'phrase vs topic line, Sep 2026']],
+    note: 'The topic’s stored spike verdict comes from ankyloglossia’s empty weeks, so this page does not repeat it.',
+    cap: 'The topic line (dashed) drops out of tongue tie: one phrase in four searches is empty in Washington. Tiles: one is about 500 searches a month across the US.',
+    build(S, { prev }) {
+      grid(S); dots(S, null); rulerY = RY_PARK; dots(S, null);
+      line(S, 'tt', ...W24);
+      const ttPts = linePts(VALS.tt, ...W24);
+      put(S, 'ln-comb', { pts: linePts(VALS.comb, ...W24), stroke: '#0D9488', sw: 2, dash: '6 4', o: 1 }, { pre: { pts: ttPts, o: 1, stroke: '#0D9488', sw: 2, dash: '6 4' }, delay: 350 });
+      put(S, 'tl-comb', { pts: tailPts(VALS.comb, ...W24), stroke: '#0D9488', sw: 1.6, o: 1 }, { pre: { pts: tailPts(VALS.tt, ...W24), o: 1, stroke: '#0D9488' }, delay: 350 });
+      put(S, 'ln-ank', { pts: linePts(VALS.ank, ...W24), stroke: '#8B98A9', sw: 1.4, dash: '2 3', o: 1 }, { pre: { pts: ttPts, o: 0.9, stroke: '#8B98A9', sw: 1.4, dash: '2 3' }, delay: 650 });
+      put(S, 'tl-ank', { pts: tailPts(VALS.ank, ...W24), stroke: '#8B98A9', o: 1 }, { pre: { pts: tailPts(VALS.tt, ...W24), o: 0.9 }, delay: 650 });
+      endDot(S, 'tt', ...W24);
+      const a = tiles('tongue tie'); const b = tiles('ankyloglossia');
+      for (let j = 0; j < a; j++) put(S, `t${j}`, { x: 130 + j * 13, y: 376, width: 10, height: 13, fill: TEAL, stroke: 'none', o: 1 }, { pre: { x: 130 + j * 13, y: 392, width: 10, height: 13 }, delay: 700 + j * 30 });
+      for (let j = 0; j < b; j++) put(S, `t${a + j}`, { x: 130 + j * 13, y: 400, width: 10, height: 13, fill: '#fff', stroke: '#98A2B3', o: 1 }, { pre: { x: 130 + j * 13, y: 416, width: 10, height: 13 }, delay: 1450 + j * 30 });
+    },
+    labels: () => `${title('74 in 100 searches say tongue tie', 'The topic line weighs both phrases by searches a month')}
+      ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W24)}
+      ${gutter([{ x0: xw(59, ...W24), y: yv(tt.m[59]), t: 'tongue tie', w: 700, c: '#0B1020' }, { x0: xw(59, ...W24), y: yv(VALS.comb[59]), t: 'topic line', c: '#0D9488' }, { x0: xw(59, ...W24), y: yv(0) - 4, t: 'ankyloglossia', c: '#667085' }])}
+      ${stripHead('Searches a month across the US · one tile is about 500', 366)}
+      ${T(0, 387, 'tongue tie', { s: 12, w: 700, c: '#0B1020' })}${T(640, 387, `about ${csR('tongue tie')}`, { s: 12, w: 700, c: '#0B1020', a: 'end' })}
+      ${T(0, 411, 'ankyloglossia', { s: 12, w: 600, c: '#667085' })}${T(640, 411, `about ${csR('ankyloglossia')}`, { s: 12, w: 600, c: '#667085', a: 'end' })}
+      ${T(130, 434, 'Hollow: too few searches in Washington to read (3 of 262 weeks)', { s: 10.5, c: '#667085' })}`,
+    hv: hvLines(...W24, [series('tt', 'tongue tie'), { ...series('comb', 'topic line', 'other'), key: { c: '#0D9488', w: 2, dash: '6 4' } }, { ...series('ank', 'ankyloglossia', 'other'), key: { c: '#8B98A9', w: 1.4, dash: '2 3' } }]),
+    idle: idleLines([series('tt', 'tongue tie'), { ...series('comb', 'topic line', 'other'), key: { c: '#0D9488', w: 2, dash: '6 4' } }, { ...series('ank', 'ankyloglossia', 'other'), key: { c: '#8B98A9', w: 1.4, dash: '2 3' } }]),
+  });
+  const ttOwn = ownVals('tt'); const ttClicks = C['tongue tie'].own.filter((r) => r.clicks > 0);
+  const ttAll = C['tongue tie'].all; const ttAllImp = sum(ttAll, (r) => r.impressions); const ttAllClk = sum(ttAll, (r) => r.clicks);
+  const OWN_MAX_TT = 1500; const yOwnTT = (v) => Y1 - (v / OWN_MAX_TT) * (Y1 - Y0);
+  chapters.push({
+    key: 'tt-who', kick: '<span class="act">Act 1 · Tongue tie ·</span> who gets the click',
+    head: 'Expedition shows up for tongue tie and almost never gets the click: <span class="r">3 clicks</span> in a year.',
+    body: [`Its pages appeared ${fmt(ownTot('tongue tie'))} times in Google for searches with "tongue tie" over 14 months. From June to August 2026 that ran 1,177, 1,204 and 1,412 a month, up from about 450 a month earlier in the year.`,
+      `Patients searched for a person to do it: "tongue tie dentist", "laser tongue tie near me", "tongue tie release" in Kirkland and Bellevue. None of those showings became a click. Across every practice we track, tongue tie searches earned ${ttAllClk} clicks from ${fmt(ttAllImp)} showings, about 1 in 900; Expedition got about 1 in 2,600.`],
+    extra: `<div class="qlist"><div class="h"><span>Search</span><span>Showings</span><span>Clicks</span></div>${C['tongue tie'].top.slice(0, 5).map((q) => `<div><span>${FL.esc(q.query)}</span><span>${fmt(q.impressions)}</span><span>${q.clicks}</span></div>`).join('')}</div>`,
+    note: 'Expedition’s own Search Console misses the weeks of Sep 7, 14 and 21, so September is drawn as a gap, not a dip. October has 2 weeks so far.',
+    cap: 'Rose: Expedition’s showings for tongue tie searches a month (left scale). Faint: the Google Trends line for shape. Dots below: each click, in the month it came.',
+    build(S) {
+      grid(S); dots(S, null); rulerY = RY_PARK; dots(S, null);
+      line(S, 'tt', ...W12, 'faint');
+      const pts = ttOwn.map((v, j) => [xw(OWN_I0 + j, ...W12), yOwnTT(v)]);
+      put(S, 'own', { pts, o: 1 }, { pre: { pts } }); put(S, 'own-cs', { pts, o: 1 }, { pre: { pts } });
+      const h = hw(...W12);
+      put(S, 'gap', { x: xw(59, ...W12) - h, width: 2 * h, y: Y0, height: Y1 - Y0, o: 1 }, { delay: 900 });
+      put(S, 'end', { cx: pts[pts.length - 1][0], cy: pts[pts.length - 1][1], r: 4, fill: ROSE, o: 1 }, { delay: 900 });
+      ttClicks.forEach((r, n) => { const i = idx(r.month); const j = i - OWN_I0; put(S, `c${n}`, { cx: xw(i, ...W12), cy: 392, r: 5, fill: ROSE, o: 1, attr: { 'data-ro-t': `${FL.ml(r.month)}: 1 click`, 'data-ro-b': `${fmt(r.impressions)} showings that month, 1 click.` } }, { pre: { cx: xw(i, ...W12), cy: pts[j][1], r: 5 }, delay: 1300 + n * 250 }); });
+    },
+    enter(fig) { fig.drawIn('own', { dur: 1100 }); fig.drawIn('own-cs', { dur: 1100 }); },
+    labels: () => `<text x="0" y="20" font-size="15" font-weight="800" fill="#0B1020"><tspan data-count="${ownTot('tongue tie')}">0</tspan> showings, 3 clicks</text>${T(0, 38, 'Expedition Pediatric Dentistry, searches containing "tongue tie", Sep 2025 to Oct 2026', { s: 11.5, c: '#667085' })}
+      ${yTicks([[yOwnTT(0), '0'], [yOwnTT(750), '750'], [yOwnTT(1500), '1,500']])}${xTicks(...W12, 2)}
+      ${T(xw(59, ...W12), Y0 + 14, 'no data', { s: 10, w: 600, c: '#667085', a: 'middle' })}${T(xw(59, ...W12), Y0 + 26, '3 weeks', { s: 10, c: '#667085', a: 'middle' })}
+      ${gutter([{ x0: xw(58, ...W12), y: yOwnTT(ttOwn[ttOwn.length - 1]), t: 'Expedition', w: 700, c: '#9D174D' }, { x0: xw(59, ...W12), y: yv(tt.m[59]), t: 'Trends shape', c: '#98A2B3' }])}
+      ${T(0, 372, 'Expedition’s clicks', { s: 10.5, w: 600, c: '#667085' })}<line x1="${X0}" x2="${X1}" y1="392" y2="392" stroke="#EEF0F3"/>${T(640, 397, '3 clicks', { s: 13, w: 800, c: '#0B1020', a: 'end' })}
+      ${T(0, 422, `All practices we track: ${fmt(ttAllImp)} showings, ${ttAllClk} clicks, about 1 in 900`, { s: 11, c: '#273043' })}
+      ${T(0, 438, 'Own showings and clicks come from the audit export; the check does not store them yet', { s: 10.5, c: '#9CA3AF' })}`,
+    hv: { i0: OWN_I0, i1: 60, x: (i) => xw(i, ...W12), note: 'Expedition, Search Console', title: (i) => (i === 59 ? 'Sep 2026: 3 weeks missing' : i === 60 ? 'Oct 2026: 2 weeks so far' : FL.ml(M[i])),
+      series: [{ name: 'showings', vals: Object.fromEntries(ttOwn.map((v, j) => [OWN_I0 + j, v])), y: yOwnTT, kind: 'rose', key: { c: ROSE, w: 2.2 }, fmt: (v) => fmt(v) },
+        { name: '', vals: Object.fromEntries(Array.from({ length: 13 }, (_, j) => [OWN_I0 + j, j <= 10 ? OWN.tt[M[OWN_I0 + j]].clicks : null])), y: () => 392, nodot: true, key: { c: ROSE, w: 0 }, fmt: (v) => (v === 1 ? '1 click' : `${v} clicks`) },
+        { name: 'Trends shape', vals: VALS.tt, y: yv, kind: 'other', key: { c: '#98A2B3', w: 1.6 }, fmt: (v) => String(Math.round(v)) }] },
+    idle: () => ({ title: 'Oct 2025 to Aug 2026, full months', note: 'Expedition, Search Console', slots: [{ key: FL.key({ c: ROSE, w: 2.2 }), v: fmt(ownTot('tongue tie')), name: 'showings, 14 months' }, { key: FL.dotKey(ROSE), v: '3', name: 'clicks' }, { key: '', v: '0', name: 'clicks on the top 8 searches' }] }),
+  });
+
+  /* ACT 2: pediatric dentist */
+  chapters.push({
+    key: 'pd-call', kick: '<span class="act">Act 2 · Pediatric dentist ·</span> its call',
+    head: 'Pediatric dentist is down a little on a year ago, <b>7 behind</b> dental searches overall.',
+    body: ['July to September averaged 49.5 in Washington, against 53.3 a year earlier: down about 7 in every 100 while dental searches overall held level. Steady, well clear of both lines.',
+      `It is the Preventative Pediatric Dentistry topic, read through 2 phrases. 'pediatric dentist' carries every search, about ${csR('pediatric dentist')} a month across the US. "children's dentist" had readings in only 18 of 262 weeks and about 100 searches a month, too few to read.`],
+    facts: [['49.5', 'Jul to Sep 2026 average'], ['53.3', 'Jul to Sep 2025 average'], ['7 behind', 'of dental searches overall'], ['100 in 100', 'searches say pediatric dentist'], ['254 of 262', 'weeks Google could read'], ['8', 'clear of the Fading line']],
+    note: 'Tongue tie stays behind in grey; pediatric dentist unfurls from the dot it held in the overview.',
+    cap: 'Pediatric dentist, Google Trends in Washington, Oct 2024 to Oct 2026, with tongue tie kept in grey. Shaded: the two 3-month windows the call compares.',
+    build(S, { prev }) {
+      grid(S); ruler(S, RY_STRIP, 18); dots(S, 'pd');
+      put(S, 'dot-chd', { cx: 22, cy: RY_STRIP, o: 1, attr: { 'data-ro-t': "children's dentist", 'data-ro-b': 'Google read it in Washington in 18 of 262 weeks: too few searches to read.' } });
+      line(S, 'tt', ...W24, 'ghost'); line(S, 'pd', ...W24, 'lead', { from: prev === 'pd-step' ? null : [R(pd.rel), RY_STRIP], delay: prev === 'pd-step' ? 0 : 350 }); windows(S, 'pd', ...W24); endDot(S, 'pd', ...W24);
+    },
+    labels: () => `${title('Steady: 7 behind dental searches overall', 'Jul to Sep 2026 against the same months of 2025, in Washington')}
+      ${T(xw(idx('2025-08'), ...W24), Y0 - 6, 'Jul to Sep 2025 · avg 53.3', { s: 10.5, w: 600, c: '#475569', a: 'middle' })}${T(xw(idx('2026-08'), ...W24) - 20, Y0 - 6, 'Jul to Sep 2026 · avg 49.5', { s: 10.5, w: 700, c: '#115E59', a: 'middle' })}
+      ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W24)}
+      ${gutter([{ x0: xw(59, ...W24), y: yv(pd.m[59]), t: 'pediatric dentist', w: 700, c: '#0B1020' }, { x0: xw(59, ...W24), y: yv(tt.m[59]), t: 'tongue tie', c: '#98A2B3' }])}
+      ${stripHead('Against dental searches overall, in Washington', 380)}${rulerLabels(RY_STRIP)}${ruleRight('pd')}${T(32, RY_STRIP + 4, 'too few', { s: 9.5, c: '#98A2B3' })}`,
+    hv: hvLines(...W24, [series('pd', 'pediatric dentist'), series('tt', 'tongue tie', 'ghost')]),
+    idle: idleLines([series('pd', 'pediatric dentist'), series('tt', 'tongue tie', 'ghost')]),
+  });
+  const W36 = [idx('2023-10'), 60]; const PK = idx('2025-08');
+  chapters.push({
+    key: 'pd-step', kick: '<span class="act">Act 2 · Pediatric dentist ·</span> its step-up',
+    head: 'Pediatric dentist <span class="g">stepped up 3 times</span> in summer 2025 and stayed up.',
+    body: ['For two years it sat near 20 on Google’s scale in Washington. In July 2025 it jumped, and August reached 61.4, about 3 times its usual level; the week of August 10, 2025 is its 100.',
+      'Thirteen months later, July to September 2026 still runs at about 8 in 10 of that peak, so the higher level is the new normal, not a spike that faded. Dental searches overall rose about 6 in 10 over the same stretch, so most of this step is its own.'],
+    facts: [['20.2', 'usual level, months 6 to 18 before'], ['61.4', 'Aug 2025 peak'], ['3.0 times', 'the usual level'], ['8 in 10', 'of the peak, Jul to Sep 2026'], ['13', 'months since the peak'], ['26 to 42', 'dental searches overall, 2024 to 2026']],
+    note: 'Every dental phrase about doubled on Google Trends from 2024 to 2026; that rise is labelled here, not read as patients.',
+    cap: 'Pediatric dentist, Washington, Oct 2023 to Oct 2026. Dashed: the middle of 5 everyday dental phrases. The bracket measures the step from its usual level.',
+    build(S) {
+      grid(S); dots(S, null); rulerY = RY_PARK; dots(S, null);
+      line(S, 'pd', ...W36);
+      put(S, 'ln-bk', { pts: linePts(VALS.bk, ...W36), stroke: '#475569', sw: 1.5, dash: '4 3', o: 1 }, { pre: { pts: linePts(VALS.bk, ...W36), stroke: '#475569', sw: 1.5, dash: '4 3' }, delay: 200 });
+      put(S, 'tl-bk', { pts: tailPts(VALS.bk, ...W36), stroke: '#475569', sw: 1.5, o: 1 }, { pre: { pts: tailPts(VALS.bk, ...W36) }, delay: 200 });
+      const xp = xw(PK, ...W36);
+      put(S, 'usual', { x1: X0, x2: xp, y1: yv(pd.base), y2: yv(pd.base), o: 1 }, { pre: { x1: X0, x2: X0, y1: yv(pd.base), y2: yv(pd.base) }, delay: 600 });
+      const bx = xp + 12;
+      put(S, 'brk', { pts: [[bx - 5, yv(pd.base)], [bx, yv(pd.base)], [bx, yv(pd.peak)], [bx - 5, yv(pd.peak)]], o: 1 }, { pre: { pts: at(bx, yv(pd.base), 4) }, delay: 1200 });
+      put(S, 'pk', { cx: xp, cy: yv(pd.peak), stroke: TEAL, o: 1 }, { delay: 1000 });
+      put(S, 'after', { x: xp, width: xw(59, ...W36) - xp, o: 0.55 }, { pre: { x: xp, width: 0 }, delay: 1900 });
+      endDot(S, 'pd', ...W36);
+    },
+    enter(fig, later) { later(1250, () => { const t = fig.svg.querySelector('[data-bracket]'); if (t) FL.countTo(t, 3.0, { from: 1, ms: 900, fmt: (v) => `${v.toFixed(1)} times` }); }); },
+    labels: () => { const xp = xw(PK, ...W36);
+      return `${title('A step up that held', 'Pediatric dentist in Washington against its usual level')}
+      ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W36, 6)}
+      ${T(xp + 20, yv(pd.base) + 4, 'usual level 20', { s: 10.5, w: 600, c: '#475569' })}
+      ${T(xp, yv(pd.peak) - 10, 'peak, Aug 2025: 61', { s: 10.5, w: 700, c: '#0B1020', a: 'end' })}
+      <text x="${xp + 20}" y="${yv(57)}" font-size="12" font-weight="800" fill="#0B1020" data-bracket="1">1.0 times</text>
+      ${T((xp + xw(59, ...W36)) / 2 + 30, Y0 + 14, 'still 8 in 10 of the peak', { s: 10.5, w: 600, c: '#115E59', a: 'middle' })}
+      ${gutter([{ x0: xw(59, ...W36), y: yv(pd.m[59]), t: 'pediatric dentist', w: 700, c: '#0B1020' }, { x0: xw(59, ...W36), y: yv(VALS.bk[59]), t: 'dental overall', c: '#475569' }])}
+      ${[['20.2', 'usual level'], ['61.4', 'Aug 2025 peak'], ['49.5', 'Jul to Sep 2026'], ['0.8', 'of the peak, now']].map(([v, l], n) => `${T(n * 160, 382, v, { s: 18, w: 800, c: '#0B1020', extra: 'class="num"' })}${T(n * 160, 400, l, { s: 11, c: '#667085' })}`).join('')}
+      ${T(0, 428, 'Dental searches overall: Jun 2025 32, Aug 2025 40; the step in pediatric dentist is about 3 times, theirs about 1.25', { s: 10.5, c: '#667085' })}`; },
+    hv: hvLines(...W36, [series('pd', 'pediatric dentist'), series('bk', 'dental searches overall', 'other')]),
+    idle: idleLines([series('pd', 'pediatric dentist'), series('bk', 'dental searches overall', 'other')]),
+  });
+  const pdOwn = ownVals('pd'); const OWN_MAX_PD = 6000; const yOwnPD = (v) => Y1 - (v / OWN_MAX_PD) * (Y1 - Y0);
+  const pdAll = C['pediatric dentist'].all; const pdAllImp = sum(pdAll, (r) => r.impressions); const pdAllClk = sum(pdAll, (r) => r.clicks);
+  /* 46 click dots, about 10 clicks each, born in the month they came from */
+  const pdDots = (() => { const out = []; let cum = 0; let made = 0; C['pediatric dentist'].own.forEach((r) => { cum += r.clicks; const want = Math.round(cum / 10); for (; made < want; made++) out.push(r.month); }); return out; })();
+  chapters.push({
+    key: 'pd-who', kick: '<span class="act">Act 2 · Pediatric dentist ·</span> who gets the click',
+    head: `Expedition gets the click on pediatric dentist, mostly from people who <span class="g">already know its name</span>.`,
+    body: [`Its pages appeared ${fmt(ownTot('pediatric dentist'))} times for searches with "pediatric dentist" over 14 months and earned ${ownClk('pediatric dentist')} clicks. Of those, 397 came from people searching "expedition pediatric dentistry".`,
+      'The searches that do not name it earn little: "pediatric dentist near me" showed it 1,642 times for 5 clicks, and "emergency pediatric dentist near me" 2,058 times for none. Across every practice we track, these searches earned about 12 clicks per 1,000 showings.'],
+    extra: `<div class="qlist"><div class="h"><span>Search</span><span>Showings</span><span>Clicks</span></div>${C['pediatric dentist'].top.slice(0, 6).map((q) => `<div><span>${FL.esc(q.query)}</span><span>${fmt(q.impressions)}</span><span>${q.clicks}</span></div>`).join('')}</div>`,
+    note: 'Same gap in September as tongue tie. Own data needs a new read before this ships.',
+    cap: 'Rose: Expedition’s showings for pediatric dentist searches a month (left scale). Each dot below is about 10 clicks, born in its month; grey ones searched the practice by name.',
+    build(S) {
+      grid(S); dots(S, null); rulerY = RY_PARK; dots(S, null);
+      line(S, 'pd', ...W12, 'faint');
+      const pts = pdOwn.map((v, j) => [xw(OWN_I0 + j, ...W12), yOwnPD(v)]);
+      put(S, 'own', { pts, o: 1 }, { pre: { pts } }); put(S, 'own-cs', { pts, o: 1 }, { pre: { pts } });
+      const h = hw(...W12);
+      put(S, 'gap', { x: xw(59, ...W12) - h, width: 2 * h, y: Y0, height: Y1 - Y0, o: 1 }, { delay: 900 });
+      put(S, 'end', { cx: pts[pts.length - 1][0], cy: pts[pts.length - 1][1], r: 4, fill: ROSE, o: 1 }, { delay: 900 });
+      pdDots.forEach((m, n) => {
+        const i = Math.max(OWN_I0, idx(m)); const j = i - OWN_I0; const sy = j < pdOwn.length ? yOwnPD(pdOwn[j]) : Y1;
+        const col = n % 23; const row = Math.floor(n / 23);
+        const named = n < 40;
+        put(S, `c${n}`, { cx: 130 + col * 15, cy: 382 + row * 16, r: 4.6, fill: ROSE, o: 1, attr: { 'data-ro-t': named ? 'About 10 clicks from searching the name' : 'About 10 clicks from other searches', 'data-ro-b': named ? '397 of 455 clicks came from "expedition pediatric dentistry".' : '58 of 455 clicks came from searches that did not name the practice.' } },
+          { pre: { cx: xw(i, ...W12), cy: sy, r: 3, fill: ROSE }, delay: 1000 + n * 22 });
+      });
+    },
+    enter(fig, later) { fig.drawIn('own', { dur: 1100 }); fig.drawIn('own-cs', { dur: 1100 }); later(2700, () => { for (let n = 0; n < 40; n++) fig.set(`c${n}`, { fill: '#C3C8D2' }); }); },
+    labels: () => `<text x="0" y="20" font-size="15" font-weight="800" fill="#0B1020"><tspan data-count="${ownTot('pediatric dentist')}">0</tspan> showings, <tspan data-count="455">0</tspan> clicks</text>${T(0, 38, 'Expedition Pediatric Dentistry, searches containing "pediatric dentist", Sep 2025 to Oct 2026', { s: 11.5, c: '#667085' })}
+      ${yTicks([[yOwnPD(0), '0'], [yOwnPD(3000), '3,000'], [yOwnPD(6000), '6,000']])}${xTicks(...W12, 2)}
+      ${T(xw(59, ...W12), Y0 + 14, 'no data', { s: 10, w: 600, c: '#667085', a: 'middle' })}${T(xw(59, ...W12), Y0 + 26, '3 weeks', { s: 10, c: '#667085', a: 'middle' })}
+      ${gutter([{ x0: xw(58, ...W12), y: yOwnPD(pdOwn[pdOwn.length - 1]), t: 'Expedition', w: 700, c: '#9D174D' }, { x0: xw(59, ...W12), y: yv(pd.m[59]), t: 'Trends shape', c: '#98A2B3' }])}
+      ${T(0, 386, 'clicks', { s: 11, w: 600, c: '#667085' })}${T(0, 400, 'one dot, about 10', { s: 10, c: '#9CA3AF' })}
+      ${T(640, 386, '397 by name', { s: 12, w: 700, c: '#667085', a: 'end' })}${T(640, 402, '58 other', { s: 12, w: 800, c: '#9D174D', a: 'end' })}
+      ${T(0, 432, `All practices we track: ${fmt(pdAllImp)} showings, ${fmt(pdAllClk)} clicks, up to 166 practices a month`, { s: 11, c: '#273043' })}`,
+    hv: { i0: OWN_I0, i1: 60, x: (i) => xw(i, ...W12), note: 'Expedition, Search Console', title: (i) => (i === 59 ? 'Sep 2026: 3 weeks missing' : i === 60 ? 'Oct 2026: 2 weeks so far' : FL.ml(M[i])),
+      series: [{ name: 'showings', vals: Object.fromEntries(pdOwn.map((v, j) => [OWN_I0 + j, v])), y: yOwnPD, kind: 'rose', key: { c: ROSE, w: 2.2 }, fmt: (v) => fmt(v) },
+        { name: '', vals: Object.fromEntries(Array.from({ length: 13 }, (_, j) => [OWN_I0 + j, j <= 10 ? OWN.pd[M[OWN_I0 + j]].clicks : null])), y: () => 0, nodot: true, key: { c: ROSE, w: 0 }, fmt: (v) => (v === 1 ? '1 click' : `${v} clicks`) }] },
+    idle: () => ({ title: 'Sep 2025 to Oct 2026', note: 'Expedition, Search Console', slots: [{ key: FL.key({ c: ROSE, w: 2.2 }), v: fmt(ownTot('pediatric dentist')), name: 'showings' }, { key: FL.dotKey(ROSE), v: '455', name: 'clicks' }, { key: FL.dotKey('#C3C8D2'), v: '397', name: 'by name' }] }),
+  });
+
+  /* ACT 3: pediatric dentistry */
+  chapters.push({
+    key: 'pdy-call', kick: '<span class="act">Act 3 · Pediatric dentistry ·</span> its call',
+    head: 'Pediatric dentistry is down about 15 in 100, <span class="r">sitting on the Fading line</span>.',
+    body: ['July to September averaged 67.6 in Washington, against 79.6 a year earlier, while dental searches overall held level. That is 85 for every 100: Fading starts below 85, so it reads Steady by the smallest margin.',
+      'Most of the gap is September: 56.5 this year against 73.0 last year. July and August 2026 ran 71.0 and 75.2, against 83.5 and 82.4 in 2025, the strongest summer in five years.'],
+    facts: [['67.6', 'Jul to Sep 2026 average'], ['79.6', 'Jul to Sep 2025 average'], ['15 behind', 'of dental searches overall'], ['0', 'clear of the Fading line'], ['262 of 262', 'weeks Google could read'], [csR('pediatric dentistry'), 'searches a month, US']],
+    note: 'Pediatric dentist stays behind in grey; pediatric dentistry unfurls from its dot, which sits exactly on the Fading tick.',
+    cap: 'Pediatric dentistry, Google Trends in Washington, Oct 2024 to Oct 2026, with pediatric dentist in grey. Shaded: the two 3-month windows the call compares.',
+    build(S, { prev }) {
+      grid(S); ruler(S, RY_STRIP, 18); dots(S, 'pdy');
+      line(S, 'pd', ...W24, 'ghost'); line(S, 'pdy', ...W24, 'lead', { from: prev === 'pdy-season' ? null : [R(pdy.rel), RY_STRIP], delay: prev === 'pdy-season' ? 0 : 350 }); windows(S, 'pdy', ...W24); endDot(S, 'pdy', ...W24);
+    },
+    labels: () => `${title('Steady, on the Fading line: 15 behind', 'Jul to Sep 2026 against the same months of 2025, in Washington')}
+      ${T(xw(idx('2025-08'), ...W24), Y0 - 6, 'Jul to Sep 2025 · avg 79.6', { s: 10.5, w: 600, c: '#475569', a: 'middle' })}${T(xw(idx('2026-08'), ...W24) - 20, Y0 - 6, 'Jul to Sep 2026 · avg 67.6', { s: 10.5, w: 700, c: '#115E59', a: 'middle' })}
+      ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W24)}
+      ${gutter([{ x0: xw(59, ...W24), y: yv(pdy.m[59]), t: 'pediatric dentistry', w: 700, c: '#0B1020' }, { x0: xw(59, ...W24), y: yv(pd.m[59]), t: 'pediatric dentist', c: '#98A2B3' }])}
+      ${stripHead('Against dental searches overall, in Washington', 380)}${rulerLabels(RY_STRIP)}${ruleRight('pdy')}`,
+    hv: hvLines(...W24, [series('pdy', 'pediatric dentistry'), series('pd', 'pediatric dentist', 'ghost')]),
+    idle: idleLines([series('pdy', 'pediatric dentistry'), series('pd', 'pediatric dentist', 'ghost')]),
+  });
+  /* the fold: calendar years 2022 to 2025, each over its own average */
+  const YRS = [2022, 2023, 2024, 2025];
+  const yrRel = YRS.map((y) => { const i = idx(`${y}-01`); const seg = pdy.m.slice(i, i + 12); const a = avg(seg); return seg.map((v) => v / a); });
+  const yrMean = yrRel[0].map((_, k) => avg(yrRel.map((a) => a[k])));
+  const xf = (k) => X0 + 20 + (k / 11) * (X1 - X0 - 40); const yr = (r) => Y1 - ((r - 0.6) / 0.8) * (Y1 - Y0);
+  const WF = [idx('2022-01'), idx('2025-12')];
+  const ramp = ['#E6F4F1', '#B9E2DA', '#7CC8BC', '#2C9E90', '#0F766E'];
+  chapters.push({
+    key: 'pdy-season', kick: '<span class="act">Act 3 · Pediatric dentistry ·</span> its season',
+    head: 'Pediatric dentistry peaks in <span class="g">late summer</span> and dips every December.',
+    body: ['Four years running in Washington, July or August was the busiest month: August in 2022, 2023 and 2024, July in 2025, at about 1.2 times an average month. December was the quietest every year, at about 8 in 10 of an average month.',
+      'Each year is measured against its own average, so the 2025 rise in every dental phrase does not fake a season. A late-summer page does best live by June. Tongue tie’s busiest month moves around (July, May, July, January) and pediatric dentist stepped up instead, so neither has a season.'],
+    facts: [['4 of 4', 'years busiest in Jul or Aug'], ['4 of 4', 'years quietest in December'], ['about 1.2', 'times an average month at the peak'], ['about 0.8', 'in December'], ['June', 'publish by, for August'], ['0', 'seasons for the other two topics']],
+    labelsAt: 1900, labelsPre: () => title('Four years of pediatric dentistry, in Washington', 'Jan 2022 to Dec 2025, then each year laid over one'),
+    enter(fig, later) { later(950, () => ['ln-pdy', 'cs-pdy', 'tl-pdy'].forEach((id) => fig.set(id, { o: 0 }))); },
+    cap: 'Pediatric dentistry, Washington: 2022 to 2025 split at each January and laid over one year, each against its own average month. Bold: the 4-year average.',
+    build(S) {
+      grid(S, 0); put(S, 'base', { y1: Y1, y2: Y1, o: 1 }); dots(S, null); rulerY = RY_PARK; dots(S, null);
+      line(S, 'pdy', ...WF, 'lead');
+      YRS.forEach((y, n) => {
+        const i = idx(`${y}-01`);
+        const cont = Array.from({ length: 12 }, (_, k) => [xw(i + k, ...WF), yv(pdy.m[i + k])]);
+        put(S, `yr${n}`, { pts: yrRel[n].map((r, k) => [xf(k), yr(r)]), stroke: n % 2 ? '#475569' : '#8B98A9', sw: 1.2, dash: n % 2 ? '4 3' : 'none', o: 0.85 }, { pre: { pts: cont, o: 0 }, delay: 1000 + n * 120 });
+      });
+      const mp = yrMean.map((r, k) => [xf(k), yr(r)]);
+      put(S, 'yrm', { pts: mp, o: 1 }, { pre: { pts: at(xf(0), yr(1), 12).map((p, k) => [xf(k), yr(1)]) }, delay: 2100 });
+      put(S, 'yrm-cs', { pts: mp, o: 1 }, { pre: { pts: at(xf(0), yr(1), 12).map((p, k) => [xf(k), yr(1)]) }, delay: 2100 });
+      put(S, 'pk', { cx: xf(7), cy: yr(yrMean[7]), stroke: TEAL, o: 1 }, { delay: 2700 });
+      put(S, 'dp', { cx: xf(11), cy: yr(yrMean[11]), o: 1 }, { delay: 2800 });
+      yrMean.forEach((r, k) => { const s = r < 0.85 ? 0 : r < 0.95 ? 1 : r < 1.05 ? 2 : r < 1.12 ? 3 : 4; put(S, `t${k}`, { x: xf(k) - 18, y: 362, width: 36, height: 22, fill: ramp[s], stroke: 'none', o: 1, attr: { 'data-ro-t': `${FL.MONF[k]}, pediatric dentistry`, 'data-ro-b': `About ${r.toFixed(2)} times an average month, averaged over 2022 to 2025 in Washington.${k === 7 ? ' The busiest month.' : k === 11 ? ' The quietest month.' : ''}` } }, { pre: { x: xf(k) - 18, y: 362, width: 36, height: 0 }, delay: 2300 + k * 40 }); });
+    },
+    labels: () => `${title('Busiest in late summer, 4 years running', 'Each year against its own average month, Washington')}
+      ${T(X0 - 6, yr(1) + 3.5, 'avg', { s: 10.5, c: '#9CA3AF', a: 'end' })}${T(X0 - 6, yr(1.3) + 3.5, '1.3', { s: 10.5, c: '#9CA3AF', a: 'end' })}${T(X0 - 6, yr(0.7) + 3.5, '0.7', { s: 10.5, c: '#9CA3AF', a: 'end' })}
+      <line x1="${X0}" x2="${X1}" y1="${yr(1)}" y2="${yr(1)}" stroke="#EEF0F3"/>
+      ${FL.MON.map((m, k) => T(xf(k), Y1 + 16, m, { s: 10.5, c: '#9CA3AF', a: 'middle' })).join('')}
+      ${T(xf(7), yr(1.3) - 6, 'Aug, about 1.2 times', { s: 11.5, w: 700, c: '#0B1020', a: 'middle' })}${T(xf(11) - 4, yr(yrMean[11]) + 22, 'Dec, about 8 in 10', { s: 11.5, w: 700, c: '#0B1020', a: 'end' })}
+      ${gutter(YRS.map((y, n) => ({ x0: xf(11), y: yr(yrRel[n][11]), t: String(y), c: '#667085' })).concat([{ x0: xf(11), y: yr(yrMean[11]) - 1, t: '4-year average', w: 700, c: '#0B1020' }]))}
+      ${yrMean.map((r, k) => (k === 7 || k === 11 ? T(xf(k), 377, r.toFixed(2).replace(/^0/, ''), { s: 10, w: 700, c: k === 7 ? '#fff' : '#273043', a: 'middle' }) : '')).join('')}
+      <path d="M${xf(5)},${400} v10 M${xf(5)},${405} H${xf(7)}" fill="none" stroke="#0F766E" stroke-width="1.2"/>${T(xf(5) - 4, 412, 'publish by June', { s: 11.5, w: 700, c: '#115E59', a: 'end' })}
+      ${T(xf(7) + 6, 412, 'two months ahead of the August peak', { s: 10.5, c: '#667085' })}
+      ${T(0, 436, 'tongue tie: busiest month moves, no season · pediatric dentist: a step up, not a season', { s: 10.5, c: '#667085' })}`,
+    hv: { i0: 0, i1: 11, x: xf, note: 'times an average month', title: (k) => `${FL.MONF[k]}, 2022 to 2025`, cols: 5,
+      series: [{ name: 'avg', vals: yrMean, y: yr, kind: 'lead', key: { c: TEAL, w: 2.2 }, fmt: (v) => v.toFixed(2) }, ...YRS.map((y, n) => ({ name: String(y), vals: yrRel[n], y: yr, kind: 'other', key: { c: n % 2 ? '#475569' : '#8B98A9', w: 1.2, dash: n % 2 ? '4 3' : '' }, fmt: (v) => v.toFixed(2) }))] },
+    idle: () => ({ title: 'August, the busiest month', note: 'times an average month, Washington', cols: 5, slots: [{ key: FL.key({ c: TEAL, w: 2.2 }), v: yrMean[7].toFixed(2), name: 'avg' }, ...YRS.map((y, n) => ({ key: FL.key({ c: n % 2 ? '#475569' : '#8B98A9', w: 1.2, dash: n % 2 ? '4 3' : '' }), v: yrRel[n][7].toFixed(2), name: String(y) }))] }),
+  });
+
+  /* What to write next: every line folds back into its dot; each dot gets its rule-built next step */
+  const NEXT = [
+    { k: 'tt', when: 'Now', head: 'A tongue tie release page that earns the click', rule: 'Rule: within 5 of Rising, and shown 1,000+ times with under 1 click in 1,000', ev: `tongue tie: 14 ahead; ${fmt(ownTot('tongue tie'))} showings, 3 clicks` },
+    { k: 'pdy', when: 'Live by June 2027', head: 'A late-summer pediatric dentistry page', rule: 'Rule: busiest in the same months in at least 2 of the last 3 years', ev: 'pediatric dentistry: July or August, 4 years of 4; on the Fading line now' },
+    { k: 'pd', when: 'Now', head: 'A page for "pediatric dentist near me"', rule: 'Rule: shown 1,000+ times with under 1 click in 100, outside searches for the name', ev: 'near me: 1,642 showings, 5 clicks; emergency near me: 2,058, none' },
+  ];
+  chapters.push({
+    key: 'next', kick: 'What to write next',
+    head: 'Three pages, each from a rule: <span class="g">tongue tie first</span>.',
+    body: ['Tongue tie is the closest topic to Rising and the clearest gap: Expedition is already shown for it and almost never clicked. A page that answers "tongue tie dentist" and "laser tongue tie near me" is the first to write.',
+      'Pediatric dentistry has the only real season, so its page should be live by June 2027. Pediatric dentist already brings clicks, but nearly all from people who know the name; a page for "near me" searches goes after the rest.'],
+    note: 'Ordered by the rules above, not by the 1 to 10 rating: on this prospect check every topic rates 2 of 10, a tie.',
+    cap: 'Each topic folds back into its dot on the ruler; each dot points to the page its rule asks for.',
+    build(S) {
+      ruler(S, 120, 26); dots(S, null, { overview: true });
+      const d = [R(pdy.rel), 120];
+      for (let n = 0; n < 4; n++) put(S, `yr${n}`, { pts: at(d[0], d[1], 12), o: 0 });
+      put(S, 'yrm', { pts: at(d[0], d[1], 12), o: 0 }); put(S, 'yrm-cs', { pts: at(d[0], d[1], 12), o: 0 });
+      ['pk', 'dp'].forEach((id) => put(S, id, { cx: d[0], cy: d[1], o: 0 }));
+      for (let k = 0; k < 12; k++) put(S, `t${k}`, { x: d[0] - 2, y: d[1] - 2, width: 4, height: 4, o: 0 });
+    },
+    labels: () => `${title('What to write next for Expedition', 'Built from rules, not opinion; in Washington')}
+      ${rulerLabels(120)}
+      ${NEXT.map((n, j) => `${T(R(TOP[n.k].rel), 84, `${j + 1}. ${TOP[n.k].name}`, { s: 12, w: 800, c: '#0B1020', a: n.k === 'pdy' ? 'end' : 'start' })}${T(R(TOP[n.k].rel), 99, ahead(TOP[n.k].rel), { s: 10.5, c: '#667085', a: n.k === 'pdy' ? 'end' : 'start' })}`).join('')}
+      ${NEXT.map((n, j) => { const y = 176 + j * 80; return `<g style="animation:rise .45s cubic-bezier(.2,.8,.2,1) ${0.25 + j * 0.15}s both">
+        <rect x="0" y="${y}" width="640" height="68" rx="6" fill="#fff" stroke="#E7E9EE"/><circle cx="22" cy="${y + 19}" r="6" fill="${TOP[n.k].pal}"/>
+        ${T(22, y + 23, String(j + 1), { s: 9, w: 800, c: '#fff', a: 'middle' })}
+        ${T(36, y + 24, n.head, { s: 14, w: 800, c: '#0B1020' })}${T(624, y + 24, n.when, { s: 12, w: 700, c: '#115E59', a: 'end' })}
+        ${T(36, y + 42, n.rule, { s: 11, c: '#667085' })}${T(36, y + 58, n.ev, { s: 11.5, w: 600, c: '#273043' })}</g>`; }).join('')}
+      ${T(0, 432, 'Ordered by rule, not by the 1 to 10 rating (every topic rates 2 of 10 on this prospect check)', { s: 10.5, c: '#9CA3AF' })}`,
+    idle: () => ({ title: 'Three next pages', note: 'ordered by rule, not rating', slots: NEXT.map((n, j) => ({ key: FL.dotKey(TOP[n.k].pal), v: String(j + 1), name: TOP[n.k].name })) }),
+  });
+
+  window.V2 = { chapters, init, base, hit: { x: X0, y: Y0, width: X1 - X0, height: Y1 - Y0 } };
+})();
+</script>
+<script>
+FL.shell({ mock: "<b>Market Trends \u00b7 Story \u00b7 V2 Topic by topic</b> <span class=\"src\">\u00b7 data: Expedition Pediatric Dentistry, check #22 (read for Washington, Oct 29, 2026), plus Expedition's own Search Console from the audit export</span>\n<ul><li>Opens on one ruler (each topic against dental searches overall), then walks one topic at a time as an act: its call, its phrases, its step-up or season, who gets the click.</li>\n<li>Hand-off between acts: the next topic's line unfurls out of the dot it held on the ruler, the previous topic stays behind in grey. One persistent figure, nothing swapped.</li>\n<li>Every label says \"in Washington\"; October is dotted; phrases Google could not read show as \"too few searches\"; ordered by rules, not the tied rating.</li></ul>\n<span class=\"nr\">Own showings and clicks need a new read: the check does not store them yet (numbers here come from the audit export).</span>" });
+FL.method(window.MT_METHOD);
+const page = document.getElementById('page');
+page.innerHTML = '<div id="tabs"></div><div id="pane"></div>';
+const END = `<div><h3>What to write next for Expedition Pediatric Dentistry</h3><p>Three pages, each from a written rule. Every number is from check #22, read for Washington.</p></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-go" id="toCards">Open the topic cards →</button><button class="btn btn-line" id="toTop">Back to the top</button></div>`;
+function showStory() {
+  const pane = document.getElementById('pane');
+  FL.story(pane, { ...window.V2, end: END, defs: '<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><line x1="0" y1="0" x2="0" y2="6" stroke="#C3C8D2" stroke-width="2"/></pattern><clipPath id="v2clip"><rect x="35" y="-60" width="512" height="600"/></clipPath>', clip: 'v2clip' });
+  document.getElementById('toTop').onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('toCards').onclick = () => FL.toast('Opens the Topics tab (not part of this mockup).');
+}
+FL.tabs(document.getElementById('tabs'), { tabs: [{ key: 'story', label: 'Story' }, { key: 'topics', label: 'Topics' }, { key: 'phrases', label: 'Phrases' }], value: 'story',
+  onChange: (t) => { const pane = document.getElementById('pane'); if (t === 'story') showStory(); else pane.innerHTML = `<div class="tabnote">The ${t === 'topics' ? 'Topics' : 'Phrases'} tab is not part of this mockup; only the Story is.</div>`; window.scrollTo({ top: 0 }); } });
+showStory();
+</script></body></html>

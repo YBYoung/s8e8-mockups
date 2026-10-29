@@ -1,0 +1,1057 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Market Trends, Story V1: One figure, eight cuts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--a2:#0891B2;
+  --up:#15803D;--down:#E11D48;--rose:#DB2777;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+
+/* mockup bar, outside the design */
+.mockbar{background:#F1F2F4;border-bottom:1px solid #E3E5E9;color:#5B6472;font:12px/1.5 Inter,sans-serif;padding:7px 18px}
+.mockbar b{color:#2B3240;font-weight:700}
+.mockbar .mk{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#7A8291;margin-right:8px}
+.mockbar ul{margin:3px 0 0;padding-left:18px}
+.mockbar li{margin:0}
+
+/* app chrome */
+.fl-app{display:grid;grid-template-columns:56px minmax(0,1fr);min-height:100vh}
+.fl-side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+.fl-side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.fl-side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.fl-side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.fl-side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.fl-side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 0;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink);white-space:nowrap}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-right .who{color:var(--ink);font-weight:700}
+.fl-right .when{color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:7px 12px;font-weight:600;font-size:13px;transition:background .2s}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn-line:hover{background:var(--soft)}
+.btn-go{background:var(--a);color:#fff}
+.btn-go:hover{background:#0B5F58}
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 10px;font-weight:600;font-size:13.5px;color:var(--aInk)}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+
+/* tabs */
+.tabs{position:sticky;top:55px;z-index:20;display:flex;gap:26px;margin:0 -28px 6px;padding:10px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(12px)}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+.tabnote{margin:40px 0;color:var(--muted);font-size:14px}
+
+/* story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:44px}
+.chap{min-height:86vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;opacity:.25;transition:opacity .4s}
+.chap.on{opacity:1}
+.chap .k{margin-bottom:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.chap .k span{color:var(--muted);font-weight:600;letter-spacing:.06em}
+.chap h2{margin:0;font-size:36px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.grad{background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.chap p{margin:14px 0 0;max-width:520px;font-size:17px;line-height:1.6}
+.chap p.note{font-size:13.5px;color:var(--muted);margin-top:12px}
+.chap q{quotes:'\2018' '\2019'}
+.facts{margin:18px 0 0;max-width:520px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 16px;border-top:1px solid var(--line)}
+.facts dt,.facts dd{margin:0;padding:6px 0;border-bottom:1px solid #F0F1F4;font-size:13px}
+.facts dt{color:var(--muted)}
+.facts dd{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.facts dd .up{color:var(--up)}
+
+.stick{position:sticky;top:112px;height:calc(100vh - 124px);display:flex;flex-direction:column;justify-content:center}
+.ro{height:52px;padding:0 4px 6px;border-bottom:1px solid #F0F1F4;margin-bottom:6px;overflow:hidden}
+.ro .r1{height:22px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap}
+.ro .r1 b{font-size:13px;font-weight:700;color:#0F172A}
+.ro .r1 span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.ro .r2{height:22px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ro .sl{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;font-size:12.5px}
+.ro .sl b{font-size:13px;font-weight:700;color:#0F172A;font-variant-numeric:tabular-nums}
+.ro .sl span{color:#273043;overflow:hidden;text-overflow:ellipsis}
+.ro .sl svg{flex:none}
+#fig{display:block;width:100%;overflow:visible;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+#fig text{font-family:Inter,sans-serif;font-variant-numeric:tabular-nums}
+.figcap{margin-top:6px;min-height:20px;text-align:center;font-size:12.5px;color:var(--muted)}
+.cl{transition:opacity .35s ease}
+
+.storyend{margin:40px 0 0;border:1px solid var(--line);border-radius:8px;background:#fff;padding:28px 30px;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.storyend.in{opacity:1;transform:none}
+.storyend h2{margin:0 0 4px;font-size:30px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.storyend .sub{margin:0 0 18px;font-size:14px;color:var(--muted)}
+.nexts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.nx{border:1px solid var(--line);border-radius:8px;padding:14px 16px;background:#FBFCFC}
+.nx b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.nx span{font-size:13.5px;color:var(--body)}
+.nx em{display:block;margin-top:8px;font-style:normal;font-size:12px;color:var(--muted)}
+.endbtns{display:flex;gap:10px;margin-top:20px}
+
+/* method window */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:6vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4)}
+.modal .win{position:relative;width:100%;max-width:760px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18)}
+.modal h2{margin:0;font-size:24px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.modal .kick{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.modal h3{margin:18px 0 4px;font-size:15.5px;color:var(--ink)}
+.modal p{margin:4px 0;font-size:14.5px;line-height:1.6}
+.modal .x{position:absolute;right:14px;top:12px;border:0;background:none;font-size:22px;color:var(--muted);border-radius:6px;padding:2px 8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0F172A;color:#fff;font-size:13px;padding:9px 14px;border-radius:6px;z-index:200}
+
+@media (max-width:1100px){.story{grid-template-columns:1fr}.stick{position:static;height:auto}.chap{opacity:1;min-height:0}.nexts{grid-template-columns:1fr}}
+.oq-rail{position:sticky;top:0;height:100vh;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}</style></head><body>
+<div class="mockbar"><span class="mk">Mockup</span><b>Market Trends result, Story tab · V1 One figure, eight cuts.</b> Data: Bothell Family Dentistry, check #23 (Oct 29, 2026), read for the US with Washington reads, call made on September 2026. Only real numbers from the check.
+<ul><li>8 chapters instead of 4, on one persistent figure that is re-cut per chapter: same lines, same dots, never remounted, never a slide.</li>
+<li>The benchmark (dental searches overall) is drawn, and every call shows its numbers: the change on a year ago, the change against overall, the distance to Rising.</li>
+<li>New in the Story: rising phrases inside steady topics, the April whitening jump, seasons by the repeat rule, Washington, and our practices' Search Console. October dotted; the call sits on September.</li>
+<li>Hover the figure: the readout bar above it reads the month; nothing covers the plot and nothing moves.</li></ul></div>
+<div class="fl-app">
+<aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item is-active" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside>
+<main class="fl-main"><div class="fl-wrap">
+<div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>Market Trends
+<button type="button" class="method-btn" id="howBtn"><span class="dot"></span>How it works</button></div>
+<div class="fl-right"><span class="who">Bothell Family Dentistry</span><span class="when">Check · Oct 29, 2026</span>
+<button class="btn btn-line" data-toast="Opens the topic editor with this check's 2 topics and 4 phrases.">Edit topics</button>
+<button class="btn btn-line" data-toast="Runs the same topics again; about 11 calls, about 11 cents.">Check again</button>
+<button class="btn btn-line" data-toast="Opens the client report: link, access code, PDF and email.">Share report</button>
+<button class="btn btn-go" data-toast="Starts a new check from the setup sentence.">New check</button></div></div>
+<div class="tabs" id="tabs" role="tablist"><button class="on" data-k="story">Story</button><button data-k="topics">Topics</button><button data-k="phrases">Phrases</button><span class="ink"></span></div>
+<div id="pane">
+<div class="story"><div id="chaps">
+
+<section class="chap on" data-ch="0"><div class="k">01 · Long story short <span>· read for the US, September 2026</span></div>
+<h2>Both topics are keeping pace with dental searches overall; <span class="grad">2 of 4</span> phrases are pulling ahead.</h2>
+<p>Dental implants is up about a tenth on a year ago while dental searches overall slipped a little, so it runs about 12 in every 100 ahead of them: Steady, 3 short of Rising. Teeth whitening is level with them. The two pulling ahead are the small phrases, tooth implant and tooth whitening, both about 23 in every 100 ahead.</p>
+<p>Together about 38,800 searches a month across the US: about 18,100 for implants and 20,700 for whitening.</p>
+<p class="note">The call compares July to September with the same three months a year earlier. October is not over yet.</p>
+<dl class="facts"><dt>Read for</dt><dd>United States, with a Washington read beside it</dd><dt>Call made on</dt><dd>September 2026 (July to September)</dd><dt>Dental searches overall</dt><dd>97 for every 100 a year earlier</dd><dt>Rising starts at</dt><dd>15 in every 100 ahead of overall</dd></dl>
+</section>
+
+<section class="chap" data-ch="1"><div class="k">02 · Why steady, when the line doubled</div>
+<h2>Every dental search jumped on Google in 2025, so the call looks <span class="grad">past the jump</span>.</h2>
+<p>From 2024 to 2026 Google's scores roughly doubled for every dental phrase this check read, including the five it uses as the benchmark: invisalign, root canal, wisdom teeth removal, veneers and teeth whitening. Google Trends alone can't tell whether more patients searched or Google rescaled its numbers, so a topic is never called Rising for that.</p>
+<p>Measured against the benchmark, teeth whitening barely moved until this spring. Dental implants climbed well past it in 2025 and is still a little ahead this year.</p>
+<dl class="facts"><dt>Benchmark, average month</dt><dd>about 25 in 2024, about 42 in January to September 2026</dd><dt>Teeth whitening, average month</dt><dd>24 in 2024, 51 in 2026</dd><dt>Whitening for every 100 overall</dt><dd>98 in 2024, 106 in 2025, 121 in 2026</dd><dt>Implants for every 100 overall</dt><dd>99 in 2024, 145 in 2025, 167 in 2026</dd><dt>Worth knowing</dt><dd>teeth whitening is one of the five, so it partly measures itself</dd></dl>
+</section>
+
+<section class="chap" data-ch="2"><div class="k">03 · How the call is made</div>
+<h2>Dental implants is up about a tenth on a year ago, <span class="grad">3 short of Rising</span>.</h2>
+<p>July to September averaged 67 on Google's scale, against 61 for the same three months of 2025. Over the same months dental searches overall slipped a little: 97 for every 100 a year earlier. So implants ran about 12 in every 100 ahead of overall. Rising starts at 15.</p>
+<p>Teeth whitening: 38 against 40, level with overall.</p>
+<dl class="facts"><dt>July, August, September 2026</dt><dd>77, 68, 56 · average 66.9</dd><dt>Same months of 2025</dt><dd>64, 63, 57 · average 61.2</dd><dt>On a year ago</dt><dd>up 9 in every 100</dd><dt>Against overall</dt><dd>12 ahead · Steady runs from 15 behind to 15 ahead</dd><dt>October</dt><dd>not over yet, so it is drawn dotted and left out</dd></dl>
+</section>
+
+<section class="chap" data-ch="3"><div class="k">04 · The phrases under each topic</div>
+<h2>Tooth implant is rising, but it carries only about <span class="grad">1 of every 10</span> implant searches.</h2>
+<p>This check read implants through 2 phrases. <q>dental implants</q> carries about 89 of every 100 searches, about 16,300 a month, and sets the topic's call. <q>tooth implant</q> is up about a fifth on a year ago, about 23 in every 100 ahead of overall: Rising on its own, at about 1,800 searches a month.</p>
+<p>Whitening is the same story, smaller: <q>tooth whitening</q> is Rising at about 600 searches a month, next to about 20,100 for <q>teeth whitening</q>.</p>
+<dl class="facts"><dt>dental implants</dt><dd>89 in 100 · 16,340 a month · Steady, 12 ahead</dd><dt>tooth implant</dt><dd>11 in 100 · 1,789 a month · <span class="up">Rising</span>, 23 ahead</dd><dt>teeth whitening</dt><dd>97 in 100 · 20,069 a month · Steady, level</dd><dt>tooth whitening</dt><dd>3 in 100 · 603 a month · <span class="up">Rising</span>, 23 ahead</dd></dl>
+</section>
+
+<section class="chap" data-ch="4"><div class="k">05 · Spikes and step-ups</div>
+<h2>Teeth whitening had <span class="grad">one big April</span>, then came back down.</h2>
+<p>In April 2026 whitening reached about 2 and a half times its usual level, its busiest month in five years, and by September was back down to about 35, near its usual level of 30. April 2025 and April 2024 were ordinary, so it was a one-off, not a season.</p>
+<p>Its busiest single week, April 5, was also the busiest week for dental implants and tooth whitening.</p>
+<dl class="facts"><dt>April 2026</dt><dd>74 on Google's scale, its busiest month in five years</dd><dt>Usual level</dt><dd>about 30, the middle reading of the 6 to 18 months before</dd><dt>The jump</dt><dd>about 2.5 times usual, just under the spike line of 2.5</dd><dt>April 2025 · April 2024</dt><dd>30 · 24</dd><dt>Five months on</dt><dd>September 35, near usual</dd></dl>
+</section>
+
+<section class="chap" data-ch="5"><div class="k">06 · The typical year</div>
+<h2><span class="grad">Neither topic</span> has a season to plan around.</h2>
+<p>Laid over each other, the last three full years don't agree. In 2023 and 2024 both topics stayed within about a tenth of an average month all year; 2025 climbed to a July high. Whitening's April 2026 was a one-off (chapter 05). Either topic can be written any month.</p>
+<p class="note">A season needs the same busiest month in at least 2 of 3 years, at least 15 in every 100 above an average month.</p>
+<dl class="facts"><dt>Dental implants, busiest month</dt><dd>January 2023, January 2024, July 2025</dd><dt>January, against an average month</dt><dd>about 4 in 100 below, across the three years</dd><dt>Teeth whitening, busiest month</dt><dd>March 2023, July 2024, July 2025</dd><dt>July, against an average month</dt><dd>about 14 in 100 above: 1 short of a season</dd></dl>
+</section>
+
+<section class="chap" data-ch="6"><div class="k">07 · Washington and the US</div>
+<h2>Washington searches like the rest of the US, <span class="grad">a little softer</span> this year.</h2>
+<p>January to September, dental implants scored 74 in Washington and 70 across the US; teeth whitening 51 in both. On the year, Washington is flatter: implants level (against up about a tenth in the US), whitening down about a tenth (against down a little).</p>
+<p><q>tooth implant</q> is up about an eighth in Washington against about a fifth in the US. <q>tooth whitening</q> is too thin to read in Washington, so its call uses the US.</p>
+<dl class="facts"><dt>dental implants, Jul to Sep on a year ago</dt><dd>Washington 101 for every 100 · US 109</dd><dt>teeth whitening, same</dt><dd>Washington 88 for every 100 · US 96</dd><dt>tooth implant, same</dt><dd>Washington 113 for every 100 · US 119</dd><dt>tooth whitening in Washington</dt><dd>zero in 9 of the last 12 months</dd></dl>
+</section>
+
+<section class="chap" data-ch="7"><div class="k">08 · Who already shows up for it</div>
+<h2><span class="grad">218 of 237</span> practices we track already show up for dental implants searches.</h2>
+<p>Over the 12 months to October their pages appeared about 2 million times in Google results for searches containing <q>dental implants</q>, and about 600,000 times for <q>teeth whitening</q> (207 of 237 practices). Bothell Family Dentistry's own Search Console isn't in our data yet, so its own line can't be drawn.</p>
+<dl class="facts"><dt>dental implants</dt><dd>2,031,586 showings · 218 of 237 practices</dd><dt>teeth whitening</dt><dd>595,994 showings · 207 of 237</dd><dt>tooth implant</dt><dd>72,534 showings · 157 of 237</dd><dt>tooth whitening</dt><dd>9,045 showings · 80 of 237</dd><dt>Busiest month, per week</dt><dd>August: about 48,300 showings a week</dd></dl>
+</section>
+
+</div>
+<div><div class="stick"><div class="ro" id="ro" aria-live="polite"><div class="r1"><b id="roM"></b><span id="roS"></span></div><div class="r2" id="roSl"></div></div>
+<svg id="fig" viewBox="0 0 640 440" role="img" aria-label="Market Trends story figure"><defs id="defs"></defs>
+<g id="Ltitle"><text id="title" x="0" y="24" font-size="15" font-weight="800" fill="#0F172A"></text></g>
+<g id="Lunder"></g><g id="Lgrid"></g><g id="Lseries"></g><g id="Ldots"></g><g id="Lover"></g><g id="Lhover"></g>
+<rect id="hit" x="34" y="52" width="512" height="282" fill="transparent"/></svg>
+<div class="figcap" id="figcap"></div></div></div></div>
+
+<div class="storyend" id="end"><h2>What to write next for Bothell Family Dentistry</h2><p class="sub">Built from the numbers above, in this order. The 2 of 10 rating is the same for every topic on a prospect check, so it does not order these.</p>
+<div class="nexts"><div class="nx"><b>Tooth implant</b><span>Rising on its own, about 1,800 searches a month.</span><em>23 in every 100 ahead of overall</em></div>
+<div class="nx"><b>Dental implants</b><span>12 ahead of overall, the topic closest to Rising.</span><em>about 16,300 searches a month · 218 of 237 practices already show up</em></div>
+<div class="nx"><b>Any month</b><span>Neither topic has a season, so either can be written when it fits.</span><em>whitening's April was a one-off</em></div></div>
+<div class="endbtns"><button class="btn btn-go" id="toCards">Open the topic cards →</button><button class="btn btn-line" id="toTop">Back to the top</button></div></div>
+</div>
+</div></main></div>
+<script>
+const D = {"months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"basket":{"teeth whitening":[25.0,27.8,28.2,27.0,28.0,31.0,29.0,26.0,24.2,25.0,25.0,22.8,23.0,23.2,25.2,26.8,26.0,27.8,25.6,25.0,25.8,25.0,26.8,23.2,23.2,23.8,26.0,24.8,25.0,24.6,23.5,23.0,22.6,24.8,24.2,21.2,21.2,21.8,25.4,25.5,27.0,32.8,28.5,30.2,35.2,43.0,37.6,34.5,35.5,34.2,37.8,41.8,51.5,52.0,73.8,57.6,60.8,40.2,37.6,34.0,32.0],"invisalign":[30.5,29.5,27.0,30.2,32.5,33.0,32.2,29.8,29.8,31.2,31.5,27.2,29.8,28.5,28.2,34.4,31.8,33.2,31.2,31.2,33.2,30.2,30.2,27.5,30.8,28.5,30.0,35.2,33.5,32.6,30.5,29.5,30.8,32.5,32.8,29.6,30.0,30.8,31.8,40.5,40.0,41.6,41.5,41.5,50.0,58.5,52.6,48.2,50.8,47.6,43.8,50.5,53.5,53.6,53.5,47.0,49.0,50.8,48.0,38.8,43.8],"veneers":[22.0,19.8,19.5,23.0,24.0,23.5,22.2,21.0,20.5,22.6,21.2,20.2,20.0,19.0,20.2,21.4,20.0,20.8,19.2,18.8,20.8,20.2,19.5,19.5,19.4,20.5,22.2,24.2,21.8,21.6,21.2,22.0,20.4,20.0,19.5,19.4,19.0,18.8,18.6,21.5,23.8,24.0,23.2,23.2,30.4,34.2,31.4,29.5,30.2,29.2,31.5,31.5,34.0,34.2,36.0,28.4,29.0,28.5,26.0,26.0,26.8],"root canal":[23.5,23.0,23.2,24.8,25.2,25.8,25.5,24.0,25.0,25.4,25.2,23.8,24.2,22.5,25.5,26.4,26.5,27.5,26.8,26.5,27.0,25.8,25.0,25.0,25.8,24.5,26.6,27.8,28.0,28.4,28.0,27.0,27.2,27.0,27.5,25.4,27.2,26.2,26.0,30.8,32.2,32.6,32.2,33.8,33.0,38.8,35.8,33.0,32.2,34.0,30.5,37.2,41.5,44.4,44.5,43.2,44.2,42.8,39.4,36.8,38.2],"wisdom teeth removal":[19.5,19.2,21.8,21.4,20.8,20.8,18.2,19.6,23.8,24.8,22.0,18.2,17.8,18.0,21.0,20.8,20.0,22.2,20.0,22.2,25.5,26.4,24.0,19.0,19.8,20.0,24.2,23.0,21.8,23.8,21.8,24.2,27.4,31.2,28.2,22.0,23.2,24.0,27.6,27.8,25.2,27.6,25.2,26.5,31.4,36.8,31.4,24.5,26.5,27.8,34.0,35.8,28.8,37.8,33.8,40.6,47.5,52.2,44.6,31.0,33.2]},"med":[23.5,23.0,23.2,24.8,25.2,25.8,25.5,24.0,24.2,25.0,25.0,22.8,23.0,22.5,25.2,26.4,26.0,27.5,25.6,25.0,25.8,25.8,25.0,23.2,23.2,23.8,26.0,24.8,25.0,24.6,23.5,24.2,27.2,27.0,27.5,22.0,23.2,24.0,26.0,27.8,27.0,32.6,28.5,30.2,33.0,38.8,35.8,33.0,32.2,34.0,34.0,37.2,41.5,44.4,44.5,43.2,47.5,42.8,39.4,34.0,33.2],"di":[28.0,25.5,24.8,26.6,30.0,28.0,26.8,25.6,27.2,27.0,27.8,26.5,25.6,24.5,23.5,28.0,27.0,26.8,26.4,26.0,26.0,26.4,25.5,24.5,23.8,23.5,24.8,26.2,25.8,25.0,25.0,23.8,24.2,25.0,25.5,23.4,24.8,23.5,23.2,33.0,33.0,31.6,35.8,38.0,49.6,63.5,63.2,57.0,56.0,55.4,52.5,56.8,69.8,72.0,75.0,74.4,79.0,77.0,68.2,55.5,54.2],"ti":[51.5,48.5,47.2,51.8,54.8,53.5,51.8,48.4,50.5,53.8,53.8,48.8,51.6,48.2,49.8,56.8,55.5,56.2,55.4,55.5,57.5,54.4,52.5,52.0,51.2,51.5,52.8,56.2,55.5,56.0,54.0,56.8,54.6,53.0,55.0,52.0,52.0,54.0,54.6,69.0,63.2,63.4,64.0,64.5,66.4,70.5,68.8,66.5,69.5,67.8,60.5,76.0,79.2,85.2,87.0,90.2,93.5,90.2,79.4,76.2,77.0],"tw":[25.0,29.0,29.8,27.6,30.5,32.0,29.2,27.0,24.8,25.4,25.8,23.2,23.2,23.8,25.8,27.2,27.2,27.5,25.6,26.8,26.8,26.4,27.2,24.0,23.8,25.8,26.0,25.8,25.0,25.6,24.2,23.8,24.0,26.5,25.5,22.6,22.0,23.2,25.6,26.8,27.0,34.0,29.5,30.2,36.6,45.0,39.0,35.2,35.2,35.4,39.2,42.8,52.2,53.6,74.0,59.8,61.5,41.8,38.0,35.2,33.2],"tww":[30.0,29.8,31.8,31.6,37.5,34.2,33.8,32.0,35.2,35.4,35.8,32.8,29.0,31.5,30.2,35.8,35.5,37.8,35.6,35.0,37.8,39.4,38.8,33.2,33.2,33.0,34.4,35.2,36.2,34.8,35.0,32.8,35.2,38.0,35.0,32.4,29.0,30.2,34.6,38.8,37.0,40.2,38.5,38.5,41.2,43.8,39.2,36.2,36.5,38.6,40.0,45.5,47.8,57.8,87.0,73.6,72.5,51.0,46.6,44.5,38.0],"cdi":[31,28,27,29,33,31,30,28,30,30,31,29,29,27,26,31,30,30,30,29,30,30,29,28,27,27,28,30,29,28,28,27,28,28,29,27,28,27,27,37,36,35,39,41,51,64,64,58,58,57,53,59,71,73,76,76,81,78,69,58,57],"ctw":[25,29,30,28,31,32,29,27,25,26,26,23,23,24,26,27,27,28,26,27,27,27,28,24,24,26,26,26,25,26,24,24,24,27,26,23,22,23,26,27,27,34,30,30,37,45,39,35,35,35,39,43,52,54,74,60,62,42,38,35,33],"wa":{"teeth whitening":[20.0,26.2,27.0,28.6,29.5,32.5,31.0,29.0,26.8,26.6,24.8,25.0,24.0,25.5,22.2,29.2,29.0,31.0,27.2,27.0,25.5,25.0,28.0,24.0,24.2,24.8,25.6,26.0,28.0,27.8,24.0,21.8,25.2,24.5,29.5,22.2,21.0,23.0,26.4,30.0,30.2,33.6,27.2,30.5,38.2,49.5,46.0,38.2,36.0,34.6,39.2,39.8,53.0,53.8,74.2,60.8,60.5,43.0,36.8,37.8,33.0],"tooth whitening":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,12.8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,11.6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,16.8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,16.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,12.6,45.0,0.0,21.0,0.0,0.0,0.0,14.5],"tooth implant":[0.0,0.0,0.0,12.6,28.0,32.5,34.2,16.4,10.0,20.8,11.0,17.0,25.6,25.5,12.0,20.8,0.0,26.2,9.2,23.2,41.2,10.2,0.0,0.0,42.4,10.5,8.4,10.5,28.2,18.0,0.0,0.0,10.2,0.0,14.2,11.0,10.2,0.0,29.8,42.8,27.0,52.8,28.5,43.8,23.6,47.0,53.2,12.2,38.0,27.8,41.2,52.0,32.0,61.2,46.2,44.4,67.5,60.5,30.6,36.2,33.0],"dental implants":[27.5,28.0,21.5,25.6,32.5,29.8,28.5,26.4,21.8,30.4,21.8,26.8,25.2,23.8,21.8,26.6,26.0,24.5,24.2,18.5,22.5,24.8,22.5,22.5,21.4,19.8,21.4,24.8,24.8,26.8,21.2,24.8,23.6,22.2,21.2,22.8,27.0,24.8,20.8,41.2,35.0,26.6,33.2,29.8,48.2,69.0,76.6,65.0,58.0,60.2,62.2,60.8,80.2,78.4,77.5,75.0,77.8,80.5,69.6,63.5,52.5]},"dd":{"dental implants":{"verdict":"stable","as_of":"2026-09","cur":66.9,"prev":61.2,"yoy_x":1.09,"relative_x":1.12,"basket_median":0.97,"basket_applied":true,"reason":null},"tooth implant":{"verdict":"growing","as_of":"2026-09","cur":81.9,"prev":68.6,"yoy_x":1.19,"relative_x":1.23,"basket_median":0.97,"basket_applied":true,"reason":null},"teeth whitening":{"verdict":"stable","as_of":"2026-09","cur":38.3,"prev":39.7,"yoy_x":0.96,"relative_x":0.99,"basket_median":0.97,"basket_applied":true,"reason":null},"tooth whitening":{"verdict":"growing","as_of":"2026-09","cur":47.4,"prev":39.7,"yoy_x":1.19,"relative_x":1.23,"basket_median":0.97,"basket_applied":true,"reason":null}},"spike":{"dental implants":{"verdict":"none","reason":"rise 1.8x under 2.5x","peak_month":"2026-06","peak":79.0,"baseline":43.8,"prior_year":[49.6,24.2],"rise_x":1.8,"seasonal_recurrence":true,"post_months":3,"tail_over_peak":null},"tooth implant":{"verdict":"none","reason":"rise 1.4x under 2.5x","peak_month":"2026-06","peak":93.5,"baseline":66.45,"prior_year":[66.4,54.6],"rise_x":1.4,"seasonal_recurrence":true,"post_months":3,"tail_over_peak":null},"teeth whitening":{"verdict":"none","reason":"rise 2.5x under 2.5x","peak_month":"2026-04","peak":74.0,"baseline":29.85,"prior_year":[29.5,24.2],"rise_x":2.5,"seasonal_recurrence":false,"post_months":5,"tail_over_peak":null},"tooth whitening":{"verdict":"none","reason":"rise 2.3x under 2.5x","peak_month":"2026-04","peak":87.0,"baseline":38.5,"prior_year":[38.5,35.0],"rise_x":2.3,"seasonal_recurrence":false,"post_months":5,"tail_over_peak":null}},"click":{"dental implants":[18904,19005,18803,18803,18451,16843,15837,14580,14178,14178,13725,12770],"tooth implant":[2161,2011,1810,1709,1709,1960,1860,1508,1608,1759,1759,1608],"teeth whitening":[21870,21669,21719,21971,21820,20915,19960,19055,18301,17748,17798,17999],"tooth whitening":[905,703,502,603,603,603,553,603,553,553,553,502]},"weights":{"dental implants":0.8881624704409514,"tooth implant":0.11183752955904855,"teeth whitening":0.972866331549646,"tooth whitening":0.027133668450354035},"contrib":{"dental implants":218,"tooth implant":157,"teeth whitening":207,"tooth whitening":80},"corpus":{"dental implants":[{"month":"2025-09","impressions":73740,"clicks":117,"practices":132,"weeks":2},{"month":"2025-10","impressions":128152,"clicks":273,"practices":133,"weeks":4},{"month":"2025-11","impressions":151336,"clicks":348,"practices":137,"weeks":4},{"month":"2025-12","impressions":165614,"clicks":348,"practices":151,"weeks":5},{"month":"2026-01","impressions":141847,"clicks":319,"practices":153,"weeks":4},{"month":"2026-02","impressions":156657,"clicks":272,"practices":159,"weeks":4},{"month":"2026-03","impressions":200393,"clicks":403,"practices":168,"weeks":5},{"month":"2026-04","impressions":163989,"clicks":308,"practices":169,"weeks":4},{"month":"2026-05","impressions":173469,"clicks":319,"practices":164,"weeks":4},{"month":"2026-06","impressions":235401,"clicks":277,"practices":162,"weeks":5},{"month":"2026-07","impressions":169757,"clicks":208,"practices":178,"weeks":4},{"month":"2026-08","impressions":241282,"clicks":223,"practices":181,"weeks":5},{"month":"2026-09","impressions":149227,"clicks":149,"practices":174,"weeks":4},{"month":"2026-10","impressions":82614,"clicks":51,"practices":155,"weeks":2}],"tooth implant":[{"month":"2025-09","impressions":2213,"clicks":4,"practices":56,"weeks":2},{"month":"2025-10","impressions":4495,"clicks":14,"practices":63,"weeks":4},{"month":"2025-11","impressions":6000,"clicks":28,"practices":67,"weeks":4},{"month":"2025-12","impressions":7040,"clicks":19,"practices":75,"weeks":5},{"month":"2026-01","impressions":5555,"clicks":18,"practices":82,"weeks":4},{"month":"2026-02","impressions":6040,"clicks":15,"practices":89,"weeks":4},{"month":"2026-03","impressions":8748,"clicks":28,"practices":97,"weeks":5},{"month":"2026-04","impressions":6276,"clicks":23,"practices":88,"weeks":4},{"month":"2026-05","impressions":5918,"clicks":18,"practices":79,"weeks":4},{"month":"2026-06","impressions":6955,"clicks":17,"practices":94,"weeks":5},{"month":"2026-07","impressions":5658,"clicks":15,"practices":95,"weeks":4},{"month":"2026-08","impressions":7574,"clicks":19,"practices":94,"weeks":5},{"month":"2026-09","impressions":4213,"clicks":3,"practices":91,"weeks":4},{"month":"2026-10","impressions":2557,"clicks":3,"practices":78,"weeks":2}],"teeth whitening":[{"month":"2025-09","impressions":11591,"clicks":40,"practices":117,"weeks":2},{"month":"2025-10","impressions":24729,"clicks":72,"practices":126,"weeks":4},{"month":"2025-11","impressions":26851,"clicks":83,"practices":124,"weeks":4},{"month":"2025-12","impressions":103992,"clicks":103,"practices":142,"weeks":5},{"month":"2026-01","impressions":58047,"clicks":108,"practices":142,"weeks":4},{"month":"2026-02","impressions":51927,"clicks":155,"practices":145,"weeks":4},{"month":"2026-03","impressions":70143,"clicks":154,"practices":150,"weeks":5},{"month":"2026-04","impressions":48846,"clicks":115,"practices":149,"weeks":4},{"month":"2026-05","impressions":48917,"clicks":126,"practices":150,"weeks":4},{"month":"2026-06","impressions":44541,"clicks":112,"practices":142,"weeks":5},{"month":"2026-07","impressions":38743,"clicks":100,"practices":155,"weeks":4},{"month":"2026-08","impressions":48833,"clicks":104,"practices":154,"weeks":5},{"month":"2026-09","impressions":36882,"clicks":84,"practices":156,"weeks":4},{"month":"2026-10","impressions":18272,"clicks":21,"practices":132,"weeks":2}],"tooth whitening":[{"month":"2025-09","impressions":224,"clicks":0,"practices":20,"weeks":2},{"month":"2025-10","impressions":487,"clicks":1,"practices":27,"weeks":4},{"month":"2025-11","impressions":538,"clicks":0,"practices":27,"weeks":4},{"month":"2025-12","impressions":818,"clicks":1,"practices":34,"weeks":5},{"month":"2026-01","impressions":671,"clicks":2,"practices":32,"weeks":4},{"month":"2026-02","impressions":837,"clicks":0,"practices":38,"weeks":4},{"month":"2026-03","impressions":991,"clicks":0,"practices":41,"weeks":5},{"month":"2026-04","impressions":861,"clicks":2,"practices":35,"weeks":4},{"month":"2026-05","impressions":709,"clicks":0,"practices":38,"weeks":4},{"month":"2026-06","impressions":965,"clicks":1,"practices":38,"weeks":5},{"month":"2026-07","impressions":797,"clicks":0,"practices":45,"weeks":4},{"month":"2026-08","impressions":1002,"clicks":1,"practices":44,"weeks":5},{"month":"2026-09","impressions":545,"clicks":1,"practices":44,"weeks":4},{"month":"2026-10","impressions":311,"clicks":0,"practices":30,"weeks":2}]},"runCorpus":{"dental implants":{"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"weeks":[4,5,4,4,5,4,4,5,4,5,4,4],"impressions":[151336,165614,141847,156657,200393,163989,173469,235401,169757,241282,149227,82614],"practices":[137,151,153,159,168,169,164,162,178,181,174,155]},"tooth implant":{"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"weeks":[4,5,4,4,5,4,4,5,4,5,4,4],"impressions":[6000,7040,5555,6040,8748,6276,5918,6955,5658,7574,4213,2557],"practices":[67,75,82,89,97,88,79,94,95,94,91,78]},"teeth whitening":{"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"weeks":[4,5,4,4,5,4,4,5,4,5,4,4],"impressions":[26851,103992,58047,51927,70143,48846,48917,44541,38743,48833,36882,18272],"practices":[124,142,142,145,150,149,150,142,155,154,156,132]},"tooth whitening":{"months":["2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"weeks":[4,5,4,4,5,4,4,5,4,5,4,4],"impressions":[538,818,671,837,991,861,709,965,797,1002,545,311],"practices":[27,34,32,38,41,35,38,38,45,44,44,30]}},"practices":237};
+(function () {
+'use strict';
+/* ---------- basics ---------- */
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+const PX0 = 34, PX1 = 540, PW = PX1 - PX0, PY0 = 56, PY1 = 330, PH = PY1 - PY0, AS = 59; // AS = September 2026, the month the call is made on
+const TEAL = '#0F766E', GREY = '#8B98A9', SLATE = '#475569', ROSE = '#DB2777', UP = '#15803D', INK = '#0F172A', MUTED = '#667085';
+const MS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MF = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const mi = (i) => { const [y, m] = D.months[i].split('-'); return { y: +y, m: +m - 1 }; };
+const mName = (i) => { const { y, m } = mi(i); return `${MF[m]} ${y}`; };
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const avg = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+const ahead = (r) => { const d = Math.round((r - 1) * 100); return Math.abs(d) <= 1 ? 'level' : d > 0 ? `${d} ahead` : `${-d} behind`; };
+
+function bez(p1x, p1y, p2x, p2y) {
+  const cx = 3 * p1x, bx = 3 * (p2x - p1x) - cx, ax = 1 - cx - bx, cy = 3 * p1y, by = 3 * (p2y - p1y) - cy, ay = 1 - cy - by;
+  const sx = (t) => ((ax * t + bx) * t + cx) * t, sy = (t) => ((ay * t + by) * t + cy) * t, dx = (t) => (3 * ax * t + 2 * bx) * t + cx;
+  return (x) => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const e = sx(t) - x; if (Math.abs(e) < 1e-5) break; const d = dx(t); if (Math.abs(d) < 1e-6) break; t -= e / d; } return sy(t); };
+}
+const EASE = bez(0.2, 0.8, 0.2, 1), LIN = (t) => t, OUT = (t) => 1 - Math.pow(1 - t, 3);
+function anim(ms, fn, ease = EASE) {
+  return new Promise((res) => {
+    if (RM || ms <= 0) { fn(1); res(); return; }
+    const t0 = performance.now();
+    const step = (now) => { const p = Math.min(1, (now - t0) / ms); fn(ease(p)); if (p < 1) requestAnimationFrame(step); else res(); };
+    requestAnimationFrame(step);
+  });
+}
+let TOK = 0;
+const wait = (ms, tok) => new Promise((r) => setTimeout(() => r(tok === TOK), RM ? 0 : ms));
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs || {}) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function T(parent, x, y, str, o = {}) {
+  return el('text', { x, y, 'font-size': o.fs || 11, 'font-weight': o.fw || 500, fill: o.c || '#273043', 'text-anchor': o.a || 'start', ...(o.attr || {}) }, parent, str);
+}
+
+/* ---------- scales and series values ---------- */
+const X = (i, dom) => PX0 + ((i - dom[0]) / (dom[1] - dom[0])) * PW;
+const YT = (v) => PY1 - (v / 100) * PH;
+const yr = (lo, hi) => (r) => PY1 - ((r - lo) / (hi - lo)) * PH;
+const DOM5 = [0, 60], DOM24 = [36, 60], DOM12 = [49, 60], DOM36 = [15, 50];
+const avg3 = (a) => a.map((v, i) => (i > AS ? v : avg(a.slice(Math.max(0, i - 1), Math.min(AS, i + 1) + 1))));
+const V = { di: D.di, ti: D.ti, tw: D.tw, tww: D.tww, cdi: D.cdi, ctw: D.ctw, med: D.med, wa: D.wa['dental implants'] };
+V.tw3 = avg3(D.tw); V.med3 = avg3(D.med);
+const YR = yr(0.4, 1.9);
+V.twR = V.tw.map((v, i) => v / V.med[i]); V.tw3R = V.tw3.map((v, i) => v / V.med3[i]);
+const ONE = V.med.map(() => 1);
+function LP(vals, dom, yf) { const p = []; for (let i = 0; i < 61; i++) { const j = Math.min(i, AS); p.push([X(j, dom), yf(vals[j])]); } return p; }
+function TP(vals, dom, yf) { return [[X(AS, dom), yf(vals[AS])], [X(60, dom), yf(vals[60])]]; }
+
+const PHR = {
+  di: { term: 'dental implants', topic: 'Dental Implants', lead: true },
+  ti: { term: 'tooth implant', topic: 'Dental Implants' },
+  tw: { term: 'teeth whitening', topic: 'Teeth Whitening', lead: true },
+  tww: { term: 'tooth whitening', topic: 'Teeth Whitening' },
+};
+Object.values(PHR).forEach((p) => { p.dd = D.dd[p.term]; p.w = D.weights[p.term]; p.cl = avg(D.click[p.term]); p.rising = p.dd.verdict === 'growing'; });
+
+/* ---------- the persistent figure ---------- */
+const svg = $('#fig'), defs = $('#defs'), Lser = $('#Lseries');
+const SER = {};
+function mkS(key) {
+  const cp = el('clipPath', { id: `c-${key}` }, defs);
+  const cr = el('rect', { x: PX0 - 6, y: PY0 - 16, width: PW + 12, height: PH + 30 }, cp);
+  const g = el('g', { 'clip-path': `url(#c-${key})` }, Lser);
+  const cas = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+  const p = el('path', { fill: 'none', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+  const t = el('path', { fill: 'none', 'stroke-linecap': 'round', 'stroke-dasharray': '2 3' }, g);
+  g.style.transition = 'opacity .5s ease';
+  [cas, p, t].forEach((e) => { e.style.transition = 'opacity .5s ease, stroke .5s ease, stroke-width .5s ease'; });
+  g.style.opacity = 0; cas.style.opacity = 0;
+  SER[key] = { key, g, cas, p, t, cr, pts: null, tp: null, rv: PX1 + 6, aid: 0, ra: 0, vis: false };
+}
+['med', 'y0', 'y1', 'y2', 'wa', 'ti', 'tw3', 'tw', 'comb', 'di', 'ym', 'rose'].forEach(mkS);
+const dStr = (pts) => `M${pts.map((q) => `${q[0].toFixed(1)},${q[1].toFixed(1)}`).join('L')}`;
+function render(s) {
+  if (s.pts) { const d = dStr(s.pts); s.p.setAttribute('d', d); s.cas.setAttribute('d', d); }
+  s.t.setAttribute('d', s.tp ? dStr(s.tp) : 'M0,0');
+}
+/* Set a series: style now (CSS transitions do colour and width), points tweened. */
+function S(key, o = {}, ms = 900) {
+  const s = SER[key];
+  if (o.c) { s.p.style.stroke = o.c; s.t.style.stroke = o.c; }
+  if (o.w != null) { s.p.style.strokeWidth = o.w; s.t.style.strokeWidth = Math.min(o.w, 1.8); s.cas.style.strokeWidth = o.w + 1.8; }
+  if (o.dash !== undefined) s.p.setAttribute('stroke-dasharray', o.dash || 'none');
+  if (o.op != null) { s.g.style.opacity = o.op; s.vis = o.op > 0; }
+  if (o.lop != null) { s.p.style.opacity = o.lop; s.t.style.opacity = o.tail === false ? 0 : o.lop; }
+  if (o.cas != null) s.cas.style.opacity = o.cas ? 1 : 0;
+  if (o.tail !== undefined) s.t.style.opacity = o.tail ? 1 : 0;
+  if (!o.pts) return Promise.resolve();
+  const to = o.pts, toT = o.tp || null;
+  if (!s.pts || o.snap || RM || ms === 0) { s.aid++; s.pts = to; if (toT) s.tp = toT; render(s); return Promise.resolve(); }
+  const id = ++s.aid; const f0 = s.pts.map((q) => q.slice()); const t0 = s.tp ? s.tp.map((q) => q.slice()) : toT;
+  return anim(ms, (e) => {
+    if (id !== s.aid) return;
+    s.pts = f0.map((q, i) => [q[0] + (to[i][0] - q[0]) * e, q[1] + (to[i][1] - q[1]) * e]);
+    if (toT) s.tp = t0.map((q, i) => [q[0] + (toT[i][0] - q[0]) * e, q[1] + (toT[i][1] - q[1]) * e]);
+    render(s);
+  }, o.ease || EASE);
+}
+function reveal(key, x, ms, ease = EASE) {
+  const s = SER[key]; const from = s.rv; const id = ++s.ra;
+  const set = (v) => { s.rv = v; s.cr.setAttribute('width', Math.max(0, v - (PX0 - 6))); };
+  if (RM || ms === 0) { set(x); return Promise.resolve(); }
+  return anim(ms, (e) => { if (id === s.ra) set(from + (x - from) * e); }, ease);
+}
+/* Bring a series in: if it is not on screen, place it and draw it from the left; if it is, glide it. */
+function showLine(key, pts, tp, style, ms = 900, drawMs = 900) {
+  const s = SER[key];
+  if (!s.vis) { S(key, { ...style, pts, tp, snap: true, op: 1 }); reveal(key, PX0 - 6, 0); return reveal(key, PX1 + 6, drawMs); }
+  reveal(key, PX1 + 6, 300);
+  return S(key, { ...style, pts, tp, op: 1 }, ms);
+}
+function only(keep) { Object.keys(SER).forEach((k) => { if (!keep.includes(k)) S(k, { op: 0 }); }); }
+
+/* grid: three persistent hairlines whose height and labels are re-cut per chapter */
+const Lgrid = $('#Lgrid'); Lgrid.style.transition = 'opacity .35s';
+const GR = [0, 1, 2].map(() => {
+  const l = el('line', { x1: PX0, x2: PX1, y1: PY1, y2: PY1, stroke: '#EEF0F3' }, Lgrid);
+  const t = el('text', { x: PX0 - 6, y: PY1, 'text-anchor': 'end', 'font-size': 10.5, fill: '#9CA3AF' }, Lgrid);
+  t.style.transition = 'opacity .3s';
+  return { l, t, y: PY1 };
+});
+let gridId = 0;
+function grid(ys, labels, ms = 900) {
+  Lgrid.style.opacity = ys ? 1 : 0;
+  if (!ys) return;
+  const id = ++gridId;
+  GR.forEach((g, k) => {
+    if (g.t.textContent !== labels[k]) {
+      if (!g.t.textContent || RM) g.t.textContent = labels[k];
+      else { g.t.style.opacity = 0; setTimeout(() => { if (id !== gridId) return; g.t.textContent = labels[k]; g.t.style.opacity = 1; }, 320); }
+    }
+  });
+  const from = GR.map((g) => g.y);
+  anim(ms, (e) => { if (id !== gridId) return; GR.forEach((g, k) => { g.y = from[k] + (ys[k] - from[k]) * e; g.l.setAttribute('y1', g.y); g.l.setAttribute('y2', g.y); g.t.setAttribute('y', g.y + 3.5); }); });
+}
+const gridTrend = (ms) => grid([YT(0), YT(50), YT(100)], ['0', '50', '100'], ms);
+
+/* chapter layers: everything that belongs to one chapter's cut (bands, axis, labels, strips) */
+const Lu = $('#Lunder'), Lo = $('#Lover');
+let CU = null, CO = null;
+function newLayers() {
+  [CU, CO].forEach((g) => { if (!g) return; g.style.opacity = 0; setTimeout(() => g.remove(), 420); });
+  CU = el('g', { class: 'cl' }, Lu); CO = el('g', { class: 'cl' }, Lo);
+  CU.style.opacity = 0; CO.style.opacity = 0;
+  const u = CU, o = CO;
+  setTimeout(() => { u.style.opacity = 1; o.style.opacity = 1; }, RM ? 0 : 340);
+}
+const sub = (parent) => { const g = el('g', { class: 'cl' }, parent); g.style.opacity = 0; return g; };
+const on = (g) => { if (!g) return; void g.getBoundingClientRect(); g.style.opacity = 1; };
+const off = (g) => { if (g) g.style.opacity = 0; };
+
+/* title band */
+const TT = $('#title'); TT.style.transition = 'opacity .35s';
+let titleCur = null, titleTimer = 0;
+function title(html) {
+  if (html === titleCur) return Promise.resolve();
+  titleCur = html; clearTimeout(titleTimer);
+  if (RM || !TT.innerHTML) { TT.innerHTML = html; TT.style.opacity = 1; return Promise.resolve(); }
+  TT.style.opacity = 0;
+  return new Promise((r) => { titleTimer = setTimeout(() => { TT.innerHTML = html; TT.style.opacity = 1; r(); }, 350); });
+}
+const cap = (s) => { $('#figcap').textContent = s; };
+
+/* x axis per cut */
+function xAxis(parent, dom, kind) {
+  const g = el('g', {}, parent);
+  el('line', { x1: PX0, x2: PX1, y1: PY1 + 0.5, y2: PY1 + 0.5, stroke: '#D1D5DB' }, g);
+  const tick = (x, a, b) => { el('line', { x1: x, x2: x, y1: PY1, y2: PY1 + 4, stroke: '#D1D5DB' }, g); if (a) T(g, x, PY1 + 15, a, { fs: 10.5, c: '#9CA3AF', a: 'middle' }); if (b) T(g, x, PY1 + 26, b, { fs: 10, c: '#9CA3AF', a: 'middle' }); };
+  if (kind === 'fold') { MS.forEach((m, k) => tick(PX0 + (k / 11) * PW, m)); return g; }
+  for (let i = Math.ceil(dom[0]); i <= dom[1]; i++) {
+    const { y, m } = mi(i); const x = X(i, dom);
+    if (kind === 'years') { if (m === 0) tick(x, String(y)); }
+    else if (kind === '24m') { if ((i - dom[0]) % 3 === 0) tick(x, m === 0 || i === dom[0] ? `${MS[m]} ${y}` : MS[m]); }
+    else if (kind === '12m') tick(x, m === 0 || i === dom[0] ? `${MS[m]} ${y}` : MS[m]);
+  }
+  return g;
+}
+
+/* end labels in the right gutter, spread around their cluster, with elbow leaders */
+function gutter(parent, items) {
+  const h = (it) => it.lines.length * 12.5;
+  items.forEach((it) => { it.ly = it.y; });
+  items.sort((a, b) => a.y - b.y);
+  for (let n = 0; n < 60; n++) {
+    let moved = false;
+    for (let i = 1; i < items.length; i++) {
+      const a = items[i - 1], b = items[i]; const need = (h(a) + h(b)) / 2 + 3;
+      if (b.ly - a.ly < need - 0.01) { const mid = (a.ly + b.ly) / 2; a.ly = mid - need / 2; b.ly = mid + need / 2; moved = true; }
+    }
+    if (items.length) {
+      const top = items[0]; const lo = PY0 + h(top) / 2; if (top.ly < lo) { const d = lo - top.ly; items.forEach((it) => { it.ly += d; }); moved = true; }
+      const bot = items[items.length - 1]; const hi = PY1 + 8 - h(bot) / 2; if (bot.ly > hi) { const d = bot.ly - hi; items.forEach((it) => { it.ly -= d; }); moved = true; }
+    }
+    if (!moved) break;
+  }
+  items.forEach((it) => {
+    const x0 = (it.x0 ?? PX1) + 4;
+    if (Math.abs(it.ly - it.y) > 2) el('path', { d: `M${x0},${it.y}H${x0 + 3}L${546},${it.ly}`, fill: 'none', stroke: '#C3C8D2' }, parent);
+    else el('line', { x1: x0, x2: 546, y1: it.y, y2: it.y, stroke: '#C3C8D2' }, parent);
+    let y = it.ly - h(it) / 2 + 9.5;
+    it.lines.forEach((ln) => { const t = T(parent, 550, y, ln.t, { fs: ln.fs || 11.5, fw: ln.fw || 500, c: ln.c || '#273043' }); if (ln.id) t.id = ln.id; y += 12.5; });
+  });
+}
+const endDot = (parent, x, y, c = TEAL) => el('circle', { cx: x, cy: y, r: 4, fill: c, stroke: '#fff', 'stroke-width': 2 }, parent);
+
+/* ---------- readout bar (fixed height, fixed slots) ---------- */
+const roM = $('#roM'), roS = $('#roS'), roSl = $('#roSl');
+function swatch(k) {
+  if (!k) return '';
+  if (k.dot) return `<svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="${k.ring ? '#fff' : k.c}" stroke="${k.c}" stroke-width="${k.ring ? 1.5 : 0}"/></svg>`;
+  if (k.sq) return `<svg width="12" height="12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" fill="${k.c}"/></svg>`;
+  return `<svg width="16" height="10" aria-hidden="true"><line x1="1.5" y1="5" x2="14.5" y2="5" stroke="${k.c}" stroke-width="${k.w || 2}" stroke-dasharray="${k.dash || ''}" stroke-linecap="round" opacity="${k.op ?? 1}"/></svg>`;
+}
+let roCols = 4;
+function RO(r) {
+  roM.textContent = r.m; roS.textContent = r.s || '';
+  const sl = (r.sl || []).slice(0, roCols); while (sl.length < roCols) sl.push(null);
+  roSl.style.gridTemplateColumns = `repeat(${roCols},minmax(0,1fr))`;
+  roSl.innerHTML = sl.map((x) => (x ? `<div class="sl">${swatch(x.k)}<b>${x.v}</b><span title="${x.n}">${x.n}</span></div>` : '<div class="sl"></div>')).join('');
+}
+
+/* ---------- hover: guide + dots, never a box over the plot ---------- */
+let HOV = null;
+const Lh = $('#Lhover');
+const guide = el('line', { y1: PY0, y2: PY1, stroke: SLATE, 'stroke-dasharray': '2 2' }, Lh);
+const rowTint = el('rect', { x: 0, width: 640, height: 34, rx: 4, fill: 'rgba(15,118,110,.06)' }, Lh);
+const hdots = [0, 1, 2, 3].map(() => el('circle', { r: 3 }, Lh));
+function clearHover() { guide.style.display = 'none'; rowTint.style.display = 'none'; hdots.forEach((d) => { d.style.display = 'none'; }); }
+clearHover();
+const svgPt = (e) => { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); };
+const hit = $('#hit');
+hit.addEventListener('pointermove', (e) => { if (HOV && HOV.move) HOV.move(svgPt(e)); });
+hit.addEventListener('pointerleave', () => { clearHover(); if (HOV) RO(HOV.idle()); });
+function placeDots(list) {
+  hdots.forEach((d, k) => {
+    const it = list[k];
+    if (!it || !it.p) { d.style.display = 'none'; return; }
+    d.style.display = '';
+    d.setAttribute('cx', it.p[0]); d.setAttribute('cy', it.p[1]);
+    d.setAttribute('r', it.lead ? 4.2 : it.rose ? 4.5 : 2.6); d.setAttribute('fill', it.c);
+    d.setAttribute('stroke', it.lead || it.rose ? '#fff' : 'none'); d.setAttribute('stroke-width', it.rose ? 2 : 1.5);
+  });
+}
+const posOf = (key, i) => { const s = SER[key]; if (!s.vis || !s.pts) return null; return i > AS && s.tp ? s.tp[1] : s.pts[Math.min(i, s.pts.length - 1)]; };
+/* A time hover: snaps to a month of the current cut. */
+function timeHover(dom, idle, row) {
+  return {
+    idle,
+    move(pt) {
+      let i = Math.round(dom[0] + ((pt.x - PX0) / PW) * (dom[1] - dom[0]));
+      i = Math.max(Math.ceil(dom[0]), Math.min(dom[1], i));
+      const r = row(i); const x = X(i, dom);
+      guide.style.display = ''; guide.setAttribute('x1', x); guide.setAttribute('x2', x);
+      placeDots(r.dots || []); RO(r);
+    },
+  };
+}
+
+/* ---------- the chapters ---------- */
+const BX = (r) => 170 + ((r - 0.7) / 0.7) * 370; // the "against overall" axis, shared by the board (01) and the ruler (03)
+const Ld = $('#Ldots');
+const BD = {};
+['di', 'ti', 'tw', 'tww'].forEach((k) => {
+  const c = el('circle', { cx: BX(1), cy: 0, r: 4 }, Ld);
+  c.style.transition = 'opacity .35s ease, fill .5s ease'; c.style.opacity = 0;
+  BD[k] = { c, x: BX(1), aid: 0 };
+});
+function dotTo(k, x, ms) { const d = BD[k]; const f = d.x; const id = ++d.aid; return anim(ms, (e) => { if (id !== d.aid) return; d.x = f + (x - f) * e; d.c.setAttribute('cx', d.x); }); }
+let boardOut = true;
+function boardAway() { if (boardOut) return; boardOut = true; Object.keys(BD).forEach((k) => { dotTo(k, BX(1), 450); BD[k].c.style.opacity = 0; }); }
+
+const sep = ' · ';
+const ROWS = [
+  { h: 'Dental Implants', y: 98, size: D.click['dental implants'].map((v, i) => v + D.click['tooth implant'][i]) },
+  { k: 'di', y: 134 }, { k: 'ti', y: 170 },
+  { h: 'Teeth Whitening', y: 222, size: D.click['teeth whitening'].map((v, i) => v + D.click['tooth whitening'][i]) },
+  { k: 'tw', y: 258 }, { k: 'tww', y: 294 },
+];
+const boardIdle = () => ({ m: 'The call, September 2026', s: 'Jul to Sep 2026 against the same months of 2025', sl: [
+  { k: { dot: true, ring: true, c: SLATE }, v: '97', n: 'overall, of every 100' },
+  { v: '15 ahead', n: 'Rising starts' },
+  { v: fmt(Math.round((avg(ROWS[0].size) + avg(ROWS[3].size)) / 100) * 100), n: 'searches a month' }] });
+
+const CH = [];
+/* 01 · the call board: every phrase starts ON level with overall, then slides out to its value */
+CH[0] = async (tok) => {
+  roCols = 3; title('Against dental searches overall'); grid(null); only([]); boardOut = false;
+  cap('Each dot is one phrase; a bigger dot carries more of its topic’s searches.');
+  const u = CU, o = CO;
+  el('rect', { x: BX(0.85), y: 78, width: BX(1.15) - BX(0.85), height: 234, fill: '#F3F4F6' }, u);
+  el('rect', { x: BX(1.15), y: 78, width: BX(1.4) - BX(1.15), height: 234, fill: '#E3F2EE' }, u);
+  T(u, (BX(0.7) + BX(0.85)) / 2, 70, 'Fading', { a: 'middle', fs: 11, fw: 700, c: MUTED });
+  T(u, BX(1), 70, 'Steady', { a: 'middle', fs: 11, fw: 700, c: MUTED });
+  T(u, (BX(1.15) + BX(1.4)) / 2, 70, 'Rising', { a: 'middle', fs: 11, fw: 700, c: UP });
+  el('line', { x1: BX(1), x2: BX(1), y1: 78, y2: 312, stroke: INK, 'stroke-width': 1 }, u);
+  [[0.85, '15 behind'], [1, 'level with overall'], [1.15, '15 ahead']].forEach(([r, t]) => T(u, BX(r), 326, t, { a: 'middle', fs: 10, c: '#9CA3AF' }));
+  const counters = {};
+  ROWS.forEach((r) => {
+    if (r.h) {
+      T(o, 0, r.y, r.h, { fs: 13, fw: 800, c: INK });
+      el('line', { x1: 0, x2: 640, y1: r.y + 7, y2: r.y + 7, stroke: '#EEF0F3' }, o);
+      const ht = T(o, 640, r.y, '', { a: 'end', fs: 12, fw: 800, c: INK });
+      el('tspan', { 'font-weight': 500, 'font-size': 10.5, fill: MUTED }, ht, `${fmt(Math.round(avg(r.size) / 100) * 100)} a month   `);
+      el('tspan', {}, ht, 'Steady');
+      return;
+    }
+    const p = PHR[r.k];
+    T(o, 12, r.y, p.term, { fs: 12, fw: p.lead ? 700 : 500, c: '#273043' });
+    T(o, 12, r.y + 13, `${Math.round(p.w * 100)} in 100${sep}${fmt(p.cl)} a month`, { fs: 10.5, c: MUTED });
+    T(o, 640, r.y, p.rising ? 'Rising' : 'Steady', { a: 'end', fs: 11.5, fw: 700, c: p.rising ? UP : '#273043' });
+    counters[r.k] = T(o, 640, r.y + 13, 'level', { a: 'end', fs: 11, c: MUTED });
+    const d = BD[r.k]; d.c.setAttribute('cy', r.y + 3); d.c.setAttribute('r', (3 + 7 * Math.sqrt(p.w)).toFixed(1));
+    d.c.setAttribute('fill', p.lead ? TEAL : GREY); d.c.setAttribute('stroke', '#fff'); d.c.setAttribute('stroke-width', 1.5);
+  });
+  /* strip: the five benchmark phrases on the same axis, their middle is "overall" */
+  const st = sub(o);
+  const bk = Object.keys(D.basket).map((k) => { const a = D.basket[k]; return { k, r: avg(a.slice(57, 60)) / avg(a.slice(45, 48)) }; });
+  T(st, 0, 372, 'The 5 benchmark', { fs: 11, fw: 700, c: INK }); T(st, 0, 385, 'phrases, on a year ago', { fs: 10.5, c: MUTED });
+  el('line', { x1: BX(0.7), x2: BX(1.4), y1: 372, y2: 372, stroke: '#E5E7EB' }, st);
+  bk.forEach((b) => el('circle', { cx: BX(b.r), cy: 372, r: 4, fill: GREY }, st));
+  el('circle', { cx: BX(D.dd['dental implants'].basket_median), cy: 372, r: 7.5, fill: 'none', stroke: SLATE, 'stroke-width': 1.5 }, st);
+  T(st, BX(D.dd['dental implants'].basket_median), 359, 'overall: 97', { a: 'middle', fs: 10.5, fw: 700, c: SLATE });
+  T(st, BX(0.855), 392, 'veneers, invisalign', { a: 'middle', fs: 10, c: MUTED });
+  T(st, BX(0.97), 404, 'teeth whitening', { a: 'middle', fs: 10, c: MUTED });
+  T(st, BX(1.11), 392, 'root canal', { a: 'middle', fs: 10, c: MUTED });
+  T(st, BX(1.38), 404, 'wisdom teeth removal', { a: 'end', fs: 10, c: MUTED, attr: { x: BX(1.38) + 10 } });
+  T(st, 170, 430, 'Dental searches overall is the middle of these five: 97 for every 100 a year earlier.', { fs: 10.5, c: MUTED });
+  HOV = {
+    idle: boardIdle,
+    move(pt) {
+      const rows = ROWS.filter((r) => r.k); const r = rows.reduce((a, b) => (Math.abs(b.y - pt.y) < Math.abs(a.y - pt.y) ? b : a));
+      const p = PHR[r.k]; const dd = p.dd;
+      rowTint.style.display = ''; rowTint.setAttribute('y', r.y - 13); guide.style.display = 'none'; placeDots([]);
+      RO({ m: `${p.term}: ${p.rising ? 'Rising' : 'Steady'}, ${fmt(p.cl)} searches a month`, s: 'Jul to Sep, Google’s 0 to 100', sl: [
+        { k: { dot: true, c: p.lead ? TEAL : GREY }, v: `${dd.cur.toFixed(1)} vs ${dd.prev.toFixed(1)}`, n: 'Jul to Sep' },
+        { v: `up ${Math.round((dd.yoy_x - 1) * 100)}`, n: 'in every 100' }, { v: ahead(dd.relative_x), n: 'against overall' }] });
+    },
+  };
+  RO(boardIdle());
+  if (!(await wait(380, tok))) return;
+  Object.keys(BD).forEach((k) => { BD[k].x = BX(1); BD[k].c.setAttribute('cx', BX(1)); BD[k].c.style.opacity = 1; });
+  if (!(await wait(450, tok))) return;
+  Object.keys(BD).forEach((k) => {
+    const rel = PHR[k].dd.relative_x; dotTo(k, BX(rel), 900);
+    anim(900, (e) => { counters[k].textContent = ahead(1 + (rel - 1) * e); });
+  });
+  if (!(await wait(950, tok))) return;
+  on(st);
+};
+
+/* 02 · the rebase: raw whitening and the benchmark both climb; divide by the benchmark and the climb is gone */
+let c1rel = false;
+CH[1] = async (tok) => {
+  roCols = 3; c1rel = false; gridTrend(); boardAway();
+  title('2025 to 2026: every dental phrase about doubled on Google Trends');
+  cap('Thin line: each month. Bold line: the 3-month average. Dashed: the middle of the 5 benchmark phrases.');
+  only(['tw', 'tw3', 'med']);
+  const u = CU, o = CO;
+  el('rect', { x: X(38.5, DOM5), y: PY0, width: X(59.5, DOM5) - X(38.5, DOM5), height: PH, fill: '#F3F4F6' }, u);
+  xAxis(u, DOM5, 'years');
+  const raw = { tw: LP(V.tw, DOM5, YT), tw3: LP(V.tw3, DOM5, YT), med: LP(V.med, DOM5, YT) };
+  const rel = { tw: LP(V.twR, DOM5, YR), tw3: LP(V.tw3R, DOM5, YR), med: LP(ONE, DOM5, YR) };
+  showLine('tw', raw.tw, TP(V.tw, DOM5, YT), { c: TEAL, w: 1.2, cas: false, tail: true, dash: '', lop: 0.4 });
+  showLine('tw3', raw.tw3, null, { c: TEAL, w: 2.2, cas: true, tail: false, dash: '' });
+  /* strip: the years under their own stretch of the axis */
+  const yrs = [[2024, 27, 38, '2024'], [2025, 39, 50, '2025'], [2026, 51, 59, 'Jan to Sep 2026']];
+  const ya = (a, y) => avg(a.slice(y[1], y[2] + 1));
+  const sA = sub(o), sB = sub(o);
+  yrs.forEach((y) => T(sA, X((y[1] + y[2]) / 2, DOM5), 360, y[3], { a: 'middle', fs: 10.5, fw: 700, c: MUTED }));
+  T(sA, PX0, 378, 'dental searches overall', { fs: 10.5, c: '#273043' }); T(sA, PX0, 394, 'teeth whitening', { fs: 10.5, c: '#273043' });
+  yrs.forEach((y) => { const x = X((y[1] + y[2]) / 2, DOM5); T(sA, x, 378, Math.round(ya(V.med, y)), { a: 'middle', fs: 11, fw: 700, c: INK }); T(sA, x, 394, Math.round(ya(V.tw, y)), { a: 'middle', fs: 11, fw: 700, c: INK }); });
+  T(sB, PX0, 413, 'whitening, for every 100 overall', { fs: 10.5, fw: 700, c: TEAL }); T(sB, PX0, 429, 'implants, for every 100 overall', { fs: 10.5, c: '#273043' });
+  const relY = (a, y) => avg(a.slice(y[1], y[2] + 1).map((v, i) => v / V.med[y[1] + i]));
+  yrs.forEach((y) => { const x = X((y[1] + y[2]) / 2, DOM5); T(sB, x, 413, Math.round(relY(V.tw, y) * 100), { a: 'middle', fs: 11, fw: 800, c: TEAL }); T(sB, x, 429, Math.round(relY(V.di, y) * 100), { a: 'middle', fs: 11, fw: 700, c: INK }); });
+  const labRaw = sub(o), labRel = sub(o);
+  gutter(labRaw, [{ y: YT(V.tw3[AS]), x0: X(AS, DOM5), lines: [{ t: 'teeth whitening', fw: 700, c: INK }, { t: `${Math.round(V.tw3[AS])}, 3-month avg`, fs: 10.5, c: MUTED }] },
+    { y: YT(V.med[AS]), x0: X(AS, DOM5), lines: [{ t: 'dental searches', fw: 500 }, { t: 'overall', fw: 500 }] }]);
+  gutter(labRel, [{ y: YR(V.tw3R[AS]), x0: X(AS, DOM5), lines: [{ t: 'teeth whitening', fw: 700, c: INK }, { t: `${Math.round(V.tw3R[AS] * 100)} for every 100`, fs: 10.5, c: MUTED }] },
+    { y: YR(1), x0: X(AS, DOM5), lines: [{ t: 'overall = 100', fw: 500 }] }]);
+  const rowAt = (i) => {
+    const r = c1rel;
+    return { m: mName(i) + (i === 60 ? ', not over yet' : ''), s: r ? 'for every 100 dental searches overall' : 'Google interest, 0 to 100',
+      dots: [{ p: posOf('tw3', Math.min(i, AS)), c: TEAL, lead: true }, { p: posOf('tw', i), c: TEAL }, { p: posOf('med', i), c: SLATE }],
+      sl: [{ k: { c: TEAL, w: 2.2 }, v: r ? Math.round(V.tw3R[Math.min(i, AS)] * 100) : Math.round(V.tw3[Math.min(i, AS)]), n: 'whitening, average' },
+        { k: { c: TEAL, w: 1.2, op: 0.4 }, v: r ? Math.round(V.twR[i] * 100) : V.tw[i].toFixed(1), n: 'whitening, month' },
+        { k: { c: SLATE, w: 1.7, dash: '4 3' }, v: r ? '100' : V.med[i].toFixed(1), n: 'overall' }] };
+  };
+  HOV = timeHover(DOM5, () => { const r = rowAt(AS); r.m = 'September 2026'; delete r.dots; return r; }, rowAt);
+  RO(HOV.idle());
+  if (!(await wait(980, tok))) return;
+  await new Promise((r) => { showLine('med', raw.med, TP(V.med, DOM5, YT), { c: SLATE, w: 1.7, cas: false, tail: true, dash: '4 3' }, 900, 650); setTimeout(r, RM ? 0 : 700); });
+  if (tok !== TOK) return;
+  on(labRaw); on(sA);
+  if (!(await wait(1500, tok))) return;
+  /* the rebase */
+  off(labRaw); c1rel = true;
+  title('Divided by dental searches overall: 100 = level with them');
+  grid([YR(0.5), YR(1), YR(1.5)], ['50', '100', '150'], 1200);
+  S('tw', { pts: rel.tw, tp: TP(V.twR, DOM5, YR), w: 1.2 }, 1200);
+  S('tw3', { pts: rel.tw3 }, 1200);
+  S('med', { pts: rel.med, tp: TP(ONE, DOM5, YR) }, 1200);
+  RO(HOV.idle());
+  if (!(await wait(1250, tok))) return;
+  on(labRel); on(sB);
+  title('Against overall, whitening only lifts in 2026');
+};
+
+/* 03 · the call: zoom to 24 months, October steps back, two windows, the ruler */
+CH[2] = async (tok) => {
+  roCols = 3; boardAway(); gridTrend(700);
+  title('Dental implants, Google’s 0 to 100');
+  cap('The two shaded stretches are the months the call compares: July to September, this year and last.');
+  const u = CU, o = CO;
+  const ax5 = sub(u), ax24 = sub(u);
+  xAxis(ax5, DOM5, 'years'); xAxis(ax24, DOM24, '24m');
+  const fromZoomed = SER.di.vis && SER.di.pts && Math.abs(SER.di.pts[36][0] - PX0) < 2;
+  /* whitening un-divides back to its raw line and leaves; implants takes its place */
+  ['tw', 'tw3', 'med'].forEach((k) => { if (SER[k].vis) S(k, { pts: LP(k === 'tw' ? V.tw : k === 'tw3' ? V.tw3 : V.med, DOM5, YT), tp: k === 'tw3' ? null : TP(k === 'tw' ? V.tw : V.med, DOM5, YT), op: 0 }, 700); });
+  only(['di', 'tw', 'tw3', 'med']);
+  S('ti', { op: 0 }); S('comb', { op: 0 });
+  const st = { c: TEAL, w: 2.2, cas: true, tail: true, dash: '' };
+  if (!fromZoomed) {
+    on(ax5);
+    if (!SER.di.vis) { S('di', { ...st, pts: LP(V.di, DOM5, YT), tp: TP(V.di, DOM5, YT), snap: true, op: 1 }); reveal('di', PX1 + 6, 0); }
+    else S('di', { ...st, pts: LP(V.di, DOM5, YT), tp: TP(V.di, DOM5, YT), op: 1 }, 600);
+    if (!(await wait(750, tok))) return;
+    off(ax5); on(ax24);
+    title('Zoom to the last 24 months');
+  } else { on(ax24); }
+  S('di', { ...st, pts: LP(V.di, DOM24, YT), tp: TP(V.di, DOM24, YT), op: 1 }, 700);
+  HOV = timeHover(DOM24, () => idle3(), (i) => ({ m: mName(i) + (i === 60 ? ', not over yet' : ''), s: 'Google interest, 0 to 100', dots: [{ p: posOf('di', i), c: TEAL, lead: true }],
+    sl: [{ k: { c: TEAL, w: 2.2 }, v: V.di[i].toFixed(1), n: 'dental implants' }, ...idle3().sl.slice(1)] }));
+  const idle3 = () => ({ m: 'September 2026', s: 'Google interest, 0 to 100', sl: [{ k: { c: TEAL, w: 2.2 }, v: V.di[AS].toFixed(1), n: 'dental implants' },
+    { k: { sq: true, c: '#CFE9E3' }, v: '66.9 vs 61.2', n: 'Jul to Sep' }, { v: '12 ahead', n: 'of overall' }] });
+  RO(idle3());
+  if (!(await wait(fromZoomed ? 100 : 760, tok))) return;
+  /* October steps back: the end dot lands on October, then walks back to September */
+  const ed = endDot(o, X(60, DOM24), YT(V.di[60]));
+  const notOver = sub(o); T(notOver, PX1, PY1 - 8, 'October, not over yet', { a: 'end', fs: 10, c: MUTED });
+  if (!(await wait(250, tok))) return;
+  anim(600, (e) => { ed.setAttribute('cx', X(60 - e, DOM24)); ed.setAttribute('cy', YT(V.di[60] + (V.di[AS] - V.di[60]) * e)); });
+  on(notOver);
+  if (!(await wait(700, tok))) return;
+  title('The call: July to September, against the same months a year earlier');
+  /* two windows wipe in, their level lines drop to their averages */
+  const win = [[45, 47, '#F3F4F6', 'Jul to Sep 2025', D.dd['dental implants'].prev], [57, 59, '#E3F2EE', 'Jul to Sep 2026', D.dd['dental implants'].cur]];
+  const bandsG = el('g', {}, u); const lv = sub(o); const wl = sub(o);
+  win.forEach((w, k) => {
+    const x0 = X(w[0] - 0.5, DOM24), x1 = X(w[1] + 0.5, DOM24);
+    const r = el('rect', { x: x0, y: PY0, width: 0, height: PH, fill: w[2] }, bandsG);
+    setTimeout(() => anim(600, (e) => r.setAttribute('width', (x1 - x0) * e)), RM ? 0 : k * 250);
+    T(wl, (x0 + x1) / 2, 362, w[3], { a: 'middle', fs: 10.5, fw: 600, c: '#6B7280' });
+    const ln = el('line', { x1: x0, x2: x1, y1: PY0, y2: PY0, stroke: INK, 'stroke-opacity': 0.4 }, lv);
+    const lt = T(lv, x1 + 3, PY0 + 3.5, Math.round(w[4]), { fs: 10.5, fw: 700, c: INK });
+    setTimeout(() => anim(900, (e) => { const y = PY0 + (YT(w[4]) - PY0) * e; ln.setAttribute('y1', y); ln.setAttribute('y2', y); lt.setAttribute('y', y + 3.5); }), RM ? 0 : 700 + k * 150);
+  });
+  on(wl);
+  if (!(await wait(650, tok))) return;
+  on(lv);
+  if (!(await wait(1150, tok))) return;
+  /* the ruler rises into the strip; implants' dot walks from level to its raw change, then to its change against overall */
+  const ru = sub(o); const ry = 402;
+  T(ru, 0, ry - 2, 'Against overall', { fs: 11, fw: 700, c: INK }); T(ru, 0, ry + 11, 'Jul to Sep, on a year ago', { fs: 10, c: MUTED });
+  el('rect', { x: BX(0.85), y: ry - 6, width: BX(1.15) - BX(0.85), height: 12, fill: '#F3F4F6' }, ru);
+  el('rect', { x: BX(1.15), y: ry - 6, width: BX(1.4) - BX(1.15), height: 12, fill: '#E3F2EE' }, ru);
+  el('line', { x1: BX(0.7), x2: BX(1.4), y1: ry, y2: ry, stroke: '#D1D5DB' }, ru);
+  [[0.85, 'Fading, 15 behind', MUTED], [1, 'level', MUTED], [1.15, 'Rising, 15 ahead', UP]].forEach(([r, t, c]) => { el('line', { x1: BX(r), x2: BX(r), y1: ry - 9, y2: ry + 9, stroke: '#9CA3AF' }, ru); T(ru, BX(r), ry + 22, t, { a: 'middle', fs: 10, fw: c === UP ? 700 : 500, c }); });
+  el('circle', { cx: BX(0.99), cy: ry, r: 4, fill: GREY }, ru);
+  T(ru, BX(0.99) - 8, ry - 12, 'teeth whitening, level', { a: 'end', fs: 10.5, c: MUTED });
+  const ghost = el('circle', { cx: BX(1.09), cy: ry, r: 4, fill: 'none', stroke: GREY, 'stroke-width': 1.5, opacity: 0 }, ru);
+  const dot = el('circle', { cx: BX(1), cy: ry, r: 6, fill: TEAL, stroke: '#fff', 'stroke-width': 2 }, ru);
+  const dl = T(ru, BX(1) - 4, ry - 12, 'dental implants', { fs: 10.5, fw: 700, c: INK });
+  /* the ruler rises from below the strip */
+  ru.setAttribute('transform', 'translate(0,24)');
+  on(ru); anim(600, (e) => ru.setAttribute('transform', `translate(0,${24 * (1 - e)})`));
+  if (!(await wait(650, tok))) return;
+  title('Up 9 in every 100 on a year ago');
+  await anim(700, (e) => { const x = BX(1 + 0.09 * e); dot.setAttribute('cx', x); dl.setAttribute('x', x - 4); });
+  if (tok !== TOK) return;
+  ghost.setAttribute('opacity', 1);
+  if (!(await wait(700, tok))) return;
+  title('Overall slipped to 97, so implants runs 12 ahead');
+  await anim(700, (e) => { const x = BX(1.09 + 0.03 * e); dot.setAttribute('cx', x); dl.setAttribute('x', x - 4); dl.textContent = `dental implants, ${ahead(1.09 + 0.03 * e)}`; });
+  if (!(await wait(900, tok))) return;
+  title('Steady: <tspan fill="#0F766E">12 ahead</tspan>, Rising starts at 15');
+};
+
+/* 04 · the topic line unbraids into its phrases */
+CH[3] = async (tok) => {
+  roCols = 3; boardAway(); gridTrend(700);
+  title('Dental Implants, the topic line');
+  cap('The topic line weighs its phrases by searches a month; each tile is about 900 of them.');
+  const u = CU, o = CO; xAxis(u, DOM24, '24m'); on(u);
+  only(['di', 'comb', 'ti']);
+  const combP = LP(V.cdi, DOM24, YT), combT = TP(V.cdi, DOM24, YT);
+  if (!SER.comb.vis) {
+    const start = SER.di.vis && SER.di.pts ? SER.di.pts : combP;
+    S('comb', { c: TEAL, w: 2.6, cas: true, tail: true, dash: '', pts: start.map((q) => q.slice()), tp: (SER.di.tp || combT).map((q) => q.slice()), snap: true, op: 1 });
+    reveal('comb', PX1 + 6, SER.di.vis ? 0 : 0);
+    if (!SER.di.vis) { reveal('comb', PX0 - 6, 0); reveal('comb', PX1 + 6, 900); }
+  }
+  S('comb', { pts: combP, tp: combT, op: 1, c: TEAL, w: 2.6, cas: true }, 600);
+  S('di', { op: 0 }); S('ti', { op: 0 });
+  const lab = sub(o), tilesG = sub(o);
+  const idle4 = () => ({ m: 'September 2026', s: 'Google interest, 0 to 100, each phrase on its own', sl: [
+    { k: { c: TEAL, w: 2.2 }, v: V.di[AS].toFixed(1), n: 'dental implants' }, { k: { c: GREY, w: 1.7 }, v: V.ti[AS].toFixed(1), n: 'tooth implant' }, { k: { c: '#0D9488', w: 2, dash: '6 4' }, v: V.cdi[AS], n: 'topic line' }] });
+  HOV = timeHover(DOM24, idle4, (i) => ({ m: mName(i) + (i === 60 ? ', not over yet' : ''), s: 'Google interest, 0 to 100, each phrase on its own',
+    dots: [{ p: posOf('di', i), c: TEAL, lead: true }, { p: posOf('ti', i), c: GREY }],
+    sl: [{ k: { c: TEAL, w: 2.2 }, v: V.di[i].toFixed(1), n: 'dental implants' }, { k: { c: GREY, w: 1.7 }, v: V.ti[i].toFixed(1), n: 'tooth implant' }, { k: { c: '#0D9488', w: 2, dash: '6 4' }, v: V.cdi[i], n: 'topic line' }] }));
+  RO(idle4());
+  if (!(await wait(900, tok))) return;
+  /* unbraid: both phrase lines start exactly on the topic line, then go their own way */
+  title('Read through 2 phrases');
+  ['di', 'ti'].forEach((k) => { S(k, { pts: SER.comb.pts.map((q) => q.slice()), tp: SER.comb.tp.map((q) => q.slice()), snap: true, op: 1, c: TEAL, w: 2.6, cas: k === 'di', tail: true, dash: '' }); reveal(k, PX1 + 6, 0); });
+  S('comb', { op: 0.5, c: '#0D9488', w: 2, cas: false, dash: '6 4', tail: false });
+  S('di', { pts: LP(V.di, DOM24, YT), tp: TP(V.di, DOM24, YT), w: 2.2 }, 900);
+  S('ti', { pts: LP(V.ti, DOM24, YT), tp: TP(V.ti, DOM24, YT), c: GREY, w: 1.7 }, 900);
+  if (!(await wait(950, tok))) return;
+  gutter(lab, [{ y: YT(V.di[AS]), x0: X(AS, DOM24), lines: [{ t: 'dental implants', fw: 700, c: INK }, { t: 'Steady, 89 in 100', fs: 10.5, c: MUTED }] },
+    { y: YT(V.ti[AS]), x0: X(AS, DOM24), lines: [{ t: 'tooth implant', fw: 500 }, { t: 'Rising, 11 in 100', fs: 10.5, fw: 700, c: UP }] }]);
+  endDot(lab, X(AS, DOM24), YT(V.di[AS]));
+  on(lab);
+  /* 20 tiles fill while the searches a month count up */
+  const total = Math.round(PHR.di.cl + PHR.ti.cl); const nTeal = Math.round(PHR.di.w * 20);
+  const tiles = [];
+  for (let k = 0; k < 20; k++) {
+    const r = el('rect', { x: PX0 + k * 22, y: 362, width: 18, height: 18, rx: 3, fill: k < nTeal ? TEAL : GREY, opacity: 0 }, tilesG);
+    r.style.transition = 'opacity .3s ease'; tiles.push(r);
+  }
+  T(tilesG, PX0 + 20 * 22 + 6, 375, `${nTeal} of 20 say ‘dental implants’`, { fs: 11, fw: 700, c: INK });
+  T(tilesG, PX0, 398, 'Each tile is about 900 searches a month, US.', { fs: 10.5, c: MUTED });
+  T(tilesG, 640, 398, `dental implants ${fmt(PHR.di.cl)}${sep}tooth implant ${fmt(PHR.ti.cl)}`, { a: 'end', fs: 10.5, fw: 600, c: '#273043' });
+  T(tilesG, PX0, 424, `Teeth whitening: 97 in 100 say ‘teeth whitening’ (${fmt(PHR.tw.cl)} a month); ‘tooth whitening’ is Rising at ${fmt(PHR.tww.cl)}.`, { fs: 10.5, c: MUTED });
+  on(tilesG);
+  await title('About <tspan id="tcount">0</tspan> searches a month for implants');
+  if (tok !== TOK) return;
+  const tc = $('#tcount');
+  tiles.forEach((r, k) => setTimeout(() => { r.setAttribute('opacity', 1); }, RM ? 0 : k * 45));
+  anim(900, (e) => { if (tc) tc.textContent = fmt(total * e); }, OUT);
+};
+
+/* 05 · measure the jump */
+CH[4] = async (tok) => {
+  roCols = 3; boardAway(); gridTrend(700);
+  title('Teeth whitening, Google’s 0 to 100');
+  cap('The bracket measures April 2026 against whitening’s usual level.');
+  const u = CU, o = CO; xAxis(u, DOM24, '24m'); on(u);
+  only(['tw']);
+  const sd = D.spike['teeth whitening']; const pk = D.months.indexOf(sd.peak_month);
+  const band = el('rect', { x: X(pk + 0.5, DOM24), y: PY0, width: 0, height: PH, fill: '#F3F4F6' }, u);
+  S('tw', { c: TEAL, w: 2.2, cas: true, tail: true, dash: '', lop: 1, pts: LP(V.tw, DOM24, YT), tp: TP(V.tw, DOM24, YT), snap: true, op: 1 });
+  reveal('tw', PX0 - 6, 0); reveal('tw', X(pk, DOM24) + 1, 1000);
+  const idle5 = () => ({ m: 'April 2026, its busiest month', s: 'Google interest, 0 to 100', sl: [{ k: { c: TEAL, w: 2.2 }, v: '74.0', n: 'teeth whitening' }, { k: { c: INK, w: 1, op: 0.45 }, v: '29.9', n: 'usual level' }, { v: '2.5 times', n: 'usual' }] });
+  HOV = timeHover(DOM24, idle5, (i) => ({ m: mName(i) + (i === 60 ? ', not over yet' : ''), s: 'Google interest, 0 to 100', dots: [{ p: posOf('tw', i), c: TEAL, lead: true }],
+    sl: [{ k: { c: TEAL, w: 2.2 }, v: V.tw[i].toFixed(1), n: 'teeth whitening' }, { k: { c: INK, w: 1, op: 0.45 }, v: '29.9', n: 'usual level' }, { v: `${(V.tw[i] / sd.baseline).toFixed(1)} times`, n: 'usual' }] }));
+  RO(idle5());
+  if (!(await wait(1050, tok))) return;
+  /* the usual level draws across */
+  const ul = el('line', { x1: PX0, x2: PX0, y1: YT(sd.baseline), y2: YT(sd.baseline), stroke: INK, 'stroke-opacity': 0.45 }, o);
+  anim(600, (e) => ul.setAttribute('x2', PX0 + PW * e));
+  const ulab = sub(o);
+  gutter(ulab, [{ y: YT(sd.baseline), x0: PX1 - 4, lines: [{ t: 'usual level', fw: 600, c: INK }, { t: `about ${Math.round(sd.baseline)}`, fs: 10.5, c: MUTED }] }]);
+  on(ulab);
+  if (!(await wait(650, tok))) return;
+  /* the bracket grows from the usual level to the peak and counts the jump */
+  title('April 2026 against its usual level');
+  const bx = X(pk, DOM24);
+  const br = el('path', { d: '', fill: 'none', stroke: INK, 'stroke-width': 1.2 }, o);
+  const bl = T(o, bx, YT(sd.peak) - 14, '1.0 times', { a: 'middle', fs: 13, fw: 800, c: INK });
+  const pm = el('circle', { cx: bx, cy: YT(sd.peak), r: 4, fill: '#fff', stroke: TEAL, 'stroke-width': 2, opacity: 0 }, o);
+  await anim(900, (e) => {
+    const y0 = YT(sd.baseline), y1 = y0 + (YT(sd.peak) - y0) * e;
+    br.setAttribute('d', `M${bx - 5},${y0}H${bx + 5}M${bx},${y0}V${y1}M${bx - 5},${y1}H${bx + 5}`);
+    bl.textContent = `${(1 + (sd.peak / sd.baseline - 1) * e).toFixed(1)} times`;
+  });
+  if (tok !== TOK) return;
+  pm.setAttribute('opacity', 1);
+  title('One busy April: <tspan fill="#0F766E">2.5 times</tspan> its usual level');
+  if (!(await wait(700, tok))) return;
+  /* the rest of the line draws on; the months after the peak shade */
+  reveal('tw', PX1 + 6, 800);
+  anim(800, (e) => band.setAttribute('width', (X(59.5, DOM24) - X(pk + 0.5, DOM24)) * e));
+  const after = sub(o);
+  T(after, (X(pk + 0.5, DOM24) + X(59.5, DOM24)) / 2, PY1 - 8, 'back near usual', { a: 'middle', fs: 10, c: '#6B7280' });
+  endDot(after, X(AS, DOM24), YT(V.tw[AS]));
+  const apr = D.months.indexOf('2025-04');
+  el('circle', { cx: X(apr, DOM24), cy: YT(V.tw[apr]), r: 3.5, fill: '#fff', stroke: GREY, 'stroke-width': 1.5 }, after);
+  /* strip: the Aprils, the shared busiest week, the spike line */
+  const sA = sub(o);
+  [[apr, 'April 2025: 30'], [pk, 'April 2026: 74']].forEach(([i, t]) => { el('line', { x1: X(i, DOM24), x2: X(i, DOM24), y1: PY1 + 18, y2: PY1 + 23, stroke: GREY }, sA); T(sA, X(i, DOM24), 364, t, { a: 'middle', fs: 10.5, fw: 700, c: i === pk ? TEAL : MUTED }); });
+  T(sA, PX0, 364, 'April 2024: 24', { fs: 10.5, fw: 700, c: MUTED });
+  T(sA, PX0, 390, 'Busiest single week: April 5, 2026. The same week was also the busiest for dental implants and tooth whitening.', { fs: 10.5, c: '#273043' });
+  T(sA, PX0, 410, 'A spike needs 2.5 times the usual level; April came in just under it. No other April came close.', { fs: 10.5, c: MUTED });
+  if (!(await wait(820, tok))) return;
+  on(after); on(sA);
+  title('One busy April, not a season');
+};
+
+/* 06 · fold the years onto one January to December axis */
+CH[5] = async (tok) => {
+  roCols = 4; boardAway(); gridTrend(700);
+  title('Dental Implants, 2023 to 2025');
+  cap('Each grey line is one year; the bold line is their average, each year against its own average month.');
+  const u = CU, o = CO; const axT = sub(u), axF = sub(u); xAxis(axT, DOM36, 'years'); xAxis(axF, null, 'fold'); on(axT);
+  only(['y0', 'y1', 'y2', 'ym']);
+  const Xf = (m) => PX0 + (Math.min(m, 11) / 11) * PW;
+  const YF = yr(0.6, 1.4);
+  const yrVals = [0, 1, 2].map((k) => Array.from({ length: 13 }, (_, m) => V.cdi[15 + 12 * k + m]));
+  const yrAvg = yrVals.map((a) => avg(a.slice(0, 12)));
+  const norm = yrVals.map((a, k) => a.map((v, m) => (m === 12 ? a[11] : v) / yrAvg[k]));
+  const mean = Array.from({ length: 13 }, (_, m) => avg(norm.map((a) => a[Math.min(m, 11)])));
+  const rawT = (k) => yrVals[k].map((v, m) => [X(15 + 12 * k + m, DOM36), YT(v)]);
+  const foldRaw = (k) => yrVals[k].map((v, m) => [Xf(m), YT(m === 12 ? yrVals[k][11] : v)]);
+  const foldN = (k) => norm[k].map((v, m) => [Xf(m), YF(v)]);
+  const yk = ['y0', 'y1', 'y2'];
+  yk.forEach((key, k) => { S(key, { c: TEAL, w: 2, cas: false, tail: false, dash: '', pts: rawT(k), snap: true, op: 1 }); reveal(key, PX0 - 6, 0); reveal(key, PX1 + 6, 1100, LIN); });
+  S('ym', { op: 0 });
+  const idleF = () => ({ m: 'July, for every 100 in an average month', s: 'Dental Implants, 100 = an average month', sl: [0, 1, 2].map((k) => ({ k: { c: GREY, w: 1.3 }, v: Math.round(norm[k][6] * 100), n: String(2023 + k) })).concat([{ k: { c: TEAL, w: 2.2 }, v: Math.round(mean[6] * 100), n: 'average' }]) });
+  HOV = { idle: idleF, move() {} };
+  RO(idleF());
+  if (!(await wait(1350, tok))) return;
+  /* fold: the line splits at each January and the years slide onto one axis */
+  title('Laid over each other');
+  off(axT); on(axF);
+  for (let k = 0; k < 3; k++) { S(yk[k], { pts: foldRaw(k), c: GREY, w: 1.3 }, 900); if (!(await wait(120, tok))) return; }
+  if (!(await wait(1000, tok))) return;
+  /* each year against its own average month: level shifts drop out */
+  title('Each year against its own average month');
+  grid([YF(0.7), YF(1), YF(1.3)], ['70', '100', '130'], 900);
+  yk.forEach((key, k) => S(key, { pts: foldN(k) }, 900));
+  if (!(await wait(1000, tok))) return;
+  S('ym', { c: TEAL, w: 2.2, cas: true, tail: false, dash: '', pts: mean.map((v, m) => [Xf(m), YF(v)]), snap: true, op: 1 });
+  reveal('ym', PX0 - 6, 0); reveal('ym', PX1 + 6, 900);
+  const lab = sub(o);
+  gutter(lab, [...[0, 1, 2].map((k) => ({ y: YF(norm[k][11]), x0: PX1, lines: [{ t: String(2023 + k), fs: 11, fw: 600, c: MUTED }] })),
+    { y: YF(mean[11]), x0: PX1, lines: [{ t: 'average', fw: 700, c: INK }] }]);
+  /* strip: the season strip for every topic, five fixed steps; the darkest step only for a real season */
+  const st = sub(o);
+  const STEP = ['#E6F4F1', '#B9E2DA', '#7CC8BC', '#2C9E90', '#0F766E'];
+  const stepOf = (r) => (r < 0.9 ? 0 : r < 0.97 ? 1 : r < 1.03 ? 2 : r < 1.15 ? 3 : 4);
+  const prof = (vals) => { const ys = [0, 1, 2].map((k) => vals.slice(15 + 12 * k, 27 + 12 * k)); const n = ys.map((a) => a.map((v) => v / avg(a))); return MS.map((_, m) => avg(n.map((a) => a[m]))); };
+  const topics = [['Dental Implants', prof(V.cdi), 'no repeating season'], ['Teeth Whitening', prof(V.ctw), 'busiest in July 2 of 3 years, 1 short']];
+  const cells = [];
+  topics.forEach(([nm, p, verdict], r) => {
+    const y = 362 + r * 33;
+    T(st, 0, y, nm, { fs: 10.5, fw: 700, c: INK });
+    T(st, 640, y, verdict, { a: 'end', fs: 10.5, c: MUTED });
+    p.forEach((v, m) => {
+      const c = el('rect', { x: Xf(m) - 19, y: y + 4, width: 38, height: 15, rx: 3, fill: STEP[stepOf(v)], opacity: 0 }, st);
+      c.style.transition = 'opacity .3s'; cells.push(c);
+      const lt = T(st, Xf(m), y + 15, Math.round(v * 100), { a: 'middle', fs: 9.5, fw: 600, c: stepOf(v) >= 3 ? '#fff' : '#115E59', attr: { opacity: 0 } });
+      lt.style.transition = 'opacity .3s'; cells.push(lt);
+    });
+  });
+  T(st, 0, 434, 'For every 100 in an average month, 2023 to 2025. A season would reach 115, the darkest step; no month does.', { fs: 10, c: MUTED });
+  if (!(await wait(950, tok))) return;
+  on(lab); on(st); cells.forEach((c, k) => { const j = k >> 1; setTimeout(() => c.setAttribute('opacity', 1), RM ? 0 : (j % 12) * 30 + Math.floor(j / 12) * 120); });
+  title('No repeating season: the three years cross each other');
+  HOV = {
+    idle: idleF,
+    move(pt) {
+      const m = Math.max(0, Math.min(11, Math.round(((pt.x - PX0) / PW) * 11)));
+      guide.style.display = ''; guide.setAttribute('x1', Xf(m)); guide.setAttribute('x2', Xf(m));
+      placeDots([{ p: SER.ym.pts[m], c: TEAL, lead: true }, ...[0, 1, 2].map((k) => ({ p: SER[yk[k]].pts[m], c: GREY }))]);
+      RO({ m: `${MF[m]}, for every 100 in an average month`, s: 'Dental Implants', sl: [0, 1, 2].map((k) => ({ k: { c: GREY, w: 1.3 }, v: Math.round(norm[k][m] * 100), n: String(2023 + k) })).concat([{ k: { c: TEAL, w: 2.2 }, v: Math.round(mean[m] * 100), n: 'average' }]) });
+    },
+  };
+};
+
+/* 07 · Washington peels off the US line */
+CH[6] = async (tok) => {
+  roCols = 4; boardAway(); gridTrend(700);
+  title('Dental implants, US and Washington');
+  cap('Solid: the US read. Dashed: the same phrase read for Washington, each on its own 0 to 100.');
+  const u = CU, o = CO; xAxis(u, DOM24, '24m'); on(u);
+  only(['di', 'wa']);
+  const st = { c: TEAL, w: 2.2, cas: true, tail: true, dash: '' };
+  if (!SER.di.vis) { S('di', { ...st, pts: LP(V.di, DOM24, YT), tp: TP(V.di, DOM24, YT), snap: true, op: 1 }); reveal('di', PX0 - 6, 0); reveal('di', PX1 + 6, 800); }
+  else S('di', { ...st, pts: LP(V.di, DOM24, YT), tp: TP(V.di, DOM24, YT), op: 1 }, 700);
+  S('wa', { c: TEAL, w: 1.7, cas: false, tail: true, dash: '5 4', pts: LP(V.di, DOM24, YT), tp: TP(V.di, DOM24, YT), snap: true, op: 0 }); reveal('wa', PX1 + 6, 0);
+  const jan = D.months.indexOf('2026-01');
+  const usA = avg(V.di.slice(jan, AS + 1)), waA = avg(V.wa.slice(jan, AS + 1));
+  const idle7 = () => ({ m: 'January to September 2026, average', s: 'Google interest, 0 to 100, each place on its own', sl: [
+    { k: { c: TEAL, w: 2.2 }, v: Math.round(usA), n: 'US' }, { k: { c: TEAL, w: 1.7, dash: '5 4' }, v: Math.round(waA), n: 'Washington' },
+    { v: '109', n: 'US, year' }, { v: '101', n: 'WA, year' }] });
+  HOV = timeHover(DOM24, idle7, (i) => ({ m: mName(i) + (i === 60 ? ', not over yet' : ''), s: 'Google interest, 0 to 100, each place on its own', dots: [{ p: posOf('di', i), c: TEAL, lead: true }, { p: posOf('wa', i), c: TEAL }],
+    sl: [{ k: { c: TEAL, w: 2.2 }, v: V.di[i].toFixed(1), n: 'US' }, { k: { c: TEAL, w: 1.7, dash: '5 4' }, v: V.wa[i].toFixed(1), n: 'Washington' },
+      { v: V.tw[i].toFixed(1), n: 'whitening, US' }, { v: (D.wa['teeth whitening'][i]).toFixed(1), n: 'whitening, WA' }] }));
+  RO(idle7());
+  if (!(await wait(850, tok))) return;
+  /* the state read starts exactly on the US line, then peels away to its own values */
+  S('wa', { op: 1 });
+  if (!(await wait(250, tok))) return;
+  title('Washington peels off the US line');
+  S('wa', { pts: LP(V.wa, DOM24, YT), tp: TP(V.wa, DOM24, YT) }, 900);
+  if (!(await wait(950, tok))) return;
+  const lab = sub(o); const bandG = sub(u);
+  el('rect', { x: X(jan - 0.5, DOM24), y: PY0, width: X(AS + 0.5, DOM24) - X(jan - 0.5, DOM24), height: PH, fill: '#F3F4F6' }, bandG); on(bandG);
+  T(lab, X(jan - 0.5, DOM24) + 4, PY0 + 12, 'Jan to Sep 2026, average', { fs: 10, c: '#6B7280' });
+  [[usA, 'US'], [waA, 'WA']].forEach(([a, n]) => {
+    el('line', { x1: X(jan - 0.5, DOM24), x2: X(AS + 0.5, DOM24), y1: YT(a), y2: YT(a), stroke: INK, 'stroke-opacity': 0.4, 'stroke-dasharray': n === 'WA' ? '5 4' : '' }, lab);
+  });
+  T(lab, X(jan - 0.5, DOM24) - 4, YT(waA) - 1, `Washington ${Math.round(waA)}`, { a: 'end', fs: 10.5, fw: 700, c: INK });
+  T(lab, X(jan - 0.5, DOM24) - 4, YT(usA) + 10, `US ${Math.round(usA)}`, { a: 'end', fs: 10.5, fw: 700, c: INK });
+  gutter(lab, [{ y: YT(V.di[AS]), x0: X(AS, DOM24), lines: [{ t: 'US', fw: 700, c: INK }, { t: 'up 9 in 100', fs: 10.5, c: MUTED }] },
+    { y: YT(V.wa[AS]), x0: X(AS, DOM24), lines: [{ t: 'Washington', fw: 600 }, { t: 'level on the year', fs: 10.5, c: MUTED }] }]);
+  /* strip: every phrase's Washington reading */
+  const sc = sub(o);
+  T(sc, PX0 - 2, 362, 'Every phrase, July to September for every 100 a year earlier', { fs: 10.5, fw: 700, c: INK });
+  const chips = [
+    [{ c: TEAL, w: 1.7, dash: '5 4' }, 'dental implants', 'Washington 101, US 109'],
+    [null, 'teeth whitening', 'Washington 88, US 96: softer'],
+    [null, 'tooth implant', 'Washington 113, US 119'],
+    [null, 'tooth whitening', 'too thin to read in Washington', true],
+  ];
+  chips.forEach(([k, n, t, thin], j) => {
+    const x = PX0 - 2 + (j % 2) * 304, y = 370 + Math.floor(j / 2) * 30;
+    el('rect', { x, y, width: 296, height: 24, rx: 4, fill: '#fff', stroke: '#E5E7EB' }, sc);
+    if (k) el('line', { x1: x + 8, x2: x + 24, y1: y + 12, y2: y + 12, stroke: k.c, 'stroke-width': k.w, 'stroke-dasharray': k.dash }, sc);
+    else el('line', { x1: x + 8, x2: x + 24, y1: y + 12, y2: y + 12, stroke: '#D1D5DB', 'stroke-width': 1.5, 'stroke-dasharray': '5 4' }, sc);
+    const tt = T(sc, x + 31, y + 16, '', { fs: 10.5, c: thin ? '#9CA3AF' : '#273043' });
+    el('tspan', { 'font-weight': 700, fill: thin ? '#9CA3AF' : INK }, tt, `${n}  `);
+    el('tspan', {}, tt, t);
+  });
+  T(sc, PX0 - 2, 436, 'Only dental implants is drawn above. Each call is made on the US read.', { fs: 10, c: MUTED });
+  on(lab); on(sc);
+  title('Washington: 74 against 70, <tspan fill="#0F766E">a little softer</tspan> on the year');
+};
+
+/* 08 · count the room */
+CH[7] = async (tok) => {
+  roCols = 4; boardAway();
+  const C = D.corpus['dental implants'].filter((r) => r.month >= '2025-11');
+  const pw = C.map((r) => r.impressions / r.weeks);
+  const YP = (v) => PY1 - (v / 50000) * PH;
+  grid([YP(0), YP(25000), YP(50000)], ['0', '25k', '50k'], 900);
+  title('Our practices’ Search Console, dental implants');
+  cap('Rose: showings a week in Google results across the practices we track. Faint: the Google Trends line, for its shape.');
+  const u = CU, o = CO; xAxis(u, DOM12, '12m'); on(u);
+  only(['di', 'rose']);
+  S('di', { c: TEAL, w: 1.7, cas: false, tail: true, dash: '', pts: LP(V.di, DOM12, YT), tp: TP(V.di, DOM12, YT), op: 0.22, snap: !SER.di.vis }, 700);
+  if (!SER.di.vis) reveal('di', PX1 + 6, 0);
+  const rp = pw.map((v, m) => [X(49 + Math.min(m, 10), DOM12), YP(pw[Math.min(m, 10)])]);
+  const rt = [[X(AS, DOM12), YP(pw[10])], [X(60, DOM12), YP(pw[11])]];
+  S('rose', { c: ROSE, w: 2.2, cas: true, tail: true, dash: '', pts: rp, tp: rt, snap: true, op: 1 });
+  reveal('rose', PX0 - 6, 0);
+  const idle8 = () => ({ m: 'September 2026', s: 'showings a week, our practices, US', sl: [
+    { k: { c: ROSE, w: 2.2 }, v: fmt(pw[10]), n: 'a week' }, { k: { dot: true, c: ROSE }, v: `${C[10].practices}`, n: 'practices' }, { v: '218 of 237', n: 'a year' }, { v: '2.03 million', n: 'showings' }] });
+  HOV = timeHover(DOM12, idle8, (i) => {
+    const m = i - 49; const r = C[m];
+    const rp2 = i > AS ? SER.rose.tp[1] : SER.rose.pts[m];
+    return { m: mName(i) + (i === 60 ? `, ${r.weeks} weeks in` : ''), s: 'showings a week, our practices, US', dots: [{ p: rp2, c: ROSE, rose: true }, { p: posOf('di', i), c: '#9CC9C3' }],
+      sl: [{ k: { c: ROSE, w: 2.2 }, v: fmt(pw[m]), n: 'a week' }, { k: { dot: true, c: ROSE }, v: `${r.practices}`, n: 'practices' }, { v: fmt(r.impressions), n: `in ${r.weeks} weeks` }, { k: { c: TEAL, w: 1.7, op: 0.3 }, v: V.di[i].toFixed(1), n: 'Trends' }] };
+  });
+  RO(idle8());
+  /* strip: 237 dots, one per practice */
+  const sg = sub(o); const dots = [];
+  for (let k = 0; k < D.practices; k++) {
+    const c = Math.floor(k / 6), r = k % 6;
+    dots.push(el('circle', { cx: PX0 + 4 + c * 9, cy: 364 + r * 9, r: 3.1, fill: '#E4E7EC' }, sg));
+  }
+  const nLit = D.contrib['dental implants'];
+  const big = T(sg, 412, 376, '0 of 237', { fs: 17, fw: 800, c: INK });
+  T(sg, 412, 392, 'practices show up for', { fs: 11, c: '#273043' });
+  T(sg, 412, 405, '‘dental implants’ searches', { fs: 11, c: '#273043' });
+  T(sg, 412, 420, `teeth whitening: ${D.contrib['teeth whitening']} of 237`, { fs: 10.5, c: MUTED });
+  T(sg, PX0, 434, 'Each dot is one practice we track.', { fs: 10, c: MUTED });
+  on(sg);
+  if (!(await wait(450, tok))) return;
+  await title('<tspan id="ccount">0</tspan> showings in 12 months');
+  if (tok !== TOK) return;
+  const cc = $('#ccount'); const total = C.reduce((a, r) => a + r.impressions, 0);
+  /* the sweep: the rose line draws, the counter runs and the room lights column by column in step */
+  const cols = Math.ceil(D.practices / 6); let lit = 0;
+  reveal('rose', PX1 + 6, 1800, LIN);
+  await anim(1800, (e) => {
+    if (cc) { let s = 0; const upto = e * 11; for (let m = 0; m < 12; m++) { const f = Math.max(0, Math.min(1, upto - m + 1)); s += C[m].impressions * (m === 0 ? Math.min(1, e * 11 + 1) : f); } cc.textContent = fmt(Math.min(total, s)); }
+    const n = Math.min(nLit, Math.round(Math.floor(e * cols + 1) * 6 * (nLit / D.practices)));
+    while (lit < n) { dots[lit].setAttribute('fill', ROSE); lit++; }
+    big.textContent = `${lit} of 237`;
+  }, LIN);
+  if (tok !== TOK) return;
+  while (lit < nLit) { dots[lit].setAttribute('fill', ROSE); lit++; }
+  big.textContent = `${nLit} of 237`;
+  if (cc) cc.textContent = fmt(total);
+  const lab = sub(o);
+  gutter(lab, [{ y: YP(pw[10]), x0: X(AS, DOM12), lines: [{ t: 'our practices', fw: 700, c: INK }, { t: `${fmt(Math.round(pw[10] / 100) * 100)} a week`, fs: 10.5, c: MUTED }] },
+    { y: YT(V.di[AS]), x0: X(AS, DOM12), lines: [{ t: 'Google Trends', fs: 10.5, c: '#9CA3AF' }] }]);
+  endDot(lab, X(AS, DOM12), YP(pw[10]), ROSE);
+  T(lab, PX1, PY1 - 8, 'October: 2 weeks in', { a: 'end', fs: 10, c: MUTED });
+  on(lab);
+  if (!(await wait(900, tok))) return;
+  title('About <tspan fill="#DB2777">2 million</tspan> showings, 218 of 237 practices');
+};
+
+/* ---------- scroll drives the chapters ---------- */
+let active = -1;
+function activate(n) {
+  if (n === active) return;
+  active = n; TOK++;
+  $$('.chap').forEach((c) => c.classList.toggle('on', +c.dataset.ch === n));
+  newLayers(); clearHover(); HOV = null;
+  CH[n](TOK);
+}
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) activate(+e.target.dataset.ch); }), { rootMargin: '-45% 0px -45% 0px' });
+$$('.chap').forEach((c) => io.observe(c));
+const endIo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.4 });
+endIo.observe($('#end'));
+activate(0);
+
+/* ---------- page chrome ---------- */
+function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+$$('[data-toast]').forEach((b) => { b.onclick = () => toast(b.dataset.toast); });
+const tabs = $('#tabs'); const ink = tabs.querySelector('.ink');
+const setTab = (k) => {
+  tabs.querySelectorAll('button').forEach((b) => { const o = b.dataset.k === k; b.classList.toggle('on', o); if (o) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+  $('.story').style.display = k === 'story' ? '' : 'none'; $('#end').style.display = k === 'story' ? '' : 'none';
+  let n = $('#tabnote'); if (!n) { n = document.createElement('p'); n.id = 'tabnote'; n.className = 'tabnote'; $('#pane').appendChild(n); }
+  n.style.display = k === 'story' ? 'none' : ''; n.textContent = `The ${k === 'topics' ? 'Topics' : 'Phrases'} tab is not part of this mockup; this round covers the Story.`;
+};
+tabs.querySelectorAll('button').forEach((b) => { b.onclick = () => { setTab(b.dataset.k); window.scrollTo({ top: 0 }); }; });
+requestAnimationFrame(() => setTab('story'));
+$('#toCards').onclick = () => { setTab('topics'); window.scrollTo({ top: 0 }); };
+$('#toTop').onclick = () => window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
+$('#howBtn').onclick = () => {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="bd"></div><div class="win" role="dialog" aria-modal="true"><button class="x" aria-label="Close">×</button>
+  <div class="kick">How it works</div><h2>How Market Trends reads a topic</h2>
+  <h3>What the numbers on the lines mean</h3><p>Google Trends scores every week from 0 to 100 against the busiest week of that read: 100 is the busiest week, 50 is half as many searches. A month is the average of its weeks, so monthly lines rarely reach 100. Dental implants’ busiest week was April 5, 2026; its busiest month, June 2026, averaged 79.</p>
+  <h3>Topics and phrases</h3><p>A topic is read through 1 to 5 phrases. Each phrase gets its own 0 to 100. The topic line weighs them by searches a month (DataForSEO), so the phrase people use most sets the topic’s call; a small phrase can rise on its own without moving it.</p>
+  <h3>Rising, steady or fading</h3><p>The last 3 full months against the same 3 months a year earlier, for the topic and for 5 benchmark phrases (invisalign, root canal, wisdom teeth removal, veneers, teeth whitening). The topic’s change is divided by the benchmark’s middle change. 15 or more in every 100 ahead is Rising, 15 or more behind is Fading, anything between is Steady.</p>
+  <h3>Seasons</h3><p>Each year is compared with its own average month, so a year that climbed does not fake a season. A month is a season only if it was the busiest in at least 2 of the last 3 full years and averages at least 15 in every 100 above an average month.</p>
+  <h3>The rating</h3><p>Points from plain parts, never an AI judgement: client priority, assessment gap, calendar, forum, audience research and page audit sources, plus search demand from our practices’ Search Console. A prospect check has no sources, so every topic rates 2 of 10 on search demand alone.</p></div>`;
+  document.body.appendChild(m);
+  const close = () => { m.remove(); document.removeEventListener('keydown', key); };
+  const key = (e) => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', key);
+  m.querySelector('.bd').onclick = close; m.querySelector('.x').onclick = close;
+};
+window.__mt = { activate, CH };
+})();
+
+</script></body></html>

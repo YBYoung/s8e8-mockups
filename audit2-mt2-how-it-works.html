@@ -1,0 +1,598 @@
+<!doctype html><html lang="en"><head><title>Market Trends, How it works, round 2</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;--up:#15803D;--down:#E11D48;--ease:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+
+/* mockup bar: outside the design */
+.mock{position:fixed;top:0;left:0;right:0;z-index:300;background:#EEF0F3;border-bottom:1px solid #D9DDE3;padding:8px 18px;font:12px/1.5 Inter,sans-serif;color:#475467}
+.mock b{color:#1D2939}
+.mock .k{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin-right:8px}
+.mock ul{margin:2px 0 0;padding-left:18px}
+.mock li{margin:0}
+
+/* the result page behind (static, dimmed by the window) */
+.fl-app{display:grid;grid-template-columns:56px minmax(0,1fr);min-height:100vh;padding-top:96px}
+.fl-side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px}
+.fl-side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.fl-side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.fl-side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.fl-side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.fl-side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.fl-wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px;width:100%}
+.fl-top{display:flex;align-items:center;justify-content:space-between;margin:0 -28px 22px;padding:14px 28px;border-bottom:1px solid #EEF0F4}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--aTint);border-radius:10px;padding:6px 10px;font-weight:600;color:var(--aInk)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2))}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.h-sentence{margin:8px 0 18px;max-width:980px;font-size:40px;font-weight:800;line-height:1.25;letter-spacing:-.025em;color:var(--ink)}
+.tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.tabs span{padding:0 0 10px;font-weight:600;color:var(--muted)}
+.tabs span.on{color:var(--ink);border-bottom:2px solid var(--a)}
+.ghost{height:260px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+
+/* the How it works window (MethodWindow) */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:110px 16px 6vh}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4)}
+.modal .win{position:relative;width:100%;max-width:880px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:24px 28px 10px;box-shadow:0 24px 60px rgba(11,16,32,.18)}
+.whead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.kick{margin-bottom:4px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.whead h2{margin:0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:8px;padding:4px 8px}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:start;border-top:1px solid var(--line);padding:22px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.new{font:700 10px Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--aInk);background:var(--aTint);border-radius:4px;padding:2px 6px}
+.msec figure{margin:0}
+.figbox{width:300px;height:200px;overflow:hidden;border-radius:14px;background:var(--soft)}
+.figbox svg{display:block;width:100%;height:100%;font-family:Inter,sans-serif}
+.cap{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+/* live today row: mockup comparison, not part of the design */
+.live{margin-top:14px;padding-top:10px;border-top:1px dashed #D0D5DD;display:grid;grid-template-columns:180px 1fr;gap:10px;align-items:start}
+.live .lb{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#98A2B3}
+.live .figbox{width:180px;height:120px;border-radius:9px}
+.live .lc{font-size:11px;color:#98A2B3;line-height:1.4;margin-top:4px}
+.fixes{margin-top:12px;border:1px dashed #D0D5DD;border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.5;color:#667085;background:#FCFCFD}
+.fixes b{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#98A2B3;display:block;margin-bottom:2px}
+
+/* figure motion: colour .5s, labels .35s, positions .9s on the house ease */
+.fig *{transition:opacity .5s,fill .5s,stroke .5s}
+.fig text{transition:opacity .35s,fill .5s}
+.fig .mv{transition:transform .9s var(--ease),opacity .5s,fill .5s,stroke .5s}
+.fig .mvs{transition:transform 1.4s var(--ease),opacity .5s,fill .5s,stroke .5s}
+@media (max-width:820px){.msec{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.fig *{transition:none!important}}
+.oq-rail{position:sticky;top:0;height:100vh;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}</style></head><body>
+
+<div class="mock"><span class="k">Mockup</span><b>Market Trends · How it works window, round 2.</b> Data: Bothell Family Dentistry check #23 (read across the US, 10/29) and Expedition Pediatric Dentistry check #22 (read for Washington). Every series is real; nothing is drawn from a made-up wave.
+<ul><li>All five figures rebuilt from real demand shapes, each acting out one literal rule, every label in its own band, the box filled. The live figure sits small under each one.</li>
+<li>Copy fixed: 100 is the busiest <b>week</b>, not month; the rating lists the engine's real parts; the call and the phrase weighting say what the engine does; seasons follow the fixed rule (T6, P1 #4).</li>
+<li>One new section: where the numbers come from and what one phrase costs.</li></ul></div>
+
+<div class="fl-app" aria-hidden="true">
+  <aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item is-active" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside>
+  <main><div class="fl-wrap">
+    <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>Market Trends</div>
+      <button class="method-btn" type="button"><span class="dot"></span>How it works</button></div>
+    <div class="eyebrow">Bothell Family Dentistry · checked Oct 29, 2026</div>
+    <h1 class="h-sentence">Dental implants and teeth whitening both hold steady across the US.</h1>
+    <div class="tabs"><span class="on">Story</span><span>Topics</span><span>Phrases</span></div>
+    <div class="ghost"></div>
+  </div></main>
+</div>
+
+<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true" aria-labelledby="mt-method-title">
+  <div class="whead"><div><div class="kick">How it works</div><h2 id="mt-method-title">How Market Trends reads demand</h2></div><button class="x" aria-label="Close">×</button></div>
+  <div id="secs"></div>
+</div></div>
+
+<script>
+/* ---------- real data, trimmed from data/mt-bothell-23.json and data/mt-expedition-22.json ---------- */
+const D = {"scaleW":{"start":"2024-01-07","v":[27,25,27,26,25,25,26,27,25,25,26,25,24,25,24,27,24,24,24,24,23,25,25,24,25,22,25,25,25,25,25,27,26,24,22,24,25,23,23,23,26,26,24,23,25,25,21,23,24,24,21,24,27,40,35,30,34,34,33,31,30,33,31,33,31,33,31,35,44,45,40,33,34,37,43,81,41,46,86,64,52,52,53,93,63,54,53,68,72,44,44,48,76,57,43,47,83,48,46,53,83,47,41,39,66,65,47,49,65,91,58,65,61,98,69,61,71,100,71,67,62,75,73,69,73,82,79,81,74,82,78,77,79,74,64,75,68,60,74,57,61,56,48],"ref":{"2024-01-14":1,"2025-07-20":80,"2026-04-05":117}},"scaleM":{"m":["2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09"],"x":[1.5,5.5,10,14.5,18.5,23,27.5,31.5,36,40.5,44.5,49,53.5,57.5,62,66.5,70.5,75,79.5,84,88.5,92.5,97,101.5,105.5,109.5,114,118.5,123,127.5,131.5,136,140.5],"v":[26.2,25.8,25.0,25.0,23.8,24.2,25.0,25.5,23.4,24.8,23.5,23.2,33.0,33.0,31.6,35.8,38.0,49.6,63.5,63.2,57.0,56.0,55.4,52.5,56.8,69.8,72.0,75.0,74.4,79.0,77.0,68.2,55.5]},"phr":{"m0":"2024-10","di":[24.8,23.5,23.2,33.0,33.0,31.6,35.8,38.0,49.6,63.5,63.2,57.0,56.0,55.4,52.5,56.8,69.8,72.0,75.0,74.4,79.0,77.0,68.2,55.5],"ti":[52.0,54.0,54.6,69.0,63.2,63.4,64.0,64.5,66.4,70.5,68.8,66.5,69.5,67.8,60.5,76.0,79.2,85.2,87.0,90.2,93.5,90.2,79.4,76.2],"cs":[12770,1608]},"call":{"m0":"2024-10","di":[24.8,23.5,23.2,33.0,33.0,31.6,35.8,38.0,49.6,63.5,63.2,57.0,56.0,55.4,52.5,56.8,69.8,72.0,75.0,74.4,79.0,77.0,68.2,55.5,54.2],"dd":{"cur":66.9,"prev":61.2,"yoy_x":1.09,"relative_x":1.12,"basket_median":0.97},"td":{"cur":81.9,"prev":68.6,"yoy_x":1.19,"relative_x":1.23},"basket":{"teeth whitening":0.97,"invisalign":0.86,"veneers":0.85,"root canal":1.11,"wisdom teeth removal":1.38},"median":0.97},"ped":[71.6,72.8,70.8,68.4,65.8,69.8,70.6,83.0,69.5,70.0,62.5,55.0,73.0,70.2,68.8,73.2,58.8,61.0,68.0,74.8,67.4,60.2,49.2,47.6,67.2,70.0,67.8,62.0,69.0,67.6,83.5,82.4,73.0,71.0,62.2,54.0],"whit":[25.8,25.0,25.6,24.2,23.8,24.0,26.5,25.5,22.6,22.0,23.2,25.6,26.8,27.0,34.0,29.5,30.2,36.6,45.0,39.0,35.2,35.2,35.4,39.2,42.8,52.2,53.6,74.0,59.8,61.5,41.8,38.0,35.2],"rate":{"di":[2031586,218],"tw":[9045,80],"teeth":595994},"src":{"cost":0.11148,"calls":11,"termcost":0.011,"secs":23,"cs":12770,"stateV":[24.8,24.8,26.8,21.2,24.8,23.6,22.2,21.2,22.8,27.0,24.8,20.8,41.2,35.0,26.6,33.2,29.8,48.2,69.0,76.6,65.0,58.0,60.2,62.2,60.8,80.2,78.4,77.5,75.0,77.8,80.5,69.6,63.5]}};
+
+/* ---------- tiny SVG kit ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let UID = 0; const uid = () => `c${++UID}`;
+function E(parent, tag, attrs = {}, text) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (text != null) n.textContent = text;
+  parent.appendChild(n); return n;
+}
+function bez(p1x, p1y, p2x, p2y) {
+  const cx = 3 * p1x, bx = 3 * (p2x - p1x) - cx, ax = 1 - cx - bx, cy = 3 * p1y, by = 3 * (p2y - p1y) - cy, ay = 1 - cy - by;
+  const sx = (t) => ((ax * t + bx) * t + cx) * t, sy = (t) => ((ay * t + by) * t + cy) * t, dx = (t) => (3 * ax * t + 2 * bx) * t + cx;
+  return (x) => { let t = x; for (let i = 0; i < 8; i++) { const d = dx(t); if (Math.abs(d) < 1e-6) break; t -= (sx(t) - x) / d; } return sy(Math.min(1, Math.max(0, t))); };
+}
+const EASE = bez(0.2, 0.8, 0.2, 1);
+const dOf = (p) => p.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join('');
+function setPts(path, p) { cancelAnimationFrame(path._raf); path._p = p.map((q) => q.slice()); path.setAttribute('d', dOf(p)); }
+function morph(path, to, ms = 900) {
+  const from = path._p || to; cancelAnimationFrame(path._raf);
+  if (REDUCE) return setPts(path, to);
+  const t0 = performance.now();
+  const f = (now) => { const k = Math.min(1, (now - t0) / ms), e = EASE(k);
+    const cur = to.map((q, i) => [from[i][0] + (q[0] - from[i][0]) * e, from[i][1] + (q[1] - from[i][1]) * e]);
+    path.setAttribute('d', dOf(cur)); path._p = cur; if (k < 1) path._raf = requestAnimationFrame(f); };
+  path._raf = requestAnimationFrame(f);
+}
+function tweenAttr(n, attr, to, ms = 900) {
+  cancelAnimationFrame(n._ra);
+  const from = parseFloat(n.getAttribute(attr)) || 0;
+  if (REDUCE || ms === 0) { n.setAttribute(attr, to); return; }
+  const t0 = performance.now();
+  const f = (now) => { const k = Math.min(1, (now - t0) / ms); n.setAttribute(attr, from + (to - from) * EASE(k)); if (k < 1) n._ra = requestAnimationFrame(f); };
+  n._ra = requestAnimationFrame(f);
+}
+function clipRect(svg, defs) { const id = uid(); const cp = E(defs, 'clipPath', { id }); const r = E(cp, 'rect', { x: 0, y: 0, width: 0, height: 200 }); return { id: `url(#${id})`, r }; }
+/* labels out then in (0.35 + 0.35s) */
+function say(t, s) {
+  if (t._s === s) return; t._s = s;
+  if (REDUCE) { t.textContent = s; return; }
+  clearTimeout(t._tm); t.style.opacity = 0;
+  t._tm = setTimeout(() => { t.textContent = s; t.style.opacity = s ? 1 : 0; }, 350);
+}
+const at = (n, x, y) => { n.style.transform = `translate(${x}px,${y}px)`; };
+const op = (n, o) => { n.style.opacity = o; };
+const fmt = (n) => Number(n).toLocaleString('en-US');
+const C = { ink: '#0B1020', body: '#273043', muted: '#667085', faint: '#98A2B3', off: '#E4E7EC', teal: '#0F766E', tealInk: '#134E4A', tint: '#E6F4F1', soft: '#99D5CC', other: '#8B98A9', bench: '#475569', up: '#15803D', down: '#E11D48' };
+/* the four reserved bands every figure uses */
+function frame(svg) {
+  const title = E(svg, 'text', { x: 12, y: 25, 'font-size': 13.5, 'font-weight': 800, fill: C.ink });
+  const foot = E(svg, 'text', { x: 12, y: 189, 'font-size': 11, fill: C.muted });
+  return { title, foot };
+}
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/* =====================================================================
+   4.1 Scale: dental implants, weekly, US. 100 = its busiest week.
+   ===================================================================== */
+function figScale(svg) {
+  const W = D.scaleW.v, n = W.length, X0 = 12, X1 = 240;
+  const xw = (i) => X0 + (i * (X1 - X0)) / (n - 1), Y = (v) => 132 - v * 0.9;
+  const defs = E(svg, 'defs'); const c1 = clipRect(svg, defs), c2 = clipRect(svg, defs);
+  const { title, foot } = frame(svg);
+  // years, in the strip band, with a tick at each January
+  const d0 = new Date(D.scaleW.start + 'T00:00:00Z');
+  const firstOf = (y) => W.findIndex((_, i) => new Date(d0.getTime() + i * 7 * 864e5).getUTCFullYear() === y);
+  [[2024, 0], [2025, firstOf(2025)], [2026, firstOf(2026)]].forEach(([y, i]) => {
+    E(svg, 'line', { x1: xw(i), x2: xw(i), y1: 134, y2: 139, stroke: '#C3C8D2' });
+    E(svg, 'text', { x: xw(i) + 3, y: 145, 'font-size': 9.5, fill: C.faint }, y);
+  });
+  E(svg, 'line', { x1: X0, x2: X1, y1: Y(0), y2: Y(0), stroke: '#D0D5DD' });
+  // the three reference weeks: hairline, dot, gutter value
+  const refs = [['2026-04-05', 'Week of Apr 5, 2026: its busiest week'], ['2025-07-20', 'Week of Jul 20, 2025'], ['2024-01-14', 'Week of Jan 14, 2024']].map(([d, f]) => {
+    const i = D.scaleW.ref[d], v = W[i];
+    const hl = E(svg, 'line', { x1: X0, x2: 250, y1: Y(v), y2: Y(v), stroke: C.faint, 'stroke-width': 0.8, 'stroke-dasharray': '2 3', opacity: 0 });
+    const lab = E(svg, 'text', { x: 292, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 12.5, 'font-weight': 800, fill: C.teal, opacity: 0 }, v);
+    return { i, v, hl, lab, f };
+  });
+  const weekly = E(svg, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 1.3, 'stroke-linejoin': 'round', 'clip-path': c1.id });
+  setPts(weekly, W.map((v, i) => [xw(i), Y(v)]));
+  const mPts = D.scaleM.x.map((x, k) => [xw(x), Y(D.scaleM.v[k])]);
+  const mCase = E(svg, 'path', { fill: 'none', stroke: '#fff', 'stroke-width': 5, 'stroke-linejoin': 'round', 'clip-path': c2.id });
+  const monthly = E(svg, 'path', { fill: 'none', stroke: C.tealInk, 'stroke-width': 2.4, 'stroke-linejoin': 'round', 'clip-path': c2.id });
+  setPts(mCase, mPts); setPts(monthly, mPts);
+  const jun = D.scaleM.m.indexOf('2026-06'), mv = D.scaleM.v[jun];
+  const mLab = E(svg, 'text', { x: 292, y: Y(mv) + 4, 'text-anchor': 'end', 'font-size': 12.5, 'font-weight': 800, fill: C.tealInk, opacity: 0 }, Math.round(mv));
+  const mDot = E(svg, 'circle', { cx: xw(D.scaleM.x[jun]), cy: Y(mv), r: 4, fill: C.tealInk, stroke: '#fff', 'stroke-width': 1.5, opacity: 0 });
+  const dot = E(svg, 'circle', { cx: 0, cy: 0, r: 5, fill: '#fff', stroke: C.teal, 'stroke-width': 2.2, class: 'mv', opacity: 0 });
+  // the gauge: this week's score against 100, in the strip band
+  E(svg, 'rect', { x: X0, y: 153, width: X1 - X0, height: 7, rx: 2, fill: C.off });
+  const bar = E(svg, 'rect', { x: X0, y: 153, width: 0, height: 7, rx: 2, fill: C.teal });
+  const barLab = E(svg, 'text', { x: 292, y: 160, 'text-anchor': 'end', 'font-size': 10.5, 'font-weight': 700, fill: C.muted }, '');
+  const gauge = (v, col) => { tweenAttr(bar, 'width', ((X1 - X0) * v) / 100); bar.setAttribute('fill', col || C.teal); say(barLab, v ? `${Math.round(v)} of 100` : ''); };
+  const go = (s) => {
+    if (s === 0) {
+      c1.r.setAttribute('width', 0); tweenAttr(c1.r, 'width', 300, 1300); c2.r.setAttribute('width', 0);
+      op(weekly, 1); refs.forEach((r) => { op(r.hl, 0); op(r.lab, 0); }); op(dot, 0); op(mLab, 0); op(mDot, 0); gauge(0);
+      say(title, 'Google scores every week, 0 to 100'); say(foot, 'Dental implants, US, one point a week');
+      at(dot, xw(refs[0].i), Y(refs[0].v));
+    } else if (s <= 3) {
+      const r = refs[s - 1];
+      refs.forEach((q, k) => { op(q.hl, k < s ? 1 : 0); op(q.lab, k < s ? (k === s - 1 ? 1 : 0.45) : 0); q.hl.setAttribute('stroke', k === s - 1 ? C.teal : C.faint); });
+      op(dot, 1); at(dot, xw(r.i), Y(r.v)); gauge(r.v);
+      say(title, ['100 = its busiest week', '52 = about half as many searches', '25 = a quarter as many'][s - 1]);
+      say(foot, r.f);
+    } else {
+      op(dot, 0); op(weekly, 0.3); refs.forEach((q) => { op(q.hl, 0); op(q.lab, 0.3); });
+      tweenAttr(c2.r, 'width', 300, 1100); op(mLab, 1); op(mDot, 1); gauge(mv, C.tealInk);
+      say(title, 'A month is the average of its weeks'); say(foot, 'Busiest month, June 2026: 79, not 100');
+    }
+  };
+  return { go, dur: [2000, 1800, 1800, 1800, 2400] };
+}
+
+/* =====================================================================
+   4.2 Phrases: two phrases, weighted by last month's searches, make the topic.
+   ===================================================================== */
+function figPhrases(svg) {
+  const P = D.phr, n = P.di.length, X0 = 12, X1 = 240;
+  const xm = (i) => X0 + (i * (X1 - X0)) / (n - 1), Y = (v) => 126 - v * 0.86;
+  const [a, b] = P.cs, wa = a / (a + b), wb = b / (a + b);
+  const top = P.di.map((v, i) => wa * v + wb * P.ti[i]);
+  const defs = E(svg, 'defs'); const c1 = clipRect(svg, defs), c2 = clipRect(svg, defs);
+  const { title, foot } = frame(svg);
+  E(svg, 'line', { x1: X0, x2: X1, y1: Y(0), y2: Y(0), stroke: '#D0D5DD' });
+  const tiL = E(svg, 'path', { fill: 'none', stroke: C.other, 'stroke-width': 1.5, 'stroke-dasharray': '4 3', 'clip-path': c1.id });
+  const diL = E(svg, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 2, 'clip-path': c1.id });
+  setPts(tiL, P.ti.map((v, i) => [xm(i), Y(v)])); setPts(diL, P.di.map((v, i) => [xm(i), Y(v)]));
+  const tCase = E(svg, 'path', { fill: 'none', stroke: '#fff', 'stroke-width': 5.5, 'clip-path': c2.id });
+  const tL = E(svg, 'path', { fill: 'none', stroke: C.tealInk, 'stroke-width': 2.6, 'clip-path': c2.id });
+  setPts(tCase, top.map((v, i) => [xm(i), Y(v)])); setPts(tL, top.map((v, i) => [xm(i), Y(v)]));
+  const j = 20; // June 2026
+  const chk = E(svg, 'circle', { cx: xm(j), cy: Y(top[j]), r: 6, fill: 'none', stroke: C.tealInk, 'stroke-width': 1.5, opacity: 0 });
+  // gutter: end values, then the calls
+  const yTi = Y(P.ti[n - 1]) + 4, yDi = Y(P.di[n - 1]) + 4;
+  const gTi = E(svg, 'text', { x: 292, y: yTi, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 800, fill: C.other }, '');
+  const gDi = E(svg, 'text', { x: 292, y: yDi, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 800, fill: C.teal }, '');
+  // strip band: 20 tiles of searches, names under the tiles they own
+  const nA = Math.round(wa * 20);
+  const tiles = Array.from({ length: 20 }, (_, i) => E(svg, 'rect', { x: 12 + i * 14, y: 139, width: 11, height: 11, rx: 2.5, fill: '#fff', stroke: '#D0D5DD', 'stroke-width': 1 }));
+  E(svg, 'text', { x: 12, y: 164, 'font-size': 10.5, 'font-weight': 700, fill: C.teal }, `dental implants ${fmt(a)}`);
+  E(svg, 'text', { x: 292, y: 164, 'text-anchor': 'end', 'font-size': 10.5, 'font-weight': 700, fill: C.other }, `tooth implant ${fmt(b)}`);
+  const pa = Math.round(wa * 100), pb = 100 - pa, per = Math.round((a + b) / 20 / 10) * 10;
+  const go = (s) => {
+    if (s === 0) {
+      c1.r.setAttribute('width', 0); tweenAttr(c1.r, 'width', 300, 1300); c2.r.setAttribute('width', 0);
+      op(diL, 1); op(tiL, 1); op(chk, 0);
+      tiles.forEach((t) => { t.setAttribute('fill', '#fff'); t.setAttribute('stroke', '#D0D5DD'); });
+      gDi.setAttribute('fill', C.teal); gTi.setAttribute('fill', C.other);
+      say(gDi, Math.round(P.di[n - 1])); say(gTi, Math.round(P.ti[n - 1]));
+      say(title, 'Two phrases, each on its own 0 to 100'); say(foot, 'Dental Implants topic, US, Oct 2024 to Sep 2026');
+    } else if (s === 1) {
+      tiles.forEach((t, i) => setTimeout(() => { const on = i < nA; t.setAttribute('fill', on ? C.teal : C.other); t.setAttribute('stroke', on ? C.teal : C.other); }, REDUCE ? 0 : i * 45));
+      say(title, `${pa} in 100 searches: "dental implants"`); say(foot, `Searches last month, US: one tile is about ${per}`);
+    } else if (s === 2) {
+      op(diL, 0.3); op(tiL, 0.3); tweenAttr(c2.r, 'width', 300, 1100); op(chk, 1);
+      gDi.setAttribute('fill', C.tealInk); say(gDi, Math.round(top[n - 1])); say(gTi, '');
+      say(title, `The topic line mixes them ${pa} to ${pb}`);
+      say(foot, `June 2026: ${pa} parts at ${P.di[j]}, ${pb} parts at ${P.ti[j]} make ${Math.round(top[j])}`);
+    } else {
+      op(tiL, 1); op(chk, 0); gTi.setAttribute('fill', C.up); gDi.setAttribute('fill', C.bench);
+      say(gTi, 'Rising'); say(gDi, 'Steady');
+      say(title, 'Tooth implant rises on its own'); say(foot, `The topic takes the call with most weight: Steady`);
+    }
+  };
+  return { go, dur: [2000, 2000, 2400, 3000] };
+}
+
+/* =====================================================================
+   4.3 The call: Jul to Sep against a year earlier, then against 5 dental phrases.
+   ===================================================================== */
+function figCall(svg) {
+  const K = D.call, n = K.di.length, X0 = 12, X1 = 292;
+  const xm = (i) => X0 + (i * (X1 - X0)) / (n - 1), Y = (v) => 98 - v * 0.6, pitch = (X1 - X0) / (n - 1);
+  const R = (r) => 12 + ((r - 0.7) / 0.7) * 280, LANE = 128;
+  const defs = E(svg, 'defs'); const c1 = clipRect(svg, defs);
+  const { title, foot } = frame(svg);
+  // windows (behind the line)
+  const band = (i0, fill) => E(svg, 'rect', { x: xm(i0) - pitch / 2, y: 36, width: pitch * 3, height: 64, fill, opacity: 0 });
+  const b25 = band(9, '#E9ECF1'), b26 = band(21, C.tint);
+  const lvl = (i0, v, col) => E(svg, 'line', { x1: xm(i0) - pitch / 2, x2: xm(i0 + 2) + pitch / 2, y1: Y(v), y2: Y(v), stroke: col, 'stroke-width': 2, opacity: 0 });
+  const l25 = lvl(9, K.dd.prev, C.bench), l26 = lvl(21, K.dd.cur, C.teal);
+  E(svg, 'line', { x1: X0, x2: X1, y1: Y(0), y2: Y(0), stroke: '#D0D5DD' });
+  const line = E(svg, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 1.8, 'clip-path': c1.id });
+  setPts(line, K.di.slice(0, n - 1).map((v, i) => [xm(i), Y(v)]));
+  const oct = E(svg, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 1.8, 'stroke-dasharray': '2 3', 'clip-path': c1.id });
+  setPts(oct, [[xm(n - 2), Y(K.di[n - 2])], [xm(n - 1), Y(K.di[n - 1])]]);
+  const w25 = E(svg, 'text', { x: xm(10), y: 111, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: C.bench, opacity: 0 }, `Jul to Sep 2025: ${Math.round(K.dd.prev)}`);
+  const w26 = E(svg, 'text', { x: 292, y: 111, 'text-anchor': 'end', 'font-size': 10, 'font-weight': 700, fill: C.teal, opacity: 0 }, `Jul to Sep 2026: ${Math.round(K.dd.cur)}`);
+  // the ruler: change on a year ago, 0.70 to 1.40
+  const zone = E(svg, 'rect', { x: R(0.85), y: LANE - 9, width: R(1.15) - R(0.85), height: 18, rx: 3, fill: '#EEF0F3', opacity: 0.35 });
+  E(svg, 'line', { x1: 12, x2: 292, y1: LANE, y2: LANE, stroke: '#C3C8D2' });
+  [0.85, 1, 1.15].forEach((r) => E(svg, 'line', { x1: R(r), x2: R(r), y1: LANE - 4, y2: LANE + 4, stroke: '#98A2B3' }));
+  const ticks = [[0.85, '15 in 100 fewer'], [1, 'same'], [1.15, '15 in 100 more']].map(([r, t]) => E(svg, 'text', { x: R(r), y: 154, 'text-anchor': 'middle', 'font-size': 9.5, fill: C.faint }, t));
+  const zones = [[0.775, 'Fading', C.down], [1, 'Steady', C.bench], [1.275, 'Rising', C.up]].map(([r, t, c]) => E(svg, 'text', { x: R(r), y: 155, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 800, fill: c, opacity: 0 }, t));
+  // benchmark dots: dropped from above onto the lane; near-equal values stack
+  const bx = Object.values(K.basket).sort((p, q) => p - q);
+  let last = -99, lift = 0;
+  const bench = bx.map((r) => { lift = R(r) - last < 9 ? lift + 8 : 0; last = R(r);
+    const c = E(svg, 'circle', { cx: 0, cy: 0, r: 3.8, fill: C.other, class: 'mv', opacity: 0 }); c._x = R(r); c._y = LANE - lift; return c; });
+  const ring = E(svg, 'circle', { cx: R(K.median), cy: LANE, r: 7.5, fill: 'none', stroke: C.bench, 'stroke-width': 1.5, opacity: 0 });
+  const tdot = E(svg, 'circle', { cx: 0, cy: 0, r: 5.5, fill: C.teal, stroke: '#fff', 'stroke-width': 1.5, class: 'mv', opacity: 0 });
+  const idot = E(svg, 'circle', { cx: 0, cy: 0, r: 5, fill: C.other, stroke: '#fff', 'stroke-width': 1.5, class: 'mv', opacity: 0 });
+  const raw = K.dd.yoy_x, rel = K.dd.relative_x, med = K.median, irel = K.td.relative_x;
+  const in100 = (r) => Math.round(Math.abs(r - 1) * 100);
+  const go = (s) => {
+    if (s === 0) {
+      c1.r.setAttribute('width', 0); tweenAttr(c1.r, 'width', 300, 1200);
+      [b25, b26, l25, l26, w25, w26, ring, tdot, idot].forEach((x) => op(x, 0)); bench.forEach((c) => { op(c, 0); at(c, c._x, 60); });
+      zones.forEach((z) => op(z, 0)); ticks.forEach((t) => op(t, 1)); op(zone, 0.35); op(line, 1); op(oct, 1);
+      at(tdot, R(raw), LANE); at(idot, R(K.td.yoy_x), LANE); idot.setAttribute('fill', C.other);
+      say(title, 'Is dental implants rising?'); say(foot, 'Dental implants, US; October is not over, so dotted');
+    } else if (s === 1) {
+      [b25, b26, l25, l26, w25, w26, tdot].forEach((x) => op(x, 1));
+      say(title, `Up about a tenth on a year ago`); say(foot, `Jul to Sep: ${Math.round(K.dd.prev)} a year ago, ${Math.round(K.dd.cur)} now`);
+    } else if (s === 2) {
+      op(line, 0.35); op(oct, 0.35);
+      bench.forEach((c, i) => setTimeout(() => { op(c, 1); at(c, c._x, c._y); }, REDUCE ? 0 : i * 140));
+      setTimeout(() => op(ring, 1), REDUCE ? 0 : 800);
+      say(title, `Dental searches overall: ${in100(med)} in 100 fewer`); say(foot, 'Middle of 5 everyday dental phrases, same months');
+    } else if (s === 3) {
+      at(tdot, R(rel), LANE); bench.forEach((c) => op(c, 0.3)); op(zone, 1);
+      ticks.forEach((t) => op(t, 0)); zones.forEach((z) => op(z, 1));
+      say(title, `Against them, ${in100(rel)} in 100 ahead: Steady`); say(foot, 'Rising starts at 15 in 100 ahead');
+    } else {
+      op(idot, 1); at(idot, R(irel), LANE); idot.setAttribute('fill', C.up);
+      say(title, `Tooth implant: ${in100(irel)} in 100 ahead, Rising`); say(foot, 'Too few searches to move the topic: Steady');
+    }
+  };
+  return { go, dur: [1700, 1900, 2000, 2000, 2400] };
+}
+
+/* =====================================================================
+   4.4 Seasons: fold the years, compare each with its own usual month.
+   ===================================================================== */
+function figSeason(svg) {
+  const ped = [0, 1, 2].map((k) => D.ped.slice(k * 12, k * 12 + 12));
+  const wh = [0, 1, 2].map((k) => D.whit.slice(k * 12, k * 12 + 12)); // 2026 runs Jan to Sep
+  const ratio = (yr) => { const m = yr.reduce((p, q) => p + q, 0) / yr.length; return yr.map((v) => v / m); };
+  const avgOf = (yrs) => Array.from({ length: 12 }, (_, j) => { const v = yrs.map((y) => y[j]).filter((x) => x != null); return v.reduce((p, q) => p + q, 0) / v.length; });
+  const pR = ped.map(ratio), wR = wh.map(ratio), pA = avgOf(pR), wA = avgOf(wR);
+  const XT = (k, j) => 12 + (12 * k + j) * 8, XF = (j) => 12 + j * 20, Yv = (v) => 124 - v * 0.84, Yr = (r) => 124 - ((r - 0.65) / 0.85) * 84;
+  const defs = E(svg, 'defs'); const cA = clipRect(svg, defs);
+  const { title, foot } = frame(svg);
+  const sub = E(svg, 'text', { x: 12, y: 171, 'font-size': 10.5, 'font-weight': 700, fill: C.tealInk }, '');
+  // hairlines: usual month and the season line, gutter words
+  const h1 = E(svg, 'line', { x1: 12, x2: 236, y1: Yr(1), y2: Yr(1), stroke: '#98A2B3', 'stroke-width': 0.8, opacity: 0 });
+  const h2 = E(svg, 'line', { x1: 12, x2: 236, y1: Yr(1.15), y2: Yr(1.15), stroke: C.teal, 'stroke-width': 0.8, 'stroke-dasharray': '3 3', opacity: 0 });
+  const g1 = E(svg, 'text', { x: 292, y: Yr(1) + 4, 'text-anchor': 'end', 'font-size': 10, 'font-weight': 700, fill: C.muted, opacity: 0 }, 'usual');
+  const g2 = E(svg, 'text', { x: 292, y: Yr(1.15) + 2, 'text-anchor': 'end', 'font-size': 10, 'font-weight': 700, fill: C.teal, opacity: 0 }, '15 up');
+  const base = E(svg, 'line', { x1: 12, x2: 292, y1: 124.5, y2: 124.5, stroke: '#D0D5DD' });
+  const yrCol = ['#B6BFCC', '#9AA5B5', '#7D899B'];
+  const lines = [0, 1, 2].map((k) => E(svg, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 1.6, 'stroke-linejoin': 'round' }));
+  const avg = E(svg, 'path', { fill: 'none', stroke: C.tealInk, 'stroke-width': 2.6, 'stroke-linejoin': 'round', 'clip-path': cA.id });
+  const ringA = E(svg, 'circle', { cx: 0, cy: 0, r: 6.5, fill: '#fff', stroke: C.teal, 'stroke-width': 2, class: 'mv', opacity: 0 });
+  const ringB = E(svg, 'circle', { cx: 0, cy: 0, r: 6.5, fill: '#fff', stroke: C.other, 'stroke-width': 2, class: 'mv', opacity: 0 });
+  const years = ['2023', '2024', '2025'].map((y, k) => E(svg, 'text', { x: XT(k, 5.5), y: 141, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 600, fill: C.muted }, y));
+  const months = 'JFMAMJJASOND'.split('').map((m, j) => E(svg, 'text', { x: XF(j), y: 141, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 600, fill: C.muted, opacity: 0 }, m));
+  const jan = [1, 2].map((k) => E(svg, 'line', { x1: XT(k, 0) - 4, x2: XT(k, 0) - 4, y1: 118, y2: 130, stroke: '#C3C8D2' }));
+  const timeline = (set) => set.map((yr, k) => yr.map((v, j) => [XT(k, j), Yv(v)]));
+  const folded = (set, rat) => set.map((yr, k) => Array.from({ length: 12 }, (_, j) => { const jj = Math.min(j, yr.length - 1); return [XF(jj), rat ? Yr(yr[jj]) : Yv(yr[jj])]; }));
+  const place = (pts, ms) => lines.forEach((l, k) => (ms ? morph(l, pts[k], ms) : setPts(l, pts[k])));
+  const hl = (on) => months.forEach((m, j) => { const tgt = on && (j === 7 || j === 11); m.setAttribute('fill', on && j === 7 ? C.teal : tgt ? C.ink : C.muted); m.setAttribute('font-weight', tgt ? 800 : 600); });
+  const go = (s) => {
+    if (s === 0) {
+      place(timeline(ped)); lines.forEach((l) => { l.setAttribute('stroke', C.teal); l.setAttribute('stroke-width', 1.6); });
+      cA.r.setAttribute('width', 0); op(avg, 1); [h1, h2, g1, g2, ringA, ringB].forEach((x) => op(x, 0));
+      years.forEach((y) => op(y, 1)); months.forEach((m) => op(m, 0)); jan.forEach((x) => op(x, 1)); hl(false);
+      say(title, 'Pediatric dentistry, Washington'); say(foot, 'Three years, 2023 to 2025, month by month'); say(sub, '');
+    } else if (s === 1) {
+      place(folded(ped, false), 900); lines.forEach((l, k) => { l.setAttribute('stroke', yrCol[k]); l.setAttribute('stroke-width', 1.3); });
+      years.forEach((y) => op(y, 0)); months.forEach((m) => op(m, 1)); jan.forEach((x) => op(x, 0));
+      say(title, 'The three years laid over each other'); say(foot, 'Each one from January to December');
+    } else if (s === 2) {
+      place(folded(pR, true), 900); op(h1, 1); op(h2, 1); op(g1, 1); op(g2, 1);
+      setPts(avg, pA.map((r, j) => [XF(j), Yr(r)])); setTimeout(() => tweenAttr(cA.r, 'width', 300, 1000), REDUCE ? 0 : 500);
+      say(title, 'Each year against its own usual month'); say(foot, 'So a year that climbed cannot fake a season');
+    } else if (s === 3) {
+      op(ringA, 1); at(ringA, XF(7), Yr(pA[7])); op(ringB, 1); at(ringB, XF(11), Yr(pA[11])); hl(true);
+      say(title, 'Late summer, every year: a season'); say(sub, 'Busiest Aug 2023, Aug 2024, Jul 2025');
+      say(foot, 'Quietest every December. Live by June to catch it.');
+    } else if (s === 4) {
+      op(ringA, 0); op(ringB, 0); hl(false); tweenAttr(cA.r, 'width', 0, 400);
+      place(folded(wR, true), 900); lines[2].setAttribute('stroke', C.teal);
+      say(title, 'Teeth whitening, US, 2024 to 2026'); say(sub, ''); say(foot, '2026 runs to September');
+    } else if (s === 5) {
+      op(ringA, 1); at(ringA, XF(3), Yr(wR[2][3])); months[3].setAttribute('fill', C.teal); months[3].setAttribute('font-weight', 800);
+      say(title, 'One busy April, in 2026 only'); say(sub, `Apr 2026: about half again above its usual month`);
+      say(foot, 'The two Aprils before it were ordinary');
+    } else {
+      setPts(avg, wA.map((r, j) => [XF(j), Yr(r)])); tweenAttr(cA.r, 'width', 300, 1000);
+      say(title, 'One busy month is not a season'); say(sub, 'Its average April stays under the season line');
+      say(foot, 'Teeth whitening gets no season');
+    }
+  };
+  return { go, dur: [1300, 1300, 1500, 2300, 1200, 1400, 2300] };
+}
+
+/* =====================================================================
+   4.5 The rating: the engine's real parts, and why a prospect check ties.
+   ===================================================================== */
+function figRating(svg) {
+  const { title, foot } = frame(svg);
+  const rows = [['Client priority', '+4'], ['Assessment gap', '+3 or +2'], ['Calendar, forum, audience, audit', '+1 each'], ['Same category as a priority', '+2'], ['Search demand', '+1 or +2']];
+  const R = rows.map(([l, p], i) => {
+    const y = 46 + i * 16;
+    const bg = E(svg, 'rect', { x: 6, y: y - 11, width: 214, height: 15, rx: 4, fill: C.tint, opacity: 0 });
+    const t = E(svg, 'text', { x: 12, y, 'font-size': 10, 'font-weight': 600, fill: C.muted }, l);
+    const pt = E(svg, 'text', { x: 216, y, 'text-anchor': 'end', 'font-size': 10.5, 'font-weight': 800, fill: C.faint }, p);
+    return { bg, t, pt };
+  });
+  // gutter: the score and its 10 cells
+  const big = E(svg, 'text', { x: 257, y: 76, 'text-anchor': 'middle', 'font-size': 34, 'font-weight': 900, fill: '#C3C8D2' }, '0');
+  E(svg, 'text', { x: 257, y: 92, 'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 600, fill: C.muted }, 'of 10');
+  const cells = Array.from({ length: 10 }, (_, i) => E(svg, 'rect', { x: 226 + (i % 5) * 13, y: 100 + Math.floor(i / 5) * 13, width: 10, height: 10, rx: 2, fill: C.off }));
+  // strip band: the Search Console gate on a log scale
+  const L = (v) => 12 + ((Math.log10(v) - 2.5) / 4) * 280, TY = 152;
+  E(svg, 'line', { x1: 12, x2: 292, y1: TY, y2: TY, stroke: '#D0D5DD', 'stroke-width': 2 });
+  const gates = [[1000, '1,000: +1'], [100000, '100,000: +2']].map(([v, t]) => {
+    const tk = E(svg, 'line', { x1: L(v), x2: L(v), y1: TY - 6, y2: TY + 6, stroke: '#98A2B3', 'stroke-width': 1.5 });
+    const lb = E(svg, 'text', { x: L(v), y: 169, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: C.faint }, t);
+    return { v, tk, lb };
+  });
+  const [di, dc] = D.rate.di, [tw] = D.rate.tw;
+  const twDot = E(svg, 'circle', { cx: L(tw), cy: TY, r: 4.5, fill: C.other, opacity: 0 });
+  const twLab = E(svg, 'text', { x: L(tw), y: 142, 'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': 600, fill: C.muted, opacity: 0 }, `tooth whitening ${fmt(tw)}`);
+  const diDot = E(svg, 'circle', { cx: 0, cy: TY, r: 5.5, fill: C.teal, stroke: '#fff', 'stroke-width': 1.5, class: 'mvs', opacity: 0 });
+  const diLab = E(svg, 'text', { x: 292, y: 142, 'text-anchor': 'end', 'font-size': 9.5, 'font-weight': 700, fill: C.teal, opacity: 0 }, `dental implants ${(di / 1e6).toFixed(1)} million`);
+  const score = (k) => { say(big, String(k)); big.setAttribute('fill', k ? C.teal : '#C3C8D2'); cells.forEach((c, i) => c.setAttribute('fill', i < k ? C.teal : C.off)); };
+  const lit = (i, on, strong) => { op(R[i].bg, on ? 1 : 0); R[i].t.setAttribute('fill', on ? C.ink : C.muted); R[i].pt.setAttribute('fill', on ? C.teal : C.faint); };
+  const go = (s) => {
+    if (s === 0) {
+      R.forEach((_, i) => lit(i, false)); score(0); [twDot, twLab, diDot, diLab].forEach((x) => op(x, 0)); at(diDot, 12, 0);
+      gates.forEach((g) => { g.lb.setAttribute('fill', C.faint); g.tk.setAttribute('stroke', '#98A2B3'); });
+      say(title, 'Points from plain parts, never AI'); say(foot, 'Added up, then held between 1 and 10');
+    } else if (s === 1) {
+      op(diDot, 1); op(twDot, 1); op(twLab, 1); at(diDot, L(di), 0);
+      gates.forEach((g, i) => setTimeout(() => { g.lb.setAttribute('fill', C.teal); g.tk.setAttribute('stroke', C.teal); }, REDUCE ? 0 : 450 + i * 450));
+      setTimeout(() => op(diLab, 1), REDUCE ? 0 : 1000);
+      say(title, 'Search demand: +2'); say(foot, `Showings in ${dc} of our practices, last 12 months`);
+    } else if (s === 2) {
+      lit(4, true, true); score(2);
+      say(title, 'This prospect: 2 of 10'); say(foot, 'A prospect check has no client material');
+    } else if (s === 3) {
+      [0, 1, 2, 3].forEach((i) => setTimeout(() => lit(i, true), REDUCE ? 0 : i * 280));
+      say(title, 'Client checks add source points'); say(foot, 'Priorities, assessment, calendar, forum, audits');
+    } else {
+      [0, 1, 2, 3].forEach((i) => lit(i, false));
+      say(title, 'Both Bothell topics: 2 of 10, a tie'); say(foot, `Teeth whitening also passes 100,000: ${fmt(D.rate.teeth)}`);
+    }
+  };
+  return { go, dur: [1600, 2200, 1800, 2000, 2400] };
+}
+
+/* =====================================================================
+   New: where the numbers come from, and what one phrase costs.
+   ===================================================================== */
+function figSources(svg) {
+  const { title, foot } = frame(svg);
+  E(svg, 'rect', { x: 8, y: 86, width: 96, height: 30, rx: 8, fill: '#fff', stroke: C.soft });
+  E(svg, 'text', { x: 56, y: 105, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: C.ink }, 'dental implants');
+  const rows = [['Trends, US', 'shape, weekly'], ['Trends, Washington', 'the state, beside it'], ['Clickstream, US', 'size: searches a month'], ['Our practices', 'Search Console showings']];
+  const W = D.scaleW.v, S = D.src.stateV;
+  const spark = (g, vals, x0, y0, w, h, dash) => { const p = E(g, 'path', { fill: 'none', stroke: C.teal, 'stroke-width': 1.2, 'stroke-dasharray': dash || '' });
+    setPts(p, vals.map((v, i) => [x0 + (i * w) / (vals.length - 1), y0 + h - (v / 100) * h])); return p; };
+  const R = rows.map(([t, s], i) => {
+    const y = 51 + i * 34;
+    const path = E(svg, 'path', { d: `M104 101 C 120 101, 120 ${y}, 136 ${y}`, fill: 'none', stroke: C.teal, 'stroke-width': 1.5, 'stroke-dasharray': 120, 'stroke-dashoffset': 120, style: 'transition:stroke-dashoffset .6s ease-out,opacity .2s' });
+    const box = E(svg, 'rect', { x: 136, y: y - 14, width: 156, height: 28, rx: 7, fill: '#fff', stroke: '#E7E9EE' });
+    E(svg, 'text', { x: 144, y: y - 1, 'font-size': 10.5, 'font-weight': 700, fill: C.ink }, t);
+    E(svg, 'text', { x: 144, y: y + 10, 'font-size': 9, fill: C.muted }, s);
+    const g = E(svg, 'g', { opacity: 0 });
+    if (i === 0) spark(g, W, 244, y - 9, 42, 18);
+    else if (i === 1) spark(g, S, 244, y - 9, 42, 18, '3 2');
+    else E(g, 'text', { x: 286, y: y + 4, 'text-anchor': 'end', 'font-size': 11.5, 'font-weight': 800, fill: C.teal }, i === 2 ? fmt(D.src.cs) : String(D.rate.di[1]));
+    return { path, box, g };
+  });
+  const go = (s) => {
+    R.forEach((r, i) => { const sent = s >= 1 + i; r.path.setAttribute('stroke-dashoffset', sent ? 0 : 120); r.path.style.opacity = sent ? 1 : 0;
+      setTimeout(() => { r.box.setAttribute('stroke', sent ? C.soft : '#E7E9EE'); op(r.g, sent ? 1 : 0); }, sent && !REDUCE ? 450 : 0); });
+    if (s === 0) { say(title, 'One phrase, four reads'); say(foot, 'Each read answers one question'); }
+    else if (s <= 4) { say(title, ['Its shape, across the US', 'Its shape in the state', 'How many search for it', 'Who already shows up for it'][s - 1]);
+      say(foot, ['Five years, one point a week', 'Drawn dashed when the state has enough', `${fmt(D.src.cs)} searches last month, US`, `Seen for ${D.rate.di[1]} of our practices`][s - 1]); }
+    else { say(title, 'Each phrase: about 1 cent'); say(foot, `Bothell: 4 phrases, ${D.src.calls} calls, 11 cents, ${D.src.secs} seconds`); }
+  };
+  return { go, dur: [900, 1000, 1000, 1000, 1000, 2800] };
+}
+
+/* =====================================================================
+   The live figures, rebuilt faithfully from method/*.tsx (for comparison).
+   ===================================================================== */
+const LT = { TEAL: '#0F766E', GREY: '#B6BCC8' };
+const wave = (base, amp, slope, n = 24) => Array.from({ length: n }, (_, i) => base + slope * i + amp * Math.sin(i / 2));
+const pts = (vals, x0, w, y0, h) => vals.map((v, i) => `${x0 + (i * w) / (vals.length - 1)},${y0 + h - (v / 100) * h}`).join(' ');
+function liveScale(svg) { // useLoop(3, 1200)
+  const v = wave(45, 14, 1.2), peak = v.indexOf(Math.max(...v)), sc = v.map((x) => (100 * x) / v[peak]);
+  E(svg, 'polyline', { points: pts(sc, 30, 240, 30, 130), fill: 'none', stroke: LT.TEAL, 'stroke-width': 2.2 });
+  const px = 30 + (peak * 240) / 23;
+  const a = [E(svg, 'circle', { cx: px, cy: 30, r: 4, fill: LT.TEAL }), E(svg, 'text', { x: px, y: 22, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#0B1020' }, '100, the busiest month')];
+  const b = [E(svg, 'line', { x1: 30, x2: 270, y1: 95, y2: 95, stroke: LT.GREY, 'stroke-dasharray': '3 3' }), E(svg, 'text', { x: 34, y: 90, 'font-size': 10.5, fill: '#667085' }, '50 = half as many searches')];
+  return { go: (s) => { a.forEach((x) => x.setAttribute('display', s >= 1 ? '' : 'none')); b.forEach((x) => x.setAttribute('display', s >= 2 ? '' : 'none')); }, dur: [1200, 1200, 1200] };
+}
+function livePhrases(svg) { // useLoop(2, 1500)
+  const ls = [[55, 8, 0.6], [40, 10, 0.9], [30, 6, 0.4]].map(([b, a, sl]) => E(svg, 'polyline', { points: pts(wave(b, a, sl), 30, 240, 30, 130), fill: 'none', 'stroke-width': 1.8 }));
+  const one = E(svg, 'polyline', { points: pts(wave(42, 8, 0.65), 30, 240, 30, 130), fill: 'none', stroke: LT.TEAL, 'stroke-width': 2.6 });
+  const t = E(svg, 'text', { x: 150, y: 186, 'text-anchor': 'middle', 'font-size': 11, fill: '#273043', 'font-weight': 600 });
+  return { go: (s) => { ls.forEach((l, k) => l.setAttribute('stroke', s === 0 ? ['#3B5BDB', '#E0527A', '#5F7D16'][k] : '#E4E7EC')); one.setAttribute('display', s === 1 ? '' : 'none'); t.textContent = s === 0 ? 'three phrases, read one by one' : 'one topic'; }, dur: [1500, 1500] };
+}
+function liveCall(svg) { // useLoop(3, 1300)
+  const topic = [30, 32, 31, 35, 38, 44, 50, 57], overall = [40, 41, 41, 42, 42, 43, 43, 44];
+  E(svg, 'polyline', { points: pts(overall, 30, 240, 30, 120), fill: 'none', stroke: LT.GREY, 'stroke-width': 1.8, 'stroke-dasharray': '4 3' });
+  const l = E(svg, 'polyline', { fill: 'none', stroke: LT.TEAL, 'stroke-width': 2.4 });
+  E(svg, 'text', { x: 30, y: 178, 'font-size': 10.5, fill: '#667085' }, 'dental searches overall');
+  const w = E(svg, 'text', { x: 270, y: 178, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 800 });
+  return { go: (s) => { const t = s === 0 ? topic : s === 1 ? overall.map((v) => v - 6) : topic.map((v, i) => 62 - v + i); l.setAttribute('points', pts(t, 30, 240, 30, 120));
+    w.textContent = ['Rising', 'Steady', 'Fading'][s]; w.setAttribute('fill', s === 0 ? '#15803D' : s === 2 ? '#E11D48' : '#273043'); }, dur: [1300, 1300, 1300] };
+}
+function liveSeason(svg) { // useLoop(12, 260)
+  const shade = [0.35, 0.4, 0.5, 0.6, 0.85, 1, 0.9, 0.6, 0.45, 0.4, 0.35, 0.4];
+  const r = shade.map((_, i) => E(svg, 'rect', { x: 24 + i * 21.5, y: 78, width: 18, height: 30, rx: 3 }));
+  'JFMAMJJASOND'.split('').forEach((m, i) => E(svg, 'text', { x: 33 + i * 21.5, y: 124, 'text-anchor': 'middle', 'font-size': 10, fill: '#667085' }, m));
+  const t = E(svg, 'text', { x: 150, y: 60, 'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': 700, fill: '#0B1020' }, 'Teeth whitening peaks in June');
+  return { go: (s) => { r.forEach((x, i) => { x.setAttribute('fill', i <= s ? LT.TEAL : '#E4E7EC'); x.setAttribute('opacity', i <= s ? shade[i] : 1); }); t.setAttribute('display', s >= 5 ? '' : 'none'); }, dur: Array(12).fill(260) };
+}
+function liveRating(svg) { // useLoop(5, 700)
+  const parts = [['Demand is rising', 3], ['Large search volume', 3], ['Steady all year', 1], ['Searched by name', 1]];
+  const g = parts.map(([l, p], i) => { const gg = E(svg, 'g'); E(gg, 'text', { x: 24, y: 50 + i * 24, 'font-size': 11, fill: '#273043' }, l); E(gg, 'text', { x: 190, y: 50 + i * 24, 'text-anchor': 'end', 'font-size': 11, 'font-weight': 700, fill: '#0B1020' }, `+${p}`); return gg; });
+  const tot = E(svg, 'text', { x: 238, y: 100, 'text-anchor': 'middle', 'font-size': 34, 'font-weight': 900, fill: LT.TEAL });
+  E(svg, 'text', { x: 238, y: 118, 'text-anchor': 'middle', 'font-size': 11, fill: '#667085' }, 'of 10');
+  return { go: (s) => { g.forEach((x, i) => x.setAttribute('opacity', i < s ? 1 : 0.3)); tot.textContent = parts.slice(0, s).reduce((a, [, p]) => a + p, 0); }, dur: Array(5).fill(700) };
+}
+
+/* =====================================================================
+   The sections: corrected copy, new figure, live figure, copy fixes note.
+   ===================================================================== */
+const SECTIONS = [
+  { title: 'What the numbers on the lines mean', fig: figScale, live: liveScale, cap: 'Dental implants, US, weekly. Bothell check.',
+    liveCap: 'Made-up wave; "100, the busiest month"; "50" label sits on the line.',
+    body: ['The lines come from Google Trends, read through DataForSEO one phrase at a time, five years back, one point a week. Each phrase is read across the US, which decides the call, and for the practice\'s state, drawn dashed beside it when the state has enough searches.',
+      'Google does not share search counts in Trends. It scores every week from 0 to 100, where 100 is the busiest week of that read. A week at 52 had about half the searches of that week; a week at 25, a quarter as many.',
+      'Each phrase has its own 100, so lines compare by shape, not size. Monthly lines average their weeks, so they rarely reach 100: dental implants\' busiest month, June 2026, averages 79. The size comes from the searches a month under each card.'],
+    fixes: 'Live said 100 is "the busiest month". It is the busiest week (T4). Added the monthly averaging, with the real 79.' },
+  { title: 'Topics and phrases', fig: figPhrases, live: livePhrases, cap: 'Dental Implants topic, US, Oct 2024 to Sep 2026.',
+    liveCap: 'Three made-up waves in topic colours; no weighting shown.',
+    body: ['A topic is what a patient wants, in the practice\'s words: dental implants, teeth whitening. Patients search for it in more than one way, so each topic is read through 1 to 5 phrases, each on its own 0 to 100.',
+      'Each phrase counts in line with its searches last month. For Bothell, 12,770 searches said "dental implants" and 1,608 said "tooth implant", so the topic line is 89 parts the first and 11 parts the second.',
+      'The topic takes the call that carries the most weight. Tooth implant is rising on its own, but with 11 of every 100 searches it cannot move the topic, which reads Steady.'],
+    fixes: 'Live said the head phrase leads the chart. The engine weighs every phrase by its latest month of searches (sizing.py) and the topic takes the call with the most weight.' },
+  { title: 'Rising, steady, fading or emerging', fig: figCall, live: liveCall, cap: 'Dental implants, US. Bothell check.',
+    liveCap: 'Invented lines; benchmark drawn flat; verdict flips every 1.3s.',
+    body: ['Each phrase\'s last 3 full months are compared with the same 3 months a year earlier. For dental implants, July to September 2026 averaged 67 against 61 a year before: up about a tenth. The month still under way is drawn dotted and never counts.',
+      'The same comparison runs for 5 everyday dental phrases: teeth whitening, invisalign, veneers, root canal and wisdom teeth removal. The middle one of the five stands for dental searches overall; this time it slipped about 3 in 100.',
+      'The phrase is then measured against that. More than 15 in 100 ahead is Rising, more than 15 in 100 behind is Fading, anything between is Steady: dental implants ran 12 ahead. Emerging means almost no searches a year earlier and real searches now. A phrase too rare to score shows as too few searches to read.'],
+    fixes: 'Added the real windows, the 5 benchmark phrases, the middle value and the 15 in 100 line (classifiers.py). Live implied dental searches overall stay flat; they doubled since 2024 (T2), which is why the comparison is relative.' },
+  { title: 'Seasons', fig: figSeason, live: liveSeason, cap: 'Expedition (Washington), then Bothell (US).',
+    liveCap: 'Invented shades; "peaks in June" while the check finds a one-off April.',
+    body: ['A season is a peak that comes back. Each year is compared with its own usual month, so a year that climbed overall cannot fake one.',
+      'A month counts as the peak only when it was the busiest month in at least 2 of the last 3 full years and runs at least 15 in 100 above a usual month. Pediatric dentistry in Washington passes: busiest in August 2023, August 2024 and July 2025, and quietest every December.',
+      'One busy month is not a season. Teeth whitening jumped in April 2026 while the Aprils before were ordinary, so it gets no season. A seasonal page does best live a month or two before its peak.'],
+    fixes: 'Live claimed "whitening climbs before summer, emergency care over the holidays"; neither check shows that. Copy states the fixed season rule (T6, P1 #4), which the shipped strip does not use yet.' },
+  { title: 'The rating', fig: figRating, live: liveRating, cap: 'The engine\'s real parts. Bothell check.',
+    liveCap: 'Four parts that do not exist in the engine, adding to 8.',
+    body: ['Each topic gets a rating from 1 to 10 that orders the list. It is points from plain parts, never an AI judgement.',
+      'Source points come from the client\'s own material: a client priority adds 4; a high gap in the assessment adds 3, a medium one 2; a calendar cluster, a forum theme, audience research and a page audit add 1 each, up to 3; a topic in the same category as a client priority adds 2.',
+      'Search demand adds 1 point when a phrase showed up at least 1,000 times across 3 or more of our practices in Search Console, and 2 at 100,000 or more. A prospect check has no client material, so its topics rate on search demand alone and often tie: both Bothell topics rate 2 of 10.'],
+    fixes: 'Live listed "demand is rising, large volume, steady all year, searched by name": none exist (T8). Now matches proposal_rating.py. Owner question stands: hide the rating on prospect checks?' },
+  { title: 'Where the numbers come from', isNew: true, fig: figSources, cap: 'One phrase, dental implants. Bothell check.',
+    body: ['Each source does one job. Google Trends, read through DataForSEO, gives the shape: weekly, five years back, for the US and the practice\'s state.',
+      'DataForSEO\'s clickstream gives the size: an estimate of searches a month across the US, from browsing data rather than from Google. Our own practices\' Search Console shows how often a phrase came up for the practices we manage over the last 12 months, and for how many of them.',
+      'Each phrase costs about a cent to read. Bothell\'s check read 4 phrases in 11 calls for 11 cents, and took 23 seconds.'],
+    fixes: 'New section (04, missing method sections). Cost and timing from run #23: cost_usd 0.111, call_count 11, 23 seconds start to finish.' },
+];
+
+const running = [];
+function mount(host, factory, big) {
+  const svg = E(host, 'svg', { viewBox: '0 0 300 200', class: 'fig', 'aria-hidden': 'true' });
+  const f = factory(svg); f.svg = svg;
+  return f;
+}
+function loop(f) {
+  if (REDUCE) { f.go(f.dur.length - 1); return; }
+  let s = 0;
+  const tick = () => { f.go(s); f.t = setTimeout(() => { s = (s + 1) % f.dur.length; tick(); }, f.dur[s]); };
+  tick();
+}
+const secs = document.getElementById('secs');
+const FREEZE = /freeze/.test(location.search);
+window.FIGS = [];
+SECTIONS.forEach((S) => {
+  const sec = document.createElement('section'); sec.className = 'msec';
+  sec.innerHTML = `<div><h3>${S.title}${S.isNew ? '<span class="new">New</span>' : ''}</h3>${S.body.map((p) => `<p>${p}</p>`).join('')}<div class="fixes"><b>Mockup note: copy fixes</b>${S.fixes}</div></div>
+    <figure><div class="figbox nf"></div><figcaption class="cap">${S.cap}</figcaption>
+    ${S.live ? `<div class="live"><div class="figbox lf"></div><div><div class="lb">Live today</div><div class="lc">${S.liveCap}</div></div></div>` : ''}</figure>`;
+  secs.appendChild(sec);
+  const nf = mount(sec.querySelector('.nf'), S.fig); window.FIGS.push(nf);
+  const lf = S.live ? mount(sec.querySelector('.lf'), S.live) : null; if (lf) window.FIGS.push(lf);
+  if (FREEZE) { nf.go(0); lf && lf.go(0); } else { loop(nf); lf && loop(lf); }
+});
+</script>
+</body></html>

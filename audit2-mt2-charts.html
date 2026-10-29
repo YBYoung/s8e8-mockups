@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Market Trends charts, round 2 (mockup)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>:root{
+  --ink:#0B1020;--ink2:#0F172A;--body:#273043;--muted:#667085;--faint:#98A2B3;--axis:#9CA3AF;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aLine:#CDE7E2;
+  --up:#15803D;--down:#E11D48;--rose:#DB2777;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#F6F7F9;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer}
+svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numeric:tabular-nums}
+
+/* mockup bar: outside the design */
+.mock{background:#ECEEF1;border-bottom:1px solid #DDE1E6;color:#4B5563;font-size:12.5px;line-height:1.5;padding:10px 28px}
+.mock b{color:#1F2937}
+.mock .mk{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#6B7280;margin-right:8px}
+.mock ul{margin:4px 0 0;padding-left:18px}
+.mnote{font:500 11.5px/1.5 'JetBrains Mono',monospace;color:#6B7280;background:#EEF0F3;border-radius:6px;padding:8px 10px;margin:0 0 10px}
+.mnote b{color:#374151}
+.oq{display:inline-block;font:700 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#4B5563;background:#E2E5EA;border-radius:4px;padding:1px 6px;margin-right:6px}
+
+/* app frame */
+.app{display:grid;grid-template-columns:56px minmax(0,1fr);min-height:100vh}
+.side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+.side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.main{min-width:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 140px}
+
+/* sticky in-page nav */
+.pnav{position:sticky;top:0;z-index:40;background:rgba(246,247,249,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E5E7EB}
+.pnav .in{max-width:1180px;margin:0 auto;padding:9px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 4px}
+.pnav .grp{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin:0 6px 0 0}
+.pnav .grp:not(:first-child){margin-left:10px}
+.pnav a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:11.5px;font-weight:600;padding:4px 6px;border-radius:6px;transition:background .2s,color .2s}
+.pnav a i{font:800 10.5px 'JetBrains Mono',monospace;font-style:normal;width:18px;height:18px;border-radius:5px;display:grid;place-items:center;background:#E9ECF0;color:var(--muted);transition:background .2s,color .2s}
+.pnav a:hover{background:#EEF0F3;color:var(--ink)}
+.pnav a.on{background:var(--aTint);color:var(--aInk)}
+.pnav a.on i{background:var(--a);color:#fff}
+
+/* page head */
+.phead{padding:30px 0 6px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.phead h1{margin:0;font-size:30px;font-weight:900;letter-spacing:-.02em;color:var(--ink);text-transform:uppercase;display:flex;align-items:center;gap:12px}
+.phead h1 svg{width:26px;height:26px;stroke:#29ABE2;fill:none;stroke-width:1.4}
+.phead p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.part{margin:44px 0 0;padding:18px 0 0;border-top:1px solid #E1E4E8}
+.part .eb{font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)}
+.part h2{margin:4px 0 2px;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.part .sub{color:var(--muted);font-size:14px;margin:0}
+
+.sec{scroll-margin-top:64px;padding-top:30px}
+.sec-h{display:flex;align-items:baseline;gap:10px;margin:0 0 4px}
+.sec-h .lt{font:800 11px 'JetBrains Mono',monospace;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--a);color:#fff;flex:none;transform:translateY(-2px)}
+.sec-h h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.sec-lede{margin:0 0 14px;color:var(--muted);font-size:14px;max-width:820px}
+
+.duo{display:grid;grid-template-columns:minmax(0,820px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1180px){.duo{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px 22px;margin-bottom:16px}
+.card .kick{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--faint)}
+.card h4{margin:2px 0 0;font-size:21px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.card .verdict{margin:6px 0 14px;font-size:15px;color:var(--body);max-width:720px}
+.w-up{color:var(--up);font-weight:700}.w-down{color:var(--down);font-weight:700}.w-flat{color:var(--ink);font-weight:700}
+.chev{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:3px}
+
+/* chart controls */
+.ctl{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:6px}
+.ctl .grp{display:flex;align-items:center;gap:8px}
+.ctl .eb{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--axis)}
+.seg{position:relative;display:inline-flex;border-radius:8px;border:1px solid #E5E7EB;background:#F1F3F5;padding:3px}
+.seg button{position:relative;z-index:1;border:0;background:none;border-radius:6px;padding:4px 11px;font-size:12px;font-weight:600;color:#6B7280;transition:color .2s;white-space:nowrap}
+.seg button.on{color:var(--ink2)}
+.seg .thumb{position:absolute;z-index:0;top:3px;bottom:3px;border-radius:6px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.08);transition:left .25s var(--ease),width .25s var(--ease)}
+
+/* readout bar: fixed 48px, fixed slots */
+.ro{height:48px;padding-bottom:8px;overflow:hidden}
+.ro .r1{height:20px;display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap}
+.ro .r1 .m{font-size:13px;font-weight:700;color:var(--ink2)}
+.ro .r1 .m small{font-weight:500;color:var(--muted);font-size:12px}
+.ro .r1 .sc{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.ro .r2{height:20px;display:grid;gap:12px;align-items:center}
+.ro .slot{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap}
+.ro .slot svg{flex:none}
+.ro .slot b{font-size:13px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums}
+.ro .slot span{font-size:12.5px;color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.ro .slot.nd b{color:var(--muted);font-weight:500;font-size:12px}
+.tc{max-width:760px}
+.plot{display:block;width:100%;overflow:visible;touch-action:pan-y;outline:none}
+.plot:focus-visible{box-shadow:0 0 0 3px var(--aTint);border-radius:4px}
+
+/* chips (approved ToggleChip) */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #E5E7EB;background:#fff;border-radius:4px;padding:3px 8px;font-size:12px;color:#1F2937}
+.chip[aria-pressed=false]{color:var(--axis)}
+.chip.lead{border-color:var(--aLine);background:var(--aTint);color:var(--a);font-weight:600;cursor:default}
+.chip.lead small{font-weight:400;color:#475569}
+.chip.off{cursor:default;color:var(--muted);background:#FAFAFB;border-style:dashed}
+.chip.off small{color:var(--faint)}
+.cap{margin:8px 0 0;font-size:11.5px;color:var(--muted);line-height:1.5;max-width:780px}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:6px}
+.tbtn{border:0;background:none;padding:0;font-size:12px;font-weight:600;color:var(--aInk);text-decoration:underline;text-underline-offset:2px}
+.tbl{margin-top:8px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+.tbl table{border-collapse:collapse;width:100%;font-size:12px}
+.tbl th,.tbl td{padding:4px 10px;text-align:right;border-bottom:1px solid #F1F3F5;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl th{position:sticky;top:0;background:#FAFAFB;color:var(--muted);font-weight:600}
+
+/* before / after */
+.ba{display:grid;grid-template-columns:minmax(0,820px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1180px){.ba{grid-template-columns:1fr}}
+.ba-tag{font:700 10.5px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.calls{list-style:none;margin:0;padding:0;counter-reset:c}
+.calls li{counter-increment:c;display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:13.5px;line-height:1.45;padding:8px 0;border-bottom:1px solid #EDEFF2;color:var(--body)}
+.calls li:before{content:counter(c);font:800 11px 'JetBrains Mono',monospace;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;background:var(--aTint);color:var(--aInk)}
+.calls b{color:var(--ink)}
+/* the live card, rebuilt as shipped */
+.live-card{background:#fff;border:1px solid #E7E9EE;border-radius:16px;padding:20px 24px}
+.live-card .lchip{border-radius:8px;border:1px solid #E7E9EE;padding:4px 10px;font-size:13px;background:#fff;color:#273043}
+.live-card .lchip.lead{border-color:#0F766E;background:#E6F4F1;font-weight:600;color:#115E59}
+.lseg{display:inline-flex;gap:2px;border-radius:10px;background:#F6F7FA;padding:3px}
+.lseg button{border:0;background:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:#667085}
+.lseg button.on{background:#fff;color:#0B1020;box-shadow:0 1px 3px rgba(11,16,32,.1)}
+
+/* small multiples */
+.sm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.sm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sm{border:1px solid var(--line);border-radius:6px;padding:10px 12px 6px;background:#fff}
+.sm .nm{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sm .vd{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.sm.empty{display:flex;flex-direction:column;justify-content:center;background:#FAFAFB;border-style:dashed}
+
+/* searches */
+.sr-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:16px}
+@media (max-width:1000px){.sr-row{grid-template-columns:1fr}}
+.opt{font:700 10.5px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.big{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+.big-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.split{font-size:12.5px;color:var(--body);margin-top:6px}
+.split b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* season strip */
+.strip{display:grid;grid-template-columns:230px repeat(12,minmax(0,1fr)) 210px;gap:2px;align-items:center}
+.strip .hd{font-size:10.5px;color:var(--axis);text-align:center;padding-bottom:2px}
+.strip .tn{font-size:13px;font-weight:600;color:var(--ink);padding-right:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .cell{height:26px;border-radius:4px;position:relative;cursor:default;transition:filter .15s}
+.strip .cell.pk{box-shadow:inset 0 0 0 2px #fff,0 0 0 1.5px #0F172A}
+.strip .cell.hv{filter:brightness(.94)}
+.strip .vt{font-size:12.5px;color:var(--body);padding-left:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .vt.no{color:var(--muted)}
+.ramp{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:10px}
+.ramp i{display:inline-block;width:18px;height:10px;border-radius:2px}
+
+/* topics tab + rail */
+.tabframe{background:#fff;border:1px solid var(--line);border-radius:8px;padding:0 24px 24px}
+.ttabs{display:flex;gap:24px;border-bottom:1px solid var(--line);padding-top:12px;margin-bottom:6px}
+.ttabs span{padding:0 0 10px;font-size:14.5px;font-weight:600;color:var(--muted);position:relative}
+.ttabs span.on{color:var(--ink)}
+.ttabs span.on:after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--a)}
+.tt{display:grid;grid-template-columns:210px minmax(0,1fr);gap:36px}
+@media (max-width:1100px){.tt{grid-template-columns:1fr}.rail{display:none}}
+.rail{position:sticky;top:60px;align-self:start;padding-top:22px}
+.rail .eb{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 8px 8px}
+.rail .grpl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin:12px 0 4px 8px}
+.ri{display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;padding:7px 8px;border-radius:10px;cursor:pointer;transition:background .2s;border:0;background:none;text-align:left;width:100%}
+.ri:hover{background:var(--soft)}
+.ri .n{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;background:var(--soft);color:var(--muted);transition:background .2s,color .2s}
+.ri .t{display:block;font-size:14px;font-weight:600;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
+.ri .v{display:block;font-size:12.5px;color:var(--muted);line-height:1.35}
+.ri .v.al{color:#9F1239}
+.ri.on{background:var(--aTint)}
+.ri.on .n{background:var(--a);color:#fff}
+.ri.on .t{color:var(--aInk)}
+.rail .prog{height:3px;border-radius:2px;background:var(--line);margin:14px 8px 6px;overflow:hidden}
+.rail .prog i{display:block;height:100%;background:var(--a);width:0;transition:width .2s}
+.rail .top{font-size:12.5px;color:var(--muted);margin-left:8px;border:0;background:none;padding:0}
+.tsec{scroll-margin-top:70px;padding:22px 0 26px;border-top:1px solid var(--line)}
+.tsec:first-child{border-top:0}
+.tsec .kick{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--faint)}
+.tsec h4{margin:2px 0 0;font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.tsec .lede{margin:6px 0 14px;font-size:15px;max-width:680px}
+.cmrow{display:grid;grid-template-columns:250px minmax(0,1fr) 190px;gap:12px;align-items:center;padding:6px 8px;border-radius:6px;transition:background .15s}
+.cmrow:hover{background:#FAFBFC}
+.cmrow .p{font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmrow .p small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.cmrow .g{font-size:12.5px;color:var(--body);text-align:right}
+.cmrow .g b{color:var(--ink)}
+.notes{margin:0;padding:0;list-style:none}
+.notes li{display:grid;grid-template-columns:14px 1fr;gap:8px;font-size:14px;padding:8px 0;border-bottom:1px solid #F0F1F4}
+.notes li:before{content:'';width:6px;height:6px;border-radius:1px;background:var(--faint);margin-top:8px}
+.notes b{color:var(--ink)}
+.cfoot{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+.cfoot b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.grad{background:linear-gradient(90deg,#0F766E,#0D9488);-webkit-background-clip:text;background-clip:text;color:transparent}
+.small{font-size:13px;color:var(--muted)}
+.oq-rail{position:sticky;top:0;height:100vh;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}</style></head>
+<body>
+<div class="mock"><span class="mk">Mockup</span><b>Market Trends charts, round 2.</b> Real data only: Bothell Family Dentistry check #23 (read for the US, with a Washington side read), Expedition Pediatric Dentistry check #22 (read for Washington) and Expedition's strategy check #16 for the many-topics view. All checks read on 10/29 and 10/24, called on September 2026.
+<ul>
+<li>What changed vs live: October 2026 is dotted and every end mark sits on September, so lines no longer dive at the end; the readout lives in a fixed bar above the plot and never moves the chart.</li>
+<li>The approved Topic Cards chrome is back: last 12 / 12 before bands with level lines, 0 / 50 / 100 grid, and a 12 / 24 / 5 year switch that zooms instead of jumping.</li>
+<li>The Washington line wears its phrase's colour, dashed, and is only drawn when the state read is readable (T10); more than 4 topics become small multiples; seasons use the repeat rule (T6).</li>
+<li>Owner questions are marked <span class="oq">Owner question</span> in grey notes: bands, searches line or bars, the rating on prospect checks.</li>
+</ul></div>
+<div class="app">
+<aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item is-active" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside>
+<main class="main">
+<div class="pnav"><div class="in">
+  <span class="grp">Bothell #23</span>
+  <a href="#b-A"><i>A</i>Topic chart</a><a href="#b-B"><i>B</i>Before and after</a><a href="#b-D"><i>D</i>Searches</a><a href="#b-F"><i>F</i>Topics tab</a>
+  <span class="grp">Expedition #22 · Washington</span>
+  <a href="#e-A"><i>A</i>Topic charts</a><a href="#e-C"><i>C</i>Many topics</a><a href="#e-E"><i>E</i>Season</a><a href="#e-F"><i>F</i>Topics tab</a>
+</div></div>
+<div class="wrap">
+  <div class="phead"><div><h1><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 5-7 4 4"/><path d="M3 21h18"/></svg>Market Trends charts</h1>
+    <p>Every Market Trends line chart, rebuilt from the approved Topic Cards and Performance charts.</p></div></div>
+
+  <div class="part"><div class="eb">Part 1 · Bothell Family Dentistry · check #23</div><h2>Read for the US, with a Washington side read</h2>
+    <p class="sub">2 topics, 4 phrases. Called on September 2026 against dental searches overall (the 5 benchmark phrases slipped to 97 for every 100 a year earlier).</p></div>
+
+  <section class="sec" id="b-A"><div class="sec-h"><span class="lt">A</span><h3>The topic card chart, rebuilt to spec</h3></div>
+    <p class="sec-lede">Point at a chart, use the arrow keys after clicking it, switch 12 / 24 months / 5 years, toggle a phrase, and flip Shade between the year bands and the call's 3 months.</p>
+    <div class="duo"><div class="cards"></div><div class="side-notes"></div></div></section>
+
+  <section class="sec" id="b-B"><div class="sec-h"><span class="lt">B</span><h3>Before and after, same data</h3></div>
+    <p class="sec-lede">Dental Implants, Bothell #23, 5 years. Top: the live card as shipped (TrendChart.tsx and TopicCardView.tsx rebuilt line for line). Bottom: the same card rebuilt to spec.</p>
+    <div class="ba"><div>
+        <div class="ba-tag">Live today</div><div class="live-card"></div>
+        <div class="ba-tag" style="margin-top:22px">Rebuilt to spec</div><div class="new-card"></div></div>
+      <div><div class="card"><div class="kick" style="margin-bottom:6px">What changed</div><ol class="calls">
+        <li><span><b>No dive at the end.</b> Live plots October 2026, which is not over, as a full month, so every line drops and the end dot and labels sit on the drop. Now October is dotted and the end marks sit on September.</span></li>
+        <li><span><b>The readout never moves the chart.</b> Live: a wrapping row that grows to two lines and pushes the plot down on every hover. Now: a fixed 48px bar with one slot per line, idle on September's values instead of "Point at the chart".</span></li>
+        <li><span><b>Direction has a picture.</b> The approved last 12 / 12 before bands come back, each with its average as a level line, so "Steady, up about a tenth" is visible.</span></li>
+        <li><span><b>Washington is the phrase's own colour, dashed.</b> Live uses cyan #0891B2, too close to the teal lead to tell apart. Tooth implant's Washington line is added; tooth whitening's is left out as too thin.</span></li>
+        <li><span><b>Calmer chrome, approved values.</b> Grid at 0 / 50 / 100 not five lines, 10.5px light axis type with ticks, a 4.0 casing not 5.4, the dark dashed hover guide with a big dot on the lead only, and no legend that repeats the end labels.</span></li>
+        <li><span><b>5 years reads the trend.</b> A thin raw month under a bold 3-month average, and switching range zooms the same drawing instead of redrawing it.</span></li>
+      </ol></div></div></div></section>
+
+  <section class="sec" id="b-D"><div class="sec-h"><span class="lt">D</span><h3>Searches a month</h3></div>
+    <p class="sec-lede">The number leads, the line supports it. Topic totals, both phrases summed.</p>
+    <div class="mnote"><span class="oq">Owner question</span>Searches a month as the number and a line (option 1, spec 03 section 11), or the approved Topic Cards bars (option 2, SearchBarsPlot, ruled 10/23)? Option 2 keeps the approved bars but moves the hover into the bar above, so it never covers the chart.</div>
+    <div class="mnote"><b>T13</b>: the stored 12 months fall for nearly every phrase (dental implants topic 21,065 to 14,378) while Trends calls it Steady. Not headlined until DataForSEO's clickstream method is checked; only 12 months are stored, so there is no year-before comparison yet.</div>
+  </section>
+
+  <section class="sec" id="b-F"><div class="sec-h"><span class="lt">F</span><h3>Topics tab with an Insights rail</h3></div>
+    <p class="sec-lede">AIV-style rail: 210px, sticky, a number chip and a one-line verdict per item built from the numbers; click to jump.</p>
+    <div class="mnote"><span class="oq">Owner question</span>Every topic on a prospect check rates 2/10 from search demand alone (T8). The rating stays quiet in each card's foot here; hide it on prospect checks?</div>
+    <div id="b-Fh"></div></section>
+
+  <div class="part"><div class="eb">Part 2 · Expedition Pediatric Dentistry · check #22</div><h2>Read for Washington</h2>
+    <p class="sub">3 topics, 5 phrases, all read for Washington, benchmark included (dental searches overall held level there). Searches a month are US estimates.</p></div>
+
+  <section class="sec" id="e-A"><div class="sec-h"><span class="lt">A</span><h3>The topic card chart, one per topic</h3></div>
+    <p class="sec-lede">Same component as Part 1. One-line topics keep the full chrome; phrases with too few searches get a grey chip instead of a line.</p>
+    <div class="duo"><div class="cards"></div><div class="side-notes"></div></div></section>
+
+  <section class="sec" id="e-C"><div class="sec-h"><span class="lt">C</span><h3>Many topics: small multiples past 4</h3></div>
+    <p class="sec-lede">Expedition's strategy check #16: 6 topics, 10 phrases. Past 4 lines, one plot braids, so each topic gets its own panel in its own colour, and one readout bar above serves every panel.</p>
+    <div class="mnote"><b>Read place</b>: strategy checks do not store where they were read, so this view names no place; needs a check before it ships. 5 of 6 topics have a reading; the sixth is shown as an empty panel that says so.</div>
+    <div class="card smhost"></div></section>
+
+  <section class="sec" id="e-E"><div class="sec-h"><span class="lt">E</span><h3>Season, by the true-season rule</h3></div>
+    <p class="sec-lede">A season is a peak that repeats. Each year is compared with its own average month, so a year that climbed overall does not fake one (T6).</p>
+    <div class="duo"><div><div class="card"><div class="kick">Pediatric Dentistry · a typical year, read for Washington</div><h4 class="tyh" style="font-size:22px"></h4><p class="verdict tyl"></p><div class="ty"></div></div>
+      <div class="card"><div class="kick">Every topic</div><h4 style="font-size:18px">When each topic is busiest</h4><p class="verdict" style="margin-bottom:10px">Hover a month for its number. Only a peak that passes the repeat rule gets a ring.</p><div class="stp"></div></div></div>
+      <div><div class="mnote"><b>Why the live strip was wrong (T6)</b><br>Live averages raw levels over 36 months, so the 2025 step-up made later months look busier: it said "Tongue-tie peaks in July" (its busiest months were really May, July and November) and gave Pediatric Dentistry "no season", the one topic with a real one.</div>
+      <div class="mnote"><b>Strip fixes</b><br>5 fixed teal steps mapped linearly from each topic's quietest to busiest month (live squared the scale, so most cells looked the same), 2px white gaps, 4px corners, a 1.5px ink ring on a repeating peak, three-letter months, numbers on hover.</div></div></div></section>
+
+  <section class="sec" id="e-F"><div class="sec-h"><span class="lt">F</span><h3>Topics tab with an Insights rail</h3></div>
+    <p class="sec-lede">The same tab for Expedition: the phrases near a line, the one real season, and the data notes the live page hides.</p>
+    <div id="e-Fh"></div></section>
+</div></main></div>
+<script>
+const DATA = {"bothell":{"label":"Bothell Family Dentistry","place":"the US","state":"Washington","run":23,"asOf":"2026-09","basketMedian":0.97,"practice":"Bothell Family Dentistry","months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"topics":[{"topic":"Dental Implants","direction":"stable","spike":"none","driving":"dental implants","combined":[31,28,27,29,33,31,30,28,30,30,31,29,29,27,26,31,30,30,30,29,30,30,29,28,27,27,28,30,29,28,28,27,28,28,29,27,28,27,27,37,36,35,39,41,51,64,64,58,58,57,53,59,71,73,76,76,81,78,69,58,57],"phrases":[{"term":"dental implants","weight":0.8881624704409514,"direction":"stable","spike":"none","size":"sizable","values":[28.0,25.5,24.8,26.6,30.0,28.0,26.8,25.6,27.2,27.0,27.8,26.5,25.6,24.5,23.5,28.0,27.0,26.8,26.4,26.0,26.0,26.4,25.5,24.5,23.8,23.5,24.8,26.2,25.8,25.0,25.0,23.8,24.2,25.0,25.5,23.4,24.8,23.5,23.2,33.0,33.0,31.6,35.8,38.0,49.6,63.5,63.2,57.0,56.0,55.4,52.5,56.8,69.8,72.0,75.0,74.4,79.0,77.0,68.2,55.5,54.2],"cur":66.9,"prev":61.2,"yoy":1.09,"rel":1.12,"basket":0.97,"peakMonth":"2026-06","riseX":1.8,"baseline":43.8,"tail":null,"clicks":[{"m":"2025-10","v":18904},{"m":"2025-11","v":19005},{"m":"2025-12","v":18803},{"m":"2026-01","v":18803},{"m":"2026-02","v":18451},{"m":"2026-03","v":16843},{"m":"2026-04","v":15837},{"m":"2026-05","v":14580},{"m":"2026-06","v":14178},{"m":"2026-07","v":14178},{"m":"2026-08","v":13725},{"m":"2026-09","v":12770}],"nullWeeks":0,"weeks":262,"state":{"values":[27.5,28.0,21.5,25.6,32.5,29.8,28.5,26.4,21.8,30.4,21.8,26.8,25.2,23.8,21.8,26.6,26.0,24.5,24.2,18.5,22.5,24.8,22.5,22.5,21.4,19.8,21.4,24.8,24.8,26.8,21.2,24.8,23.6,22.2,21.2,22.8,27.0,24.8,20.8,41.2,35.0,26.6,33.2,29.8,48.2,69.0,76.6,65.0,58.0,60.2,62.2,60.8,80.2,78.4,77.5,75.0,77.8,80.5,69.6,63.5,52.5],"zeros12":0,"zerosAll":0,"enoughFlag":true,"drawn":true}},{"term":"tooth implant","weight":0.11183752955904855,"direction":"growing","spike":"none","size":"sizable","values":[51.5,48.5,47.2,51.8,54.8,53.5,51.8,48.4,50.5,53.8,53.8,48.8,51.6,48.2,49.8,56.8,55.5,56.2,55.4,55.5,57.5,54.4,52.5,52.0,51.2,51.5,52.8,56.2,55.5,56.0,54.0,56.8,54.6,53.0,55.0,52.0,52.0,54.0,54.6,69.0,63.2,63.4,64.0,64.5,66.4,70.5,68.8,66.5,69.5,67.8,60.5,76.0,79.2,85.2,87.0,90.2,93.5,90.2,79.4,76.2,77.0],"cur":81.9,"prev":68.6,"yoy":1.19,"rel":1.23,"basket":0.97,"peakMonth":"2026-06","riseX":1.4,"baseline":66.45,"tail":null,"clicks":[{"m":"2025-10","v":2161},{"m":"2025-11","v":2011},{"m":"2025-12","v":1810},{"m":"2026-01","v":1709},{"m":"2026-02","v":1709},{"m":"2026-03","v":1960},{"m":"2026-04","v":1860},{"m":"2026-05","v":1508},{"m":"2026-06","v":1608},{"m":"2026-07","v":1759},{"m":"2026-08","v":1759},{"m":"2026-09","v":1608}],"nullWeeks":0,"weeks":262,"state":{"values":[0.0,0.0,0.0,12.6,28.0,32.5,34.2,16.4,10.0,20.8,11.0,17.0,25.6,25.5,12.0,20.8,0.0,26.2,9.2,23.2,41.2,10.2,0.0,0.0,42.4,10.5,8.4,10.5,28.2,18.0,0.0,0.0,10.2,0.0,14.2,11.0,10.2,0.0,29.8,42.8,27.0,52.8,28.5,43.8,23.6,47.0,53.2,12.2,38.0,27.8,41.2,52.0,32.0,61.2,46.2,44.4,67.5,60.5,30.6,36.2,33.0],"zeros12":0,"zerosAll":10,"enoughFlag":true,"drawn":true}}],"season":{"years":[{"year":2023,"raw":[31.0,30.0,30.0,30.0,29.0,30.0,30.0,29.0,28.0,27.0,27.0,28.0],"rel":[1.066,1.032,1.032,1.032,0.997,1.032,1.032,0.997,0.963,0.928,0.928,0.963]},{"year":2024,"raw":[30.0,29.0,28.0,28.0,27.0,28.0,28.0,29.0,27.0,28.0,27.0,27.0],"rel":[1.071,1.036,1.0,1.0,0.964,1.0,1.0,1.036,0.964,1.0,0.964,0.964]},{"year":2025,"raw":[37.0,36.0,35.0,39.0,41.0,51.0,64.0,64.0,58.0,58.0,57.0,53.0],"rel":[0.749,0.728,0.708,0.789,0.83,1.032,1.295,1.295,1.174,1.174,1.153,1.073]}],"mean":[0.962,0.932,0.913,0.94,0.93,1.021,1.109,1.109,1.034,1.034,1.015,1.0],"busiest":[0,0,6],"quietest":[9,4,2],"peak":6,"low":2,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Teeth Whitening","direction":"stable","spike":"none","driving":"teeth whitening","combined":[25,29,30,28,31,32,29,27,25,26,26,23,23,24,26,27,27,28,26,27,27,27,28,24,24,26,26,26,25,26,24,24,24,27,26,23,22,23,26,27,27,34,30,30,37,45,39,35,35,35,39,43,52,54,74,60,62,42,38,35,33],"phrases":[{"term":"teeth whitening","weight":0.972866331549646,"direction":"stable","spike":"none","size":"sizable","values":[25.0,29.0,29.8,27.6,30.5,32.0,29.2,27.0,24.8,25.4,25.8,23.2,23.2,23.8,25.8,27.2,27.2,27.5,25.6,26.8,26.8,26.4,27.2,24.0,23.8,25.8,26.0,25.8,25.0,25.6,24.2,23.8,24.0,26.5,25.5,22.6,22.0,23.2,25.6,26.8,27.0,34.0,29.5,30.2,36.6,45.0,39.0,35.2,35.2,35.4,39.2,42.8,52.2,53.6,74.0,59.8,61.5,41.8,38.0,35.2,33.2],"cur":38.3,"prev":39.7,"yoy":0.96,"rel":0.99,"basket":0.97,"peakMonth":"2026-04","riseX":2.5,"baseline":29.85,"tail":null,"clicks":[{"m":"2025-10","v":21870},{"m":"2025-11","v":21669},{"m":"2025-12","v":21719},{"m":"2026-01","v":21971},{"m":"2026-02","v":21820},{"m":"2026-03","v":20915},{"m":"2026-04","v":19960},{"m":"2026-05","v":19055},{"m":"2026-06","v":18301},{"m":"2026-07","v":17748},{"m":"2026-08","v":17798},{"m":"2026-09","v":17999}],"nullWeeks":0,"weeks":262,"state":{"values":[20.0,26.2,27.0,28.6,29.5,32.5,31.0,29.0,26.8,26.6,24.8,25.0,24.0,25.5,22.2,29.2,29.0,31.0,27.2,27.0,25.5,25.0,28.0,24.0,24.2,24.8,25.6,26.0,28.0,27.8,24.0,21.8,25.2,24.5,29.5,22.2,21.0,23.0,26.4,30.0,30.2,33.6,27.2,30.5,38.2,49.5,46.0,38.2,36.0,34.6,39.2,39.8,53.0,53.8,74.2,60.8,60.5,43.0,36.8,37.8,33.0],"zeros12":0,"zerosAll":0,"enoughFlag":true,"drawn":true}},{"term":"tooth whitening","weight":0.027133668450354035,"direction":"growing","spike":"none","size":"sizable","values":[30.0,29.8,31.8,31.6,37.5,34.2,33.8,32.0,35.2,35.4,35.8,32.8,29.0,31.5,30.2,35.8,35.5,37.8,35.6,35.0,37.8,39.4,38.8,33.2,33.2,33.0,34.4,35.2,36.2,34.8,35.0,32.8,35.2,38.0,35.0,32.4,29.0,30.2,34.6,38.8,37.0,40.2,38.5,38.5,41.2,43.8,39.2,36.2,36.5,38.6,40.0,45.5,47.8,57.8,87.0,73.6,72.5,51.0,46.6,44.5,38.0],"cur":47.4,"prev":39.7,"yoy":1.19,"rel":1.23,"basket":0.97,"peakMonth":"2026-04","riseX":2.3,"baseline":38.5,"tail":null,"clicks":[{"m":"2025-10","v":905},{"m":"2025-11","v":703},{"m":"2025-12","v":502},{"m":"2026-01","v":603},{"m":"2026-02","v":603},{"m":"2026-03","v":603},{"m":"2026-04","v":553},{"m":"2026-05","v":603},{"m":"2026-06","v":553},{"m":"2026-07","v":553},{"m":"2026-08","v":553},{"m":"2026-09","v":502}],"nullWeeks":0,"weeks":262,"state":{"values":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,12.8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,11.6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,16.8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,16.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,12.6,45.0,0.0,21.0,0.0,0.0,0.0,14.5],"zeros12":9,"zerosAll":52,"enoughFlag":true,"drawn":false}}],"season":{"years":[{"year":2023,"raw":[27.0,27.0,28.0,26.0,27.0,27.0,27.0,28.0,24.0,24.0,26.0,26.0],"rel":[1.022,1.022,1.06,0.984,1.022,1.022,1.022,1.06,0.909,0.909,0.984,0.984]},{"year":2024,"raw":[26.0,25.0,26.0,24.0,24.0,24.0,27.0,26.0,23.0,22.0,23.0,26.0],"rel":[1.054,1.014,1.054,0.973,0.973,0.973,1.095,1.054,0.932,0.892,0.932,1.054]},{"year":2025,"raw":[27.0,27.0,34.0,30.0,30.0,37.0,45.0,39.0,35.0,35.0,35.0,39.0],"rel":[0.785,0.785,0.988,0.872,0.872,1.075,1.308,1.133,1.017,1.017,1.017,1.133]}],"mean":[0.954,0.94,1.034,0.943,0.956,1.023,1.142,1.082,0.953,0.939,0.978,1.057],"busiest":[2,6,6],"quietest":[8,9,0],"peak":6,"low":9,"repeat":2,"passes":false,"lowRepeat":1}}],"costUsd":0.11148,"calls":11,"corpusPractices":null},"expedition":{"label":"Expedition Pediatric Dentistry","place":"Washington","state":null,"run":22,"asOf":"2026-09","basketMedian":1.0,"practice":"Expedition Pediatric Dentistry","months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"topics":[{"topic":"Tongue-tie","direction":"stable","spike":"spike_confirmed","driving":"tongue tie","combined":[15,13,21,12,20,29,24,26,29,36,22,25,28,20,19,26,33,31,27,44,35,27,30,26,28,32,44,27,33,32,29,26,33,36,26,17,25,27,32,33,24,30,27,17,20,29,25,19,31,37,18,24,23,27,33,36,27,34,22,27,31],"phrases":[{"term":"tongue tie","weight":0.7374069834001145,"direction":"stable","spike":"none","size":"sizable","values":[20.5,18.0,28.5,16.0,26.8,39.5,32.5,35.8,38.8,48.6,30.0,34.0,38.6,27.5,26.2,34.6,44.2,42.5,37.0,60.0,47.5,36.4,40.2,35.2,38.0,42.8,59.2,37.2,44.5,43.8,39.0,35.2,44.4,49.2,35.0,22.4,34.0,37.2,42.8,44.5,32.8,40.4,37.0,23.0,27.0,39.5,33.4,26.2,42.2,43.0,24.0,33.2,31.8,37.2,44.8,48.6,36.5,46.0,30.0,36.5,40.5],"cur":37.5,"prev":33.0,"yoy":1.14,"rel":1.14,"basket":1.0,"peakMonth":"2026-05","riseX":1.3,"baseline":37.1,"tail":null,"clicks":[{"m":"2025-10","v":11915},{"m":"2025-11","v":11865},{"m":"2025-12","v":11765},{"m":"2026-01","v":11815},{"m":"2026-02","v":11513},{"m":"2026-03","v":11211},{"m":"2026-04","v":10960},{"m":"2026-05","v":11262},{"m":"2026-06","v":11010},{"m":"2026-07","v":10658},{"m":"2026-08","v":11061},{"m":"2026-09","v":10306}],"nullWeeks":22,"weeks":262},{"term":"ankyloglossia","weight":0.26259301659988554,"direction":"negligible","spike":"spike_confirmed","size":"negligible","values":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,20.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,6.2],"cur":0.0,"prev":0.0,"yoy":null,"rel":null,"basket":null,"peakMonth":"2025-11","riseX":null,"baseline":0.0,"tail":0.0,"clicks":[{"m":"2025-10","v":6033},{"m":"2025-11","v":5681},{"m":"2025-12","v":5228},{"m":"2026-01","v":4826},{"m":"2026-02","v":4575},{"m":"2026-03","v":4273},{"m":"2026-04","v":4323},{"m":"2026-05","v":4072},{"m":"2026-06","v":3921},{"m":"2026-07","v":4122},{"m":"2026-08","v":3770},{"m":"2026-09","v":3670}],"nullWeeks":259,"weeks":262}],"season":{"years":[{"year":2023,"raw":[26.0,33.0,31.0,27.0,44.0,35.0,27.0,30.0,26.0,28.0,32.0,44.0],"rel":[0.815,1.034,0.971,0.846,1.379,1.097,0.846,0.94,0.815,0.877,1.003,1.379]},{"year":2024,"raw":[27.0,33.0,32.0,29.0,26.0,33.0,36.0,26.0,17.0,25.0,27.0,32.0],"rel":[0.945,1.155,1.12,1.015,0.91,1.155,1.259,0.91,0.595,0.875,0.945,1.12]},{"year":2025,"raw":[33.0,24.0,30.0,27.0,17.0,20.0,29.0,25.0,19.0,31.0,37.0,18.0],"rel":[1.277,0.929,1.161,1.045,0.658,0.774,1.123,0.968,0.735,1.2,1.432,0.697]}],"mean":[1.012,1.039,1.084,0.969,0.982,1.009,1.076,0.939,0.715,0.984,1.127,1.065],"busiest":[4,6,10],"quietest":[0,8,4],"peak":10,"low":8,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Preventative Pediatric Dentistry","direction":"stable","spike":"step_up_held","driving":"pediatric dentist","combined":[25,28,8.2,25,23,27,24,23,24,24,24,22,24,19,17,25,24,29,26,23,21,23,22,17,18,16,20,22,21,23,20,24,19,28,21,18,19,19,19,24,28,22,24,18,32,57,61,42,42,42,41,45,55,52,44,39,45,50,47,52,37],"phrases":[{"term":"pediatric dentist","weight":1.0,"direction":"stable","spike":"step_up_held","size":"sizable","values":[24.5,28.0,8.2,25.4,23.0,26.8,23.8,22.6,24.0,23.6,24.0,22.0,23.6,19.0,17.2,24.8,24.0,28.8,25.6,23.0,20.8,23.0,22.2,16.8,18.2,16.2,20.2,21.8,21.0,23.2,19.8,24.0,18.6,27.8,20.5,18.2,19.2,18.5,18.6,23.5,27.8,22.0,23.8,18.2,32.2,56.8,61.4,41.8,41.8,42.0,41.2,45.0,55.2,51.8,43.5,39.0,45.2,49.8,47.2,51.5,36.8],"cur":49.5,"prev":53.3,"yoy":0.93,"rel":0.93,"basket":1.0,"peakMonth":"2025-08","riseX":3.0,"baseline":20.15,"tail":0.8,"clicks":[{"m":"2025-10","v":10005},{"m":"2025-11","v":9804},{"m":"2025-12","v":10005},{"m":"2026-01","v":9653},{"m":"2026-02","v":9804},{"m":"2026-03","v":10156},{"m":"2026-04","v":10508},{"m":"2026-05","v":9753},{"m":"2026-06","v":9502},{"m":"2026-07","v":8949},{"m":"2026-08","v":8396},{"m":"2026-09","v":7893}],"nullWeeks":8,"weeks":262},{"term":"children's dentist","weight":0.0,"direction":"negligible","spike":"spike_confirmed","size":"negligible","values":[0.0,0.0,0.0,0.0,17.2,0.0,0.0,13.6,0.0,0.0,54.2,34.8,20.0,0.0,0.0,0.0,0.0,19.0,0.0,0.0,19.0,0.0,0.0,0.0,0.0,0.0,0.0,17.2,0.0,15.6,0.0,19.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,39.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,9.8],"cur":0.0,"prev":0.0,"yoy":null,"rel":null,"basket":null,"peakMonth":"2026-01","riseX":null,"baseline":0.0,"tail":0.0,"clicks":[{"m":"2025-10","v":201},{"m":"2025-11","v":201},{"m":"2025-12","v":150},{"m":"2026-01","v":150},{"m":"2026-02","v":150},{"m":"2026-03","v":150},{"m":"2026-04","v":150},{"m":"2026-05","v":50},{"m":"2026-06","v":50},{"m":"2026-07","v":50},{"m":"2026-08","v":0},{"m":"2026-09","v":0}],"nullWeeks":244,"weeks":262}],"season":{"years":[{"year":2023,"raw":[25.0,24.0,29.0,26.0,23.0,21.0,23.0,22.0,17.0,18.0,16.0,20.0],"rel":[1.136,1.091,1.318,1.182,1.045,0.955,1.045,1.0,0.773,0.818,0.727,0.909]},{"year":2024,"raw":[22.0,21.0,23.0,20.0,24.0,19.0,28.0,21.0,18.0,19.0,19.0,19.0],"rel":[1.043,0.996,1.091,0.949,1.138,0.901,1.328,0.996,0.854,0.901,0.901,0.901]},{"year":2025,"raw":[24.0,28.0,22.0,24.0,18.0,32.0,57.0,61.0,42.0,42.0,42.0,41.0],"rel":[0.665,0.776,0.61,0.665,0.499,0.887,1.58,1.691,1.164,1.164,1.164,1.136]}],"mean":[0.948,0.954,1.006,0.932,0.894,0.914,1.318,1.229,0.93,0.961,0.931,0.982],"busiest":[2,6,7],"quietest":[10,8,4],"peak":6,"low":4,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Pediatric Dentistry","direction":"stable","spike":"none","driving":"pediatric dentistry","combined":[62,45,43,61,69,69,59,61,68,65,73,69,70,60,53,72,73,71,68,66,70,71,83,70,70,63,55,73,70,69,73,59,61,68,75,67,60,49,48,67,70,68,62,69,68,84,82,73,71,62,54,74,80,72,74,80,71,71,75,57,67],"phrases":[{"term":"pediatric dentistry","weight":1.0,"direction":"stable","spike":"none","size":"sizable","values":[61.5,45.2,43.2,61.4,68.5,68.8,58.5,61.4,68.0,65.2,73.2,68.5,70.2,60.2,52.8,71.6,72.8,70.8,68.4,65.8,69.8,70.6,83.0,69.5,70.0,62.5,55.0,73.0,70.2,68.8,73.2,58.8,61.0,68.0,74.8,67.4,60.2,49.2,47.6,67.2,70.0,67.8,62.0,69.0,67.6,83.5,82.4,73.0,71.0,62.2,54.0,74.2,79.5,72.4,73.8,80.4,71.0,71.0,75.2,56.5,67.2],"cur":67.6,"prev":79.6,"yoy":0.85,"rel":0.85,"basket":1.0,"peakMonth":"2025-07","riseX":1.2,"baseline":67.7,"tail":null,"clicks":[{"m":"2025-10","v":3418},{"m":"2025-11","v":3167},{"m":"2025-12","v":3268},{"m":"2026-01","v":3217},{"m":"2026-02","v":3418},{"m":"2026-03","v":3217},{"m":"2026-04","v":3318},{"m":"2026-05","v":3318},{"m":"2026-06","v":3117},{"m":"2026-07","v":2865},{"m":"2026-08","v":2614},{"m":"2026-09","v":2564}],"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[72.0,73.0,71.0,68.0,66.0,70.0,71.0,83.0,70.0,70.0,63.0,55.0],"rel":[1.038,1.053,1.024,0.981,0.952,1.01,1.024,1.197,1.01,1.01,0.909,0.793]},{"year":2024,"raw":[73.0,70.0,69.0,73.0,59.0,61.0,68.0,75.0,67.0,60.0,49.0,48.0],"rel":[1.135,1.088,1.073,1.135,0.917,0.948,1.057,1.166,1.041,0.933,0.762,0.746]},{"year":2025,"raw":[67.0,70.0,68.0,62.0,69.0,68.0,84.0,82.0,73.0,71.0,62.0,54.0],"rel":[0.969,1.012,0.983,0.896,0.998,0.983,1.214,1.186,1.055,1.027,0.896,0.781]}],"mean":[1.047,1.051,1.027,1.004,0.956,0.98,1.098,1.183,1.035,0.99,0.856,0.773],"busiest":[7,7,6],"quietest":[11,11,11],"peak":7,"low":11,"repeat":2,"passes":true,"lowRepeat":3}}],"costUsd":0.0839,"calls":7,"corpusPractices":null},"strategy":{"label":"Expedition Pediatric Dentistry","place":null,"state":null,"run":16,"asOf":"2026-09","basketMedian":0.98,"practice":null,"months":["2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"topics":[{"topic":"Frenectomy","direction":"stable","spike":"none","driving":"tongue tie","combined":[34,35,31,35,40,39,40,38,40,45,43,40,43,39,35,46,46,47,44,56,55,45,44,43,50,44,57,44,45,42,41,41,44,46,39,37,40,39,41,47,46,45,45,43,47,61,51,44,48,47,38,45,44,46,48,49,49,50,44,42,40],"phrases":[{"term":"tongue tie","weight":0.7243972727911717,"direction":"stable","spike":"none","size":"sizable","cur":50.4,"prev":55.7,"yoy":0.91,"rel":0.93,"basket":0.98,"peakMonth":"2025-07","riseX":1.3,"baseline":47.8,"tail":null,"nullWeeks":0,"weeks":262},{"term":"frenectomy","weight":0.2756027272088283,"direction":"decaying","spike":"none","size":"sizable","cur":31.5,"prev":42.5,"yoy":0.74,"rel":0.76,"basket":0.98,"peakMonth":"2025-07","riseX":2.1,"baseline":26.9,"tail":null,"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[46.0,46.0,47.0,44.0,56.0,55.0,45.0,44.0,43.0,50.0,44.0,57.0],"rel":[0.957,0.957,0.977,0.915,1.165,1.144,0.936,0.915,0.894,1.04,0.915,1.185]},{"year":2024,"raw":[44.0,45.0,42.0,41.0,41.0,44.0,46.0,39.0,37.0,40.0,39.0,41.0],"rel":[1.058,1.082,1.01,0.986,0.986,1.058,1.106,0.938,0.89,0.962,0.938,0.986]},{"year":2025,"raw":[47.0,46.0,45.0,45.0,43.0,47.0,61.0,51.0,44.0,48.0,47.0,38.0],"rel":[1.004,0.982,0.961,0.961,0.918,1.004,1.302,1.089,0.94,1.025,1.004,0.811]}],"mean":[1.006,1.007,0.983,0.954,1.023,1.069,1.115,0.981,0.908,1.009,0.952,0.994],"busiest":[11,6,6],"quietest":[8,8,11],"peak":6,"low":8,"repeat":2,"passes":false,"lowRepeat":2}},{"topic":"Sedation Dentistry","direction":"decaying","spike":"fading","driving":"sedation dentistry","combined":[31,28,25,28,32,30,30,26,30,31,31,29,30,26,28,32,32,30,30,29,30,32,29,31,29,28,28,29,29,27,27,26,26,28,28,28,26,25,23,37,42,44,50,48,61,86,84,64,51,55,53,59,65,69,69,72,81,74,64,60,51],"phrases":[{"term":"sedation dentistry","weight":0.7504145936981758,"direction":"decaying","spike":"fading","size":"sizable","cur":71.3,"prev":87.9,"yoy":0.81,"rel":0.83,"basket":0.98,"peakMonth":"2025-08","riseX":3.6,"baseline":26.700000000000003,"tail":0.7,"nullWeeks":0,"weeks":262},{"term":"dental sedation","weight":0.08291873963515754,"direction":"stable","spike":"none","size":"sizable","cur":58.2,"prev":58.9,"yoy":0.99,"rel":1.01,"basket":0.98,"peakMonth":"2026-06","riseX":1.7,"baseline":47.05,"tail":null,"nullWeeks":0,"weeks":262},{"term":"sleep dentistry","weight":0.16666666666666666,"direction":"stable","spike":"fading","size":"sizable","cur":47.5,"prev":43.1,"yoy":1.1,"rel":1.12,"basket":0.98,"peakMonth":"2026-06","riseX":2.6,"baseline":34.5,"tail":0.47,"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[32.0,32.0,30.0,30.0,29.0,30.0,32.0,29.0,31.0,29.0,28.0,28.0],"rel":[1.067,1.067,1.0,1.0,0.967,1.0,1.067,0.967,1.033,0.967,0.933,0.933]},{"year":2024,"raw":[29.0,29.0,27.0,27.0,26.0,26.0,28.0,28.0,28.0,26.0,25.0,23.0],"rel":[1.081,1.081,1.006,1.006,0.969,0.969,1.043,1.043,1.043,0.969,0.932,0.857]},{"year":2025,"raw":[37.0,42.0,44.0,50.0,48.0,61.0,86.0,84.0,64.0,51.0,55.0,53.0],"rel":[0.658,0.747,0.782,0.889,0.853,1.084,1.529,1.493,1.138,0.907,0.978,0.942]}],"mean":[0.935,0.965,0.929,0.965,0.93,1.018,1.213,1.168,1.071,0.948,0.948,0.911],"busiest":[0,0,6],"quietest":[10,11,0],"peak":6,"low":11,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Frenectomy: Procedure Details & Process","direction":"decaying","spike":"none","driving":"tongue tie surgery","combined":[31,28,28,28,34,36,40,36,41,44,47,38,38,34,36,44,42,42,43,39,49,45,46,35,46,38,56,38,41,31,36,43,45,49,44,40,40,40,33,48,44,41,46,39,52,56,49,47,41,49,37,45,45,45,42,43,44,44,39,40,38],"phrases":[{"term":"lip tie surgery","weight":null,"direction":"growing","spike":"none","size":"not_sizable","cur":40.3,"prev":33.4,"yoy":1.21,"rel":1.23,"basket":0.98,"peakMonth":"2026-08","riseX":1.8,"baseline":30.35,"tail":null,"nullWeeks":131,"weeks":262},{"term":"tongue tie surgery","weight":1.0,"direction":"decaying","spike":"none","size":"sizable","cur":40.7,"prev":50.5,"yoy":0.8,"rel":0.82,"basket":0.98,"peakMonth":"2025-07","riseX":1.4,"baseline":39.9,"tail":null,"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[44.0,42.0,42.0,43.0,39.0,49.0,45.0,46.0,35.0,46.0,38.0,56.0],"rel":[1.006,0.96,0.96,0.983,0.891,1.12,1.029,1.051,0.8,1.051,0.869,1.28]},{"year":2024,"raw":[38.0,41.0,31.0,36.0,43.0,45.0,49.0,44.0,40.0,40.0,40.0,33.0],"rel":[0.95,1.025,0.775,0.9,1.075,1.125,1.225,1.1,1.0,1.0,1.0,0.825]},{"year":2025,"raw":[48.0,44.0,41.0,46.0,39.0,52.0,56.0,49.0,47.0,41.0,49.0,37.0],"rel":[1.049,0.962,0.896,1.005,0.852,1.137,1.224,1.071,1.027,0.896,1.071,0.809]}],"mean":[1.002,0.982,0.877,0.963,0.939,1.127,1.159,1.074,0.942,0.982,0.98,0.971],"busiest":[11,6,6],"quietest":[8,2,11],"peak":6,"low":2,"repeat":2,"passes":true,"lowRepeat":1}},{"topic":"Lip Tie & Tongue Tie: Infant & Baby Treatment","direction":"stable","spike":"fading","driving":"lip tie","combined":[29,26,25,31,34,35,32,31,32,34,37,32,35,29,27,35,36,34,35,32,34,32,31,35,34,32,34,28,30,28,32,32,34,32,28,28,29,27,30,34,32,31,31,32,33,40,35,32,37,34,29,33,36,44,80,61,49,37,35,32,31],"phrases":[{"term":"lip tie","weight":1.0,"direction":"stable","spike":"fading","size":"sizable","cur":34.4,"prev":35.7,"yoy":0.96,"rel":0.98,"basket":0.98,"peakMonth":"2026-04","riseX":2.5,"baseline":31.65,"tail":0.41,"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[35.0,36.0,34.0,35.0,32.0,34.0,32.0,31.0,35.0,34.0,32.0,34.0],"rel":[1.04,1.069,1.01,1.04,0.95,1.01,0.95,0.921,1.04,1.01,0.95,1.01]},{"year":2024,"raw":[28.0,30.0,28.0,32.0,32.0,34.0,32.0,28.0,28.0,29.0,27.0,30.0],"rel":[0.939,1.006,0.939,1.073,1.073,1.14,1.073,0.939,0.939,0.972,0.905,1.006]},{"year":2025,"raw":[34.0,32.0,31.0,31.0,32.0,33.0,40.0,35.0,32.0,37.0,34.0,29.0],"rel":[1.02,0.96,0.93,0.93,0.96,0.99,1.2,1.05,0.96,1.11,1.02,0.87]}],"mean":[1.0,1.012,0.96,1.014,0.994,1.047,1.074,0.97,0.98,1.031,0.958,0.962],"busiest":[1,5,6],"quietest":[7,10,11],"peak":6,"low":10,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Insurance accepted and cost information","direction":"stable","spike":"none","driving":"dental insurance","combined":[55,54,47,55,60,58,56,49,51,53,56,50,57,56,52,62,60,55,55,51,51,52,51,50,58,58,58,64,58,58,54,49,51,55,55,53,59,62,60,69,62,62,59,59,63,75,68,69,74,86,70,86,85,88,84,83,87,85,79,67,74],"phrases":[{"term":"dental insurance","weight":0.9991478192695107,"direction":"stable","spike":"none","size":"sizable","cur":77.0,"prev":70.7,"yoy":1.09,"rel":1.11,"basket":0.98,"peakMonth":"2026-03","riseX":1.4,"baseline":62.1,"tail":null,"nullWeeks":0,"weeks":262},{"term":"dental cost","weight":0.0008521807304893222,"direction":"stable","spike":"none","size":"negligible","cur":63.6,"prev":59.6,"yoy":1.07,"rel":1.09,"basket":0.98,"peakMonth":"2026-03","riseX":2.0,"baseline":46.95,"tail":null,"nullWeeks":0,"weeks":262}],"season":{"years":[{"year":2023,"raw":[62.0,60.0,55.0,55.0,51.0,51.0,52.0,51.0,50.0,58.0,58.0,58.0],"rel":[1.126,1.089,0.998,0.998,0.926,0.926,0.944,0.926,0.908,1.053,1.053,1.053]},{"year":2024,"raw":[64.0,58.0,58.0,54.0,49.0,51.0,55.0,55.0,53.0,59.0,62.0,60.0],"rel":[1.133,1.027,1.027,0.956,0.867,0.903,0.973,0.973,0.938,1.044,1.097,1.062]},{"year":2025,"raw":[69.0,62.0,62.0,59.0,59.0,63.0,75.0,68.0,69.0,74.0,86.0,70.0],"rel":[1.015,0.912,0.912,0.868,0.868,0.926,1.103,1.0,1.015,1.088,1.265,1.029]}],"mean":[1.091,1.009,0.979,0.941,0.887,0.918,1.007,0.966,0.954,1.062,1.138,1.048],"busiest":[0,0,10],"quietest":[8,4,3],"peak":10,"low":4,"repeat":1,"passes":false,"lowRepeat":1}},{"topic":"Cost and insurance coverage for general anesthesia","noRead":true}],"costUsd":0.1342,"calls":12,"corpusPractices":null}};
+
+// ---------- helpers ----------
+const EASE = 'cubic-bezier(.2,.8,.2,1)';
+const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const LAST_FULL = 59, NOW_IDX = 60;   // Sep 2026 = last full month, Oct 2026 = not over yet (T3)
+const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let UID = 0;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const fmtN = (n) => Math.round(n).toLocaleString('en-US');
+const monthLong = (m) => { const [y, mm] = m.split('-'); return `${MONL[+mm - 1]} ${y}`; };
+const monthShort = (m, yr) => { const [y, mm] = m.split('-'); return yr ? `${MON3[+mm - 1]} '${y.slice(2)}` : MON3[+mm - 1]; };
+const about = (n) => n >= 10000 ? Math.round(n / 100) * 100 : n >= 1000 ? Math.round(n / 10) * 10 : Math.round(n);
+function share(pct) {
+  const a = Math.abs(pct);
+  return a >= 45 ? 'about half' : a >= 30 ? 'about a third' : a >= 23 ? 'about a quarter' : a >= 17 ? 'about a fifth' : a >= 13 ? 'about a seventh' : a >= 9 ? 'about a tenth' : 'a little';
+}
+function changeWords(yoy) {
+  if (yoy == null) return 'no reading a year ago';
+  const pct = Math.round((yoy - 1) * 100);
+  if (Math.abs(pct) < 5) return 'about level with a year ago';
+  return `${pct > 0 ? 'up' : 'down'} ${share(pct)} on a year ago`;
+}
+/** The call's own number, in words (T7): against dental searches overall, with the distance to the line. */
+function relWords(rel) {
+  if (rel == null) return '';
+  const d = Math.round((rel - 1) * 100);
+  if (rel >= 1.15) return `about ${d} in every 100 ahead of dental searches overall, past the Rising line at 15`;
+  if (rel < 0.85) return `about ${-d} in every 100 behind dental searches overall, past the Fading line at 15`;
+  if (Math.abs(d) <= 2) return 'level with dental searches overall';
+  if (d > 0) return `about ${d} in every 100 ahead of dental searches overall; Rising starts at 15`;
+  if (d === -15) return 'about 15 in every 100 behind dental searches overall, right on the Fading line';
+  return `about ${-d} in every 100 behind dental searches overall; Fading starts at 15 behind`;
+}
+function relShort(rel) {
+  const d = Math.round((rel - 1) * 100);
+  if (rel >= 1.15) return `${d} ahead, Rising`;
+  if (rel < 0.85) return `${-d} behind, Fading`;
+  if (Math.abs(d) <= 2) return 'level with overall';
+  if (d > 0) return 15 - d <= 5 ? `${d} ahead, ${15 - d} short of Rising` : `${d} ahead of overall`;
+  if (d === -15) return 'on the Fading line';
+  return `${-d} behind overall`;
+}
+const verdictOf = (dir) => dir === 'growing' ? 'Rising' : dir === 'decaying' ? 'Fading' : dir === 'emerging' ? 'Emerging' : 'Steady';
+const wordClass = (w) => w === 'Rising' || w === 'Emerging' ? 'w-up' : w === 'Fading' ? 'w-down' : 'w-flat';
+function chevron(w) {
+  if (w !== 'Rising' && w !== 'Fading') return '';
+  const c = w === 'Rising' ? '#15803D' : w === 'Fading' ? '#E11D48' : '#0F172A';
+  const d = w === 'Rising' ? 'M2 8l4-4 4 4' : w === 'Fading' ? 'M2 4l4 4 4-4' : 'M2 6h8';
+  return `<svg class="chev" viewBox="0 0 12 12"><path d="${d}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+const swatch = (color, width, dash, op = 1) => `<svg width="16" height="8" aria-hidden="true" style="opacity:${op}"><line x1="1" x2="15" y1="4" y2="4" stroke="${color}" stroke-width="${width}" ${dash ? `stroke-dasharray="${dash}"` : ''} stroke-linecap="round"/></svg>`;
+
+function seg(host, options, value, onChange) {
+  host.classList.add('seg');
+  host.setAttribute('role', 'group');
+  host.innerHTML = `<span class="thumb"></span>` + options.map((o) => `<button type="button" data-v="${o.v}" aria-pressed="${o.v === value}">${o.l}</button>`).join('');
+  const thumb = host.querySelector('.thumb');
+  const place = () => {
+    const b = host.querySelector(`button[data-v="${value}"]`);
+    host.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b));
+    if (b) { thumb.style.left = b.offsetLeft + 'px'; thumb.style.width = b.offsetWidth + 'px'; }
+  };
+  host.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    value = b.dataset.v; host.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    place(); onChange(value);
+  });
+  requestAnimationFrame(place);
+  window.addEventListener('resize', place);
+  document.fonts && document.fonts.ready.then(place);
+}
+
+/** Spread labels around their cluster's middle (03 spec 7), clamp into [lo, hi]. items: {y} -> sets .ly */
+function spread(items, gap, lo, hi) {
+  const s = [...items].sort((a, b) => a.y - b.y);
+  let groups = s.map((it) => ({ items: [it], mid: it.y }));
+  const top = (g) => g.mid - ((g.items.length - 1) * gap) / 2;
+  let merged = true;
+  while (merged) {
+    merged = false;
+    for (let k = 1; k < groups.length; k++) {
+      const a = groups[k - 1], b = groups[k];
+      if (top(b) < top(a) + a.items.length * gap) {
+        const items2 = [...a.items, ...b.items];
+        groups.splice(k - 1, 2, { items: items2, mid: items2.reduce((t, i) => t + i.y, 0) / items2.length });
+        merged = true; break;
+      }
+    }
+  }
+  groups.forEach((g) => {
+    let t = top(g); const h = (g.items.length - 1) * gap;
+    t = Math.max(lo, Math.min(hi - h, t));
+    g.items.forEach((it, k) => { it.ly = t + k * gap; });
+  });
+  return s;
+}
+
+function readoutHTML() {
+  return `<div class="ro" aria-live="off"><div class="r1"><span class="m" aria-live="polite"></span><span class="sc"></span></div><div class="r2"></div></div>`;
+}
+function fillReadout(ro, month, scale, slots) {
+  $('.m', ro).innerHTML = month;
+  $('.sc', ro).textContent = scale;
+  const r2 = $('.r2', ro);
+  r2.style.gridTemplateColumns = `repeat(${Math.max(1, slots.length)}, minmax(0,1fr))`;
+  r2.innerHTML = slots.map((s) => `<div class="slot ${s.value == null ? 'nd' : ''}">${s.sw}<b>${s.value == null ? 'no data' : s.value}</b><span title="${esc(s.name)}">${esc(s.name)}</span></div>`).join('');
+}
+
+// ---------- A: the topic card chart, rebuilt to spec ----------
+// o: { months, lines:[{key,label,short,values,color,width,dash,lead,kind,on}], range, bands, peak:{index}, scale, place, cur, prev, offChips:[{label,note}] }
+function topicChart(host, o) {
+  host.classList.add('tc');
+  const id = 'tc' + (++UID);
+  const CW = 640, CH = 270, PL = 30, PT = 20, PB = 26, PR = 124;
+  const STEP = (CW - PL - PR) / 60;
+  const X = (i) => PL + i * STEP, Y = (v) => PT + (1 - v / 100) * (CH - PT - PB);
+  const s0 = (r) => 60 - r, RX = (i, r) => PL + (i - s0(r)) * STEP * (60 / r);
+  const tf = (r) => { const k = 60 / r, t = PL - k * X(s0(r)); return `translate(${t.toFixed(2)}px,0px) scale(${k.toFixed(4)},1)`; };
+  let range = o.range || 24, bands = o.bands || 'year', hover = null, drag = null, dragging = false;
+  const lines = o.lines;
+  const shown = () => lines.filter((l) => l.on !== false);
+  const lead = lines.find((l) => l.lead);
+  const path = (vals, a, b) => { let d = '', pen = false; for (let i = a; i <= b; i++) { const v = vals[i]; if (v == null) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`; pen = true; } return d; };
+  const avg3 = lead.values.map((v, i) => { if (i > LAST_FULL) return null; const w = [lead.values[i - 1], v, lead.values[i + 1]].filter((x, k) => x != null && i - 1 + k <= LAST_FULL); return w.length ? w.reduce((a, b) => a + b, 0) / w.length : null; });
+  const NS = 'vector-effect="non-scaling-stroke"';
+  const lineMarks = [...lines].sort((a, b) => Number(!!a.lead) - Number(!!b.lead)).map((l) => {
+    const solid = path(l.values, 0, LAST_FULL), tail = path(l.values, LAST_FULL, NOW_IDX);
+    const base = `fill="none" stroke-linejoin="round" stroke-linecap="round" ${NS}`;
+    return `<g class="ln" data-k="${l.key}" style="transition:opacity .35s">
+      ${l.lead ? `<path class="cas" d="${solid}" stroke="#fff" stroke-width="4" ${base} style="transition:opacity .35s"/>` : ''}
+      <path class="sol" d="${solid}" stroke="${l.color}" stroke-width="${l.width}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} ${base} style="transition:opacity .35s,stroke-width .35s"/>
+      <path class="tail" d="${tail}" stroke="${l.color}" stroke-width="${Math.min(l.width, 1.8)}" stroke-dasharray="2 3" fill="none" ${NS}/>
+      ${l.lead ? `<path class="acas" d="${path(avg3, 0, LAST_FULL)}" stroke="#fff" stroke-width="4" ${base} style="opacity:0;transition:opacity .35s"/><path class="avg" d="${path(avg3, 0, LAST_FULL)}" stroke="${l.color}" stroke-width="2.2" ${base} style="opacity:0;transition:opacity .35s"/>` : ''}
+    </g>`;
+  }).join('');
+  const area = `${path(lead.values, 0, LAST_FULL)}L${X(LAST_FULL)},${Y(0)}L${X(0)},${Y(0)}Z`;
+
+  host.innerHTML = `
+    <div class="ctl"><div class="grp"><span class="eb">Show</span><div class="rg"></div></div>
+      <div class="grp"><span class="eb">Shade</span><div class="bg"></div></div></div>
+    ${readoutHTML()}
+    <svg class="plot" viewBox="0 0 ${CW} ${CH}" tabindex="0" role="img" aria-label="Google interest by month">
+      <defs>
+        <linearGradient id="${id}-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".22"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient>
+        <linearGradient id="${id}-tail" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E3F2EE"/><stop offset="1" stop-color="#E3F2EE" stop-opacity="0"/></linearGradient>
+        <clipPath id="${id}-clip"><rect x="${PL}" y="0" width="${CW - PL - PR}" height="${CH}"/></clipPath>
+      </defs>
+      <g class="chrome"></g>
+      <g class="sel"></g>
+      <g clip-path="url(#${id}-clip)"><g class="zoom" style="transform:${tf(range)};transition:${REDUCE ? 'none' : `transform .7s ${EASE}`}">
+        <path class="area" d="${area}" fill="url(#${id}-area)" style="transition:opacity .35s"/>
+        ${lineMarks}
+      </g></g>
+      <g class="lvl"></g>
+      <g class="mk"></g>
+      <g class="labels"></g>
+      <g class="hv"></g>
+      <rect class="hit" x="${PL}" y="${PT}" width="${CW - PL - PR}" height="${CH - PT - PB}" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="chips"></div>
+    <p class="cap"></p>
+    <div class="foot"><span></span><button type="button" class="tbtn">Show as a table</button></div>
+    <div class="tbl" hidden></div>`;
+  const svg = $('svg', host), chrome = $('.chrome', host), zoom = $('.zoom', host), mk = $('.mk', host), labs = $('.labels', host), hv = $('.hv', host), sel = $('.sel', host), lvl = $('.lvl', host);
+  const ro = $('.ro', host);
+
+  function drawChrome() {
+    const half = (RX(1, range) - RX(0, range)) / 2;
+    let out = '';
+    const band = (i0, i1, fill, label) => {
+      if (i1 < s0(range)) return '';
+      const a = Math.max(i0, s0(range));
+      return `<rect x="${RX(a, range) - half}" y="${PT}" width="${RX(i1, range) - RX(a, range) + 2 * half}" height="${CH - PT - PB}" fill="${fill}"/>
+        <text x="${(RX(a, range) + RX(i1, range)) / 2}" y="${CH - PB - 5}" text-anchor="middle" font-size="10" fill="#6B7280">${label}</text>`;
+    };
+    if (bands === 'year') {
+      if (range > 12) out += band(LAST_FULL - 23, LAST_FULL - 12, '#F3F4F6', '12 before');
+      out += band(LAST_FULL - 11, LAST_FULL, '#E3F2EE', 'last 12');
+    } else {
+      out += band(LAST_FULL - 14, LAST_FULL - 12, '#F3F4F6', range === 60 ? "'25" : "Jul to Sep '25");
+      out += band(LAST_FULL - 2, LAST_FULL, '#E3F2EE', range === 60 ? "'26" : "Jul to Sep '26");
+    }
+    const tFrom = RX(LAST_FULL, range) + half, tTo = CW - PR;
+    if (tTo > tFrom) out += `<rect x="${tFrom}" y="${PT}" width="${tTo - tFrom}" height="${CH - PT - PB}" fill="url(#${id}-tail)"/>`;
+    [0, 50, 100].forEach((v) => { out += `<line x1="${PL}" x2="${CW - PR}" y1="${Y(v)}" y2="${Y(v)}" stroke="#EEF0F3"/><text x="${PL - 6}" y="${Y(v) + 3}" text-anchor="end" font-size="10.5" fill="#9CA3AF">${v}</text>`; });
+    for (let i = s0(range); i <= NOW_IDX; i++) {
+      const cm = +o.months[i].split('-')[1] - 1;
+      if (range === 60 ? cm !== 0 : range === 24 && cm % 3 !== 0) continue;
+      const lab = range === 60 ? o.months[i].slice(0, 4) : monthShort(o.months[i], cm === 0 || i === s0(range));
+      out += `<line x1="${RX(i, range)}" x2="${RX(i, range)}" y1="${CH - PB}" y2="${CH - PB + 4}" stroke="#D1D5DB"/><text x="${RX(i, range)}" y="${CH - 6}" text-anchor="middle" font-size="10.5" fill="#9CA3AF">${lab}</text>`;
+    }
+    out += `<line x1="${PL}" x2="${CW - PR}" y1="${CH - PB}" y2="${CH - PB}" stroke="#D1D5DB"/>`;
+    chrome.innerHTML = out;
+    // level lines on top of the bands, for the lead (03 spec 12): the gap between them is the direction
+    let lv = '';
+    if (lead.on !== false) {
+      const mean = (a, b) => { const v = lead.values.slice(a, b + 1).filter((x) => x != null); return v.reduce((s, x) => s + x, 0) / v.length; };
+      const pairs = bands === 'year'
+        ? [[LAST_FULL - 23, LAST_FULL - 12, mean(LAST_FULL - 23, LAST_FULL - 12), 'avg'], [LAST_FULL - 11, LAST_FULL, mean(LAST_FULL - 11, LAST_FULL), 'avg']]
+        : [[LAST_FULL - 14, LAST_FULL - 12, o.prev, ''], [LAST_FULL - 2, LAST_FULL, o.cur, '']];
+      pairs.forEach(([a, b, v, w], k) => {
+        if (v == null || b < s0(range) || (bands === 'year' && k === 0 && range === 12)) return;
+        const xa = RX(Math.max(a, s0(range)), range) - half, xb = RX(b, range) + half;
+        lv += `<line x1="${xa}" x2="${xb}" y1="${Y(v)}" y2="${Y(v)}" stroke="#0F172A" stroke-opacity=".4"/>
+          <text x="${xa + 4}" y="${Y(v) - 4}" text-anchor="start" font-size="10.5" fill="#0F172A" font-weight="600" paint-order="stroke" stroke="#fff" stroke-width="3">${w ? w + ' ' : ''}${Math.round(v)}</text>`;
+      });
+    }
+    lvl.innerHTML = lv;
+    if (!REDUCE && chrome.animate) { chrome.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease' }); lvl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 350, easing: 'ease' }); }
+  }
+
+  function drawMarks() {
+    const place = (i, v) => `transform:translate(${RX(i, range).toFixed(1)}px,${Y(v).toFixed(1)}px);transition:${REDUCE ? 'none' : `transform .7s ${EASE}`}`;
+    let m = '';
+    if (lead.on !== false && lead.values[LAST_FULL] != null) m += `<g class="end" style="${place(LAST_FULL, lead.values[LAST_FULL])}"><circle r="4" fill="${lead.color}" stroke="#fff" stroke-width="2"/></g>`;
+    if (o.peak && lead.on !== false) {
+      const pv = lead.values[o.peak.index], hidden = o.peak.index < s0(range), right = RX(o.peak.index, range) > CW - PR - 90;
+      m += `<g style="${place(o.peak.index, pv)};visibility:${hidden ? 'hidden' : 'visible'}"><circle r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/>
+        <text x="${right ? -8 : 8}" y="-7" text-anchor="${right ? 'end' : 'start'}" font-size="10.5" font-weight="600" fill="#0F172A" paint-order="stroke" stroke="#fff" stroke-width="3">peak, ${monthShort(o.months[o.peak.index], true)}</text></g>`;
+    }
+    // reuse the existing nodes so transforms glide
+    if (!mk.dataset.ready) { mk.innerHTML = m; mk.dataset.ready = '1'; return; }
+    const tmp = document.createElementNS('http://www.w3.org/2000/svg', 'g'); tmp.innerHTML = m;
+    [...tmp.children].forEach((c, k) => { const cur = mk.children[k]; if (cur) { cur.setAttribute('style', c.getAttribute('style')); } else mk.appendChild(c); });
+    while (mk.children.length > tmp.children.length) mk.lastChild.remove();
+  }
+
+  function drawLabels() {
+    const vis = shown().filter((l) => l.values[LAST_FULL] != null);
+    if (vis.length > 4) { labs.innerHTML = ''; return; }
+    const items = vis.map((l) => ({ l, y: Y(l.values[LAST_FULL]) }));
+    spread(items, 13, PT + 4, CH - PB - 4);
+    const x0 = CW - PR;
+    labs.innerHTML = items.map(({ l, y, ly }) => {
+      if (Math.abs(ly - y) > 40) return '';
+      const lead2 = !!l.lead;
+      const leader = Math.abs(ly - y) > 2 ? `<path d="M${x0 + 2},${y} h4 L${x0 + 10},${ly} h2" fill="none" stroke="#C3C8D2"/>` : '';
+      return `${leader}<text x="${x0 + 14}" y="${ly + 4}" font-size="11.5" font-weight="${lead2 ? 700 : 500}" fill="${lead2 ? '#0F172A' : '#273043'}">${esc((l.short || l.label).slice(0, 22))}</text>`;
+    }).join('');
+  }
+
+  function applyLines() {
+    lines.forEach((l) => {
+      const g = $(`.ln[data-k="${CSS.escape(l.key)}"]`, svg);
+      g.style.opacity = l.on === false ? 0 : 1;
+      if (l.lead) {
+        const five = range === 60;
+        $('.sol', g).style.strokeWidth = five ? 1.2 : l.width; $('.sol', g).style.opacity = five ? 0.35 : 1;
+        $('.cas', g).style.opacity = five ? 0 : 1;
+        $('.avg', g).style.opacity = five ? 1 : 0; $('.acas', g).style.opacity = five ? 1 : 0;
+      }
+    });
+    $('.area', svg).style.opacity = lead.on === false ? 0 : 1;
+  }
+
+  const scale = o.scale;
+  function idle() {
+    if (drag && !dragging) return showDrag();
+    fillReadout(ro, monthLong(o.months[LAST_FULL]), scale, slotsAt(LAST_FULL));
+  }
+  function slotsAt(i) {
+    return shown().map((l) => ({ sw: swatch(l.color, l.width, l.dash), value: l.values[i] == null ? null : Math.round(l.values[i]), name: l.short || l.label }));
+  }
+  function showAt(i) {
+    const notOver = i === NOW_IDX;
+    fillReadout(ro, `${monthLong(o.months[i])}${notOver ? ' <small>not over yet</small>' : ''}`, scale, slotsAt(i));
+    const x = RX(i, range);
+    hv.innerHTML = `<line x1="${x}" x2="${x}" y1="${PT}" y2="${CH - PB}" stroke="#475569" stroke-dasharray="2 2"/>` +
+      shown().map((l) => l.values[i] == null ? '' : `<circle cx="${x}" cy="${Y(l.values[i])}" r="${l.lead ? 4.2 : 2.6}" fill="${l.color}" ${l.lead ? 'stroke="#fff" stroke-width="1.5"' : ''}/>`).join('');
+  }
+  function showDrag() {
+    const [a, b] = [Math.min(drag.a, drag.b), Math.max(drag.a, drag.b)];
+    const half = (RX(1, range) - RX(0, range)) / 2;
+    sel.innerHTML = `<rect x="${RX(a, range) - half}" y="${PT}" width="${RX(b, range) - RX(a, range) + 2 * half}" height="${CH - PT - PB}" fill="#0F766E" fill-opacity=".08"/>`;
+    const n = b - a + 1;
+    fillReadout(ro, `${monthShort(o.months[a], true)} to ${monthShort(o.months[b], true)} <small>average of ${n} months</small>`, 'click the chart to clear', shown().map((l) => {
+      const v = l.values.slice(a, b + 1).filter((x) => x != null);
+      return { sw: swatch(l.color, l.width, l.dash), value: v.length ? Math.round(v.reduce((s, x) => s + x, 0) / v.length) : null, name: l.short || l.label };
+    }));
+  }
+  const idxAt = (e) => {
+    const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * CW;
+    return Math.max(s0(range), Math.min(NOW_IDX, s0(range) + Math.round((px - PL) / (STEP * (60 / range)))));
+  };
+  const hit = $('.hit', svg);
+  hit.addEventListener('pointermove', (e) => {
+    const i = idxAt(e);
+    if (dragging && range > 12) { drag.b = i; if (drag.b !== drag.a) { hv.innerHTML = ''; showDrag(); return; } }
+    if (drag && !dragging) { hv.innerHTML = ''; return; }
+    hover = i; showAt(i);
+  });
+  hit.addEventListener('pointerdown', (e) => {
+    const i = idxAt(e);
+    if (drag && !dragging) { drag = null; sel.innerHTML = ''; hover = i; showAt(i); return; }
+    dragging = true; drag = { a: i, b: i };
+  });
+  window.addEventListener('pointerup', () => { if (!dragging) return; dragging = false; if (drag && drag.a === drag.b) { drag = null; sel.innerHTML = ''; } });
+  hit.addEventListener('pointerleave', () => { hover = null; hv.innerHTML = ''; idle(); });
+  svg.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'Escape') return;
+    e.preventDefault();
+    if (e.key === 'Escape') { hover = null; hv.innerHTML = ''; return idle(); }
+    hover = Math.max(s0(range), Math.min(NOW_IDX, (hover ?? LAST_FULL) + (e.key === 'ArrowLeft' ? -1 : 1)));
+    showAt(hover);
+  });
+  svg.addEventListener('blur', () => { hover = null; hv.innerHTML = ''; idle(); });
+
+  // chips (approved PhraseChips: lead tinted "drives the verdict", toggles with line keys, plus the lines that are not drawn and why)
+  const chips = $('.chips', host);
+  chips.innerHTML = lines.map((l) => l.lead
+    ? `<span class="chip lead">${swatch(l.color, l.width)}${esc(l.label)}<small>drives the verdict</small></span>`
+    : `<button type="button" class="chip" data-k="${esc(l.key)}" aria-pressed="${l.on !== false}">${swatch(l.color, l.width, l.dash, l.on === false ? 0.3 : 1)}${esc(l.label)}</button>`).join('') +
+    (o.offChips || []).map((c) => `<span class="chip off">${esc(c.label)}<small>${esc(c.note)}</small></span>`).join('');
+  chips.addEventListener('click', (e) => {
+    const b = e.target.closest('button.chip'); if (!b) return;
+    const l = lines.find((x) => x.key === b.dataset.k); l.on = l.on === false;
+    b.setAttribute('aria-pressed', l.on); b.querySelector('svg').style.opacity = l.on ? 1 : 0.3;
+    applyLines(); drawLabels(); idle(); renderTable();
+  });
+  $('.cap', host).textContent = o.caption;
+  const tb = $('.tbtn', host), tbl = $('.tbl', host);
+  function renderTable() {
+    if (tbl.hidden) return;
+    const vis = shown(), rows = [];
+    for (let i = NOW_IDX; i >= s0(range); i--) rows.push(`<tr><td>${monthLong(o.months[i])}${i === NOW_IDX ? ', not over yet' : ''}</td>${vis.map((l) => `<td>${l.values[i] == null ? 'no data' : Math.round(l.values[i])}</td>`).join('')}</tr>`);
+    tbl.innerHTML = `<table><thead><tr><th>Month</th>${vis.map((l) => `<th>${esc(l.label)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+  }
+  tb.addEventListener('click', () => { tbl.hidden = !tbl.hidden; tb.textContent = tbl.hidden ? 'Show as a table' : 'Hide the table'; renderTable(); });
+
+  seg($('.rg', host), [{ v: '12', l: '12 months' }, { v: '24', l: '24 months' }, { v: '60', l: '5 years' }], String(range), (v) => {
+    range = +v; drag = null; sel.innerHTML = ''; hv.innerHTML = '';
+    zoom.style.transform = tf(range); applyLines(); drawChrome(); drawMarks(); idle(); renderTable();
+  });
+  seg($('.bg', host), [{ v: 'year', l: 'Last 12 vs 12 before' }, { v: 'call', l: "The call's 3 months" }], bands, (v) => { bands = v; drawChrome(); });
+
+  applyLines(); drawChrome(); drawMarks(); drawLabels(); idle();
+  // draw-in on first view: a left-to-right reveal of every line, 900ms house ease (03 spec motion)
+  if (!REDUCE && 'IntersectionObserver' in window) revealOnView(svg, $(`#${id}-clip rect`, svg), PL, CW - PL - PR);
+  return { svg };
+}
+
+function tween(ms, fn, done) {
+  const t0 = performance.now();
+  const ease = (t) => { // cubic-bezier(.2,.8,.2,1) approximated
+    let lo = 0, hi = 1, u = t; for (let k = 0; k < 18; k++) { u = (lo + hi) / 2; const x = 3 * (1 - u) ** 2 * u * 0.2 + 3 * (1 - u) * u * u * 0.2 + u ** 3; if (x < t) lo = u; else hi = u; }
+    return 3 * (1 - u) ** 2 * u * 0.8 + 3 * (1 - u) * u * u * 1 + u ** 3;
+  };
+  const step = (now) => { const t = Math.min(1, (now - t0) / ms); fn(ease(t)); if (t < 1) requestAnimationFrame(step); else done && done(); };
+  requestAnimationFrame(step);
+}
+function revealOnView(el, rect, x0, w) {
+  rect.setAttribute('width', 0);
+  const io = new IntersectionObserver((es) => {
+    if (!es.some((e) => e.isIntersecting)) return; io.disconnect();
+    tween(900, (k) => rect.setAttribute('width', (w * k).toFixed(1)));
+  }, { threshold: 0.3 });
+  io.observe(el);
+}
+
+// ---------- B: the live TrendChart, rebuilt as shipped (TrendChart.tsx + TopicCardView.tsx) ----------
+function liveTrendChart(host, months, lines, rangeInit, idleText) {
+  const PL = 30, PT = 10, PB = 24, W = 820, H = 260, PR = 130;
+  let range = rangeInit, hover = null;
+  const N = months.length;
+  function render() {
+    const start = Math.max(0, N - range), span = Math.max(1, N - 1 - start), last = N - 1;
+    const x = (i) => PL + ((i - start) / span) * (W - PL - PR), y = (v) => PT + (1 - v / 100) * (H - PT - PB);
+    const path = (vals) => { let d = ''; for (let i = start; i <= last; i++) { const v = vals[i]; if (typeof v === 'number') d += `${d ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`; } return d; };
+    const lead = lines.find((l) => l.lead);
+    const ends = lines.filter((l) => typeof l.values[last] === 'number').map((l) => ({ l, ly: y(l.values[last]) })).sort((a, b) => a.ly - b.ly);
+    for (let k = 1; k < ends.length; k++) if (ends[k].ly - ends[k - 1].ly < 14) ends[k].ly = ends[k - 1].ly + 14;
+    const ticks = months.map((m, i) => ({ m, i })).filter(({ m, i }) => i >= start && (m.endsWith('-01') || (range <= 24 && /-(04|07|10)$/.test(m))));
+    const ml = (m) => monthShort(m, true).replace("'", '’');
+    const ro = hover === null ? `<span style="color:#667085">${idleText}</span>`
+      : `<b style="color:#0B1020">${monthLong(months[hover])}</b>` + lines.map((l) => typeof l.values[hover] === 'number' ? `<span><i style="display:inline-block;width:12px;height:2px;vertical-align:4px;margin-right:6px;background:${l.color}"></i>${esc(l.label)} <b style="color:#0B1020">${Math.round(l.values[hover])}</b></span>` : '').join('');
+    host.innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;min-height:44px;padding:6px 0 8px;font-size:13px;color:#273043">${ro}</div>
+      <svg viewBox="0 0 ${W} ${H}" style="display:block;width:100%;overflow:visible">
+        <defs><linearGradient id="mt-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".2"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>
+        ${[0, 25, 50, 75, 100].map((v) => `<line x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${PL - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="#667085">${v}</text>`).join('')}
+        ${ticks.map(({ m, i }) => `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="#667085">${ml(m)}</text>`).join('')}
+        <path d="${path(lead.values)}L${x(last)},${y(0)}L${x(start)},${y(0)}Z" fill="url(#mt-area)"/>
+        ${[...lines].sort((a, b) => Number(!!a.lead) - Number(!!b.lead)).map((l) => `${l.lead ? `<path d="${path(l.values)}" fill="none" stroke="#fff" stroke-width="5.4" stroke-linejoin="round" stroke-linecap="round"/>` : ''}<path d="${path(l.values)}" fill="none" stroke="${l.color}" stroke-width="${l.lead ? 2.4 : 2}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`).join('')}
+        <circle cx="${x(last)}" cy="${y(lead.values[last])}" r="4" fill="${lead.color}" stroke="#fff" stroke-width="2"/>
+        ${ends.map(({ l, ly }) => { const ty = y(l.values[last]); return `${Math.abs(ly - ty) > 2 ? `<line x1="${x(last) + 4}" y1="${ty}" x2="${x(last) + 10}" y2="${ly - 3}" stroke="#C3C8D2"/>` : ''}<text x="${x(last) + 12}" y="${ly + 1}" font-size="11.5" font-weight="${l.lead ? 700 : 500}" fill="#273043">${esc(l.label.length > 18 ? l.label.slice(0, 17) + '…' : l.label)}</text>`; }).join('')}
+        ${hover !== null ? `<line x1="${x(hover)}" x2="${x(hover)}" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/>` + lines.map((l) => typeof l.values[hover] === 'number' ? `<circle cx="${x(hover)}" cy="${y(l.values[hover])}" r="3.5" fill="${l.color}" stroke="#fff" stroke-width="1.5"/>` : '').join('') : ''}
+        <rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent"/>
+      </svg>
+      <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:#273043">${lines.map((l) => `<span style="display:inline-flex;align-items:center;gap:6px"><i style="display:inline-block;width:14px;height:2px;background:${l.color}"></i>${esc(l.label)}</span>`).join('')}</div>`;
+    const svg = $('svg', host), hit = $('.hit', host);
+    hit.addEventListener('mousemove', (e) => {
+      const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W;
+      const h = Math.max(start, Math.min(last, Math.round(start + ((px - PL) / (W - PL - PR)) * span)));
+      if (h !== hover) { hover = h; render(); }
+    });
+    hit.addEventListener('mouseleave', () => { hover = null; render(); });
+  }
+  render();
+  return { setRange: (r) => { range = r; hover = null; render(); } };
+}
+
+// ---------- C: small multiples past 4 topics (03 spec 8) ----------
+const TOPIC_HUES = ['#0D9488', '#3B5BDB', '#E0527A', '#5F7D16', '#9C36B5'];
+function smallMultiples(host, set) {
+  const W = 320, H = 112, PL = 4, PR = 8, PT = 6, PB = 18, R = 24, S0 = 60 - R;
+  const X = (i) => PL + ((i - S0) / R) * (W - PL - PR), Y = (v) => PT + (1 - v / 100) * (H - PT - PB);
+  const tops = set.topics;
+  const live = tops.filter((t) => !t.noRead);
+  host.innerHTML = `${readoutHTML()}<div class="sm-grid"></div><p class="cap"></p>`;
+  const grid = $('.sm-grid', host), ro = $('.ro', host);
+  const scale = 'each panel on its own 0 to 100';
+  tops.forEach((t, k) => {
+    const cell = document.createElement('div');
+    if (t.noRead) {
+      cell.className = 'sm empty';
+      cell.innerHTML = `<div class="nm" title="${esc(t.topic)}">${esc(t.topic)}</div><div class="vd">No trend reading: Google Trends had nothing for its phrases.</div>`;
+      grid.appendChild(cell); return;
+    }
+    const c = TOPIC_HUES[live.indexOf(t)];
+    const lp = t.phrases.find((p) => p.term === t.driving) || t.phrases[0];
+    const word = verdictOf(t.direction);
+    const v = t.combined;
+    const path = (a, b) => { let d = ''; for (let i = a; i <= b; i++) d += `${i === a ? 'M' : 'L'}${X(i).toFixed(1)},${Y(v[i]).toFixed(1)}`; return d; };
+    const half = (X(1 + S0) - X(S0)) / 2;
+    const gid = 'sm' + (++UID);
+    cell.className = 'sm';
+    cell.innerHTML = `<div class="nm" title="${esc(t.topic)}">${esc(t.topic)}</div>
+      <div class="vd"><span class="${wordClass(word)}">${word}</span>, ${changeWords(lp.yoy)}</div>
+      <svg viewBox="0 0 ${W} ${H}" class="plot" style="margin-top:4px">
+        <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".12"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
+        <rect x="${X(LAST_FULL - 11) - half}" y="${PT}" width="${X(LAST_FULL) - X(LAST_FULL - 11) + 2 * half}" height="${H - PT - PB}" fill="#E3F2EE" opacity=".7"/>
+        <line x1="${PL}" x2="${W - PR}" y1="${Y(0)}" y2="${Y(0)}" stroke="#E5E7EB"/>
+        <path d="${path(S0, LAST_FULL)}L${X(LAST_FULL)},${Y(0)}L${X(S0)},${Y(0)}Z" fill="url(#${gid})"/>
+        <path d="${path(S0, LAST_FULL)}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="${path(LAST_FULL, NOW_IDX)}" fill="none" stroke="${c}" stroke-width="1.8" stroke-dasharray="2 3"/>
+        <circle cx="${X(LAST_FULL)}" cy="${Y(v[LAST_FULL])}" r="3" fill="${c}" stroke="#fff" stroke-width="1.5"/>
+        <text x="${X(S0)}" y="${H - 3}" font-size="10.5" fill="#9CA3AF">${monthShort(set.months[S0], true)}</text>
+        <text x="${X(48)}" y="${H - 3}" font-size="10.5" fill="#9CA3AF" text-anchor="middle">${monthShort(set.months[48], true)}</text>
+        <text x="${X(LAST_FULL)}" y="${H - 3}" font-size="10.5" fill="#9CA3AF" text-anchor="end">${monthShort(set.months[LAST_FULL], true)}</text>
+        <g class="hv"></g>
+        <rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H - PB}" fill="transparent" style="cursor:crosshair"/>
+      </svg>`;
+    cell._t = t; cell._c = c;
+    grid.appendChild(cell);
+  });
+  const cells = [...grid.querySelectorAll('.sm:not(.empty)')];
+  const show = (i) => {
+    fillReadout(ro, i === LAST_FULL && !show.h ? monthLong(set.months[i]) : `${monthLong(set.months[i])}${i === NOW_IDX ? ' <small>not over yet</small>' : ''}`, scale,
+      cells.map((c) => ({ sw: swatch(c._c, 2), value: Math.round(c._t.combined[i]), name: c._t.topic })));
+    cells.forEach((c) => {
+      $('.hv', c).innerHTML = show.h ? `<line x1="${X(i)}" x2="${X(i)}" y1="${PT}" y2="${H - PB}" stroke="#475569" stroke-dasharray="2 2"/><circle cx="${X(i)}" cy="${Y(c._t.combined[i])}" r="3.4" fill="${c._c}" stroke="#fff" stroke-width="1.5"/>` : '';
+    });
+  };
+  cells.forEach((c) => {
+    const svg = $('svg', c), hit = $('.hit', c);
+    hit.addEventListener('pointermove', (e) => {
+      const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W;
+      const i = Math.max(S0, Math.min(NOW_IDX, S0 + Math.round(((px - PL) / (W - PL - PR)) * R)));
+      show.h = true; show(i);
+    });
+    hit.addEventListener('pointerleave', () => { show.h = false; show(LAST_FULL); });
+  });
+  show.h = false; show(LAST_FULL);
+  $('.cap', host).textContent = `Shared scale: every panel is the topic's weighted line on its own 0 to 100 from Google Trends, where 100 is the phrase's busiest week in five years, so compare shapes, not heights. Same 24 months in every panel; the green band is the last 12 full months; October 2026 is dotted, not over yet. One colour per panel, in the order the check listed the topics.`;
+}
+
+// ---------- D: searches a month (03 spec 11) and the approved bars (SearchBarsPlot) ----------
+function topicSearches(t) {
+  const months = t.phrases[0].clicks.map((c) => c.m);
+  const sum = months.map((m) => t.phrases.reduce((s, p) => s + ((p.clicks.find((c) => c.m === m) || {}).v || 0), 0));
+  return { months, sum };
+}
+function searchesLine(host, t, place) {
+  const { months, sum } = topicSearches(t);
+  const avg = sum.reduce((a, b) => a + b, 0) / sum.length;
+  const W = 400, H = 120, PL = 6, PR = 64, PT = 12, PB = 20, n = months.length - 1;
+  const max = Math.max(...sum) * 1.08;
+  const X = (k) => PL + (k / n) * (W - PL - PR), Y = (v) => PT + (1 - v / max) * (H - PT - PB);
+  const d = sum.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join('');
+  const split = t.phrases.filter((p) => p.clicks.length).map((p) => `${esc(p.term)} <b>${fmtN(about(p.clicks.reduce((s, c) => s + c.v, 0) / p.clicks.length))}</b>`).join(' · ');
+  host.innerHTML = `<div class="big">About ${fmtN(about(avg))} searches a month</div>
+    <div class="big-sub">across the US, DataForSEO estimate, average of ${monthShort(months[0], true)} to ${monthShort(months[n], true)}</div>
+    <div class="split">${split}</div>
+    <div style="margin-top:12px">${readoutHTML()}
+    <svg class="plot" viewBox="0 0 ${W} ${H}">
+      <line x1="${PL}" x2="${W - PR}" y1="${Y(0)}" y2="${Y(0)}" stroke="#EEF0F3"/>
+      <path d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="${d}" fill="none" stroke="#0F766E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${X(n)}" cy="${Y(sum[n])}" r="4" fill="#0F766E" stroke="#fff" stroke-width="2"/>
+      <text x="${X(n) + 8}" y="${Y(sum[n]) + 4}" font-size="11.5" font-weight="600" fill="#0F172A">${fmtN(sum[n])}</text>
+      ${months.map((m, k) => { const cm = +m.split('-')[1] - 1; return (cm % 3 === 0 || k === 0 || k === n) && !(k === n - 1) ? `<text x="${X(k)}" y="${H - 4}" font-size="10.5" fill="#9CA3AF" text-anchor="${k === 0 ? 'start' : k === n ? 'end' : 'middle'}">${monthShort(m, cm === 0 || k === 0)}</text>` : ''; }).join('')}
+      <g class="hv"></g>
+      <rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent" style="cursor:crosshair"/>
+    </svg></div>
+    <p class="cap">Estimates for the whole US, smoothed by DataForSEO. Only these 12 months are stored, so there is no year-before line yet.</p>`;
+  const ro = $('.ro', host), svg = $('svg', host), hv = $('.hv', host);
+  const show = (k, h) => {
+    fillReadout(ro, monthLong(months[k]), 'searches a month, US', [{ sw: swatch('#0F766E', 2), value: fmtN(sum[k]), name: `${t.topic}, ${t.phrases.length > 1 ? 'all phrases' : t.phrases[0].term}` }]);
+    hv.innerHTML = h ? `<line x1="${X(k)}" x2="${X(k)}" y1="${PT}" y2="${H - PB}" stroke="#475569" stroke-dasharray="2 2"/><circle cx="${X(k)}" cy="${Y(sum[k])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>` : '';
+  };
+  $('.hit', host).addEventListener('pointermove', (e) => { const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W; show(Math.max(0, Math.min(n, Math.round(((px - PL) / (W - PL - PR)) * n))), true); });
+  $('.hit', host).addEventListener('pointerleave', () => show(n, false));
+  show(n, false);
+}
+function fmtK(n) { if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`; if (n >= 10000) return `${Math.round(n / 1000)}k`; if (n >= 1000) return `${(n / 1000).toFixed(1)}k`; return String(Math.round(n)); }
+function searchBars(host, t) {
+  const { months, sum } = topicSearches(t);
+  const MW = 640, MPL = 30, MPR = 12, BH = 196, TOP = 20, BASE = 148, shown = months.length;
+  const slot = (MW - MPL - MPR) / shown, bw = Math.min(22, slot * 0.58), sx = (k) => MPL + (k + 0.5) * slot;
+  const max = Math.max(...sum), yOf = (v) => TOP + (1 - v / 100) * (BASE - TOP), top = (v) => Math.min(yOf((v / max) * 100), BASE - 2);
+  const bar = (bx, yTop, w) => { const r = Math.min(4, Math.max(0, (BASE - yTop) / 2)); return `M${bx.toFixed(1)} ${BASE}V${(yTop + r).toFixed(1)}a${r} ${r} 0 0 1 ${r} ${-r}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}V${BASE}Z`; };
+  const peak = sum.indexOf(max);
+  host.innerHTML = `<h5 style="margin:0 0 6px;font-size:12.5px;font-weight:600;color:#0F172A">Estimated US searches for ${esc(t.topic)}, last ${shown} months</h5>
+    <div style="display:flex;gap:16px;font-size:12px;color:#6B7280;margin-bottom:4px"><span style="display:inline-flex;align-items:center;gap:7px"><i style="width:14px;height:10px;border-radius:2px;background:#94A3B8;display:inline-block"></i>searches a month</span></div>
+    ${readoutHTML()}
+    <svg class="plot" viewBox="0 0 ${MW} ${BH}">
+      ${[0, 50, 100].map((v) => `<line x1="${MPL}" x2="${MW - MPR}" y1="${yOf(v)}" y2="${yOf(v)}" stroke="#EEF0F3"/><text x="${MPL - 6}" y="${yOf(v) + 3.5}" text-anchor="end" font-size="10.5" fill="#9CA3AF">${v === 0 ? '0' : fmtK((max * v) / 100)}</text>`).join('')}
+      <g class="bars">${sum.map((v, k) => `<path data-k="${k}" d="${bar(sx(k) - bw / 2, top(v), bw)}" fill="#94A3B8"/>`).join('')}</g>
+      <text x="${sx(peak)}" y="${yOf(100) - 5}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#6B7280">${fmtK(max)}</text>
+      ${months.map((m, k) => { const cm = +m.split('-')[1] - 1; return `<text x="${sx(k)}" y="${BH - 26}" text-anchor="middle" font-size="10.5" fill="#9CA3AF">${cm === 0 || k === 0 ? monthShort(m, true) : MON3[cm]}</text>`; }).join('')}
+      <g class="hv"></g>
+      <rect class="hit" x="${MPL - 6}" y="0" width="${MW - MPL - MPR + 12}" height="${BH}" fill="transparent"/>
+    </svg>
+    <p class="cap" style="margin-top:0">About ${fmtN(sum[shown - 1])} US searches in ${monthLong(months[shown - 1])}. Hover a month for the count; the same month a year earlier is not stored yet.</p>`;
+  const ro = $('.ro', host), svg = $('svg', host), hv = $('.hv', host), bars = [...host.querySelectorAll('.bars path')];
+  const show = (k, h) => {
+    fillReadout(ro, monthLong(months[k]), 'searches a month, US', [{ sw: `<i style="display:inline-block;width:12px;height:8px;border-radius:2px;background:#94A3B8"></i>`, value: fmtN(sum[k]), name: t.topic }]);
+    bars.forEach((b, j) => b.setAttribute('fill', h && j === k ? '#64748B' : '#94A3B8'));
+    hv.innerHTML = h ? `<line x1="${sx(k)}" x2="${sx(k)}" y1="16" y2="${BASE}" stroke="#475569" stroke-dasharray="2 2"/>` : '';
+  };
+  $('.hit', host).addEventListener('pointermove', (e) => { const b = svg.getBoundingClientRect(); const vx = ((e.clientX - b.left) / b.width) * MW; show(Math.max(0, Math.min(shown - 1, Math.floor((vx - MPL) / slot))), true); });
+  $('.hit', host).addEventListener('pointerleave', () => show(shown - 1, false));
+  show(shown - 1, false);
+}
+
+// ---------- E: the true season (T6) ----------
+const RAMP = ['#E6F4F1', '#B9E2DA', '#7CC8BC', '#2C9E90', '#0F766E'];
+function seasonVerdict(t) {
+  const s = t.season;
+  if (!s) return { text: 'no reading', has: false };
+  if (!s.passes) return { text: 'No repeating season: the busiest month moves from year to year', short: 'no repeating season', has: false };
+  const pk = MONL[s.peak], lo = s.lowRepeat >= 2 ? MONL[s.low] : null;
+  const pub = MONL[(s.peak + 10) % 12];
+  return { text: `Peaks in ${pk}${lo ? `, dips every ${lo}` : ''}; live by ${pub}`, short: `peaks in ${pk}, live by ${pub}`, has: true, pub };
+}
+function typicalYear(host, t, place) {
+  const s = t.season;
+  const W = 640, H = 250, PL = 34, PR = 96, PT = 22, PB = 26;
+  const all = s.years.flatMap((y) => y.rel).concat(s.mean);
+  const lo = Math.floor((Math.min(...all) - 0.04) * 10) / 10, hi = Math.ceil((Math.max(...all) + 0.04) * 10) / 10;
+  const X = (k) => PL + (k / 11) * (W - PL - PR), Y = (v) => PT + ((hi - v) / (hi - lo)) * (H - PT - PB);
+  const pth = (a) => a.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join('');
+  const grid = [-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6].map((d) => Math.round((1 + d) * 10) / 10).filter((g) => g >= lo - 1e-9 && g <= hi + 1e-9);
+  const items = [...s.years.map((y) => ({ k: y.year, y: Y(y.rel[11]), label: String(y.year), bold: false })), { k: 'mean', y: Y(s.mean[11]), label: 'typical year', bold: true }];
+  spread(items, 13, PT + 4, H - PB - 4);
+  const v = seasonVerdict(t);
+  host.innerHTML = `${readoutHTML()}
+    <svg class="plot" viewBox="0 0 ${W} ${H}" tabindex="0">
+      <defs><linearGradient id="ty-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".18"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>
+      ${grid.map((g) => `<line x1="${PL}" x2="${W - PR}" y1="${Y(g)}" y2="${Y(g)}" stroke="${Math.abs(g - 1) < 1e-9 ? '#D1D5DB' : '#EEF0F3'}"/><text x="${PL - 6}" y="${Y(g) + 3}" text-anchor="end" font-size="10.5" fill="#9CA3AF">${g.toFixed(1)}</text>`).join('')}
+      <text x="${W - PR + 4}" y="${Y(1) + 3}" font-size="10" fill="#9CA3AF" opacity="0">.</text>
+      ${MON3.map((m, k) => `<line x1="${X(k)}" x2="${X(k)}" y1="${H - PB}" y2="${H - PB + 4}" stroke="#D1D5DB"/><text x="${X(k)}" y="${H - 6}" text-anchor="middle" font-size="10.5" fill="#9CA3AF">${m}</text>`).join('')}
+      <path d="${pth(s.mean)}L${X(11)},${Y(lo)}L${X(0)},${Y(lo)}Z" fill="url(#ty-area)"/>
+      ${s.years.map((y) => `<path d="${pth(y.rel)}" fill="none" stroke="#8B98A9" stroke-opacity=".6" stroke-width="1.2" stroke-linejoin="round"/>`).join('')}
+      <path d="${pth(s.mean)}" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="${pth(s.mean)}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${s.passes ? `<circle cx="${X(s.peak)}" cy="${Y(s.mean[s.peak])}" r="4" fill="#fff" stroke="#0F766E" stroke-width="2"/>
+        <text x="${X(s.peak)}" y="${Y(s.mean[s.peak]) - 10}" text-anchor="middle" font-size="11.5" font-weight="600" fill="#0F172A" paint-order="stroke" stroke="#fff" stroke-width="3">peaks in ${MONL[s.peak]}</text>` : ''}
+      ${s.passes && s.lowRepeat >= 2 ? `<circle cx="${X(s.low)}" cy="${Y(s.mean[s.low])}" r="4" fill="#fff" stroke="#8B98A9" stroke-width="2"/>
+        <text x="${X(s.low) - 8}" y="${Y(s.mean[s.low]) + 16}" text-anchor="end" font-size="11.5" font-weight="600" fill="#273043" paint-order="stroke" stroke="#fff" stroke-width="3">dips in ${MONL[s.low]}</text>` : ''}
+      ${items.map((it) => `${Math.abs(it.ly - it.y) > 2 ? `<path d="M${X(11) + 2},${it.y} h4 L${X(11) + 10},${it.ly} h2" fill="none" stroke="#C3C8D2"/>` : ''}<text x="${X(11) + 14}" y="${it.ly + 4}" font-size="11.5" font-weight="${it.bold ? 700 : 500}" fill="${it.bold ? '#0F172A' : '#667085'}">${it.label}</text>`).join('')}
+      <g class="hv"></g>
+      <rect class="hit" x="${PL}" y="${PT}" width="${W - PL - PR}" height="${H - PT - PB}" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <p class="cap">Each line is one calendar year of ${esc(t.phrases[0].term)} read for ${place}, divided by that year's own average month, so 1.0 is an average month and a year that climbed overall does not fake a season. A month counts as the peak only when it was the busiest in at least 2 of the last 3 full years and averages at least 1.15 times an average month. ${esc(t.topic)}: busiest in ${s.busiest.map((b, k) => `${MON3[b]} ${s.years[k].year}`).join(', ')}; quietest in ${s.quietest.map((b, k) => `${MON3[b]} ${s.years[k].year}`).join(', ')}.</p>`;
+  const ro = $('.ro', host), svg = $('svg', host), hv = $('.hv', host);
+  const show = (k, h) => {
+    fillReadout(ro, h ? MONL[k] : `${MONL[s.peak]} <small>${s.passes ? 'the peak' : 'busiest on average'}</small>`, 'times that year\'s average month', [
+      ...s.years.map((y) => ({ sw: swatch('#8B98A9', 1.2), value: y.rel[k].toFixed(2), name: `${y.year}, read ${Math.round(y.raw[k])}` })),
+      { sw: swatch('#0F766E', 2.2), value: s.mean[k].toFixed(2), name: 'typical year' }]);
+    hv.innerHTML = h ? `<line x1="${X(k)}" x2="${X(k)}" y1="${PT}" y2="${H - PB}" stroke="#475569" stroke-dasharray="2 2"/>` + s.years.map((y) => `<circle cx="${X(k)}" cy="${Y(y.rel[k])}" r="2.6" fill="#8B98A9"/>`).join('') + `<circle cx="${X(k)}" cy="${Y(s.mean[k])}" r="4.2" fill="#0F766E" stroke="#fff" stroke-width="1.5"/>` : '';
+  };
+  let cur = null;
+  $('.hit', host).addEventListener('pointermove', (e) => { const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W; cur = Math.max(0, Math.min(11, Math.round(((px - PL) / (W - PL - PR)) * 11))); show(cur, true); });
+  $('.hit', host).addEventListener('pointerleave', () => { cur = null; show(s.peak, false); });
+  svg.addEventListener('keydown', (e) => { if (!/Arrow(Left|Right)/.test(e.key)) return; e.preventDefault(); cur = Math.max(0, Math.min(11, (cur ?? s.peak) + (e.key === 'ArrowLeft' ? -1 : 1))); show(cur, true); });
+  show(s.peak, false);
+  return v;
+}
+function seasonStrip(host, topics) {
+  const rows = topics.filter((t) => t.season);
+  host.innerHTML = `${readoutHTML()}<div class="strip"><div></div>${MON3.map((m) => `<div class="hd">${m}</div>`).join('')}<div></div>
+    ${rows.map((t, r) => {
+      const s = t.season, mn = Math.min(...s.mean), mx = Math.max(...s.mean), v = seasonVerdict(t);
+      return `<div class="tn" title="${esc(t.topic)}">${esc(t.topic)}</div>` + s.mean.map((x, k) => {
+        const step = Math.min(4, Math.floor(((x - mn) / (mx - mn || 1)) * 5));
+        return `<div class="cell ${s.passes && k === s.peak ? 'pk' : ''}" data-r="${r}" data-k="${k}" style="background:${RAMP[step]}"></div>`;
+      }).join('') + `<div class="vt ${v.has ? '' : 'no'}">${esc(v.has ? v.short : 'no repeating season')}</div>`;
+    }).join('')}</div>
+    <div class="ramp">quietest month ${RAMP.map((c) => `<i style="background:${c}"></i>`).join('')} busiest month, each topic against its own typical year; a ringed cell is a peak that repeats</div>`;
+  const ro = $('.ro', host);
+  const idle = () => fillReadout(ro, 'Every topic, a typical year', 'last 3 full years, each against its own average', rows.map((t) => ({ sw: '', value: seasonVerdict(t).has ? MON3[t.season.peak] : 'no peak', name: t.topic })));
+  host.querySelectorAll('.cell').forEach((c) => {
+    c.addEventListener('pointerenter', () => {
+      host.querySelectorAll('.cell.hv').forEach((x) => x.classList.remove('hv')); c.classList.add('hv');
+      const t = rows[+c.dataset.r], k = +c.dataset.k, s = t.season, x = s.mean[k];
+      const what = s.passes && k === s.peak ? 'busiest month' : s.passes && k === s.low && s.lowRepeat >= 2 ? 'quietest month' : x >= 1.05 ? 'busier than average' : x <= 0.95 ? 'quieter than average' : 'about an average month';
+      fillReadout(ro, `${esc(t.topic)}, ${MONL[k]}`, 'last 3 full years', [{ sw: `<i style="display:inline-block;width:12px;height:10px;border-radius:2px;background:${c.style.background}"></i>`, value: `${x.toFixed(2)} times`, name: what },
+        ...s.years.map((y) => ({ sw: '', value: y.rel[k].toFixed(2), name: String(y.year) }))]);
+    });
+  });
+  $('.strip', host).addEventListener('pointerleave', () => { host.querySelectorAll('.cell.hv').forEach((x) => x.classList.remove('hv')); idle(); });
+  idle();
+}
+
+// ---------- the chart config for one topic ----------
+function chartConfig(set, t) {
+  const lead = t.phrases.find((p) => p.term === t.driving) || t.phrases[0];
+  const others = t.phrases.filter((p) => p !== lead && p.direction !== 'negligible');
+  const neg = t.phrases.filter((p) => p !== lead && p.direction === 'negligible');
+  const OTHER = [{ color: '#8B98A9' }, { color: '#475569', dash: '4 3' }, { color: '#8B98A9', dash: '2 3' }];
+  const lines = [{ key: lead.term, label: lead.term, values: lead.values, color: '#0F766E', width: 2.2, lead: true }];
+  others.forEach((p, k) => lines.push({ key: p.term, label: p.term, values: p.values, color: OTHER[k].color, dash: OTHER[k].dash, width: 1.7 }));
+  const offChips = neg.map((p) => ({ label: p.term, note: `too few searches to read, ${p.weeks - p.nullWeeks} of ${p.weeks} weeks have a reading` }));
+  const st = set.state;
+  if (st) {
+    [lead, ...others].forEach((p, k) => {
+      if (!p.state) return;
+      if (p.state.drawn) lines.push({ key: p.term + '@st', label: `${p.term}, ${st}`, short: `${p.term}, WA`, values: p.state.values, color: k === 0 ? '#0F766E' : OTHER[k - 1].color, dash: '5 4', width: 1.7, kind: 'state', on: k === 0 });
+      else offChips.push({ label: `${p.term} in ${st}`, note: `too thin to read in ${st}: ${p.state.zeros12} of the last 12 months at zero` });
+    });
+  }
+  if (others.length) {
+    const w = t.phrases.map((p) => p.weight || 0);
+    lines.push({ key: '__combined', label: 'All phrases, weighted by searches', short: 'all phrases', values: t.combined, color: '#0D9488', dash: '6 4', width: 2, on: false });
+  }
+  const peak = ['fading', 'spike_confirmed', 'step_up_held'].includes(lead.spike) && lead.peakMonth ? { index: set.months.indexOf(lead.peakMonth) } : null;
+  const where = set.place === 'Washington' ? 'Washington' : 'the US';
+  const caption = `Google interest for each phrase on its own 0 to 100, where 100 is that phrase's busiest week in five years; a month is the average of its weeks, so monthly lines rarely reach 100. Read for ${where}${lines.some((l) => l.kind === 'state') ? `; dashed lines are the same phrase read for ${st}` : ''}. From 2025 every dental phrase about doubled on Google Trends, the benchmark included, so the call is made against dental searches overall. Dotted end: October 2026, not over yet; the call is made on September. Drag across the 24 month or 5 year view to read a span.`;
+  return { months: set.months, lines, peak, offChips, caption, cur: lead.cur, prev: lead.prev, scale: `Google interest, 0 to 100, read for ${where}`, lead };
+}
+function verdictSentence(set, t) {
+  const c = chartConfig(set, t), lead = c.lead, word = verdictOf(t.direction);
+  const where = set.place === 'Washington' ? 'in Washington' : 'across the US';
+  const risers = t.phrases.filter((p) => p !== lead && p.direction === 'growing');
+  let s = `${chevron(word)}<span class="${wordClass(word)}">${word}</span> ${where}: ${changeWords(lead.yoy)}, ${relWords(lead.rel)}.`;
+  risers.forEach((p) => { s += ` '${esc(p.term)}' is Rising on its own, ${Math.round((p.rel - 1) * 100)} in every 100 ahead, with about ${Math.max(1, Math.round((p.weight || 0) * 100))} in every 100 of the topic's searches.`; });
+  if (lead.spike === 'step_up_held') s += ` A step up that held: about ${lead.riseX} times its usual level in ${monthShort(lead.peakMonth, true)}, and it stayed up.`;
+  return s;
+}
+
+// ---------- F: Topics tab with the Insights rail ----------
+function topicsTab(host, set, prefix) {
+  const tops = set.topics.filter((t) => !t.noRead);
+  const where = set.place === 'Washington' ? 'Washington' : 'the US';
+  const near = [];
+  tops.forEach((t) => t.phrases.forEach((p) => {
+    if (p.rel == null) return;
+    const lead = p.term === t.driving;
+    const d = Math.round((p.rel - 1) * 100);
+    if ((d >= 10 && d < 15) || (d <= -10 && d >= -15) || (p.direction === 'growing' && !lead)) near.push({ t, p, d, lead });
+  }));
+  const notes = [];
+  tops.forEach((t) => t.phrases.forEach((p) => {
+    if (p.direction === 'negligible') notes.push(`<b>${esc(p.term)}</b>: a reading in only ${p.weeks - p.nullWeeks} of ${p.weeks} weeks, too few searches to read, so it does not move ${esc(t.topic)} and its spike flag is not shown.`);
+    if (p.state && !p.state.drawn) notes.push(`<b>${esc(p.term)} in ${set.state}</b>: ${p.state.zeros12} of the last 12 months at zero, too thin to read in ${set.state}, so no ${set.state} line is drawn.`);
+  }));
+  if (set.place === 'Washington') notes.push(`<b>Read for Washington.</b> Every Trends line on this check, and its benchmark of five dental phrases, is a Washington read; only searches a month are US estimates.`);
+  notes.push(`<b>Every dental phrase about doubled on Google Trends from 2024 to 2026</b>, the benchmark included: its middle phrase averaged about ${set.place === 'Washington' ? '27 in 2024 and 44' : '25 in 2024 and 42'} in January to September 2026. Trends alone cannot tell more patients from a rescale, so each call is made against that benchmark.`);
+  if (set.place !== 'Washington') notes.push(`<b>No Search Console line</b>: ${esc(set.practice)} has no rows in our Search Console data yet, so its own line cannot be drawn.`);
+  notes.push(`<b>October 2026 is not over</b>: it is drawn dotted and the call is made on September.`);
+  const items = [
+    ...tops.map((t, k) => { const lp = t.phrases.find((p) => p.term === t.driving) || t.phrases[0]; return { id: `${prefix}-t${k}`, title: t.topic, verdict: `${verdictOf(t.direction)}, ${relShort(lp.rel)}`, grp: 'Topics' }; }),
+    { id: `${prefix}-near`, title: 'Closest to moving', verdict: near.length ? `${near.length} phrase${near.length > 1 ? 's' : ''} near a line` : 'none near a line', grp: 'Across topics' },
+    { id: `${prefix}-when`, title: 'When to publish', verdict: tops.some((t) => seasonVerdict(t).has) ? tops.filter((t) => seasonVerdict(t).has).map((t) => `${t.topic}: live by ${seasonVerdict(t).pub}`).join('; ') : 'any month: no repeating season', grp: 'Across topics' },
+    { id: `${prefix}-notes`, title: 'Data notes', verdict: `${notes.length} notes`, grp: 'Across topics', alert: false },
+  ];
+  host.innerHTML = `<div class="tabframe"><div class="ttabs"><span>Story</span><span class="on">Topics</span><span>Phrases</span></div>
+    <div class="tt"><aside class="rail"><div class="eb">On this page</div>
+      ${items.map((it, k) => `${k === 0 || items[k - 1].grp !== it.grp ? `<div class="grpl">${it.grp}</div>` : ''}<button type="button" class="ri" data-go="${it.id}"><span class="n">${k + 1}</span><span><span class="t">${esc(it.title)}</span><span class="v">${esc(it.verdict)}</span></span></button>`).join('')}
+      <div class="prog"><i></i></div><button type="button" class="top">Back to the top ↑</button></aside>
+    <div class="tbody"></div></div></div>`;
+  const body = $('.tbody', host);
+  tops.forEach((t, k) => {
+    const sec = document.createElement('section'); sec.className = 'tsec'; sec.id = `${prefix}-t${k}`;
+    sec.innerHTML = `<div class="kick">Topic ${k + 1} of ${tops.length}</div><h4>${esc(t.topic)}</h4><p class="lede">${verdictSentence(set, t)}</p><div class="ch"></div>
+      <div class="cfoot"><span>About <b>${fmtN(about(topicSearches(t).sum.reduce((a, b) => a + b, 0) / 12))}</b> searches a month across the US</span><span>Season: <b>${esc(seasonVerdict(t).short || 'no repeating season')}</b></span><span>Rating <b>2</b>/10, search demand +2</span></div>`;
+    body.appendChild(sec);
+    const c = chartConfig(set, t); topicChart($('.ch', sec), { ...c, range: 24, bands: 'year' });
+  });
+  const ns = document.createElement('section'); ns.className = 'tsec'; ns.id = `${prefix}-near`;
+  const RX0 = 0.7, RX1 = 1.4, rw = 400, rh = 26, rxp = (v) => 8 + ((Math.max(RX0, Math.min(RX1, v)) - RX0) / (RX1 - RX0)) * (rw - 16);
+  ns.innerHTML = `<div class="kick">Across topics</div><h4>Closest to moving</h4><p class="lede">Each phrase against dental searches overall: the middle band is Steady, past 15 in every 100 either way it is Rising or Fading.</p>
+    <div class="cmrow" style="padding-top:0;padding-bottom:0"><span></span><svg viewBox="0 0 ${rw} 16" class="plot"><text x="${rxp(0.775)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Fading</text><text x="${rxp(1)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Steady</text><text x="${rxp(1.275)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Rising</text></svg><span></span></div>
+    ${(near.length ? near : []).map(({ t, p, d, lead }) => `<div class="cmrow"><span class="p">${esc(p.term)}<small>${esc(t.topic)}${lead ? ', drives the verdict' : `, ${Math.max(1, Math.round((p.weight || 0) * 100))} in 100 of its searches`}</small></span>
+      <svg viewBox="0 0 ${rw} ${rh}" class="plot"><rect x="${rxp(0.85)}" y="4" width="${rxp(1.15) - rxp(0.85)}" height="${rh - 8}" fill="#F3F4F6" rx="2"/><rect x="${rxp(1.15)}" y="4" width="${rxp(1.4) - rxp(1.15)}" height="${rh - 8}" fill="#E3F2EE" rx="2"/>
+        <line x1="${rxp(1)}" x2="${rxp(1)}" y1="3" y2="${rh - 3}" stroke="#0F172A" stroke-opacity=".4"/>
+        ${[0.85, 1.15].map((v) => `<line x1="${rxp(v)}" x2="${rxp(v)}" y1="2" y2="${rh - 2}" stroke="#9CA3AF"/>`).join('')}
+        <circle cx="${rxp(p.rel)}" cy="${rh / 2}" r="5" fill="${lead ? '#0F766E' : '#8B98A9'}" stroke="#fff" stroke-width="2"/></svg>
+      <span class="g"><b class="${wordClass(verdictOf(p.direction))}">${verdictOf(p.direction)}</b>, ${esc(relShort(p.rel))}</span></div>`).join('') || '<p class="small">No phrase is within 5 of a line.</p>'}`;
+  body.appendChild(ns);
+  const ws = document.createElement('section'); ws.className = 'tsec'; ws.id = `${prefix}-when`;
+  const anySeason = tops.some((t) => seasonVerdict(t).has);
+  ws.innerHTML = `<div class="kick">Across topics</div><h4>When to publish</h4><p class="lede">${anySeason ? tops.filter((t) => seasonVerdict(t).has).map((t) => `${esc(t.topic)} was busiest in ${MONL[t.season.peak]} in ${t.season.repeat} of the last 3 full years in ${where}, about ${t.season.mean[t.season.peak].toFixed(1)} times an average month, so a page does best live by ${seasonVerdict(t).pub}.`).join(' ') + ' The other topics have no repeating season.' : `Neither topic has a season to plan around: over the last three full years the busiest month moved from year to year, so either can be written any month.`}</p><div class="ss"></div>`;
+  body.appendChild(ws); seasonStrip($('.ss', ws), tops);
+  const dn = document.createElement('section'); dn.className = 'tsec'; dn.id = `${prefix}-notes`;
+  dn.innerHTML = `<div class="kick">Across topics</div><h4>Data notes</h4><ul class="notes">${notes.map((n) => `<li><span>${n}</span></li>`).join('')}</ul>
+    <div class="cfoot"><span class="mono">${set.calls} calls · $${set.costUsd.toFixed(2)} · read ${monthLong(set.asOf)}</span></div>`;
+  body.appendChild(dn);
+  // rail behaviour (AIV): scroll spy at 200px, smooth jumps, progress
+  const rail = $('.rail', host), btns = [...rail.querySelectorAll('.ri')], secs = items.map((it) => document.getElementById(it.id));
+  btns.forEach((b) => b.addEventListener('click', () => document.getElementById(b.dataset.go).scrollIntoView({ behavior: 'smooth', block: 'start' })));
+  $('.top', rail).addEventListener('click', () => host.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  const spy = () => {
+    let on = 0; secs.forEach((s, k) => { if (s.getBoundingClientRect().top < 200) on = k; });
+    btns.forEach((b, k) => b.classList.toggle('on', k === on));
+    const r = body.getBoundingClientRect(); const p = Math.max(0, Math.min(1, (200 - r.top) / Math.max(1, r.height - 200)));
+    $('.prog i', rail).style.width = (p * 100).toFixed(1) + '%';
+  };
+  window.addEventListener('scroll', spy, { passive: true }); spy();
+}
+
+// ---------- assemble the page ----------
+const B = DATA.bothell, E = DATA.expedition, S = DATA.strategy;
+const CARRIED = `<div class="mnote"><b>Carried over from the approved charts</b><br>
+  Demand chart: 640 x 270 box, padding L30 T20 B26, lead #0F766E on a white casing, other phrases #8B98A9 solid and #475569 dashed 4 3, combined #0D9488 dashed 6 4, grid only at 0 / 50 / 100 in #EEF0F3, 10.5px #9CA3AF axis type with 4px ticks, last 12 / 12 before bands, dotted not-over month with the band fading across it, one CSS transform zoom for 12 / 24 / 5 years at .7s, chrome cross-fade 350ms, peak marker, non-scaling strokes, chips with line keys and the tinted "drives the verdict" lead chip.<br>
+  Performance chart: the readout bar ABOVE the plot, never a floating box; grey idle state; drag across to read a span.</div>
+  <div class="mnote"><b>New to spec 03</b><br>Readout fixed at 48px with one slot per line, idle on September 2026 (the newest full month). Keyboard: focus the chart, then left and right arrows. End labels on September with spread and elbow leaders. Washington lines only when the state read has no zero month in the last 12 (T10). Level lines with each band's average. 5 years: thin raw month under a bold 3-month average. "Show as a table" under every chart.</div>`;
+const Q_BANDS = `<div class="mnote"><span class="oq">Owner question</span>Shade: the approved "last 12 vs 12 before" bands, or the call's own 3 months (July to September against the same months a year earlier, the numbers the verdict uses)? Both are wired to the "Shade" switch on every chart; level lines move with them.</div>`;
+
+function topicCardEl(set, t, k, n, opts = {}) {
+  const el = document.createElement('div'); el.className = 'card';
+  el.innerHTML = `<div class="kick">Topic ${k + 1} of ${n}</div><h4>${esc(t.topic)}</h4><p class="verdict">${verdictSentence(set, t)}</p><div class="ch"></div>`;
+  const c = chartConfig(set, t);
+  topicChart($('.ch', el), { ...c, range: opts.range || 24, bands: 'year' });
+  return el;
+}
+function partA(id, set, side) {
+  const host = document.getElementById(id), col = $('.cards', host);
+  const tops = set.topics.filter((t) => !t.noRead);
+  tops.forEach((t, k) => col.appendChild(topicCardEl(set, t, k, tops.length)));
+  $('.side-notes', host).innerHTML = side;
+}
+
+// A, Bothell
+partA('b-A', B, CARRIED + Q_BANDS);
+// A, Expedition (read for Washington)
+partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every line on this check, and the benchmark it is called against, is a Washington read, so no state line is drawn and every sentence says "in Washington". Searches a month are US estimates.</div>
+  <div class="mnote"><b>Too few searches (T9)</b><br>ankyloglossia and children's dentist have a reading in only 3 and 18 of 262 weeks: no line, a grey chip says why, and the topic's "spike that collapsed" flag, which comes from ankyloglossia, is never narrated.</div>
+  <div class="mnote"><b>Peak marker</b><br>Only on pediatric dentist: its stored shape is a step up that held (about 3 times its usual level in August 2025, still up).</div>` + Q_BANDS);
+
+// B, before vs after (Bothell, Dental Implants)
+(function () {
+  const t = B.topics[0], host = document.getElementById('b-B');
+  const lead = t.phrases[0], other = t.phrases[1];
+  const sl = (a) => a.slice(1).map((v) => v == null ? null : Math.round(v));
+  const months = B.months.slice(1);
+  const lines = [
+    { key: lead.term, label: lead.term, values: sl(lead.values), color: '#0F766E', lead: true },
+    { key: other.term, label: other.term, values: sl(other.values), color: '#475569' },
+    { key: 'st', label: `Washington, ${lead.term}`, values: sl(lead.state.values), color: '#0891B2', dash: '5 4' },
+  ];
+  const card = $('.live-card', host);
+  card.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#98A2B3">Topic 1 of 2</span>
+      <h3 style="margin:0;flex:1;font-size:22px;font-weight:800;color:#0B1020">Dental Implants</h3><span style="font-size:14px;color:#667085"><b style="font-size:22px;font-weight:900;color:#0B1020">2</b>/10</span></div>
+    <p style="margin:6px 0 4px;font-size:16px;color:#273043"><b style="color:#273043">Steady</b> across the US: ${changeWords(lead.yoy)}.</p>
+    <div style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px"><div style="display:flex;gap:6px"><button class="lchip lead">dental implants</button><button class="lchip">tooth implant</button></div>
+      <div class="lseg"><button data-r="12">12 months</button><button data-r="24">24 months</button><button data-r="60" class="on">5 years</button></div></div>
+    <div class="lc" style="margin-top:8px"></div>
+    <p style="margin:12px 0 0;font-size:14px;color:#273043">About ${fmtN(Math.round(topicSearches(t).sum.reduce((a, b) => a + b, 0) / 12 / 10) * 10)} searches a month in the US.</p>
+    <ul style="margin:12px 0 0;padding:12px 0 0;list-style:none;border-top:1px solid #E7E9EE;font-size:13px;color:#667085"><li>search demand <b style="color:#0B1020">+2</b></li></ul>`;
+  const lc = liveTrendChart($('.lc', card), months, lines, 60, 'Point at the chart to read a month · Google interest across the US and in Washington, 0 to 100');
+  card.querySelectorAll('.lseg button').forEach((b) => b.addEventListener('click', () => { card.querySelectorAll('.lseg button').forEach((x) => x.classList.toggle('on', x === b)); lc.setRange(+b.dataset.r); }));
+  const nc = $('.new-card', host);
+  nc.appendChild(topicCardEl(B, t, 0, 2, { range: 60 }));
+})();
+
+// C, many topics (strategy check #16)
+smallMultiples($('#e-C .smhost'), S);
+
+// D, searches a month (Bothell)
+(function () {
+  const host = document.getElementById('b-D');
+  B.topics.forEach((t) => {
+    const row = document.createElement('div'); row.className = 'sr-row';
+    row.innerHTML = `<div class="card" style="margin:0"><div class="opt">Option 1 · the number, then a 12-month line</div><div class="kick">${esc(t.topic)}</div><div class="o1" style="margin-top:4px"></div></div>
+      <div class="card" style="margin:0"><div class="opt">Option 2 · the approved Topic Cards bars</div><div class="kick">${esc(t.topic)}</div><div class="o2" style="margin-top:4px"></div></div>`;
+    host.appendChild(row);
+    searchesLine($('.o1', row), t, 'the US');
+    searchBars($('.o2', row), t);
+  });
+})();
+
+// E, season (Expedition, read for Washington)
+(function () {
+  const t = E.topics.find((x) => x.topic === 'Pediatric Dentistry');
+  const v = typicalYear($('#e-E .ty'), t, 'Washington');
+  $('#e-E .tyh').innerHTML = `Pediatric Dentistry peaks in <span class="grad">late summer</span> and dips every December`;
+  $('#e-E .tyl').textContent = `In Washington, ${MONL[t.season.peak]} was the busiest month in ${t.season.repeat} of the last 3 full years and ${MONL[t.season.busiest[2]]} in the other, about ${t.season.mean[t.season.peak].toFixed(1)} times an average month, and December the quietest all three years, about ${t.season.mean[11].toFixed(1)} times. A late-summer page does best live by ${v.pub}.`;
+  seasonStrip($('#e-E .stp'), E.topics);
+})();
+
+// F, Topics tab with the Insights rail
+topicsTab(document.getElementById('b-Fh'), B, 'bf');
+topicsTab(document.getElementById('e-Fh'), E, 'ef');
+
+// sticky in-page nav: scroll spy
+(function () {
+  const links = [...document.querySelectorAll('.pnav a')], secs = links.map((a) => document.querySelector(a.getAttribute('href')));
+  const spy = () => { let on = 0; secs.forEach((s, k) => { if (s.getBoundingClientRect().top < 140) on = k; }); links.forEach((a, k) => a.classList.toggle('on', k === on)); };
+  window.addEventListener('scroll', spy, { passive: true }); spy();
+})();
+
+</script>
+</body></html>

@@ -1,0 +1,1035 @@
+<!doctype html><html lang="en"><head><title>Grid Scan | Story v2 (Bothell scan 2)</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>/* Facelift shared look: the AI Visibility page's experience in OQ teal.
+   Tokens follow components/tools/ai-visibility/aivTheme.ts with indigo swapped for teal. */
+:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;--aRing:rgba(15,118,110,.35);
+  --up:#15803D;--down:#E11D48;
+  --g:#15803D;--y:#F5C518;--r:#DC2626;--n:#94A3B8;
+  --t1:#0D9488;--t2:#3B5BDB;--t3:#E0527A;--t4:#5F7D16;--t5:#9C36B5;
+  --rose:#DB2777;
+  --shadowPanel:0 20px 50px rgba(11,16,32,.10);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer}
+input,textarea{font:inherit}
+a{color:var(--aInk)}
+
+/* app chrome: the OQ sidebar, then the tool page */
+.fl-app{display:grid;grid-template-columns:56px minmax(0,1fr);min-height:100vh}
+.fl-side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+.fl-side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.fl-side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.fl-side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.fl-side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.fl-side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+@media (max-width:900px){.fl-app{grid-template-columns:1fr}.fl-side{display:none}.fl-wrap{padding:0 16px 80px}}
+
+/* the sticky frosted top bar (AivShell) */
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 22px;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+@media (max-width:900px){.fl-top{margin:0 -16px 18px;padding:12px 16px}}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-sample{font:600 10.5px 'JetBrains Mono',monospace;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+
+/* buttons (BTN_GO / BTN_SOFT / BTN_LINE) */
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;transition:box-shadow .2s,transform .1s,background .2s,opacity .2s;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.28)}
+.btn-go:hover{box-shadow:0 8px 24px rgba(15,118,110,.32)}
+.btn-go:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.btn-soft{background:var(--aTint);color:var(--aInk)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:8px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.btn-big{padding:14px 22px;font-size:16px}
+.btn-link{background:none;border:0;padding:0;color:var(--aInk);font-weight:600;text-decoration:underline;text-underline-offset:2px;font-size:14px}
+.btn.ready{animation:flReady 1.8s ease-in-out infinite}
+@keyframes flReady{0%,100%{box-shadow:0 6px 18px rgba(15,118,110,.28),0 0 0 0 rgba(15,118,110,.45)}50%{box-shadow:0 8px 24px rgba(15,118,110,.32),0 0 0 10px rgba(15,118,110,0)}}
+.sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:flSheen 1.3s ease-in-out infinite}
+@keyframes flSheen{to{transform:translateX(100%)}}
+
+/* type */
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.panel-head{margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.grad{background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-sentence{margin:0;max-width:980px;font-size:42px;font-weight:800;line-height:1.28;letter-spacing:-.025em;color:var(--ink)}
+.h-big{font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em}
+.h-chapter{margin:0;font-size:42px;font-weight:900;line-height:1.1;letter-spacing:-.025em;color:var(--ink)}
+.lede{font-size:17px;color:var(--body);max-width:640px}
+.small{font-size:13px;color:var(--muted)}
+@media (max-width:700px){.h-sentence{font-size:30px}.h-big{font-size:64px}.h-chapter{font-size:30px}}
+
+/* the dotted blank in a setup sentence (Blank.tsx) */
+.blank{display:inline;margin:0 2px;padding:0 4px;border:0;background:none;color:var(--aInk);font:inherit;border-radius:6px 6px 0 0;border-bottom:4px dotted var(--a);transition:background .2s}
+.blank:hover,.blank.open{background:var(--aTint)}
+.blank.ok{border-bottom-style:solid}
+.blank .tick{margin-left:2px;vertical-align:.6em;font-size:.5em;color:var(--up)}
+
+/* the panel a blank opens (SetupPanel.tsx) */
+.panel{margin-top:24px;max-width:820px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:20px 22px;box-shadow:var(--shadowPanel);animation:flRise .3s var(--ease)}
+.panel.wide{max-width:1100px}
+@keyframes flRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:flRise .35s var(--ease) both}
+.fade{animation:flFade .35s ease both}
+@keyframes flFade{from{opacity:0}to{opacity:1}}
+
+/* inputs */
+.field{display:block}
+.field>span{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--body)}
+.field>span i{color:var(--down);font-style:normal}
+.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--ink);outline:none;background:#fff;transition:border-color .15s,box-shadow .15s}
+.input:focus{border-color:var(--a);box-shadow:0 0 0 4px var(--aTint)}
+
+/* a found listing (FoundListing.tsx) */
+.found{display:flex;align-items:center;gap:14px;padding:16px;border-radius:12px;background:var(--soft);cursor:pointer;transition:background .15s,box-shadow .15s}
+.found:hover{background:var(--aTint)}
+.found.on{background:var(--aTint);box-shadow:0 0 0 1px var(--a)}
+.found .lt{width:42px;height:42px;border-radius:12px;background:var(--aTint);color:var(--aInk);display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
+.found b{display:block;color:var(--ink);font-size:15px}
+.found small{display:block;color:var(--muted);font-size:13px}
+
+/* list rows with a box and a number (RivalRow.tsx) */
+.row{display:grid;grid-template-columns:18px 24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s,opacity .2s}
+.row.hot{border-color:#A7D8CF;background:#FAFDFC}
+.row.off{opacity:.6}
+.row.off .nm{text-decoration:line-through;color:var(--faint)}
+.row input{width:18px;height:18px;accent-color:var(--a)}
+.num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--aTint);color:var(--aInk)}
+.row.off .num{background:var(--soft);color:var(--faint)}
+.nm{display:block;font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;border-radius:6px;padding:1px 6px;font-size:11.5px;font-weight:600;background:var(--soft);color:var(--muted)}
+.tag.a{background:var(--aTint);color:var(--aInk)}
+
+/* the orb (Orb.tsx), steps (StepList.tsx), the map search (MapSearch.tsx) */
+.orb{position:relative;display:inline-block;flex:none}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:2px dotted #7CC8BC;animation:flSpin 2.4s linear infinite}
+.orb .core{position:absolute;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));animation:flBreathe 1.6s ease-in-out infinite}
+@keyframes flSpin{to{transform:rotate(360deg)}}
+@keyframes flBreathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.86);opacity:.85}}
+.steps{list-style:none;margin:0;padding:2px 0 0;display:flex;flex-direction:column;gap:8px}
+.steps li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--faint);transition:color .2s}
+.steps li.now{font-weight:600;color:var(--ink)}
+.steps li.done{color:var(--body)}
+.steps .st{width:16px;height:16px;border-radius:50%;flex:none;border:1.5px solid #D0D5DD;display:grid;place-items:center;font-size:10px;color:#fff}
+.steps li.now .st{border-color:var(--a);border-top-color:transparent;animation:flSpin .8s linear infinite}
+.steps li.done .st{background:var(--up);border-color:var(--up)}
+.mapsearch{position:relative;height:120px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:repeating-linear-gradient(135deg,#F3F4F7 0 14px,#EEF0F4 14px 28px)}
+.mapsearch .pulse{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;border:2px solid var(--a);animation:flPulse 1.8s ease-out infinite}
+.mapsearch .pulse.b{animation-delay:.9s}
+@keyframes flPulse{from{transform:scale(.6);opacity:.9}to{transform:scale(6);opacity:0}}
+.mapsearch .c{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px;border-radius:50%;background:var(--a)}
+.mapsearch .f{position:absolute;width:10px;height:10px;border-radius:3px;border:2px solid var(--a);background:#fff;animation:flPop .4s var(--ease) both}
+@keyframes flPop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.turning{position:relative;display:inline-block;width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));flex:none}
+.turning:after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px dotted #7CC8BC;animation:flSpin 6s linear infinite}
+.skel{height:11px;border-radius:6px;background:#E8EAEF;margin:10px 0;animation:flSkel 1.4s ease-in-out infinite}
+@keyframes flSkel{50%{opacity:.5}}
+.caret{display:inline-block;width:2px;height:1em;background:var(--a);vertical-align:-2px;margin-left:1px;animation:flBlink 1s steps(1) infinite}
+@keyframes flBlink{50%{opacity:0}}
+.shimmer-line{position:relative;height:2px;max-width:420px;margin-top:4px;overflow:hidden;border-radius:1px;background:#EEF0F5}
+.shimmer-line:after{content:'';position:absolute;inset:0 auto 0 0;width:35%;background:linear-gradient(90deg,transparent,#7CC8BC,transparent);animation:flShim 2.2s ease-in-out infinite}
+@keyframes flShim{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+
+/* the method button + window (MethodButton / MethodWindow) */
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:10px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .15s}
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:6vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4);animation:flFade .2s}
+.modal .win{position:relative;width:100%;max-width:860px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:flRise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:8px;padding:4px 8px}
+.modal .x:hover{background:var(--soft)}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:14px;background:var(--soft)}
+@media (max-width:760px){.msec{grid-template-columns:1fr}}
+
+/* branded tooltip (BrandedTooltip.tsx) */
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none;animation:flFade .12s}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+[data-tip]{cursor:help}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* segmented control with a sliding white thumb (Segmented.tsx) */
+.seg{position:relative;display:inline-flex;flex-wrap:wrap;gap:2px;border-radius:10px;background:var(--soft);padding:3px}
+.seg button{position:relative;z-index:1;border:0;background:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted);transition:color .2s;white-space:nowrap}
+.seg button:hover{color:var(--body)}
+.seg button.on{color:var(--ink)}
+.seg .thumb{position:absolute;z-index:0;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(11,16,32,.1);transition:left .25s var(--ease),width .25s var(--ease),top .25s var(--ease)}
+.seg .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* tabs with a sliding underline (ResultView.tsx) */
+.tabs{position:sticky;top:57px;z-index:20;display:flex;gap:26px;margin:0 -28px 10px;padding:8px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(12px)}
+@media (max-width:900px){.tabs{margin:0 -16px 10px;padding:8px 16px 0}}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+
+/* branded dropdown (audit-hub-option-g .dd) */
+.dd{position:relative;display:inline-block}
+.dd-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink)}
+.dd-btn:after{content:'';width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.dd-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:50;min-width:220px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .12s}
+.dd-opt{display:flex;justify-content:space-between;gap:10px;width:100%;border:0;background:none;text-align:left;border-radius:7px;padding:7px 10px;font-size:13px;color:var(--body)}
+.dd-opt:hover{background:var(--soft)}
+.dd-opt.on{color:var(--aInk);font-weight:600}
+.dd-opt.on:after{content:'✓'}
+
+/* switch (Clients only) */
+.switch{display:inline-flex;align-items:center;gap:8px;border:0;background:none;font-size:13px;font-weight:500;color:var(--muted)}
+.switch i{position:relative;display:inline-block;width:30px;height:16px;border-radius:6px;background:#D0D5DD;transition:background .2s}
+.switch i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:4px;background:#fff;transition:left .2s}
+.switch.on i{background:var(--a)}
+.switch.on i:after{left:16px}
+
+/* past runs (PastSnapshotRow.tsx) */
+.past{display:grid;grid-template-columns:minmax(0,1fr) 220px 150px;align-items:center;gap:16px;width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;text-align:left;transition:border-color .15s,background .15s;animation:flRise .35s var(--ease) both}
+.past:hover{border-color:#A7D8CF;background:#FAFDFC}
+.past .p1 b{display:block;font-size:15.5px;color:var(--ink)}
+.past .p1 span{font-size:12.5px;color:var(--muted)}
+.past .p3{text-align:right;font:12px 'JetBrains Mono',monospace;color:var(--faint)}
+@media (max-width:700px){.past{grid-template-columns:minmax(0,1fr) auto}.past .p3{display:none}}
+
+/* heat tiles (variation C) */
+.htile{width:34px;height:34px;border-radius:4px;display:grid;place-items:center;font:800 13px Inter,sans-serif;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(11,16,32,.18);transform:translate(-50%,-50%);transition:background .35s,color .35s,transform .35s var(--ease),opacity .35s}
+.htile.wait{background:rgba(255,255,255,.55)!important;color:transparent!important;box-shadow:inset 0 0 0 1.5px rgba(15,118,110,.25)}
+.htile.land{animation:flLand .45s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes flLand{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.hpin{transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:auto}
+.hpin i{width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(11,16,32,.25),0 4px 10px rgba(11,16,32,.3)}
+.hpin span{margin-top:3px;white-space:nowrap;font:700 11px Inter,sans-serif;color:var(--ink);background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:6px;padding:1px 6px;opacity:0;transition:opacity .15s}
+.hpin:hover span,.hpin.lbl span{opacity:1}
+.leaflet-container{font-family:Inter,sans-serif;background:#EEF0F2}
+.mini{display:grid;gap:2px}
+.mini i{display:block;aspect-ratio:1;border-radius:2px;transition:background .3s}
+
+/* charts (Demand chart language) */
+.readout{min-height:44px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding:6px 0 8px;font-size:13px;color:var(--body)}
+.readout b{color:var(--ink)}
+.readout .sw{display:inline-block;width:12px;height:2px;vertical-align:4px;margin-right:6px;border-radius:1px}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart .gl{stroke:#EEF0F3;stroke-width:1}
+.chart .ax{fill:var(--muted);font:11px Inter,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--body);margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:2px;border-radius:1px}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}}
+.oq-rail{position:sticky;top:0;height:100vh;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}</style>
+<script>/* Facelift shared behaviours (window.FL): the AI Visibility page's pieces
+   (frame, How it works window, branded hovers, sliding controls, waits that
+   show their steps, typing, counting) in OQ teal, plus the Grid Scan heat map
+   (variation C) and a line chart in the approved Demand chart language. */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.wait = (ms) => new Promise((r) => setTimeout(r, FL.reduce ? 0 : ms));
+  FL.$ = (sel, root = document) => root.querySelector(sel);
+  FL.$$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.money = (n) => `$${Number(n).toFixed(2)}`;
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+
+  const ICON = {
+    grid: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="9.5" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><rect x="16" y="9.5" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><rect x="9.5" y="16" width="5" height="5" rx="1"/><rect x="16" y="16" width="5" height="5" rx="1"/></svg>',
+    trends: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>',
+  };
+  FL.icon = ICON;
+
+  /* The app frame: OQ sidebar, sticky frosted top bar (brand mark, tool name,
+     How it works, a right slot), then #page. Call once, before building the page. */
+  FL.shell = function ({ tool, name, right = '', methodLabel = 'How it works' }) {
+    const page = document.getElementById('page');
+    const nav = [['Dashboard'], ['Clients'], ['Content Strategy'], ['Production'], ['Performance']];
+    const tools = [['Grid Scan', tool === 'grid'], ['Market Trends', tool === 'trends'], ['AI Visibility'], ['Relevance Analyzer']];
+    const app = FL.h(`<div class="fl-app">
+      <aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item is-active" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside>
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark">${ICON[tool]}</span>${FL.esc(name)}</div>
+          <div class="fl-right"><span class="fl-sample">Mockup</span><span id="method-slot"></span><span id="top-right">${right}</span></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = `<button type="button" class="method-btn"><span class="dot"></span>${FL.esc(methodLabel)}</button>`;
+    return { right: (html) => { FL.$('#top-right').innerHTML = html; } };
+  };
+
+  /* How it works: hover for the one-line teaser, click for the window; each
+     section has a small looping picture beside it (figure(el) -> stop()). */
+  FL.method = function ({ teaser, kicker, title, sections }) {
+    const btn = FL.$('.method-btn');
+    let tip = null;
+    btn.addEventListener('mouseenter', () => { if (tip) return; tip = FL.h(`<span class="teaser" role="tooltip">${FL.esc(teaser)}</span>`); btn.appendChild(tip); });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    window.addEventListener('scroll', () => { tip?.remove(); tip = null; }, true);
+    document.addEventListener('click', (e) => { if (!btn.contains(e.target)) { tip?.remove(); tip = null; } });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px">
+          <div><div class="panel-head" style="margin-bottom:4px">${FL.esc(kicker)}</div><h2 style="margin:0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption || '')}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => (s.figure ? s.figure(m.querySelector(`[data-fig="${i}"]`)) : null));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); tip?.remove(); tip = null; document.removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      document.addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close;
+      m.querySelector('.x').onclick = close;
+    });
+  };
+  /* A step counter for method pictures: fn(step) every ms, 0..count-1, looping. */
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0;
+    fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* Branded hover: any element with data-tip (and optional data-tip-h). Delegated, so content added later works. */
+  let tipEl = null; let tipFor = null; let tipTimer = null;
+  const hideTip = () => { clearTimeout(tipTimer); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return;
+    hideTip();
+    if (!t) return;
+    tipFor = t;
+    tipTimer = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      const left = Math.max(8, Math.min(r.left, innerWidth - 288));
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+      tipEl.style.left = `${left}px`;
+    }, 120);
+  });
+  window.addEventListener('scroll', hideTip, true);
+
+  /* Branded dropdown, never a native select. */
+  FL.dropdown = function (host, { options, value, onChange, label }) {
+    let v = value; let open = false;
+    const draw = () => {
+      const cur = options.find((o) => o.value === v) || options[0];
+      host.innerHTML = `<div class="dd"><button type="button" class="dd-btn" aria-label="${FL.esc(label || '')}">${FL.esc(cur.label)}</button>
+        ${open ? `<div class="dd-menu">${options.map((o) => `<button type="button" class="dd-opt ${o.value === v ? 'on' : ''}" data-v="${FL.esc(o.value)}"><span>${FL.esc(o.label)}${o.count != null ? ` <span style="color:var(--faint)">${o.count}</span>` : ''}</span></button>`).join('')}</div>` : ''}</div>`;
+      host.querySelector('.dd-btn').onclick = (e) => { e.stopPropagation(); open = !open; draw(); };
+      host.querySelectorAll('.dd-opt').forEach((b) => { b.onclick = () => { v = b.dataset.v; open = false; draw(); onChange && onChange(v); }; });
+    };
+    document.addEventListener('click', () => { if (open) { open = false; draw(); } });
+    draw();
+    return { set: (x) => { v = x; draw(); } };
+  };
+
+  /* Segmented control: the white thumb slides to the pick. */
+  FL.segmented = function (host, { options, value, onChange, label }) {
+    host.innerHTML = `<div class="seg" role="radiogroup" aria-label="${FL.esc(label || '')}"><span class="thumb"></span>${options.map((o) =>
+      `<button type="button" role="radio" data-v="${FL.esc(o.value)}">${o.color ? `<span class="sw" style="background:${o.color}"></span>` : ''}${FL.esc(o.label)}</button>`).join('')}</div>`;
+    const seg = host.firstElementChild; const thumb = seg.querySelector('.thumb');
+    const set = (v, fire) => {
+      seg.querySelectorAll('button').forEach((b) => { const on = b.dataset.v === String(v); b.classList.toggle('on', on); b.setAttribute('aria-checked', on);
+        if (on) { thumb.style.left = `${b.offsetLeft}px`; thumb.style.top = `${b.offsetTop}px`; thumb.style.width = `${b.offsetWidth}px`; thumb.style.height = `${b.offsetHeight}px`; } });
+      if (fire && onChange) onChange(v);
+    };
+    seg.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.v, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (v) => set(v, false) };
+  };
+
+  /* Tabs with a sliding underline; sticky under the top bar. */
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.setAttribute('role', 'tablist');
+    host.innerHTML = tabs.map((t) => `<button type="button" role="tab" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on);
+        if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (k) => set(k, false) };
+  };
+
+  /* Waits that show what they are doing. */
+  FL.orb = (size = 44) => `<span class="orb" aria-hidden="true" style="width:${size}px;height:${size}px"><span class="ring"></span><span class="core" style="inset:${size * 0.2}px"></span></span>`;
+  FL.sheen = () => '<span class="sheen" aria-hidden="true"></span>';
+  FL.mapSearch = (label) => `<div><div class="mapsearch" aria-hidden="true"><span class="pulse"></span><span class="pulse b"></span><span class="c"></span>
+    ${[[30, 32], [64, 40], [44, 70], [70, 66], [24, 62]].map(([x, y], i) => `<span class="f" style="left:${x}%;top:${y}%;animation-delay:${0.6 + i * 0.35}s"></span>`).join('')}</div>
+    <p style="margin:10px 0 0;font-size:14px;font-weight:600;color:var(--ink)">${FL.esc(label)}</p></div>`;
+  FL.steps = function (host, labels) {
+    host.innerHTML = `<ul class="steps">${labels.map((l) => `<li><span class="st"></span>${FL.esc(l)}</li>`).join('')}</ul>`;
+    const lis = host.querySelectorAll('li');
+    return { set(i, state) { const li = lis[i]; li.className = state; li.querySelector('.st').textContent = state === 'done' ? '✓' : ''; } };
+  };
+  FL.skeleton = (widths = ['92%', '84%', '88%', '46%']) => widths.map((w) => `<div class="skel" style="width:${w}"></div>`).join('');
+
+  /* Typing: text into el, a few characters a tick, with a caret while it types. */
+  FL.type = function (el, text, { cps = 180 } = {}) {
+    if (FL.reduce) { el.textContent = text; return Promise.resolve(); }
+    return new Promise((res) => {
+      let n = 0; el.innerHTML = '<span class="caret"></span>';
+      const step = Math.max(1, Math.round(cps / 60));
+      const t = setInterval(() => {
+        n = Math.min(text.length, n + step);
+        el.innerHTML = `${FL.esc(text.slice(0, n))}${n < text.length ? '<span class="caret"></span>' : ''}`;
+        if (n >= text.length) { clearInterval(t); res(); }
+      }, 16);
+    });
+  };
+  /* Count a number up (or down) to `to`, easing out. */
+  FL.countTo = function (el, to, { from = null, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    const start = from ?? (parseFloat(el.dataset.v) || 0);
+    el.dataset.v = to;
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (now) => { const p = Math.min(1, (now - t0) / ms); const e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(start + (to - start) * e); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  FL.wilson = function (k, n) {
+    if (!n) return [0, 0];
+    const z = 1.96; const p = k / n; const d = 1 + (z * z) / n; const c = (p + (z * z) / (2 * n)) / d;
+    const h = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / d;
+    return [Math.max(0, c - h), Math.min(1, c + h)];
+  };
+
+  /* ---------------- Grid Scan: ranks and the heat map (variation C) ---------------- */
+  FL.RANK = { g: '#15803D', y: '#F5C518', r: '#DC2626', n: '#94A3B8' };
+  FL.rankStyle = (v) => (v == null || v > 20 ? { bg: FL.RANK.n, ink: '#fff', t: '20+' }
+    : v <= 3 ? { bg: FL.RANK.g, ink: '#fff', t: String(Math.round(v)) }
+      : v <= 10 ? { bg: FL.RANK.y, ink: '#0B1020', t: String(Math.round(v)) }
+        : { bg: FL.RANK.r, ink: '#fff', t: String(Math.round(v)) });
+  FL.band = (v) => (v == null || v > 20 ? 'not in top 20' : v <= 3 ? 'top 3' : v <= 10 ? '4 to 10' : '11 to 20');
+  FL.flat = (g) => g.flat();
+  FL.top3 = (g) => FL.flat(g).filter((v) => v != null && v <= 3).length;
+  FL.solv = (g) => (100 * FL.top3(g)) / FL.flat(g).length;
+  FL.avgRank = (g) => FL.flat(g).reduce((a, v) => a + (v == null || v > 20 ? 21 : v), 0) / FL.flat(g).length;
+  /* The all-keywords average: mean rank per point, 21 for not in top 20. */
+  FL.avgGrid = (grids) => grids[0].map((row, i) => row.map((_, j) => grids.reduce((a, g) => a + (g[i][j] > 20 ? 21 : g[i][j]), 0) / grids.length));
+  FL.legendHtml = () => `<div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:8px">${[[1, 'top 3'], [7, '4 to 10'], [14, '11 to 20'], [21, 'not in top 20']].map(([v, l]) => { const s = FL.rankStyle(v); return `<span style="display:inline-flex;align-items:center"><b style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;margin-right:6px;font-size:11px;background:${s.bg};color:${s.ink}">${s.t}</b>${l}</span>`; }).join('')}</div>`;
+  FL.mini = (g, px = 6) => `<div class="mini" style="grid-template-columns:repeat(${g.length},${px}px)">${FL.flat(g).map((v) => `<i style="background:${FL.rankStyle(v).bg}"></i>`).join('')}</div>`;
+
+  /* The map: Esri light grey canvas (no names), 34px square rank tiles at the grid spacing,
+     pins above the tiles with a white halo. Points row 0 = north, col 0 = west. */
+  FL.heatMap = function (el, { center, size = 9, spacingMi = 0.25, zoom = 14, interactive = true }) {
+    const map = L.map(el, { scrollWheelZoom: false, zoomControl: interactive, dragging: interactive, attributionControl: true, zoomSnap: 0.25 });
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Tiles &copy; Esri' }).addTo(map);
+    const dLat = spacingMi / 69; const dLng = spacingMi / (69 * Math.cos((center[0] * Math.PI) / 180));
+    const mid = (size - 1) / 2;
+    const pt = (i, j) => [center[0] + (mid - i) * dLat, center[1] + (j - mid) * dLng];
+    map.fitBounds(L.latLngBounds([pt(0, 0), pt(size - 1, size - 1)]), { paddingTopLeft: [interactive ? 48 : 18, 18], paddingBottomRight: [18, 18] });
+    const tiles = [];
+    for (let i = 0; i < size; i++) for (let j = 0; j < size; j++) {
+      const m = L.marker(pt(i, j), { icon: L.divIcon({ className: '', html: '<div class="htile wait"></div>', iconSize: [0, 0] }), interactive: false, keyboard: false }).addTo(map);
+      tiles.push({ i, j, m });
+    }
+    const pinLayer = L.layerGroup().addTo(map);
+    const api = {
+      map, pt,
+      tileEl: (i, j) => tiles[i * size + j].m.getElement()?.firstElementChild,
+      set(i, j, v, { land = false, exact = true } = {}) {
+        const d = api.tileEl(i, j); if (!d) return;
+        const s = FL.rankStyle(v);
+        d.className = `htile${land && !FL.reduce ? ' land' : ''}`;
+        d.style.background = s.bg; d.style.color = s.ink;
+        d.textContent = v == null || v > 20 ? '20+' : exact ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+        if (!exact) d.style.fontSize = '11.5px'; else d.style.fontSize = '';
+      },
+      clear() { tiles.forEach(({ i, j }) => { const d = api.tileEl(i, j); if (d) { d.className = 'htile wait'; d.textContent = ''; } }); },
+      setGrid(g, { exact = true } = {}) { tiles.forEach(({ i, j }) => api.set(i, j, g[i][j], { exact })); },
+      /* Paint a grid in the order a scan reads it (rings out from the office), one point every `ms`. */
+      async sweep(g, { ms = 18, exact = true, onPoint } = {}) {
+        api.clear();
+        const order = tiles.map(({ i, j }) => ({ i, j, d: Math.hypot(i - mid, j - mid) + (Math.atan2(i - mid, j - mid) + Math.PI) / 50 })).sort((a, b) => a.d - b.d);
+        for (let k = 0; k < order.length; k++) { const { i, j } = order[k]; api.set(i, j, g[i][j], { land: true, exact }); onPoint && onPoint(k + 1, g[i][j], i, j); if (ms) await FL.wait(ms); }
+      },
+      /* pins: [{lat,lng,label,kind:'you'|'comp'|'custom',n}] */
+      setPins(pins, { labels = false } = {}) {
+        pinLayer.clearLayers();
+        pins.forEach((p) => {
+          const color = p.kind === 'you' ? 'var(--a)' : p.kind === 'custom' ? '#3B5BDB' : '#0B1020';
+          L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', iconSize: [0, 0], html: `<div class="hpin ${labels || p.kind === 'you' ? 'lbl' : ''}"><i style="background:${color}"></i><span>${p.n ? `${p.n} · ` : ''}${FL.esc(p.label)}</span></div>` }), zIndexOffset: p.kind === 'you' ? 2000 : 1000 }).addTo(pinLayer);
+        });
+      },
+      tilesVisible(on) { tiles.forEach(({ m }) => { const e = m.getElement(); if (e) e.style.opacity = on ? 1 : 0; }); },
+    };
+    return api;
+  };
+
+  /* ---------------- Market Trends: the line chart (Demand chart language) ----------------
+     Thin 2px monotone lines, no dots; the lead line in white casing with a soft area and an
+     end dot; dashed slate hover guide with a dot per line; the readout ABOVE the chart keeps
+     its height (no layout shift); end labels pushed apart; legend for 2+ series. */
+  FL.lineChart = function (host, opts) {
+    let o = { height: 260, range: 60, upto: null, endLabels: true, draw: true, yMax: 100, legend: true, ...opts };
+    const W = 820; const PL = 30; const PR = o.endLabels ? 130 : 14; const PT = 10; const PB = 24;
+    host.classList.add('chart');
+    host.innerHTML = `${o.readout === false ? '' : '<div class="readout"></div>'}<svg viewBox="0 0 ${W} ${o.height}" role="img"></svg>${o.legend ? '<div class="legend"></div>' : ''}`;
+    const svg = host.querySelector('svg'); const ro = host.querySelector('.readout'); const lg = host.querySelector('.legend');
+    const NS = 'http://www.w3.org/2000/svg';
+    const render = (animate) => {
+      const H = o.height; const months = o.months; const N = months.length;
+      const start = Math.max(0, N - o.range); const span = N - 1 - start;
+      const x = (i) => PL + ((i - start) / Math.max(1, span)) * (W - PL - PR);
+      const y = (v) => PT + (1 - v / o.yMax) * (H - PT - PB);
+      const last = o.upto == null ? N - 1 : Math.min(N - 1, o.upto);
+      const path = (vals) => { let d = ''; for (let i = start; i <= last; i++) { if (vals[i] == null) continue; d += `${d ? 'L' : 'M'}${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`; } return d; };
+      let s = '<defs><linearGradient id="fl-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".2"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>';
+      [0, 25, 50, 75, 100].filter((v) => v <= o.yMax).forEach((v) => { s += `<line class="gl" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${PL - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; });
+      for (let i = start; i < N; i++) if (/^Jan/.test(months[i]) || (o.range <= 24 && /^(Apr|Jul|Oct)/.test(months[i]))) s += `<text class="ax" x="${x(i)}" y="${H - 6}" text-anchor="middle">${months[i].replace(' 20', ' ’')}</text>`;
+      const lines = o.lines.filter((l) => !l.hidden);
+      const lead = lines.find((l) => l.lead);
+      if (lead) s += `<path d="${path(lead.values)}L${x(last)},${y(0)}L${x(start)},${y(0)}Z" fill="url(#fl-area)"/>`;
+      [...lines].sort((a, b) => Number(!!a.lead) - Number(!!b.lead)).forEach((l) => {
+        const d = path(l.values);
+        if (l.lead) s += `<path d="${d}" fill="none" stroke="#fff" stroke-width="${(l.width || 2.4) + 3}" stroke-linejoin="round" stroke-linecap="round"/>`;
+        s += `<path class="ln" d="${d}" fill="none" stroke="${l.color}" stroke-width="${l.width || 2}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`;
+      });
+      if (lead && lead.values[last] != null) s += `<circle cx="${x(last)}" cy="${y(lead.values[last])}" r="4" fill="${lead.color}" stroke="#fff" stroke-width="2"/>`;
+      if (o.endLabels) {
+        const ends = lines.filter((l) => l.values[last] != null).map((l) => ({ l, y: y(l.values[last]) })).sort((a, b) => a.y - b.y);
+        for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 14) ends[k].y = ends[k - 1].y + 14;
+        ends.forEach(({ l, y: ly }) => { const ty = y(l.values[last]); s += `${Math.abs(ly - ty) > 2 ? `<line x1="${x(last) + 4}" y1="${ty}" x2="${x(last) + 10}" y2="${ly - 3}" stroke="#C3C8D2"/>` : ''}<text x="${x(last) + 12}" y="${ly + 1}" font-size="11.5" font-weight="${l.lead ? 700 : 500}" fill="#273043">${FL.esc(l.short || l.label)}</text>`; });
+      }
+      s += `<g class="hov" style="display:none"><line class="hl" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/></g><rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent"/>`;
+      svg.innerHTML = s;
+      if (animate && o.draw && !FL.reduce) svg.querySelectorAll('.ln').forEach((p) => { const len = p.getTotalLength(); p.style.strokeDasharray = `${len}`; p.style.strokeDashoffset = `${len}`; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = '0'; });
+      if (lg) lg.innerHTML = lines.length > 1 ? lines.map((l) => `<span><i style="background:${l.color}"></i>${FL.esc(l.label)}</span>`).join('') : '';
+      const def = () => { if (ro) ro.innerHTML = o.readoutDefault || ''; };
+      def();
+      const g = svg.querySelector('.hov'); const hl = svg.querySelector('.hl');
+      const hit = svg.querySelector('.hit');
+      hit.onmousemove = (e) => {
+        const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W;
+        const i = Math.max(start, Math.min(last, Math.round(start + ((px - PL) / (W - PL - PR)) * span)));
+        g.style.display = ''; hl.setAttribute('x1', x(i)); hl.setAttribute('x2', x(i));
+        g.querySelectorAll('circle').forEach((c) => c.remove());
+        lines.forEach((l) => { if (l.values[i] == null) return; const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x(i)); c.setAttribute('cy', y(l.values[i])); c.setAttribute('r', 3.5); c.setAttribute('fill', l.color); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', 1.5); g.appendChild(c); });
+        if (ro) ro.innerHTML = `<b>${months[i]}</b>${lines.map((l) => (l.values[i] == null ? '' : `<span><span class="sw" style="background:${l.color}"></span>${FL.esc(l.label)} <b>${l.values[i]}</b></span>`)).join('')}`;
+        o.onHover && o.onHover(i);
+      };
+      hit.onmouseleave = () => { g.style.display = 'none'; def(); o.onHover && o.onHover(null); };
+    };
+    render(true);
+    return { update(next, animate = false) { o = { ...o, ...next }; render(animate); }, get opts() { return o; } };
+  };
+  FL.TOPIC_COLORS = ['#0D9488', '#3B5BDB', '#E0527A', '#5F7D16', '#9C36B5'];
+})();
+</script>
+<script>window.GSDATA={"practice":{"t":"Bothell Family Dentistry","addr":"19515 N Creek Pkwy S Ste 213, Bothell, WA 98011","r":4.9,"n":218,"lat":47.7695777,"lng":-122.1857172,"i":0,"domain":"bothellfamilydentistry.com"},"kw":[{"kw":"dentist near me","rank":[5,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,4,1,1,21,21,1,1,1,1,5,1,1,1,1,1,1,1,2,9,3,2,1,1,1,1,1,2,18,13,4,4,1,1,1,1,2,20,18,11,3,2,1,1,2,10,16,18,11,3,1,1,3,8,14,11,12,10,2,1,2,10,13,20],"top":[[1,2,3,4,0,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],[0,2,1,4,3,7,5,8,9,14,10,11,13,16,15,17,12,6,19,20],[0,7,2,1,5,4,14,3,8,10,9,17,11,13,16,15,12,19,6,20],[0,7,14,5,2,4,1,10,17,8,9,13,3,16,11,15,19,12,21,20],[0,7,14,5,17,10,2,4,13,16,1,11,8,9,3,19,15,12,21,22],[0,7,14,5,17,10,2,13,16,11,4,8,9,19,15,23,12,22,21,24],[0,7,14,5,17,10,16,13,11,8,9,19,23,15,12,22,21,25,24,20],[0,7,14,19,17,16,23,25,21,22,26,27,28,29,30,31,32,33,34,35],[0,7,14,19,17,23,25,26,22,29,28,30,36,31,34,37,33,38,35,39],[1,3,0,2,8,7,10,4,11,13,14,15,16,5,17,9,19,6,20,12],[0,1,7,3,8,2,14,10,11,13,4,16,17,15,5,9,19,20,12,6],[0,7,14,8,1,2,17,10,11,3,13,16,5,4,15,19,9,20,21,12],[0,7,14,17,8,10,11,1,2,16,5,13,4,15,3,19,9,22,21,20],[0,7,14,17,10,5,8,16,13,11,2,1,19,15,4,3,22,9,40,41],[0,7,14,17,10,5,16,13,11,8,2,40,41,19,22,4,15,9,23,42],[0,7,14,17,10,5,40,41,16,13,11,8,19,23,42,22,15,9,21,25],[0,7,14,40,41,42,17,19,16,23,25,43,21,22,26,31,27,28,29,30],[0,7,40,14,41,42,19,23,17,25,43,22,26,28,29,30,31,44,36,37],[1,8,3,0,11,10,7,15,13,16,14,2,17,20,19,4,21,27,9,26],[0,8,7,11,1,14,10,13,3,15,16,17,2,19,20,4,21,27,9,26],[0,7,14,17,8,10,16,11,13,1,15,3,19,2,21,20,4,27,28,22],[7,14,17,11,16,1,10,8,13,3,19,15,27,2,30,29,12,20,28,26],[7,14,17,10,8,16,11,13,19,15,1,2,40,21,41,3,28,31,23,30],[0,7,14,17,10,22,16,13,8,11,19,40,41,31,23,15,2,45,46,42],[0,7,14,17,10,40,41,16,13,23,22,11,8,46,19,45,42,31,15,47],[0,7,14,40,46,41,42,17,23,47,19,45,16,48,25,43,21,22,49,31],[0,7,40,14,41,46,42,47,23,45,19,17,48,25,43,49,50,51,22,26],[8,11,15,10,0,1,13,16,20,7,14,3,17,19,27,21,52,2,53,26],[0,8,11,7,14,15,10,17,16,13,20,1,19,3,27,21,2,28,26,30],[0,7,14,17,8,11,16,10,13,15,19,1,21,20,27,28,3,22,30,26],[0,7,14,17,22,16,8,10,13,11,19,15,21,28,34,1,27,20,30,3],[0,7,14,22,17,16,10,8,13,11,19,31,15,28,21,33,41,40,34,23],[0,7,14,31,22,17,16,10,13,8,41,40,19,23,11,42,46,15,45,28],[0,7,14,17,22,40,16,23,11,42,10,46,41,13,48,31,19,8,47,45],[0,7,14,40,41,23,17,46,42,45,16,47,48,19,22,25,43,21,49,51],[40,0,41,46,7,42,45,47,14,23,43,48,25,50,17,51,49,19,54,44],[8,11,15,20,10,16,13,52,0,27,14,17,53,7,19,21,55,1,56,57],[11,8,0,17,15,14,16,10,20,13,7,27,19,21,53,28,26,1,30,52],[14,0,17,7,11,8,16,10,13,28,19,34,15,21,27,20,30,26,32,22],[0,7,14,17,34,22,28,16,8,10,11,13,19,21,15,30,33,27,26,58],[0,7,14,22,17,33,58,34,16,10,28,13,8,19,11,21,15,23,30,31],[0,7,14,22,17,31,16,10,23,13,19,40,41,8,42,11,33,46,48,28],[0,7,14,17,23,40,41,42,22,46,45,16,10,48,13,47,19,31,11,8],[0,7,14,23,40,41,42,46,17,45,47,48,16,43,19,22,49,25,51,21],[40,0,46,41,7,42,45,47,23,43,14,48,50,51,25,17,49,54,19,37],[11,8,20,10,16,15,27,53,13,59,52,55,19,21,60,56,17,0,14,32],[11,16,8,27,17,19,10,21,20,13,14,15,0,32,7,26,60,30,61,28],[17,14,28,0,7,19,16,34,21,11,10,8,30,13,27,62,26,32,15,29],[17,14,34,0,7,28,19,16,62,10,30,21,11,8,13,22,29,63,26,64],[0,7,14,17,34,22,28,16,19,10,33,13,58,8,21,11,30,23,15,48],[0,7,14,17,22,23,16,10,40,42,48,19,13,46,41,45,28,8,34,11],[0,7,14,23,17,40,42,41,46,48,45,47,16,10,13,22,19,11,8,43],[0,23,7,40,42,14,41,46,45,48,17,47,16,43,49,37,19,51,65,50],[23,0,40,42,41,7,46,45,47,14,48,17,43,49,51,50,37,25,65,19],[27,10,16,11,13,60,8,66,21,20,19,32,15,61,26,53,67,17,55,0],[21,16,27,19,32,68,11,10,61,26,17,13,8,60,30,14,20,0,39,69],[17,39,30,14,19,70,21,28,16,32,0,26,10,27,61,7,11,13,8,68],[17,14,0,28,7,34,19,30,21,16,10,62,13,11,32,63,8,26,39,29],[14,0,17,7,28,34,16,19,10,13,21,30,8,23,48,11,42,22,26,46],[0,7,14,17,23,48,42,16,40,46,10,19,41,13,45,28,21,47,8,11],[0,23,7,14,48,42,17,40,46,41,45,47,16,10,13,19,37,43,65,11],[23,0,42,7,40,46,48,41,45,47,14,65,37,17,43,49,51,16,50,19],[23,40,42,46,41,47,45,43,48,0,51,7,50,37,49,65,14,54,71,25],[10,16,13,27,21,19,11,32,8,60,61,26,20,68,17,0,15,14,67,66],[21,32,19,16,68,61,27,10,26,13,11,17,30,72,8,14,60,0,73,7],[17,19,21,30,32,16,14,10,61,26,0,39,13,68,27,7,70,11,8,28],[17,14,0,19,7,21,30,16,10,28,13,32,26,11,8,61,39,27,70,48],[0,17,14,7,16,19,48,10,13,21,23,28,30,42,8,11,46,40,45,26],[0,7,14,48,17,23,42,46,40,16,45,41,10,19,13,47,21,11,8,28],[23,48,0,42,7,46,14,40,45,41,17,47,65,37,16,43,10,13,19,49],[23,65,42,48,37,46,40,0,45,47,41,7,43,14,51,49,17,50,16,74],[23,42,46,65,40,47,37,45,48,41,43,49,51,0,54,7,71,50,14,17],[10,13,16,21,19,27,11,8,32,17,0,26,14,61,7,15,20,60,30,68],[16,10,21,19,13,32,17,27,61,11,26,0,8,14,7,30,68,15,20,60],[16,17,19,30,10,32,26,13,61,0,11,14,7,68,27,39,8,75,29,21],[17,0,14,16,7,19,10,13,21,30,8,32,11,48,26,27,61,28,23,42],[0,14,17,7,48,16,10,19,13,23,42,21,46,45,40,41,30,11,8,26],[48,0,7,23,14,42,17,46,40,45,41,16,10,47,13,19,21,43,11,8],[48,42,23,46,40,45,47,43,41,0,7,51,14,50,49,17,37,65,10,54],[48,42,46,23,43,40,45,47,51,41,50,71,0,49,37,65,7,54,14,17],[42,46,47,43,23,40,45,51,48,49,41,54,71,76,50,77,65,37,78,0]],"solv":69.1,"arp":4.69,"density":{"top20":78,"top10":54,"top3":29},"topComp":{"place_id":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","title":"Accent Dental Center Bothell","arp":6.2}},{"kw":"dentist in bothell","rank":[2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,6,3,2,1,1,1,1,1,1,9,8,2,2,1,1,1,1,1,5,7,1,1,1,1,1,1,2,3,3,1,1,1,1,1,1,1],"top":[[1,0,2,5,3,4,16,11,13,7,8,10,14,12,9,17,26,61,20,6],[0,1,5,2,4,16,3,7,13,11,14,8,12,10,17,9,26,61,21,20],[0,1,5,2,7,16,13,11,4,3,14,17,8,10,12,9,26,61,21,20],[0,7,4,1,11,2,13,5,16,3,14,12,8,17,10,26,9,27,30,28],[0,5,7,1,16,2,13,11,14,4,17,3,10,8,26,61,9,12,21,20],[0,5,7,16,2,13,11,14,4,17,10,8,26,61,9,12,21,20,19,30],[0,5,7,16,13,11,14,17,10,8,26,61,9,21,12,30,19,20,22,27],[0,7,16,14,17,26,61,21,19,30,22,27,23,28,29,34,60,79,37,39],[0,7,14,17,26,19,30,23,22,28,29,34,37,25,39,63,31,38,58,75],[1,0,5,2,3,16,11,13,7,4,8,14,10,17,26,12,9,20,61,15],[0,1,5,16,2,7,11,13,3,4,14,8,17,10,26,12,61,20,9,21],[0,1,5,7,16,2,11,13,3,14,17,4,8,10,26,61,12,9,20,21],[0,7,5,1,16,13,11,2,14,17,3,4,8,10,26,61,21,9,12,20],[0,7,5,1,16,13,11,14,2,17,3,4,10,8,26,61,21,9,12,20],[0,7,5,16,13,14,11,2,17,4,10,8,26,61,21,12,9,22,20,19],[0,7,5,16,13,11,14,17,10,8,26,61,21,12,9,22,30,19,20,27],[0,7,16,14,17,61,26,21,30,19,22,23,27,28,29,34,40,60,37,39],[0,7,14,17,26,19,30,23,22,28,29,34,40,37,41,42,39,31,25,63],[1,0,16,11,13,3,2,7,8,10,14,17,4,26,20,61,21,15,27,19],[0,1,16,11,7,13,2,3,14,8,17,10,4,26,61,20,21,19,15,30],[0,1,7,16,11,13,14,2,17,3,8,10,4,26,61,21,20,15,19,30],[0,7,16,1,11,13,14,17,2,3,8,10,4,26,61,21,20,30,19,22],[0,7,16,1,14,13,11,17,2,10,3,8,4,26,61,21,22,30,20,19],[0,7,16,14,13,11,17,2,10,4,8,26,61,21,22,30,20,19,9,12],[0,7,16,14,13,11,17,10,26,8,61,21,30,19,22,9,20,12,23,28],[0,7,16,14,17,61,26,21,30,19,23,22,27,28,29,34,40,37,60,31],[0,7,14,17,26,23,30,19,22,28,29,34,40,37,46,41,42,45,48,31],[0,11,1,16,13,8,7,3,10,2,17,14,20,26,61,15,4,21,27,19],[0,11,16,1,13,7,8,14,17,10,3,2,26,20,61,21,4,15,19,27],[0,7,16,11,1,13,14,17,8,10,2,3,26,61,21,20,4,19,15,30],[0,7,16,14,11,13,1,17,2,8,10,26,3,61,21,4,22,20,30,19],[0,7,16,14,1,13,11,17,22,2,8,10,26,3,61,4,21,30,19,20],[0,7,16,14,13,17,11,2,31,10,22,26,8,4,61,21,30,19,20,28],[0,7,16,14,13,11,17,10,26,8,61,21,22,30,19,23,20,31,28,15],[0,7,16,14,17,26,61,21,23,30,19,22,28,27,34,29,37,31,40,60],[0,7,14,17,26,23,30,19,22,28,40,29,37,34,46,41,42,45,48,39],[11,8,0,16,13,1,20,15,10,7,14,17,3,26,52,2,61,21,27,19],[0,11,16,13,8,1,7,17,14,10,20,26,61,21,3,2,19,15,27,30],[0,7,16,14,11,17,13,1,8,10,26,61,21,2,3,20,19,28,30,27],[0,7,14,16,17,11,13,1,10,8,26,22,61,34,2,21,28,3,30,19],[0,7,14,16,17,22,13,11,1,58,26,10,8,33,2,61,21,3,30,34],[0,7,16,14,17,13,11,22,2,26,10,31,8,61,21,30,4,19,58,28],[0,7,16,14,13,17,11,10,26,8,61,21,22,23,30,19,20,28,27,34],[0,7,16,14,17,26,61,23,21,30,19,22,28,27,34,29,37,40,46,31],[0,7,14,17,26,23,30,19,28,22,29,75,39,34,65,48,37,42,63,33],[11,20,8,16,13,0,10,15,1,52,53,27,7,21,17,26,14,61,59,60],[11,16,0,13,8,17,21,7,26,20,10,14,1,61,19,27,30,3,2,60],[17,0,14,16,11,7,13,28,26,21,1,8,10,61,30,29,19,63,34,20],[0,17,7,14,16,28,13,11,34,1,26,10,29,61,8,63,21,30,19,2],[0,7,14,17,16,13,11,1,22,26,10,34,61,8,21,2,58,28,30,19],[0,7,14,16,17,13,11,26,10,61,2,8,22,21,30,19,28,23,34,20],[0,7,16,14,13,17,11,10,26,61,23,8,21,30,22,19,28,20,27,34],[0,7,16,14,17,23,26,61,21,30,19,22,28,37,27,34,29,40,42,46],[0,7,14,17,23,26,30,19,37,22,28,40,42,46,29,34,48,41,45,39],[11,16,13,10,27,20,21,8,0,26,60,61,19,1,17,7,67,14,66,53],[16,21,11,19,26,61,13,0,27,10,17,30,8,60,7,14,32,68,1,20],[17,0,16,26,21,30,14,11,13,61,39,19,7,28,10,63,1,8,29,70],[17,0,14,7,16,28,13,11,26,30,61,21,1,10,63,29,8,34,19,39],[0,7,14,17,16,13,11,1,26,10,61,21,8,30,28,19,34,3,29,20],[0,7,16,14,17,13,11,26,10,61,21,8,30,23,19,28,22,20,27,34],[0,7,16,14,13,17,11,23,10,26,61,8,21,30,19,28,20,37,22,27],[0,7,23,16,14,17,26,30,28,61,19,22,27,48,65,29,37,32,42,75],[0,7,23,14,17,26,30,19,28,22,29,75,65,39,37,34,48,42,47,40],[16,13,10,11,0,21,61,26,8,27,1,19,7,17,14,20,60,67,30,32],[21,16,26,61,13,19,0,11,10,17,7,32,68,8,14,30,27,1,20,60],[0,16,21,13,61,26,30,17,11,7,19,14,10,39,1,8,32,27,28,20],[0,16,17,7,13,14,11,26,61,10,21,30,1,8,19,28,39,27,20,3],[0,16,7,17,14,13,11,26,1,10,61,21,8,30,19,28,3,27,20,23],[0,7,16,14,17,13,11,26,10,61,21,8,23,30,19,28,27,20,29,34],[0,7,23,16,13,17,14,11,26,30,10,28,61,8,19,27,48,22,29,32],[0,23,7,16,14,17,26,30,65,48,37,28,61,19,27,42,22,29,32,75],[23,0,7,37,14,65,17,26,42,30,46,19,40,48,28,22,45,29,43,54],[16,13,0,10,11,21,61,26,1,7,8,17,14,19,27,20,30,3,15,60],[16,13,0,11,21,10,61,26,17,7,14,1,8,19,30,27,20,3,32,60],[0,16,13,11,7,17,26,61,10,21,14,1,19,8,30,27,20,3,28,32],[0,16,13,7,11,17,14,26,10,61,1,21,8,30,19,27,3,20,28,15],[0,16,7,13,14,17,11,26,1,10,61,21,8,30,19,3,27,20,23,28],[0,16,7,13,14,17,11,26,10,61,21,8,23,30,19,27,20,28,48,15],[0,7,16,13,14,17,11,23,10,48,61,26,8,21,30,19,37,20,28,27],[0,23,7,16,14,17,48,37,26,61,42,21,30,65,19,46,27,28,40,22],[0,23,7,42,14,17,37,26,46,48,30,65,19,45,40,54,51,43,49,28]],"solv":93.8,"arp":1.56,"density":{"top20":60,"top10":33,"top3":16},"topComp":{"place_id":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","title":"Accent Dental Center Bothell","arp":4.28}},{"kw":"emergency dentist bothell","rank":[10,9,8,5,5,5,5,4,3,10,8,7,4,4,4,4,4,3,9,8,5,4,4,3,4,4,3,12,8,5,4,4,4,4,4,3,13,9,6,4,3,4,4,4,3,14,10,8,4,4,4,4,4,3,15,11,10,6,4,4,4,5,4,12,10,10,7,5,4,4,5,4,10,9,9,8,6,4,4,5,4],"top":[[21,7,1,5,14,3,11,4,2,0,9,10,27,16,15,20,19,8,18,13],[21,7,14,5,1,3,11,4,0,2,27,10,9,16,15,20,19,8,13,18],[21,7,14,5,1,3,11,0,4,10,27,2,9,16,15,19,20,8,13,17],[21,7,14,5,0,1,11,3,4,27,10,2,9,16,19,20,15,8,13,17],[21,7,14,5,0,11,1,3,27,10,4,16,9,2,19,20,15,8,13,17],[21,7,14,5,0,11,27,10,16,4,9,2,19,20,15,8,13,17,23,34],[21,7,14,5,0,11,27,10,16,9,19,20,15,8,17,13,23,34,60,53],[21,7,14,0,27,16,19,17,23,34,60,68,22,29,58,26,28,36,25,75],[7,14,0,19,23,17,34,29,22,58,26,28,36,25,75,65,80,62,81,82],[21,7,1,14,3,11,5,27,10,0,4,2,16,9,15,20,19,8,13,18],[21,7,14,1,5,11,3,0,27,10,4,16,2,9,15,20,19,8,13,60],[21,7,14,5,11,1,0,3,27,10,16,4,2,9,20,15,19,8,13,17],[21,7,14,0,5,11,1,3,27,10,16,4,2,9,19,20,15,8,13,17],[21,7,14,0,5,11,1,3,27,10,16,4,19,9,2,20,15,8,17,13],[21,7,14,0,5,11,27,10,16,4,19,9,2,20,15,8,40,17,13,34],[21,7,14,0,5,11,27,10,16,19,9,20,15,40,8,23,17,13,34,60],[21,7,14,0,27,16,19,40,17,23,34,60,41,68,43,58,22,29,26,28],[7,14,0,40,19,23,17,34,41,43,22,29,58,42,26,28,36,25,65,75],[21,7,14,1,11,3,27,10,0,16,20,15,4,2,19,8,9,13,60,53],[21,7,14,11,1,3,27,0,10,16,20,15,4,19,2,8,9,13,60,17],[21,7,14,11,0,27,1,3,10,16,20,19,15,4,2,8,9,17,60,34],[21,7,14,0,11,27,1,3,10,16,19,20,15,4,2,9,8,17,13,34],[21,7,14,0,11,27,10,1,3,16,19,20,4,15,2,9,8,17,34,13],[21,7,0,27,10,11,14,16,4,34,17,19,2,68,8,15,29,59,18,53],[21,7,14,0,11,27,10,16,19,20,9,15,40,8,23,17,34,13,60,51],[21,7,14,0,27,16,19,40,23,17,51,34,47,60,41,45,68,58,22,43],[7,14,0,40,19,23,17,51,47,34,41,45,43,48,58,22,29,49,42,26],[21,7,11,14,1,27,3,10,16,20,15,0,8,19,4,2,53,60,9,13],[21,7,14,11,27,1,10,0,3,16,20,15,19,8,4,2,60,9,53,17],[21,7,14,11,0,27,10,16,1,3,19,20,15,8,4,2,17,34,60,9],[21,7,14,0,11,27,16,10,1,3,19,20,15,8,34,17,4,2,9,60],[21,7,14,0,11,27,16,10,1,3,19,20,15,17,34,22,58,8,4,2],[21,7,14,0,11,27,10,16,19,20,15,17,4,34,2,8,40,22,9,23],[21,7,14,0,11,27,10,16,19,20,40,15,23,17,8,34,9,60,51,13],[21,7,14,0,27,16,19,40,23,17,51,34,47,60,45,41,68,58,43,48],[7,14,0,40,19,23,51,17,47,41,45,34,43,48,58,22,42,49,29,26],[21,7,11,14,20,27,10,15,16,8,1,3,0,53,19,60,59,52,13,2],[21,7,11,14,27,10,20,16,0,1,15,19,3,8,53,60,17,13,4,2],[21,7,14,11,27,0,10,16,19,1,20,3,15,17,34,8,60,53,13,4],[21,7,14,0,11,27,16,34,10,19,1,17,3,20,15,58,8,22,60,4],[7,21,0,14,27,10,11,34,17,16,19,1,68,3,4,15,22,29,8,2],[21,7,14,0,11,27,10,16,19,58,20,17,15,34,22,23,40,8,4,2],[21,7,14,0,11,27,10,16,19,23,40,20,17,15,34,8,51,60,13,58],[21,7,14,0,27,16,23,19,40,17,51,34,47,60,45,41,43,48,68,58],[7,14,0,40,23,19,51,47,17,45,41,34,43,48,42,49,58,22,29,65],[21,7,11,27,14,10,16,20,15,19,8,53,1,0,3,59,13,60,68,55],[21,7,11,27,14,16,19,20,10,0,15,8,1,53,3,68,17,60,13,59],[21,7,14,11,27,19,10,0,16,17,34,20,1,15,3,8,60,68,28,62],[21,7,14,0,11,27,17,16,10,34,19,20,1,3,15,8,28,62,60,58],[21,7,14,0,11,27,34,16,10,19,58,17,1,3,20,15,22,8,60,23],[21,7,14,0,11,27,16,10,19,20,17,34,23,15,58,40,8,22,60,2],[21,7,14,0,11,27,10,16,19,23,40,20,17,15,34,8,51,60,13,47],[21,7,14,0,27,23,16,40,19,51,17,34,47,45,60,41,43,48,68,58],[7,14,0,23,40,19,51,47,45,17,41,43,34,48,42,65,49,58,46,22],[21,11,7,27,10,20,14,19,16,8,15,53,68,13,0,1,3,60,59,67],[21,7,27,11,14,16,10,19,68,20,0,15,8,1,3,17,60,53,13,26],[21,7,14,19,27,11,16,10,68,0,17,20,34,1,15,60,3,8,26,28],[21,7,14,27,11,0,16,19,10,17,34,20,1,3,15,68,8,28,60,62],[21,7,14,0,27,11,16,10,19,17,34,1,20,3,15,8,23,60,68,40],[21,7,14,0,27,11,16,10,19,23,17,20,34,15,40,8,60,68,51,13],[21,7,14,0,11,27,10,23,16,19,40,20,17,15,34,51,8,47,60,45],[21,7,14,23,0,27,16,40,19,51,17,65,47,45,34,43,48,41,60,68],[7,14,23,0,40,19,51,47,45,65,41,43,17,48,34,42,49,46,50,29],[21,7,27,10,11,14,16,19,20,68,13,0,15,1,8,3,60,53,67,17],[21,7,27,14,16,19,11,10,68,0,20,15,1,3,8,60,13,17,26,53],[21,7,14,19,27,11,10,16,68,0,20,17,1,15,3,60,8,13,26,34],[21,7,14,27,11,16,0,10,19,17,20,1,3,15,68,60,34,8,13,23],[21,7,14,27,0,11,16,10,19,1,20,17,3,15,34,23,8,60,40,68],[21,7,14,0,27,11,16,10,19,23,20,17,40,15,34,8,60,51,68,13],[21,7,14,0,23,11,27,10,16,19,40,20,17,51,15,34,48,8,47,45],[21,7,14,23,0,27,16,40,19,51,65,47,48,45,17,43,41,34,60,42],[7,14,23,0,40,51,19,43,47,65,45,42,41,48,17,34,49,46,50,71],[21,7,14,10,27,11,16,19,20,0,15,1,3,13,68,60,8,53,17,34],[21,7,14,27,10,11,16,19,0,68,20,1,15,3,8,60,13,17,53,34],[21,7,14,27,11,10,16,19,0,20,68,1,15,3,60,8,17,13,34,53],[21,7,14,27,11,10,16,0,19,20,1,3,15,17,68,60,8,13,34,23],[21,7,14,27,11,0,10,16,19,1,20,3,17,15,23,40,8,60,68,34],[21,7,14,0,27,11,10,16,19,23,20,40,17,15,8,51,34,60,48,13],[21,7,27,0,10,11,14,16,34,19,68,17,23,65,15,59,48,53,8,13],[21,7,14,23,0,40,27,16,19,48,51,65,47,45,43,17,42,41,34,60],[7,14,23,0,40,51,47,19,42,43,48,65,45,41,17,49,46,34,71,50]],"solv":9.9,"arp":5.95,"density":{"top20":54,"top10":33,"top3":7},"topComp":{"place_id":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","title":"Accent Dental Center Bothell","arp":1.89}},{"kw":"botox bothell","rank":[21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21],"top":[[83,84,85,86,87,88,89,90,91,92,93,94,95,96],[83,84,85,87,86,88,90,92,89,91,93,94,95,97,96],[83,84,85,87,86,90,92,88,89,91,93,97,94,98,96],[83,84,85,87,90,92,86,89,88,91,93,97,94,98,96],[83,84,85,90,87,92,86,89,88,93,91,97,98,94,96],[84,85,90,92,87,89,86,88,97,93,91,98,94,99,96,100,101],[92,85,90,93,89,97,98,99,102,101],[90,92,97,98,99,101],[92,90,97],[83,84,85,103,87,86,89,90,88,92,91,93,104,94,95,97,96,98,105,100],[83,84,85,103,87,90,86,89,92,88,91,93,104,94,97,95,98,96,105,99],[83,84,85,103,90,87,92,89,86,88,93,91,104,97,94,98,96,99,105,106],[83,84,85,103,90,92,87,89,86,88,93,104,91,97,98,94,96,99,106,105],[83,84,85,103,90,92,87,89,86,88,93,104,97,91,98,94,106,99,96,105],[84,103,85,90,92,87,89,86,88,97,93,104,91,98,94,106,99,96,105,107],[103,85,90,92,89,97,104,93,98,106,99,107,108,109,101],[103,90,92,97,98,104,106,99,107,108,109,101],[103,90,92,97,98,104,106,99,107],[83,84,85,103,89,90,87,92,86,88,93,91,104,95,94,97,110,111,98,96],[83,84,103,85,90,89,92,87,86,88,93,104,91,97,95,110,94,111,98,96],[83,84,103,85,90,92,89,87,86,93,88,104,91,97,110,111,98,94,112,96],[83,84,103,90,85,92,89,87,86,93,88,104,91,97,110,111,98,94,113,96],[83,84,103,90,85,92,89,87,86,93,104,88,97,91,110,98,111,94,113,106],[92,103,90,85,87,93,89,91,84,97,98,111,88,86,94,99,114,106,104,105],[103,85,90,92,89,97,104,93,98,110,111,113,106,99,114,107,108,109,101],[103,90,92,97,98,104,111,110,106,113,99,107,114,109,108,101],[103,90,92,97,98,111,104,110,106,113,99,107],[83,84,103,89,85,90,92,87,93,86,88,104,91,95,97,110,94,111,98,105],[83,84,103,90,85,89,92,87,93,86,104,88,91,97,110,95,111,98,94,112],[83,84,103,90,92,85,89,87,93,86,104,88,91,97,110,111,98,112,94,113],[83,84,90,103,92,85,89,87,93,86,104,88,97,110,91,111,98,112,94,113],[83,84,90,103,92,85,89,87,93,104,86,97,88,110,98,111,91,112,113,106],[84,103,90,92,85,89,87,97,104,86,93,110,88,98,111,91,113,106,112,99],[103,90,85,92,89,97,104,110,98,111,93,113,106,99,112,114,107,108,109,101],[103,90,92,97,98,110,104,111,113,106,99,112,107,114,109,108,101],[103,90,92,97,98,110,111,104,106,113,99,107,109,114,108,112],[83,84,89,103,90,92,93,87,104,86,88,91,95,97,110,111,98,105,94,101],[83,84,103,90,89,92,93,87,104,86,88,97,91,110,95,111,98,112,105,94],[83,90,84,92,103,89,93,104,87,86,88,112,97,110,91,111,98,94,105,113],[83,90,92,103,84,89,112,104,93,87,86,97,88,110,111,98,91,113,94,106],[83,90,92,103,84,89,104,87,93,86,97,110,112,88,98,111,91,113,106,94],[84,103,90,92,89,87,104,97,93,110,86,98,111,88,91,113,112,106,99,94],[103,90,92,89,97,110,104,98,111,93,113,106,99,112,114,107,108,109,101],[103,90,92,97,98,110,111,104,113,106,99,107,114,112,109,108,101],[103,90,92,97,98,110,111,104,106,113,99,107,109,114,108,112],[83,89,103,84,93,90,92,104,86,88,97,91,110,95,101,102,111,98,105,94],[83,103,89,84,90,92,93,104,86,88,97,110,91,101,111,95,98,102,112,105],[83,90,103,92,84,89,93,104,112,86,97,110,88,111,98,91,101,105,102,113],[83,90,92,103,84,89,104,93,112,86,110,97,88,111,98,91,113,106,105,101],[83,90,92,103,84,89,104,93,110,112,97,86,111,98,88,91,113,106,99,105],[103,90,84,92,89,104,110,97,93,111,98,86,88,113,112,91,106,99,114,107],[103,90,92,89,97,110,104,111,98,93,113,106,99,112,114,107,108,109,101],[103,90,92,97,110,98,111,104,113,106,99,107,114,109,108,112,101],[103,90,97,92,98,111,110,104,106,113,99,107,109,114,108,112],[83,89,103,93,90,92,104,101,102,110,97,105,95,111,98,112,113,106,115,99],[83,103,89,90,93,92,104,101,102,110,97,111,98,95,105,112,113,106,115,99],[83,103,90,92,89,104,93,110,97,111,112,101,98,102,105,113,106,99,114,116],[83,103,90,92,89,104,93,110,97,112,111,98,113,101,105,106,102,99,114,107],[83,103,90,92,89,104,93,110,97,111,98,112,113,106,105,114,99,101,107],[103,90,92,89,110,104,97,93,111,98,113,106,112,114,99,107,105,108,101],[103,90,92,110,89,97,104,111,98,93,113,106,114,107,99,112,108,109,101],[103,92,90,97,98,112,111,114,110,106,116,108,113,99,107,104,117,109,118,102],[103,97,90,92,110,98,111,106,113,104,107,109,99,114,108,112],[83,103,93,89,92,90,105,116,112,104,102,101,119,120,97,98,111,114,95,110],[103,83,104,89,93,90,92,101,102,110,97,111,105,98,95,119,116,113,112,106],[103,83,104,90,92,89,93,110,97,111,101,98,116,102,119,105,112,113,106,99],[103,83,90,104,92,89,93,110,97,111,98,119,113,112,105,101,106,102,114,99],[83,103,90,92,104,89,110,93,97,111,98,113,119,106,112,114,105,99,107],[103,92,90,93,112,89,97,114,116,110,98,111,104,119,106,105,108,113,99,107],[103,110,90,92,97,89,104,111,98,93,113,114,106,119,107,99,108,109,112,101],[103,110,90,92,111,97,98,104,113,106,114,107,108,119,99,109,112,121,101],[103,110,97,111,98,90,92,113,106,104,107,109,114,108,99,119,112,117,121],[83,103,89,104,93,90,92,105,110,102,97,101,111,119,98,95,113,106,120,112],[103,83,104,89,93,90,92,110,97,111,101,116,105,102,98,119,95,113,106,112],[103,104,83,90,89,92,93,110,97,116,111,98,119,105,101,102,113,106,112,99],[103,83,104,90,92,89,93,110,97,111,98,119,113,105,106,101,112,114,116,102],[83,103,90,104,92,89,110,93,97,111,98,113,119,106,114,105,99,112,107],[103,110,90,92,104,89,97,111,93,98,113,114,106,119,107,99,105,108,112,109],[110,103,90,92,114,111,97,104,89,98,113,93,106,119,107,99,108,109,112,121],[110,103,111,90,92,97,114,113,98,104,106,107,108,119,99,109,112,121,122,101],[110,103,111,113,97,98,90,92,107,106,104,114,109,108,99,119,112,121,122,117]],"solv":0.0,"arp":21.0,"density":{"top20":40,"top10":28,"top3":12},"topComp":{"place_id":"ChIJYxI3n_IPkFQROmGt8q_VgQ8","title":"West Hill Aesthetics","arp":3.65}},{"kw":"invisalign bothell","rank":[11,7,7,7,7,6,5,5,5,10,7,7,7,6,6,6,5,5,10,8,7,6,5,5,6,5,6,9,9,7,5,5,4,6,5,6,11,10,8,7,6,5,6,6,6,13,7,14,9,7,5,6,7,3,13,15,16,13,8,6,8,8,8,14,14,14,12,8,9,9,8,9,13,14,13,10,9,9,10,9,11],"top":[[56,31,37,10,1,123,12,7,4,13,0,11,14,5,2,9,17,26,16,30],[56,31,37,10,123,7,0,12,13,1,4,11,14,5,9,17,2,26,16,34],[56,31,37,10,123,7,0,13,12,14,11,1,4,5,9,17,26,34,16,2],[56,31,37,123,7,10,0,13,14,12,11,5,4,1,17,9,26,34,16,30],[56,31,37,7,123,10,0,14,13,12,11,5,4,1,17,34,26,9,74,16],[31,56,37,7,123,0,10,14,13,12,11,5,17,4,26,74,34,9,30,16],[31,56,37,7,0,123,10,14,13,11,12,5,17,74,26,34,9,30,16,124],[31,37,7,123,0,14,74,17,26,34,30,16,124,28,58],[31,37,7,123,0,14,74,17,26,34,30,124,28,58],[56,31,37,10,123,1,7,13,11,0,12,14,4,5,17,26,16,9,2,125],[56,31,37,10,123,7,0,13,11,1,14,12,4,17,5,26,16,34,125,9],[56,31,37,123,10,7,0,13,14,11,12,1,17,4,5,34,125,26,16,124],[56,31,37,123,7,10,0,14,13,11,12,17,1,34,125,5,4,26,124,16],[31,56,37,7,123,0,10,14,13,11,12,125,17,34,1,5,26,4,124,74],[31,56,37,7,123,0,10,14,13,11,125,12,17,34,5,74,26,4,124,30],[31,56,37,7,123,0,10,14,13,125,11,12,17,74,34,5,26,30,124,16],[31,37,7,123,0,14,125,74,17,34,26,42,30,16,124,28,58],[31,37,7,123,0,125,14,74,17,42,26,34,30,124,28,58],[56,31,37,10,123,11,1,13,7,0,14,126,12,17,16,4,26,34,124,30],[56,31,37,10,123,7,11,0,13,14,126,1,17,12,34,16,26,124,4,30],[56,31,37,123,10,7,0,14,13,11,126,17,34,1,12,125,124,26,16,30],[56,31,37,123,7,0,10,14,13,126,11,17,34,12,124,125,1,26,16,30],[31,56,37,7,0,123,10,14,126,13,11,17,34,125,124,12,26,1,74,30],[31,56,37,7,0,123,10,126,14,13,125,11,17,34,74,12,124,26,30,28],[31,56,37,7,123,0,10,126,14,13,125,11,74,17,34,12,26,124,30,16],[31,37,7,123,0,126,14,125,74,17,34,26,42,50,30,124,16,51,28,58],[31,37,126,7,123,0,125,14,74,17,50,42,34,26,51,30,124,28,58],[56,31,37,10,11,123,13,7,0,14,1,126,17,16,26,34,12,124,30,125],[56,31,37,10,123,11,7,13,0,14,126,17,34,1,16,124,26,30,12,125],[56,31,37,123,10,7,0,14,11,13,34,17,126,124,26,16,1,28,125,30],[31,56,37,7,0,123,10,14,34,13,11,126,17,124,125,28,26,30,16,1],[31,56,37,7,0,123,10,14,126,34,13,17,11,125,124,74,26,28,58,30],[31,56,37,0,7,123,10,17,13,14,11,16,125,30,126,12,26,4,42,34],[31,56,37,7,123,0,126,10,14,125,74,13,17,11,34,124,26,30,28,42],[31,37,7,123,0,126,14,125,74,17,34,26,42,50,124,30,16,51,28,61],[31,37,126,7,123,0,125,74,14,42,17,50,34,26,51,30,124,28,58],[56,31,11,37,10,123,13,7,127,14,0,16,126,17,26,1,124,30,34,28],[56,31,37,10,123,11,13,7,14,0,17,34,124,16,126,26,30,28,1,125],[56,31,37,123,14,10,7,0,34,17,11,13,124,28,126,30,26,16,125,1],[56,31,37,123,7,14,0,34,10,17,124,13,11,28,126,58,30,26,125,16],[31,56,37,7,123,0,14,10,34,17,126,13,58,124,11,125,28,74,26,30],[31,56,37,7,0,123,14,10,126,34,13,17,125,74,11,124,58,26,28,30],[31,56,37,7,123,0,126,10,14,74,125,13,17,34,11,124,26,30,42,28],[31,37,7,123,126,0,74,125,14,17,34,42,26,50,124,30,51,28,16,58],[31,37,126,7,123,0,74,125,14,42,50,17,51,34,26,30,124,28,43,58],[56,10,31,11,37,13,123,16,7,127,14,26,0,17,126,30,124,34,1,28],[56,31,10,37,123,13,0,11,7,17,16,30,26,14,1,28,34,125,2,126],[56,31,123,37,124,14,17,10,34,7,28,11,30,0,13,26,16,126,125,1],[56,31,37,123,124,7,17,34,0,14,10,28,13,11,30,126,26,125,16,74],[31,56,37,123,7,14,0,34,10,17,124,126,13,28,58,11,125,74,30,26],[31,56,37,7,0,123,14,10,126,34,74,17,13,125,124,11,28,26,30,58],[31,37,56,7,123,0,74,126,10,14,125,13,17,34,11,124,42,26,30,28],[37,31,74,123,7,126,0,125,14,17,42,34,50,26,124,51,30,28,16,58],[37,31,0,7,125,123,126,42,17,51,74,14,50,30,43,26,47,34,28,124],[56,10,11,31,37,13,123,16,26,7,14,30,0,17,126,124,34,28,125,1],[56,31,10,37,123,11,13,16,30,26,17,14,7,124,0,28,34,126,125,1],[56,31,37,123,124,10,17,14,30,26,28,34,11,7,13,0,16,126,125,74],[56,31,37,123,124,14,17,34,10,7,28,30,0,13,11,126,26,125,16,74],[56,31,37,123,7,14,10,0,17,34,124,126,13,28,74,11,125,30,26,16],[56,31,37,123,7,0,10,14,74,126,17,34,125,13,124,11,26,30,28,16],[37,31,56,74,123,7,126,0,10,14,125,13,17,34,11,42,124,26,30,50],[37,31,74,126,123,7,125,0,14,42,17,50,34,51,26,124,30,28,16,43],[37,31,74,126,125,123,7,0,42,14,50,51,17,26,34,30,124,28,43,47],[56,10,31,37,13,16,11,123,26,7,14,30,126,0,17,124,125,34,28,1],[56,31,37,10,123,13,16,26,11,30,7,14,17,0,126,124,34,28,125,1],[56,31,37,123,10,30,26,17,13,14,7,11,124,0,16,28,126,34,125,74],[56,31,37,123,10,14,17,7,30,124,13,0,126,34,28,11,26,125,16,74],[56,31,37,123,10,7,14,0,126,17,13,34,124,74,125,11,30,28,26,16],[56,37,31,123,7,74,10,126,0,14,125,13,17,34,11,124,26,30,42,28],[37,56,31,74,123,126,7,10,0,125,14,13,42,17,11,34,124,26,50,30],[37,31,74,126,123,125,7,0,42,14,50,17,51,34,26,124,30,16,28,43],[37,31,74,126,125,42,123,7,0,14,50,51,17,26,34,30,43,124,28,47],[56,10,31,37,13,123,11,16,7,26,126,14,0,30,17,125,124,34,28,1],[56,31,37,10,123,13,11,26,7,16,14,126,30,0,17,124,125,34,28,74],[56,31,37,10,123,13,7,14,126,26,30,11,0,17,16,124,125,34,28,74],[56,37,31,123,10,7,13,126,14,0,17,11,30,26,125,124,34,74,16,28],[56,37,31,123,10,7,126,14,0,13,74,125,17,11,124,30,26,34,16,28],[56,37,31,123,10,126,74,7,0,125,14,13,17,11,26,34,42,124,30,16],[37,56,31,74,126,123,125,10,7,0,14,13,42,17,11,50,51,26,34,30],[37,31,74,126,125,123,42,7,0,14,50,51,17,26,34,30,124,16,28,43],[37,31,74,126,125,42,123,7,51,50,0,14,17,26,43,30,34,47,124,28]],"solv":1.2,"arp":8.14,"density":{"top20":33,"top10":25,"top3":9},"topComp":{"place_id":"ChIJ09kb9EMOkFQRbzSU6beBkgg","title":"Bothell Orthodontics","arp":1.79}}],"L":[{"t":"Bothell Family Dentistry","r":4.9,"n":218,"lat":47.769578,"lng":-122.185717,"mi":0,"brg":null,"solv":34.8,"arp":8.27},{"t":"Bothell Modern Dentistry","r":4.8,"n":108,"lat":47.779694,"lng":-122.219567,"mi":1.72,"brg":"NW","solv":4.2,"arp":17.12},{"t":"Canyon Park Dental","r":4.7,"n":69,"lat":47.789957,"lng":-122.214882,"mi":1.95,"brg":"NW","solv":1.0,"arp":19.01},{"t":"Bothell Family Dental Care","r":5,"n":13,"lat":47.780105,"lng":-122.219068,"mi":1.71,"brg":"NW","solv":0.7,"arp":18.73},{"t":"Hamamoto Dentistry","r":4.7,"n":313,"lat":47.792697,"lng":-122.212181,"mi":2.01,"brg":"NW","solv":0.2,"arp":19.28},{"t":"Crystal Springs Dental","r":4.8,"n":391,"lat":47.803762,"lng":-122.209129,"mi":2.6,"brg":"NW","solv":3.0,"arp":19.11},{"t":"Beautiful Smiles Denture and Dental Clinic","r":4.6,"n":56,"lat":47.78993,"lng":-122.214876,"mi":1.95,"brg":"NW","solv":0.0,"arp":20.94},{"t":"Accent Dental Center Bothell","r":4.8,"n":247,"lat":47.768652,"lng":-122.186321,"mi":0.07,"brg":"SW","solv":45.4,"arp":7.9},{"t":"Hello Kids Dentistry","r":4.9,"n":542,"lat":47.766514,"lng":-122.209939,"mi":1.14,"brg":"W","solv":2.5,"arp":17.18},{"t":"Sunshine Dental Care","r":4.9,"n":62,"lat":47.797738,"lng":-122.211169,"mi":2.27,"brg":"NW","solv":0.0,"arp":20.09},{"t":"Smile Sanctuary\u00ae","r":4.9,"n":371,"lat":47.761309,"lng":-122.211074,"mi":1.31,"brg":"SW","solv":2.7,"arp":12.92},{"t":"Crisafulli Dental","r":4.7,"n":378,"lat":47.765533,"lng":-122.20862,"mi":1.1,"brg":"W","solv":5.4,"arp":13.13},{"t":"Noreen Goldwire DDS","r":4.9,"n":429,"lat":47.79566,"lng":-122.211835,"mi":2.17,"brg":"NW","solv":0.0,"arp":20.21},{"t":"Bothell Smiles Family Dentistry","r":4.8,"n":70,"lat":47.761343,"lng":-122.211038,"mi":1.3,"brg":"SW","solv":2.0,"arp":14.96},{"t":"Annigan Dental","r":4.7,"n":144,"lat":47.765884,"lng":-122.191261,"mi":0.36,"brg":"SW","solv":30.4,"arp":9.36},{"t":"Creekside Dental","r":5,"n":22,"lat":47.767304,"lng":-122.209993,"mi":1.14,"brg":"W","solv":0.5,"arp":18.97},{"t":"Bothell Dental Care","r":4.7,"n":96,"lat":47.761866,"lng":-122.205893,"mi":1.08,"brg":"SW","solv":12.1,"arp":12.85},{"t":"Beardslee Dental","r":4.8,"n":114,"lat":47.764198,"lng":-122.193752,"mi":0.53,"brg":"SW","solv":4.7,"arp":12.58},{"t":"Dr. Eric Weller, DDS","r":5,"n":1,"lat":47.789867,"lng":-122.215731,"mi":1.97,"brg":"NW","solv":0.0,"arp":20.98},{"t":"Northshore Dental Center","r":4.9,"n":21,"lat":47.761389,"lng":-122.20122,"mi":0.91,"brg":"SW","solv":0.7,"arp":15.99},{"t":"Ever Bright Digital Dental Center","r":4.8,"n":24,"lat":47.765529,"lng":-122.208664,"mi":1.1,"brg":"W","solv":0.5,"arp":18.71},{"t":"Dr. Jude Brooks Emergency Dentist Bothell","r":5,"n":2,"lat":47.760939,"lng":-122.201924,"mi":0.96,"brg":"SW","solv":19.5,"arp":15.13},{"t":"Norman Bolosan, DDS, PC","r":4.7,"n":15,"lat":47.769557,"lng":-122.185582,"mi":0.01,"brg":"E","solv":0.0,"arp":19.38},{"t":"Pearl Dental Center","r":5,"n":56,"lat":47.758321,"lng":-122.167288,"mi":1.15,"brg":"SE","solv":4.7,"arp":17.7},{"t":"Bothell Everett Kids Dentistry","r":4.8,"n":159,"lat":47.808808,"lng":-122.208828,"mi":2.91,"brg":"N","solv":0.0,"arp":20.99},{"t":"Yerra Family Dentistry","r":5,"n":161,"lat":47.76204,"lng":-122.129658,"mi":2.65,"brg":"E","solv":0.0,"arp":20.72},{"t":"Joseph M Hanrahan DDS","r":5,"n":133,"lat":47.761189,"lng":-122.201056,"mi":0.92,"brg":"SW","solv":0.2,"arp":17.12},{"t":"Bothell Dental Clinic","r":3.8,"n":9,"lat":47.76244,"lng":-122.205624,"mi":1.05,"brg":"SW","solv":1.5,"arp":17.25},{"t":"Bothell Pediatric Dentistry","r":4.9,"n":62,"lat":47.764176,"lng":-122.193866,"mi":0.53,"brg":"SW","solv":0.2,"arp":19.17},{"t":"Bothell Oral, Maxillofacial & Implant Surgery","r":4.8,"n":176,"lat":47.764241,"lng":-122.193992,"mi":0.53,"brg":"SW","solv":0.0,"arp":20.45},{"t":"Dr. Ashley Schwark Ulrich, DDS","r":5,"n":25,"lat":47.76156,"lng":-122.197443,"mi":0.78,"brg":"SW","solv":0.2,"arp":18.48},{"t":"Bothell Orthodontics","r":4.7,"n":27,"lat":47.771787,"lng":-122.180989,"mi":0.27,"brg":"NE","solv":19.8,"arp":16.86},{"t":"Sobczak Wencel Dentistry","r":4.7,"n":15,"lat":47.76058,"lng":-122.201442,"mi":0.96,"brg":"SW","solv":0.2,"arp":20.52},{"t":"Accent Dental Center: Dr. Isabel Perez, DDS, PS","r":5,"n":2,"lat":47.768593,"lng":-122.186167,"mi":0.07,"brg":"S","solv":0.0,"arp":20.87},{"t":"Dr. Henry Hsue","r":5,"n":1,"lat":47.765884,"lng":-122.191261,"mi":0.36,"brg":"SW","solv":0.2,"arp":18.07},{"t":"Patterson Dental","r":3.1,"n":10,"lat":47.793664,"lng":-122.1965,"mi":1.74,"brg":"N","solv":0.0,"arp":20.99},{"t":"Viridian Oral & Maxillofacial Surgery - Woodinville","r":5,"n":65,"lat":47.761989,"lng":-122.129254,"mi":2.67,"brg":"E","solv":0.0,"arp":20.94},{"t":"Bruchal Orthodontics","r":5,"n":198,"lat":47.75843,"lng":-122.167198,"mi":1.15,"brg":"SE","solv":18.0,"arp":16.78},{"t":"THE GUM DENTIST LLC","r":null,"n":null,"lat":47.802214,"lng":-122.182589,"mi":2.26,"brg":"N","solv":0.0,"arp":20.99},{"t":"Boriotti and Schwark","r":5,"n":1,"lat":47.761588,"lng":-122.197391,"mi":0.77,"brg":"SW","solv":0.2,"arp":20.77},{"t":"Woodinville Woodin Creek Dental","r":4.9,"n":389,"lat":47.756213,"lng":-122.153043,"mi":1.77,"brg":"SE","solv":1.5,"arp":18.75},{"t":"Woodinville Modern Dentistry","r":4.8,"n":280,"lat":47.754827,"lng":-122.148869,"mi":1.99,"brg":"SE","solv":0.2,"arp":19.65},{"t":"Signature Smiles","r":4.9,"n":277,"lat":47.75429,"lng":-122.161785,"mi":1.53,"brg":"SE","solv":1.7,"arp":19.04},{"t":"Gentle Dental Woodinville","r":4.2,"n":130,"lat":47.754243,"lng":-122.161153,"mi":1.55,"brg":"SE","solv":0.0,"arp":20.23},{"t":"Saman Saghafi, DDS, MSC, MAGD, FICOI","r":5,"n":27,"lat":47.755092,"lng":-122.151552,"mi":1.87,"brg":"SE","solv":0.0,"arp":20.99},{"t":"Oasis Family Dentistry","r":4.9,"n":214,"lat":47.753397,"lng":-122.15973,"mi":1.64,"brg":"SE","solv":0.0,"arp":19.96},{"t":"Woodinville Family Dental","r":4.8,"n":182,"lat":47.753922,"lng":-122.15888,"mi":1.65,"brg":"SE","solv":1.0,"arp":19.94},{"t":"Advanced Care Dentistry","r":4.8,"n":325,"lat":47.75417,"lng":-122.158161,"mi":1.66,"brg":"SE","solv":0.2,"arp":20.01},{"t":"Wagner Family Dentistry","r":4.9,"n":205,"lat":47.753055,"lng":-122.171546,"mi":1.32,"brg":"SE","solv":1.0,"arp":19.71},{"t":"Sustineri Dental | Biological & Holistic Dentistry","r":4.5,"n":107,"lat":47.754018,"lng":-122.158289,"mi":1.66,"brg":"SE","solv":0.0,"arp":20.72},{"t":"Koczarski Family & Aesthetic Dentistry","r":4.9,"n":247,"lat":47.751166,"lng":-122.151769,"mi":2.02,"brg":"SE","solv":0.0,"arp":20.5},{"t":"Eckland Family Dentistry","r":4.8,"n":73,"lat":47.753225,"lng":-122.158731,"mi":1.69,"brg":"SE","solv":0.0,"arp":20.01},{"t":"Bothell Endodontics","r":4.8,"n":66,"lat":47.76681,"lng":-122.209922,"mi":1.14,"brg":"W","solv":0.0,"arp":20.88},{"t":"Columbia Dental Group \ucf5c\ub7fc\ube44\uc544 \uc885\ud569 \uce58\uacfc","r":4.2,"n":10,"lat":47.765598,"lng":-122.208664,"mi":1.1,"brg":"W","solv":0.0,"arp":20.73},{"t":"Dr. Gabriel Malouf, DDS","r":4.8,"n":97,"lat":47.754019,"lng":-122.158291,"mi":1.66,"brg":"SE","solv":0.0,"arp":20.92},{"t":"Dr. Wendy Crisafulli","r":3.7,"n":3,"lat":47.765533,"lng":-122.20862,"mi":1.1,"brg":"W","solv":0.0,"arp":20.96},{"t":"Richard Chan Orthodontics","r":4.9,"n":341,"lat":47.766426,"lng":-122.209851,"mi":1.14,"brg":"W","solv":15.6,"arp":17.93},{"t":"Dr. Brian Moody","r":null,"n":null,"lat":47.767304,"lng":-122.209993,"mi":1.14,"brg":"W","solv":0.0,"arp":21.0},{"t":"Dr. Fernando Caballero, DDS","r":null,"n":null,"lat":47.768593,"lng":-122.186167,"mi":0.07,"brg":"S","solv":0.0,"arp":20.52},{"t":"Dr. John T. Kim, DDS","r":5,"n":2,"lat":47.76552,"lng":-122.20869,"mi":1.1,"brg":"W","solv":0.0,"arp":20.92},{"t":"Dr. Blake Herbison, DDS","r":4.8,"n":16,"lat":47.76244,"lng":-122.205624,"mi":1.05,"brg":"SW","solv":0.0,"arp":20.32},{"t":"Bothell Landing Dental - Casey Carmody, DDS","r":4.7,"n":19,"lat":47.76061,"lng":-122.201413,"mi":0.96,"brg":"SW","solv":0.0,"arp":19.19},{"t":"Dr. Brian Rubens","r":5,"n":1,"lat":47.764199,"lng":-122.194001,"mi":0.53,"brg":"SW","solv":0.0,"arp":20.92},{"t":"Dr. Ara G. Carmody, DDS","r":5,"n":1,"lat":47.763876,"lng":-122.194065,"mi":0.55,"brg":"SW","solv":0.0,"arp":20.91},{"t":"Dmitry Peysakhov, DMD","r":5,"n":2,"lat":47.764199,"lng":-122.194001,"mi":0.53,"brg":"SW","solv":0.0,"arp":21.0},{"t":"Dr. Hassan Jazaeri","r":5,"n":1,"lat":47.758321,"lng":-122.167288,"mi":1.15,"brg":"SE","solv":0.2,"arp":20.46},{"t":"Dr. Gabriela Aluas DDS","r":5,"n":1,"lat":47.762326,"lng":-122.205978,"mi":1.06,"brg":"SW","solv":0.0,"arp":20.96},{"t":"Dr. Karen Wang","r":5,"n":1,"lat":47.761343,"lng":-122.211038,"mi":1.3,"brg":"SW","solv":0.0,"arp":20.96},{"t":"Bothell Landing Dental","r":5,"n":1,"lat":47.76058,"lng":-122.201442,"mi":0.96,"brg":"SW","solv":0.0,"arp":20.37},{"t":"Dr. Diane Vo","r":null,"n":null,"lat":47.761383,"lng":-122.201269,"mi":0.92,"brg":"SW","solv":0.0,"arp":21.0},{"t":"Dr. Ashley Ulrich","r":5,"n":2,"lat":47.761588,"lng":-122.197391,"mi":0.77,"brg":"SW","solv":0.0,"arp":20.95},{"t":"Jerald D. Bates DDS, PLLC","r":4.9,"n":113,"lat":47.754286,"lng":-122.158376,"mi":1.65,"brg":"SE","solv":0.0,"arp":20.94},{"t":"Lee Albert DDS","r":null,"n":null,"lat":47.759086,"lng":-122.202058,"mi":1.05,"brg":"SW","solv":0.0,"arp":20.98},{"t":"Wencel Margaret L DDS","r":null,"n":null,"lat":47.760607,"lng":-122.201423,"mi":0.96,"brg":"SW","solv":0.0,"arp":21.0},{"t":"Dr. Trina Bruchal","r":null,"n":null,"lat":47.75843,"lng":-122.167198,"mi":1.15,"brg":"SE","solv":1.7,"arp":19.77},{"t":"HealthPoint Bothell","r":3.7,"n":428,"lat":47.760737,"lng":-122.200735,"mi":0.93,"brg":"SW","solv":0.0,"arp":20.92},{"t":"Ken Wu, DDS","r":5,"n":1,"lat":47.754212,"lng":-122.161748,"mi":1.54,"brg":"SE","solv":0.0,"arp":20.98},{"t":"Woodinville Periodontics","r":4.8,"n":35,"lat":47.752953,"lng":-122.158614,"mi":1.7,"brg":"SE","solv":0.0,"arp":20.99},{"t":"Plaza at 175th","r":4.3,"n":126,"lat":47.753769,"lng":-122.161026,"mi":1.58,"brg":"SE","solv":0.0,"arp":21.0},{"t":"David A Killen DDS","r":4.9,"n":173,"lat":47.808825,"lng":-122.20576,"mi":2.86,"brg":"N","solv":0.0,"arp":20.99},{"t":"Livewell Animal Urgent Care of Bothell","r":4.9,"n":96,"lat":47.766726,"lng":-122.192042,"mi":0.35,"brg":"SW","solv":0.0,"arp":20.99},{"t":"Molina Healthcare of Washington","r":1.6,"n":311,"lat":47.793461,"lng":-122.196703,"mi":1.72,"brg":"N","solv":0.0,"arp":21.0},{"t":"Dr. Yoo-Lee Yea, DDS","r":5,"n":1,"lat":47.763876,"lng":-122.194068,"mi":0.55,"brg":"SW","solv":0.0,"arp":21.0},{"t":"Radiance Skin and Laser","r":5,"n":500,"lat":47.780029,"lng":-122.22014,"mi":1.75,"brg":"NW","solv":11.1,"arp":18.8},{"t":"CK Aesthetics","r":5,"n":29,"lat":47.789837,"lng":-122.217106,"mi":2.02,"brg":"NW","solv":6.9,"arp":19.37},{"t":"RejuvenationMD\u00ae","r":4.8,"n":127,"lat":47.797075,"lng":-122.211242,"mi":2.24,"brg":"NW","solv":4.2,"arp":19.8},{"t":"Trudeau Aesthetics","r":5,"n":12,"lat":47.790062,"lng":-122.215858,"mi":1.99,"brg":"NW","solv":0.0,"arp":19.94},{"t":"Kiss Aesthetics","r":5,"n":25,"lat":47.792827,"lng":-122.213339,"mi":2.05,"brg":"NW","solv":0.0,"arp":19.95},{"t":"MIMoMD","r":4.6,"n":11,"lat":47.790317,"lng":-122.214605,"mi":1.96,"brg":"NW","solv":0.0,"arp":20.1},{"t":"Sonam Health And Aesthetics","r":5,"n":12,"lat":47.764142,"lng":-122.207788,"mi":1.09,"brg":"W","solv":1.5,"arp":18.63},{"t":"West Hill Aesthetics","r":5,"n":16,"lat":47.766593,"lng":-122.19142,"mi":0.34,"brg":"SW","solv":11.4,"arp":17.53},{"t":"Hungry Esthetics","r":5,"n":71,"lat":47.790168,"lng":-122.214444,"mi":1.95,"brg":"NW","solv":0.0,"arp":20.3},{"t":"SKIM Medical Spa","r":5,"n":83,"lat":47.766655,"lng":-122.191305,"mi":0.33,"brg":"SW","solv":5.7,"arp":17.76},{"t":"Balance Medical Aesthetics","r":5,"n":34,"lat":47.760972,"lng":-122.208793,"mi":1.22,"brg":"SW","solv":0.2,"arp":19.05},{"t":"Hello Nurse, LLC","r":4.9,"n":43,"lat":47.790061,"lng":-122.216031,"mi":1.99,"brg":"NW","solv":0.0,"arp":20.68},{"t":"Timeless Treatment, PLLC","r":5,"n":66,"lat":47.776611,"lng":-122.236488,"mi":2.4,"brg":"W","solv":0.0,"arp":20.73},{"t":"Skin Addiction","r":5,"n":2,"lat":47.792685,"lng":-122.213726,"mi":2.06,"brg":"NW","solv":0.0,"arp":20.85},{"t":"KOCO Medical Aesthetics","r":5,"n":123,"lat":47.758759,"lng":-122.151081,"mi":1.77,"brg":"SE","solv":1.2,"arp":18.64},{"t":"Aleris Aesthetics","r":5,"n":93,"lat":47.757983,"lng":-122.152471,"mi":1.74,"brg":"SE","solv":0.0,"arp":19.24},{"t":"Nordic Clinic","r":4.9,"n":306,"lat":47.761943,"lng":-122.129363,"mi":2.67,"brg":"E","solv":0.0,"arp":20.26},{"t":"Royal beauty llc","r":5,"n":118,"lat":47.792685,"lng":-122.213726,"mi":2.06,"brg":"NW","solv":0.0,"arp":20.99},{"t":"Indigo Esthetics","r":4.6,"n":11,"lat":47.760406,"lng":-122.204342,"mi":1.07,"brg":"SW","solv":0.0,"arp":20.49},{"t":"Optimal BioHealth","r":4.9,"n":42,"lat":47.760207,"lng":-122.206501,"mi":1.16,"brg":"SW","solv":0.0,"arp":20.72},{"t":"LUXE Aesthetics and Wellness","r":5,"n":91,"lat":47.755739,"lng":-122.197831,"mi":1.11,"brg":"SW","solv":14.3,"arp":17.64},{"t":"Bayer Beauty Esthetics","r":5,"n":24,"lat":47.755739,"lng":-122.197831,"mi":1.11,"brg":"SW","solv":1.2,"arp":18.75},{"t":"Glow Skincare & Wax","r":5,"n":42,"lat":47.75517,"lng":-122.214459,"mi":1.66,"brg":"SW","solv":0.0,"arp":20.63},{"t":"Pure MedSpa","r":4.9,"n":98,"lat":47.756295,"lng":-122.153285,"mi":1.76,"brg":"SE","solv":0.0,"arp":20.07},{"t":"EWA","r":5,"n":8,"lat":47.75429,"lng":-122.161785,"mi":1.53,"brg":"SE","solv":0.0,"arp":20.46},{"t":"Oasis Medspa & Salon","r":4.4,"n":176,"lat":47.754243,"lng":-122.162199,"mi":1.52,"brg":"SE","solv":0.0,"arp":20.65},{"t":"Glowlight Med Spa","r":5,"n":5,"lat":47.756532,"lng":-122.154162,"mi":1.72,"brg":"SE","solv":0.0,"arp":20.69},{"t":"FNDN Wellness","r":4.9,"n":40,"lat":47.753621,"lng":-122.171548,"mi":1.28,"brg":"SE","solv":1.7,"arp":19.19},{"t":"TLC SKINCARE CLINIC","r":5,"n":138,"lat":47.752953,"lng":-122.158623,"mi":1.7,"brg":"SE","solv":0.5,"arp":19.49},{"t":"MJ Brow & Skin","r":4.9,"n":625,"lat":47.766719,"lng":-122.191182,"mi":0.32,"brg":"SW","solv":0.0,"arp":20.25},{"t":"Sima Medical & Cosmetic Clinic","r":4.6,"n":33,"lat":47.753622,"lng":-122.161202,"mi":1.58,"brg":"SE","solv":0.0,"arp":20.07},{"t":"Pura Vida Hydration & Aesthetics","r":4.9,"n":47,"lat":47.753621,"lng":-122.171548,"mi":1.28,"brg":"SE","solv":0.0,"arp":20.43},{"t":"EvergreenHealth Primary Care, Lakeshore Bothell","r":2.8,"n":90,"lat":47.762352,"lng":-122.206523,"mi":1.09,"brg":"SW","solv":0.0,"arp":20.99},{"t":"GLAM","r":5,"n":155,"lat":47.755739,"lng":-122.197831,"mi":1.11,"brg":"SW","solv":0.0,"arp":20.83},{"t":"InSpa - Woodinville","r":4.6,"n":188,"lat":47.757613,"lng":-122.156979,"mi":1.57,"brg":"SE","solv":0.0,"arp":20.98},{"t":"The Babe Cave","r":5,"n":62,"lat":47.764161,"lng":-122.144272,"mi":1.96,"brg":"E","solv":0.0,"arp":21.0},{"t":"The Skin Club","r":5,"n":36,"lat":47.733581,"lng":-122.196445,"mi":2.53,"brg":"S","solv":0.0,"arp":20.69},{"t":"Momo\u2019s Skincare Retreat","r":5,"n":18,"lat":47.755467,"lng":-122.221739,"mi":1.93,"brg":"SW","solv":0.0,"arp":20.98},{"t":"Groove Esthetics","r":5,"n":14,"lat":47.733608,"lng":-122.196497,"mi":2.53,"brg":"S","solv":0.0,"arp":20.97},{"t":"SpaBeautyMD","r":5,"n":15,"lat":47.730088,"lng":-122.174534,"mi":2.77,"brg":"S","solv":0.0,"arp":20.99},{"t":"Fey & Grey Orthodontist","r":4.3,"n":18,"lat":47.764135,"lng":-122.193926,"mi":0.53,"brg":"SW","solv":0.2,"arp":17.79},{"t":"Grey Kristina A. DDS","r":2,"n":1,"lat":47.764154,"lng":-122.193897,"mi":0.53,"brg":"SW","solv":0.0,"arp":20.01},{"t":"Woodinville Orthodontics","r":4.7,"n":117,"lat":47.754194,"lng":-122.158394,"mi":1.65,"brg":"SE","solv":0.0,"arp":19.7},{"t":"Soleil Orthodontics","r":4.9,"n":198,"lat":47.751114,"lng":-122.151953,"mi":2.02,"brg":"SE","solv":0.7,"arp":19.29},{"t":"Dr. Michelle Ament","r":null,"n":null,"lat":47.767391,"lng":-122.21003,"mi":1.14,"brg":"W","solv":0.0,"arp":20.94}],"full":{"emergency dentist bothell|4|4":[[7,1],[21,2],[0,3],[14,4],[27,5],[10,6],[11,7],[34,8],[17,9],[16,10],[19,11],[1,12],[68,13],[3,14],[4,15],[15,16],[22,17],[29,18],[8,19],[2,20]],"emergency dentist bothell|6|2":[[21,1],[7,2],[14,3],[19,4],[27,5],[11,6],[16,7],[10,8],[68,9],[0,10],[17,11],[20,12],[34,13],[1,14],[15,15],[60,16],[3,17],[8,18],[26,19],[28,20]]},"board":[7,14,31,21,37,56,103,16,90,83,84,92,11,17],"metrics":{"solv":34.8,"arp":8.27,"position":2,"field_size":128,"competitors_in_top20":127,"competitors_ever_top3":50,"band":"present"},"cost":0.81,"profiles":{"7":{"primary_category":"Dentist","other_categories":["Cosmetic dentist","Dental clinic","Dental hygienist","Dental implants periodontist","Dental implants provider","Emergency dental service","Endodontist","Periodontist","Teeth whitening service"],"photos":15,"sampled":50,"replied":10,"reply_rate":20.0,"new_90d":11,"new_90d_floor":false},"0":{"primary_category":"Dentist","other_categories":["Cosmetic dentist","Dental clinic","Dental implants provider","Teeth whitening service"],"photos":51,"sampled":50,"replied":41,"reply_rate":82.0,"new_90d":14,"new_90d_floor":false},"14":{"primary_category":"Dentist","other_categories":["Cosmetic dentist","Dental clinic","Dental implants provider","Denture care center","Emergency dental service"],"photos":39,"sampled":50,"replied":42,"reply_rate":84.0,"new_90d":7,"new_90d_floor":false},"16":{"primary_category":"Dentist","other_categories":[],"photos":11,"sampled":50,"replied":2,"reply_rate":4.0,"new_90d":11,"new_90d_floor":false}},"profile":{"primary_category":"Dentist","other_categories":["Cosmetic dentist","Dental clinic","Dental implants provider","Teeth whitening service"],"photos":51,"sampled":50,"replied":41,"reply_rate":82.0,"new_90d":14,"new_90d_floor":false},"profileCost":0.0516,"twice":{"a":[10,7,5,5,5,4,4,4,3,8,8,5,4,3,4,1,4,2,7,6,4,3,4,4,3,3,3,7,5,4,4,4,2,4,2,2,9,6,5,4,2,4,4,1,3,9,3,5,4,4,4,4,4,3,11,9,7,4,4,4,4,4,3,11,8,7,5,4,4,4,4,4,7,7,6,6,4,4,2,5,4],"b":[10,7,5,5,5,3,4,4,3,8,8,4,4,4,4,4,3,2,4,6,3,4,4,4,4,3,2,8,5,5,4,4,4,4,4,3,9,6,5,4,4,2,4,4,3,9,8,5,4,4,4,4,4,3,11,9,7,4,4,4,4,1,3,11,8,7,4,4,4,4,4,4,7,7,6,6,4,4,4,5,4]},"snapComp":[{"t":"Norman Bolosan, DDS, PC","pid":"ChIJV1CyUvUOkFQROxMyW5CP9FY","r":4.7,"n":15,"lat":47.769557,"lng":-122.1855818},{"t":"Accent Dental Center Bothell","pid":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","r":4.8,"n":247,"lat":47.7686516,"lng":-122.1863214},{"t":"Dr. Fernando Caballero, DDS","pid":"ChIJEQQv6EMOkFQRRUcY1zA3cuw","r":null,"n":null,"lat":47.7685933,"lng":-122.18616709999999},{"t":"Accent Dental Center: Dr. Isabel Perez, DDS, PS","pid":"ChIJEQQv6EMOkFQRm8bs3KMXxKA","r":5,"n":2,"lat":47.7685933,"lng":-122.18616709999999},{"t":"Annigan Dental","pid":"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns","r":4.7,"n":144,"lat":47.765884299999996,"lng":-122.19126139999999},{"t":"Beardslee Dental","pid":"ChIJ72xfL-QPkFQRuS35wXhbSdg","r":4.8,"n":114,"lat":47.7641978,"lng":-122.19375199999999},{"t":"Northshore Dental Center","pid":"ChIJbZwxG2kOkFQRgYkIEQc3hOs","r":4.9,"n":21,"lat":47.7613895,"lng":-122.20121979999999},{"t":"Bothell Dental Care","pid":"ChIJNaK6cVYPkFQRHdVKvg_p5ec","r":4.7,"n":96,"lat":47.7618659,"lng":-122.20589349999999}],"scanned":"Oct 27, 2026"};</script>
+<script>/* Grid Scan v2 mockups: shared maths over the real Bothell scan #2 (window.GSDATA). */
+(function () {
+  const D = window.GSDATA;
+  const G = (window.GS = {});
+  G.D = D; G.P = D.practice; G.L = D.L; G.OWN = D.practice.i;
+  G.KW = D.kw.map((k) => k.kw);
+  G.K = Object.fromEntries(D.kw.map((k) => [k.kw, k]));
+  G.idx = (name) => D.L.findIndex((l) => l.t === name);
+  G.rankOf = (kk, n, i) => (i === G.OWN ? kk.rank[n] : (kk.top[n].indexOf(i) + 1) || 21);
+  G.top3 = (kk) => kk.rank.filter((v) => v <= 3).length;
+  G.first = (kk) => kk.rank.filter((v) => v === 1).length;
+  G.avgRank = (kk) => kk.rank.reduce((a, v) => a + v, 0) / 81;
+  G.kOf5 = Array.from({ length: 81 }, (_, n) => D.kw.filter((kk) => kk.rank[n] <= 3).length);
+  G.firstCount = (kk, i) => kk.top.filter((t) => t[0] === i).length;
+  G.top3Count = (kk, i) => kk.top.filter((t) => t.slice(0, 3).includes(i)).length;
+  G.short = { 'dentist near me': 'near me', 'dentist in bothell': 'in bothell', 'emergency dentist bothell': 'emergency', 'botox bothell': 'botox', 'invisalign bothell': 'invisalign' };
+  /* rows: 0 = north; cols: 0 = west; 0.25 mi apart, office at (4,4) */
+  G.dir = (n) => {
+    const i = Math.floor(n / 9); const j = n % 9;
+    const no = (4 - i) * 0.25; const e = (j - 4) * 0.25; const d = Math.hypot(no, e);
+    if (d < 0.01) return 'at the office';
+    const names = ['east', 'north-east', 'north', 'north-west', 'west', 'south-west', 'south', 'south-east'];
+    const a = Math.round(Math.atan2(no, e) / (Math.PI / 4));
+    const mi = d < 0.3 ? d.toFixed(2).replace(/0$/, '') : d.toFixed(1).replace(/\.0$/, '');
+    return `${mi} mi ${names[(a + 8) % 8]}`;
+  };
+  G.ord = (v) => (v > 20 ? 'not in top 20' : `${v}${v % 10 === 1 && v !== 11 ? 'st' : v % 10 === 2 && v !== 12 ? 'nd' : v % 10 === 3 && v !== 13 ? 'rd' : 'th'}`);
+  G.stars = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} from ${FL.fmt(l.n)} review${l.n === 1 ? '' : 's'}`);
+  G.starsShort = (l) => (l.r == null ? 'no reviews' : `${Number(l.r).toFixed(1)} · ${FL.fmt(l.n)}`);
+  G.trunc = (s, n) => (s.length > n ? `${s.slice(0, n - 1).trimEnd()}…` : s);
+  /* read order: rings out from the office (the order the scan reads points) */
+  G.readOrder = Array.from({ length: 81 }, (_, n) => n).sort((a, b) => {
+    const r = (n) => { const i = Math.floor(n / 9) - 4; const j = (n % 9) - 4; return Math.hypot(i, j) + (Math.atan2(i, j) + Math.PI) / 50; };
+    return r(a) - r(b);
+  });
+  G.readPos = new Array(81); G.readOrder.forEach((n, k) => { G.readPos[n] = k; });
+  G.mi = (l) => (l.mi == null ? '' : `${l.mi} mi`);
+})();
+</script>
+<style>/* gs2 Story: one persistent map, tiles keyed by point, a reserved readout panel beside it. */
+.mock-bar{background:#F2F3F5;border-bottom:1px solid #E4E7EC;color:#475467;font:12px/1.5 Inter,sans-serif;padding:8px 20px}
+.mock-bar b{color:#1D2939}
+.mock-bar ul{margin:2px 0 0;padding-left:18px}
+.mock-bar .ep{display:inline-block;background:#E4E7EC;border-radius:4px;padding:0 6px;font:600 11px 'JetBrains Mono',monospace;color:#344054}
+.gs-story{display:grid;gap:44px;grid-template-columns:minmax(0,1fr) 612px}
+@media (max-width:1180px){.gs-story{grid-template-columns:1fr}}
+.gs-ch{min-height:86vh;display:flex;flex-direction:column;justify-content:center;padding:28px 0;opacity:.25;transition:opacity .4s}
+.gs-ch.on{opacity:1}
+.gs-ch .k{margin-bottom:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.gs-ch h2{margin:0;font-size:34px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.gs-ch p{margin:14px 0 0;font-size:17px;line-height:1.6;max-width:540px}
+.gs-ch .note{font-size:13.5px;color:var(--muted);line-height:1.55}
+.gs-ch .q{color:var(--ink);font-weight:600}
+.warnword{color:var(--down)}
+.gs-strip{margin-top:18px;border-top:1px solid var(--line)}
+.gs-strip .r{display:grid;grid-template-columns:118px minmax(0,1fr) 62px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.gs-strip .r .nm{color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-strip .r .v{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.gs-strip .r .s{font-size:12px;color:var(--muted)}
+.gs-cells{display:grid;grid-template-columns:repeat(81,minmax(0,1fr));gap:1px;height:12px}
+.gs-cells i{display:block;border-radius:1.5px}
+.gs-tbl{margin-top:16px;width:100%;border-collapse:collapse;font-size:13px}
+.gs-tbl th{text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:6px 6px 6px 0;border-bottom:1px solid var(--line)}
+.gs-tbl td{padding:7px 6px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.gs-tbl td.n{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.gs-tbl td.m{color:var(--muted);font-size:12px}
+.gs-tbl tr.me td{background:#F3FAF8}
+.chip{display:inline-grid;place-items:center;min-width:22px;height:20px;border-radius:4px;font-size:11px;font-weight:800;padding:0 4px;font-variant-numeric:tabular-nums}
+
+/* the sticky figure */
+.gs-fig{position:sticky;top:124px;height:calc(100vh - 144px);display:flex;flex-direction:column;justify-content:center}
+@media (max-width:1180px){.gs-fig{position:static;height:auto}}
+.gs-ftitle{height:56px;overflow:hidden;display:flex;align-items:flex-end;padding-bottom:10px;font-size:16px;font-weight:800;letter-spacing:-.01em;color:var(--ink);line-height:1.3;transition:opacity .35s}
+.gs-ftitle.out{opacity:0}
+.gs-frow{display:grid;grid-template-columns:404px 196px;gap:12px}
+.gs-map{position:relative;width:404px;height:404px;border-radius:14px;border:1px solid var(--line);overflow:hidden}
+.gs-map .lf{position:absolute;inset:0}
+.gs-ovl{position:absolute;inset:0;z-index:500;pointer-events:none}
+.gs-ovl svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.tl{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:4px;overflow:hidden;pointer-events:auto;cursor:crosshair;
+  box-shadow:0 1px 2px rgba(11,16,32,.18);transform:scale(.3);opacity:0;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .5s ease,box-shadow .15s}
+.tl i{position:absolute;top:0;bottom:0;width:20%;border-left:1px solid transparent;transition:background-color .5s ease,border-color .5s ease}
+.tl i:first-child{border-left:0}
+.tl b{position:absolute;inset:0;display:grid;place-items:center;font:800 13px Inter,sans-serif;font-variant-numeric:tabular-nums;transition:opacity .35s,color .35s;pointer-events:none}
+.tl.hov{box-shadow:0 0 0 2px #0B1020,0 2px 6px rgba(11,16,32,.3)}
+.office{position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border:2px solid var(--a);border-radius:7px;box-shadow:0 0 0 3px rgba(255,255,255,.85);pointer-events:none;transition:opacity .5s}
+.pin{position:absolute;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:5px;background:#fff;border:2px solid #0B1020;display:grid;place-items:center;font:800 10.5px Inter,sans-serif;color:#0B1020;
+  box-shadow:0 2px 6px rgba(11,16,32,.25);opacity:0;transform:translateY(6px);transition:opacity .35s,transform .5s cubic-bezier(.2,.8,.2,1),left .9s cubic-bezier(.2,.8,.2,1),top .9s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s,color .2s;pointer-events:none}
+.pin.on{opacity:1;transform:none}
+.pin.blue{border-color:#3B5BDB;color:#2B44A8}
+.pin.hot{background:#0B1020;color:#fff}
+.pin.blue.hot{background:#3B5BDB;color:#fff}
+.pin.edge{border-style:dashed}
+.lead{stroke:#475569;stroke-width:1;fill:none;transition:opacity .35s}
+.leaddot{fill:#0B1020;transition:opacity .35s}
+
+/* the reserved readout panel beside the map */
+.gs-panel{position:relative;height:404px;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.gs-panel .pv{position:absolute;inset:0;padding:12px 12px;transition:opacity .2s;font-size:12px;line-height:1.4;color:var(--body)}
+.gs-panel .pv.out{opacity:0}
+.gs-panel h4{margin:0 0 2px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.gs-panel .ph{font-size:13.5px;font-weight:800;color:var(--ink);line-height:1.25;margin-bottom:8px}
+.gs-panel .pr{display:grid;grid-template-columns:24px minmax(0,1fr);gap:6px;align-items:start;padding:5px 0;border-top:1px solid #F0F1F4}
+.gs-panel .pr .nm{font-weight:600;color:var(--ink);overflow:hidden;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal}
+.gs-panel .pr .sb{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-panel .pr.me .nm{color:var(--aInk);font-weight:800}
+.gs-panel .more{margin:4px 0 0;padding:3px 0;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;border-top:1px dashed #D0D5DD}
+.gs-panel .hint{position:absolute;left:12px;right:12px;bottom:10px;font-size:11px;color:var(--faint)}
+.gs-panel .kr{display:grid;grid-template-columns:24px minmax(0,1fr) 30px;gap:6px;align-items:center;padding:4px 0;border-top:1px solid #F0F1F4}
+.gs-panel .kr .v{text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.gs-legend{height:40px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);transition:opacity .35s}
+.gs-legend.out{opacity:0}
+.gs-legend .sw{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:4px;margin-right:5px;font-size:10.5px;font-weight:800}
+.gs-legend span{display:inline-flex;align-items:center}
+.gs-cap{min-height:20px;font-size:13px;color:var(--muted);transition:opacity .35s}
+.gs-cap.out{opacity:0}
+
+/* board bars in the field chapter: one spec, 8px, no track */
+.gs-ro{height:40px;margin-top:16px;font-size:13px;color:var(--body);display:flex;align-items:center;border-bottom:1px solid var(--line)}
+.gs-ro b{color:var(--ink)}
+.gs-board{display:flex;flex-direction:column}
+.gs-brow{display:grid;grid-template-columns:22px minmax(0,1fr) 64px;gap:2px 8px;align-items:center;padding:6px 6px;border-radius:6px;transition:background .15s;cursor:default}
+.gs-brow:hover,.gs-brow.hot{background:#F6F7FA}
+.gs-brow .no{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.gs-brow .nm{font-size:13.5px;color:var(--ink);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-brow.me .nm{font-weight:800;color:var(--aInk)}
+.gs-brow .v{text-align:right;font-size:12px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.gs-brow .bar{grid-column:2;display:flex;align-items:center;gap:8px}
+.gs-brow .bar i{display:block;height:8px;border-radius:0 4px 4px 0;background:#94A3B8;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.gs-brow.me .bar i{background:var(--a)}
+.gs-brow .bar span{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.gs-brow .kind{grid-column:3;grid-row:2;text-align:right;font-size:11px;color:var(--faint)}
+.gs-seg{margin-top:16px}
+.gs-end{margin:40px 0 80px;border:1px solid var(--line);border-radius:16px;padding:24px 26px;background:#fff}
+.gs-end h3{margin:0 0 6px;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.gs-end .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+
+#top-right{display:inline-flex;align-items:center;gap:12px}
+.chip{min-width:24px}
+.gs-map .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.75)}
+.chip{min-width:28px}
+</style></head><body>
+<div class="mock-bar"><b>Mockup · gs2-story · Grid Scan result, Story tab.</b> Data: Bothell Family Dentistry, scan #2 (Oct 27, 2026: 5 searches, 405 points, $0.81), real top 20 at every point. Scan twice note uses scans #3 and #4 (same day pair).
+<ul><li>Headline map is now "top 3 on k of 5 searches" per point, so its tiles add up to exactly 141 readings = 28 of 81. The averaged rank map is gone.</li>
+<li>One map, 81 tiles that keep identity; every chapter re-colours and re-sizes them over 0.5s and 0.9s (no instant swap). New chapters: five searches as stripes, "just outside the pack" (emergency), a different market, the field of 128.</li>
+<li>Point hover fills the reserved panel beside the map with that spot's top 3 and the practice's rank: <span class="ep">needs a small read endpoint</span> over local_grid_scan_points (stored today, no API returns it).</li>
+<li>Pins never carry labels on the map: numbered squares, moved off shared spots with a leader line, names in the panel. Basemap and Leaflet load from the network, as in the approved v1.</li></ul></div>
+<div id="page"></div>
+<script>/* gs2 Story: the Grid Scan result Story for Bothell scan #2. One map, 81 tiles keyed by
+   point and never remade; each chapter re-colours, re-sizes and re-labels them. */
+(function () {
+  const L_ = window.L;
+  const { D, P, L, OWN, K, KW } = GS;
+  const esc = FL.esc;
+  const RS = FL.rankStyle;
+  const nm = (i) => L[i].t;
+  const shell = FL.shell({ tool: 'grid', name: 'Grid Scan' });
+  shell.right(`<b style="color:var(--ink)">${esc(P.t)}</b><span style="color:var(--muted)">Scan · Oct 27</span><button class="btn btn-line">Share report</button><button class="btn btn-line">New scan</button>`);
+  const mb = FL.$('.method-btn'); mb.onclick = () => { location.href = 'gs2-how-it-works.html'; };
+
+  /* ---------------- facts, all computed from the scan ---------------- */
+  const ACC = GS.idx('Accent Dental Center Bothell'); const JUDE = GS.idx('Dr. Jude Brooks Emergency Dentist Bothell');
+  const ANN = GS.idx('Annigan Dental'); const CRIS = GS.idx('Crisafulli Dental'); const BDC = GS.idx('Bothell Dental Care');
+  const EM = K['emergency dentist bothell']; const DIB = K['dentist in bothell']; const DNM = K['dentist near me'];
+  const BOT = K['botox bothell']; const INV = K['invisalign bothell'];
+  const ORDER = [...D.kw].sort((a, b) => GS.top3(b) - GS.top3(a) || GS.avgRank(a) - GS.avgRank(b)).map((k) => k.kw);
+  const readings = D.kw.reduce((a, k) => a + GS.top3(k), 0);   // 141
+  const avg81 = Math.round(readings / D.kw.length);             // 28
+  const per100 = Math.round((readings / (81 * D.kw.length)) * 100);
+  const kDist = [0, 1, 2, 3, 4, 5].map((v) => GS.kOf5.filter((x) => x === v).length);
+  const k3plus = GS.kOf5.filter((x) => x >= 3).length;
+  const zeroPts = GS.kOf5.map((v, n) => (v === 0 ? n : -1)).filter((n) => n >= 0);
+  const dibWeak = DIB.rank.map((v, n) => (v > 3 ? n : -1)).filter((n) => n >= 0);
+  const dnmMiss = DNM.rank.map((v, n) => (v > 20 ? n : -1)).filter((n) => n >= 0);
+  const trio = [JUDE, ACC, ANN];
+  const held = EM.top.map((t, n) => (trio.every((i) => t.slice(0, 3).includes(i)) ? n : -1)).filter((n) => n >= 0);
+  const heldSet = new Set(held);
+  const em4 = EM.rank.filter((v) => v === 4).length; const em45 = EM.rank.filter((v) => v === 4 || v === 5).length;
+  const heldAt4 = held.filter((n) => EM.rank[n] === 4).length;
+  const gapGrid = Array.from({ length: 81 }, (_, n) => D.kw.filter((kk) => kk.rank[n] > 3 && kk.top[n].slice(0, 3).includes(ACC)).length);
+  const gapReadings = D.kw.reduce((a, kk) => a + kk.rank.filter((v) => v > 3).length, 0);
+  const gapBy = new Map(); D.kw.forEach((kk) => kk.rank.forEach((v, n) => { if (v > 3) kk.top[n].slice(0, 3).forEach((i) => { const g = gapBy.get(i) || { n: 0, by: {} }; g.n++; g.by[kk.kw] = (g.by[kk.kw] || 0) + 1; gapBy.set(i, g); }); }));
+  const gapTop = [...gapBy.entries()].sort((a, b) => b[1].n - a[1].n).slice(0, 6);
+  const ahead = (kk, a, b) => kk.rank.filter((_, n) => GS.rankOf(kk, n, a) < GS.rankOf(kk, n, b)).length;
+  const M = D.metrics; const of81 = (solv) => Math.round((solv * 81) / 100);
+  const field = [OWN, ...D.board].map((i) => ({ i, solv: L[i].solv })).sort((a, b) => b.solv - a.solv).slice(0, 11);
+  const kindOf = (t) => (/orthodont/i.test(t) ? 'orthodontist' : /aesthetic|skin|spa|laser|wellness/i.test(t) ? 'med spa' : 'dentist');
+  const oneMiDental = field.filter((f) => f.i !== OWN && kindOf(L[f.i].t) === 'dentist');
+  const prof = (i) => D.profiles[String(i)];
+  const hasEmCat = (i) => (prof(i)?.other_categories || []).includes('Emergency dental service');
+
+  /* ---------------- colours ---------------- */
+  const GREEN = ['#E4E7EC', '#CDEBD8', '#8ED3A6', '#3DA866', '#15803D', '#0D5C2B'];
+  const GINK = ['#667085', '#0B1020', '#0B1020', '#fff', '#fff', '#fff'];
+  const BLUE = ['#EEF0F3', '#C9D3F6', '#8FA3EC', '#5A75E0', '#3B5BDB', '#2B44A8'];
+  const BINK = ['#98A2B3', '#1E2F7A', '#0B1020', '#fff', '#fff', '#fff'];
+  const legendRank = (counts) => [[1, 'top 3'], [7, '4 to 10'], [14, '11 to 20'], [21, 'not in top 20']].map(([v, l], k) => { const s = RS(v); return `<span><b class="sw" style="background:${s.bg};color:${s.ink}">${s.t === '20+' ? '' : ''}</b>${l}${counts ? ` <b style="color:var(--ink);margin-left:4px">${counts[k]}</b>` : ''}</span>`; }).join('');
+  const bandCounts = (kk) => [kk.rank.filter((v) => v <= 3).length, kk.rank.filter((v) => v > 3 && v <= 10).length, kk.rank.filter((v) => v > 10 && v <= 20).length, kk.rank.filter((v) => v > 20).length];
+  const chipHtml = (v) => { const s = RS(v); return `<b class="chip" style="background:${s.bg};color:${s.ink}">${s.t}</b>`; };
+  const q = (kw) => `<span class="q">“${esc(kw)}”</span>`;
+
+  /* ---------------- chapter 05 letters: who is first at each point ---------------- */
+  const LETTERS = {};
+  [BOT, INV].forEach((kk) => {
+    const c = new Map(); kk.top.forEach((t) => c.set(t[0], (c.get(t[0]) || 0) + 1));
+    const ranked = [...c.entries()].sort((a, b) => b[1] - a[1]);
+    const keyed = ranked.slice(0, 3).map(([i, n], k) => ({ i, n, letter: 'ABC'[k] }));
+    const other = ranked.slice(3).reduce((a, [, n]) => a + n, 0);
+    LETTERS[kk.kw] = { keyed, other, otherN: ranked.length - 3, of: (i) => keyed.find((x) => x.i === i)?.letter || '+' };
+  });
+
+  /* ---------------- the chapters ---------------- */
+  const S = { mkt: 'botox bothell', active: 0 };
+  const best = K[ORDER[0]];
+  const firstWho = (kk, pts) => { const c = new Map(); pts.forEach((n) => { const i = kk.top[n][0]; c.set(i, (c.get(i) || 0) + 1); }); return [...c.entries()].sort((a, b) => b[1] - a[1]); };
+  const weakFirst = firstWho(DIB, dibWeak);
+
+  const strip = () => `<div class="gs-strip">${ORDER.map((kw) => { const kk = K[kw]; return `<div class="r"><span class="nm">${esc(kw)}</span><span class="gs-cells">${GS.readOrder.map((n) => `<i style="background:${RS(kk.rank[n]).bg}"></i>`).join('')}</span><span class="v">${GS.top3(kk)} <span class="s">of 81</span></span></div>`; }).join('')}<p class="note" style="margin:8px 0 0">Each strip is one search's 81 points, nearest the office first. Count = points in the top 3.</p></div>`;
+
+  const CH = [
+    {
+      key: 'short', kick: `Long story short · ${D.kw.length} searches`,
+      head: `${esc(P.t)} is in the top 3 at <span class="grad">${avg81} of 81</span> points on an average search.`,
+      body: [
+        `Across ${D.kw.length} searches and ${81 * D.kw.length} Maps readings it made the top 3 ${readings} times, about ${per100} in every 100. Each tile counts how many of the ${D.kw.length} searches put it in the top 3 from that spot, so the tiles add up to exactly that ${readings}.`,
+        `Two searches carry it: ${q('dentist in bothell')} at ${GS.top3(DIB)} of 81 and ${q('dentist near me')} at ${GS.top3(DNM)}. On ${q('emergency dentist bothell')} it sits just outside the pack, 4th or 5th at ${em45} points. ${q('botox bothell')} and ${q('invisalign bothell')} belong to med spas and orthodontists.`,
+      ],
+      extra: `<table class="gs-tbl"><thead><tr><th>Search</th><th style="text-align:right">Top 3</th><th style="text-align:right">First</th><th style="text-align:right">Avg rank</th></tr></thead><tbody>${ORDER.map((kw) => { const kk = K[kw]; return `<tr><td>${esc(kw)}</td><td class="n">${GS.top3(kk)} of 81</td><td class="n">${GS.first(kk)}</td><td class="n">${kk.arp.toFixed(1)}</td></tr>`; }).join('')}</tbody></table>
+        <p class="note">Top 3 on 3 or more searches at ${k3plus} points, the office and the east edge. Top 3 on none at ${zeroPts.length}, all ${GS.dir(zeroPts[0]).replace(/^[\d.]+ mi /, '')} and south-west, about a mile out. Average rank ${M.arp.toFixed(1)}, with not in the top 20 counted as 21. Number ${M.position} of the ${M.field_size} listings Google showed. Scanned Oct 27, ${FL.money(D.cost)}.</p>`,
+      title: `Top 3 on how many of the ${D.kw.length} searches, at each point`,
+      cap: `Each tile: one spot. The number: searches with ${P.t} in the top 3 there.`,
+      legend: () => `${[0, 1, 2, 3, 4, 5].map((v) => `<span><b class="sw" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b></span>`).join('')}<span>of ${D.kw.length} searches · ringed: the office</span>`,
+      tile: (n) => ({ c: GREEN[GS.kOf5[n]], d: String(GS.kOf5[n]), ink: GINK[GS.kOf5[n]] }),
+      delay: (n) => GS.readPos[n] * 9,
+      pins: [], hover: 'all',
+      idle: () => `<h4>How the map adds up</h4><div class="ph">${readings} top 3 readings ÷ ${D.kw.length} searches = ${avg81} of 81</div>${[5, 4, 3, 2, 1, 0].map((v) => `<div class="kr"><b class="chip" style="background:${GREEN[v]};color:${GINK[v]}">${v}</b><span>${v === 1 ? '1 search' : `${v} searches`}</span><span class="v">${kDist[v]}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Points per count. Point at any tile for its five ranks.</p>`,
+    },
+    {
+      key: 'five', kick: 'Five searches, five maps',
+      head: `Each search draws its own map: green on two, yellow on two, grey on one.`,
+      body: [
+        `Every tile is now five thin stripes, one per search, strongest first. ${q('dentist in bothell')} puts it first at ${GS.first(DIB)} points; ${q('dentist near me')} at ${GS.first(DNM)}, though it drops out of the top 20 at ${dnmMiss.length} points ${GS.dir(dnmMiss[0])} of the office, where ${esc(nm(DNM.top[dnmMiss[0]][0]))} and ${esc(nm(DNM.top[dnmMiss[0]][1]))} lead.`,
+        `On ${q('emergency dentist bothell')} it ranks between ${Math.min(...EM.rank)} and ${Math.max(...EM.rank)} and is never first. On ${q('invisalign bothell')} it is mostly 5th to 9th (${INV.rank.filter((v) => v >= 5 && v <= 9).length} points), top 3 at ${GS.top3(INV)}. On ${q('botox bothell')} it is not in the top 20 anywhere.`,
+      ],
+      extra: strip(),
+      title: 'Five ranks per point: one stripe per search',
+      cap: 'Stripes left to right: in bothell, near me, emergency, invisalign, botox.',
+      legend: () => legendRank(),
+      tile: (n) => ({ c: ORDER.map((kw) => RS(K[kw].rank[n]).bg), split: true, d: '', ink: '#fff' }),
+      delay: (n, s) => s * 110 + (n % 9) * 14,
+      pins: [], hover: 'all',
+      idle: () => `<h4>Stripe order</h4><div class="ph">Strongest search on the left</div>${ORDER.map((kw, s) => `<div class="kr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">${s + 1}</b><span>${esc(GS.short[kw])}</span><span class="v">${GS.top3(K[kw])}</span></div>`).join('')}<p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Right column: points in the top 3, of 81.</p>`,
+    },
+    {
+      key: 'best', kick: 'Strongest search',
+      head: `On ${q('dentist in bothell')} it is first at <span class="grad">${GS.first(DIB)} of 81</span> points and top 3 at ${GS.top3(DIB)}.`,
+      body: [
+        `The ${dibWeak.length} points it misses all sit ${GS.dir(dibWeak[0]).split(' ')[0]} to ${Math.max(...dibWeak.map((n) => parseFloat(GS.dir(n)))).toFixed(2).replace(/0$/, '')} miles west and south-west, toward ${esc(nm(BDC))} (${L[BDC].mi} mi) and ${esc(nm(CRIS))} (${L[CRIS].mi} mi). There it ranks ${Math.min(...dibWeak.map((n) => DIB.rank[n]))} to ${Math.max(...dibWeak.map((n) => DIB.rank[n]))}.`,
+        `First at those ${dibWeak.length}: ${weakFirst.map(([i, c]) => `${esc(nm(i))} at ${c}`).join(', ')}. ${esc(nm(ACC))} is top 3 at ${GS.top3Count(DIB, ACC)} points on this search but never first; ${esc(P.t)} is ahead of it at all ${ahead(DIB, OWN, ACC)}.`,
+      ],
+      extra: `<p class="note">Only ${DIB.density.top3} listings ever reach the top 3 on this search; ${DIB.density.top20} show up somewhere in a top 20. Average rank here ${DIB.arp.toFixed(1)}.</p>`,
+      title: `“dentist in bothell”: first almost everywhere, 5 points lost to the south-west`,
+      cap: 'Each tile: the practice\'s rank from that spot. Enlarged: the 5 points outside the top 3.',
+      legend: () => legendRank(bandCounts(DIB)),
+      tile: (n) => { const v = DIB.rank[n]; const s = RS(v); return { c: s.bg, d: s.t, ink: s.ink, s: v > 3 ? 1.14 : 0.92 }; },
+      delay: (n) => (n % 9) * 45,
+      pins: [CRIS, BDC, JUDE], hover: 'dentist in bothell',
+      idle: () => `<h4>Who holds the 5 points</h4><div class="ph">Numbered on the map</div>${[CRIS, BDC, JUDE].map((i, k) => `<div class="pr"><b class="chip" style="background:#fff;border:2px solid #0B1020;color:#0B1020">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${L[i].mi} mi · ${GS.starsShort(L[i])} · first at ${weakFirst.find(([x]) => x === i)?.[1] || 0} of 5</span></span></div>`).join('')}`,
+    },
+    {
+      key: 'pack', kick: 'Just outside the pack',
+      head: `On emergency searches, the same three listings hold the top 3 at <span class="grad">${held.length} of 81</span> points. The practice is next in line.`,
+      body: [
+        `On ${q('emergency dentist bothell')}, wherever they hold it, the order never changes: ${esc(nm(JUDE))}, then ${esc(nm(ACC))}, then ${esc(nm(ANN))}. The first has ${L[JUDE].r.toFixed(1)} stars from just ${L[JUDE].n} reviews, sits ${L[JUDE].mi} miles south-west and has the search words in its name; it is first at ${GS.firstCount(EM, JUDE)} of 81 points.`,
+        `${esc(P.t)} has ${P.r} stars from ${P.n} reviews, more than ${esc(nm(ANN))} (${L[ANN].n}) and close to ${esc(nm(ACC))} (${L[ACC].n}). It is 4th at ${em4} points and 4th or 5th at ${em45}; at ${heldAt4} of the ${held.length} pack points it is the very next listing. It reaches the top 3 at ${GS.top3(EM)}: the office and the east edge.`,
+        `${esc(nm(ACC))} and ${esc(nm(ANN))} both list ${q('Emergency dental service')} as a profile category; ${esc(P.t)}'s profile does not (it lists ${prof(OWN).other_categories.length} others).`,
+      ],
+      extra: `<p class="note">Only ${EM.density.top3} listings ever reach the top 3 on this search, against ${DIB.density.top3} and ${DNM.density.top3} on the other dentist searches: a locked pack. Two passes two minutes apart on Oct 27 moved 15 of 81 points across the top 3 line here, more than any other search, so the edge is close. Average rank ${EM.arp.toFixed(1)}.</p>`,
+      title: 'The same three hold the pack; the practice is 4th behind them',
+      cap: `Full size: the ${held.length} points the same three hold. Number: the practice's rank there.`,
+      legend: () => legendRank(bandCounts(EM)),
+      tile: (n) => { const v = EM.rank[n]; const s = RS(v); const h = heldSet.has(n); return { c: s.bg, d: s.t, ink: s.ink, s: h ? 1 : 0.6, o: h ? 1 : 0.5 }; },
+      delay: (n, s, px) => px.dist(n, JUDE) * 2.2,
+      pins: [JUDE, ACC, ANN], hover: 'emergency dentist bothell',
+      idle: () => `<h4>The map pack, ${held.length} of 81 points</h4><div class="ph">emergency dentist bothell</div>${trio.map((i, k) => `<div class="pr"><b class="chip" style="background:${RS(1).bg};color:#fff">${k + 1}</b><span><span class="nm" style="display:block">${esc(nm(i))}</span><span class="sb">${GS.starsShort(L[i])} reviews · ${L[i].mi} mi</span></span></div>`).join('')}<div class="more">More places</div><div class="pr me"><b class="chip" style="background:${RS(4).bg};color:${RS(4).ink}">4</b><span><span class="nm" style="display:block">${esc(P.t)}</span><span class="sb">${GS.starsShort(P)} reviews · the office</span></span></div><p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Pins 1 to 3 on the map are these three.</p>`,
+    },
+    {
+      key: 'market', kick: 'A different market',
+      head: `On ${q('botox bothell')} it is <span class="warnword">not in the top 20 anywhere</span>; med spas own that map.`,
+      body: [
+        `${LETTERS['botox bothell'].keyed.map((x) => `${esc(nm(x.i))} is first at ${x.n} points (${GS.starsShort(L[x.i])} reviews, ${L[x.i].mi} mi)`).join('; ')}. The letters on the tiles name who is first at each spot.`,
+        `${q('invisalign bothell')} belongs to orthodontists: ${LETTERS['invisalign bothell'].keyed.map((x) => `${esc(nm(x.i))} first at ${x.n}`).join(', ')}. ${esc(P.t)} is on that list, mostly 5th to 9th, top 3 at ${GS.top3(INV)} point.`,
+      ],
+      extra: `<div class="gs-seg" id="mktseg"></div><p class="note">Neither is a dentist race, so neither drags the strong searches down on purpose: they are kept because the homepage names both services. Botox returned fewer than 20 listings at ${BOT.top.filter((t) => t.length < 20).length} points.</p>`,
+      title: () => (S.mkt === 'botox bothell' ? '“botox bothell”: grey everywhere; the letters name who is first' : '“invisalign bothell”: on the list, behind three orthodontists'),
+      cap: 'Tile colour: the practice\'s rank. Tile letter: who is first there (key at right).',
+      legend: () => legendRank(bandCounts(K[S.mkt])),
+      tile: (n) => { const kk = K[S.mkt]; const s = RS(kk.rank[n]); return { c: s.bg, d: LETTERS[S.mkt].of(kk.top[n][0]), ink: s.ink, s: 0.96 }; },
+      delay: (n) => Math.floor(n / 9) * 50,
+      pins: () => LETTERS[S.mkt].keyed.map((x) => x.i), hover: () => S.mkt,
+      idle: () => { const lt = LETTERS[S.mkt]; return `<h4>Who is first, by point</h4><div class="ph">${esc(S.mkt)}</div>${lt.keyed.map((x) => `<div class="pr"><b class="chip" style="background:#fff;border:2px solid #0B1020;color:#0B1020">${x.letter}</b><span><span class="nm" style="display:block">${esc(nm(x.i))}</span><span class="sb">first at ${x.n} · ${GS.starsShort(L[x.i])} · ${L[x.i].mi} mi</span></span></div>`).join('')}${lt.otherN > 0 ? `<div class="pr"><b class="chip" style="background:#F2F4F7;color:var(--ink)">+</b><span><span class="nm" style="display:block">${lt.otherN} others</span><span class="sb">first at ${lt.other} points</span></span></div>` : ''}`; },
+    },
+    {
+      key: 'gaps', kick: 'Who takes the gaps',
+      head: `Where it slips, <span style="color:#2B44A8">${esc(nm(ACC))}</span> takes the spot most: ${gapBy.get(ACC).n} times, ${gapBy.get(ACC).by['emergency dentist bothell']} of them on emergency searches.`,
+      body: [
+        `${esc(P.t)} misses the top 3 in ${gapReadings} of ${81 * D.kw.length} readings. No one rival takes them; they split by search. ${esc(nm(ACC))} sits ${L[ACC].mi} miles away, ${GS.starsShort(L[ACC])} reviews, and is ahead of the practice at all ${ahead(EM, ACC, OWN)} emergency points; the practice is ahead of it at all ${ahead(DIB, OWN, ACC)} ${q('dentist in bothell')} points and ${ahead(DNM, OWN, ACC)} on ${q('dentist near me')}.`,
+      ],
+      extra: `<table class="gs-tbl"><thead><tr><th>Takes the spot</th><th style="text-align:right">Times</th><th>Mostly on</th></tr></thead><tbody>${gapTop.map(([i, g]) => { const top = Object.entries(g.by).sort((a, b) => b[1] - a[1])[0]; return `<tr><td>${esc(nm(i))}<div class="m" style="color:var(--muted);font-size:12px">${L[i].mi} mi · ${GS.starsShort(L[i])} · ${kindOf(nm(i))}</div></td><td class="n">${g.n}</td><td class="m">${esc(GS.short[top[0]])} (${top[1]})</td></tr>`; }).join('')}</tbody></table>`,
+      title: `Points where ${nm(ACC)} holds a top 3 spot the practice misses`,
+      cap: `Blue number: searches where ${nm(ACC)} is top 3 there and ${P.t} is not.`,
+      legend: () => `${[0, 1, 2, 3].map((v) => `<span><b class="sw" style="background:${BLUE[v]};color:${BINK[v]}">${v}</b></span>`).join('')}<span>searches, of ${D.kw.length} · ${gapGrid.filter((v) => v).length} of 81 points light up</span>`,
+      tile: (n) => { const v = gapGrid[n]; return { c: BLUE[v], d: v ? String(v) : '', ink: BINK[v], s: v ? 1 : 0.5, o: v ? 1 : 0.7 }; },
+      delay: (n, s, px) => px.dist(n, ACC) * 2.4,
+      pins: [ACC], blue: true, hover: 'gaps',
+      idle: () => `<h4>The rival</h4><div class="ph">${esc(nm(ACC))}</div><div class="kr"><span></span><span>Distance</span><span class="v">${L[ACC].mi} mi</span></div><div class="kr"><span></span><span>Stars</span><span class="v">${L[ACC].r}</span></div><div class="kr"><span></span><span>Reviews</span><span class="v">${L[ACC].n}</span></div><div class="kr"><span></span><span>Gaps it takes</span><span class="v">${gapBy.get(ACC).n}</span></div><div class="kr"><span></span><span>Top 3, average search</span><span class="v">${of81(L[ACC].solv)}</span></div><p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">Lists Emergency dental service on its profile${hasEmCat(ACC) ? '' : ' (no)'}. Point at a tile for the head to head.</p>`,
+    },
+    {
+      key: 'field', kick: 'The field',
+      head: `${esc(P.t)} is <span class="grad">number ${M.position} of ${M.field_size}</span> listings Google showed, behind ${esc(nm(ACC))}.`,
+      body: [
+        `The scan saw ${M.competitors_in_top20} other listings in some top 20; ${M.competitors_ever_top3} of them reached a top 3 at least once. Ranked by points in the top 3 on an average search, with distance and stars:`,
+      ],
+      extra: () => `<div class="gs-ro" id="boardro"></div><div class="gs-board" id="board">${field.map((f, k) => { const l = L[f.i]; const me = f.i === OWN; const max = of81(field[0].solv); return `<div class="gs-brow ${me ? 'me' : ''}" data-i="${f.i}"><span class="no">${k + 1}</span><span class="nm">${esc(l.t)}</span><span class="v">${of81(f.solv)} of 81</span><span class="bar"><i style="width:${Math.max(3, (of81(f.solv) / max) * 210)}px"></i><span>${me ? 'the office' : `${l.mi} mi`} · ${GS.starsShort(me ? P : l)}</span></span><span class="kind">${me ? '' : kindOf(l.t)}</span></div>`; }).join('')}</div>
+        <p class="note">${field.filter((f) => f.i !== OWN && kindOf(L[f.i].t) !== 'dentist').length} of the top 10 rivals are orthodontists or med spas, there from the invisalign and botox searches. ${esc(nm(JUDE))} is number ${field.findIndex((f) => f.i === JUDE) + 1} but was not on the 8 chosen rivals, so head to head cannot see it today.</p>`,
+      title: `The field: top ${field.length - 1} rivals by share of the map`,
+      cap: 'Pins: numbered by place in the field. Tiles faded so the pins read.',
+      legend: () => '<span>Line: pin moved off a shared spot · dashed: beyond the map edge · ringed: the office, number 2</span>',
+      tile: (n) => ({ c: GREEN[GS.kOf5[n]], d: '', ink: '#fff', s: 0.34, o: 0.55 }),
+      delay: (n) => (80 - GS.readPos[n]) * 5,
+      pins: field.filter((f) => f.i !== OWN).map((f) => f.i), pinNo: (i) => field.findIndex((f) => f.i === i) + 1, hover: 'all',
+      idle: () => `<h4>Pins on the map</h4><div class="ph">Top ${field.length - 1} rivals</div>${field.filter((f) => f.i !== OWN).map((f) => `<div class="kr" data-pk="${f.i}" style="padding:2px 0"><b class="chip" style="background:#fff;border:1.5px solid #0B1020;color:#0B1020;height:18px">${field.findIndex((x) => x.i === f.i) + 1}</b><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px">${esc(nm(f.i))}</span><span class="v" style="font-size:11px">${L[f.i].mi}</span></div>`).join('')}`,
+    },
+  ];
+  const val = (x) => (typeof x === 'function' ? x() : x);
+
+  /* ---------------- page ---------------- */
+  const page = document.getElementById('page');
+  page.innerHTML = `<div id="rtabs"></div><div class="gs-story"><div id="chs">${CH.map((c, i) => `<section class="gs-ch ${i === 0 ? 'on' : ''}" data-ch="${i}"><div class="k">${String(i + 1).padStart(2, '0')} · ${c.kick}</div><h2>${c.head}</h2>${c.body.map((b) => `<p>${b}</p>`).join('')}${val(c.extra) || ''}</section>`).join('')}
+      <div class="gs-end"><h3>Next for ${esc(P.t)}</h3><p style="margin:0;font-size:15px;max-width:520px">The emergency pack is the closest ground: 4th at ${em4} points behind three listings, one of them with ${L[JUDE].n} reviews. Put ${esc(nm(JUDE))} next to the practice, or open the map on that search.</p>
+      <div class="acts"><button class="btn btn-go">Add ${esc(G0(nm(JUDE)))} to head to head</button><button class="btn btn-line">Open the map on “emergency dentist bothell”</button><button class="btn-link" onclick="scrollTo({top:0,behavior:'smooth'})">Back to the top</button></div></div></div>
+    <div><div class="gs-fig"><div class="gs-ftitle" id="ftitle"></div><div class="gs-frow"><div class="gs-map" id="gmap"><div class="lf" id="lf"></div><div class="gs-ovl" id="ovl"><svg id="ovsvg"></svg></div></div><div class="gs-panel" id="panel"><div class="pv" id="pv"></div></div></div><div class="gs-legend" id="legend"></div><div class="gs-cap" id="cap"></div></div></div></div>`;
+  function G0(s) { return s.replace(/ Emergency Dentist Bothell$/, ''); }
+  FL.tabs(document.getElementById('rtabs'), { tabs: [{ key: 'story', label: 'Story' }, { key: 'map', label: 'Map' }, { key: 'board', label: 'Leaderboard' }], value: 'story', onChange: () => {} });
+
+  /* ---------------- the one map ---------------- */
+  const lmap = L_.map('lf', { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false, zoomSnap: 0.05, attributionControl: true });
+  L_.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Tiles &copy; Esri' }).addTo(lmap);
+  const dLat = 0.25 / 69; const dLng = 0.25 / (69 * Math.cos((P.lat * Math.PI) / 180));
+  const ptLL = (n) => [P.lat + (4 - Math.floor(n / 9)) * dLat, P.lng + ((n % 9) - 4) * dLng];
+  lmap.fitBounds(L_.latLngBounds([ptLL(0), ptLL(80)]), { paddingTopLeft: [22, 22], paddingBottomRight: [22, 36] });
+  const ovl = document.getElementById('ovl'); const svg = document.getElementById('ovsvg');
+  const xy = (ll) => lmap.latLngToContainerPoint(ll);
+  const tiles = Array.from({ length: 81 }, (_, n) => {
+    const el = FL.h(`<div class="tl" data-n="${n}">${'<i></i>'.repeat(5)}<b></b></div>`);
+    const p = xy(ptLL(n)); el.style.left = `${p.x}px`; el.style.top = `${p.y}px`;
+    ovl.appendChild(el);
+    el.querySelectorAll('i').forEach((s, k) => { s.style.left = `${k * 20}%`; });
+    return { el, st: [...el.querySelectorAll('i')], dg: el.querySelector('b'), p };
+  });
+  const office = FL.h('<div class="office"></div>'); office.style.left = `${tiles[40].p.x}px`; office.style.top = `${tiles[40].p.y}px`; ovl.appendChild(office);
+  const px = { dist: (n, i) => { const a = tiles[n].p; const b = xy([L[i].lat, L[i].lng]); return Math.hypot(a.x - b.x, a.y - b.y); } };
+
+  /* pins: one element per listing, made on first use, never removed */
+  const pinEls = new Map();
+  function pinEl(i) {
+    if (!pinEls.has(i)) {
+      const el = FL.h('<div class="pin"></div>'); ovl.appendChild(el);
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line'); ln.setAttribute('class', 'lead'); svg.appendChild(ln);
+      const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); dot.setAttribute('class', 'leaddot'); dot.setAttribute('r', 2.5); svg.appendChild(dot);
+      pinEls.set(i, { el, ln, dot });
+    }
+    return pinEls.get(i);
+  }
+  /* place pins without overlap: keep the true spot if free, else the nearest free slot on rings
+     around it, with a leader line back; keep clear of the office ring */
+  const pitchX = tiles[1].p.x - tiles[0].p.x; const pitchY = tiles[9].p.y - tiles[0].p.y;
+  /* in tile chapters a pin sits on the nearest free gap crossing between tiles, so it never hides a number */
+  function layoutCross(list) {
+    const W = 404; const H = 404; const used = new Set();
+    return list.map((i) => {
+      const t = xy([L[i].lat, L[i].lng]); const tx = Math.max(12, Math.min(W - 12, t.x)); const ty = Math.max(12, Math.min(H - 12, t.y));
+      const edge = tx !== t.x || ty !== t.y;
+      const gx = (tx - tiles[0].p.x) / pitchX; const gy = (ty - tiles[0].p.y) / pitchY;
+      let bestC = null; let bd = 1e9;
+      for (let a = -0.5; a <= 8.5; a += 1) for (let b = -0.5; b <= 8.5; b += 1) {
+        const key = `${a},${b}`; if (used.has(key)) continue;
+        if (Math.abs(a - 4) < 1 && Math.abs(b - 4) < 1) continue;
+        const x = tiles[0].p.x + a * pitchX; const y = tiles[0].p.y + b * pitchY;
+        if (x < 11 || x > W - 11 || y < 11 || y > H - 11) continue;
+        const d = Math.hypot(a - gx, b - gy); if (d < bd) { bd = d; bestC = { key, x, y }; }
+      }
+      used.add(bestC.key);
+      return { i, x: bestC.x, y: bestC.y, tx, ty, moved: Math.hypot(bestC.x - tx, bestC.y - ty) > 6, edge };
+    });
+  }
+  function layoutPins(list) {
+    const W = 404; const H = 404; const placed = [{ x: tiles[40].p.x, y: tiles[40].p.y, r: 30 }];
+    return list.map((i) => {
+      const t = xy([L[i].lat, L[i].lng]); const tx = Math.max(14, Math.min(W - 14, t.x)); const ty = Math.max(14, Math.min(H - 14, t.y));
+      const edge = tx !== t.x || ty !== t.y;
+      const free = (x, y) => x > 12 && x < W - 12 && y > 12 && y < H - 12 && placed.every((p) => Math.hypot(p.x - x, p.y - y) >= (p.r || 23));
+      let spot = free(tx, ty) ? { x: tx, y: ty } : null;
+      for (let ring = 1; !spot && ring < 7; ring++) for (let a = 0; a < 12 && !spot; a++) { const ang = (a / 12) * Math.PI * 2 + 2.4; const x = tx + Math.cos(ang) * 26 * ring; const y = ty + Math.sin(ang) * 26 * ring; if (free(x, y)) spot = { x, y }; }
+      spot = spot || { x: tx, y: ty }; placed.push({ ...spot, r: 23 });
+      return { i, x: spot.x, y: spot.y, tx, ty, moved: Math.hypot(spot.x - tx, spot.y - ty) > 3, edge };
+    });
+  }
+  function setPins(c) {
+    const list = val(c.pins) || [];
+    const lay = c.key === 'field' ? layoutPins(list) : layoutCross(list);
+    pinEls.forEach((p, i) => { if (!list.includes(i)) { p.el.classList.remove('on'); p.ln.style.opacity = 0; p.dot.style.opacity = 0; } });
+    lay.forEach((o, k) => {
+      const p = pinEl(o.i);
+      const no = c.pinNo ? c.pinNo(o.i) : c.key === 'market' ? LETTERS[S.mkt].of(o.i) : k + 1;
+      p.el.textContent = no; p.el.className = `pin ${c.blue ? 'blue' : ''} ${o.edge ? 'edge' : ''}`;
+      p.el.style.left = `${o.x}px`; p.el.style.top = `${o.y}px`;
+      p.ln.setAttribute('x1', o.tx); p.ln.setAttribute('y1', o.ty); p.ln.setAttribute('x2', o.x); p.ln.setAttribute('y2', o.y);
+      p.dot.setAttribute('cx', o.tx); p.dot.setAttribute('cy', o.ty);
+      p.ln.style.opacity = o.moved ? 1 : 0; p.dot.style.opacity = o.moved ? 1 : 0;
+      p.el.dataset.i = o.i;
+      setTimeout(() => p.el.classList.add('on'), 450 + k * (c.key === 'field' ? 70 : 120));
+    });
+  }
+
+  /* apply a chapter: colour 0.5s, size 0.9s, digits out then in 0.35s + 0.35s */
+  let digitTimer = null;
+  function apply(ci, first) {
+    const c = CH[ci];
+    tiles.forEach((t, n) => {
+      const s = c.tile(n); const cs = Array.isArray(s.c) ? s.c : [s.c, s.c, s.c, s.c, s.c];
+      const base = c.delay ? c.delay(n, 0, px) : 0;
+      t.el.style.transitionDelay = `${base}ms, ${base}ms, 0ms`;
+      t.el.style.transform = `scale(${s.s ?? 1})`; t.el.style.opacity = s.o ?? 1;
+      t.st.forEach((st, k) => { const d = c.delay ? c.delay(n, k, px) : 0; st.style.transitionDelay = `${d}ms`; st.style.backgroundColor = cs[k]; st.style.borderLeftColor = s.split && k ? '#fff' : cs[k]; });
+    });
+    office.style.opacity = c.key === 'field' ? 1 : 1;
+    clearTimeout(digitTimer);
+    tiles.forEach((t) => { t.dg.style.opacity = 0; });
+    digitTimer = setTimeout(() => { tiles.forEach((t, n) => { const s = c.tile(n); t.dg.textContent = s.d; t.dg.style.color = s.ink; t.dg.style.opacity = s.d ? 1 : 0; t.dg.style.fontSize = s.d.length > 2 ? '11px' : ''; }); }, first ? 500 : 350);
+    setPins(c);
+    swap('ftitle', val(c.title)); swap('legend', val(c.legend), true); swap('cap', c.cap);
+    idle();
+  }
+  function swap(id, html, isHtml) {
+    const el = document.getElementById(id); if (el.dataset.v === html) return; el.dataset.v = html;
+    el.classList.add('out'); setTimeout(() => { if (isHtml || id === 'legend') el.innerHTML = html; else el.textContent = html.replace(/<[^>]+>/g, ''); el.classList.remove('out'); }, 350);
+  }
+
+  /* ---------------- the readout panel ---------------- */
+  const pv = document.getElementById('pv');
+  let hoverN = null;
+  function paint(html) { pv.innerHTML = html; }
+  function idle() { hoverN = null; paint(`${val(CH[S.active].idle)}`); bindPanelPins(); }
+  function bindPanelPins() { pv.querySelectorAll('[data-pk]').forEach((r) => { r.onmouseenter = () => hotPin(+r.dataset.pk, true); r.onmouseleave = () => hotPin(+r.dataset.pk, false); }); }
+  function hotPin(i, on) { const p = pinEls.get(i); if (p) p.el.classList.toggle('hot', on); document.querySelectorAll(`.gs-brow[data-i="${i}"]`).forEach((r) => r.classList.toggle('hot', on)); }
+  const rowHtml = (rank, i, me) => { const l = me ? P : L[i]; return `<div class="pr ${me ? 'me' : ''}">${chipHtml(rank)}<span><span class="nm" style="display:block">${esc(me ? P.t : l.t)}</span><span class="sb">${GS.starsShort(l)} reviews${me ? '' : ` · ${l.mi} mi`}</span></span></div>`; };
+  function hoverHtml(n) {
+    const c = CH[S.active]; const mode = val(c.hover);
+    const head = `<h4>From this spot</h4><div class="ph">${GS.dir(n).replace(/^./, (m) => m.toUpperCase())}</div>`;
+    if (mode === 'all' || mode === 'gaps') {
+      return `${head}${ORDER.map((kw) => { const kk = K[kw]; const v = kk.rank[n]; const first = kk.top[n][0]; const sub = mode === 'gaps' ? `Accent: ${GS.ord(GS.rankOf(kk, n, ACC))}` : `first: ${first === OWN ? 'the practice' : esc(G0(nm(first)))}`; return `<div class="pr">${chipHtml(v)}<span><span class="nm" style="display:block">${esc(kw)}</span><span class="sb">${sub}</span></span></div>`; }).join('')}<p style="margin:6px 0 0;font-size:11px;color:var(--muted)">Chips: ${esc(P.t)}'s rank. Top 3 on ${GS.kOf5[n]} of ${D.kw.length}.${mode === 'gaps' ? ` Accent takes ${gapGrid[n]} spot${gapGrid[n] === 1 ? '' : 's'} it misses here.` : ''}</p>`;
+    }
+    const kk = K[mode]; const v = kk.rank[n]; const t3 = kk.top[n].slice(0, 3);
+    return `${head}<div style="font-size:11.5px;color:var(--muted);margin:-4px 0 4px">${esc(mode)}</div>${t3.map((i, k) => rowHtml(k + 1, i, i === OWN)).join('')}${v > 3 ? `<div class="more">${v > 20 ? 'Not in the first 20' : 'More places'}</div>${rowHtml(v, OWN, true)}` : ''}`;
+  }
+  tiles.forEach((t, n) => {
+    t.el.addEventListener('mouseenter', () => { tiles.forEach((x) => x.el.classList.remove('hov')); t.el.classList.add('hov'); hoverN = n; paint(hoverHtml(n)); });
+  });
+  document.getElementById('gmap').addEventListener('mouseleave', () => { tiles.forEach((x) => x.el.classList.remove('hov')); idle(); });
+
+  /* board rows: hover tints the row, says it in the readout above the board, lights the pin */
+  function bindBoard() {
+    const ro = document.getElementById('boardro'); if (!ro) return;
+    const def = () => { ro.innerHTML = `<span><b>${esc(P.t)}</b>: top 3 at <b>${avg81} of 81</b> points on an average search, average rank ${M.arp.toFixed(1)}</span>`; };
+    def();
+    document.querySelectorAll('.gs-brow').forEach((r) => {
+      const i = +r.dataset.i;
+      r.onmouseenter = () => { const l = L[i]; ro.innerHTML = `<span><b>${esc(i === OWN ? P.t : l.t)}</b>: top 3 at <b>${of81(l.solv)} of 81</b> points, average rank ${l.arp.toFixed(1)}${i === OWN ? '' : `, ${l.mi} mi ${l.brg || ''}`}</span>`; hotPin(i, true); };
+      r.onmouseleave = () => { def(); hotPin(i, false); };
+    });
+  }
+  bindBoard();
+
+  /* chapter 05: botox / invisalign, re-lit in place */
+  FL.segmented(document.getElementById('mktseg'), { label: 'Search', options: [{ value: 'botox bothell', label: 'botox bothell' }, { value: 'invisalign bothell', label: 'invisalign bothell' }], value: S.mkt, onChange: (v) => { S.mkt = v; if (S.active === 4) apply(4); } });
+
+  /* ---------------- scroll: a 10% band at mid-screen picks the chapter ---------------- */
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; const i = +e.target.dataset.ch; if (i === S.active) return; S.active = i; document.querySelectorAll('.gs-ch').forEach((c) => c.classList.toggle('on', c === e.target)); apply(i); }), { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('.gs-ch').forEach((c) => io.observe(c));
+  lmap.whenReady(() => requestAnimationFrame(() => apply(0, true)));
+  window.__gs = { apply, S, CH, tiles, hoverHtml };
+})();
+</script></body></html>
