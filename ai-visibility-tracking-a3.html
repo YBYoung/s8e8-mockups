@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility Tracking A3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-tracking-data2.js"></script>
+<script src="ai-visibility-tracking-setup.js"></script>
+<script src="ai-visibility-tracking-a3-chart.js"></script>
+<script src="ai-visibility-tracking-a3-task.js"></script>
+<style>
+.layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:44px; padding-top:30px; }
+.rail { position:sticky; top:118px; align-self:start; display:flex; flex-direction:column; gap:2px; }
+.rail a { text-decoration:none; color:var(--muted); font-size:14px; padding:6px 10px; border-radius:6px; transition:background .2s,color .2s; }
+.rail a.on { color:var(--a-ink); background:var(--a-tint); font-weight:600; }
+.rail .sep { height:1px; background:var(--line); margin:8px 0; }
+.controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:13.5px; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; padding:3px; gap:2px; position:relative; }
+.seg button { position:relative; z-index:1; background:none; border:0; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--muted); transition:color .25s; }
+.seg button.on { color:var(--a-ink); } .seg button:disabled { color:#D0D5DD; cursor:not-allowed; }
+.seg .pill { position:absolute; top:3px; bottom:3px; border-radius:6px; background:var(--a-tint); transition:left .35s cubic-bezier(.4,0,.2,1), width .35s cubic-bezier(.4,0,.2,1); }
+/* branded dropdown with an animated open */
+.dd { position:relative; display:inline-block; }
+.dd > button { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 12px; font:600 13px Inter; color:var(--ink); }
+.dd > button svg { width:12px; height:12px; stroke:var(--muted); fill:none; stroke-width:2; transition:transform .25s; } .dd.open > button svg { transform:rotate(180deg); }
+.dd .menu { position:absolute; top:calc(100% + 6px); left:0; z-index:40; min-width:300px; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 10px 30px rgba(16,24,40,.12); padding:6px;
+  opacity:0; transform:translateY(-6px) scale(.98); transform-origin:top left; pointer-events:none; transition:opacity .18s, transform .22s cubic-bezier(.4,0,.2,1); }
+.dd.open .menu { opacity:1; transform:none; pointer-events:auto; }
+.dd .menu button { display:block; width:100%; text-align:left; border:0; background:none; border-radius:8px; padding:9px 10px; font:500 13.5px Inter; color:var(--ink); }
+.dd .menu button small { display:block; color:var(--muted); font-size:12.5px; margin-top:1px; } .dd .menu button:hover { background:var(--soft); } .dd .menu button.on { background:var(--a-tint); color:var(--a-ink); }
+.dd .menu button:disabled { color:var(--faint); cursor:not-allowed; background:none; }
+section.s { padding:34px 0 30px; border-bottom:1px solid var(--line); scroll-margin-top:120px; }
+.stat { display:flex; flex-wrap:wrap; gap:8px 26px; font-size:14px; margin:4px 0 6px; } .stat b { color:var(--ink); }
+.lbls { display:flex; flex-wrap:wrap; gap:6px 22px; font-size:13.5px; margin:0 0 16px; color:var(--muted); } .lbls b { color:var(--ink); }
+.note { font-size:13.5px; color:var(--muted); background:var(--soft); border-radius:8px; padding:9px 12px; margin:0 0 14px; max-width:760px; } .note b { color:var(--ink); }
+.box { border:1px solid var(--line); border-radius:12px; padding:14px 16px 10px; }
+.boxhd { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.key { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:12.5px; color:var(--muted); align-items:center; }
+.key .sw { display:inline-block; vertical-align:-2px; margin-right:7px; }
+.mks { display:flex; flex-wrap:wrap; gap:6px 20px; font-size:12.5px; color:var(--muted); margin-top:8px; }
+.mks i { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:6px; vertical-align:0; }
+/* range rows */
+.rkey { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:12.5px; color:var(--muted); margin:10px 0 4px; align-items:center; }
+.fr { display:grid; grid-template-columns:24px 200px minmax(0,1fr) 74px 150px 96px; gap:12px; align-items:center; padding:9px 6px; border-top:1px solid #F2F4F7; font-size:14px; border-radius:6px; }
+.fr.click { cursor:pointer; } .fr.click:hover { background:#FAFAFF; }
+.fr .chev { width:14px; height:14px; stroke:var(--faint); fill:none; stroke-width:2; transition:transform .3s; } .fr.open .chev { transform:rotate(90deg); }
+.fr .nm { color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fr.sub { font-size:13.5px; } .fr.sub .nm { padding-left:14px; }
+.trk { position:relative; height:24px; }
+.trk::before { content:''; position:absolute; left:0; right:0; top:11px; height:2px; background:#F2F4F7; }
+.trk > * { position:absolute; transition:left .6s cubic-bezier(.4,0,.2,1), width .6s cubic-bezier(.4,0,.2,1), background .4s, opacity .4s; }
+.trk .rg { top:6px; height:12px; border-radius:6px; background:#DADDFB; }
+.trk .was { top:3px; width:3px; height:18px; margin-left:-1.5px; border-radius:2px; background:#98A2B3; }
+.trk .ln { top:11px; height:2px; } .trk .ln.none { background:repeating-linear-gradient(90deg,#98A2B3 0 3px,transparent 3px 6px); }
+.trk .ln.up, .trk .ln.down { background:var(--a); }
+.trk .ln.up::after, .trk .ln.down::after { content:''; position:absolute; top:-4px; border:5px solid transparent; }
+.trk .ln.up::after { right:-6px; border-left:7px solid var(--a); border-right:0; } .trk .ln.down::after { left:-6px; border-right:7px solid var(--a); border-left:0; }
+.trk .nw { top:5px; width:14px; height:14px; margin-left:-7px; border-radius:50%; background:var(--a); border:2px solid #fff; box-shadow:0 0 0 1px var(--a); }
+.fr .v { font-weight:800; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
+.fr .c { font-size:13px; } .c.none { color:var(--faint); } .c.up { color:var(--up); font-weight:600; } .c.down { color:var(--down); font-weight:600; }
+.fr .n { font-size:12.5px; color:var(--faint); text-align:right; }
+.axis { display:grid; grid-template-columns:24px 200px minmax(0,1fr) 74px 150px 96px; gap:12px; font-size:11.5px; color:var(--faint); padding:0 6px 4px; }
+.axis .sc { position:relative; height:14px; } .axis .sc span { position:absolute; transform:translateX(-50%); white-space:nowrap; } .axis .sc span:first-child { transform:none; }
+.rkey .sw { margin-right:7px; vertical-align:-1px; }
+/* animated expanders */
+.kids { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1); } .kids.open { grid-template-rows:1fr; }
+.kids > div { overflow:hidden; min-height:0; } .kids .in { padding:2px 0 10px; }
+.qrow { display:grid; grid-template-columns:24px minmax(0,1fr) 240px; gap:12px; padding:10px 6px; border-top:1px solid #F2F4F7; font-size:13.5px; }
+.qrow .nm { color:var(--body); padding-left:28px; } .qrow .nm a { font-size:12.5px; }
+.qrow .r { font-size:13px; color:var(--muted); } .qrow .r b { color:var(--ink); }
+.aiol { display:block; font-size:12.5px; color:var(--muted); margin-top:4px; } .aiol .aio { font-size:12.5px; }
+/* rivals evidence */
+.evbtn { margin-top:14px; display:inline-flex; gap:8px; align-items:center; background:none; border:1px solid var(--line); border-radius:8px; padding:8px 12px; font:600 13.5px Inter; color:var(--a-ink); }
+.evbtn svg { width:12px; height:12px; stroke:currentColor; fill:none; stroke-width:2; transition:transform .3s; } .evbtn.open svg { transform:rotate(180deg); }
+.quote { border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:12px 0 0; font-size:14px; max-width:760px; } .quote q { color:var(--ink); } .quote .small { margin-top:6px; }
+/* sources table */
+.tbl { width:100%; border-collapse:collapse; font-size:14px; } .tbl th { text-align:left; font:600 11.5px Inter; color:var(--faint); padding:8px 8px; border-bottom:1px solid var(--line); }
+.tbl td { padding:12px 8px; border-top:1px solid #F2F4F7; vertical-align:top; } .tbl td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; } .tbl th.num { text-align:right; }
+.tbl tr.grp td { border-top:0; padding:20px 8px 6px; font:700 11.5px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.tbl .dom { font-weight:700; color:var(--ink); } .tbl .path { display:block; font-size:12.5px; color:var(--muted); word-break:break-all; } .tbl .why { display:block; font-size:12.5px; color:var(--muted); margin-top:2px; }
+.btn.mini { font-size:12.5px; padding:5px 10px; white-space:nowrap; }
+/* wrong facts */
+.wf { border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-top:12px; }
+.wf .top { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) 150px; gap:14px; font-size:14px; }
+.wf .k { font-size:11.5px; color:var(--faint); display:block; margin-bottom:2px; } .wf .said { color:var(--down); font-weight:700; } .wf .ok { color:var(--up); font-weight:600; }
+.wf .found { margin-top:12px; padding:10px 12px; border-radius:8px; background:var(--soft); font-size:13.5px; } .wf .found b { color:var(--ink); }
+.checks { margin:10px 0 0; padding:0; list-style:none; font-size:13.5px; } .checks li { display:grid; grid-template-columns:22px minmax(0,1fr); gap:6px; padding:5px 0; }
+.checks .ic { width:16px; height:16px; border-radius:4px; display:grid; place-items:center; font:700 11px Inter; color:#fff; margin-top:2px; } .ic.hit { background:var(--down); } .ic.miss { background:#D0D5DD; } .ic.match { background:var(--up); }
+.wf .act { display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:13px; color:var(--muted); gap:12px; flex-wrap:wrap; }
+/* tasks */
+.tcards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:14px 0 22px; }
+.tcard { border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:6px; }
+.tcard .when { font:600 11px Inter; letter-spacing:.08em; text-transform:uppercase; color:var(--a-ink); } .tcard h3 { margin:0; font:800 17px Inter; color:var(--ink); }
+.tcard p { margin:0; font-size:13.5px; color:var(--muted); } .tcard .go2 { margin-top:auto; padding-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--faint); }
+.rule { display:grid; grid-template-columns:22px minmax(0,1fr) 210px; gap:12px; padding:13px 0; border-top:1px solid #F2F4F7; font-size:14px; align-items:start; }
+.rule .t { font-weight:700; color:var(--ink); } .rule .d { font-size:13.5px; color:var(--muted); margin-top:2px; } .rule .w { font-size:13px; color:var(--body); }
+.ck { width:18px; height:18px; border-radius:4px; border:1.5px solid #D0D5DD; background:#fff; display:grid; place-items:center; padding:0; margin-top:2px; }
+.ck.on { background:var(--a); border-color:var(--a); } .ck.on::after { content:''; width:9px; height:5px; border:2px solid #fff; border-top:0; border-right:0; transform:rotate(-45deg) translate(1px,-1px); }
+.ask { color:var(--a-ink); font-weight:600; }
+.now { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin:6px 0 10px; }
+.vbar { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); z-index:40; display:flex; gap:4px; align-items:center; background:#0B1020; border-radius:10px; padding:5px; box-shadow:0 10px 30px rgba(16,24,40,.25); }
+.vbar span { color:#98A2B3; font-size:12px; padding:0 8px 0 6px; } .vbar button { background:none; border:0; color:#D0D5DD; border-radius:7px; padding:7px 12px; font-size:13px; font-weight:600; } .vbar button.on { background:#fff; color:var(--ink); }
+.foot { margin-top:26px; display:flex; justify-content:space-between; font-size:13.5px; color:var(--muted); flex-wrap:wrap; gap:8px; }
+@media (max-width:1000px) { .layout { grid-template-columns:1fr; } .rail { display:none; } .fr, .axis { grid-template-columns:20px 120px 1fr 56px; } .fr .c, .fr .n, .axis > :nth-child(n+5) { display:none; } .tcards { grid-template-columns:1fr; } .rule { grid-template-columns:22px 1fr; } .rule .w { grid-column:2; } .wf .top { grid-template-columns:1fr; } .qrow { grid-template-columns:1fr; } .qrow .nm { padding-left:0; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="pane"></main>
+<script>
+const T = window.TRK, D2 = window.TRK2, S = window.TRK_SETUP, C = window.A3C;
+T.topbar(document.getElementById('top'), { mock: 'A3, Tracking for the SEO',
+  note: 'A2 reworked from the owner\'s Oct 29 notes: Yesterday, dated comparisons, two chart versions (switch at the bottom), transitions, readouts above charts, "no real change" defined, rivals evidence, sources as a table, wrong facts traced, Alerts replaced by Weekly Workload tasks, Steadiness dropped. Real: the questions, prices, AI Overviews counts, the rival list, the Perplexity sedation quote. Everything else is sample, 8 weeks in (yesterday = Dec 26).' });
+const pane = document.getElementById('pane');
+const ALL = S.AIS.map((a) => a.key);
+let TRACK = { ais: [...ALL], qids: [...S.ORIGINAL.filter((id) => id !== 56), 901, 902] };
+const N = { all: 258, ai: { chatgpt: 42, gemini: 54, aio: 54, aimode: 54, perplexity: 54 } };   // answers a day (branded left out)
+const MARKERS = [{ day: 26, kind: 'work', text: '■ Nov 27: veneers page published' }, { day: 36, kind: 'method', text: '■ Dec 7: Perplexity updated its search' }, { day: 43, kind: 'track', text: '◆ Dec 14: tracking changed' }];
+const PERIODS = {
+  yday: { label: 'Yesterday', range: [55, 55], before: [48, 54], beforeLabel: 'the 7 days before' },
+  week: { label: 'Last 7 days', range: [49, 55], before: [42, 48], beforeLabel: 'the 7 days before' },
+  month: { label: 'Last 28 days', range: [28, 55], before: [0, 27], beforeLabel: 'the 28 days before' },
+  quarter: { label: 'This quarter', range: [0, 55], before: null, beforeLabel: 'the quarter before' },
+};
+const FIRST = [0, 6];
+let st = { period: 'week', compare: 'before', mode: 'all', version: 'A' };
+const P = () => PERIODS[st.period];
+const eff = () => (st.compare === 'first' || !P().before ? 'first' : 'before');
+const cmpRange = () => (eff() === 'first' ? FIRST : P().before);
+const cmpLabel = () => (eff() === 'first' ? `the first week (${C.span(...FIRST)})` : `${P().beforeLabel} (${C.span(...P().before)})`);
+const days = ([a, b]) => b - a + 1;
+const avgOf = (arr, [a, b]) => arr.slice(a, b + 1).reduce((t, v) => t + v, 0) / days([a, b]);
+const VERDICT = { up: 'real rise', down: 'real drop', none: 'no real change' };
+const VTIP = {
+  up: 'This period\'s likely range sits wholly above the compared period\'s, so the rise is bigger than chance.',
+  down: 'This period\'s likely range sits wholly below the compared period\'s, so the drop is bigger than chance.',
+  none: 'The two likely ranges overlap, so the difference could be chance: asking the same questions again could easily give the other number.',
+};
+const inTen = (v) => Math.round(v / 10);
+let chart;
+
+function summaryHtml() {
+  const s = stats('all'), [lo, hi] = C.range(s.now, s.n);
+  return `<span class="dt">${P().label}, ${C.span(...P().range)}</span><span><b>about ${inTen(s.now)} in every 10</b> answers named ${T.PRACTICE}</span><span>likely ${lo} to ${hi} in every 100, from ${s.n.toLocaleString()} answers</span><span class="mk">Hover the chart for a day or a week.</span>`;
+}
+/** now / compared rates and answer counts for 'all', an AI key, or a service. */
+function stats(key, svc) {
+  const r = P().range, c = cmpRange();
+  if (svc) { const dd = svc.w.flatMap((v) => Array(7).fill(v)), n1 = svc.q * 10; return { now: avgOf(dd, r), prev: avgOf(dd, c), n: n1 * days(r), nPrev: n1 * days(c) }; }
+  const src = key === 'all' ? chart.data.all.days : chart.data.ai[key].days, n1 = key === 'all' ? N.all : N.ai[key];
+  return { now: avgOf(src, r), prev: avgOf(src, c), n: n1 * days(r), nPrev: n1 * days(c) };
+}
+const SC = 70, pos = (v) => `${Math.min(100, (v / SC) * 100)}%`;
+function rowHtml(id, name, click, sub) {
+  return `<div class="fr ${click ? 'click' : ''} ${sub ? 'sub' : ''}" data-row="${id}">${click ? '<svg class="chev" viewBox="0 0 14 14"><path d="M5 3l4 4-4 4"/></svg>' : '<span></span>'}<span class="nm">${name}</span>
+    <span class="trk"><span class="rg"></span><span class="ln"></span><span class="was"></span><span class="nw"></span></span><span class="v"></span><span class="c tip"><span class="t"></span><span class="tipbox"></span></span><span class="n"></span></div>`;
+}
+function setRow(el, s) {
+  const [lo, hi] = C.range(s.now, s.n), v = C.verdict(s.now, s.n, s.prev, s.nPrev), a = Math.min(s.now, s.prev), b = Math.max(s.now, s.prev);
+  const q = (k) => el.querySelector(k);
+  Object.assign(q('.rg').style, { left: pos(lo), width: `calc(${pos(hi)} - ${pos(lo)})` });
+  q('.was').style.left = pos(s.prev); q('.nw').style.left = pos(s.now);
+  const ln = q('.ln'); ln.className = `ln ${v}`; Object.assign(ln.style, { left: pos(a), width: `calc(${pos(b)} - ${pos(a)})` });
+  q('.v').textContent = `${inTen(s.now)} in 10`;
+  const c = q('.c'); c.className = `c tip ${v}`; q('.c .t').textContent = `${v === 'up' ? '↑ ' : v === 'down' ? '↓ ' : ''}${VERDICT[v]}`;
+  q('.c .tipbox').innerHTML = `<b>${VERDICT[v][0].toUpperCase()}${VERDICT[v].slice(1)}</b>Now likely ${lo} to ${hi} in every 100 (${s.n.toLocaleString()} answers); ${cmpLabel()} likely ${C.range(s.prev, s.nPrev).join(' to ')} (${s.nPrev.toLocaleString()} answers). ${VTIP[v]}`;
+  q('.n').textContent = `${s.n.toLocaleString()} answers`;
+}
+const rkey = () => `<div class="rkey"><span><span class="sw" style="width:3px;height:14px;background:#98A2B3;border-radius:2px;display:inline-block"></span>${cmpLabel()}</span><span><span class="sw" style="width:12px;height:12px;border-radius:50%;background:var(--a);display:inline-block"></span>${P().label.toLowerCase()}</span><span><span class="sw" style="width:26px;height:10px;border-radius:5px;background:#DADDFB;display:inline-block"></span>likely range now</span><span><span class="sw" style="width:22px;height:2px;background:var(--a);display:inline-block"></span>arrow: a real change</span><span><span class="sw" style="width:22px;height:2px;background:repeating-linear-gradient(90deg,#98A2B3 0 3px,transparent 3px 6px);display:inline-block"></span>dotted: no real change</span></div>`;
+const axis = () => `<div class="axis"><span></span><span></span><span class="sc">${[0, 20, 40, 60].map((v) => `<span style="left:${pos(v)}">${v ? `${v / 10} in 10` : 0}</span>`).join('')}</span><span></span><span>Against ${cmpLabel().split(' (')[0]}</span><span></span></div>`;
+
+function questionsFor(svc) {
+  return D2.QUESTIONS.filter((q) => q.service === svc).map((q) => {
+    const d = days(P().range), n = 10 * d, k = Math.round((q.rate / 100) * n), aio = S.QUESTIONS.find((x) => x.text === q.text);
+    const yd = st.period === 'yday';
+    const rate = yd ? `Yesterday's <b>${n} answers</b> named ${T.PRACTICE} in <b>${k}</b>. Two asks on each AI is too few for a rate: <a href="#">read what they said</a>.` : `Named in <b>${k} of ${n}</b> answers, about ${inTen(q.rate)} in every 10`;
+    let aiol = '';
+    if (aio && aio.ok) {
+      const sn = 2 * d, shown = Math.round((sn * aio.shown) / aio.ok), named = aio.shown ? Math.round((shown * aio.named) / aio.shown) : 0;
+      aiol = `<span class="aiol"><span class="aidot" style="background:#EA4335"></span>AI Overviews: Google showed an Overview on ${S.seen(shown, sn, 'shown', '')} searches${shown ? `; when it did, it named ${T.PRACTICE} in ${S.seen(named, shown, 'named', '')}` : ''}</span>`;
+    }
+    return `<div class="qrow"><span></span><span class="nm">${q.text}${aiol}<a href="#">See the answers →</a></span><span class="r">${rate}</span></div>`;
+  }).join('') || '<p class="small" style="padding-left:34px">Questions are shown for the sample services only.</p>';
+}
+
+function full() {
+  const aiNames = Object.fromEntries(T.AIS.map((a) => [a.key, a.name]));
+  pane.innerHTML = `<div class="layout"><nav class="rail">${[['overview', 'Overview'], ['ais', 'By AI'], ['services', 'Services and questions'], ['rivals', 'Rivals'], ['sources', 'Sources'], ['facts', 'Wrong facts'], ['tasks', 'Tasks'], ['track', 'What we track']].map(([k, l], i) => `${i === 4 ? '<span class="sep"></span>' : ''}<a href="#${k}" data-k="${k}">${l}</a>`).join('')}</nav><div>
+    <div class="controls"><div class="seg" id="per"><span class="pill"></span>${Object.entries(PERIODS).map(([k, p]) => `<button data-p="${k}">${p.label}</button>`).join('')}</div>
+      <span>compared with</span><div class="dd" id="cmp"><button type="button"><span class="v"></span><svg viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3"/></svg></button><div class="menu"></div></div></div>
+    <section class="s" id="overview" style="padding-top:22px"><div class="eyebrow" id="ovEye"></div><h2 class="mid" id="ovH"></h2>
+      <div class="stat" id="ovStat"></div>
+      <div class="lbls">How AI named ${T.PRACTICE}:
+        <span class="tip"><b id="lbR"></b> recommended<span class="tipbox"><b>Recommended</b>The answer puts the practice forward as a good choice: a top pick, or praised. "Kari Mann Dental Studio is a great option for anxious patients."</span></span>
+        <span class="tip"><b id="lbL"></b> listed<span class="tipbox"><b>Listed</b>One of several options, with no push either way. A list of five Cape Coral dentists that includes the practice.</span></span>
+        <span class="tip"><b id="lbM"></b> mentioned in passing<span class="tipbox"><b>Mentioned in passing</b>Named as a side note, or only in a source or a caveat, never offered as a choice. Still counts as named.</span></span></div>
+      <div class="note" id="ydNote" hidden></div>
+      <div class="box"><div class="boxhd"><div class="key" id="ckey"></div><div class="seg" id="view"><span class="pill"></span><button data-v="all">All AIs</button><button data-v="each">Each AI</button></div></div>
+        <div id="main"></div>
+        <div class="mks">${MARKERS.map((m) => `<span><i style="background:${m.kind === 'work' ? '#4F46E5' : m.kind === 'track' ? '#0B1020' : '#98A2B3'};${m.kind === 'track' ? 'transform:rotate(45deg);width:8px;height:8px;' : ''}"></i>${m.text.slice(2)}</span>`).join('')}</div></div>
+    </section>
+    <section class="s" id="ais"><div class="eyebrow">By AI</div><h2 class="mid" id="aiH"></h2><p class="small">Click an AI to see its services.</p>
+      <div id="aiKey"></div><div id="aiAxis"></div>
+      ${T.AIS.map((a) => `${rowHtml(`ai-${a.key}`, `<span class="aidot" style="background:${a.dot}"></span>${a.name}`, true)}<div class="kids" data-kids="ai-${a.key}"><div><div class="in">${a.key === 'aio' ? '<p class="small" style="padding:4px 34px 8px">Only searches where Google showed an Overview count. Each question\'s two numbers are under Services and questions.</p>' : ''}${T.SERVICES.map((s) => rowHtml(`ai-${a.key}-${s.name}`, s.name, false, true)).join('')}</div></div></div>`).join('')}
+      <p class="small" style="margin-top:12px">Perplexity: grey marker on Dec 7. ${T.MARKERS[1].detail}</p></section>
+    <section class="s" id="services"><div class="eyebrow">Services and questions</div><h2 class="mid" id="svH"></h2><p class="small">Click a service for its questions. For AI Overviews each question shows two numbers: how often Google showed an Overview, and when it did, how often it named ${T.PRACTICE}.</p>
+      <div id="svKey"></div><div id="svAxis"></div>
+      ${T.SERVICES.map((s) => `${rowHtml(`sv-${s.name}`, s.name, true)}<div class="kids" data-kids="sv-${s.name}"><div><div class="in" data-qs="${s.name}"></div></div></div>`).join('')}</section>
+    <section class="s" id="rivals"><div class="eyebrow">Rivals</div><h2 class="mid">Smile Cape Coral is gaining, mostly on sedation.</h2>
+      <p class="small">Out of every 100 times AI named any dentist for these questions. Each week is a flat step.</p>
+      <div class="box"><div id="share"></div><div class="key" style="margin-top:6px">${[['Kari Mann Dental Studio', '#4F46E5'], ['Cape Dental Care', '#F9A8D4'], ['Smile Cape Coral', '#DB2777']].map(([n, c]) => `<span><span class="sw" style="width:16px;height:3px;background:${c};display:inline-block"></span>${n}</span>`).join('')}</div></div>
+      <button class="evbtn" id="evb">The evidence: where Smile Cape Coral gained <svg viewBox="0 0 12 12"><path d="M3 4.5l3 3 3-3"/></svg></button>
+      <div class="kids" id="ev"><div><div class="in">
+        <table class="tbl" style="margin-top:12px"><thead><tr><th>Service</th><th class="num">Nov 1 to 28</th><th class="num">Nov 29 to Dec 26</th><th>Change</th></tr></thead><tbody>
+          ${[['Sedation', 4, 8, 27, 'up'], ['Implants', 4, 12, 15, 'none'], ['Whitening', 3, 10, 11, 'none'], ['Veneers', 3, 5, 6, 'none'], ['Emergency', 3, 14, 13, 'none']].map(([s, q, a, b, v]) => { const n = q * 280; return `<tr><td class="dom">${s}</td><td class="num">named in ${Math.round((n * a) / 100)} of ${n.toLocaleString()}</td><td class="num">named in ${Math.round((n * b) / 100)} of ${n.toLocaleString()}</td><td class="${v === 'up' ? 'up' : 'small'}">${v === 'up' ? '↑ real rise' : 'no real change'}</td></tr>`; }).join('')}</tbody></table>
+        <p class="small" style="margin-top:10px">Of the 302 sedation answers that named Smile Cape Coral since Nov 29, 190 did not name ${T.PRACTICE}.</p>
+        <div class="quote"><q>Smile Cape Coral: Nitrous oxide and oral sedation. 3730 Del Prado Blvd S</q><div class="small">Perplexity, asked "Sedation dentistry for anxious patients in Cape Coral". Real, from the Oct 28 Snapshot. <a href="#">See the 302 answers</a></div></div>
+        <p class="small" style="margin-top:10px">What it reads: AI cited smilecapecoral.com/sedation-dentistry in 141 of those answers; ${T.PRACTICE}'s sedation page in 38.</p>
+      </div></div></div></section>
+    <section class="s" id="sources"><div class="eyebrow">Sources · last 28 days</div><h2 class="mid">Where AI gets its information.</h2>
+      <p class="small">Every link the AIs put in their answers, by site. Links change fast from one ask to the next, so this always reads 28 days.</p>
+      <table class="tbl"><thead><tr><th>Site</th><th class="num">In answers</th><th class="num" style="white-space:nowrap">Also named Kari Mann</th><th>Next</th></tr></thead><tbody>
+        <tr class="grp"><td colspan="4">Mostly in answers that name rivals</td></tr>
+        ${[['opencare.com', 'A dentist booking and review site', 36, 3, 'Check the Opencare profile'], ['zocdoc.com', 'A booking site with patient reviews', 111, 24, 'Check the Zocdoc profile'], ['doctor.webmd.com', 'A doctor directory', 49, 14, 'Check the WebMD profile']].map(([d, p, n, k, a]) => `<tr><td><span class="dom">${d}</span><span class="why">${p}</span></td><td class="num">${n}</td><td class="num">${k}</td><td><a href="#">${a}</a> &nbsp; <button class="btn mini" data-task="src">Make a task</button></td></tr>`).join('')}
+        <tr class="grp"><td colspan="4">New in the last 28 days</td></tr>
+        <tr><td><span class="dom">karimanndentalstudio.com</span><span class="path">/cosmetic/porcelain-veneers</span><span class="why">The new veneers page, cited by Gemini and AI Mode</span></td><td class="num">41</td><td class="num">41</td><td class="small">Working: keep it</td></tr>
+        <tr><td><span class="dom">capecoraldentists.org</span><span class="why">A local directory, first cited Dec 15</span></td><td class="num">9</td><td class="num">2</td><td><a href="#">Check its listing</a></td></tr>
+        <tr class="grp"><td colspan="4">No longer cited</td></tr>
+        <tr><td><span class="dom">yelp.com</span><span class="why">Not cited since Dec 11 for any practice: an AI change, not a loss for ${T.PRACTICE}</span></td><td class="num">0 <span class="small">(was 12)</span></td><td class="num">0</td><td class="small">Nothing to do</td></tr>
+      </tbody></table></section>
+    <section class="s" id="facts"><div class="eyebrow">Wrong facts</div><h2 class="mid">Two wrong facts still showing, each traced to where AI likely read it.</h2>
+      <p class="small">For each wrong fact we check, in order: the pages the AI linked in those answers, ${T.PRACTICE}'s own site (with its schema markup: the hidden data that tells Google the phone, hours and address), and its Google Business Profile. Not built yet; this shows how it would work.</p>
+      <div class="wf"><div class="top"><span><span class="k">AI said</span><span class="said">Open Saturdays 9 to 1</span><div class="small">Gemini and AI Mode · 7 answers · Dec 9 to Dec 26</div></span><span><span class="k">Our data (CRM)</span>Closed Saturdays</span><span><span class="k">Status</span>still showing</span></div>
+        <div class="found">Found on <b>${T.PRACTICE}'s own site</b>: the schema markup on the homepage lists <b>Saturday 09:00 to 13:00</b>. Visitors never see it, but Google reads it.</div>
+        <ul class="checks"><li><span class="ic miss">–</span><span>Pages the AI linked: 9 pages checked, not on any of them</span></li><li><span class="ic hit">!</span><span>karimanndentalstudio.com: schema markup on 1 page says Saturday 9 to 1; the visible hours say closed</span></li><li><span class="ic match">✓</span><span>Google Business Profile: closed Saturdays, matches our data</span></li></ul>
+        <div class="act"><span>Fix: correct the hours in the site's schema markup.</span><button class="btn mini" data-task="fact">Make a task</button></div></div>
+      <div class="wf"><div class="top"><span><span class="k">AI said</span><span class="said">"Dr. Kinn"</span><div class="small">Perplexity · 3 answers · Nov 3 to Dec 22</div></span><span><span class="k">Our data (CRM)</span>Dr. Kari Mann</span><span><span class="k">Status</span>still showing</span></div>
+        <div class="found">Not found anywhere we checked. Perplexity most likely misspelled the name itself.</div>
+        <ul class="checks"><li><span class="ic miss">–</span><span>Pages Perplexity linked: 5 pages checked, not on any of them</span></li><li><span class="ic match">✓</span><span>karimanndentalstudio.com, including schema markup: "Dr. Kari Mann" everywhere</span></li><li><span class="ic match">✓</span><span>Google Business Profile: "Dr. Kari Mann"</span></li></ul>
+        <div class="act"><span>Nothing on our side to fix. Watch it: a task is worth it only if it keeps showing.</span></div></div>
+      <div class="wf"><div class="top"><span><span class="k">AI said</span><span class="said">Closed Fridays</span><div class="small">Gemini · 5 answers · Nov 12 to Dec 2</div></span><span><span class="k">Our data (CRM)</span>Friday 8 a.m. to noon</span><span><span class="k">Status</span><span class="ok">gone since Dec 2</span></span></div>
+        <div class="found">Was found on <b>yelp.com/biz/kari-mann-dental-studio-cape-coral</b>: "Fri Closed". Fixed on Yelp Nov 28; AI stopped saying it Dec 2.</div></div>
+    </section>
+    <section class="s" id="tasks"><div class="eyebrow">Tasks</div><h2 class="mid">What lands on the SEO's Weekly Workload.</h2>
+      <p class="small">No Slack. Two kinds of task, both made like every other task in OpenedQueries; preview either one to see who gets it, when, and what it says.</p>
+      <div class="tcards">
+        <div class="tcard"><span class="when">Every Monday</span><h3>Review ${T.PRACTICE}'s AI Visibility week</h3><p>The week in a few lines, anything that moved (below), any new wrong fact with a Make a task button. About 15 minutes.</p><div class="go2"><span>Next: Monday Dec 28</span><button class="btn mini" data-task="week">Preview the task</button></div></div>
+        <div class="tcard"><span class="when">When a drop holds for 4 weeks</span><h3>Find out why AI names ${T.PRACTICE} less</h3><p>Comes already worked out: which AI, which services, who took the place, what AI stopped reading. About 45 minutes.</p><div class="go2"><span>None so far</span><button class="btn mini" data-task="drop">Preview an example</button></div></div></div>
+      <h4 style="margin:0 0 2px;color:var(--ink)">What Monday's review reports</h4>
+      ${[
+    ['A real rise or drop for the practice', 'The last 4 weeks\' likely range doesn\'t overlap the 4 weeks before. Example: "likely 33 to 37" against "27 to 30". One or two weeks is never enough.', 'In the review. A drop that holds also makes its own task.'],
+    ['A service moves', 'The same test for one service. A service has fewer answers, so it needs the full 4 weeks to clear its range.', 'In the review'],
+    ['A rival gains', 'Over a month (4 weeks against the 4 before), and again over a quarter (13 weeks against the 13 before).', 'In the review'],
+    ['A new wrong fact', 'A fact that disagrees with our data, seen in <span class="ask">2 or more answers (your call: 1 or 2)</span>, then traced.', 'In the review, with a Make a task button'],
+    ['An AI changes how it answers', 'Every practice moves the same week on one AI (like Perplexity on Dec 7). Marked on the chart, explained, never blamed on the practice.', 'In the review, never a task'],
+  ].map(([t, d, w]) => `<div class="rule"><button class="ck on" aria-label="${t}"></button><span><div class="t">${t}</div><div class="d">${d}</div></span><span class="w">${w}</span></div>`).join('')}
+    </section>
+    <section class="s" id="track" style="border:0"><div class="eyebrow">What we track</div><h2 class="mid">${TRACK.qids.length} questions on ${TRACK.ais.length === 5 ? 'all 5 AIs' : `${TRACK.ais.length} AIs`}, about ${S.usd(S.price(TRACK.ais, TRACK.qids).total)} a month.</h2>
+      <div class="now"><span>${TRACK.ais.map((k) => `<span class="aidot" style="background:${S.AIS.find((a) => a.key === k).dot}"></span>${aiNames[k]}`).join(' &nbsp; ')}</span><button class="btn go" data-change>Change what we track</button></div>
+      <p class="small">Changed Dec 14: 2 questions added, "Top rated dentists in Cape Coral" stopped (its 6 weeks of answers kept). Every change is a dark diamond on the charts. The full change flow is on <a href="ai-visibility-tracking-a2-analytic.html#track">A2</a>.</p></section>
+    <div class="foot"><span>Yesterday's asks finished at 7:40 p.m. · next asks this morning at 7</span><span>$27.80 spent this month · <a href="#">Stop tracking</a></span></div>
+  </div></div>`;
+  chart = C.build(pane.querySelector('#main'), { T, S, n: N, markers: MARKERS, summary: summaryHtml });
+  C.weekly(pane.querySelector('#share'), { lines: [{ name: T.PRACTICE, w: T.RIVALS[0].w.map((v) => v / 10), color: '#4F46E5', lead: true }, { name: 'Cape Dental Care', w: T.RIVALS[1].w.map((v) => v / 10), color: '#F9A8D4' }, { name: 'Smile Cape Coral', w: T.RIVALS[2].w.map((v) => v / 10), color: '#DB2777' }],
+    fmt: (v) => `about ${Math.round(v)} of 100`, title: '<span class="dt">Each week</span><span>Hover the chart for a week\'s numbers.</span>' });
+  wire(); update();
+}
+
+function segPill(seg) { const on = seg.querySelector('button.on'), pill = seg.querySelector('.pill'); if (on) { pill.style.left = `${on.offsetLeft}px`; pill.style.width = `${on.offsetWidth}px`; } }
+function update() {
+  const q = (s) => pane.querySelector(s);
+  pane.querySelectorAll('#per button').forEach((b) => { b.classList.toggle('on', b.dataset.p === st.period); }); segPill(q('#per'));
+  pane.querySelectorAll('#view button').forEach((b) => { b.classList.toggle('on', b.dataset.v === st.mode); }); segPill(q('#view'));
+  q('#cmp .v').textContent = cmpLabel();
+  q('#cmp .menu').innerHTML = `<button data-c="before" class="${eff() === 'before' ? 'on' : ''}" ${P().before ? '' : 'disabled'}>${P().before ? `${P().beforeLabel[0].toUpperCase()}${P().beforeLabel.slice(1)} (${C.span(...P().before)})` : 'The quarter before'}<small>${P().before ? 'Is this better than last time?' : 'Not yet: tracking started Nov 1'}</small></button>
+    <button data-c="first" class="${eff() === 'first' ? 'on' : ''}">The first week (${C.span(...FIRST)})<small>Is this better than where we started?</small></button>`;
+  chart.set({ mode: st.mode, version: st.version, period: P().range, compare: cmpRange() });
+  const s = stats('all'), v = C.verdict(s.now, s.n, s.prev, s.nPrev), [lo, hi] = C.range(s.now, s.n);
+  q('#ovEye').textContent = `Overview · ${P().label.toLowerCase()}, ${C.span(...P().range)}`;
+  q('#ovH').textContent = `AI named ${T.PRACTICE} in about ${inTen(s.now)} in every 10 answers ${st.period === 'yday' ? 'yesterday' : ''}: ${v === 'none' ? `no real change from ${cmpLabel().split(' (')[0]}` : `a ${VERDICT[v]} from ${cmpLabel().split(' (')[0]}`}.`.replace('  ', ' ').replace(' :', ':');
+  const named = Math.round((s.now / 100) * s.n);
+  q('#ovStat').innerHTML = `<span>Named in <b>${named.toLocaleString()} of ${s.n.toLocaleString()}</b> answers</span><span class="tip">Likely <b>${lo} to ${hi}</b> in every 100<span class="tipbox"><b>Likely range</b>We saw ${named.toLocaleString()} of ${s.n.toLocaleString()}. In reality, if the same questions were asked all over again, the count would most likely land between ${lo} and ${hi} in every 100. More answers make the range narrower.</span></span><span>${cmpLabel()[0].toUpperCase()}${cmpLabel().slice(1)}: <b>${C.range(s.prev, s.nPrev).join(' to ')}</b></span><span class="tip">Named first in <b>${Math.round(named * 0.37).toLocaleString()}</b><span class="tipbox"><b>Named first</b>Answers that put the practice before any other. A count, not a rank: the order inside an answer changes almost every time.</span></span>`;
+  q('#lbR').textContent = Math.round(named * 0.41).toLocaleString(); q('#lbL').textContent = Math.round(named * 0.49).toLocaleString(); q('#lbM').textContent = (named - Math.round(named * 0.41) - Math.round(named * 0.49)).toLocaleString();
+  const yd = q('#ydNote'); yd.hidden = st.period !== 'yday';
+  yd.innerHTML = `<b>One day is about ${N.all} answers</b>, so its likely range is wide (${lo} to ${hi}). A week of answers narrows it to about 4 points. Yesterday is compared with the 7 days before it, because two single days are both too loose to tell apart.`;
+  q('#ckey').innerHTML = st.mode === 'each' ? T.AIS.map((a) => `<span><span class="sw" style="${st.version === 'A' ? 'width:16px;height:3px' : 'width:10px;height:10px;border-radius:2px'};background:${a.dot};display:inline-block"></span>${a.name}</span>`).join('')
+    : st.version === 'A' ? `<span><span class="sw" style="width:5px;height:14px;background:#C7CBF5;border-radius:1px;display:inline-block"></span>each day: about ${N.all} answers, swings a lot</span><span><span class="sw" style="width:22px;height:3px;background:#4338CA;display:inline-block"></span>each week: 7 days together, about ${(N.all * 7).toLocaleString()} answers</span><span><span class="sw" style="width:22px;height:10px;background:rgba(79,70,229,.16);display:inline-block"></span>likely range of the week</span>`
+      : `<span><span class="sw" style="width:12px;height:14px;background:#C7CBF5;border-radius:2px;display:inline-block"></span>each week, about ${(N.all * 7).toLocaleString()} answers</span><span><span class="sw" style="width:2px;height:14px;background:#312E81;display:inline-block"></span>likely range of the week</span><span><span class="sw" style="width:6px;height:6px;border-radius:50%;background:#4338CA;display:inline-block"></span>hover a week for its days</span>`;
+  ['aiKey', 'svKey'].forEach((k) => { q(`#${k}`).innerHTML = rkey(); }); ['aiAxis', 'svAxis'].forEach((k) => { q(`#${k}`).innerHTML = axis(); });
+  const moved = (rows) => { const up = rows.filter((r) => r.v === 'up').map((r) => r.n), dn = rows.filter((r) => r.v === 'down').map((r) => r.n); const l = (a) => (a.length > 1 ? `${a.slice(0, -1).join(', ')} and ${a.at(-1)}` : a[0]);
+    return !up.length && !dn.length ? `No real change on any one ${rows.kind} against ${cmpLabel().split(' (')[0]}.` : `${up.length ? `${l(up)} rose` : ''}${up.length && dn.length ? '; ' : ''}${dn.length ? `${l(dn)} dropped` : ''}, against ${cmpLabel().split(' (')[0]}.`; };
+  const aiRows = T.AIS.map((a) => { const s2 = stats(a.key); setRow(q(`[data-row="ai-${a.key}"]`), s2);
+    T.SERVICES.forEach((sv) => { const s3 = stats(null, { ...sv, w: sv.w.map((x, i) => Math.max(0, Math.min(95, x + (a.w[i] - T.OVERALL[i]) * 1.2))), q: sv.q / 5 * 1 }); setRow(q(`[data-row="ai-${a.key}-${sv.name}"]`), s3); });
+    return { n: a.name, v: C.verdict(s2.now, s2.n, s2.prev, s2.nPrev) }; }); aiRows.kind = 'AI';
+  q('#aiH').textContent = moved(aiRows);
+  const svRows = T.SERVICES.map((sv) => { const s2 = stats(null, sv); setRow(q(`[data-row="sv-${sv.name}"]`), s2); q(`[data-qs="${sv.name}"]`).innerHTML = questionsFor(sv.name); return { n: sv.name, v: C.verdict(s2.now, s2.n, s2.prev, s2.nPrev) }; }); svRows.kind = 'service';
+  q('#svH').textContent = moved(svRows);
+  pane.querySelectorAll('#ovH, #ovStat, #aiH, #svH').forEach((e) => e.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 450 }));
+}
+
+function wire() {
+  pane.querySelector('#per').onclick = (e) => { const p = e.target.dataset?.p; if (p) { st.period = p; update(); } };
+  pane.querySelector('#view').onclick = (e) => { const v = e.target.dataset?.v; if (v) { st.mode = v; update(); } };
+  const dd = pane.querySelector('#cmp');
+  dd.querySelector(':scope > button').onclick = (e) => { e.stopPropagation(); dd.classList.toggle('open'); };
+  dd.querySelector('.menu').onclick = (e) => { const b = e.target.closest('button'); if (b && !b.disabled) { st.compare = b.dataset.c; dd.classList.remove('open'); update(); } };
+  document.addEventListener('click', () => dd.classList.remove('open'));
+  pane.querySelectorAll('.fr.click').forEach((r) => { r.onclick = () => { const k = pane.querySelector(`[data-kids="${r.dataset.row}"]`); r.classList.toggle('open'); k.classList.toggle('open'); }; });
+  const evb = pane.querySelector('#evb'); evb.onclick = () => { evb.classList.toggle('open'); pane.querySelector('#ev').classList.toggle('open'); };
+  pane.querySelectorAll('[data-task]').forEach((b) => { b.onclick = () => A3T.open(TASKS[b.dataset.task]()); });
+  pane.querySelector('[data-change]').onclick = () => S.chooser(pane, { mode: 'change', now: TRACK, onCancel: full, onSave: (r) => { TRACK = { ais: r.ais, qids: r.qids }; full(); } });
+  const links = pane.querySelectorAll('.rail a');
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a) => a.classList.toggle('on', a.dataset.k === e.target.id)); }), { rootMargin: '-30% 0px -60% 0px' });
+  pane.querySelectorAll('section.s').forEach((s) => io.observe(s));
+}
+
+const COMMENT = (what) => `<span class="at">@Kari Mann's SEO</span> ${what} <span class="at">@Kari Mann's MS</span> is following. Made by OpenedQueries from AI Visibility Tracking.`;
+const TASKS = {
+  week: () => ({ step: 'Weekly Workload task · preview', title: `Review ${T.PRACTICE}'s AI Visibility week`, from: `<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · week of Dec 20 to 26`,
+    when: '<b>Made every Monday at 7 a.m.</b>, after Sunday evening\'s asks finish. Lands on this week\'s Weekly Workload for the client\'s SEO; the MS follows it.',
+    week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 15, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    description: `AI Visibility, week of Dec 20 to 26 (1,806 answers).
+
+The week: AI named Kari Mann Dental Studio in about 4 in every 10 answers. Against the first week (Nov 1 to 7): a real rise.
+
+What moved over the last 4 weeks:
+- Veneers: about 2 in 10 to about 6 in 10, a real rise since the veneers page went up Nov 27.
+- Gemini and AI Mode: real rises. Perplexity: lower since its Dec 7 update, the same for every practice.
+- Smile Cape Coral: up on sedation over the month (named in 90 of 1,120 sedation answers Nov 1 to 28, 302 of 1,120 since).
+
+New wrong fact: "Open Saturdays 9 to 1" (Gemini and AI Mode, 7 answers). Traced to the site's schema markup. Make a task from the Tracking page if it needs fixing.
+
+Read the week: openedqueries.com/tools/ai-visibility/kari-mann/tracking`,
+    comment: COMMENT('here is this week\'s AI Visibility review.') }),
+  drop: () => ({ step: 'Weekly Workload task · example preview', title: `Find out why AI names ${T.PRACTICE} less`, from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · example: this has not happened',
+    when: '<b>Made on the Monday a drop has held for 4 weeks</b>: the last 4 weeks\' likely range sits wholly below the 4 weeks before. Never made for a drop every practice shares on one AI.',
+    week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Fri, Jan 1', section: 'The SEO\'s client lane', estimate: 45, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    description: `AI named Kari Mann Dental Studio less for 4 weeks: likely 29 to 32 in every 100 in the 4 weeks to Dec 26, against 38 to 41 in the 4 weeks before.
+
+Where the drop is:
+- AI: mostly AI Mode (about 46 to 31 in every 100). ChatGPT and Gemini: no real change.
+- Services: Implants (44 to 30) and Sedation (52 to 38). Everything else: no real change.
+- Who took the place: Smile Cape Coral, named in 41 of the implant answers that left Kari Mann out.
+- What AI reads: karimanndentalstudio.com/dental-implants stopped being cited (was in 22 answers). opencare.com is in 30 implant answers that name rivals.
+- Not an AI update: the other tracked practices held steady on AI Mode in the same weeks.
+
+Start here: check the implants page (still live? changed recently?) and Kari Mann's Opencare profile.
+The answers behind this: openedqueries.com/tools/ai-visibility/kari-mann/tracking#services`,
+    comment: COMMENT('AI Visibility found a drop that held for 4 weeks; the task says where.') }),
+  fact: () => ({ step: 'Weekly Workload task · preview', title: 'Fix the Saturday hours in the site\'s schema markup', from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · wrong fact',
+    when: '<b>Made when the SEO clicks Make a task</b>, one task per wrong fact.', week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    description: `Gemini and AI Mode say Kari Mann Dental Studio is "open Saturdays 9 to 1" (7 answers, Dec 9 to 26). Our data: closed Saturdays.
+
+Where it comes from: the schema markup on karimanndentalstudio.com's homepage lists Saturday 09:00 to 13:00. The visible hours and the Google Business Profile both say closed.
+
+Fix: remove Saturday from the openingHours in the homepage schema markup, then check it with Google's Rich Results Test.`,
+    comment: COMMENT('AI Visibility traced a wrong fact to the site\'s schema markup.') }),
+  src: () => ({ step: 'Weekly Workload task · preview', title: 'Check Kari Mann Dental Studio\'s Opencare profile', from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · sources',
+    when: '<b>Made when the SEO clicks Make a task.</b>', week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    description: `AI linked opencare.com in 36 answers in the last 28 days; only 3 of them named Kari Mann Dental Studio.
+
+Check: is the practice listed on Opencare? Are its services (implants, sedation, veneers) and hours right?`,
+    comment: COMMENT('AI often reads Opencare when it names other dentists.') }),
+};
+
+function vbar() {
+  const b = document.createElement('div'); b.className = 'vbar';
+  b.innerHTML = '<span>Chart</span><button data-v="A" class="on">A: weeks as steps, days as bars</button><button data-v="B">B: weeks as columns</button>';
+  b.onclick = (e) => { const v = e.target.dataset?.v; if (!v) return; st.version = v; b.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x.dataset.v === v)); if (chart) update(); };
+  document.body.appendChild(b);
+}
+vbar(); full();
+</script>
+</body>
+</html>
