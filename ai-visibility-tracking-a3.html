@@ -222,7 +222,7 @@ function full() {
       </div></div></div></section>
     <section class="s" id="sources"><div class="eyebrow">Sources · last 28 days</div><h2 class="mid">Where AI gets its information.</h2>
       <p class="small">Every link the AIs put in their answers, by site. Links change fast from one ask to the next, so this always reads 28 days.</p>
-      <table class="tbl"><thead><tr><th>Site</th><th class="num">In answers</th><th class="num" style="white-space:nowrap">Also named Kari Mann</th><th>Next</th></tr></thead><tbody>
+      <table class="tbl"><thead><tr><th>Site</th><th class="num">In answers</th><th class="num" style="white-space:nowrap"><span class="tip">Of those, named Kari Mann<span class="tipbox" style="white-space:normal;left:auto;right:0;text-align:left"><b>Of those, named Kari Mann</b>Of the answers that cited this site, how many also named Kari Mann Dental Studio. A site cited often but rarely next to Kari Mann mostly feeds answers about rivals: opencare.com was cited in 36 answers and only 3 of them named Kari Mann.</span></span></th><th>Next</th></tr></thead><tbody>
         <tr class="grp"><td colspan="4">Mostly in answers that name rivals</td></tr>
         ${[['opencare.com', 'A dentist booking and review site', 36, 3, 'Check the Opencare profile'], ['zocdoc.com', 'A booking site with patient reviews', 111, 24, 'Check the Zocdoc profile'], ['doctor.webmd.com', 'A doctor directory', 49, 14, 'Check the WebMD profile']].map(([d, p, n, k, a]) => `<tr><td><span class="dom">${d}</span><span class="why">${p}</span></td><td class="num">${n}</td><td class="num">${k}</td><td><a href="#">${a}</a> &nbsp; <button class="btn mini" data-task="src">Make a task</button></td></tr>`).join('')}
         <tr class="grp"><td colspan="4">New in the last 28 days</td></tr>
@@ -322,7 +322,7 @@ const COMMENT = (what) => `<span class="at">@Kari Mann's SEO</span> ${what} <spa
 const TASKS = {
   week: () => ({ step: 'Weekly Workload task · preview', title: `Review ${T.PRACTICE}'s AI Visibility week`, from: `<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · week of Dec 20 to 26`,
     when: '<b>Made every Monday at 7 a.m.</b>, after Sunday evening\'s asks finish. Lands on this week\'s Weekly Workload for the client\'s SEO; the MS follows it.',
-    week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 15, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 15, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
     description: `AI Visibility, week of Dec 20 to 26 (1,806 answers).
 
 The week: AI named Kari Mann Dental Studio in about 4 in every 10 answers. Against the first week (Nov 1 to 7): a real rise.
@@ -338,7 +338,7 @@ Read the week: openedqueries.com/tools/ai-visibility/kari-mann/tracking`,
     comment: COMMENT('here is this week\'s AI Visibility review.') }),
   drop: () => ({ step: 'Weekly Workload task · example preview', title: `Find out why AI names ${T.PRACTICE} less`, from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · example: this has not happened',
     when: '<b>Made on the Monday a drop has held for 4 weeks</b>: the last 4 weeks\' likely range sits wholly below the 4 weeks before. Never made for a drop every practice shares on one AI.',
-    week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Fri, Jan 1', section: 'The SEO\'s client lane', estimate: 45, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    assignee: 'Kari Mann\'s SEO', due: 'Fri, Jan 1', section: 'The SEO\'s client lane', estimate: 45, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
     description: `AI named Kari Mann Dental Studio less for 4 weeks: likely 29 to 32 in every 100 in the 4 weeks to Dec 26, against 38 to 41 in the 4 weeks before.
 
 Where the drop is:
@@ -352,7 +352,7 @@ Start here: check the implants page (still live? changed recently?) and Kari Man
 The answers behind this: openedqueries.com/tools/ai-visibility/kari-mann/tracking#services`,
     comment: COMMENT('AI Visibility found a drop that held for 4 weeks; the task says where.') }),
   fact: () => ({ step: 'Weekly Workload task · preview', title: 'Fix the Saturday hours in the site\'s schema markup', from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · wrong fact',
-    when: '<b>Made when the SEO clicks Make a task</b>, one task per wrong fact.', week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    when: '<b>Made when the SEO clicks Make a task</b>, one task per wrong fact.', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
     description: `Gemini and AI Mode say Kari Mann Dental Studio is "open Saturdays 9 to 1" (7 answers, Dec 9 to 26). Our data: closed Saturdays.
 
 Where it comes from: the schema markup on karimanndentalstudio.com's homepage lists Saturday 09:00 to 13:00. The visible hours and the Google Business Profile both say closed.
@@ -360,7 +360,7 @@ Where it comes from: the schema markup on karimanndentalstudio.com's homepage li
 Fix: remove Saturday from the openingHours in the homepage schema markup, then check it with Google's Rich Results Test.`,
     comment: COMMENT('AI Visibility traced a wrong fact to the site\'s schema markup.') }),
   src: () => ({ step: 'Weekly Workload task · preview', title: 'Check Kari Mann Dental Studio\'s Opencare profile', from: '<b>Kari Mann Dental Studio</b> · AI Visibility Tracking · sources',
-    when: '<b>Made when the SEO clicks Make a task.</b>', week: 'This week', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
+    when: '<b>Made when the SEO clicks Make a task.</b>', assignee: 'Kari Mann\'s SEO', due: 'Wed, Dec 30', section: 'The SEO\'s client lane', estimate: 20, sum: 'Creates the task in Asana, puts it on this week\'s Weekly Workload and posts the comment.', action: 'Create task',
     description: `AI linked opencare.com in 36 answers in the last 28 days; only 3 of them named Kari Mann Dental Studio.
 
 Check: is the practice listed on Opencare? Are its services (implants, sedation, veneers) and hours right?`,

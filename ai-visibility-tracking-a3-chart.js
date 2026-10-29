@@ -50,11 +50,21 @@
   /** A week line's points: mid-week, held flat to the first and last day so it spans the chart like the day line. */
   const weekPts = (weeks, last) => [[0, weeks[0]], ...weeks.map((v, i) => [7 * i + 3, v]), [last, weeks[weeks.length - 1]]];
 
+  /** Holds a readout line at the height of the tallest thing it can show, so hovering never moves the chart. */
+  function lockRow(row, renders) {
+    row.style.minHeight = '';
+    let tall = 0;
+    renders.forEach((r) => { r(); tall = Math.max(tall, row.offsetHeight); });
+    row.style.minHeight = `${tall}px`;
+  }
+  let resizeHooks = [];
+  window.addEventListener('resize', () => { clearTimeout(window.__a3cR); window.__a3cR = setTimeout(() => resizeHooks.forEach((f) => f()), 150); });
+
   const css = `
 .a3c { position:relative; }
 .a3c .ro { display:flex; flex-direction:column; border-radius:10px; background:var(--soft); font-size:13.5px; color:var(--body); margin-bottom:8px; }
 .a3c .ro > div { min-height:42px; display:flex; align-items:center; gap:4px 16px; flex-wrap:wrap; padding:8px 14px; }
-.a3c .ro.two { min-height:106px; } .a3c .ro .hv { flex:1; border-top:1px solid #E9ECF1; color:var(--muted); }
+.a3c .ro .hv { flex:1; border-top:1px solid #E9ECF1; color:var(--muted); }
 .a3c .ro .hv.on { color:var(--body); }
 .a3c .ro b { color:var(--ink); } .a3c .ro .dt { font-weight:700; color:var(--ink); min-width:112px; }
 .a3c .ro .mute { color:var(--faint); font-size:12.5px; } .a3c .ro .mk { color:var(--muted); font-size:12.5px; }
@@ -131,8 +141,16 @@
       sd(q('.wkc'), wk); sd(q('.wk'), wk); q('.wkc').style.opacity = all ? 1 : 0; q('.wk').style.opacity = all ? 1 : 0;
       // Each AI grows out of the overall week line, so switching reads as one line splitting into five.
       qa('.ai').forEach((p) => { sd(p, all ? wk : smooth(pts(weekPts(data.ai[p.dataset.k].weeks, D - 1)))); p.style.opacity = all ? 0 : 1; });
-      bands(); axisAndMarks(); ends(); stretch(); readPin(); readHover(hoverD);
+      bands(); axisAndMarks(); ends(); stretch(); lock();
     }
+    /** Measure every day's hover line and the period / a stretch on the top line, then show the current state. */
+    function lock() {
+      const was = kept, days = Array.from({ length: view[1] - view[0] + 1 }, (_, i) => view[0] + i);
+      lockRow(hv, [() => readHover(null), ...days.map((d) => () => readHover(d))]);
+      lockRow(pin, [() => { kept = null; readPin(); }, () => { kept = [view[0], view[1]]; readPin(); }]);
+      kept = was; readPin(); readHover(hoverD);
+    }
+    resizeHooks.push(lock);
     function bands() {
       const put = (r, t, [a, b], long, short) => {
         const x0 = xs(a) - 0.5 * (PW / (view[1] - view[0])), x1 = xs(b) + 0.5 * (PW / (view[1] - view[0]));
@@ -256,12 +274,15 @@
       <g class="hov"></g><rect class="hit" x="${PL}" y="0" width="${PWW}" height="${H - PB}"/></svg>`;
     const pin = el.querySelector('.pin'), hov = el.querySelector('.hov'), svg = el.querySelector('svg');
     const rest = () => { pin.innerHTML = title; hov.innerHTML = ''; };
+    const show = (i) => { pin.innerHTML = `<span class="dt">Week of ${span(7 * i, 7 * i + 6)}</span>${lines.map((l) => `<span><span class="k" style="background:${l.color};height:${l.lead ? 2.5 : 2}px"></span>${l.name} <b>${fmt(l.w[i])}</b></span>`).join('')}`; };
+    const lock = () => { lockRow(pin, [() => { pin.innerHTML = title; }, ...Array.from({ length: 8 }, (_, i) => () => show(i))]); pin.innerHTML = title; };
+    resizeHooks.push(lock);
     el.querySelector('.hit').addEventListener('pointermove', (e) => {
       const r = svg.getBoundingClientRect(), d = Math.max(0, Math.min(last, Math.round((((e.clientX - r.left) / r.width) * W - PL) / PWW * last))), i = Math.min(7, Math.floor(d / 7)), Xh = xx(7 * i + 3);
       hov.innerHTML = `<line x1="${Xh}" x2="${Xh}" y1="${PT}" y2="${H - PB}" stroke="#475569" stroke-dasharray="2 2"/>${lines.map((l) => `<circle cx="${Xh}" cy="${yy(l.w[i])}" r="${l.lead ? 5 : 4}" fill="${l.color}" stroke="#fff" stroke-width="2"/>`).join('')}`;
-      pin.innerHTML = `<span class="dt">Week of ${span(7 * i, 7 * i + 6)}</span>${lines.map((l) => `<span><span class="k" style="background:${l.color};height:${l.lead ? 2.5 : 2}px"></span>${l.name} <b>${fmt(l.w[i])}</b></span>`).join('')}`;
+      show(i);
     });
-    el.querySelector('.hit').addEventListener('pointerleave', rest); rest();
+    el.querySelector('.hit').addEventListener('pointerleave', rest); lock(); rest();
   }
 
   window.A3C = { build, weekly, range, verdict, md, wd, span, D, PERPLEXITY };
