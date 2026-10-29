@@ -531,42 +531,67 @@ function liveRating(svg) { // useLoop(5, 700)
 /* =====================================================================
    The sections: corrected copy, new figure, live figure, copy fixes note.
    ===================================================================== */
+
+/* ADDED 10/29 for Story V5: one page, from search to call (Expedition /frenectomy, Oct 2025 to Oct 2026, performance_cache_pages) */
+function figPages(svg) {
+  const { title, foot } = frame(svg);
+  const rows = [['Showings in Google', '4,461'], ['Average place in Google', '23'], ['Clicks from Google', '7'], ['Visits, every source', '144'], ['Calls or forms', '6']];
+  const R = rows.map(([t, v], i) => { const y = 48 + i * 21; const g = E(svg, 'g', { opacity: 0, style: 'transition:opacity .45s' });
+    E(g, 'line', { x1: 12, x2: 288, y1: y + 6, y2: y + 6, stroke: '#EEF0F3' });
+    E(g, 'text', { x: 12, y: y, 'font-size': 11, fill: C.body }, t); E(g, 'text', { x: 288, y: y, 'text-anchor': 'end', 'font-size': 12.5, 'font-weight': 800, fill: C.ink }, v); return g; });
+  const W = ['Write', 'Strengthen', 'Keep'].map((t, i) => { const x = 12 + i * 94; const g = E(svg, 'g', {});
+    const r = E(g, 'rect', { x, y: 154, width: 88, height: 22, rx: 5, fill: '#fff', stroke: '#E7E9EE', style: 'transition:fill .45s,stroke .45s' });
+    const tx = E(g, 'text', { x: x + 44, y: 169, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: C.muted, style: 'transition:fill .45s' }, t); return { r, tx }; });
+  const go = (s) => {
+    R.forEach((g, i) => { g.style.opacity = s >= [1, 2, 3, 4, 4][i] ? 1 : 0; });
+    W.forEach((w, i) => { const on = s >= 5 && i === 1; w.r.setAttribute('fill', on ? C.teal : '#fff'); w.r.setAttribute('stroke', on ? C.teal : '#E7E9EE'); w.tx.setAttribute('fill', on ? '#fff' : C.muted); });
+    say(title, ['One page, from search to call', 'Google showed it 4,461 times', 'Usually past the first page', 'Only 7 clicks from Google', 'Yet 144 visits and 6 calls or forms', 'So its pin is Strengthen'][s]);
+    say(foot, ['The frenectomy service page, Expedition', 'Search Console, last 12 months', 'Places 1 to 10 are the first page', 'AI answers settle many searches', 'Google Analytics, every way in', 'Proposal: the owner to confirm'][s]);
+  };
+  return { go, dur: [1000, 1100, 1100, 1100, 1300, 2600] };
+}
+
 const SECTIONS = [
-  { title: 'What the numbers on the lines mean', fig: figScale, live: liveScale, cap: 'Dental implants, US, weekly. Bothell check.',
+  { id: 'hiw-scale', title: 'What the numbers on the lines mean', fig: figScale, live: liveScale, cap: 'Dental implants, US, weekly. Bothell check.',
     liveCap: 'Made-up wave; "100, the busiest month"; "50" label sits on the line.',
     body: ['The lines come from Google Trends, read through DataForSEO one phrase at a time, five years back, one point a week. Each phrase is read across the US, which decides Rising, Steady or Fading, and for the practice\'s state, drawn dashed beside it when the state has enough searches.',
       'Google does not share search counts in Trends. It scores every week from 0 to 100, where 100 is the busiest week of that read. A week at 52 had about half the searches of that week; a week at 25, a quarter as many.',
       'Each phrase has its own 100, so lines compare by shape, not size. Monthly lines average their weeks, so they rarely reach 100: dental implants\' busiest month, June 2026, averages 79. The size comes from the searches a month under each card.'],
     fixes: 'Live said 100 is "the busiest month". It is the busiest week (T4). Added the monthly averaging, with the real 79.' },
-  { title: 'Topics and phrases', fig: figPhrases, live: livePhrases, cap: 'Dental Implants topic, US, Oct 2024 to Sep 2026.',
+  { id: 'hiw-phrases', title: 'Topics and phrases', fig: figPhrases, live: livePhrases, cap: 'Dental Implants topic, US, Oct 2024 to Sep 2026.',
     liveCap: 'Three made-up waves in topic colours; no weighting shown.',
     body: ['A topic is what a patient wants, in the practice\'s words: dental implants, teeth whitening. Patients search for it in more than one way, so each topic is read through 1 to 5 phrases, each on its own 0 to 100.',
       'Each phrase counts in line with its searches last month. For Bothell, 12,770 searches said "dental implants" and 1,608 said "tooth implant", so the topic line is 89 parts the first and 11 parts the second.',
       'The topic takes the word, Rising, Steady or Fading, that carries the most searches. Tooth implant is Rising on its own, but with 11 of every 100 searches it cannot move the topic, which reads Steady.'],
     fixes: 'Live said the head phrase leads the chart. The engine weighs every phrase by its latest month of searches (sizing.py) and the topic takes the call with the most weight.' },
-  { title: 'Rising, Steady, Fading or Emerging', fig: figCall, live: liveCall, cap: 'Dental implants, US. Bothell check.',
+  { id: 'hiw-rising', title: 'Rising, Steady, Fading or Emerging', fig: figCall, live: liveCall, cap: 'Dental implants, US. Bothell check.',
     liveCap: 'Invented lines; benchmark drawn flat; verdict flips every 1.3s.',
     body: ['Each phrase\'s last 3 full months are compared with the same 3 months a year earlier. For dental implants, July to September 2026 averaged 67 against 61 a year before: about 1 in 10 higher. The month still under way is drawn dotted and never counts.',
       '<b>Dental searches overall</b>: how much people search for dentists in general. Market Trends measures it with 5 common dental searches: invisalign, root canal, wisdom teeth removal, veneers and teeth whitening. It takes the middle of the five; this time it dipped about 3 in every 100.',
       '<b>Rising</b>: searches for the topic are growing clearly faster than dental searches overall. <b>Steady</b>: moving about the same as dental searches overall. <b>Fading</b>: clearly slower. <b>Emerging</b>: small but growing fast. Clearly means more than 15 in every 100 ahead or behind, comparing July to September with the same three months a year earlier. Dental implants came out about 12 in every 100 ahead, so it is Steady. A phrase too rare to score shows as too few searches to read.'],
     fixes: 'Added the real windows, the 5 benchmark phrases, the middle value and the 15 in 100 line (classifiers.py). Live implied dental searches overall stay flat; they doubled since 2024 (T2), which is why the comparison is relative.' },
-  { title: 'Seasons', fig: figSeason, live: liveSeason, cap: 'Expedition (Washington), then Bothell (US).',
+  { id: 'hiw-seasons', title: 'Seasons', fig: figSeason, live: liveSeason, cap: 'Expedition (Washington), then Bothell (US).',
     liveCap: 'Invented shades; "peaks in June" while the check finds a one-off April.',
     body: ['A season is a peak that comes back. Each year is compared with its own usual month, so a year that climbed overall cannot fake one.',
       'A month counts as the peak only when it was the busiest month in at least 2 of the last 3 full years and runs at least 15 in 100 above a usual month. Pediatric dentistry in Washington passes: busiest in August 2023, August 2024 and July 2025, and quietest every December.',
       'One busy month is not a season. Teeth whitening jumped in April 2026 while the Aprils before were ordinary, so it gets no season. A seasonal page does best live a month or two before its peak.'],
     fixes: 'Live claimed "whitening climbs before summer, emergency care over the holidays"; neither check shows that. Copy states the fixed season rule (T6, P1 #4), which the shipped strip does not use yet.' },
-  { title: 'The rating', fig: figRating, live: liveRating, cap: 'The engine\'s real parts. Bothell check.',
+  { id: 'hiw-rating', title: 'The rating', fig: figRating, live: liveRating, cap: 'The engine\'s real parts. Bothell check.',
     liveCap: 'Four parts that do not exist in the engine, adding to 8.',
     body: ['Each topic gets a rating from 1 to 10 that orders the list. It is points from plain parts, never an AI judgement.',
       'Source points come from the client\'s own material: a client priority adds 4; a high gap in the assessment adds 3, a medium one 2; a calendar cluster, a forum theme, audience research and a page audit add 1 each, up to 3; a topic in the same category as a client priority adds 2.',
       'Search demand adds 1 point when a phrase showed up at least 1,000 times across 3 or more of our practices in Search Console, and 2 at 100,000 or more. A prospect check has no client material, so its topics rate on search demand alone and often tie: both Bothell topics rate 2 of 10.'],
     fixes: 'Live listed "demand is rising, large volume, steady all year, searched by name": none exist (T8). Now matches proposal_rating.py. Owner question stands: hide the rating on prospect checks?' },
-  { title: 'Where the numbers come from', isNew: true, fig: figSources, cap: 'One phrase, dental implants. Bothell check.',
+  { id: 'hiw-sources', title: 'Where the numbers come from', isNew: true, fig: figSources, cap: 'One phrase, dental implants. Bothell check.',
     body: ['Each source does one job. Google Trends, read through DataForSEO, gives the shape: weekly, five years back, for the US and the practice\'s state.',
       'DataForSEO\'s clickstream gives the size: an estimate of searches a month across the US, from browsing data rather than from Google. Our own practices\' Search Console shows how often a phrase came up for the practices we manage over the last 12 months, and for how many of them.',
       'Each phrase costs about a cent to read. Bothell\'s check read 4 phrases in 11 calls for 11 cents, and took 23 seconds.'],
     fixes: 'New section (04, missing method sections). Cost and timing from run #23: cost_usd 0.111, call_count 11, 23 seconds start to finish.' },
+  { id: 'hiw-pages', title: 'How patients reach a page, and the pins', isNew: true, fig: figPages, cap: 'The frenectomy service page. Expedition check, last 12 months.',
+    body: ['Fewer searches end in a click now, because AI answers settle many of them on the results page. So a topic is never judged on clicks alone. Market Trends finds the practice\'s pages that cover each topic, by their address and by the searches they show up for. Other words for the same care count: frenectomy counts for tongue tie.',
+      'For each page it shows the last 12 months: how often Google showed it and its average place, from Search Console; its clicks; and its visits and calls or forms, from Google Analytics, counting every way people arrive. New visitors per page are not saved yet.',
+      '<b>Pins on the year, a proposal.</b> Write: no page covers the topic. Strengthen: a page exists, but Google shows it past its first page or it rarely brings visits or calls. Keep: the page is on Google\'s first page and brings visits every week, or it brings calls or forms most months. The pin follows the page that brings the topic\'s calls or forms. The month comes from the season: a page does best live two months before a peak that repeats; a topic with no season is pinned to now.'],
+    fixes: 'Added 10/29 for Story V5 (anchor hiw-pages). The Write, Strengthen, Keep rule is a proposal for the owner to confirm. Page numbers come from performance_cache_pages (Search Console and GA4 by page). New users are stored for the whole site only: per page needs a new read. Calls or forms = GA4 key events; none were recorded anywhere on the site from May to July 2026, which looks like a tracking gap.' },
 ];
 
 const running = [];
@@ -585,7 +610,7 @@ const secs = document.getElementById('secs');
 const FREEZE = /freeze/.test(location.search);
 window.FIGS = [];
 SECTIONS.forEach((S) => {
-  const sec = document.createElement('section'); sec.className = 'msec';
+  const sec = document.createElement('section'); sec.className = 'msec'; if (S.id) { sec.id = S.id; sec.style.scrollMarginTop = '20px'; }
   sec.innerHTML = `<div><h3>${S.title}${S.isNew ? '<span class="new">New</span>' : ''}</h3>${S.body.map((p) => `<p>${p}</p>`).join('')}<div class="fixes"><b>Mockup note: copy fixes</b>${S.fixes}</div></div>
     <figure><div class="figbox nf"></div><figcaption class="cap">${S.cap}</figcaption>
     ${S.live ? `<div class="live"><div class="figbox lf"></div><div><div class="lb">Live today</div><div class="lc">${S.liveCap}</div></div></div>` : ''}</figure>`;
@@ -594,5 +619,10 @@ SECTIONS.forEach((S) => {
   const lf = S.live ? mount(sec.querySelector('.lf'), S.live) : null; if (lf) window.FIGS.push(lf);
   if (FREEZE) { nf.go(0); lf && lf.go(0); } else { loop(nf); lf && loop(lf); }
 });
+/* ADDED 10/29: links from the Story open this window at a section, e.g. mt2-how-it-works.html#hiw-pages */
+function goHash() { const el = location.hash && document.getElementById(location.hash.slice(1)); if (!el) return;
+  el.scrollIntoView({ block: 'start', behavior: REDUCE ? 'auto' : 'smooth' });
+  if (!REDUCE && el.animate) el.animate([{ backgroundColor: '#E6F4F1' }, { backgroundColor: 'rgba(230,244,241,0)' }], { duration: 1800, easing: 'ease-out' }); }
+addEventListener('hashchange', goHash); addEventListener('load', () => setTimeout(goHash, 60));
 </script>
 </body></html>
