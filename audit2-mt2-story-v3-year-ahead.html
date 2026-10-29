@@ -82,6 +82,10 @@ a{color:var(--aInk)}
 .chap h2 .g{color:var(--a)}
 .chap h2 .r{color:var(--down)}
 .chap p{margin:14px 0 0;max-width:540px;font-size:17px;line-height:1.6}
+.defs{margin-top:18px;max-width:540px;padding:12px 14px;background:#F8FAFB;border:1px solid var(--line);border-radius:6px}
+.defs .dh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.chap .defs p{margin:0;font-size:13.5px;line-height:1.55;color:#273043}
+.chap .defs p+p{margin-top:6px}
 .chap .note{font-size:13.5px;color:var(--muted);margin-top:12px}
 .facts{margin-top:18px;max-width:540px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
 .facts div{padding:9px 10px 9px 0;border-bottom:1px solid var(--line)}
@@ -330,7 +334,7 @@ a{color:var(--aInk)}
     const { chapters, end } = cfg;
     host.innerHTML = `<div class="story"><div class="chs">${chapters.map((c, i) => `<section class="chap ${i === 0 ? 'on' : ''}" data-i="${i}">
         <div class="k">${esc(String(i + 1).padStart(2, '0'))} · ${c.kick}</div>
-        <h2>${c.head}</h2>${(c.body || []).map((b) => `<p>${b}</p>`).join('')}
+        <h2>${c.head}</h2>${(c.body || []).map((b) => `<p>${b}</p>`).join('')}${c.defs ? FL.DEFS : ''}
         ${c.facts ? `<div class="facts">${c.facts.map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>` : ''}
         ${c.extra || ''}${c.note ? `<p class="note">${c.note}</p>` : ''}</section>`).join('')}
         <div class="storyend" id="storyend">${end}</div></div>
@@ -396,6 +400,11 @@ a{color:var(--aInk)}
     return { fig, go };
   };
 
+  /* the shared definitions, word for word the same on every Market Trends page */
+  FL.DEFS = `<div class="defs"><div class="dh">How to read the words</div>
+    <p><b>Dental searches overall</b>: how much people search for dentists in general. Market Trends measures it with 5 common dental searches: invisalign, root canal, wisdom teeth removal, veneers and teeth whitening.</p>
+    <p><b>Rising</b>: searches for the topic are growing clearly faster than dental searches overall. <b>Steady</b>: moving about the same as dental searches overall. <b>Fading</b>: clearly slower. <b>Emerging</b>: small but growing fast.</p>
+    <p>Clearly means more than 15 in every 100 ahead or behind, comparing July to September with the same three months a year earlier. Example: if dental searches overall stay flat and a topic grows 20 in every 100, it is 20 in every 100 ahead, so it is Rising.</p></div>`;
   /* helpers for building chapter states */
   FL.put = (S, id, t, o = {}) => { const v = S.get(id) || { t: {} }; Object.assign(v.t, t); if (o.pre) v.pre = Object.assign(v.pre || {}, o.pre); if ('dur' in o) v.dur = o.dur; if ('delay' in o) v.delay = o.delay; S.set(id, v); };
   /* spread end labels around their own middle, clamp inside [top, bottom] */
@@ -435,8 +444,8 @@ a{color:var(--aInk)}
     o.ownImp = P.ownImpYear; o.ownClkYear = P.ownClkYear;
     return o;
   };
-  FL.COMB_NOTE = 'Our practices’ data starts Sep 2025; a backfill to Nov 2024 is planned.';
-  FL.OWN_NOTE = 'Expedition’s own line needs a new read in the check (cheap: same table, one client).';
+  FL.COMB_NOTE = 'Our practices’ data starts Sep 2025; months back to Nov 2024 are planned.';
+  FL.OWN_NOTE = 'Expedition’s own line is not saved in the check yet; adding it is a small backend change.';
 })();
 </script>
 <script>/* How it works: four sections, each a looping picture drawn from Expedition check #22 (Washington). */
@@ -583,7 +592,7 @@ a{color:var(--aInk)}
   const TERM = { tt: 'tongue tie', pd: 'pediatric dentist', pdy: 'pediatric dentistry' };
   const VALS = { tt: P['tongue tie'].m, pd: P['pediatric dentist'].m, pdy: P['pediatric dentistry'].m, us: D.us16.tongueTie };
   const REL = { tt: P['tongue tie'].rel, pd: P['pediatric dentist'].rel, pdy: P['pediatric dentistry'].rel };
-  const ahead = (r) => { const n = Math.round((r - 1) * 100); return n === 0 ? 'level' : n > 0 ? `${n} ahead` : `${n * -1} behind`; };
+  const ahead = (r) => { const n = Math.round((r - 1) * 100); return n === 0 ? 'same pace' : n > 0 ? `${n} in 100 ahead` : `${n * -1} in 100 behind`; };
   const N = 60;
   const linePts = (vals, i0, i1, x1 = X1, y = yv) => Array.from({ length: N }, (_, i) => [xw(i, i0, i1, x1), y(vals[i] ?? 0)]);
   const tailPts = (vals, i0, i1, x1 = X1, y = yv) => [[xw(59, i0, i1, x1), y(vals[59])], [xw(60, i0, i1, x1), y(vals[60])]];
@@ -599,12 +608,12 @@ a{color:var(--aInk)}
   const laneTop = (g, l) => g.top + l * (g.h + g.gap);
   const cell = (g, l, k0, k1 = k0, inset = 3) => ({ x: BX0 + k0 * CW + inset, y: laneTop(g, l) + inset, width: (k1 - k0 + 1) * CW - 2 * inset, height: g.h - 2 * inset });
   const PINS = {
-    'p-rc-tt': { lane: 0, k0: 2, fill: '#fff', stroke: TEAL, label: 'check', rule: 'Rule: within 5 of a line, re-check once the next 3 full months are in. Tongue tie is 1 short of Rising; October to December is read in January 2027.' },
-    'p-rc-pdy': { lane: 2, k0: 2, fill: '#fff', stroke: TEAL, label: 'check', rule: 'Rule: within 5 of a line, re-check once the next 3 full months are in. Pediatric dentistry sits on the Fading line; read again in January 2027.' },
-    'p-dip': { lane: 2, k0: 1, fill: '#EEF0F3', stroke: 'none', label: 'dip', rule: 'December was the quietest month in Washington 4 years of 4, about 8 in 10 of an average month.' },
+    'p-rc-tt': { lane: 0, k0: 2, fill: '#fff', stroke: TEAL, label: 'check', rule: 'Rule: within 5 in 100 of a line, check again once the next 3 full months are in. Tongue tie is just short of Rising; October to December can be read in January 2027.' },
+    'p-rc-pdy': { lane: 2, k0: 2, fill: '#fff', stroke: TEAL, label: 'check', rule: 'Rule: within 5 in 100 of a line, check again once the next 3 full months are in. Pediatric dentistry sits on the Fading line; check again in January 2027.' },
+    'p-dip': { lane: 2, k0: 1, fill: '#EEF0F3', stroke: 'none', label: 'dip', rule: 'December was the quietest month in Washington 4 years of 4, about 0.75 times an average month.' },
     'p-peak': { lane: 2, k0: 8, k1: 9, fill: '#E3F2EE', stroke: 'none', label: 'peak', rule: 'July or August was the busiest month 4 years of 4, about 1.2 times an average month.' },
-    'p-pub': { lane: 2, k0: 7, fill: TEAL, stroke: 'none', label: 'publish', rule: 'Rule: a season repeats in at least 2 of the last 3 years, so publish 2 months before the peak: live by June 2027.' },
-    'p-write': { lane: 0, k0: 0, fill: TEAL, stroke: 'none', label: 'write', rule: 'Rule: shown 1,000+ times a month with under 1 click in 1,000, so write the page now. Expedition’s own site, Jun to Aug 2026: 3,793 showings, 1 click.' },
+    'p-pub': { lane: 2, k0: 7, fill: TEAL, stroke: 'none', label: 'publish', rule: 'Rule: a peak that repeats in at least 2 of the last 3 years is a season, so publish 2 months before it: live by June 2027.' },
+    'p-write': { lane: 0, k0: 0, fill: TEAL, stroke: 'none', label: 'write', rule: 'Rule: shown 1,000+ times a month with under 1 click per 1,000 showings, so write the page now. Expedition’s own site, Jun to Aug 2026: 3,793 showings, 1 click.' },
   };
   const PIN_IDS = Object.keys(PINS);
 
@@ -717,13 +726,14 @@ a{color:var(--aInk)}
      and the two near a line drop a re-check pin onto January */
   const W12 = [idx('2025-10'), 60]; const XN = 430;
   chapters.push({
-    key: 'now', kick: 'What is moving now · read for Washington, September 2026',
-    head: 'Nothing has crossed a line yet; <span class="g">two topics are close enough</span> to check again in January.',
-    body: ['Measured against dental searches overall in Washington, tongue tie runs 14 in every 100 ahead (Rising starts at 15) and pediatric dentistry 15 behind (Fading starts below 85, so it sits exactly on the line). Pediatric dentist is 7 behind, well inside Steady.',
-      'A call compares 3 full months with the same 3 a year earlier, so the next fair read is January 2027, when October to December is in. That is the first thing on the year: two re-check pins.'],
-    facts: [['14 ahead', 'tongue tie, 1 short of Rising'], ['15 behind', 'pediatric dentistry, on the Fading line'], ['7 behind', 'pediatric dentist, Steady'], ['100 for 100', 'dental searches overall, on the year'], ['Jan 2027', 'next 3-month read is complete'], ['2', 're-check pins placed']],
-    note: 'Lines are each topic’s main phrase, Oct 2025 to Oct 2026, on Google’s 0 to 100 in Washington. October is dotted: not over yet.',
-    cap: 'Each topic’s last 12 months, then where it stands against dental searches overall (upright ruler). Topics within 5 of a line drop a re-check pin onto January 2027.',
+    key: 'now', kick: 'What is moving now · read for Washington, September 2026', defs: true,
+    head: 'Nothing is Rising or Fading yet, but <span class="g">two topics are worth checking again</span> in January.',
+    body: ['Tongue tie searches grew a little faster than dental searches overall in Washington, but not enough to count as Rising yet: about 14 in every 100 ahead of them, where Rising needs more than 15.',
+      'Pediatric dentistry fell about 15 in every 100 behind dental searches overall, right on the Fading line but not past it. Pediatric dentist is about 7 in every 100 behind, well inside Steady.',
+      'Each check compares 3 full months with the same 3 a year earlier, so the next fair look is January 2027, once October to December are in. That is the first thing on the year: two check-again pins.'],
+    facts: [['14 in 100 ahead', 'tongue tie, just short of Rising'], ['15 in 100 behind', 'pediatric dentistry, on the Fading line'], ['7 in 100 behind', 'pediatric dentist, Steady'], ['100 for 100', 'dental searches overall, against a year earlier'], ['Jan 2027', 'the next 3 full months are in'], ['2', 'check-again pins placed']],
+    note: 'Lines are each topic’s main phrase, Oct 2025 to Oct 2026, on Google’s 0 to 100 in Washington, where 100 is its busiest week. October is dotted: not over yet.',
+    cap: 'Each topic’s last 12 months, then where it stands against dental searches overall on the upright ruler. Topics within 5 in 100 of a line drop a check-again pin onto January 2027.',
     build(S) {
       grid(S); put(S, 'g0', { x2: XN }); put(S, 'g50', { x2: XN }); put(S, 'g100', { x2: XN }); put(S, 'base', { x2: XN });
       ['vr-ri', 'vr-st', 'vr-ax', 'vt85', 'vt100', 'vt115'].forEach((id) => put(S, id, { o: 1 }, { delay: 500 }));
@@ -737,13 +747,13 @@ a{color:var(--aInk)}
     labelsAt: 1100, labelsPre: () => `${title('What is moving now, in Washington', 'Last 12 months, then each topic against dental searches overall')}${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W12, 3, XN)}${bandLabels(GEO.normal, -1)}`,
     labels: () => `${title('What is moving now, in Washington', 'Last 12 months, then each topic against dental searches overall')}
       ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W12, 3, XN)}
-      ${T(VX, Y0 - 8, 'against overall', { s: 10, w: 600, c: '#667085', a: 'middle' })}
+      ${T(VX, Y0 - 8, 'against dental searches', { s: 10, w: 600, c: '#667085', a: 'middle' })}
       ${T(VX + 14, VR(1.22) + 3, 'Rising', { s: 10, w: 600, c: '#15803D' })}${T(VX + 14, VR(0.78) + 3, 'Fading', { s: 10, w: 600, c: '#E11D48' })}
       ${FL.spread(LANES.map((k) => ({ k, y: VR(REL[k]) + 4 })), 26, Y0 + 10, Y1).map((d) => `${T(VX + 14, d.ly - 6, TERM[d.k], { s: 11, w: 700, c: '#0B1020' })}${T(VX + 14, d.ly + 7, ahead(REL[d.k]), { s: 10.5, c: '#667085' })}`).join('')}
-      ${bandLabels(GEO.normal, 0)}${T(0, 436, 'Re-check: within 5 of a line, read again once the next 3 full months are in', { s: 10.5, c: '#667085' })}`,
+      ${bandLabels(GEO.normal, 0)}${T(0, 436, 'Check again: within 5 in 100 of a line, look again once the next 3 full months are in', { s: 10.5, c: '#667085' })}`,
     hv: { i0: W12[0], i1: 60, x: (i) => xw(i, ...W12, XN), note: 'Google Trends, Washington', title: (i) => (i === 60 ? 'Oct 2026, not over yet' : FL.ml(M[i])), series: LANES.map((k) => ser(k, TERM[k], 'other', { c: PAL[k], w: 2 })) },
     enter(fig, later, { first }) { if (first) LANES.forEach((k) => fig.drawIn(`ln-${k}`, { dur: 900 })); },
-    idle: () => ({ title: 'Jul to Sep 2026 against Jul to Sep 2025', note: 'against dental searches overall', slots: LANES.map((k) => ({ key: FL.dotKey(PAL[k]), v: ahead(REL[k]), name: TERM[k] })) }),
+    idle: () => ({ title: 'Jul to Sep 2026 against Jul to Sep 2025', note: 'in every 100, against dental searches overall', slots: LANES.map((k) => ({ key: FL.dotKey(PAL[k]), v: ahead(REL[k]).replace(' in 100', ''), name: TERM[k] })) }),
   });
 
   /* 02 What is seasonal: four Nov-to-Oct years of pediatric dentistry fold onto the band's own columns,
@@ -757,10 +767,10 @@ a{color:var(--aInk)}
   chapters.push({
     key: 'season', kick: 'What is seasonal',
     head: 'Pediatric dentistry peaks in <span class="g">July or August</span> every year, so its page goes live by June.',
-    body: ['Laid over each other, four years in Washington (November 2021 to October 2025) agree: August was the busiest month in three of them and July in the fourth, at about 1.2 times an average month. December was the quietest all four times, about 3 in 4 of an average month.',
-      'Each year is divided by its own average, so the 2025 jump in every dental phrase does not fake a season. Folded onto the coming year’s months, the peak lands on July and August 2027 and the dip on December 2026. Two months ahead of the peak gives the publish pin: June.'],
-    facts: [['4 of 4', 'years busiest in Jul or Aug'], ['4 of 4', 'years quietest in December'], ['about 1.2', 'times an average month, Aug'], ['about 0.75', 'in December'], ['Jun 2027', 'live by, 2 months ahead'], ['0', 'seasons for tongue tie or pediatric dentist']],
-    note: 'Tongue tie’s busiest month moves (July, May, July, January) and pediatric dentist stepped up instead of repeating, so neither gets a season pin.',
+    body: ['Laid over each other, four years in Washington agree, from November 2021 to October 2025. August was the busiest month in three of them and July in the fourth, about 1.2 times an average month. December was the quietest all four times, about 0.75 times an average month.',
+      'Each year is measured against its own average, so the 2025 jump in every dental search does not fake a season. Laid onto the coming year, the peak lands on July and August 2027 and the dip on December 2026. Two months before the peak gives the publish pin: June.'],
+    facts: [['4 of 4', 'years busiest in Jul or Aug'], ['4 of 4', 'years quietest in December'], ['about 1.2', 'times an average month, Aug'], ['about 0.75', 'times an average month, Dec'], ['Jun 2027', 'live by, 2 months before the peak'], ['0', 'seasons for tongue tie or pediatric dentist']],
+    note: 'Tongue tie’s busiest month moves around: July, May, July, January. Pediatric dentist jumped once instead of repeating. So neither gets a season pin.',
     cap: 'Pediatric dentistry, Washington: four Nov-to-Oct years, each against its own average, folded onto the band’s months. Bold: their average. Peak, dip and publish pins land below.',
     build(S) {
       put(S, 'base', { y1: Y1, y2: Y1, x1: BX0, x2: BX1, o: 1 });
@@ -781,8 +791,8 @@ a{color:var(--aInk)}
     enter(fig, later) { later(950, () => ['ln-pdy', 'cs-pdy', 'tl-pdy'].forEach((id) => fig.set(id, { o: 0 }))); },
     labels: () => `${title('Busiest in July or August, 4 years of 4', 'Pediatric dentistry, each Nov-to-Oct year against its own average, Washington')}
       <line x1="${BX0}" x2="${BX1}" y1="${yr(1)}" y2="${yr(1)}" stroke="#E7E9EE"/>${T(BX0 - 6, yr(1) + 3.5, 'average month', { s: 10, c: '#9CA3AF', a: 'end' })}
-      ${T(BX0 - 6, yr(1.25) + 3.5, '1.25 times', { s: 10, c: '#9CA3AF', a: 'end' })}${T(BX0 - 6, yr(0.75) + 3.5, '3 in 4', { s: 10, c: '#9CA3AF', a: 'end' })}
-      ${T(bx(9), yr(1.33), 'Aug, about 1.2 times', { s: 11.5, w: 700, c: '#0B1020', a: 'middle' })}${T(bx(1) - 12, Y0 + 14, 'Dec, about 3 in 4', { s: 11.5, w: 700, c: '#0B1020' })}<line x1="${bx(1)}" x2="${bx(1)}" y1="${Y0 + 20}" y2="${yr(yrMean[1]) - 7}" stroke="#C3C8D2"/>
+      ${T(BX0 - 6, yr(1.25) + 3.5, '1.25 times', { s: 10, c: '#9CA3AF', a: 'end' })}${T(BX0 - 6, yr(0.75) + 3.5, '0.75 times', { s: 10, c: '#9CA3AF', a: 'end' })}
+      ${T(bx(9), yr(1.33), 'Aug, about 1.2 times', { s: 11.5, w: 700, c: '#0B1020', a: 'middle' })}${T(bx(1) - 12, Y0 + 14, 'Dec, about 0.75 times', { s: 11.5, w: 700, c: '#0B1020' })}<line x1="${bx(1)}" x2="${bx(1)}" y1="${Y0 + 20}" y2="${yr(yrMean[1]) - 7}" stroke="#C3C8D2"/>
       ${bandLabels(GEO.normal, 1)}${T(0, 436, 'Publish pin: 2 months ahead of a peak that repeats in at least 2 of the last 3 years', { s: 10.5, c: '#667085' })}`,
     hv: { i0: 0, i1: 11, x: bx, note: 'years ending in October', title: (k) => `${BMF[k].split(' ')[0]}, times an average month`, cols: 5,
       series: [{ name: 'avg', vals: yrMean, y: yr, kind: 'lead', key: { c: TEAL, w: 2.2 }, fmt: (v) => v.toFixed(2) }, ...YS.map((y, n) => ({ name: String(y), vals: yrRel[n], y: yr, kind: 'other', key: { c: n % 2 ? '#475569' : '#8B98A9', w: 1.2, dash: n % 2 ? '4 3' : '' }, fmt: (v) => v.toFixed(2) }))] },
@@ -793,13 +803,13 @@ a{color:var(--aInk)}
   const pd = P['pediatric dentist']; const W36 = [idx('2023-10'), 60]; const PK = idx('2025-08');
   const avg2024 = avg(pd.m.slice(idx('2024-01'), idx('2024-01') + 12));
   chapters.push({
-    key: 'held', kick: 'What stepped up and held',
-    head: 'Pediatric dentist <span class="g">tripled in summer 2025</span> and has stayed up; its lane is steady all year.',
-    body: [`For two years it sat near 20 on Google’s scale in Washington (2024 averaged ${avg2024.toFixed(1)}). In July 2025 it jumped and August reached 61.4, about 3 times its usual level of 20.2. The week of August 10, 2025 is its busiest.`,
-      'Thirteen months on, July to September 2026 averages 49.5, about 8 in 10 of the peak: a new level, not a spike that faded, and not a season. Over the same stretch every dental phrase about doubled on Google Trends, so part of the rise is the whole category.'],
-    facts: [['20.2', 'usual level before'], ['61.4', 'Aug 2025 peak'], ['3.0 times', 'the usual level'], ['49.5', 'Jul to Sep 2026'], ['8 in 10', 'of the peak, 13 months on'], [csR('pediatric dentist'), 'searches a month, US']],
-    note: 'No rule fires for pediatric dentist this year, so its lane carries its level and no pin.',
-    cap: 'Pediatric dentist, Washington, Oct 2023 to Oct 2026. The level it holds now (Jul to Sep 2026) slides down into its lane and runs across the whole year.',
+    key: 'held', kick: 'What jumped and held',
+    head: 'Pediatric dentist searches <span class="g">tripled in summer 2025</span> and have stayed up.',
+    body: [`For two years it sat near 20 on Google’s 0 to 100 in Washington; 2024 averaged ${avg2024.toFixed(1)}. In July 2025 it jumped. August reached 61.4, about 3 times its usual level of 20.2, and the week of August 10, 2025 was its busiest.`,
+      'Thirteen months on, July to September 2026 averages 49.5, not far below the peak. That is a new level, not a spike that faded, and not a season. Over the same stretch every dental search about doubled on Google Trends, so part of the rise is shared by all of them. Its row on the year stays steady, with no pin.'],
+    facts: [['20.2', 'usual level before'], ['61.4', 'Aug 2025 peak'], ['3.0 times', 'the usual level'], ['49.5', 'Jul to Sep 2026'], ['about 80 in 100', 'of the peak level, 13 months on'], [csR('pediatric dentist'), 'searches a month, US']],
+    note: 'None of the rules applies to pediatric dentist this year, so its row shows its level and no pin.',
+    cap: 'Pediatric dentist, Washington, Oct 2023 to Oct 2026. The level it holds now, July to September 2026, slides down into its row and runs across the whole year.',
     build(S) {
       grid(S); line(S, 'pd', ...W36, 'lead', { from: at(X0, yv(pd.m[24])) });
       const xp = xw(PK, ...W36);
@@ -810,12 +820,12 @@ a{color:var(--aInk)}
       put(S, 'p-held', { x1: xw(57, ...W36) - 6, x2: xw(59, ...W36) + 6, y1: yv(pd.cur), y2: yv(pd.cur), o: 1 }, { pre: { x1: xw(57, ...W36) - 6, x2: xw(59, ...W36) + 6, y1: yv(pd.cur), y2: yv(pd.cur), o: 0 }, delay: 700 });
     },
     enter(fig, later) { const g = GEO.normal; const hl = laneTop(g, 1) + g.h * 0.7; later(1700, () => fig.set('p-held', { x1: BX0 + 6, x2: BX1 - 6, y1: hl, y2: hl })); },
-    labels: () => { const xp = xw(PK, ...W36); return `${title('A step up that held: about 50 now', 'Pediatric dentist in Washington, against its usual level')}
+    labels: () => { const xp = xw(PK, ...W36); return `${title('A jump that held: about 50 now', 'Pediatric dentist in Washington, against its usual level')}
       ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W36, 6)}
       ${T(xp + 12, yv(pd.base) + 4, 'usual level 20', { s: 10.5, w: 600, c: '#475569' })}${T(xp - 8, yv(pd.peak) - 2, 'Aug 2025: 61, 3.0 times', { s: 10.5, w: 700, c: '#0B1020', a: 'end' })}
       ${T(xw(58, ...W36), yv(pd.cur) - 16, 'now 49.5', { s: 10.5, w: 700, c: '#115E59', a: 'middle' })}
       ${gutter([{ x0: xw(59, ...W36), y: yv(pd.m[59]), t: 'pediatric dentist', w: 700, c: '#0B1020' }])}
-      ${bandLabels(GEO.normal, 2)}${T(0, 436, 'A step up that held is not a season: no publish pin, the lane holds steady', { s: 10.5, c: '#667085' })}`; },
+      ${bandLabels(GEO.normal, 2)}${T(0, 436, 'A jump that held is not a season: no publish pin, its row stays steady', { s: 10.5, c: '#667085' })}`; },
     hv: { i0: W36[0], i1: 60, x: (i) => xw(i, ...W36), note: 'Google Trends, Washington, 0 to 100', title: (i) => (i === 60 ? 'Oct 2026, not over yet' : FL.ml(M[i])), series: [ser('pd', 'pediatric dentist')] },
     idle: () => ({ title: 'Jul to Sep 2026', note: 'Google Trends, Washington', slots: [{ key: FL.key({ c: TEAL, w: 2.2 }), v: '49.5', name: 'now' }, { key: FL.key({ c: '#0F172A', w: 1 }), v: '20.2', name: 'usual before' }, { key: FL.dotKey(TEAL, true), v: '61.4', name: 'Aug 2025 peak' }] }),
   });
@@ -836,13 +846,13 @@ a{color:var(--aInk)}
   const ord = (n) => `${n}${n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'}`;
   chapters.push({
     key: 'seen', kick: 'Where Expedition is seen but not clicked',
-    head: `Google showed Expedition’s own site for tongue tie ${fmt(ttTot)} times; <span class="r">3 people clicked</span>.`,
-    body: [`<b>Expedition’s own site:</b> over 14 months its pages came up for searches like "tongue tie dentist" (687 times), "laser tongue tie near me" (649) and "tongue tie release" in Kirkland and Bellevue. From June to August 2026 it was shown 1,177, 1,204 and 1,412 times a month, about three times the start of the year. One of those 3,793 showings became a click.`,
-      `<b>Our practices combined:</b> ${cb.seenYear} of the ${cb.practicesAll} practices we manage showed up for tongue tie at least once, and ${cb.clicked} got a click. The average practice was shown about ${Math.round(cb.avg[idx('2026-06')])} times a week at the June high and about ${Math.round(cb.avg[idx('2026-09')])} by September; Expedition, at about 300 a week in July, is the ${ord(cb.rank)} most shown of the ${cb.seenYear}. Across our practices these searches earned ${cb.clk} clicks from ${fmt(cb.imp)} showings, about 1 in ${fmt(oneIn)}; Expedition sits near 1 in ${fmt(ownOneIn)}.`,
+    head: `Expedition shows up for tongue tie, but <span class="r">almost nobody clicks</span>.`,
+    body: [`<b>Expedition’s own site:</b> Google showed it ${fmt(ttTot)} times for tongue tie searches from Sep 2025 to Oct 2026. Patients clicked 3 times. The searches included “tongue tie dentist”, 687 times, “laser tongue tie near me”, 649 times, and “tongue tie release” in Kirkland and Bellevue. From June to August 2026 it showed up 1,177, 1,204 and 1,412 times a month, about three times the start of the year. One of those 3,793 showings became a click.`,
+      `<b>Our practices combined:</b> ${cb.seenYear} of the ${cb.practicesAll} practices we manage showed up for tongue tie at least once, and ${cb.clicked} got a click. The average practice showed up about ${Math.round(cb.avg[idx('2026-06')])} times a week at the June high and about ${Math.round(cb.avg[idx('2026-09')])} by September. Expedition showed up about 300 times a week in July, the ${ord(cb.rank)} most of the ${cb.seenYear}. Across our practices these searches earned ${cb.clk} clicks from ${fmt(cb.imp)} showings: about 1 click for every ${fmt(oneIn)} showings. Expedition got about 1 for every ${fmt(ownOneIn)}.`,
       'Patients are looking for someone to do the release, and Expedition is in the results without a page that answers them. That gap is the first page on the year: November 2026.'],
-    facts: [[fmt(ttTot), 'Expedition showings, Sep 2025 to Oct 2026'], ['3', 'Expedition clicks: Oct 2025, Feb 2026, Jul 2026'], [`${cb.seenYear} of ${cb.practicesAll}`, 'our practices showed up for tongue tie'], [`about 1 in ${fmt(oneIn)}`, 'clicks per showing, our practices'], [ord(cb.rank), `Expedition, most shown of the ${cb.seenYear}`], ['Nov 2026', 'write pin placed']],
-    note: `The rose line is our practices combined, never one client: showings on the phrase divided by the practices that reported that week. ${FL.COMB_NOTE} Expedition’s own data misses the weeks of Sep 7, 14 and 21, drawn as a hatched gap, not a dip. ${FL.OWN_NOTE}`,
-    cap: 'Top: our practices combined, showings per practice a week (bold rose, own scale), Google Trends shape faint (no scale). Bottom: Expedition’s own site, showings a week (dashed rose, own scale); dots on its floor are its 3 clicks. The write pin drops onto November 2026.',
+    facts: [[fmt(ttTot), 'Expedition showings, Sep 2025 to Oct 2026'], ['3', 'Expedition clicks: Oct 2025, Feb 2026, Jul 2026'], [`${cb.seenYear} of ${cb.practicesAll}`, 'our practices showed up for tongue tie'], [`1 in ${fmt(oneIn)}`, 'showings got a click, our practices'], [ord(cb.rank), `Expedition, most shown of the ${cb.seenYear}`], ['Nov 2026', 'write pin placed']],
+    note: `The rose line is our practices combined, never one client: each week’s showings divided by the number of practices with data that week. ${FL.COMB_NOTE} Expedition’s own data misses the weeks of Sep 7, 14 and 21, drawn as a hatched gap, not a dip. ${FL.OWN_NOTE}`,
+    cap: 'Top, bold rose: our practices combined, average showings per practice a week, on its own scale; the Google Trends shape is faint, no scale. Bottom, dashed rose: Expedition’s own site, showings a week, on its own scale; the dots on its floor are its 3 clicks. The write pin drops onto November 2026.',
     build(S) {
       put(S, 'g100', { y1: UP0, y2: UP0, o: 1 }); put(S, 'g50', { y1: (UP0 + UP1) / 2, y2: (UP0 + UP1) / 2, o: 1 }); put(S, 'g0', { y1: UP1, y2: UP1, o: 1 });
       put(S, 'lg0', { y1: LP0, y2: LP0, o: 1 }); put(S, 'lg1', { y1: (LP0 + LP1) / 2, y2: (LP0 + LP1) / 2, o: 1 }); put(S, 'base', { y1: LP1, y2: LP1, o: 1 });
@@ -867,27 +877,27 @@ a{color:var(--aInk)}
       ${yTicks([[yC(0), '0'], [yC(10), '10'], [yC(20), '20']])}${yTicks([[yE(0), '0'], [yE(150), '150'], [yE(300), '300']])}${xTicks(...W12, 2)}
       ${T(xw(59, ...W12), LP0 + 13, 'no data', { s: 10, w: 600, c: '#667085', a: 'middle' })}${T(xw(59, ...W12), LP0 + 25, 'for 3 weeks', { s: 10, c: '#667085', a: 'middle' })}
       ${gutter([{ x0: xw(59, ...W12), y: yC(cb.avg[59]), t: 'Our practices', w: 700, c: ROSE_D }, { x0: xw(59, ...W12), y: yT(VALS.tt[59]), t: 'Trends shape', c: '#98A2B3' }, { x0: xw(58, ...W12), y: yE(cb.own[58]), t: 'Expedition', w: 600, c: '#475569' }, { x0: xw(57, ...W12), y: Y1 - 2, t: '3 clicks', w: 800, c: '#0B1020' }])}
-      ${bandLabels(GEO.normal, 3)}${T(0, 422, 'Write pin: Expedition’s own site shown 1,000+ times a month with under 1 click in 1,000', { s: 10.5, c: '#667085' })}
-      ${T(0, 436, `Our practices combined: ${cb.seenYear} of ${cb.practicesAll} showed up, ${cb.clicked} got a click. ${FL.COMB_NOTE}`, { s: 10, c: '#9CA3AF' })}`,
+      ${bandLabels(GEO.normal, 3)}${T(0, 422, 'Write pin: Expedition’s own site shown 1,000+ times a month with under 1 click per 1,000 showings', { s: 10.5, c: '#667085' })}
+      ${T(0, 436, `Our practices combined: ${cb.seenYear} of ${cb.practicesAll} showed up, ${cb.clicked} got a click. Their data starts Sep 2025.`, { s: 10, c: '#9CA3AF' })}`,
     hv: { i0: CI[0], i1: 60, x: (i) => xw(i, ...W12), note: 'showings a week · bold: ours · dashed: Expedition', cols: 4,
       title: (i) => (i === 59 ? 'Sep 2026 · Expedition missing 3 of 4 weeks' : i === 60 ? 'Oct 2026, 2 weeks so far' : FL.ml(M[i])),
       series: [{ name: 'per practice', vals: cb.avg, y: yC, kind: 'rose', key: { c: ROSE, w: 2.2 }, fmt: (v) => v.toFixed(1) },
         { name: 'shown', vals: cb.seen, y: () => 0, nodot: true, key: { c: ROSE, w: 0 }, fmt: (v, i) => `${v} of ${cb.rep[i]}` },
         { name: 'Expedition', vals: cb.own, y: yE, kind: 'other', key: OWN_KEY, fmt: (v) => fmt(Math.round(v)) },
         { name: 'its clicks', vals: cb.ownClk, y: () => Y1, nodot: true, key: { c: ROSE, w: 0 }, fmt: (v) => String(v) }] },
-    idle: () => ({ title: 'Sep 2025 to Oct 2026', note: 'Search Console · bold: ours · dashed: Expedition', cols: 4, slots: [{ key: FL.key({ c: ROSE, w: 2.2 }), v: `${cb.seenYear} of ${cb.practicesAll}`, name: 'shown' }, { key: FL.key({ c: ROSE, w: 2.2 }), v: `1 in ${fmt(oneIn)}`, name: 'clicked' }, { key: FL.key(OWN_KEY), v: fmt(ttTot), name: 'Expedition' }, { key: FL.dotKey(ROSE), v: String(cb.ownClkYear), name: 'its clicks' }] }),
+    idle: () => ({ title: 'Sep 2025 to Oct 2026', note: 'Search Console · bold: our practices · dashed: Expedition', cols: 4, slots: [{ key: FL.key({ c: ROSE, w: 2.2 }), v: `${cb.seenYear} of ${cb.practicesAll}`, name: 'shown' }, { key: FL.key({ c: ROSE, w: 2.2 }), v: `1 in ${fmt(oneIn)}`, name: 'clicked' }, { key: FL.key(OWN_KEY), v: fmt(ttTot), name: 'Expedition' }, { key: FL.dotKey(ROSE), v: String(cb.ownClkYear), name: 'its clicks' }] }),
   });
 
   /* 05 The Washington caveat: the US read peels off the Washington line; a dashed frame lands on the band */
   const W24 = [idx('2024-10'), 60]; const us = D.us16;
   chapters.push({
     key: 'wa', kick: 'The Washington caveat',
-    head: 'This check was read for Washington; across the US, tongue tie is <span class="r">7 behind</span>, not 14 ahead.',
-    body: [`Every line and every call in this check is a Google Trends read for Washington, including the 5 benchmark phrases. A different check (#16, read for the US on ${us.created.slice(5).replace('-', '/')}) has tongue tie at ${us.cur} for July to September against ${us.prev} a year earlier, with US dental searches at 98 for every 100: 7 behind, not 14 ahead.`,
-      'So the tongue tie re-check in January should read both places before anyone calls it Rising. Two more cautions for the whole plan: every dental phrase about doubled on Google Trends from 2024 to 2026 (the Washington benchmark went from about 26 to about 42), which is labelled, not counted as patients; and searches a month are a US figure from a different source.'],
-    facts: [['14 ahead', 'tongue tie, Washington, check #22'], ['7 behind', 'tongue tie, US, check #16'], ['37.5 / 33.0', 'Washington, Jul to Sep vs a year earlier'], [`${us.cur} / ${us.prev}`, 'US, same months'], ['26 to 42', 'Washington benchmark, 2024 to 2026'], ['every pin', 'placed from the Washington read']],
+    head: 'Read across the whole US, tongue tie is <span class="r">behind dental searches overall, not ahead</span>.',
+    body: [`Every line and every Rising, Steady or Fading in this check comes from Google Trends for Washington, including the 5 common dental searches. A different check, #16, was read for the whole US on ${us.created.slice(5).replace('-', '/')}. It has tongue tie at ${us.cur} this July to September against ${us.prev} a year earlier. US dental searches overall were at 98 for every 100 a year earlier. So across the US, tongue tie is about 7 in every 100 behind dental searches overall, not 14 ahead.`,
+      'Before anyone calls tongue tie Rising, the January check should look at both places. Two more cautions for the whole plan. Every dental search about doubled on Google Trends from 2024 to 2026: dental searches overall in Washington went from about 26 to about 42. That is shown, not counted as more patients. And searches a month are a US figure from a different source.'],
+    facts: [['14 in 100 ahead', 'tongue tie, Washington, check #22'], ['7 in 100 behind', 'tongue tie, US, check #16'], ['37.5 / 33.0', 'Washington, Jul to Sep this year / last year'], [`${us.cur} / ${us.prev}`, 'US, same months'], ['26 to 42', 'dental searches overall in Washington, 2024 to 2026'], ['every pin', 'placed from the Washington read']],
     note: 'The US line is the same phrase in a different place, so it keeps the same color, dashed.',
-    cap: 'Tongue tie, Oct 2024 to Oct 2026: Washington (check #22, solid) and the US (check #16, dashed), each on its own 0 to 100. The dashed frame marks the whole band as a Washington read.',
+    cap: 'Tongue tie, Oct 2024 to Oct 2026. Solid: Washington, check #22. Dashed: the US, check #16. Each on its own 0 to 100. The dashed frame marks the whole year plan as a Washington read.',
     build(S) {
       grid(S); line(S, 'tt', ...W24, 'lead');
       put(S, 'ln-us', { pts: linePts(VALS.us, ...W24), stroke: TEAL, sw: 1.7, dash: '5 4', o: 1 }, { pre: { pts: linePts(VALS.tt, ...W24), o: 1, stroke: TEAL, sw: 1.7, dash: '5 4' }, delay: 500 });
@@ -898,26 +908,26 @@ a{color:var(--aInk)}
       pins(S, 4);
     },
     enter(fig, later) { const g = GEO.normal; later(1600, () => fig.set('waframe', { x: -8, y: g.head - 10, width: BX1 + 14, height: laneTop(g, 2) + g.h - g.head + 16 })); },
-    labels: () => `${title('Washington 14 ahead · US 7 behind', 'Tongue tie, Jul to Sep 2026 against the same months of 2025')}
+    labels: () => `${title('Washington ahead, US behind', 'Tongue tie, Jul to Sep 2026 against the same months of 2025')}
       ${yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']])}${xTicks(...W24)}
       ${gutter([{ x0: xw(59, ...W24), y: yv(VALS.tt[59]), t: 'Washington', w: 700, c: '#0B1020' }, { x0: xw(59, ...W24), y: yv(VALS.us[59]), t: 'US, check #16', c: '#273043' }])}
-      ${bandLabels(GEO.normal, 4)}${T(0, 436, 'Benchmark in Washington: about 26 in 2024, about 42 in 2026, labelled, not read as patients', { s: 10.5, c: '#667085' })}`,
+      ${bandLabels(GEO.normal, 4)}${T(0, 436, 'Dental searches overall in Washington: about 26 in 2024, about 42 in 2026; shown, not read as patients', { s: 10.5, c: '#667085' })}`,
     hv: { i0: W24[0], i1: 60, x: (i) => xw(i, ...W24), note: 'Google Trends, each on its own 0 to 100', title: (i) => (i === 60 ? 'Oct 2026, not over yet' : FL.ml(M[i])), series: [ser('tt', 'Washington'), { ...ser('us', 'US, check #16', 'other', { c: TEAL, w: 1.7, dash: '5 4' }) }] },
-    idle: () => ({ title: 'Jul to Sep 2026 against Jul to Sep 2025', note: 'against dental searches overall', slots: [{ key: FL.key({ c: TEAL, w: 2.2 }), v: '14 ahead', name: 'Washington' }, { key: FL.key({ c: TEAL, w: 1.7, dash: '5 4' }), v: '7 behind', name: 'US, check #16' }] }),
+    idle: () => ({ title: 'Jul to Sep 2026 against Jul to Sep 2025', note: 'in every 100, against dental searches overall', slots: [{ key: FL.key({ c: TEAL, w: 2.2 }), v: '14 ahead', name: 'Washington' }, { key: FL.key({ c: TEAL, w: 1.7, dash: '5 4' }), v: '7 behind', name: 'US, check #16' }] }),
   });
 
   /* 06 The plan: the plot empties, the band rises and widens, its pins become three numbered steps */
   const PLAN = [
-    { n: 1, pin: 'p-write', when: 'November 2026', head: 'Write the tongue tie release page', rule: 'Rule: shown 1,000+ times a month with under 1 click in 1,000', ev: `Expedition’s own site: ${fmt(ttTot)} tongue tie showings, 3 clicks; 14 ahead in Washington` },
-    { n: 2, pin: 'p-rc-tt', when: 'January 2027', head: 'Re-check tongue tie and pediatric dentistry', rule: 'Rule: within 5 of a line, read again once the next 3 full months are in', ev: 'tongue tie 1 short of Rising (US 7 behind); pediatric dentistry on the Fading line' },
-    { n: 3, pin: 'p-pub', when: 'live by June 2027', head: 'Publish the late-summer pediatric dentistry page', rule: 'Rule: a peak that repeats in at least 2 of the last 3 years, 2 months ahead', ev: 'pediatric dentistry: busiest in July or August, 4 years of 4' },
+    { n: 1, pin: 'p-write', when: 'November 2026', head: 'Write the tongue tie release page', rule: 'Rule: shown 1,000+ times a month with under 1 click per 1,000 showings', ev: `Expedition’s own site: ${fmt(ttTot)} tongue tie showings, 3 clicks; 14 in 100 ahead in Washington` },
+    { n: 2, pin: 'p-rc-tt', when: 'January 2027', head: 'Check tongue tie and pediatric dentistry again', rule: 'Rule: within 5 in 100 of a line, look again once the next 3 full months are in', ev: 'tongue tie just short of Rising, behind across the US; pediatric dentistry on the Fading line' },
+    { n: 3, pin: 'p-pub', when: 'live by June 2027', head: 'Publish the late-summer pediatric dentistry page', rule: 'Rule: a peak that repeats in at least 2 of the last 3 years; publish 2 months before', ev: 'pediatric dentistry: busiest in July or August, 4 years of 4' },
   ];
   chapters.push({
     key: 'plan', kick: 'The plan',
-    head: 'Three steps on the year: <span class="g">write in November</span>, re-check in January, publish by June.',
-    body: ['Each pin came from a rule applied to this check, not from a judgement: a gap between showings and clicks, a topic near a line, a peak that repeats. Pediatric dentist holds steady all year and needs no new page.',
-      'The order follows the calendar, not the 1 to 10 rating; on this prospect check every topic rates 2 of 10, so the rating cannot rank them.'],
-    note: 'Up to 3 steps, by rule. A topic with no rule firing gets no pin.',
+    head: 'Three steps on the year: <span class="g">write in November</span>, check again in January, publish by June.',
+    body: ['Each pin came from a written rule applied to this check, not from opinion: a gap between showings and clicks, a topic near a line, a peak that repeats. Pediatric dentist holds steady all year and needs no new page.',
+      'The order follows the calendar, not the 1 to 10 rating. On this prospect check every topic rates 2 of 10, so the rating cannot rank them.'],
+    note: 'Up to 3 steps, by rule. A topic that no rule applies to gets no pin.',
     cap: 'The finished year: every pin placed by an earlier chapter, numbered in calendar order, with the rule that put it there.',
     build(S) {
       band(S, GEO.plan, { delay: 300 });

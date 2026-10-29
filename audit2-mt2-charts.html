@@ -56,6 +56,10 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
 .part{margin:44px 0 0;padding:18px 0 0;border-top:1px solid #E1E4E8}
 .part .eb{font:700 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)}
 .part h2{margin:4px 0 2px;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)}
+.defs{margin-top:14px;max-width:760px;padding:12px 14px;background:#F8FAFB;border:1px solid var(--line);border-radius:6px}
+.defs .dh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.defs p{margin:0;font-size:13.5px;line-height:1.55;color:#273043}
+.defs p+p{margin-top:6px}
 .part .sub{color:var(--muted);font-size:14px;margin:0}
 
 .sec{scroll-margin-top:64px;padding-top:30px}
@@ -235,10 +239,14 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
     <p>Every Market Trends line chart, rebuilt from the approved Topic Cards and Performance charts.</p></div></div>
 
   <div class="part"><div class="eb">Part 1 · Bothell Family Dentistry · check #23</div><h2>Read for the US, with a Washington side read</h2>
-    <p class="sub">2 topics, 4 phrases. Called on September 2026 against dental searches overall (the 5 benchmark phrases slipped to 97 for every 100 a year earlier).</p></div>
+    <p class="sub">2 topics, 4 phrases, judged on July to September 2026. Dental searches overall dipped a little: 97 searches for every 100 a year earlier.</p>
+    <div class="defs"><div class="dh">How to read the words</div>
+<p><b>Dental searches overall</b>: how much people search for dentists in general. Market Trends measures it with 5 common dental searches: invisalign, root canal, wisdom teeth removal, veneers and teeth whitening.</p>
+<p><b>Rising</b>: searches for the topic are growing clearly faster than dental searches overall. <b>Steady</b>: moving about the same as dental searches overall. <b>Fading</b>: clearly slower. <b>Emerging</b>: small but growing fast.</p>
+<p>Clearly means more than 15 in every 100 ahead or behind, comparing July to September with the same three months a year earlier. Example: if dental searches overall stay flat and a topic grows 20 in every 100, it is 20 in every 100 ahead, so it is Rising.</p></div></div>
 
   <section class="sec" id="b-A"><div class="sec-h"><span class="lt">A</span><h3>The topic card chart, rebuilt to spec</h3></div>
-    <p class="sec-lede">Point at a chart, use the arrow keys after clicking it, switch 12 / 24 months / 5 years, toggle a phrase or our practices, and flip Shade between "Last 12 months vs the 12 before" and "Jul to Sep vs a year ago" (hover either for what it shades).</p>
+    <p class="sec-lede">Point at a chart, use the arrow keys after clicking it, switch 12 / 24 months / 5 years, toggle a phrase or our practices, and flip Shade between "Last 12 months vs the 12 before" and "Jul to Sep vs a year ago". Hover either for what it shades.</p>
     <div class="duo"><div class="cards"></div><div class="side-notes"></div></div></section>
 
   <section class="sec" id="b-B"><div class="sec-h"><span class="lt">B</span><h3>Before and after, same data</h3></div>
@@ -249,7 +257,7 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
       <div><div class="card"><div class="kick" style="margin-bottom:6px">What changed</div><ol class="calls">
         <li><span><b>No dive at the end.</b> Live plots October 2026, which is not over, as a full month, so every line drops and the end dot and labels sit on the drop. Now October is dotted and the end marks sit on September.</span></li>
         <li><span><b>The readout never moves the chart.</b> Live: a wrapping row that grows to two lines and pushes the plot down on every hover. Now: a fixed 48px bar with one slot per line, idle on September's values instead of "Point at the chart".</span></li>
-        <li><span><b>Direction has a picture.</b> The approved last 12 / 12 before bands come back, each with its average as a level line, so "Steady, up about a tenth" is visible.</span></li>
+        <li><span><b>Direction has a picture.</b> The approved last 12 / 12 before bands come back, each with its average as a level line, so "Steady, about 9 in every 100 higher than a year ago" is visible.</span></li>
         <li><span><b>Washington is the phrase's own colour, dashed.</b> Live uses cyan #0891B2, too close to the teal lead to tell apart. Tooth implant's Washington line is added; tooth whitening's is left out as too thin.</span></li>
         <li><span><b>Calmer chrome, approved values.</b> Grid at 0 / 50 / 100 not five lines, 10.5px light axis type with ticks, a 4.0 casing not 5.4, the dark dashed hover guide with a big dot on the lead only, and no legend that repeats the end labels.</span></li>
         <li><span><b>5 years reads the trend.</b> A thin raw month under a bold 3-month average, and switching range zooms the same drawing instead of redrawing it.</span></li>
@@ -262,12 +270,12 @@ svg text{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-variant-numer
   </section>
 
   <section class="sec" id="b-F"><div class="sec-h"><span class="lt">F</span><h3>Topics tab with an Insights rail</h3></div>
-    <p class="sec-lede">AIV-style rail: 210px, sticky, a number chip and a one-line verdict per item built from the numbers; click to jump.</p>
+    <p class="sec-lede">AIV-style rail: 210px, sticky, a number chip and a one-line summary per item built from the numbers; click to jump.</p>
     <div class="mnote"><span class="oq">Owner question</span>Every topic on a prospect check rates 2/10 from search demand alone (T8). The rating stays quiet in each card's foot here; hide it on prospect checks?</div>
     <div id="b-Fh"></div></section>
 
   <div class="part"><div class="eb">Part 2 · Expedition Pediatric Dentistry · check #22</div><h2>Read for Washington</h2>
-    <p class="sub">3 topics, 5 phrases, all read for Washington, benchmark included (dental searches overall held level there). Searches a month are US estimates.</p></div>
+    <p class="sub">3 topics, 5 phrases, all read for Washington, dental searches overall included; they held flat there. Searches a month are US estimates.</p></div>
 
   <section class="sec" id="e-A"><div class="sec-h"><span class="lt">A</span><h3>The topic card chart, one per topic</h3></div>
     <p class="sec-lede">Same component as Part 1. One-line topics keep the full chrome; phrases with too few searches get a grey chip instead of a line.</p>
@@ -309,31 +317,32 @@ function share(pct) {
   const a = Math.abs(pct);
   return a >= 45 ? 'about half' : a >= 30 ? 'about a third' : a >= 23 ? 'about a quarter' : a >= 17 ? 'about a fifth' : a >= 13 ? 'about a seventh' : a >= 9 ? 'about a tenth' : 'a little';
 }
+/** The raw change on last year, in plain words: one comparison only (copy guide rule 7). */
 function changeWords(yoy) {
-  if (yoy == null) return 'no reading a year ago';
+  if (yoy == null) return 'no Google score a year ago';
   const pct = Math.round((yoy - 1) * 100);
-  if (Math.abs(pct) < 5) return 'about level with a year ago';
-  return `${pct > 0 ? 'up' : 'down'} ${share(pct)} on a year ago`;
+  if (Math.abs(pct) < 5) return 'about the same as a year ago';
+  return `about ${Math.abs(pct)} in every 100 ${pct > 0 ? 'higher' : 'lower'} than a year ago`;
 }
 /** The call's own number, in words (T7): against dental searches overall, with the distance to the line. */
 function relWords(rel) {
   if (rel == null) return '';
   const d = Math.round((rel - 1) * 100);
-  if (rel >= 1.15) return `about ${d} in every 100 ahead of dental searches overall, past the Rising line at 15`;
-  if (rel < 0.85) return `about ${-d} in every 100 behind dental searches overall, past the Fading line at 15`;
-  if (Math.abs(d) <= 2) return 'level with dental searches overall';
-  if (d > 0) return `about ${d} in every 100 ahead of dental searches overall; Rising starts at 15`;
-  if (d === -15) return 'about 15 in every 100 behind dental searches overall, right on the Fading line';
-  return `about ${-d} in every 100 behind dental searches overall; Fading starts at 15 behind`;
+  if (rel > 1.15) return `about ${d} in every 100 ahead, past the Rising line`;
+  if (rel < 0.85) return `about ${-d} in every 100 behind, past the Fading line`;
+  if (Math.abs(d) <= 2) return 'moving at about the same pace';
+  if (d > 0) return `about ${d} in every 100 ahead; Rising needs more than 15`;
+  if (d === -15) return 'about 15 in every 100 behind, right on the Fading line';
+  return `about ${-d} in every 100 behind; Fading needs more than 15 behind`;
 }
 function relShort(rel) {
   const d = Math.round((rel - 1) * 100);
-  if (rel >= 1.15) return `${d} ahead, Rising`;
-  if (rel < 0.85) return `${-d} behind, Fading`;
-  if (Math.abs(d) <= 2) return 'level with overall';
-  if (d > 0) return 15 - d <= 5 ? `${d} ahead, ${15 - d} short of Rising` : `${d} ahead of overall`;
+  if (rel > 1.15) return `${d} in 100 ahead`;
+  if (rel < 0.85) return `${-d} in 100 behind`;
+  if (Math.abs(d) <= 2) return 'same pace as dental searches';
+  if (d > 0) return 15 - d <= 5 ? `${d} in 100 ahead, close to Rising` : `${d} in 100 ahead`;
   if (d === -15) return 'on the Fading line';
-  return `${-d} behind overall`;
+  return `${-d} in 100 behind`;
 }
 const verdictOf = (dir) => dir === 'growing' ? 'Rising' : dir === 'decaying' ? 'Fading' : dir === 'emerging' ? 'Emerging' : 'Steady';
 const wordClass = (w) => w === 'Rising' || w === 'Emerging' ? 'w-up' : w === 'Fading' ? 'w-down' : 'w-flat';
@@ -648,7 +657,7 @@ function topicChart(host, o) {
   // chips (approved PhraseChips: lead tinted "drives the verdict", toggles with line keys, plus the lines that are not drawn and why)
   const chips = $('.chips', host);
   chips.innerHTML = lines.map((l) => l.lead
-    ? `<span class="chip lead">${swatch(l.color, l.width)}${esc(l.label)}<small>drives the verdict</small></span>`
+    ? `<span class="chip lead">${swatch(l.color, l.width)}${esc(l.label)}<small>sets the topic’s word</small></span>`
     : `<button type="button" class="chip${l.kind === 'corpus' || l.kind === 'own' ? ' rose' : ''}" data-k="${esc(l.key)}" aria-pressed="${l.on !== false}"${l.tip ? ` data-tip="${esc(l.tip)}" data-tip-h="${esc(l.tipH || '')}"` : ''}>${swatch(l.color, l.width, l.dash, l.on === false ? 0.3 : 1)}${esc(l.label)}</button>`).join('') +
     (o.offChips || []).map((c) => `<span class="chip off">${esc(c.label)}<small>${esc(c.note)}</small></span>`).join('');
   chips.addEventListener('click', (e) => {
@@ -673,7 +682,7 @@ function topicChart(host, o) {
   });
   seg($('.bg', host), [
     { v: 'year', l: 'Last 12 months vs the 12 before', tip: 'Shades the last 12 full months, Oct 2025 to Sep 2026, against the 12 before, each with its average as a level line.' },
-    { v: 'call', l: 'Jul to Sep vs a year ago', tip: 'Shades July to September 2026 against the same 3 months of 2025: the two windows the verdict compares.' },
+    { v: 'call', l: 'Jul to Sep vs a year ago', tip: 'Shades July to September 2026 against the same 3 months of 2025: the two stretches compared for Rising, Steady or Fading.' },
   ], bands, (v) => { bands = v; drawChrome(); });
 
   applyLines(); drawChrome(); drawMarks(); drawLabels(); idle();
@@ -756,7 +765,7 @@ function smallMultiples(host, set) {
     const cell = document.createElement('div');
     if (t.noRead) {
       cell.className = 'sm empty';
-      cell.innerHTML = `<div class="nm" title="${esc(t.topic)}">${esc(t.topic)}</div><div class="vd">No trend reading: Google Trends had nothing for its phrases.</div>`;
+      cell.innerHTML = `<div class="nm" title="${esc(t.topic)}">${esc(t.topic)}</div><div class="vd">No Google score for its phrases.</div>`;
       grid.appendChild(cell); return;
     }
     const c = TOPIC_HUES[live.indexOf(t)];
@@ -964,7 +973,7 @@ function chartConfig(set, t) {
   const OTHER = [{ color: '#8B98A9' }, { color: '#475569', dash: '4 3' }, { color: '#8B98A9', dash: '2 3' }];
   const lines = [{ key: lead.term, label: lead.term, values: lead.values, color: '#0F766E', width: 2.2, lead: true }];
   others.forEach((p, k) => lines.push({ key: p.term, label: p.term, values: p.values, color: OTHER[k].color, dash: OTHER[k].dash, width: 1.7 }));
-  const offChips = neg.map((p) => ({ label: p.term, note: `too few searches to read, ${p.weeks - p.nullWeeks} of ${p.weeks} weeks have a reading` }));
+  const offChips = neg.map((p) => ({ label: p.term, note: `too few searches to read, a Google score in ${p.weeks - p.nullWeeks} of ${p.weeks} weeks` }));
   const st = set.state;
   if (st) {
     [lead, ...others].forEach((p, k) => {
@@ -982,7 +991,7 @@ function chartConfig(set, t) {
   if (cp) {
     const one = (v) => (v < 100 ? (Math.round(v * 10) / 10).toFixed(1) : fmtN(v));
     lines.push({ key: '__ours', label: 'Our practices combined', short: 'Our practices', kind: 'corpus', values: cp.avg, max: cp.max, color: '#DB2777', width: 2.2, on: true, fmt: one,
-      nameAt: (i) => (cp.seen[i] == null ? 'ours: from Sep 2025' : `ours, ${cp.seen[i]} of ${cp.rep[i]} shown`),
+      nameAt: (i) => (cp.seen[i] == null ? 'ours: from Sep 2025' : `ours, ${cp.seen[i]} of ${cp.rep[i]} practices`),
       tipH: 'Our practices combined',
       tip: `Search Console showings on searches containing '${lead.term}', across the ${cp.all} practices we manage with Search Console data, averaged per practice that reported that week; never one client. ${cp.seenYear} of ${cp.all} showed up at least once and ${cp.clicked} got a click. Rose numbers are its own scale, not Google's 0 to 100. Data starts Sep 2025; a backfill to Nov 2024 is planned.` });
     if (cp.own) {
@@ -990,21 +999,22 @@ function chartConfig(set, t) {
       lines.push({ key: '__own', label: `${set.practice.split(' ')[0]}’s own site`, short: set.practice.split(' ')[0], kind: 'own', values: o.vals, max: o.max, gap: o.gap, color: '#DB2777', width: 1.5, dash: '5 3', on: false, fmt: (v) => fmtN(v),
         nameAt: (i) => (i === o.gap[0] ? `${set.practice.split(' ')[0]}: 3 weeks missing` : `${set.practice.split(' ')[0]} a week`),
         tipH: `${set.practice.split(' ')[0]}’s own site`,
-        tip: `${set.practice}'s own Search Console showings a week on '${lead.term}' searches, in its own panel under the chart: ${fmtN(o.imp)} showings and ${o.clkYear} clicks from Sep 2025 to Oct 2026, number ${o.rank} by showings among our practices. Sep 2026 misses 3 weeks: hatched, not a dip. Needs a new read in the check (cheap: same table, one client).` });
+        tip: `${set.practice}'s own Search Console showings a week on '${lead.term}' searches, in its own panel under the chart: ${fmtN(o.imp)} showings and ${o.clkYear} clicks from Sep 2025 to Oct 2026, number ${o.rank} by showings among our practices. Sep 2026 misses 3 weeks: hatched, not a dip. Not saved in the check yet; adding it is a small backend change.` });
     } else offChips.push({ label: `${set.practice}’s own site`, note: 'no Search Console rows yet' });
   }
   const peak = ['fading', 'spike_confirmed', 'step_up_held'].includes(lead.spike) && lead.peakMonth ? { index: set.months.indexOf(lead.peakMonth) } : null;
   const where = set.place === 'Washington' ? 'Washington' : 'the US';
-  const caption = `Google interest for each phrase on its own 0 to 100, where 100 is that phrase's busiest week in five years; a month is the average of its weeks, so monthly lines rarely reach 100. Read for ${where}${lines.some((l) => l.kind === 'state') ? `; dashed lines are the same phrase read for ${st}` : ''}. From 2025 every dental phrase about doubled on Google Trends, the benchmark included, so the call is made against dental searches overall. Dotted end: October 2026, not over yet; the call is made on September. Drag across the 24 month or 5 year view to read a span.${cp ? ` Rose: our practices combined, every client's Search Console showings averaged per practice a week, on its own rose scale; it starts Sep 2025 (a backfill to Nov 2024 is planned).${cp.own ? ` Dashed rose panel: ${set.practice.split(' ')[0]}’s own site, one practice, off until switched on.` : ''}` : ''}`;
+  const caption = `Google interest for each phrase on its own 0 to 100, where 100 is that phrase's busiest week in five years; a month is the average of its weeks, so monthly lines rarely reach 100. Read for ${where}${lines.some((l) => l.kind === 'state') ? `; dashed lines are the same phrase read for ${st}` : ''}. From 2025 Google’s scores for every dental search about doubled, so Rising, Steady and Fading are judged against dental searches overall, not against that jump. Dotted end: October 2026, not over yet; the judgement uses months up to September. Drag across the 24 month or 5 year view to read a span.${cp ? ` Rose: our practices combined, every client's Search Console showings averaged per practice a week, on its own rose scale; it starts Sep 2025; adding the months back to Nov 2024 is planned.${cp.own ? ` Dashed rose panel: ${set.practice.split(' ')[0]}’s own site, one practice, off until switched on.` : ''}` : ''}`;
   return { months: set.months, lines, peak, offChips, caption, cur: lead.cur, prev: lead.prev, scale: `Google interest, 0 to 100, read for ${where}`, lead };
 }
 function verdictSentence(set, t) {
   const c = chartConfig(set, t), lead = c.lead, word = verdictOf(t.direction);
   const where = set.place === 'Washington' ? 'in Washington' : 'across the US';
   const risers = t.phrases.filter((p) => p !== lead && p.direction === 'growing');
-  let s = `${chevron(word)}<span class="${wordClass(word)}">${word}</span> ${where}: ${changeWords(lead.yoy)}, ${relWords(lead.rel)}.`;
-  risers.forEach((p) => { s += ` '${esc(p.term)}' is Rising on its own, ${Math.round((p.rel - 1) * 100)} in every 100 ahead, with about ${Math.max(1, Math.round((p.weight || 0) * 100))} in every 100 of the topic's searches.`; });
-  if (lead.spike === 'step_up_held') s += ` A step up that held: about ${lead.riseX} times its usual level in ${monthShort(lead.peakMonth, true)}, and it stayed up.`;
+  const chg = changeWords(lead.yoy);
+  let s = `${chevron(word)}<span class="${wordClass(word)}">${word}</span> ${where}. Searches for ‘${esc(lead.term)}’ were ${chg}. Against dental searches overall, it is ${relWords(lead.rel)}.`;
+  risers.forEach((p) => { s += ` ‘${esc(p.term)}’ is Rising on its own, about ${Math.round((p.rel - 1) * 100)} in every 100 ahead of dental searches overall, but it carries only about ${Math.max(1, Math.round((p.weight || 0) * 100))} in every 100 of the topic’s searches.`; });
+  if (lead.spike === 'step_up_held') s += ` A jump that held: about ${lead.riseX} times its usual level in ${monthShort(lead.peakMonth, true)}, and it stayed up.`;
   return s;
 }
 
@@ -1021,13 +1031,13 @@ function topicsTab(host, set, prefix) {
   }));
   const notes = [];
   tops.forEach((t) => t.phrases.forEach((p) => {
-    if (p.direction === 'negligible') notes.push(`<b>${esc(p.term)}</b>: a reading in only ${p.weeks - p.nullWeeks} of ${p.weeks} weeks, too few searches to read, so it does not move ${esc(t.topic)} and its spike flag is not shown.`);
+    if (p.direction === 'negligible') notes.push(`<b>${esc(p.term)}</b>: a Google score in only ${p.weeks - p.nullWeeks} of ${p.weeks} weeks, too few searches to read, so it does not move ${esc(t.topic)} and its saved spike flag is not shown.`);
     if (p.state && !p.state.drawn) notes.push(`<b>${esc(p.term)} in ${set.state}</b>: ${p.state.zeros12} of the last 12 months at zero, too thin to read in ${set.state}, so no ${set.state} line is drawn.`);
   }));
-  if (set.place === 'Washington') notes.push(`<b>Read for Washington.</b> Every Trends line on this check, and its benchmark of five dental phrases, is a Washington read; only searches a month are US estimates.`);
-  notes.push(`<b>Every dental phrase about doubled on Google Trends from 2024 to 2026</b>, the benchmark included: its middle phrase averaged about ${set.place === 'Washington' ? '27 in 2024 and 44' : '25 in 2024 and 42'} in January to September 2026. Trends alone cannot tell more patients from a rescale, so each call is made against that benchmark.`);
+  if (set.place === 'Washington') notes.push(`<b>Read for Washington.</b> Every Trends line on this check, including the 5 common dental searches behind dental searches overall, is read for Washington; only searches a month are US estimates.`);
+  notes.push(`<b>Every dental search about doubled on Google Trends from 2024 to 2026</b>, dental searches overall included: about ${set.place === 'Washington' ? '27 in 2024 and 44' : '25 in 2024 and 42'} in January to September 2026, on Google’s 0 to 100. Google Trends alone cannot tell more patients from a change of scale, so each topic is judged against dental searches overall.`);
   if (set.place !== 'Washington') notes.push(`<b>No Search Console line</b>: ${esc(set.practice)} has no rows in our Search Console data yet, so its own line cannot be drawn.`);
-  notes.push(`<b>October 2026 is not over</b>: it is drawn dotted and the call is made on September.`);
+  notes.push(`<b>October 2026 is not over</b>: it is drawn dotted and left out; the judgement uses months up to September.`);
   const items = [
     ...tops.map((t, k) => { const lp = t.phrases.find((p) => p.term === t.driving) || t.phrases[0]; return { id: `${prefix}-t${k}`, title: t.topic, verdict: `${verdictOf(t.direction)}, ${relShort(lp.rel)}`, grp: 'Topics' }; }),
     { id: `${prefix}-near`, title: 'Closest to moving', verdict: near.length ? `${near.length} phrase${near.length > 1 ? 's' : ''} near a line` : 'none near a line', grp: 'Across topics' },
@@ -1049,14 +1059,14 @@ function topicsTab(host, set, prefix) {
   });
   const ns = document.createElement('section'); ns.className = 'tsec'; ns.id = `${prefix}-near`;
   const RX0 = 0.7, RX1 = 1.4, rw = 400, rh = 26, rxp = (v) => 8 + ((Math.max(RX0, Math.min(RX1, v)) - RX0) / (RX1 - RX0)) * (rw - 16);
-  ns.innerHTML = `<div class="kick">Across topics</div><h4>Closest to moving</h4><p class="lede">Each phrase against dental searches overall: the middle band is Steady, past 15 in every 100 either way it is Rising or Fading.</p>
+  ns.innerHTML = `<div class="kick">Across topics</div><h4>Closest to moving</h4><p class="lede">Each phrase against dental searches overall. The middle band is Steady; more than 15 in every 100 ahead is Rising, more than 15 behind is Fading.</p>
     <div class="cmrow" style="padding-top:0;padding-bottom:0"><span></span><svg viewBox="0 0 ${rw} 16" class="plot"><text x="${rxp(0.775)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Fading</text><text x="${rxp(1)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Steady</text><text x="${rxp(1.275)}" y="11" font-size="10.5" fill="#9CA3AF" text-anchor="middle">Rising</text></svg><span></span></div>
-    ${(near.length ? near : []).map(({ t, p, d, lead }) => `<div class="cmrow"><span class="p">${esc(p.term)}<small>${esc(t.topic)}${lead ? ', drives the verdict' : `, ${Math.max(1, Math.round((p.weight || 0) * 100))} in 100 of its searches`}</small></span>
+    ${(near.length ? near : []).map(({ t, p, d, lead }) => `<div class="cmrow"><span class="p">${esc(p.term)}<small>${esc(t.topic)}${lead ? ', sets the topic’s word' : `, ${Math.max(1, Math.round((p.weight || 0) * 100))} in 100 of its searches`}</small></span>
       <svg viewBox="0 0 ${rw} ${rh}" class="plot"><rect x="${rxp(0.85)}" y="4" width="${rxp(1.15) - rxp(0.85)}" height="${rh - 8}" fill="#F3F4F6" rx="2"/><rect x="${rxp(1.15)}" y="4" width="${rxp(1.4) - rxp(1.15)}" height="${rh - 8}" fill="#E3F2EE" rx="2"/>
         <line x1="${rxp(1)}" x2="${rxp(1)}" y1="3" y2="${rh - 3}" stroke="#0F172A" stroke-opacity=".4"/>
         ${[0.85, 1.15].map((v) => `<line x1="${rxp(v)}" x2="${rxp(v)}" y1="2" y2="${rh - 2}" stroke="#9CA3AF"/>`).join('')}
         <circle cx="${rxp(p.rel)}" cy="${rh / 2}" r="5" fill="${lead ? '#0F766E' : '#8B98A9'}" stroke="#fff" stroke-width="2"/></svg>
-      <span class="g"><b class="${wordClass(verdictOf(p.direction))}">${verdictOf(p.direction)}</b>, ${esc(relShort(p.rel))}</span></div>`).join('') || '<p class="small">No phrase is within 5 of a line.</p>'}`;
+      <span class="g"><b class="${wordClass(verdictOf(p.direction))}">${verdictOf(p.direction)}</b>, ${esc(relShort(p.rel))}</span></div>`).join('') || '<p class="small">No phrase is within 5 in 100 of a line.</p>'}`;
   body.appendChild(ns);
   const ws = document.createElement('section'); ws.className = 'tsec'; ws.id = `${prefix}-when`;
   const anySeason = tops.some((t) => seasonVerdict(t).has);
@@ -1085,7 +1095,7 @@ const CARRIED = `<div class="mnote"><b>Carried over from the approved charts</b>
   Demand chart: 640 x 270 box, padding L30 T20 B26, lead #0F766E on a white casing, other phrases #8B98A9 solid and #475569 dashed 4 3, combined #0D9488 dashed 6 4, grid only at 0 / 50 / 100 in #EEF0F3, 10.5px #9CA3AF axis type with 4px ticks, last 12 / 12 before bands, dotted not-over month with the band fading across it, one CSS transform zoom for 12 / 24 / 5 years at .7s, chrome cross-fade 350ms, peak marker, non-scaling strokes, chips with line keys and the tinted "drives the verdict" lead chip.<br>
   Performance chart: the readout bar ABOVE the plot, never a floating box; grey idle state; drag across to read a span.</div>
   <div class="mnote"><b>New to spec 03</b><br>Readout fixed at 48px with one slot per line, idle on September 2026 (the newest full month). Keyboard: focus the chart, then left and right arrows. End labels on September with spread and elbow leaders. Washington lines only when the state read has no zero month in the last 12 (T10). Level lines with each band's average. 5 years: thin raw month under a bold 3-month average. "Show as a table" under every chart.</div>`;
-const Q_BANDS = `<div class="mnote"><span class="oq">Owner question</span>Shade: the approved "Last 12 months vs the 12 before" bands, or "Jul to Sep vs a year ago" (the two 3-month windows the verdict compares)? Both are wired to the "Shade" switch on every chart, each with a one-line hover; level lines move with them.</div>`;
+const Q_BANDS = `<div class="mnote"><span class="oq">Owner question</span>Shade: the approved "Last 12 months vs the 12 before" bands, or "Jul to Sep vs a year ago", the two 3-month stretches compared for Rising, Steady or Fading? Both are wired to the "Shade" switch on every chart, each with a one-line hover; level lines move with them.</div>`;
 
 function topicCardEl(set, t, k, n, opts = {}) {
   const el = document.createElement('div'); el.className = 'card';
@@ -1104,7 +1114,7 @@ function partA(id, set, side) {
 // A, Bothell
 partA('b-A', B, CARRIED + Q_BANDS);
 // A, Expedition (read for Washington)
-partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every line on this check, and the benchmark it is called against, is a Washington read, so no state line is drawn and every sentence says "in Washington". Searches a month are US estimates.</div>
+partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every line on this check, dental searches overall included, is read for Washington, so no state line is drawn and every sentence says "in Washington". Searches a month are US estimates.</div>
   <div class="mnote"><b>Too few searches (T9)</b><br>ankyloglossia and children's dentist have a reading in only 3 and 18 of 262 weeks: no line, a grey chip says why, and the topic's "spike that collapsed" flag, which comes from ankyloglossia, is never narrated.</div>
   <div class="mnote"><b>Peak marker</b><br>Only on pediatric dentist: its stored shape is a step up that held (about 3 times its usual level in August 2025, still up).</div>` + Q_BANDS);
 
@@ -1122,7 +1132,7 @@ partA('e-A', E, `<div class="mnote"><b>Read for Washington (T1)</b><br>Every lin
   const card = $('.live-card', host);
   card.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#98A2B3">Topic 1 of 2</span>
       <h3 style="margin:0;flex:1;font-size:22px;font-weight:800;color:#0B1020">Dental Implants</h3><span style="font-size:14px;color:#667085"><b style="font-size:22px;font-weight:900;color:#0B1020">2</b>/10</span></div>
-    <p style="margin:6px 0 4px;font-size:16px;color:#273043"><b style="color:#273043">Steady</b> across the US: ${changeWords(lead.yoy)}.</p>
+    <p style="margin:6px 0 4px;font-size:16px;color:#273043"><b style="color:#273043">Steady</b> across the US: up about a tenth on a year ago.</p>
     <div style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px"><div style="display:flex;gap:6px"><button class="lchip lead">dental implants</button><button class="lchip">tooth implant</button></div>
       <div class="lseg"><button data-r="12">12 months</button><button data-r="24">24 months</button><button data-r="60" class="on">5 years</button></div></div>
     <div class="lc" style="margin-top:8px"></div>
@@ -1155,7 +1165,7 @@ smallMultiples($('#e-C .smhost'), S);
   const t = E.topics.find((x) => x.topic === 'Pediatric Dentistry');
   const v = typicalYear($('#e-E .ty'), t, 'Washington');
   $('#e-E .tyh').innerHTML = `Pediatric Dentistry peaks in <span class="grad">late summer</span> and dips every December`;
-  $('#e-E .tyl').textContent = `In Washington, ${MONL[t.season.peak]} was the busiest month in ${t.season.repeat} of the last 3 full years and ${MONL[t.season.busiest[2]]} in the other, about ${t.season.mean[t.season.peak].toFixed(1)} times an average month, and December the quietest all three years, about ${t.season.mean[11].toFixed(1)} times. A late-summer page does best live by ${v.pub}.`;
+  $('#e-E .tyl').textContent = `In Washington, ${MONL[t.season.peak]} was the busiest month in ${t.season.repeat} of the last 3 full years and ${MONL[t.season.busiest[2]]} in the other, about ${t.season.mean[t.season.peak].toFixed(1)} times an average month. December was the quietest month all three years, about ${t.season.mean[11].toFixed(1)} times an average month. A late-summer page does best live by ${v.pub}.`;
   seasonStrip($('#e-E .stp'), E.topics);
 })();
 

@@ -258,7 +258,7 @@ function figPhrases(svg) {
     } else {
       op(tiL, 1); op(chk, 0); gTi.setAttribute('fill', C.up); gDi.setAttribute('fill', C.bench);
       say(gTi, 'Rising'); say(gDi, 'Steady');
-      say(title, 'Tooth implant rises on its own'); say(foot, `The topic takes the call with most weight: Steady`);
+      say(title, 'Tooth implant rises on its own'); say(foot, `The phrase with the most searches sets the topic: Steady`);
     }
   };
   return { go, dur: [2000, 2000, 2400, 3000] };
@@ -310,16 +310,16 @@ function figCall(svg) {
       say(title, 'Is dental implants rising?'); say(foot, 'Dental implants, US; October is not over, so dotted');
     } else if (s === 1) {
       [b25, b26, l25, l26, w25, w26, tdot].forEach((x) => op(x, 1));
-      say(title, `Up about a tenth on a year ago`); say(foot, `Jul to Sep: ${Math.round(K.dd.prev)} a year ago, ${Math.round(K.dd.cur)} now`);
+      say(title, `About 1 in 10 higher than a year ago`); say(foot, `Jul to Sep: ${Math.round(K.dd.prev)} a year ago, ${Math.round(K.dd.cur)} now`);
     } else if (s === 2) {
       op(line, 0.35); op(oct, 0.35);
       bench.forEach((c, i) => setTimeout(() => { op(c, 1); at(c, c._x, c._y); }, REDUCE ? 0 : i * 140));
       setTimeout(() => op(ring, 1), REDUCE ? 0 : 800);
-      say(title, `Dental searches overall: ${in100(med)} in 100 fewer`); say(foot, 'Middle of 5 everyday dental phrases, same months');
+      say(title, `Dental searches overall: ${in100(med)} in 100 fewer`); say(foot, 'Middle of 5 common dental searches, same months');
     } else if (s === 3) {
       at(tdot, R(rel), LANE); bench.forEach((c) => op(c, 0.3)); op(zone, 1);
       ticks.forEach((t) => op(t, 0)); zones.forEach((z) => op(z, 1));
-      say(title, `Against them, ${in100(rel)} in 100 ahead: Steady`); say(foot, 'Rising starts at 15 in 100 ahead');
+      say(title, `Against them, ${in100(rel)} in 100 ahead: Steady`); say(foot, 'Rising needs more than 15 in 100 ahead');
     } else {
       op(idot, 1); at(idot, R(irel), LANE); idot.setAttribute('fill', C.up);
       say(title, `Tooth implant: ${in100(irel)} in 100 ahead, Rising`); say(foot, 'Too few searches to move the topic: Steady');
@@ -383,7 +383,7 @@ function figSeason(svg) {
       say(title, 'Teeth whitening, US, 2024 to 2026'); say(sub, ''); say(foot, '2026 runs to September');
     } else if (s === 5) {
       op(ringA, 1); at(ringA, XF(3), Yr(wR[2][3])); months[3].setAttribute('fill', C.teal); months[3].setAttribute('font-weight', 800);
-      say(title, 'One busy April, in 2026 only'); say(sub, `Apr 2026: about half again above its usual month`);
+      say(title, 'One busy April, in 2026 only'); say(sub, `Apr 2026: about 1.5 times its usual month`);
       say(foot, 'The two Aprils before it were ordinary');
     } else {
       setPts(avg, wA.map((r, j) => [XF(j), Yr(r)])); tweenAttr(cA.r, 'width', 300, 1000);
@@ -534,7 +534,7 @@ function liveRating(svg) { // useLoop(5, 700)
 const SECTIONS = [
   { title: 'What the numbers on the lines mean', fig: figScale, live: liveScale, cap: 'Dental implants, US, weekly. Bothell check.',
     liveCap: 'Made-up wave; "100, the busiest month"; "50" label sits on the line.',
-    body: ['The lines come from Google Trends, read through DataForSEO one phrase at a time, five years back, one point a week. Each phrase is read across the US, which decides the call, and for the practice\'s state, drawn dashed beside it when the state has enough searches.',
+    body: ['The lines come from Google Trends, read through DataForSEO one phrase at a time, five years back, one point a week. Each phrase is read across the US, which decides Rising, Steady or Fading, and for the practice\'s state, drawn dashed beside it when the state has enough searches.',
       'Google does not share search counts in Trends. It scores every week from 0 to 100, where 100 is the busiest week of that read. A week at 52 had about half the searches of that week; a week at 25, a quarter as many.',
       'Each phrase has its own 100, so lines compare by shape, not size. Monthly lines average their weeks, so they rarely reach 100: dental implants\' busiest month, June 2026, averages 79. The size comes from the searches a month under each card.'],
     fixes: 'Live said 100 is "the busiest month". It is the busiest week (T4). Added the monthly averaging, with the real 79.' },
@@ -542,13 +542,13 @@ const SECTIONS = [
     liveCap: 'Three made-up waves in topic colours; no weighting shown.',
     body: ['A topic is what a patient wants, in the practice\'s words: dental implants, teeth whitening. Patients search for it in more than one way, so each topic is read through 1 to 5 phrases, each on its own 0 to 100.',
       'Each phrase counts in line with its searches last month. For Bothell, 12,770 searches said "dental implants" and 1,608 said "tooth implant", so the topic line is 89 parts the first and 11 parts the second.',
-      'The topic takes the call that carries the most weight. Tooth implant is rising on its own, but with 11 of every 100 searches it cannot move the topic, which reads Steady.'],
+      'The topic takes the word, Rising, Steady or Fading, that carries the most searches. Tooth implant is Rising on its own, but with 11 of every 100 searches it cannot move the topic, which reads Steady.'],
     fixes: 'Live said the head phrase leads the chart. The engine weighs every phrase by its latest month of searches (sizing.py) and the topic takes the call with the most weight.' },
-  { title: 'Rising, steady, fading or emerging', fig: figCall, live: liveCall, cap: 'Dental implants, US. Bothell check.',
+  { title: 'Rising, Steady, Fading or Emerging', fig: figCall, live: liveCall, cap: 'Dental implants, US. Bothell check.',
     liveCap: 'Invented lines; benchmark drawn flat; verdict flips every 1.3s.',
-    body: ['Each phrase\'s last 3 full months are compared with the same 3 months a year earlier. For dental implants, July to September 2026 averaged 67 against 61 a year before: up about a tenth. The month still under way is drawn dotted and never counts.',
-      'The same comparison runs for 5 everyday dental phrases: teeth whitening, invisalign, veneers, root canal and wisdom teeth removal. The middle one of the five stands for dental searches overall; this time it slipped about 3 in 100.',
-      'The phrase is then measured against that. More than 15 in 100 ahead is Rising, more than 15 in 100 behind is Fading, anything between is Steady: dental implants ran 12 ahead. Emerging means almost no searches a year earlier and real searches now. A phrase too rare to score shows as too few searches to read.'],
+    body: ['Each phrase\'s last 3 full months are compared with the same 3 months a year earlier. For dental implants, July to September 2026 averaged 67 against 61 a year before: about 1 in 10 higher. The month still under way is drawn dotted and never counts.',
+      '<b>Dental searches overall</b>: how much people search for dentists in general. Market Trends measures it with 5 common dental searches: invisalign, root canal, wisdom teeth removal, veneers and teeth whitening. It takes the middle of the five; this time it dipped about 3 in every 100.',
+      '<b>Rising</b>: searches for the topic are growing clearly faster than dental searches overall. <b>Steady</b>: moving about the same as dental searches overall. <b>Fading</b>: clearly slower. <b>Emerging</b>: small but growing fast. Clearly means more than 15 in every 100 ahead or behind, comparing July to September with the same three months a year earlier. Dental implants came out about 12 in every 100 ahead, so it is Steady. A phrase too rare to score shows as too few searches to read.'],
     fixes: 'Added the real windows, the 5 benchmark phrases, the middle value and the 15 in 100 line (classifiers.py). Live implied dental searches overall stay flat; they doubled since 2024 (T2), which is why the comparison is relative.' },
   { title: 'Seasons', fig: figSeason, live: liveSeason, cap: 'Expedition (Washington), then Bothell (US).',
     liveCap: 'Invented shades; "peaks in June" while the check finds a one-off April.',
