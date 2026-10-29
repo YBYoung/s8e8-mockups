@@ -1,0 +1,1043 @@
+<!doctype html><html lang="en"><head><title>Market Trends · Topic board</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>/* Facelift shared look: the AI Visibility page's experience in OQ teal.
+   Tokens follow components/tools/ai-visibility/aivTheme.ts with indigo swapped for teal. */
+:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;--aRing:rgba(15,118,110,.35);
+  --up:#15803D;--down:#E11D48;
+  --g:#15803D;--y:#F5C518;--r:#DC2626;--n:#94A3B8;
+  --t1:#0D9488;--t2:#3B5BDB;--t3:#E0527A;--t4:#5F7D16;--t5:#9C36B5;
+  --rose:#DB2777;
+  --shadowPanel:0 20px 50px rgba(11,16,32,.10);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer}
+input,textarea{font:inherit}
+a{color:var(--aInk)}
+
+/* app chrome: the OQ sidebar, then the tool page */
+.fl-app{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:100vh}
+.fl-side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+.fl-side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.fl-side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.fl-side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.fl-side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.fl-side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+@media (max-width:900px){.fl-app{grid-template-columns:1fr}.fl-side{display:none}.fl-wrap{padding:0 16px 80px}}
+
+/* the sticky frosted top bar (AivShell) */
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 22px;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+@media (max-width:900px){.fl-top{margin:0 -16px 18px;padding:12px 16px}}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-sample{font:600 10.5px 'JetBrains Mono',monospace;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+
+/* buttons (BTN_GO / BTN_SOFT / BTN_LINE) */
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;transition:box-shadow .2s,transform .1s,background .2s,opacity .2s;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.28)}
+.btn-go:hover{box-shadow:0 8px 24px rgba(15,118,110,.32)}
+.btn-go:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.btn-soft{background:var(--aTint);color:var(--aInk)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:8px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.btn-big{padding:14px 22px;font-size:16px}
+.btn-link{background:none;border:0;padding:0;color:var(--aInk);font-weight:600;text-decoration:underline;text-underline-offset:2px;font-size:14px}
+.btn.ready{animation:flReady 1.8s ease-in-out infinite}
+@keyframes flReady{0%,100%{box-shadow:0 6px 18px rgba(15,118,110,.28),0 0 0 0 rgba(15,118,110,.45)}50%{box-shadow:0 8px 24px rgba(15,118,110,.32),0 0 0 10px rgba(15,118,110,0)}}
+.sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:flSheen 1.3s ease-in-out infinite}
+@keyframes flSheen{to{transform:translateX(100%)}}
+
+/* type */
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.panel-head{margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.grad{background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-sentence{margin:0;max-width:980px;font-size:42px;font-weight:800;line-height:1.28;letter-spacing:-.025em;color:var(--ink)}
+.h-big{font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em}
+.h-chapter{margin:0;font-size:42px;font-weight:900;line-height:1.1;letter-spacing:-.025em;color:var(--ink)}
+.lede{font-size:17px;color:var(--body);max-width:640px}
+.small{font-size:13px;color:var(--muted)}
+@media (max-width:700px){.h-sentence{font-size:30px}.h-big{font-size:64px}.h-chapter{font-size:30px}}
+
+/* the dotted blank in a setup sentence (Blank.tsx) */
+.blank{display:inline;margin:0 2px;padding:0 4px;border:0;background:none;color:var(--aInk);font:inherit;border-radius:6px 6px 0 0;border-bottom:4px dotted var(--a);transition:background .2s}
+.blank:hover,.blank.open{background:var(--aTint)}
+.blank.ok{border-bottom-style:solid}
+.blank .tick{margin-left:2px;vertical-align:.6em;font-size:.5em;color:var(--up)}
+
+/* the panel a blank opens (SetupPanel.tsx) */
+.panel{margin-top:24px;max-width:820px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:20px 22px;box-shadow:var(--shadowPanel);animation:flRise .3s var(--ease)}
+.panel.wide{max-width:1100px}
+@keyframes flRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:flRise .35s var(--ease) both}
+.fade{animation:flFade .35s ease both}
+@keyframes flFade{from{opacity:0}to{opacity:1}}
+
+/* inputs */
+.field{display:block}
+.field>span{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--body)}
+.field>span i{color:var(--down);font-style:normal}
+.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--ink);outline:none;background:#fff;transition:border-color .15s,box-shadow .15s}
+.input:focus{border-color:var(--a);box-shadow:0 0 0 4px var(--aTint)}
+
+/* a found listing (FoundListing.tsx) */
+.found{display:flex;align-items:center;gap:14px;padding:16px;border-radius:12px;background:var(--soft);cursor:pointer;transition:background .15s,box-shadow .15s}
+.found:hover{background:var(--aTint)}
+.found.on{background:var(--aTint);box-shadow:0 0 0 1px var(--a)}
+.found .lt{width:42px;height:42px;border-radius:12px;background:var(--aTint);color:var(--aInk);display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
+.found b{display:block;color:var(--ink);font-size:15px}
+.found small{display:block;color:var(--muted);font-size:13px}
+
+/* list rows with a box and a number (RivalRow.tsx) */
+.row{display:grid;grid-template-columns:18px 24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s,opacity .2s}
+.row.hot{border-color:#A7D8CF;background:#FAFDFC}
+.row.off{opacity:.6}
+.row.off .nm{text-decoration:line-through;color:var(--faint)}
+.row input{width:18px;height:18px;accent-color:var(--a)}
+.num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--aTint);color:var(--aInk)}
+.row.off .num{background:var(--soft);color:var(--faint)}
+.nm{display:block;font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;border-radius:6px;padding:1px 6px;font-size:11.5px;font-weight:600;background:var(--soft);color:var(--muted)}
+.tag.a{background:var(--aTint);color:var(--aInk)}
+
+/* the orb (Orb.tsx), steps (StepList.tsx), the map search (MapSearch.tsx) */
+.orb{position:relative;display:inline-block;flex:none}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:2px dotted #7CC8BC;animation:flSpin 2.4s linear infinite}
+.orb .core{position:absolute;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));animation:flBreathe 1.6s ease-in-out infinite}
+@keyframes flSpin{to{transform:rotate(360deg)}}
+@keyframes flBreathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.86);opacity:.85}}
+.steps{list-style:none;margin:0;padding:2px 0 0;display:flex;flex-direction:column;gap:8px}
+.steps li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--faint);transition:color .2s}
+.steps li.now{font-weight:600;color:var(--ink)}
+.steps li.done{color:var(--body)}
+.steps .st{width:16px;height:16px;border-radius:50%;flex:none;border:1.5px solid #D0D5DD;display:grid;place-items:center;font-size:10px;color:#fff}
+.steps li.now .st{border-color:var(--a);border-top-color:transparent;animation:flSpin .8s linear infinite}
+.steps li.done .st{background:var(--up);border-color:var(--up)}
+.mapsearch{position:relative;height:120px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:repeating-linear-gradient(135deg,#F3F4F7 0 14px,#EEF0F4 14px 28px)}
+.mapsearch .pulse{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;border:2px solid var(--a);animation:flPulse 1.8s ease-out infinite}
+.mapsearch .pulse.b{animation-delay:.9s}
+@keyframes flPulse{from{transform:scale(.6);opacity:.9}to{transform:scale(6);opacity:0}}
+.mapsearch .c{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px;border-radius:50%;background:var(--a)}
+.mapsearch .f{position:absolute;width:10px;height:10px;border-radius:3px;border:2px solid var(--a);background:#fff;animation:flPop .4s var(--ease) both}
+@keyframes flPop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.turning{position:relative;display:inline-block;width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));flex:none}
+.turning:after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px dotted #7CC8BC;animation:flSpin 6s linear infinite}
+.skel{height:11px;border-radius:6px;background:#E8EAEF;margin:10px 0;animation:flSkel 1.4s ease-in-out infinite}
+@keyframes flSkel{50%{opacity:.5}}
+.caret{display:inline-block;width:2px;height:1em;background:var(--a);vertical-align:-2px;margin-left:1px;animation:flBlink 1s steps(1) infinite}
+@keyframes flBlink{50%{opacity:0}}
+.shimmer-line{position:relative;height:2px;max-width:420px;margin-top:4px;overflow:hidden;border-radius:1px;background:#EEF0F5}
+.shimmer-line:after{content:'';position:absolute;inset:0 auto 0 0;width:35%;background:linear-gradient(90deg,transparent,#7CC8BC,transparent);animation:flShim 2.2s ease-in-out infinite}
+@keyframes flShim{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+
+/* the method button + window (MethodButton / MethodWindow) */
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:10px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .15s}
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:6vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4);animation:flFade .2s}
+.modal .win{position:relative;width:100%;max-width:860px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:flRise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:8px;padding:4px 8px}
+.modal .x:hover{background:var(--soft)}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:14px;background:var(--soft)}
+@media (max-width:760px){.msec{grid-template-columns:1fr}}
+
+/* branded tooltip (BrandedTooltip.tsx) */
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none;animation:flFade .12s}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+[data-tip]{cursor:help}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* segmented control with a sliding white thumb (Segmented.tsx) */
+.seg{position:relative;display:inline-flex;flex-wrap:wrap;gap:2px;border-radius:10px;background:var(--soft);padding:3px}
+.seg button{position:relative;z-index:1;border:0;background:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted);transition:color .2s;white-space:nowrap}
+.seg button:hover{color:var(--body)}
+.seg button.on{color:var(--ink)}
+.seg .thumb{position:absolute;z-index:0;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(11,16,32,.1);transition:left .25s var(--ease),width .25s var(--ease),top .25s var(--ease)}
+.seg .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* tabs with a sliding underline (ResultView.tsx) */
+.tabs{position:sticky;top:57px;z-index:20;display:flex;gap:26px;margin:0 -28px 10px;padding:8px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(12px)}
+@media (max-width:900px){.tabs{margin:0 -16px 10px;padding:8px 16px 0}}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+
+/* branded dropdown (audit-hub-option-g .dd) */
+.dd{position:relative;display:inline-block}
+.dd-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink)}
+.dd-btn:after{content:'';width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.dd-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:50;min-width:220px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .12s}
+.dd-opt{display:flex;justify-content:space-between;gap:10px;width:100%;border:0;background:none;text-align:left;border-radius:7px;padding:7px 10px;font-size:13px;color:var(--body)}
+.dd-opt:hover{background:var(--soft)}
+.dd-opt.on{color:var(--aInk);font-weight:600}
+.dd-opt.on:after{content:'✓'}
+
+/* switch (Clients only) */
+.switch{display:inline-flex;align-items:center;gap:8px;border:0;background:none;font-size:13px;font-weight:500;color:var(--muted)}
+.switch i{position:relative;display:inline-block;width:30px;height:16px;border-radius:6px;background:#D0D5DD;transition:background .2s}
+.switch i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:4px;background:#fff;transition:left .2s}
+.switch.on i{background:var(--a)}
+.switch.on i:after{left:16px}
+
+/* past runs (PastSnapshotRow.tsx) */
+.past{display:grid;grid-template-columns:minmax(0,1fr) 220px 150px;align-items:center;gap:16px;width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;text-align:left;transition:border-color .15s,background .15s;animation:flRise .35s var(--ease) both}
+.past:hover{border-color:#A7D8CF;background:#FAFDFC}
+.past .p1 b{display:block;font-size:15.5px;color:var(--ink)}
+.past .p1 span{font-size:12.5px;color:var(--muted)}
+.past .p3{text-align:right;font:12px 'JetBrains Mono',monospace;color:var(--faint)}
+@media (max-width:700px){.past{grid-template-columns:minmax(0,1fr) auto}.past .p3{display:none}}
+
+/* heat tiles (variation C) */
+.htile{width:34px;height:34px;border-radius:4px;display:grid;place-items:center;font:800 13px Inter,sans-serif;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(11,16,32,.18);transform:translate(-50%,-50%);transition:background .35s,color .35s,transform .35s var(--ease),opacity .35s}
+.htile.wait{background:rgba(255,255,255,.55)!important;color:transparent!important;box-shadow:inset 0 0 0 1.5px rgba(15,118,110,.25)}
+.htile.land{animation:flLand .45s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes flLand{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.hpin{transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:auto}
+.hpin i{width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(11,16,32,.25),0 4px 10px rgba(11,16,32,.3)}
+.hpin span{margin-top:3px;white-space:nowrap;font:700 11px Inter,sans-serif;color:var(--ink);background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:6px;padding:1px 6px;opacity:0;transition:opacity .15s}
+.hpin:hover span,.hpin.lbl span{opacity:1}
+.leaflet-container{font-family:Inter,sans-serif;background:#EEF0F2}
+.mini{display:grid;gap:2px}
+.mini i{display:block;aspect-ratio:1;border-radius:2px;transition:background .3s}
+
+/* charts (Demand chart language) */
+.readout{min-height:44px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding:6px 0 8px;font-size:13px;color:var(--body)}
+.readout b{color:var(--ink)}
+.readout .sw{display:inline-block;width:12px;height:2px;vertical-align:4px;margin-right:6px;border-radius:1px}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart .gl{stroke:#EEF0F3;stroke-width:1}
+.chart .ax{fill:var(--muted);font:11px Inter,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--body);margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:2px;border-radius:1px}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}}
+</style>
+<script>/* Facelift shared behaviours (window.FL): the AI Visibility page's pieces
+   (frame, How it works window, branded hovers, sliding controls, waits that
+   show their steps, typing, counting) in OQ teal, plus the Grid Scan heat map
+   (variation C) and a line chart in the approved Demand chart language. */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.wait = (ms) => new Promise((r) => setTimeout(r, FL.reduce ? 0 : ms));
+  FL.$ = (sel, root = document) => root.querySelector(sel);
+  FL.$$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.money = (n) => `$${Number(n).toFixed(2)}`;
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+
+  const ICON = {
+    grid: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="9.5" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><rect x="16" y="9.5" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><rect x="9.5" y="16" width="5" height="5" rx="1"/><rect x="16" y="16" width="5" height="5" rx="1"/></svg>',
+    trends: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>',
+  };
+  FL.icon = ICON;
+
+  /* The app frame: OQ sidebar, sticky frosted top bar (brand mark, tool name,
+     How it works, a right slot), then #page. Call once, before building the page. */
+  FL.shell = function ({ tool, name, right = '', methodLabel = 'How it works' }) {
+    const page = document.getElementById('page');
+    const nav = [['Dashboard'], ['Clients'], ['Content Strategy'], ['Production'], ['Performance']];
+    const tools = [['Grid Scan', tool === 'grid'], ['Market Trends', tool === 'trends'], ['AI Visibility'], ['Relevance Analyzer']];
+    const app = FL.h(`<div class="fl-app">
+      <aside class="fl-side"><div class="wm">STUDIO<br>EIGHTY EIGHT</div><div class="rule"></div>
+        ${nav.map(([n]) => `<a href="#">${n}</a>`).join('')}
+        <div class="grp">Tools</div>${tools.map(([n, on]) => `<a href="#" class="${on ? 'on' : ''}">${n}</a>`).join('')}
+      </aside>
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark">${ICON[tool]}</span>${FL.esc(name)}</div>
+          <div class="fl-right"><span class="fl-sample">Mockup</span><span id="method-slot"></span><span id="top-right">${right}</span></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = `<button type="button" class="method-btn"><span class="dot"></span>${FL.esc(methodLabel)}</button>`;
+    return { right: (html) => { FL.$('#top-right').innerHTML = html; } };
+  };
+
+  /* How it works: hover for the one-line teaser, click for the window; each
+     section has a small looping picture beside it (figure(el) -> stop()). */
+  FL.method = function ({ teaser, kicker, title, sections }) {
+    const btn = FL.$('.method-btn');
+    let tip = null;
+    btn.addEventListener('mouseenter', () => { if (tip) return; tip = FL.h(`<span class="teaser" role="tooltip">${FL.esc(teaser)}</span>`); btn.appendChild(tip); });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    window.addEventListener('scroll', () => { tip?.remove(); tip = null; }, true);
+    document.addEventListener('click', (e) => { if (!btn.contains(e.target)) { tip?.remove(); tip = null; } });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px">
+          <div><div class="panel-head" style="margin-bottom:4px">${FL.esc(kicker)}</div><h2 style="margin:0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption || '')}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => (s.figure ? s.figure(m.querySelector(`[data-fig="${i}"]`)) : null));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); tip?.remove(); tip = null; document.removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      document.addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close;
+      m.querySelector('.x').onclick = close;
+    });
+  };
+  /* A step counter for method pictures: fn(step) every ms, 0..count-1, looping. */
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0;
+    fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* Branded hover: any element with data-tip (and optional data-tip-h). Delegated, so content added later works. */
+  let tipEl = null; let tipFor = null; let tipTimer = null;
+  const hideTip = () => { clearTimeout(tipTimer); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return;
+    hideTip();
+    if (!t) return;
+    tipFor = t;
+    tipTimer = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      const left = Math.max(8, Math.min(r.left, innerWidth - 288));
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+      tipEl.style.left = `${left}px`;
+    }, 120);
+  });
+  window.addEventListener('scroll', hideTip, true);
+
+  /* Branded dropdown, never a native select. */
+  FL.dropdown = function (host, { options, value, onChange, label }) {
+    let v = value; let open = false;
+    const draw = () => {
+      const cur = options.find((o) => o.value === v) || options[0];
+      host.innerHTML = `<div class="dd"><button type="button" class="dd-btn" aria-label="${FL.esc(label || '')}">${FL.esc(cur.label)}</button>
+        ${open ? `<div class="dd-menu">${options.map((o) => `<button type="button" class="dd-opt ${o.value === v ? 'on' : ''}" data-v="${FL.esc(o.value)}"><span>${FL.esc(o.label)}${o.count != null ? ` <span style="color:var(--faint)">${o.count}</span>` : ''}</span></button>`).join('')}</div>` : ''}</div>`;
+      host.querySelector('.dd-btn').onclick = (e) => { e.stopPropagation(); open = !open; draw(); };
+      host.querySelectorAll('.dd-opt').forEach((b) => { b.onclick = () => { v = b.dataset.v; open = false; draw(); onChange && onChange(v); }; });
+    };
+    document.addEventListener('click', () => { if (open) { open = false; draw(); } });
+    draw();
+    return { set: (x) => { v = x; draw(); } };
+  };
+
+  /* Segmented control: the white thumb slides to the pick. */
+  FL.segmented = function (host, { options, value, onChange, label }) {
+    host.innerHTML = `<div class="seg" role="radiogroup" aria-label="${FL.esc(label || '')}"><span class="thumb"></span>${options.map((o) =>
+      `<button type="button" role="radio" data-v="${FL.esc(o.value)}">${o.color ? `<span class="sw" style="background:${o.color}"></span>` : ''}${FL.esc(o.label)}</button>`).join('')}</div>`;
+    const seg = host.firstElementChild; const thumb = seg.querySelector('.thumb');
+    const set = (v, fire) => {
+      seg.querySelectorAll('button').forEach((b) => { const on = b.dataset.v === String(v); b.classList.toggle('on', on); b.setAttribute('aria-checked', on);
+        if (on) { thumb.style.left = `${b.offsetLeft}px`; thumb.style.top = `${b.offsetTop}px`; thumb.style.width = `${b.offsetWidth}px`; thumb.style.height = `${b.offsetHeight}px`; } });
+      if (fire && onChange) onChange(v);
+    };
+    seg.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.v, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (v) => set(v, false) };
+  };
+
+  /* Tabs with a sliding underline; sticky under the top bar. */
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.setAttribute('role', 'tablist');
+    host.innerHTML = tabs.map((t) => `<button type="button" role="tab" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on);
+        if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (k) => set(k, false) };
+  };
+
+  /* Waits that show what they are doing. */
+  FL.orb = (size = 44) => `<span class="orb" aria-hidden="true" style="width:${size}px;height:${size}px"><span class="ring"></span><span class="core" style="inset:${size * 0.2}px"></span></span>`;
+  FL.sheen = () => '<span class="sheen" aria-hidden="true"></span>';
+  FL.mapSearch = (label) => `<div><div class="mapsearch" aria-hidden="true"><span class="pulse"></span><span class="pulse b"></span><span class="c"></span>
+    ${[[30, 32], [64, 40], [44, 70], [70, 66], [24, 62]].map(([x, y], i) => `<span class="f" style="left:${x}%;top:${y}%;animation-delay:${0.6 + i * 0.35}s"></span>`).join('')}</div>
+    <p style="margin:10px 0 0;font-size:14px;font-weight:600;color:var(--ink)">${FL.esc(label)}</p></div>`;
+  FL.steps = function (host, labels) {
+    host.innerHTML = `<ul class="steps">${labels.map((l) => `<li><span class="st"></span>${FL.esc(l)}</li>`).join('')}</ul>`;
+    const lis = host.querySelectorAll('li');
+    return { set(i, state) { const li = lis[i]; li.className = state; li.querySelector('.st').textContent = state === 'done' ? '✓' : ''; } };
+  };
+  FL.skeleton = (widths = ['92%', '84%', '88%', '46%']) => widths.map((w) => `<div class="skel" style="width:${w}"></div>`).join('');
+
+  /* Typing: text into el, a few characters a tick, with a caret while it types. */
+  FL.type = function (el, text, { cps = 180 } = {}) {
+    if (FL.reduce) { el.textContent = text; return Promise.resolve(); }
+    return new Promise((res) => {
+      let n = 0; el.innerHTML = '<span class="caret"></span>';
+      const step = Math.max(1, Math.round(cps / 60));
+      const t = setInterval(() => {
+        n = Math.min(text.length, n + step);
+        el.innerHTML = `${FL.esc(text.slice(0, n))}${n < text.length ? '<span class="caret"></span>' : ''}`;
+        if (n >= text.length) { clearInterval(t); res(); }
+      }, 16);
+    });
+  };
+  /* Count a number up (or down) to `to`, easing out. */
+  FL.countTo = function (el, to, { from = null, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    const start = from ?? (parseFloat(el.dataset.v) || 0);
+    el.dataset.v = to;
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (now) => { const p = Math.min(1, (now - t0) / ms); const e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(start + (to - start) * e); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  FL.wilson = function (k, n) {
+    if (!n) return [0, 0];
+    const z = 1.96; const p = k / n; const d = 1 + (z * z) / n; const c = (p + (z * z) / (2 * n)) / d;
+    const h = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / d;
+    return [Math.max(0, c - h), Math.min(1, c + h)];
+  };
+
+  /* ---------------- Grid Scan: ranks and the heat map (variation C) ---------------- */
+  FL.RANK = { g: '#15803D', y: '#F5C518', r: '#DC2626', n: '#94A3B8' };
+  FL.rankStyle = (v) => (v == null || v > 20 ? { bg: FL.RANK.n, ink: '#fff', t: '20+' }
+    : v <= 3 ? { bg: FL.RANK.g, ink: '#fff', t: String(Math.round(v)) }
+      : v <= 10 ? { bg: FL.RANK.y, ink: '#0B1020', t: String(Math.round(v)) }
+        : { bg: FL.RANK.r, ink: '#fff', t: String(Math.round(v)) });
+  FL.band = (v) => (v == null || v > 20 ? 'not in top 20' : v <= 3 ? 'top 3' : v <= 10 ? '4 to 10' : '11 to 20');
+  FL.flat = (g) => g.flat();
+  FL.top3 = (g) => FL.flat(g).filter((v) => v != null && v <= 3).length;
+  FL.solv = (g) => (100 * FL.top3(g)) / FL.flat(g).length;
+  FL.avgRank = (g) => FL.flat(g).reduce((a, v) => a + (v == null || v > 20 ? 21 : v), 0) / FL.flat(g).length;
+  /* The all-keywords average: mean rank per point, 21 for not in top 20. */
+  FL.avgGrid = (grids) => grids[0].map((row, i) => row.map((_, j) => grids.reduce((a, g) => a + (g[i][j] > 20 ? 21 : g[i][j]), 0) / grids.length));
+  FL.legendHtml = () => `<div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:8px">${[[1, 'top 3'], [7, '4 to 10'], [14, '11 to 20'], [21, 'not in top 20']].map(([v, l]) => { const s = FL.rankStyle(v); return `<span style="display:inline-flex;align-items:center"><b style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;margin-right:6px;font-size:11px;background:${s.bg};color:${s.ink}">${s.t}</b>${l}</span>`; }).join('')}</div>`;
+  FL.mini = (g, px = 6) => `<div class="mini" style="grid-template-columns:repeat(${g.length},${px}px)">${FL.flat(g).map((v) => `<i style="background:${FL.rankStyle(v).bg}"></i>`).join('')}</div>`;
+
+  /* The map: Esri light grey canvas (no names), 34px square rank tiles at the grid spacing,
+     pins above the tiles with a white halo. Points row 0 = north, col 0 = west. */
+  FL.heatMap = function (el, { center, size = 9, spacingMi = 0.25, zoom = 14, interactive = true }) {
+    const map = L.map(el, { scrollWheelZoom: false, zoomControl: interactive, dragging: interactive, attributionControl: true, zoomSnap: 0.25 });
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Tiles &copy; Esri' }).addTo(map);
+    const dLat = spacingMi / 69; const dLng = spacingMi / (69 * Math.cos((center[0] * Math.PI) / 180));
+    const mid = (size - 1) / 2;
+    const pt = (i, j) => [center[0] + (mid - i) * dLat, center[1] + (j - mid) * dLng];
+    map.fitBounds(L.latLngBounds([pt(0, 0), pt(size - 1, size - 1)]), { paddingTopLeft: [interactive ? 48 : 18, 18], paddingBottomRight: [18, 18] });
+    const tiles = [];
+    for (let i = 0; i < size; i++) for (let j = 0; j < size; j++) {
+      const m = L.marker(pt(i, j), { icon: L.divIcon({ className: '', html: '<div class="htile wait"></div>', iconSize: [0, 0] }), interactive: false, keyboard: false }).addTo(map);
+      tiles.push({ i, j, m });
+    }
+    const pinLayer = L.layerGroup().addTo(map);
+    const api = {
+      map, pt,
+      tileEl: (i, j) => tiles[i * size + j].m.getElement()?.firstElementChild,
+      set(i, j, v, { land = false, exact = true } = {}) {
+        const d = api.tileEl(i, j); if (!d) return;
+        const s = FL.rankStyle(v);
+        d.className = `htile${land && !FL.reduce ? ' land' : ''}`;
+        d.style.background = s.bg; d.style.color = s.ink;
+        d.textContent = v == null || v > 20 ? '20+' : exact ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+        if (!exact) d.style.fontSize = '11.5px'; else d.style.fontSize = '';
+      },
+      clear() { tiles.forEach(({ i, j }) => { const d = api.tileEl(i, j); if (d) { d.className = 'htile wait'; d.textContent = ''; } }); },
+      setGrid(g, { exact = true } = {}) { tiles.forEach(({ i, j }) => api.set(i, j, g[i][j], { exact })); },
+      /* Paint a grid in the order a scan reads it (rings out from the office), one point every `ms`. */
+      async sweep(g, { ms = 18, exact = true, onPoint } = {}) {
+        api.clear();
+        const order = tiles.map(({ i, j }) => ({ i, j, d: Math.hypot(i - mid, j - mid) + (Math.atan2(i - mid, j - mid) + Math.PI) / 50 })).sort((a, b) => a.d - b.d);
+        for (let k = 0; k < order.length; k++) { const { i, j } = order[k]; api.set(i, j, g[i][j], { land: true, exact }); onPoint && onPoint(k + 1, g[i][j], i, j); if (ms) await FL.wait(ms); }
+      },
+      /* pins: [{lat,lng,label,kind:'you'|'comp'|'custom',n}] */
+      setPins(pins, { labels = false } = {}) {
+        pinLayer.clearLayers();
+        pins.forEach((p) => {
+          const color = p.kind === 'you' ? 'var(--a)' : p.kind === 'custom' ? '#3B5BDB' : '#0B1020';
+          L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', iconSize: [0, 0], html: `<div class="hpin ${labels || p.kind === 'you' ? 'lbl' : ''}"><i style="background:${color}"></i><span>${p.n ? `${p.n} · ` : ''}${FL.esc(p.label)}</span></div>` }), zIndexOffset: p.kind === 'you' ? 2000 : 1000 }).addTo(pinLayer);
+        });
+      },
+      tilesVisible(on) { tiles.forEach(({ m }) => { const e = m.getElement(); if (e) e.style.opacity = on ? 1 : 0; }); },
+    };
+    return api;
+  };
+
+  /* ---------------- Market Trends: the line chart (Demand chart language) ----------------
+     Thin 2px monotone lines, no dots; the lead line in white casing with a soft area and an
+     end dot; dashed slate hover guide with a dot per line; the readout ABOVE the chart keeps
+     its height (no layout shift); end labels pushed apart; legend for 2+ series. */
+  FL.lineChart = function (host, opts) {
+    let o = { height: 260, range: 60, upto: null, endLabels: true, draw: true, yMax: 100, legend: true, ...opts };
+    const W = 820; const PL = 30; const PR = o.endLabels ? 130 : 14; const PT = 10; const PB = 24;
+    host.classList.add('chart');
+    host.innerHTML = `${o.readout === false ? '' : '<div class="readout"></div>'}<svg viewBox="0 0 ${W} ${o.height}" role="img"></svg>${o.legend ? '<div class="legend"></div>' : ''}`;
+    const svg = host.querySelector('svg'); const ro = host.querySelector('.readout'); const lg = host.querySelector('.legend');
+    const NS = 'http://www.w3.org/2000/svg';
+    const render = (animate) => {
+      const H = o.height; const months = o.months; const N = months.length;
+      const start = Math.max(0, N - o.range); const span = N - 1 - start;
+      const x = (i) => PL + ((i - start) / Math.max(1, span)) * (W - PL - PR);
+      const y = (v) => PT + (1 - v / o.yMax) * (H - PT - PB);
+      const last = o.upto == null ? N - 1 : Math.min(N - 1, o.upto);
+      const path = (vals) => { let d = ''; for (let i = start; i <= last; i++) { if (vals[i] == null) continue; d += `${d ? 'L' : 'M'}${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`; } return d; };
+      let s = '<defs><linearGradient id="fl-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".2"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>';
+      [0, 25, 50, 75, 100].filter((v) => v <= o.yMax).forEach((v) => { s += `<line class="gl" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${PL - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; });
+      for (let i = start; i < N; i++) if (/^Jan/.test(months[i]) || (o.range <= 24 && /^(Apr|Jul|Oct)/.test(months[i]))) s += `<text class="ax" x="${x(i)}" y="${H - 6}" text-anchor="middle">${months[i].replace(' 20', ' ’')}</text>`;
+      const lines = o.lines.filter((l) => !l.hidden);
+      const lead = lines.find((l) => l.lead);
+      if (lead) s += `<path d="${path(lead.values)}L${x(last)},${y(0)}L${x(start)},${y(0)}Z" fill="url(#fl-area)"/>`;
+      [...lines].sort((a, b) => Number(!!a.lead) - Number(!!b.lead)).forEach((l) => {
+        const d = path(l.values);
+        if (l.lead) s += `<path d="${d}" fill="none" stroke="#fff" stroke-width="${(l.width || 2.4) + 3}" stroke-linejoin="round" stroke-linecap="round"/>`;
+        s += `<path class="ln" d="${d}" fill="none" stroke="${l.color}" stroke-width="${l.width || 2}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`;
+      });
+      if (lead && lead.values[last] != null) s += `<circle cx="${x(last)}" cy="${y(lead.values[last])}" r="4" fill="${lead.color}" stroke="#fff" stroke-width="2"/>`;
+      if (o.endLabels) {
+        const ends = lines.filter((l) => l.values[last] != null).map((l) => ({ l, y: y(l.values[last]) })).sort((a, b) => a.y - b.y);
+        for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 14) ends[k].y = ends[k - 1].y + 14;
+        ends.forEach(({ l, y: ly }) => { const ty = y(l.values[last]); s += `${Math.abs(ly - ty) > 2 ? `<line x1="${x(last) + 4}" y1="${ty}" x2="${x(last) + 10}" y2="${ly - 3}" stroke="#C3C8D2"/>` : ''}<text x="${x(last) + 12}" y="${ly + 1}" font-size="11.5" font-weight="${l.lead ? 700 : 500}" fill="#273043">${FL.esc(l.short || l.label)}</text>`; });
+      }
+      s += `<g class="hov" style="display:none"><line class="hl" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/></g><rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent"/>`;
+      svg.innerHTML = s;
+      if (animate && o.draw && !FL.reduce) svg.querySelectorAll('.ln').forEach((p) => { const len = p.getTotalLength(); p.style.strokeDasharray = `${len}`; p.style.strokeDashoffset = `${len}`; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = '0'; });
+      if (lg) lg.innerHTML = lines.length > 1 ? lines.map((l) => `<span><i style="background:${l.color}"></i>${FL.esc(l.label)}</span>`).join('') : '';
+      const def = () => { if (ro) ro.innerHTML = o.readoutDefault || ''; };
+      def();
+      const g = svg.querySelector('.hov'); const hl = svg.querySelector('.hl');
+      const hit = svg.querySelector('.hit');
+      hit.onmousemove = (e) => {
+        const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W;
+        const i = Math.max(start, Math.min(last, Math.round(start + ((px - PL) / (W - PL - PR)) * span)));
+        g.style.display = ''; hl.setAttribute('x1', x(i)); hl.setAttribute('x2', x(i));
+        g.querySelectorAll('circle').forEach((c) => c.remove());
+        lines.forEach((l) => { if (l.values[i] == null) return; const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x(i)); c.setAttribute('cy', y(l.values[i])); c.setAttribute('r', 3.5); c.setAttribute('fill', l.color); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', 1.5); g.appendChild(c); });
+        if (ro) ro.innerHTML = `<b>${months[i]}</b>${lines.map((l) => (l.values[i] == null ? '' : `<span><span class="sw" style="background:${l.color}"></span>${FL.esc(l.label)} <b>${l.values[i]}</b></span>`)).join('')}`;
+        o.onHover && o.onHover(i);
+      };
+      hit.onmouseleave = () => { g.style.display = 'none'; def(); o.onHover && o.onHover(null); };
+    };
+    render(true);
+    return { update(next, animate = false) { o = { ...o, ...next }; render(animate); }, get opts() { return o; } };
+  };
+  FL.TOPIC_COLORS = ['#0D9488', '#3B5BDB', '#E0527A', '#5F7D16', '#9C36B5'];
+})();
+</script>
+<script>/* generated by build.py: Grid Scan = real Bothell run #2; trends = sample */
+window.FLDATA = {"GS":{"practice":{"title":"Bothell Family Dentistry","rating":4.9,"reviews":218,"address":"19515 N Creek Pkwy S Ste 213, Bothell, WA 98011","domain":"bothellfamilydentistry.com","city":"Bothell, WA","lat":47.769557,"lng":-122.1855818},"keywords":["dentist near me","dentist in bothell","emergency dentist bothell","botox bothell","invisalign bothell"],"competitors":[{"place_id":"ChIJV1CyUvUOkFQROxMyW5CP9FY","title":"Norman Bolosan, DDS, PC","rating":4.7,"reviews":15,"address":"19515 N Creek Pkwy #212, Bothell, WA 98011","lat":47.769557,"lng":-122.1855818},{"place_id":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","title":"Accent Dental Center Bothell","rating":4.8,"reviews":247,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7686516,"lng":-122.1863214},{"place_id":"ChIJEQQv6EMOkFQRRUcY1zA3cuw","title":"Dr. Fernando Caballero, DDS","rating":null,"reviews":null,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7685933,"lng":-122.18616709999999},{"place_id":"ChIJEQQv6EMOkFQRm8bs3KMXxKA","title":"Accent Dental Center: Dr. Isabel Perez, DDS, PS","rating":5,"reviews":2,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7685933,"lng":-122.18616709999999},{"place_id":"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns","title":"Annigan Dental","rating":4.7,"reviews":144,"address":"19115 112th Ave NE b101, Bothell, WA 98011","lat":47.765884299999996,"lng":-122.19126139999999},{"place_id":"ChIJ72xfL-QPkFQRuS35wXhbSdg","title":"Beardslee Dental","rating":4.8,"reviews":114,"address":"18807 Beardslee Blvd Unit 105, Bothell, WA 98011","lat":47.7641978,"lng":-122.19375199999999},{"place_id":"ChIJbZwxG2kOkFQRgYkIEQc3hOs","title":"Northshore Dental Center","rating":4.9,"reviews":21,"address":"18404 104th Ave NE, Bothell, WA 98011","lat":47.7613895,"lng":-122.20121979999999},{"place_id":"ChIJNaK6cVYPkFQRHdVKvg_p5ec","title":"Bothell Dental Care","rating":4.7,"reviews":96,"address":"10036 NE 185th St, Bothell, WA 98011","lat":47.7618659,"lng":-122.20589349999999}],"grids":{"dentist near me":{"own":[[5,1,1,1,1,1,1,1,1],[3,1,1,1,1,1,1,1,1],[4,1,1,21,21,1,1,1,1],[5,1,1,1,1,1,1,1,2],[9,3,2,1,1,1,1,1,2],[18,13,4,4,1,1,1,1,2],[20,18,11,3,2,1,1,2,10],[16,18,11,3,1,1,3,8,14],[11,12,10,2,1,2,10,13,20]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,20,18,16,10,9],[21,21,21,18,17,15,16,14,12],[21,21,20,21,21,6,11,18,19],[21,21,18,5,4,5,5,15,21],[21,21,20,6,4,4,9,16,21],[21,21,21,16,6,5,16,21,21],[21,21,21,21,18,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[8,6,2,2,2,2,2,2,2],[6,3,2,2,2,2,2,2,2],[7,3,2,1,1,2,2,2,2],[10,4,2,2,2,2,2,2,5],[14,11,4,2,2,2,2,2,5],[21,15,5,5,2,2,2,3,6],[21,21,16,5,4,2,3,4,12],[21,20,16,5,4,2,5,12,16],[15,15,13,5,4,3,11,17,21]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,20,7,21,21,21,21],[21,21,21,21,13,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,18,17],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,16,21,21,21,21],[21,21,21,17,6,17,21,21,21],[21,21,21,21,11,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[15,10,7,3,3,3,3,3,3],[11,7,3,3,3,3,3,3,4],[11,6,3,2,2,3,3,3,4],[11,5,3,3,3,3,3,3,9],[11,6,1,3,3,3,3,3,11],[19,11,2,2,3,3,3,6,10],[21,16,4,2,1,3,4,11,17],[18,16,7,2,3,3,7,14,19],[13,14,12,3,2,5,13,19,21]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[18,16,12,9,5,5,5,5,5],[15,13,7,4,4,4,4,7,9],[13,12,4,3,3,4,4,8,12],[13,8,4,4,5,6,4,7,15],[12,4,3,4,5,5,4,9,16],[17,5,1,1,4,4,5,11,12],[18,11,1,1,3,4,7,14,21],[15,12,1,1,2,5,11,17,20],[10,7,2,1,3,7,16,20,21]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[20,19,18,17,16,14,12,4,4],[17,17,16,16,13,14,13,8,7],[15,14,13,11,9,11,15,11,11],[14,13,11,11,11,13,17,14,18],[15,13,11,13,14,11,17,15,19],[13,6,6,7,9,12,17,17,20],[11,4,5,7,8,12,16,20,21],[6,3,2,4,6,14,19,21,21],[5,4,3,6,8,16,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[17,14,15,14,10,9,7,6,21],[13,12,12,10,8,7,9,9,21],[10,11,7,5,6,7,8,13,21],[8,9,7,6,6,7,7,11,21],[6,7,7,8,9,7,12,13,21],[5,2,7,8,8,7,13,13,21],[3,2,9,10,7,8,13,18,21],[2,4,6,8,5,10,15,19,21],[3,1,1,4,6,12,21,21,21]]},"dentist in bothell":{"own":[[2,1,1,1,1,1,1,1,1],[2,1,1,1,1,1,1,1,1],[2,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1],[3,1,1,1,1,1,1,1,1],[6,3,2,1,1,1,1,1,1],[9,8,2,2,1,1,1,1,1],[5,7,1,1,1,1,1,1,2],[3,3,1,1,1,1,1,1,1]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,19,11,9],[21,21,21,21,21,18,16,11,9],[21,21,21,20,17,15,15,12,9],[21,21,21,17,9,11,13,12,9],[21,21,21,12,6,8,13,12,10],[21,21,21,21,9,13,15,12,10],[21,21,21,21,21,17,19,12,10],[21,21,21,21,21,21,18,17,16],[21,21,21,21,21,21,21,20,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[10,8,5,2,3,3,3,2,2],[9,6,4,2,2,2,2,2,2],[8,5,3,2,2,2,2,2,2],[7,6,2,2,2,2,2,2,2],[10,7,2,2,2,2,2,2,2],[13,8,6,3,2,2,2,2,2],[16,15,13,4,2,2,2,2,2],[13,11,10,4,3,2,2,3,3],[10,10,5,4,3,3,2,3,3]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,19],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,10,19,21,21,21],[21,21,21,21,17,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,14,21,21,21,20],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[13,11,11,11,9,8,7,4,3],[12,11,10,9,8,6,7,4,3],[11,9,7,7,5,4,4,4,3],[12,8,7,4,4,4,4,4,3],[11,9,4,3,3,4,4,4,3],[17,12,3,4,3,3,4,4,3],[18,16,7,3,3,4,4,5,4],[15,15,12,6,5,4,7,5,5],[13,11,11,7,5,5,5,5,5]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[16,15,12,14,11,10,8,5,4],[14,13,11,10,10,9,8,5,4],[12,11,9,8,8,7,7,5,4],[11,9,8,8,8,6,7,5,4],[12,8,6,5,5,5,6,5,4],[15,6,1,2,4,5,6,5,4],[15,11,1,1,4,5,6,6,5],[14,10,8,3,4,5,6,6,7],[12,9,6,6,6,6,6,6,6]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,19,17,9,6],[21,21,21,21,21,20,18,10,6],[20,18,19,19,20,18,14,10,8],[20,19,18,20,19,18,15,11,8],[20,17,17,20,21,18,16,11,8],[21,15,17,19,20,16,16,11,8],[13,4,12,19,16,15,15,11,8],[12,6,11,15,15,15,15,14,12],[14,14,13,15,15,15,16,15,13]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[7,6,6,9,5,4,4,3,21],[6,4,5,5,5,4,4,3,21],[3,3,4,3,3,3,3,3,21],[4,3,3,3,3,3,3,3,21],[4,3,3,4,4,3,3,3,21],[4,2,4,5,5,4,3,3,21],[2,1,3,5,5,3,3,4,21],[1,2,2,2,2,3,4,4,21],[1,1,2,2,2,2,3,4,21]]},"emergency dentist bothell":{"own":[[10,9,8,5,5,5,5,4,3],[10,8,7,4,4,4,4,4,3],[9,8,5,4,4,3,4,4,3],[12,8,5,4,4,4,4,4,3],[13,9,6,4,3,4,4,4,3],[14,10,8,4,4,4,4,4,3],[15,11,10,6,4,4,4,5,4],[12,10,10,7,5,4,4,5,4],[10,9,9,8,6,4,4,5,4]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,13,9],[21,21,21,21,21,21,21,17,11],[21,21,21,21,21,21,21,19,16],[21,21,21,21,16,18,21,21,16],[21,21,21,18,17,15,21,21,18],[21,21,21,21,17,18,21,21,20],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,1,2,2,2,1],[2,2,2,2,2,2,2,2,1],[3,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,15,10],[21,21,21,21,21,21,21,16,13],[21,21,21,21,21,21,21,18,15],[21,21,21,21,17,21,21,18,15],[21,21,21,16,21,10,20,20,17],[21,21,21,20,11,15,21,20,18],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[5,3,3,3,3,3,3,3,2],[4,3,3,3,3,3,3,3,2],[3,3,3,3,3,7,3,3,2],[4,3,3,3,3,3,3,3,2],[4,4,3,3,4,3,3,3,2],[5,5,3,3,3,3,3,3,2],[7,5,3,3,3,3,3,3,2],[6,4,3,3,3,3,3,3,2],[3,3,3,3,3,3,7,3,2]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[21,21,20,20,20,18,15,8,6],[21,21,20,20,19,18,17,9,7],[21,20,18,18,18,11,16,10,7],[21,20,17,16,14,12,14,10,8],[21,17,14,12,9,12,13,10,9],[21,17,10,7,12,11,13,11,10],[21,16,11,10,10,11,13,11,13],[20,18,12,10,12,12,13,15,15],[19,18,17,14,13,13,12,16,15]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[17,17,16,15,15,13,11,7,4],[17,17,17,15,13,11,10,7,5],[15,14,12,11,11,12,9,7,5],[14,13,11,11,11,9,9,7,5],[15,12,9,10,11,9,9,8,6],[10,7,6,11,10,9,9,9,6],[8,8,4,8,9,9,10,9,6],[8,6,4,9,9,9,10,9,7],[8,8,8,9,9,9,10,9,8]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[14,14,14,14,12,9,9,6,21],[13,12,11,11,11,9,9,6,21],[10,10,10,10,10,8,8,6,21],[9,10,8,7,7,8,8,6,21],[9,8,8,7,10,8,8,6,21],[7,6,9,8,8,7,8,7,21],[9,6,7,7,7,7,9,7,21],[7,5,8,6,7,7,9,7,21],[7,7,7,7,8,8,8,8,21]]},"botox bothell":{"own":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]]},"invisalign bothell":{"own":[[11,7,7,7,7,6,5,5,5],[10,7,7,7,6,6,6,5,5],[10,8,7,6,5,5,6,5,6],[9,9,7,5,5,4,6,5,6],[11,10,8,7,6,5,6,6,6],[13,7,14,9,7,5,6,7,3],[13,15,16,13,8,6,8,8,8],[14,14,14,12,8,9,9,8,9],[13,14,13,10,9,9,10,9,11]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[8,6,6,5,4,4,4,3,3],[7,6,6,5,4,4,4,3,3],[9,6,6,5,4,4,4,3,4],[8,7,6,4,4,5,4,3,4],[8,8,7,5,4,4,4,3,4],[9,9,10,6,5,4,4,5,4],[10,13,14,10,5,5,6,6,7],[10,11,11,8,6,5,7,7,8],[9,9,7,6,6,8,9,8,8]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,15,14],[21,21,21,21,21,21,21,17,16],[21,21,21,21,21,21,21,20,19],[21,21,21,21,19,21,21,21,19],[21,21,21,16,13,17,21,20,20],[21,21,21,21,15,20,21,20,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[13,13,10,9,8,8,8,6,6],[12,11,9,8,8,8,8,6,7],[11,10,8,8,8,9,9,7,8],[10,10,8,8,8,10,9,7,9],[10,9,5,6,7,7,9,9,9],[11,14,6,10,6,7,10,9,12],[11,12,8,6,6,8,10,9,10],[11,12,10,6,7,10,11,10,10],[12,11,8,9,8,11,11,10,12]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[17,16,16,15,15,13,13,8,8],[15,14,13,12,13,13,13,9,9],[14,13,12,12,12,13,14,10,10],[13,12,12,13,12,8,13,10,11],[14,11,10,10,10,12,13,10,12],[14,10,7,7,10,12,13,10,9],[14,11,7,7,9,11,13,11,13],[15,13,8,7,10,13,14,12,13],[15,15,14,11,13,13,14,13,13]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[19,19,19,19,20,20,19,12,21],[17,17,19,20,21,21,20,14,21],[15,16,19,19,21,21,20,17,21],[14,15,16,19,21,12,21,17,21],[12,14,18,20,21,21,21,19,21],[8,11,17,19,21,21,21,19,21],[8,8,17,19,20,20,21,19,21],[6,7,15,19,20,21,21,18,21],[8,10,15,19,19,20,21,18,21]]}},"spacingMi":0.25,"size":9,"pricePerPoint":0.002,"alsoFound":[{"title":"Dr. Fernando Caballero, DDS","why":"A dentist's own listing"}]},"MT":{"practice":{"title":"Bothell Family Dentistry","domain":"bothellfamilydentistry.com","city":"Bothell, WA","state":"Washington"},"months":["Oct 2021","Nov 2021","Dec 2021","Jan 2022","Feb 2022","Mar 2022","Apr 2022","May 2022","Jun 2022","Jul 2022","Aug 2022","Sep 2022","Oct 2022","Nov 2022","Dec 2022","Jan 2023","Feb 2023","Mar 2023","Apr 2023","May 2023","Jun 2023","Jul 2023","Aug 2023","Sep 2023","Oct 2023","Nov 2023","Dec 2023","Jan 2024","Feb 2024","Mar 2024","Apr 2024","May 2024","Jun 2024","Jul 2024","Aug 2024","Sep 2024","Oct 2024","Nov 2024","Dec 2024","Jan 2025","Feb 2025","Mar 2025","Apr 2025","May 2025","Jun 2025","Jul 2025","Aug 2025","Sep 2025","Oct 2025","Nov 2025","Dec 2025","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026"],"inProgress":true,"asOf":"Sep 2026","topics":[{"topic":"Dental implants","short":"Implants","verdict":"growing","rating":8,"ratingParts":[{"label":"Demand is growing","points":3},{"label":"Large search volume","points":3},{"label":"Steady all year","points":1},{"label":"Searched by name","points":1}],"yoy":1.18,"searchesPerMonth":6600,"searches12":[6524,7167,7130,6758,6720,6970,6643,5950,5802,6294,6178,6328],"prior12":[5665,6014,5793,5651,5732,6011,5700,4912,5124,5393,5444,5336],"phrases":[{"phrase":"dental implants","values":[66,71,64,72,71,67,64,62,63,66,64,68,66,74,80,80,78,80,76,76,68,70,66,78,74,80,80,83,87,78,76,76,78,71,74,84,86,84,84,91,91,84,91,87,79,83,86,91,89,91,97,95,93,93,88,88,92,95,88,96,100]},{"phrase":"tooth implant","values":[50,53,62,58,62,58,59,53,47,47,49,58,57,61,63,66,66,58,64,61,62,59,64,62,64,64,70,70,66,71,68,68,64,61,63,67,74,67,75,70,78,78,72,72,66,74,70,74,74,80,82,80,76,84,78,76,76,79,79,80,84]},{"phrase":"implant dentist","values":[45,39,45,46,46,50,39,47,39,41,43,39,45,49,49,49,55,50,46,51,47,50,45,43,46,54,53,51,58,51,49,51,50,50,51,47,51,59,63,63,58,54,61,55,53,53,55,55,57,58,61,63,64,61,62,59,54,57,55,58,61]},{"phrase":"all on 4 implants","values":[33,32,30,36,32,34,36,34,30,33,28,29,36,37,38,33,41,41,38,39,33,32,30,34,39,38,43,37,43,41,34,41,37,38,34,36,36,45,42,43,42,47,41,45,43,43,38,43,42,42,46,49,42,46,50,50,46,49,42,46,45]}],"drive":0,"combined":[48,49,50,53,53,52,50,49,45,47,46,48,51,55,58,57,60,57,56,57,52,53,51,54,56,59,62,60,64,60,57,59,57,55,56,58,62,64,66,67,67,66,66,65,60,63,62,66,66,68,72,72,69,71,70,68,67,70,66,70,72],"peakIndex":50,"peakMonthName":"January","corpus12":[52,58,60,59,58,57,52,50,45,44,46,49],"gateRefused":[{"phrase":"implants bothell wa","why":"names a place"}]},{"topic":"Emergency dentist","short":"Emergency","verdict":"growing","rating":7,"ratingParts":[{"label":"Demand is growing","points":3},{"label":"Medium search volume","points":2},{"label":"Winter peak","points":1},{"label":"Searched by name","points":1}],"yoy":1.11,"searchesPerMonth":3100,"searches12":[3490,3645,3586,3311,3056,2928,2551,2727,2842,2971,2952,3438],"prior12":[3164,3240,3225,3113,2724,2647,2276,2561,2484,2660,2562,3155],"phrases":[{"phrase":"emergency dentist","values":[62,68,77,74,68,58,61,55,52,56,53,59,73,82,85,85,77,68,65,62,62,56,70,70,83,83,91,89,82,79,62,61,59,68,71,79,88,85,89,91,86,74,79,74,64,73,70,79,91,89,100,97,91,83,79,73,76,80,83,86,89]},{"phrase":"dentist open saturday","values":[55,67,67,59,61,52,47,45,39,38,45,59,65,65,64,67,68,62,52,45,42,45,56,56,64,68,74,71,70,61,58,52,47,58,53,67,68,77,74,70,68,65,67,56,55,64,56,70,71,74,80,79,80,71,67,58,56,58,62,77,85]},{"phrase":"broken tooth","values":[42,45,56,44,42,39,32,36,30,36,41,44,44,55,48,53,47,45,36,38,39,44,44,41,48,59,62,52,53,52,41,36,39,45,48,45,52,55,55,64,62,53,53,50,48,42,52,58,58,64,61,59,61,52,53,53,44,55,50,53,58]}],"drive":0,"combined":[53,60,67,59,57,50,47,45,40,43,46,54,61,67,66,68,64,58,51,48,48,48,57,56,65,70,76,71,68,64,54,50,48,57,57,64,69,72,73,75,72,64,66,60,56,60,59,69,73,76,80,78,77,69,66,61,59,64,65,72,77],"peakIndex":50,"peakMonthName":"December","corpus12":[52,51,53,58,54,56,52,45,46,42,40,45],"gateRefused":[]},{"topic":"Invisalign","short":"Invisalign","verdict":"stable","rating":6,"ratingParts":[{"label":"Demand is steady","points":2},{"label":"Large search volume","points":3},{"label":"January peak","points":0},{"label":"Searched by name","points":1}],"yoy":1.01,"searchesPerMonth":4400,"searches12":[4889,4785,4576,4905,4588,4379,4272,4111,4154,4186,4405,4300],"prior12":[5077,4805,4453,4962,4430,4385,4207,4172,4059,4207,4553,4055],"phrases":[{"phrase":"invisalign","values":[93,96,100,97,96,87,91,88,79,81,85,88,84,97,93,97,93,99,90,81,85,84,79,87,85,96,94,93,94,90,94,90,84,78,79,87,88,96,99,99,91,99,88,85,82,78,78,87,88,99,93,100,100,96,87,84,85,82,87,82,88]},{"phrase":"clear aligners","values":[69,75,76,85,81,81,74,65,69,66,71,72,69,79,79,87,76,81,76,71,65,69,65,75,76,78,79,76,81,78,69,68,71,72,68,65,78,79,84,78,81,74,71,71,68,68,62,75,72,76,84,76,82,78,75,69,69,65,71,69,78]},{"phrase":"invisalign cost","values":[60,65,68,68,69,65,62,60,51,51,59,60,54,60,65,59,68,60,54,60,56,56,54,51,57,65,60,68,62,65,59,56,59,51,51,53,53,62,69,69,60,65,62,56,60,47,57,53,63,65,60,65,62,60,56,57,57,53,53,59,59]}],"drive":0,"combined":[74,79,81,83,82,78,76,71,66,66,72,73,69,79,79,81,79,80,73,71,69,70,66,71,73,80,78,79,79,78,74,71,71,67,66,68,73,79,84,82,77,79,74,71,70,64,66,72,74,80,79,80,81,78,73,70,70,67,70,70,75],"peakIndex":38,"peakMonthName":"January","corpus12":[40,42,49,46,50,45,39,39,34,32,33,35],"gateRefused":[]},{"topic":"Sedation dentistry","short":"Sedation","verdict":"emerging","rating":5,"ratingParts":[{"label":"Demand is emerging","points":3},{"label":"Small search volume","points":1},{"label":"Steady all year","points":1},{"label":"Searched by name","points":0}],"yoy":1.34,"searchesPerMonth":720,"searches12":[733,730,733,721,706,772,760,699,668,736,658,710],"prior12":[547,534,560,551,534,576,566,509,500,541,472,530],"phrases":[{"phrase":"sedation dentist","values":[41,30,41,54,41,59,43,43,38,46,43,38,38,57,43,62,49,54,68,65,46,65,51,43,49,62,73,76,78,76,65,81,62,57,57,62,73,65,70,86,86,95,81,78,81,84,81,86,70,78,78,100,84,100,97,89,100,92,95,95,97]},{"phrase":"sleep dentistry","values":[24,19,32,41,30,38,35,32,35,43,41,27,35,32,46,41,43,51,49,43,54,41,43,49,43,49,43,62,51,51,54,65,65,54,51,54,59,65,65,65,76,68,62,70,68,59,68,62,73,68,62,68,86,86,89,81,68,78,65,84,81]},{"phrase":"iv sedation dentist","values":[27,32,16,27,35,24,41,24,35,30,19,38,27,38,43,30,41,49,43,30,30,43,35,30,30,30,38,51,43,38,57,43,51,51,38,35,43,38,46,59,43,59,49,49,49,57,59,41,54,59,57,70,54,59,70,54,57,54,65,62,54]}],"drive":0,"combined":[31,27,30,41,35,40,40,33,36,40,34,34,33,42,44,44,44,51,53,46,43,50,43,41,41,47,51,63,57,55,59,63,59,54,49,50,58,56,60,70,68,74,64,66,66,67,69,63,66,68,66,79,75,82,85,75,75,75,75,80,77],"peakIndex":54,"peakMonthName":"March","corpus12":[49,56,58,62,58,57,52,48,43,41,45,47],"gateRefused":[]},{"topic":"Teeth whitening","short":"Whitening","verdict":"decaying","rating":4,"ratingParts":[{"label":"Demand is falling","points":0},{"label":"Medium search volume","points":2},{"label":"Summer peak","points":1},{"label":"Searched by name","points":1}],"yoy":0.82,"searchesPerMonth":2900,"searches12":[2340,2368,2437,2770,2937,3046,3447,3527,3558,3286,2904,2693],"prior12":[2893,2915,3043,3388,3492,3703,4248,4230,4222,4134,3447,3229],"phrases":[{"phrase":"teeth whitening","values":[89,76,75,82,83,86,100,99,97,96,90,81,81,69,67,69,76,78,85,94,93,92,88,85,75,68,62,68,71,78,88,88,86,88,78,76,64,58,60,60,64,76,79,86,82,78,79,74,54,57,53,50,54,61,76,81,83,81,71,65,50]},{"phrase":"professional teeth whitening","values":[74,61,61,58,71,78,79,83,88,86,78,72,65,64,62,54,60,74,75,81,85,81,78,65,64,60,49,56,64,69,67,76,71,78,64,62,54,49,43,50,50,62,61,67,74,68,64,56,44,43,46,40,49,51,56,65,69,62,64,46,46]},{"phrase":"zoom whitening","values":[54,57,54,49,56,57,64,65,69,62,57,62,56,51,43,51,44,57,64,61,61,58,61,56,49,47,36,43,46,53,54,64,60,61,51,51,42,42,40,43,42,46,51,58,54,51,46,43,39,31,39,33,39,39,43,47,47,46,42,43,31]}],"drive":0,"combined":[72,65,63,63,70,74,81,82,85,81,75,72,67,61,57,58,60,70,75,79,80,77,76,69,63,58,49,56,60,67,70,76,72,76,64,63,53,50,48,51,52,61,64,70,70,66,63,58,46,44,46,41,47,50,58,64,66,63,59,51,42],"peakIndex":8,"peakMonthName":"June","corpus12":[29,31,37,34,35,36,27,25,21,21,21,22],"gateRefused":[]}],"suggestedTopics":["Dental implants","Invisalign","Emergency dentist","Teeth whitening","Sedation dentistry","Root canals","Pediatric dentistry","Dental crowns"],"pricePerPhrase":0.006},"PAST":[{"name":"Bothell Family Dentistry","city":"Bothell, WA","client":true,"status":"complete","when":"Oct 28, 2:14 PM","cost":0.81,"gs":"28 of 81","mt":"3 of 5 rising"},{"name":"Northgate Smile Studio","city":"Seattle, WA","client":false,"status":"running","when":"Oct 29, 9:02 AM","cost":0.42,"gs":"","mt":""},{"name":"Cedar Park Dental","city":"Austin, TX","client":true,"status":"complete","when":"Oct 27, 4:40 PM","cost":1.62,"gs":"22 of 81","mt":"2 of 4 rising"},{"name":"Lakeview Family Dental","city":"Boulder, CO","client":true,"status":"complete","when":"Oct 27, 11:05 AM","cost":0.98,"gs":"71 of 81","mt":"1 of 3 rising"},{"name":"Summit Ridge Dentistry","city":"Denver, CO","client":false,"status":"failed","when":"Oct 26, 3:51 PM","cost":0.12,"gs":"","mt":""},{"name":"Harbor Point Dental","city":"Tacoma, WA","client":false,"status":"complete","when":"Oct 25, 10:20 AM","cost":0.81,"gs":"9 of 81","mt":"4 of 5 rising"}]};
+</script>
+<style>
+.setbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-4px 0 20px;font-size:13.5px;color:var(--muted);animation:flFade .3s}
+.setbar b{color:var(--ink);font-size:14.5px}
+.h-sentence .soft{color:var(--faint)}
+.tray{position:sticky;top:57px;z-index:25;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:26px -28px 20px;padding:12px 28px;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);border-top:1px solid var(--line)}
+.tray:empty{display:none}
+.tray .count{font-weight:800;color:var(--ink);font-size:15px;white-space:nowrap}
+.tray .chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+.tray .info{flex:1;min-width:0;font-size:13.5px;color:var(--muted)}
+.tray .bar{position:absolute;left:0;bottom:-1px;height:2px;background:var(--a);transition:width .5s var(--ease)}
+.chip{border-radius:6px;background:var(--aTint);color:var(--aInk);font-size:12.5px;font-weight:600;padding:3px 8px;animation:flPop .3s var(--ease)}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:14px}
+.tile{position:relative;height:118px;perspective:1200px;transition:height .45s var(--ease),opacity .35s,transform .35s}
+.tile.drop{animation:tdrop .5s var(--ease) both}
+@keyframes tdrop{from{opacity:0;transform:translateY(-16px) scale(.96)}to{opacity:1;transform:none}}
+.tile .inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .75s var(--ease)}
+.tile.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:14px;background:#fff;padding:16px;overflow:hidden;transition:box-shadow .25s,border-color .25s,transform .25s}
+.back{transform:rotateY(180deg);overflow-y:auto}
+.tile.pick .front{cursor:pointer}
+.tile.pick .front:hover{border-color:#A7D8CF}
+.tile.on.pick .front{border-color:var(--a);box-shadow:0 0 0 1px var(--a),0 14px 30px rgba(15,118,110,.14);transform:translateY(-3px)}
+.tn{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.25;padding-right:30px}
+.why{font-size:12.5px;color:var(--muted);margin-top:4px}
+.tk{position:absolute;right:14px;top:14px;width:22px;height:22px;border-radius:50%;border:1.5px solid #D0D5DD;display:grid;place-items:center;color:#fff;font-size:12px;transition:all .25s var(--ease)}
+.tile.on .tk{background:var(--a);border-color:var(--a)}
+.tile.gone{opacity:0;transform:scale(.94);pointer-events:none}
+.tile.tall{height:300px}
+.tile.run{height:212px}
+.tile.addt .front{border-style:dashed;display:flex;align-items:center;justify-content:center;color:var(--aInk);font-weight:700;cursor:pointer;background:#FCFDFD}
+.tile.addt .front:hover{background:var(--aTint)}
+.tile.addt input{width:100%}
+.back .bh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.back .bh b{font-size:15px;color:var(--ink)}
+.ph{display:flex;align-items:center;gap:8px;min-height:32px;border-bottom:1px solid #F1F2F5;font-size:13.5px;color:var(--ink);animation:flFade .25s}
+.ph .tag{flex:none}
+.ph.ref .pt{color:var(--faint);text-decoration:line-through}
+.ph .x{margin-left:auto;border:0;background:none;color:var(--faint);font-size:16px;line-height:1;padding:2px 4px;border-radius:6px}
+.ph .x:hover{background:var(--soft);color:var(--down)}
+.addph{display:flex;gap:6px;margin-top:8px}
+.addph .input{padding:6px 9px;font-size:13px}
+.addph .btn-line{padding:6px 10px}
+/* the running and finished tile */
+.rk{position:absolute;left:16px;top:16px;width:24px;height:24px;border-radius:7px;background:var(--soft);color:var(--muted);font-size:12px;font-weight:800;display:grid;place-items:center;opacity:0;transition:opacity .4s}
+.ranked .rk{opacity:1}
+.ranked .rk.first{background:var(--aTint);color:var(--aInk)}
+.ranked .tn.r{padding-left:34px}
+.spark{display:block;width:100%;height:auto;margin:12px 0 8px}
+.meta{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.vd{font-size:13.5px;font-weight:700;transition:opacity .4s}
+.vd.up{color:var(--up)}.vd.dn{color:var(--down)}.vd.st{color:var(--muted)}.vd.w{color:var(--faint);font-weight:500}
+.rt{font-size:13px;color:var(--muted)}
+.rt b{font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.sr{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tile.reading .front{border-color:#A7D8CF}
+.tile.reading .front:after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(15,118,110,.10) 50%,transparent 80%);transform:translateX(-100%);animation:flSheen 1.2s ease-in-out infinite}
+.tile.res .front{cursor:pointer}
+.tile.res .front:hover{border-color:#A7D8CF;box-shadow:0 14px 30px rgba(11,16,32,.08);transform:translateY(-2px)}
+.opencard{position:absolute;right:16px;bottom:15px;font-size:12.5px;font-weight:600;color:var(--aInk);opacity:0;transition:opacity .2s;pointer-events:none}
+.tile.res .front:hover .opencard{opacity:1}
+.asking{height:28px;margin-top:12px;font-size:13.5px;color:var(--muted)}
+.asking b{color:var(--ink);font-weight:600}
+/* landing */
+.pform{display:grid;gap:12px}
+.pform .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.combo{position:relative}
+.combo .dd-menu{left:0;right:auto;width:100%}
+.pastsec{margin-top:56px;max-width:1100px}
+.phead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.plist{display:flex;flex-direction:column;gap:8px}
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:90;pointer-events:none}
+.sheet.open{pointer-events:auto}
+.sheet .bd{position:absolute;inset:0;background:rgba(11,16,32,.32);opacity:0;transition:opacity .35s}
+.sheet .pane{position:absolute;right:0;top:0;bottom:0;width:min(780px,94vw);background:#fff;box-shadow:-24px 0 60px rgba(11,16,32,.16);transform:translateX(102%);transition:transform .45s var(--ease);overflow-y:auto;padding:26px 32px 60px}
+.sheet.open .bd{opacity:1}
+.sheet.open .pane{transform:none}
+.sheet h2{margin:4px 0 0;font-size:34px;font-weight:900;letter-spacing:-.025em;color:var(--ink)}
+.sheet .sec{border-top:1px solid var(--line);padding:22px 0 8px;margin-top:20px}
+.sheet .sech{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.sheet .sech h3{margin:0;font-size:16px;color:var(--ink)}
+.togs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tog{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--body);transition:all .15s}
+.tog i{width:14px;height:2px;border-radius:1px}
+.tog.off{color:var(--faint);text-decoration:line-through;background:var(--soft)}
+.parts{margin:6px 0 0;padding:0;list-style:none}
+.parts li{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #F1F2F5;font-size:14px;animation:flRise .35s var(--ease) both}
+.parts li b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.next{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:26px;padding:18px 20px;border-radius:14px;background:var(--soft)}
+.next p{margin:0;flex:1;min-width:220px;font-size:14.5px;color:var(--ink)}
+.cmp{animation:flRise .4s var(--ease)}
+@media (max-width:700px){.pform .three{grid-template-columns:1fr}}
+</style></head><body>
+<div id="page"><div id="settled"></div><div id="head"></div><div id="panel"></div><div class="tray" id="tray"></div><div id="board" class="board"></div><div id="below"></div></div>
+<div class="sheet" id="sheet"><div class="bd"></div><div class="pane" role="dialog" aria-modal="true"></div></div>
+<script>
+const D = FLDATA, MT = D.MT, $ = FL.$, esc = FL.esc;
+const shell = FL.shell({ tool: 'trends', name: 'Market Trends' });
+const WHY = { 'Dental implants': 'a page of its own', Invisalign: 'named on the homepage', 'Emergency dentist': 'in the main menu', 'Teeth whitening': 'named on the homepage', 'Sedation dentistry': 'a page of its own', 'Root canals': 'on the services page', 'Pediatric dentistry': 'on the services page', 'Dental crowns': 'on the services page' };
+const EXTRA = { 'Root canals': ['root canal', 'root canal cost', 'endodontist'], 'Pediatric dentistry': ['pediatric dentist', 'kids dentist', 'childrens dentist'], 'Dental crowns': ['dental crown', 'crown cost', 'same day crowns'] };
+const VERD = { growing: ['Rising', 'up'], emerging: ['Emerging', 'up'], stable: ['Steady', 'st'], decaying: ['Falling', 'dn'] };
+const LINE_GREYS = ['#8B98A9', '#475569', '#B6BCC8', '#64748B'];
+const PRICE = MT.pricePerPhrase;
+
+/* A topic's data: the sample set, or a steady stand-in for a topic added by hand. */
+const cache = {};
+function TD(name) {
+  if (cache[name]) return cache[name];
+  let t = MT.topics.find((x) => x.topic.toLowerCase() === name.toLowerCase());
+  if (!t) {
+    let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) % 997;
+    const b = MT.topics[2];
+    const words = EXTRA[name] || [name.toLowerCase(), `${name.toLowerCase()} near me`, `${name.toLowerCase()} cost`];
+    t = { ...b, topic: name, short: name.split(' ')[0], verdict: 'stable', rating: 3 + (h % 2), yoy: 1.02, searchesPerMonth: 600 + (h % 9) * 110,
+      ratingParts: [{ label: 'Demand is steady', points: 2 }, { label: 'Small search volume', points: 1 }, { label: 'Steady all year', points: 1 }, { label: 'Searched by name', points: 0 }],
+      phrases: words.map((w, k) => ({ phrase: w, values: b.phrases[Math.min(k, b.phrases.length - 1)].values.map((v, i) => Math.max(2, Math.min(100, Math.round(v * 0.8 + ((i * 7 + h) % 9) - 4)))) })),
+      gateRefused: [], searches12: b.searches12.map((v) => Math.round(v / 6)), prior12: b.prior12.map((v) => Math.round(v / 6.1)) };
+    t.combined = t.phrases[0].values.map((_, i) => Math.round(t.phrases.reduce((a, p) => a + p.values[i], 0) / t.phrases.length));
+  }
+  return (cache[name] = t);
+}
+const yoyWords = (y) => { const r = Math.round((y - 1) * 100); return Math.abs(r) < 3 ? 'level with last year' : `${r > 0 ? 'up' : 'down'} ${Math.abs(r)}% on last year`; };
+
+let S;
+function reset() { S = { stage: 'start', practice: null, picked: [...MT.topics.map((t) => t.topic)], extra: [], phr: {}, typed: false, done: new Set(), spent: 0, view: 'board', fromPast: false }; }
+reset();
+const colorOf = (name) => { const i = S.picked.indexOf(name); return i >= 0 && i < 5 ? FL.TOPIC_COLORS[i] : '#94A3B8'; };
+const livePhrases = (name) => (S.phr[name] || []).filter((p) => !p.ref);
+const phraseCount = () => S.picked.reduce((a, n) => a + livePhrases(n).length, 0);
+
+/* ------------------------------- How it works ------------------------------- */
+const SV = (inner) => `<svg viewBox="0 0 300 200" width="100%" height="100%" aria-hidden="true" style="font-family:Inter,sans-serif">${inner}</svg>`;
+const sparkPath = (vals, w, h, x0 = 0, y0 = 0, max = 100) => vals.map((v, i) => `${i ? 'L' : 'M'}${(x0 + (i / (vals.length - 1)) * w).toFixed(1)},${(y0 + h - (v / max) * h).toFixed(1)}`).join('');
+FL.method({
+  teaser: 'Each search phrase is one Google Trends read for the practice\'s state, five years of months. Phrases add up to a topic; the topic is compared with dental searches overall. Click for the whole method.',
+  kicker: 'Market Trends', title: 'How it works',
+  sections: [
+    { title: 'What the lines show', caption: 'One topic, read month by month.',
+      body: ['Google does not share search counts in Trends. It shares interest: how busy a month was next to the busiest month in the group, which is set to 100.', 'So a line at 50 means half as many searches as the peak month, not 50 searches. The lines are for the shape over time; the search counts a month sit under them on each card.'],
+      figure: (el) => { const v = MT.topics[1].combined.slice(-30); const pk = v.indexOf(Math.max(...v));
+        el.innerHTML = SV(`<defs><clipPath id="m1c"><rect x="0" y="0" height="200" width="0"/></clipPath></defs><line x1="24" x2="284" y1="40" y2="40" stroke="#E7E9EE"/><line x1="24" x2="284" y1="170" y2="170" stroke="#E7E9EE"/><text x="18" y="44" font-size="10" text-anchor="end" fill="#667085">100</text><text x="18" y="174" font-size="10" text-anchor="end" fill="#667085">0</text><path clip-path="url(#m1c)" d="${sparkPath(v, 260, 130, 24, 40)}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round"/><g id="m1p" opacity="0" style="transition:opacity .4s"><circle cx="${24 + (pk / 29) * 260}" cy="40" r="5" fill="#0F766E" stroke="#fff" stroke-width="2"/><text x="${Math.min(200, 24 + (pk / 29) * 260)}" y="28" font-size="11" font-weight="700" fill="#0B1020">The busiest month = 100</text></g>`);
+        const r = el.querySelector('rect'); r.style.transition = 'width .65s ease'; const p = el.querySelector('#m1p');
+        return FL.loop(6, 750, (s) => { r.setAttribute('width', s === 0 ? 40 : Math.min(300, 40 + s * 60)); p.setAttribute('opacity', s >= 4 ? 1 : 0); }); } },
+    { title: 'Topics and phrases', caption: 'Three phrases make one topic line.',
+      body: ['A topic is what a patient wants ("Dental implants"). A phrase is how they type it into Google ("tooth implant", "implant dentist").', 'Each topic is read through 1 to 5 phrases, written from the topic and checked by the team. Phrases that name a place or are not about dentistry are left out, struck through, with the reason on hover.'],
+      figure: (el) => { const ph = ['dental implants', 'tooth implant', 'implant dentist'];
+        el.innerHTML = SV(`${ph.map((p, i) => `<g class="pc"><rect x="14" y="${36 + i * 46}" width="122" height="30" rx="7" fill="#fff" stroke="#E7E9EE"/><text x="26" y="${55 + i * 46}" font-size="11.5" font-weight="600" fill="#273043">${p}</text><path d="M136 ${51 + i * 46} C 170 ${51 + i * 46}, 170 100, 196 100" fill="none" stroke="#99D5CC" stroke-width="1.6" stroke-dasharray="80" stroke-dashoffset="80" style="transition:stroke-dashoffset .5s"/></g>`).join('')}<rect x="196" y="76" width="92" height="48" rx="10" fill="#fff" stroke="#E7E9EE"/><text x="206" y="94" font-size="10" fill="#667085">Topic</text><text x="206" y="112" font-size="12" font-weight="800" fill="#0B1020">Implants</text>`);
+        const g = [...el.querySelectorAll('.pc')];
+        return FL.loop(5, 700, (s) => g.forEach((x, i) => { const on = s > i; x.querySelector('rect').setAttribute('stroke', on ? '#0F766E' : '#E7E9EE'); x.querySelector('rect').setAttribute('fill', on ? '#E6F4F1' : '#fff'); x.querySelector('path').style.strokeDashoffset = on && s >= 3 ? 0 : 80; })); } },
+    { title: 'Rising, steady, falling or emerging', caption: 'The topic against dental searches overall.',
+      body: ['Every dental search moves with the seasons and the economy. So a topic is called rising only when it grows faster than dental searches overall over the last 12 months, and falling when it drops behind them.', 'Emerging means a small topic that is climbing quickly from a low start. The change on last year is shown in plain numbers on each card.'],
+      figure: (el) => { const base = Array.from({ length: 20 }, (_, i) => 50 + i * 0.6 + Math.sin(i) * 2);
+        const shapes = [['Rising', '#15803D', (i) => 40 + i * 2.4], ['Steady', '#667085', (i) => 56 + Math.sin(i * 0.9) * 3], ['Falling', '#E11D48', (i) => 78 - i * 2.1]];
+        el.innerHTML = SV(`<path d="${sparkPath(base, 250, 130, 24, 30)}" fill="none" stroke="#B6BCC8" stroke-width="1.6" stroke-dasharray="4 3"/><text x="24" y="190" font-size="10.5" fill="#667085">- - - dental searches overall</text><path id="m3l" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linejoin="round" style="transition:d .7s ease"/><text id="m3t" x="276" y="22" text-anchor="end" font-size="15" font-weight="800"></text>`);
+        const l = el.querySelector('#m3l'); const t = el.querySelector('#m3t');
+        return FL.loop(3, 1500, (s) => { const [w, c, f] = shapes[s]; l.setAttribute('d', sparkPath(Array.from({ length: 20 }, (_, i) => f(i)), 250, 130, 24, 30)); t.textContent = w; t.setAttribute('fill', c); }); } },
+    { title: 'Seasons', caption: 'When each topic is busiest.',
+      body: ['Some topics have a season: whitening before summer events, emergencies over the winter holidays, Invisalign in January. Five years of months show whether a peak repeats or was a one-off.', 'The busiest month on each card is the month that peaks year after year, so content can go up a month or two before it.'],
+      figure: (el) => { const M = 'JFMAMJJASOND'.split(''); const T = [['Emergency dentist', [11, 0, 1]], ['Teeth whitening', [4, 5, 6]], ['Invisalign', [0]]];
+        el.innerHTML = SV(`<text id="m4t" x="150" y="40" text-anchor="middle" font-size="14" font-weight="800" fill="#0B1020"></text>${M.map((m, i) => `<rect class="mc" x="${24 + (i % 6) * 44}" y="${62 + Math.floor(i / 6) * 60}" width="36" height="36" rx="6" fill="#E4E7EC" style="transition:fill .4s"/><text x="${42 + (i % 6) * 44}" y="${116 + Math.floor(i / 6) * 60}" text-anchor="middle" font-size="10" fill="#667085">${m}</text>`).join('')}`);
+        const c = [...el.querySelectorAll('.mc')]; const t = el.querySelector('#m4t');
+        return FL.loop(3, 1600, (s) => { t.textContent = T[s][0]; c.forEach((r, i) => r.setAttribute('fill', T[s][1].includes(i) ? '#0F766E' : '#E4E7EC')); }); } },
+    { title: 'The 1 to 10 rating', caption: 'Points add up to the rating.',
+      body: ['The rating orders the board so the strongest topics come first. It adds points for the direction of demand, how many people search, how steady the year is, and whether patients search the topic by name.', 'It ranks topics against each other for this practice; it never decides what to write on its own.'],
+      figure: (el) => { const P = MT.topics[0].ratingParts;
+        el.innerHTML = SV(`${P.map((p, i) => `<g class="rp" opacity="0" style="transition:opacity .35s"><text x="20" y="${44 + i * 30}" font-size="12" fill="#273043">${p.label}</text><text x="200" y="${44 + i * 30}" font-size="12" font-weight="800" text-anchor="end" fill="#0B1020">+${p.points}</text></g>`).join('')}<line x1="20" x2="200" y1="160" y2="160" stroke="#E7E9EE"/><text id="m5n" x="20" y="186" font-size="20" font-weight="900" fill="#0F766E"></text>`);
+        const g = [...el.querySelectorAll('.rp')]; const n = el.querySelector('#m5n');
+        return FL.loop(6, 700, (s) => { let sum = 0; g.forEach((x, i) => { const on = i < s; x.setAttribute('opacity', on ? 1 : 0); if (on) sum += P[i].points; }); n.textContent = s ? `${sum} of 10` : ''; }); } },
+  ],
+});
+
+/* ------------------------------- landing ------------------------------- */
+const head = $('#head'), panel = $('#panel'), tray = $('#tray'), board = $('#board'), below = $('#below'), settled = $('#settled');
+function clearAll() { head.innerHTML = panel.innerHTML = tray.innerHTML = board.innerHTML = below.innerHTML = settled.innerHTML = ''; }
+
+function start() {
+  reset(); clearAll(); shell.right(''); window.scrollTo({ top: 0 });
+  head.innerHTML = `<div class="eyebrow" style="margin-bottom:12px">New check</div><h1 class="h-sentence rise">Read where patient demand is heading, <span class="soft">one topic at a time.</span></h1>`;
+  const clients = D.PAST.filter((r) => r.client);
+  panel.innerHTML = `<section class="panel"><div class="panel-head">Which practice</div><div class="pform">
+    <div class="field combo"><span>Client</span><input class="input" id="cl" placeholder="Search clients, or leave blank for a prospect" autocomplete="off"><div id="clm"></div></div>
+    <div class="three"><label class="field"><span>Domain<i> *</i></span><input class="input" id="fd" value="bothellfamilydentistry.com"></label>
+    <label class="field"><span>Business name<i> *</i></span><input class="input" id="fn" value="Bothell Family Dentistry"></label>
+    <label class="field"><span>City and state<i> *</i></span><input class="input" id="fc" value="Bothell, WA"></label></div>
+    <p id="prob" class="small" style="margin:0;color:var(--down)"></p>
+    <div><button class="btn btn-go" id="find">Find the practice</button></div></div></section>`;
+  const cl = $('#cl'), clm = $('#clm');
+  const showMenu = () => { const q = cl.value.toLowerCase(); const m = clients.filter((c) => c.name.toLowerCase().includes(q));
+    clm.innerHTML = m.length ? `<div class="dd-menu">${m.map((c) => `<button type="button" class="dd-opt" data-n="${esc(c.name)}"><span>${esc(c.name)} <span style="color:var(--faint)">${esc(c.city)}</span></span></button>`).join('')}</div>` : '';
+    clm.querySelectorAll('.dd-opt').forEach((b) => { b.onmousedown = (e) => { e.preventDefault(); const c = clients.find((x) => x.name === b.dataset.n); cl.value = c.name; $('#fn').value = c.name; $('#fc').value = c.city; if (c.name !== 'Bothell Family Dentistry') $('#fd').value = ''; clm.innerHTML = ''; }; }); };
+  cl.onfocus = showMenu; cl.oninput = showMenu; cl.onblur = () => setTimeout(() => { clm.innerHTML = ''; }, 120);
+  $('#find').onclick = () => { const f = { d: $('#fd').value.trim(), n: $('#fn').value.trim(), c: $('#fc').value.trim() };
+    if (!f.d || !f.n || !f.c) { $('#prob').textContent = 'Domain, business name and city are all needed.'; return; } lookup(f, !!cl.value); };
+  pastChecks();
+}
+
+function pastChecks() {
+  let clientsOnly = false, who = 'all';
+  below.innerHTML = `<section class="pastsec"><div class="phead"><h2 class="eyebrow" style="margin:0;flex:1">Past checks<span style="margin-left:8px;font-weight:500;text-transform:none;letter-spacing:0" id="pn"></span></h2>
+    <button type="button" class="switch" role="switch" id="co"><i></i>Clients only</button><span id="pdd"></span></div><div class="plist" id="pl"></div></section>`;
+  const draw = () => {
+    const rows = D.PAST.filter((r) => (!clientsOnly || r.client) && (who === 'all' || r.name === who));
+    $('#pn').textContent = rows.length;
+    $('#pl').innerHTML = rows.map((r, i) => {
+      const mid = r.status === 'complete' ? `<span><b class="grad" style="font-size:22px;font-weight:900;letter-spacing:-.02em">${esc(r.mt.replace(' rising', ''))}</b><span class="small" style="display:block">topics rising</span></span>`
+        : r.status === 'running' ? '<span style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--aInk)"><span class="turning"></span>Reading Google Trends</span>'
+          : '<span style="font-size:13.5px;font-weight:600;color:var(--down)">Stopped</span>';
+      return `<button type="button" class="past" data-i="${D.PAST.indexOf(r)}" style="animation-delay:${i * 0.05}s"><span class="p1"><b>${esc(r.name)}</b><span>${esc(r.city)} <span class="tag ${r.client ? 'a' : ''}" style="margin-left:6px">${r.client ? 'Client' : 'Prospect'}</span></span></span>${mid}<span class="p3">${esc(r.when)}<br>${FL.money(r.cost)}</span></button>`;
+    }).join('') || '<p class="small">No checks for this client yet.</p>';
+    $('#pl').querySelectorAll('.past').forEach((b) => { b.onclick = () => openPast(D.PAST[+b.dataset.i]); });
+  };
+  $('#co').onclick = () => { clientsOnly = !clientsOnly; $('#co').classList.toggle('on', clientsOnly); $('#co').setAttribute('aria-checked', clientsOnly); draw(); };
+  FL.dropdown($('#pdd'), { label: 'Filter by client', value: 'all', options: [{ value: 'all', label: 'All clients and prospects' }, ...D.PAST.filter((r) => r.client).map((r) => ({ value: r.name, label: r.name, count: 1 }))], onChange: (v) => { who = v; draw(); } });
+  draw();
+}
+
+async function lookup(f, isClient) {
+  below.innerHTML = '';
+  panel.innerHTML = `<section class="panel"><div class="panel-head">Which practice</div>${FL.mapSearch(`Looking up ${f.n} on Google Maps…`)}</section>`;
+  await FL.wait(1700);
+  const P = D.GS.practice, c1 = D.GS.competitors[1], c2 = D.GS.competitors[6];
+  const cands = [{ t: f.n, a: P.address, r: `${P.rating} (${P.reviews} reviews)`, gbp: true }, { t: c1.title, a: c1.address, r: `${c1.rating} (${c1.reviews} reviews)` }, { t: c2.title, a: c2.address, r: `${c2.rating} (${c2.reviews} reviews)` }];
+  let pick = 0;
+  panel.innerHTML = `<section class="panel"><div class="panel-head">Which practice</div><div role="radiogroup" style="display:flex;flex-direction:column;gap:8px">${cands.map((c, i) => `<div class="found rise ${i === 0 ? 'on' : ''}" role="radio" tabindex="0" data-i="${i}" style="animation-delay:${i * 0.08}s"><span class="lt">${esc(c.t[0])}</span><span style="min-width:0"><b>${esc(c.t)}</b><small>${esc(c.a)} · ${esc(c.r)}</small>${c.gbp ? '<small style="color:var(--aInk);font-weight:600">From their Google Business Profile</small>' : ''}</span></div>`).join('')}</div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-go" id="one">That's the one</button><button class="btn btn-line" id="chg">Change the name or city</button></div></section>`;
+  panel.querySelectorAll('.found').forEach((el) => { el.onclick = () => { pick = +el.dataset.i; panel.querySelectorAll('.found').forEach((x) => x.classList.toggle('on', x === el)); }; });
+  $('#chg').onclick = start;
+  $('#one').onclick = () => { S.practice = { name: cands[pick].t, domain: f.d, city: f.c, client: isClient || cands[pick].t === P.title }; reading(); };
+}
+
+function settledBar() {
+  const p = S.practice;
+  settled.innerHTML = `<div class="setbar"><b>${esc(p.name)}</b>${p.domain ? `<span>${esc(p.domain)}</span><span>·</span>` : ''}<span>${esc(p.city)}</span><span class="tag ${p.client ? 'a' : ''}">${p.client ? 'Client' : 'Prospect'}</span><button class="btn-link" id="edp" style="font-size:13px">Change practice</button></div>`;
+  $('#edp').onclick = start;
+}
+
+async function reading() {
+  settledBar(); below.innerHTML = '';
+  head.innerHTML = `<h1 class="h-sentence rise">Reading ${esc(S.practice.domain)}</h1>`;
+  panel.innerHTML = `<section class="panel"><div class="panel-head">Finding the topics</div><div style="display:flex;gap:18px;align-items:flex-start">${FL.orb()}<div id="stp"></div></div></section>`;
+  const st = FL.steps($('#stp'), [`Opening ${S.practice.domain}`, 'Reading the services it names', 'Matching them to topics patients search']);
+  for (let i = 0; i < 3; i++) { st.set(i, 'now'); await FL.wait(850); st.set(i, 'done'); }
+  await FL.wait(300);
+  pickBoard();
+}
+
+/* ------------------------------- the board ------------------------------- */
+const tileEl = {};
+function makeTile(name, i, pickMode = true) {
+  const el = FL.h(`<div class="tile drop ${pickMode ? 'pick' : 'run'}" style="animation-delay:${i * 0.06}s"><div class="inner"><div class="face front"></div><div class="face back"></div></div></div>`);
+  el.addEventListener('animationend', () => { el.classList.remove('drop'); el.style.animationDelay = ''; }, { once: true });
+  el.dataset.t = name; tileEl[name] = el; return el;
+}
+function pickFront(el) { const n = el.dataset.t; el.querySelector('.front').innerHTML = `<div class="tn">${esc(n)}</div><div class="why">${esc(WHY[n] || 'added by the team')}</div><span class="tk">✓</span>`; }
+
+function pickBoard() {
+  S.stage = 'board'; panel.innerHTML = '';
+  const all = [...MT.suggestedTopics, ...S.extra];
+  head.innerHTML = `<h1 class="h-sentence rise">The website names <span class="grad">${MT.suggestedTopics.length} topics</span>. Pick the ones to check.</h1>`;
+  board.innerHTML = '';
+  all.forEach((n, i) => { const el = makeTile(n, i); pickFront(el); el.classList.toggle('on', S.picked.includes(n));
+    el.querySelector('.front').onclick = () => togglePick(n); board.appendChild(el); });
+  addTile(all.length);
+  drawPickTray();
+}
+function addTile(i) {
+  const el = FL.h(`<div class="tile pick addt drop" style="animation-delay:${i * 0.06}s"><div class="inner"><div class="face front">+ Add a topic</div></div></div>`);
+  const f = el.querySelector('.front');
+  f.onclick = () => { if (f.querySelector('input')) return; f.innerHTML = '<input class="input" placeholder="e.g. Gum disease" aria-label="Add a topic">'; const inp = f.querySelector('input'); inp.focus();
+    inp.onkeydown = (e) => { if (e.key === 'Escape') { f.textContent = '+ Add a topic'; } if (e.key !== 'Enter') return; const v = inp.value.trim().replace(/\b\w/g, (c) => c.toUpperCase());
+      if (!v || tileEl[v]) { f.textContent = '+ Add a topic'; return; } if (S.picked.length >= 10) return;
+      S.extra.push(v); S.picked.push(v); const t = makeTile(v, 0); pickFront(t); t.classList.add('on'); t.querySelector('.front').onclick = () => togglePick(v); board.insertBefore(t, el); f.textContent = '+ Add a topic'; drawPickTray(); };
+    inp.onblur = () => setTimeout(() => { if (inp.isConnected) f.textContent = '+ Add a topic'; }, 150); };
+  board.appendChild(el);
+}
+function togglePick(n) {
+  if (S.stage !== 'board') return;
+  if (S.picked.includes(n)) S.picked = S.picked.filter((x) => x !== n); else if (S.picked.length < 10) S.picked.push(n);
+  tileEl[n].classList.toggle('on', S.picked.includes(n)); drawPickTray();
+}
+function drawPickTray() {
+  tray.innerHTML = `<span class="count"><span id="pc">${S.picked.length}</span> of 10 topics</span><span class="chips">${S.picked.map((n) => `<span class="chip">${esc(n)}</span>`).join('')}</span><button class="btn btn-go" id="wp" ${S.picked.length ? '' : 'disabled'}>Write the phrases</button>`;
+  $('#wp').onclick = phrases;
+}
+
+/* ------------------------------- phrases (the flip) ------------------------------- */
+function phraseList(n) {
+  if (!S.phr[n]) { const t = TD(n); S.phr[n] = t.phrases.map((p, k) => ({ t: p.phrase, head: k === 0 })).concat((t.gateRefused || []).map((g) => ({ t: g.phrase, ref: g.why }))); }
+  return S.phr[n];
+}
+async function phrases() {
+  S.stage = 'phrases'; S.typed = false;
+  head.innerHTML = `<h1 class="h-sentence rise">How patients search <span class="grad">${S.picked.length} topic${S.picked.length === 1 ? '' : 's'}</span>.</h1>`;
+  board.querySelectorAll('.tile').forEach((el) => { if (!S.picked.includes(el.dataset.t)) { el.classList.add('gone'); setTimeout(() => { if (S.stage === 'phrases') el.style.display = 'none'; }, 360); } });
+  drawPhraseTray();
+  await FL.wait(380);
+  const tiles = S.picked.map((n) => tileEl[n]);
+  tiles.forEach((el) => { el.classList.remove('pick'); el.classList.add('tall'); });
+  await FL.wait(300);
+  for (const el of tiles) {
+    if (S.stage !== 'phrases') return;
+    const n = el.dataset.t; const list = phraseList(n);
+    const back = el.querySelector('.back');
+    back.innerHTML = `<div class="bh"><b>${esc(n)}</b><span class="mono small" data-cnt></span></div><div data-rows></div>`;
+    el.classList.add('flipped');
+    await FL.wait(FL.reduce ? 0 : 420);
+    const rows = back.querySelector('[data-rows]');
+    for (const p of list) { const r = FL.h(`<div class="ph"><span class="pt"></span></div>`); rows.appendChild(r); await FL.type(r.querySelector('.pt'), p.t, { cps: 420 }); }
+    drawBack(n);
+  }
+  S.typed = true; drawPhraseTray();
+}
+function drawBack(n) {
+  const el = tileEl[n]; const back = el.querySelector('.back'); const list = S.phr[n]; const live = livePhrases(n).length;
+  back.querySelector('[data-cnt]').textContent = `${live} of 5`;
+  back.querySelector('[data-rows]').innerHTML = list.map((p, i) => `<div class="ph ${p.ref ? 'ref' : ''}">${p.ref ? `<span class="pt" data-tip-h="Left out: ${esc(p.ref)}" data-tip="A phrase that names a place gets mixed up with searches about the city itself, so the check reads phrases without place names.">${esc(p.t)}</span>`
+    : `<span class="pt">${esc(p.t)}</span>${p.head ? '<span class="tag a" data-tip-h="Main phrase" data-tip="The phrase most people use for this topic. It leads the topic\'s chart.">main</span>' : ''}<button class="x" data-i="${i}" aria-label="Remove ${esc(p.t)}">×</button>`}</div>`).join('')
+    + (live < 5 ? `<div class="addph"><input class="input" placeholder="Add a phrase" aria-label="Add a phrase to ${esc(n)}"><button class="btn btn-line">Add</button></div>` : '')
+    + (!live ? '<p class="small" style="color:var(--down);margin:6px 0 0">At least one phrase.</p>' : '');
+  back.querySelectorAll('.x').forEach((b) => { b.onclick = () => { list.splice(+b.dataset.i, 1); if (!list.some((p) => p.head && !p.ref)) { const f = list.find((p) => !p.ref); if (f) f.head = true; } drawBack(n); drawPhraseTray(); }; });
+  const inp = back.querySelector('.addph input');
+  if (inp) { const add = () => { const v = inp.value.trim().toLowerCase(); if (!v || list.some((p) => p.t === v)) return;
+      list.push(/\b(bothell|wa|seattle)\b/.test(v) ? { t: v, ref: 'names a place' } : { t: v }); drawBack(n); drawPhraseTray(); };
+    inp.onkeydown = (e) => { if (e.key === 'Enter') add(); }; back.querySelector('.addph .btn').onclick = add; }
+}
+function drawPhraseTray() {
+  const n = phraseCount(); const ok = S.typed && S.picked.every((t) => livePhrases(t).length > 0);
+  tray.innerHTML = `<span class="count">${S.picked.length} topics · ${S.typed ? n : '…'} phrases</span><span class="info"><button class="btn-link" id="ct" style="font-size:13.5px">Change topics</button></span>
+    <span class="small" style="white-space:nowrap">${ok ? 'About two minutes. It keeps going if this page is closed.' : S.typed ? 'Every topic needs a phrase.' : 'Writing the phrases…'}</span>
+    <button class="btn btn-go btn-big ${ok ? 'ready' : ''}" id="run" ${ok ? '' : 'disabled'}>${ok ? `Run it · ${FL.money(n * PRICE)}` : 'Run it'}${S.typed ? '' : FL.sheen()}</button>`;
+  $('#ct').onclick = () => { S.stage = 'board'; board.querySelectorAll('.tile').forEach((el) => { el.classList.remove('flipped', 'tall', 'gone'); el.style.display = ''; if (!el.classList.contains('addt')) el.classList.add('pick'); }); head.innerHTML = `<h1 class="h-sentence">The website names <span class="grad">${MT.suggestedTopics.length} topics</span>. Pick the ones to check.</h1>`; drawPickTray(); };
+  $('#run').onclick = async () => { $('#run').innerHTML = `Starting…${FL.sheen()}`; $('#run').classList.remove('ready'); await FL.wait(700); live(); };
+}
+
+/* ------------------------------- live run ------------------------------- */
+function runFront(el, i) {
+  const n = el.dataset.t; const t = TD(n);
+  el.querySelector('.front').innerHTML = `<span class="rk">${i + 1}</span><span class="opencard">Open the card →</span><div class="tn">${esc(n)}</div>
+    <svg class="spark" viewBox="0 0 240 58"><line x1="0" x2="240" y1="57" y2="57" stroke="#EEF0F3"/></svg>
+    <div class="meta"><span class="vd w">Waiting</span><span class="rt"><b data-r>0</b>/10</span></div><div class="sr">${FL.fmt(t.searchesPerMonth)} searches a month</div>`;
+  el.querySelector('.rt').style.opacity = 0; el.querySelector('.sr').style.opacity = 0;
+}
+function finishTile(el, animate = true) {
+  const n = el.dataset.t; const t = TD(n); const v = t.combined.slice(-24); const c = colorOf(n);
+  const svg = el.querySelector('.spark');
+  svg.innerHTML = `<line x1="0" x2="240" y1="57" y2="57" stroke="#EEF0F3"/><path d="${sparkPath(v, 234, 50, 0, 4)}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="234" cy="${(4 + 50 - (v[23] / 100) * 50).toFixed(1)}" r="3.2" fill="${c}" stroke="#fff" stroke-width="1.5"/>`;
+  const p = svg.querySelector('path');
+  if (animate && !FL.reduce) { const L0 = p.getTotalLength(); p.style.strokeDasharray = L0; p.style.strokeDashoffset = L0; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = 0; }
+  const [w, cls] = VERD[t.verdict]; const vd = el.querySelector('.vd'); vd.className = `vd ${cls}`; vd.textContent = w;
+  vd.setAttribute('data-tip-h', w); vd.setAttribute('data-tip', `Demand is ${yoyWords(t.yoy)}, measured against dental searches overall in ${MT.practice.state}.`);
+  el.querySelector('.rt').style.cssText = 'opacity:1;transition:opacity .4s'; el.querySelector('.sr').style.cssText = 'opacity:1;transition:opacity .4s';
+  if (animate) FL.countTo(el.querySelector('[data-r]'), t.rating, { from: 0, ms: 800 }); else el.querySelector('[data-r]').textContent = t.rating;
+}
+const rising = (names) => names.filter((n) => ['growing', 'emerging'].includes(TD(n).verdict)).length;
+
+function boardForRun(names) {
+  board.innerHTML = ''; Object.keys(tileEl).forEach((k) => delete tileEl[k]);
+  names.forEach((n, i) => { const el = makeTile(n, i, false); runFront(el, i); board.appendChild(el); });
+}
+
+async function live() {
+  S.stage = 'live'; S.done = new Set(); S.spent = 0; board.classList.remove('ranked'); board.style.display = ''; below.innerHTML = '';
+  board.querySelectorAll('.tile').forEach((el) => el.classList.remove('res'));
+  const total = phraseCount();
+  board.querySelectorAll('.tile').forEach((el) => { if (!S.picked.includes(el.dataset.t) || el.classList.contains('addt')) el.remove(); });
+  S.picked.forEach((n, i) => { const el = tileEl[n]; runFront(el, i); el.classList.remove('flipped', 'tall', 'pick', 'on'); el.classList.add('run'); });
+  head.innerHTML = `<div class="eyebrow" style="display:flex;align-items:center;gap:10px"><span class="turning"></span>Check running</div>
+    <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:8px"><span class="h-big grad" id="lk">0 of ${S.picked.length}</span><span style="font-size:17px;color:var(--muted)">topics are rising so far</span></div>
+    <div class="asking" id="ask"></div>`;
+  let read = 0;
+  const drawTray = (now) => { tray.innerHTML = `<span class="info"><b style="color:var(--ink)">${read} of ${total} phrases read</b> · <span class="mono">${FL.money(S.spent)}</span> spent · keeps going if this page is closed</span>${now ? `<span class="small">Reading <b style="color:var(--ink)">${esc(now)}</b></span>` : ''}<span class="bar" style="width:${(100 * read) / Math.max(1, total)}%"></span>`; };
+  drawTray('');
+  for (const n of S.picked) {
+    if (S.stage !== 'live') return;
+    const el = tileEl[n]; el.classList.add('reading'); el.querySelector('.vd').textContent = 'Reading…';
+    drawTray(n);
+    for (const p of livePhrases(n)) {
+      if (S.stage !== 'live') return;
+      const ask = $('#ask'); ask.innerHTML = 'Asking Google Trends: “<span id="aq"></span>”<div class="shimmer-line"></div>';
+      await FL.type($('#aq'), p.t, { cps: 300 }); await FL.wait(260);
+      read += 1; S.spent += PRICE; drawTray(n);
+    }
+    el.classList.remove('reading'); finishTile(el);
+    S.done.add(n);
+    const k = rising([...S.done]); const lk = $('#lk'); lk.textContent = `${k} of ${S.picked.length}`;
+    await FL.wait(250);
+  }
+  $('#ask').innerHTML = ''; await FL.wait(500);
+  result(true);
+}
+
+/* ------------------------------- result ------------------------------- */
+function flipSort(names) {
+  const els = names.map((n) => tileEl[n]);
+  const first = new Map(els.map((e) => [e, e.getBoundingClientRect()]));
+  els.forEach((e) => board.appendChild(e));
+  els.forEach((e) => { const a = first.get(e); const b = e.getBoundingClientRect(); const dx = a.left - b.left; const dy = a.top - b.top; if (!dx && !dy) return;
+    e.style.transition = 'none'; e.style.transform = `translate(${dx}px,${dy}px)`; e.getBoundingClientRect();
+    e.style.transition = 'transform .75s cubic-bezier(.2,.8,.2,1)'; e.style.transform = ''; setTimeout(() => { e.style.transition = ''; }, 800); });
+}
+function result(animate) {
+  S.stage = 'result'; S.view = 'board';
+  const names = [...S.picked].sort((a, b) => TD(b).rating - TD(a).rating);
+  const top = TD(names[0]); const k = rising(names);
+  shell.right('<button class="btn btn-line" id="share">Share report</button><button class="btn btn-line" id="nc">New check</button>');
+  $('#nc').onclick = start; $('#share').onclick = () => { $('#share').textContent = 'Link copied'; setTimeout(() => { const b = $('#share'); if (b) b.textContent = 'Share report'; }, 1600); };
+  head.innerHTML = `<h1 class="h-sentence rise"><span class="grad">${k} of ${names.length}</span> topics are rising around ${esc(S.practice.city.split(',')[0])}.</h1>
+    <p class="lede rise" style="animation-delay:.08s;margin:14px 0 0"><b style="color:var(--ink)">${esc(names[0])}</b> leads at ${top.rating} of 10: demand is ${yoyWords(top.yoy)}, about ${FL.fmt(top.searchesPerMonth)} searches a month in ${esc(MT.practice.state)}.</p>`;
+  tray.innerHTML = `<span id="vw"></span><span class="info"></span><span class="small mono">${S.picked.length} topics · ${phraseCount() || 16} phrases · ${FL.money(S.spent)}</span><button class="btn btn-line" id="again">Check again · ${FL.money((phraseCount() || 16) * PRICE)}</button>`;
+  $('#again').onclick = () => { if (Object.keys(S.phr).length) live(); };
+  FL.segmented($('#vw'), { label: 'View', value: 'board', options: [{ value: 'board', label: 'Board' }, { value: 'compare', label: 'Compare' }], onChange: (v) => { S.view = v; view(); } });
+  names.forEach((n) => { const el = tileEl[n]; el.classList.add('res'); el.querySelector('.front').onclick = () => openSheet(n); });
+  const order = () => { flipSort(names); names.forEach((n, i) => { const r = tileEl[n].querySelector('.rk'); r.textContent = i + 1; r.classList.toggle('first', i === 0); tileEl[n].querySelector('.tn').classList.add('r'); }); board.classList.add('ranked'); };
+  if (animate) setTimeout(order, 350); else order();
+  below.innerHTML = '';
+}
+function view() {
+  if (S.view === 'board') { board.style.display = ''; below.innerHTML = ''; return; }
+  board.style.display = 'none';
+  below.innerHTML = `<section class="cmp"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px"><h2 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-.015em;color:var(--ink)">Every topic on one chart</h2><span id="cr"></span></div><div id="cc"></div></section>`;
+  const lines = S.picked.map((n) => ({ key: n, label: n, short: TD(n).short, values: TD(n).combined, color: colorOf(n), width: 2 }));
+  const ch = FL.lineChart($('#cc'), { months: MT.months, lines, range: 24, height: 300, readoutDefault: `<span>Each topic's own busiest month is 100. <span class="tipword" data-tip-h="Why each topic has its own 100" data-tip="Google Trends scales each topic to its own peak, so the chart compares shapes and direction, not how many people search. Search counts sit on each topic's card.">Why</span></span>` });
+  FL.segmented($('#cr'), { label: 'Range', value: '24', options: [{ value: '12', label: '12 months' }, { value: '24', label: '2 years' }, { value: '60', label: '5 years' }], onChange: (v) => ch.update({ range: +v }, true) });
+}
+
+/* ------------------------------- the Topic Card sheet ------------------------------- */
+const sheet = $('#sheet'), pane = sheet.querySelector('.pane');
+function closeSheet() { sheet.classList.remove('open'); document.removeEventListener('keydown', escKey); }
+function escKey(e) { if (e.key === 'Escape') closeSheet(); }
+sheet.querySelector('.bd').onclick = closeSheet;
+function openSheet(n) {
+  const t = TD(n); const names = [...S.picked].sort((a, b) => TD(b).rating - TD(a).rating); const [w, cls] = VERD[t.verdict];
+  const hidden = new Set();
+  pane.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+      <div><div class="eyebrow">Topic ${names.indexOf(n) + 1} of ${names.length}</div><h2>${esc(n)}</h2></div>
+      <div style="display:flex;align-items:center;gap:14px"><span class="rt"><b style="font-size:34px">${t.rating}</b>/10</span><button class="x" style="border:0;background:none;font-size:24px;color:var(--muted)" aria-label="Close" id="xs">×</button></div></div>
+    <p class="lede" style="margin:10px 0 0"><span class="vd ${cls}" style="font-size:17px">${w}:</span> demand is ${yoyWords(t.yoy)}. Busiest in ${t.peakMonthName}.</p>
+    <div class="sec"><div class="sech"><h3>Google interest</h3><span id="rg"></span></div><div id="dc"></div><div class="togs" id="tg"></div></div>
+    <div class="sec"><div class="sech"><h3>Searches a month in ${esc(MT.practice.state)}</h3></div><div id="sc"></div></div>
+    <div class="sec"><div class="sech"><h3>Why ${t.rating} of 10</h3></div><ul class="parts">${t.ratingParts.map((p, i) => `<li style="animation-delay:${0.05 * i}s"><span>${esc(p.label)}</span><b>+${p.points}</b></li>`).join('')}</ul></div>
+    <div class="next"><p>${['growing', 'emerging'].includes(t.verdict) ? `Demand for ${esc(n.toLowerCase())} is climbing. A new page can be on the calendar before the ${t.peakMonthName} peak.` : `Demand for ${esc(n.toLowerCase())} is ${w.toLowerCase()}. A page here waits behind the rising topics.`}</p><button class="btn btn-go" id="plan">Plan a page</button></div>`;
+  const lines = () => t.phrases.map((p, k) => ({ key: p.phrase, label: p.phrase, values: p.values, color: k === 0 ? '#0F766E' : LINE_GREYS[(k - 1) % 4], width: k === 0 ? 2.4 : 1.6, lead: k === 0, dash: k === 2 ? '4 3' : '', hidden: hidden.has(p.phrase) }));
+  sheet.classList.add('open'); document.addEventListener('keydown', escKey);
+  $('#xs').onclick = closeSheet;
+  $('#plan').onclick = () => { $('#plan').textContent = 'Added to the calendar draft'; $('#plan').disabled = true; };
+  setTimeout(() => {
+    const ch = FL.lineChart($('#dc'), { months: MT.months, lines: lines(), range: 24, height: 250, legend: false, readoutDefault: `<span><b>${esc(t.phrases[0].phrase)}</b> leads. Point at the chart for any month.</span>` });
+    FL.segmented($('#rg'), { label: 'Range', value: '24', options: [{ value: '12', label: '12 months' }, { value: '24', label: '2 years' }, { value: '60', label: '5 years' }], onChange: (v) => ch.update({ range: +v }, true) });
+    const tg = $('#tg');
+    const drawTogs = () => { tg.innerHTML = t.phrases.map((p, k) => `<button type="button" class="tog ${hidden.has(p.phrase) ? 'off' : ''}" data-p="${esc(p.phrase)}"><i style="background:${k === 0 ? '#0F766E' : LINE_GREYS[(k - 1) % 4]}"></i>${esc(p.phrase)}</button>`).join('');
+      tg.querySelectorAll('.tog').forEach((b) => { b.onclick = () => { const p = b.dataset.p; if (hidden.has(p)) hidden.delete(p); else if (hidden.size < t.phrases.length - 1) hidden.add(p); drawTogs(); ch.update({ lines: lines() }); }; }); };
+    drawTogs();
+    searchChart($('#sc'), t.searches12, t.prior12, MT.months.slice(49, 61));
+  }, 120);
+}
+/* Searches a month: this year and the same months a year earlier, two thin lines, readout above. */
+function searchChart(host, now, before, months) {
+  const W = 700, H = 190, PL = 44, PR = 16, PT = 10, PB = 24; const max = Math.ceil(Math.max(...now, ...before) * 1.15 / 500) * 500;
+  const x = (i) => PL + (i / 11) * (W - PL - PR); const y = (v) => PT + (1 - v / max) * (H - PT - PB);
+  const path = (a) => a.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const sum = (a) => a.reduce((s, v) => s + v, 0); const ch = Math.round((sum(now) / sum(before) - 1) * 100);
+  const def = `<span><b>${FL.fmt(Math.round(sum(now) / 12))}</b> a month on average this year, ${ch >= 0 ? `<span style="color:var(--up);font-weight:700">up ${ch}%</span>` : `<span style="color:var(--down);font-weight:700">down ${-ch}%</span>`} on the same months last year</span>`;
+  host.innerHTML = `<div class="readout">${def}</div><svg viewBox="0 0 ${W} ${H}" style="display:block;width:100%;overflow:visible">
+    ${[0, 0.5, 1].map((f) => `<line x1="${PL}" x2="${W - PR}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="#EEF0F3"/><text x="${PL - 6}" y="${y(max * f) + 4}" text-anchor="end" font-size="11" fill="#667085">${FL.fmt(max * f)}</text>`).join('')}
+    ${months.map((m, i) => (i % 2 ? '' : `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="#667085">${m.slice(0, 3)}</text>`)).join('')}
+    <path d="${path(before)}" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-dasharray="4 3"/><path d="${path(now)}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round"/>
+    <g id="sh" style="display:none"><line id="shl" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/><circle id="sh1" r="3.5" fill="#0F766E" stroke="#fff" stroke-width="1.5"/><circle id="sh2" r="3.5" fill="#94A3B8" stroke="#fff" stroke-width="1.5"/></g>
+    <rect x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent" id="shit"/></svg>
+    <div class="legend"><span><i style="background:#0F766E"></i>This year</span><span><i style="background:#94A3B8"></i>Same month last year</span></div>`;
+  const svg = host.querySelector('svg'); const ro = host.querySelector('.readout'); const g = svg.querySelector('#sh');
+  svg.querySelector('#shit').onmousemove = (e) => { const b = svg.getBoundingClientRect(); const i = Math.max(0, Math.min(11, Math.round((((e.clientX - b.left) / b.width) * W - PL) / ((W - PL - PR) / 11))));
+    g.style.display = ''; svg.querySelector('#shl').setAttribute('x1', x(i)); svg.querySelector('#shl').setAttribute('x2', x(i));
+    svg.querySelector('#sh1').setAttribute('cx', x(i)); svg.querySelector('#sh1').setAttribute('cy', y(now[i])); svg.querySelector('#sh2').setAttribute('cx', x(i)); svg.querySelector('#sh2').setAttribute('cy', y(before[i]));
+    ro.innerHTML = `<b>${months[i]}</b><span><span class="sw" style="background:#0F766E"></span>This year <b>${FL.fmt(now[i])}</b></span><span><span class="sw" style="background:#94A3B8"></span>A year earlier <b>${FL.fmt(before[i])}</b></span>`; };
+  svg.querySelector('#shit').onmouseleave = () => { g.style.display = 'none'; ro.innerHTML = def; };
+}
+
+/* ------------------------------- opening a past check ------------------------------- */
+function openPast(r) {
+  reset(); clearAll();
+  S.practice = { name: r.name, domain: r.name === 'Bothell Family Dentistry' ? 'bothellfamilydentistry.com' : '', city: r.city, client: r.client };
+  settledBar(); window.scrollTo({ top: 0 });
+  S.picked.forEach((n) => phraseList(n));
+  if (r.status === 'failed') {
+    head.innerHTML = '<h1 class="h-sentence">This check stopped.</h1>';
+    panel.innerHTML = `<section class="panel"><p style="margin:0 0 14px;font-size:15px">Google Trends stopped answering after 3 of 16 phrases. Nothing was charged past ${FL.money(r.cost)}.</p><button class="btn btn-go" id="rt">Check again · ${FL.money(phraseCount() * PRICE)}</button></section>`;
+    $('#rt').onclick = () => { clearAll(); settledBar(); boardForRun(S.picked); live(); };
+    shell.right('<button class="btn btn-line" id="nc">New check</button>'); $('#nc').onclick = start; return;
+  }
+  boardForRun(S.picked);
+  if (r.status === 'running') { live(); shell.right('<button class="btn btn-line" id="nc">New check</button>'); $('#nc').onclick = start; return; }
+  S.picked.forEach((n) => finishTile(tileEl[n], false)); S.spent = phraseCount() * PRICE;
+  result(false);
+}
+
+start();
+</script></body></html>

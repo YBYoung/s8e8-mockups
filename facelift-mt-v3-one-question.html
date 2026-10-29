@@ -1,0 +1,1029 @@
+<!doctype html><html lang="en"><head><title>Market Trends | One question at a time</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>/* Facelift shared look: the AI Visibility page's experience in OQ teal.
+   Tokens follow components/tools/ai-visibility/aivTheme.ts with indigo swapped for teal. */
+:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;--aRing:rgba(15,118,110,.35);
+  --up:#15803D;--down:#E11D48;
+  --g:#15803D;--y:#F5C518;--r:#DC2626;--n:#94A3B8;
+  --t1:#0D9488;--t2:#3B5BDB;--t3:#E0527A;--t4:#5F7D16;--t5:#9C36B5;
+  --rose:#DB2777;
+  --shadowPanel:0 20px 50px rgba(11,16,32,.10);
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer}
+input,textarea{font:inherit}
+a{color:var(--aInk)}
+
+/* app chrome: the OQ sidebar, then the tool page */
+.fl-app{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:100vh}
+.fl-side{background:#0B0B0C;color:#C9CDD4;padding:18px 14px;position:sticky;top:0;height:100vh;overflow:hidden}
+.fl-side .wm{color:#fff;font-weight:800;letter-spacing:.14em;font-size:11px;line-height:1.35}
+.fl-side .rule{height:2px;margin:10px 0 18px;background:linear-gradient(90deg,#FF2D8F,#F5C518,#22C55E,#29ABE2,#7C3AED);border-radius:2px;opacity:.85}
+.fl-side .grp{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6B7280;margin:16px 6px 6px}
+.fl-side a{display:block;padding:6px 8px;border-radius:6px;color:#C9CDD4;text-decoration:none;font:500 11.5px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.fl-side a.on{color:#29ABE2;background:rgba(41,171,226,.08)}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1180px;margin:0 auto;padding:0 28px 120px}
+@media (max-width:900px){.fl-app{grid-template-columns:1fr}.fl-side{display:none}.fl-wrap{padding:0 16px 80px}}
+
+/* the sticky frosted top bar (AivShell) */
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 22px;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+@media (max-width:900px){.fl-top{margin:0 -16px 18px;padding:12px 16px}}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-sample{font:600 10.5px 'JetBrains Mono',monospace;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+
+/* buttons (BTN_GO / BTN_SOFT / BTN_LINE) */
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;transition:box-shadow .2s,transform .1s,background .2s,opacity .2s;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.28)}
+.btn-go:hover{box-shadow:0 8px 24px rgba(15,118,110,.32)}
+.btn-go:disabled{opacity:.4;box-shadow:none;cursor:not-allowed}
+.btn-soft{background:var(--aTint);color:var(--aInk)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:8px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.btn-big{padding:14px 22px;font-size:16px}
+.btn-link{background:none;border:0;padding:0;color:var(--aInk);font-weight:600;text-decoration:underline;text-underline-offset:2px;font-size:14px}
+.btn.ready{animation:flReady 1.8s ease-in-out infinite}
+@keyframes flReady{0%,100%{box-shadow:0 6px 18px rgba(15,118,110,.28),0 0 0 0 rgba(15,118,110,.45)}50%{box-shadow:0 8px 24px rgba(15,118,110,.32),0 0 0 10px rgba(15,118,110,0)}}
+.sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:flSheen 1.3s ease-in-out infinite}
+@keyframes flSheen{to{transform:translateX(100%)}}
+
+/* type */
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.panel-head{margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.grad{background:linear-gradient(90deg,var(--a),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.h-sentence{margin:0;max-width:980px;font-size:42px;font-weight:800;line-height:1.28;letter-spacing:-.025em;color:var(--ink)}
+.h-big{font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em}
+.h-chapter{margin:0;font-size:42px;font-weight:900;line-height:1.1;letter-spacing:-.025em;color:var(--ink)}
+.lede{font-size:17px;color:var(--body);max-width:640px}
+.small{font-size:13px;color:var(--muted)}
+@media (max-width:700px){.h-sentence{font-size:30px}.h-big{font-size:64px}.h-chapter{font-size:30px}}
+
+/* the dotted blank in a setup sentence (Blank.tsx) */
+.blank{display:inline;margin:0 2px;padding:0 4px;border:0;background:none;color:var(--aInk);font:inherit;border-radius:6px 6px 0 0;border-bottom:4px dotted var(--a);transition:background .2s}
+.blank:hover,.blank.open{background:var(--aTint)}
+.blank.ok{border-bottom-style:solid}
+.blank .tick{margin-left:2px;vertical-align:.6em;font-size:.5em;color:var(--up)}
+
+/* the panel a blank opens (SetupPanel.tsx) */
+.panel{margin-top:24px;max-width:820px;border:1px solid var(--line);border-radius:18px;background:#fff;padding:20px 22px;box-shadow:var(--shadowPanel);animation:flRise .3s var(--ease)}
+.panel.wide{max-width:1100px}
+@keyframes flRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rise{animation:flRise .35s var(--ease) both}
+.fade{animation:flFade .35s ease both}
+@keyframes flFade{from{opacity:0}to{opacity:1}}
+
+/* inputs */
+.field{display:block}
+.field>span{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--body)}
+.field>span i{color:var(--down);font-style:normal}
+.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--ink);outline:none;background:#fff;transition:border-color .15s,box-shadow .15s}
+.input:focus{border-color:var(--a);box-shadow:0 0 0 4px var(--aTint)}
+
+/* a found listing (FoundListing.tsx) */
+.found{display:flex;align-items:center;gap:14px;padding:16px;border-radius:12px;background:var(--soft);cursor:pointer;transition:background .15s,box-shadow .15s}
+.found:hover{background:var(--aTint)}
+.found.on{background:var(--aTint);box-shadow:0 0 0 1px var(--a)}
+.found .lt{width:42px;height:42px;border-radius:12px;background:var(--aTint);color:var(--aInk);display:grid;place-items:center;font-weight:800;font-size:16px;flex:none}
+.found b{display:block;color:var(--ink);font-size:15px}
+.found small{display:block;color:var(--muted);font-size:13px}
+
+/* list rows with a box and a number (RivalRow.tsx) */
+.row{display:grid;grid-template-columns:18px 24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:border-color .15s,background .15s,opacity .2s}
+.row.hot{border-color:#A7D8CF;background:#FAFDFC}
+.row.off{opacity:.6}
+.row.off .nm{text-decoration:line-through;color:var(--faint)}
+.row input{width:18px;height:18px;accent-color:var(--a)}
+.num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--aTint);color:var(--aInk)}
+.row.off .num{background:var(--soft);color:var(--faint)}
+.nm{display:block;font-weight:600;font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;border-radius:6px;padding:1px 6px;font-size:11.5px;font-weight:600;background:var(--soft);color:var(--muted)}
+.tag.a{background:var(--aTint);color:var(--aInk)}
+
+/* the orb (Orb.tsx), steps (StepList.tsx), the map search (MapSearch.tsx) */
+.orb{position:relative;display:inline-block;flex:none}
+.orb .ring{position:absolute;inset:0;border-radius:50%;border:2px dotted #7CC8BC;animation:flSpin 2.4s linear infinite}
+.orb .core{position:absolute;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));animation:flBreathe 1.6s ease-in-out infinite}
+@keyframes flSpin{to{transform:rotate(360deg)}}
+@keyframes flBreathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.86);opacity:.85}}
+.steps{list-style:none;margin:0;padding:2px 0 0;display:flex;flex-direction:column;gap:8px}
+.steps li{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--faint);transition:color .2s}
+.steps li.now{font-weight:600;color:var(--ink)}
+.steps li.done{color:var(--body)}
+.steps .st{width:16px;height:16px;border-radius:50%;flex:none;border:1.5px solid #D0D5DD;display:grid;place-items:center;font-size:10px;color:#fff}
+.steps li.now .st{border-color:var(--a);border-top-color:transparent;animation:flSpin .8s linear infinite}
+.steps li.done .st{background:var(--up);border-color:var(--up)}
+.mapsearch{position:relative;height:120px;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:repeating-linear-gradient(135deg,#F3F4F7 0 14px,#EEF0F4 14px 28px)}
+.mapsearch .pulse{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;border:2px solid var(--a);animation:flPulse 1.8s ease-out infinite}
+.mapsearch .pulse.b{animation-delay:.9s}
+@keyframes flPulse{from{transform:scale(.6);opacity:.9}to{transform:scale(6);opacity:0}}
+.mapsearch .c{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px;border-radius:50%;background:var(--a)}
+.mapsearch .f{position:absolute;width:10px;height:10px;border-radius:3px;border:2px solid var(--a);background:#fff;animation:flPop .4s var(--ease) both}
+@keyframes flPop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.turning{position:relative;display:inline-block;width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));flex:none}
+.turning:after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1.5px dotted #7CC8BC;animation:flSpin 6s linear infinite}
+.skel{height:11px;border-radius:6px;background:#E8EAEF;margin:10px 0;animation:flSkel 1.4s ease-in-out infinite}
+@keyframes flSkel{50%{opacity:.5}}
+.caret{display:inline-block;width:2px;height:1em;background:var(--a);vertical-align:-2px;margin-left:1px;animation:flBlink 1s steps(1) infinite}
+@keyframes flBlink{50%{opacity:0}}
+.shimmer-line{position:relative;height:2px;max-width:420px;margin-top:4px;overflow:hidden;border-radius:1px;background:#EEF0F5}
+.shimmer-line:after{content:'';position:absolute;inset:0 auto 0 0;width:35%;background:linear-gradient(90deg,transparent,#7CC8BC,transparent);animation:flShim 2.2s ease-in-out infinite}
+@keyframes flShim{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+
+/* the method button + window (MethodButton / MethodWindow) */
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:10px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:linear-gradient(120deg,var(--a),var(--a2));position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .15s}
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:6vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4);animation:flFade .2s}
+.modal .win{position:relative;width:100%;max-width:860px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:flRise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:8px;padding:4px 8px}
+.modal .x:hover{background:var(--soft)}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:14px;background:var(--soft)}
+@media (max-width:760px){.msec{grid-template-columns:1fr}}
+
+/* branded tooltip (BrandedTooltip.tsx) */
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none;animation:flFade .12s}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+[data-tip]{cursor:help}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* segmented control with a sliding white thumb (Segmented.tsx) */
+.seg{position:relative;display:inline-flex;flex-wrap:wrap;gap:2px;border-radius:10px;background:var(--soft);padding:3px}
+.seg button{position:relative;z-index:1;border:0;background:none;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted);transition:color .2s;white-space:nowrap}
+.seg button:hover{color:var(--body)}
+.seg button.on{color:var(--ink)}
+.seg .thumb{position:absolute;z-index:0;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(11,16,32,.1);transition:left .25s var(--ease),width .25s var(--ease),top .25s var(--ease)}
+.seg .sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* tabs with a sliding underline (ResultView.tsx) */
+.tabs{position:sticky;top:57px;z-index:20;display:flex;gap:26px;margin:0 -28px 10px;padding:8px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.9);backdrop-filter:blur(12px)}
+@media (max-width:900px){.tabs{margin:0 -16px 10px;padding:8px 16px 0}}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+
+/* branded dropdown (audit-hub-option-g .dd) */
+.dd{position:relative;display:inline-block}
+.dd-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--ink)}
+.dd-btn:after{content:'';width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg) translateY(-2px)}
+.dd-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:50;min-width:220px;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;box-shadow:0 12px 32px rgba(11,16,32,.12);animation:flFade .12s}
+.dd-opt{display:flex;justify-content:space-between;gap:10px;width:100%;border:0;background:none;text-align:left;border-radius:7px;padding:7px 10px;font-size:13px;color:var(--body)}
+.dd-opt:hover{background:var(--soft)}
+.dd-opt.on{color:var(--aInk);font-weight:600}
+.dd-opt.on:after{content:'✓'}
+
+/* switch (Clients only) */
+.switch{display:inline-flex;align-items:center;gap:8px;border:0;background:none;font-size:13px;font-weight:500;color:var(--muted)}
+.switch i{position:relative;display:inline-block;width:30px;height:16px;border-radius:6px;background:#D0D5DD;transition:background .2s}
+.switch i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:4px;background:#fff;transition:left .2s}
+.switch.on i{background:var(--a)}
+.switch.on i:after{left:16px}
+
+/* past runs (PastSnapshotRow.tsx) */
+.past{display:grid;grid-template-columns:minmax(0,1fr) 220px 150px;align-items:center;gap:16px;width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px 16px;text-align:left;transition:border-color .15s,background .15s;animation:flRise .35s var(--ease) both}
+.past:hover{border-color:#A7D8CF;background:#FAFDFC}
+.past .p1 b{display:block;font-size:15.5px;color:var(--ink)}
+.past .p1 span{font-size:12.5px;color:var(--muted)}
+.past .p3{text-align:right;font:12px 'JetBrains Mono',monospace;color:var(--faint)}
+@media (max-width:700px){.past{grid-template-columns:minmax(0,1fr) auto}.past .p3{display:none}}
+
+/* heat tiles (variation C) */
+.htile{width:34px;height:34px;border-radius:4px;display:grid;place-items:center;font:800 13px Inter,sans-serif;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(11,16,32,.18);transform:translate(-50%,-50%);transition:background .35s,color .35s,transform .35s var(--ease),opacity .35s}
+.htile.wait{background:rgba(255,255,255,.55)!important;color:transparent!important;box-shadow:inset 0 0 0 1.5px rgba(15,118,110,.25)}
+.htile.land{animation:flLand .45s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes flLand{from{transform:translate(-50%,-50%) scale(.3);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.hpin{transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:auto}
+.hpin i{width:14px;height:14px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px rgba(11,16,32,.25),0 4px 10px rgba(11,16,32,.3)}
+.hpin span{margin-top:3px;white-space:nowrap;font:700 11px Inter,sans-serif;color:var(--ink);background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:6px;padding:1px 6px;opacity:0;transition:opacity .15s}
+.hpin:hover span,.hpin.lbl span{opacity:1}
+.leaflet-container{font-family:Inter,sans-serif;background:#EEF0F2}
+.mini{display:grid;gap:2px}
+.mini i{display:block;aspect-ratio:1;border-radius:2px;transition:background .3s}
+
+/* charts (Demand chart language) */
+.readout{min-height:44px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;padding:6px 0 8px;font-size:13px;color:var(--body)}
+.readout b{color:var(--ink)}
+.readout .sw{display:inline-block;width:12px;height:2px;vertical-align:4px;margin-right:6px;border-radius:1px}
+.chart svg{display:block;width:100%;overflow:visible}
+.chart .gl{stroke:#EEF0F3;stroke-width:1}
+.chart .ax{fill:var(--muted);font:11px Inter,sans-serif}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--body);margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:14px;height:2px;border-radius:1px}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}}
+</style>
+<script>/* Facelift shared behaviours (window.FL): the AI Visibility page's pieces
+   (frame, How it works window, branded hovers, sliding controls, waits that
+   show their steps, typing, counting) in OQ teal, plus the Grid Scan heat map
+   (variation C) and a line chart in the approved Demand chart language. */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.wait = (ms) => new Promise((r) => setTimeout(r, FL.reduce ? 0 : ms));
+  FL.$ = (sel, root = document) => root.querySelector(sel);
+  FL.$$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.money = (n) => `$${Number(n).toFixed(2)}`;
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+
+  const ICON = {
+    grid: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="9.5" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><rect x="16" y="9.5" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><rect x="9.5" y="16" width="5" height="5" rx="1"/><rect x="16" y="16" width="5" height="5" rx="1"/></svg>',
+    trends: '<svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>',
+  };
+  FL.icon = ICON;
+
+  /* The app frame: OQ sidebar, sticky frosted top bar (brand mark, tool name,
+     How it works, a right slot), then #page. Call once, before building the page. */
+  FL.shell = function ({ tool, name, right = '', methodLabel = 'How it works' }) {
+    const page = document.getElementById('page');
+    const nav = [['Dashboard'], ['Clients'], ['Content Strategy'], ['Production'], ['Performance']];
+    const tools = [['Grid Scan', tool === 'grid'], ['Market Trends', tool === 'trends'], ['AI Visibility'], ['Relevance Analyzer']];
+    const app = FL.h(`<div class="fl-app">
+      <aside class="fl-side"><div class="wm">STUDIO<br>EIGHTY EIGHT</div><div class="rule"></div>
+        ${nav.map(([n]) => `<a href="#">${n}</a>`).join('')}
+        <div class="grp">Tools</div>${tools.map(([n, on]) => `<a href="#" class="${on ? 'on' : ''}">${n}</a>`).join('')}
+      </aside>
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark">${ICON[tool]}</span>${FL.esc(name)}</div>
+          <div class="fl-right"><span class="fl-sample">Mockup</span><span id="method-slot"></span><span id="top-right">${right}</span></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = `<button type="button" class="method-btn"><span class="dot"></span>${FL.esc(methodLabel)}</button>`;
+    return { right: (html) => { FL.$('#top-right').innerHTML = html; } };
+  };
+
+  /* How it works: hover for the one-line teaser, click for the window; each
+     section has a small looping picture beside it (figure(el) -> stop()). */
+  FL.method = function ({ teaser, kicker, title, sections }) {
+    const btn = FL.$('.method-btn');
+    let tip = null;
+    btn.addEventListener('mouseenter', () => { if (tip) return; tip = FL.h(`<span class="teaser" role="tooltip">${FL.esc(teaser)}</span>`); btn.appendChild(tip); });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    window.addEventListener('scroll', () => { tip?.remove(); tip = null; }, true);
+    document.addEventListener('click', (e) => { if (!btn.contains(e.target)) { tip?.remove(); tip = null; } });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px">
+          <div><div class="panel-head" style="margin-bottom:4px">${FL.esc(kicker)}</div><h2 style="margin:0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption || '')}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => (s.figure ? s.figure(m.querySelector(`[data-fig="${i}"]`)) : null));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); tip?.remove(); tip = null; document.removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      document.addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close;
+      m.querySelector('.x').onclick = close;
+    });
+  };
+  /* A step counter for method pictures: fn(step) every ms, 0..count-1, looping. */
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0;
+    fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* Branded hover: any element with data-tip (and optional data-tip-h). Delegated, so content added later works. */
+  let tipEl = null; let tipFor = null; let tipTimer = null;
+  const hideTip = () => { clearTimeout(tipTimer); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return;
+    hideTip();
+    if (!t) return;
+    tipFor = t;
+    tipTimer = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      const left = Math.max(8, Math.min(r.left, innerWidth - 288));
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+      tipEl.style.left = `${left}px`;
+    }, 120);
+  });
+  window.addEventListener('scroll', hideTip, true);
+
+  /* Branded dropdown, never a native select. */
+  FL.dropdown = function (host, { options, value, onChange, label }) {
+    let v = value; let open = false;
+    const draw = () => {
+      const cur = options.find((o) => o.value === v) || options[0];
+      host.innerHTML = `<div class="dd"><button type="button" class="dd-btn" aria-label="${FL.esc(label || '')}">${FL.esc(cur.label)}</button>
+        ${open ? `<div class="dd-menu">${options.map((o) => `<button type="button" class="dd-opt ${o.value === v ? 'on' : ''}" data-v="${FL.esc(o.value)}"><span>${FL.esc(o.label)}${o.count != null ? ` <span style="color:var(--faint)">${o.count}</span>` : ''}</span></button>`).join('')}</div>` : ''}</div>`;
+      host.querySelector('.dd-btn').onclick = (e) => { e.stopPropagation(); open = !open; draw(); };
+      host.querySelectorAll('.dd-opt').forEach((b) => { b.onclick = () => { v = b.dataset.v; open = false; draw(); onChange && onChange(v); }; });
+    };
+    document.addEventListener('click', () => { if (open) { open = false; draw(); } });
+    draw();
+    return { set: (x) => { v = x; draw(); } };
+  };
+
+  /* Segmented control: the white thumb slides to the pick. */
+  FL.segmented = function (host, { options, value, onChange, label }) {
+    host.innerHTML = `<div class="seg" role="radiogroup" aria-label="${FL.esc(label || '')}"><span class="thumb"></span>${options.map((o) =>
+      `<button type="button" role="radio" data-v="${FL.esc(o.value)}">${o.color ? `<span class="sw" style="background:${o.color}"></span>` : ''}${FL.esc(o.label)}</button>`).join('')}</div>`;
+    const seg = host.firstElementChild; const thumb = seg.querySelector('.thumb');
+    const set = (v, fire) => {
+      seg.querySelectorAll('button').forEach((b) => { const on = b.dataset.v === String(v); b.classList.toggle('on', on); b.setAttribute('aria-checked', on);
+        if (on) { thumb.style.left = `${b.offsetLeft}px`; thumb.style.top = `${b.offsetTop}px`; thumb.style.width = `${b.offsetWidth}px`; thumb.style.height = `${b.offsetHeight}px`; } });
+      if (fire && onChange) onChange(v);
+    };
+    seg.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.v, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (v) => set(v, false) };
+  };
+
+  /* Tabs with a sliding underline; sticky under the top bar. */
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.setAttribute('role', 'tablist');
+    host.innerHTML = tabs.map((t) => `<button type="button" role="tab" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); b.setAttribute('aria-selected', on);
+        if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+    return { set: (k) => set(k, false) };
+  };
+
+  /* Waits that show what they are doing. */
+  FL.orb = (size = 44) => `<span class="orb" aria-hidden="true" style="width:${size}px;height:${size}px"><span class="ring"></span><span class="core" style="inset:${size * 0.2}px"></span></span>`;
+  FL.sheen = () => '<span class="sheen" aria-hidden="true"></span>';
+  FL.mapSearch = (label) => `<div><div class="mapsearch" aria-hidden="true"><span class="pulse"></span><span class="pulse b"></span><span class="c"></span>
+    ${[[30, 32], [64, 40], [44, 70], [70, 66], [24, 62]].map(([x, y], i) => `<span class="f" style="left:${x}%;top:${y}%;animation-delay:${0.6 + i * 0.35}s"></span>`).join('')}</div>
+    <p style="margin:10px 0 0;font-size:14px;font-weight:600;color:var(--ink)">${FL.esc(label)}</p></div>`;
+  FL.steps = function (host, labels) {
+    host.innerHTML = `<ul class="steps">${labels.map((l) => `<li><span class="st"></span>${FL.esc(l)}</li>`).join('')}</ul>`;
+    const lis = host.querySelectorAll('li');
+    return { set(i, state) { const li = lis[i]; li.className = state; li.querySelector('.st').textContent = state === 'done' ? '✓' : ''; } };
+  };
+  FL.skeleton = (widths = ['92%', '84%', '88%', '46%']) => widths.map((w) => `<div class="skel" style="width:${w}"></div>`).join('');
+
+  /* Typing: text into el, a few characters a tick, with a caret while it types. */
+  FL.type = function (el, text, { cps = 180 } = {}) {
+    if (FL.reduce) { el.textContent = text; return Promise.resolve(); }
+    return new Promise((res) => {
+      let n = 0; el.innerHTML = '<span class="caret"></span>';
+      const step = Math.max(1, Math.round(cps / 60));
+      const t = setInterval(() => {
+        n = Math.min(text.length, n + step);
+        el.innerHTML = `${FL.esc(text.slice(0, n))}${n < text.length ? '<span class="caret"></span>' : ''}`;
+        if (n >= text.length) { clearInterval(t); res(); }
+      }, 16);
+    });
+  };
+  /* Count a number up (or down) to `to`, easing out. */
+  FL.countTo = function (el, to, { from = null, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    const start = from ?? (parseFloat(el.dataset.v) || 0);
+    el.dataset.v = to;
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (now) => { const p = Math.min(1, (now - t0) / ms); const e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(start + (to - start) * e); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+  FL.wilson = function (k, n) {
+    if (!n) return [0, 0];
+    const z = 1.96; const p = k / n; const d = 1 + (z * z) / n; const c = (p + (z * z) / (2 * n)) / d;
+    const h = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / d;
+    return [Math.max(0, c - h), Math.min(1, c + h)];
+  };
+
+  /* ---------------- Grid Scan: ranks and the heat map (variation C) ---------------- */
+  FL.RANK = { g: '#15803D', y: '#F5C518', r: '#DC2626', n: '#94A3B8' };
+  FL.rankStyle = (v) => (v == null || v > 20 ? { bg: FL.RANK.n, ink: '#fff', t: '20+' }
+    : v <= 3 ? { bg: FL.RANK.g, ink: '#fff', t: String(Math.round(v)) }
+      : v <= 10 ? { bg: FL.RANK.y, ink: '#0B1020', t: String(Math.round(v)) }
+        : { bg: FL.RANK.r, ink: '#fff', t: String(Math.round(v)) });
+  FL.band = (v) => (v == null || v > 20 ? 'not in top 20' : v <= 3 ? 'top 3' : v <= 10 ? '4 to 10' : '11 to 20');
+  FL.flat = (g) => g.flat();
+  FL.top3 = (g) => FL.flat(g).filter((v) => v != null && v <= 3).length;
+  FL.solv = (g) => (100 * FL.top3(g)) / FL.flat(g).length;
+  FL.avgRank = (g) => FL.flat(g).reduce((a, v) => a + (v == null || v > 20 ? 21 : v), 0) / FL.flat(g).length;
+  /* The all-keywords average: mean rank per point, 21 for not in top 20. */
+  FL.avgGrid = (grids) => grids[0].map((row, i) => row.map((_, j) => grids.reduce((a, g) => a + (g[i][j] > 20 ? 21 : g[i][j]), 0) / grids.length));
+  FL.legendHtml = () => `<div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:8px">${[[1, 'top 3'], [7, '4 to 10'], [14, '11 to 20'], [21, 'not in top 20']].map(([v, l]) => { const s = FL.rankStyle(v); return `<span style="display:inline-flex;align-items:center"><b style="display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;margin-right:6px;font-size:11px;background:${s.bg};color:${s.ink}">${s.t}</b>${l}</span>`; }).join('')}</div>`;
+  FL.mini = (g, px = 6) => `<div class="mini" style="grid-template-columns:repeat(${g.length},${px}px)">${FL.flat(g).map((v) => `<i style="background:${FL.rankStyle(v).bg}"></i>`).join('')}</div>`;
+
+  /* The map: Esri light grey canvas (no names), 34px square rank tiles at the grid spacing,
+     pins above the tiles with a white halo. Points row 0 = north, col 0 = west. */
+  FL.heatMap = function (el, { center, size = 9, spacingMi = 0.25, zoom = 14, interactive = true }) {
+    const map = L.map(el, { scrollWheelZoom: false, zoomControl: interactive, dragging: interactive, attributionControl: true, zoomSnap: 0.25 });
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: 'Tiles &copy; Esri' }).addTo(map);
+    const dLat = spacingMi / 69; const dLng = spacingMi / (69 * Math.cos((center[0] * Math.PI) / 180));
+    const mid = (size - 1) / 2;
+    const pt = (i, j) => [center[0] + (mid - i) * dLat, center[1] + (j - mid) * dLng];
+    map.fitBounds(L.latLngBounds([pt(0, 0), pt(size - 1, size - 1)]), { paddingTopLeft: [interactive ? 48 : 18, 18], paddingBottomRight: [18, 18] });
+    const tiles = [];
+    for (let i = 0; i < size; i++) for (let j = 0; j < size; j++) {
+      const m = L.marker(pt(i, j), { icon: L.divIcon({ className: '', html: '<div class="htile wait"></div>', iconSize: [0, 0] }), interactive: false, keyboard: false }).addTo(map);
+      tiles.push({ i, j, m });
+    }
+    const pinLayer = L.layerGroup().addTo(map);
+    const api = {
+      map, pt,
+      tileEl: (i, j) => tiles[i * size + j].m.getElement()?.firstElementChild,
+      set(i, j, v, { land = false, exact = true } = {}) {
+        const d = api.tileEl(i, j); if (!d) return;
+        const s = FL.rankStyle(v);
+        d.className = `htile${land && !FL.reduce ? ' land' : ''}`;
+        d.style.background = s.bg; d.style.color = s.ink;
+        d.textContent = v == null || v > 20 ? '20+' : exact ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+        if (!exact) d.style.fontSize = '11.5px'; else d.style.fontSize = '';
+      },
+      clear() { tiles.forEach(({ i, j }) => { const d = api.tileEl(i, j); if (d) { d.className = 'htile wait'; d.textContent = ''; } }); },
+      setGrid(g, { exact = true } = {}) { tiles.forEach(({ i, j }) => api.set(i, j, g[i][j], { exact })); },
+      /* Paint a grid in the order a scan reads it (rings out from the office), one point every `ms`. */
+      async sweep(g, { ms = 18, exact = true, onPoint } = {}) {
+        api.clear();
+        const order = tiles.map(({ i, j }) => ({ i, j, d: Math.hypot(i - mid, j - mid) + (Math.atan2(i - mid, j - mid) + Math.PI) / 50 })).sort((a, b) => a.d - b.d);
+        for (let k = 0; k < order.length; k++) { const { i, j } = order[k]; api.set(i, j, g[i][j], { land: true, exact }); onPoint && onPoint(k + 1, g[i][j], i, j); if (ms) await FL.wait(ms); }
+      },
+      /* pins: [{lat,lng,label,kind:'you'|'comp'|'custom',n}] */
+      setPins(pins, { labels = false } = {}) {
+        pinLayer.clearLayers();
+        pins.forEach((p) => {
+          const color = p.kind === 'you' ? 'var(--a)' : p.kind === 'custom' ? '#3B5BDB' : '#0B1020';
+          L.marker([p.lat, p.lng], { icon: L.divIcon({ className: '', iconSize: [0, 0], html: `<div class="hpin ${labels || p.kind === 'you' ? 'lbl' : ''}"><i style="background:${color}"></i><span>${p.n ? `${p.n} · ` : ''}${FL.esc(p.label)}</span></div>` }), zIndexOffset: p.kind === 'you' ? 2000 : 1000 }).addTo(pinLayer);
+        });
+      },
+      tilesVisible(on) { tiles.forEach(({ m }) => { const e = m.getElement(); if (e) e.style.opacity = on ? 1 : 0; }); },
+    };
+    return api;
+  };
+
+  /* ---------------- Market Trends: the line chart (Demand chart language) ----------------
+     Thin 2px monotone lines, no dots; the lead line in white casing with a soft area and an
+     end dot; dashed slate hover guide with a dot per line; the readout ABOVE the chart keeps
+     its height (no layout shift); end labels pushed apart; legend for 2+ series. */
+  FL.lineChart = function (host, opts) {
+    let o = { height: 260, range: 60, upto: null, endLabels: true, draw: true, yMax: 100, legend: true, ...opts };
+    const W = 820; const PL = 30; const PR = o.endLabels ? 130 : 14; const PT = 10; const PB = 24;
+    host.classList.add('chart');
+    host.innerHTML = `${o.readout === false ? '' : '<div class="readout"></div>'}<svg viewBox="0 0 ${W} ${o.height}" role="img"></svg>${o.legend ? '<div class="legend"></div>' : ''}`;
+    const svg = host.querySelector('svg'); const ro = host.querySelector('.readout'); const lg = host.querySelector('.legend');
+    const NS = 'http://www.w3.org/2000/svg';
+    const render = (animate) => {
+      const H = o.height; const months = o.months; const N = months.length;
+      const start = Math.max(0, N - o.range); const span = N - 1 - start;
+      const x = (i) => PL + ((i - start) / Math.max(1, span)) * (W - PL - PR);
+      const y = (v) => PT + (1 - v / o.yMax) * (H - PT - PB);
+      const last = o.upto == null ? N - 1 : Math.min(N - 1, o.upto);
+      const path = (vals) => { let d = ''; for (let i = start; i <= last; i++) { if (vals[i] == null) continue; d += `${d ? 'L' : 'M'}${x(i).toFixed(1)},${y(vals[i]).toFixed(1)}`; } return d; };
+      let s = '<defs><linearGradient id="fl-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#0F766E" stop-opacity=".2"/><stop offset="1" stop-color="#0F766E" stop-opacity="0"/></linearGradient></defs>';
+      [0, 25, 50, 75, 100].filter((v) => v <= o.yMax).forEach((v) => { s += `<line class="gl" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${PL - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; });
+      for (let i = start; i < N; i++) if (/^Jan/.test(months[i]) || (o.range <= 24 && /^(Apr|Jul|Oct)/.test(months[i]))) s += `<text class="ax" x="${x(i)}" y="${H - 6}" text-anchor="middle">${months[i].replace(' 20', ' ’')}</text>`;
+      const lines = o.lines.filter((l) => !l.hidden);
+      const lead = lines.find((l) => l.lead);
+      if (lead) s += `<path d="${path(lead.values)}L${x(last)},${y(0)}L${x(start)},${y(0)}Z" fill="url(#fl-area)"/>`;
+      [...lines].sort((a, b) => Number(!!a.lead) - Number(!!b.lead)).forEach((l) => {
+        const d = path(l.values);
+        if (l.lead) s += `<path d="${d}" fill="none" stroke="#fff" stroke-width="${(l.width || 2.4) + 3}" stroke-linejoin="round" stroke-linecap="round"/>`;
+        s += `<path class="ln" d="${d}" fill="none" stroke="${l.color}" stroke-width="${l.width || 2}" ${l.dash ? `stroke-dasharray="${l.dash}"` : ''} stroke-linejoin="round" stroke-linecap="round"/>`;
+      });
+      if (lead && lead.values[last] != null) s += `<circle cx="${x(last)}" cy="${y(lead.values[last])}" r="4" fill="${lead.color}" stroke="#fff" stroke-width="2"/>`;
+      if (o.endLabels) {
+        const ends = lines.filter((l) => l.values[last] != null).map((l) => ({ l, y: y(l.values[last]) })).sort((a, b) => a.y - b.y);
+        for (let k = 1; k < ends.length; k++) if (ends[k].y - ends[k - 1].y < 14) ends[k].y = ends[k - 1].y + 14;
+        ends.forEach(({ l, y: ly }) => { const ty = y(l.values[last]); s += `${Math.abs(ly - ty) > 2 ? `<line x1="${x(last) + 4}" y1="${ty}" x2="${x(last) + 10}" y2="${ly - 3}" stroke="#C3C8D2"/>` : ''}<text x="${x(last) + 12}" y="${ly + 1}" font-size="11.5" font-weight="${l.lead ? 700 : 500}" fill="#273043">${FL.esc(l.short || l.label)}</text>`; });
+      }
+      s += `<g class="hov" style="display:none"><line class="hl" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/></g><rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent"/>`;
+      svg.innerHTML = s;
+      if (animate && o.draw && !FL.reduce) svg.querySelectorAll('.ln').forEach((p) => { const len = p.getTotalLength(); p.style.strokeDasharray = `${len}`; p.style.strokeDashoffset = `${len}`; p.getBoundingClientRect(); p.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = '0'; });
+      if (lg) lg.innerHTML = lines.length > 1 ? lines.map((l) => `<span><i style="background:${l.color}"></i>${FL.esc(l.label)}</span>`).join('') : '';
+      const def = () => { if (ro) ro.innerHTML = o.readoutDefault || ''; };
+      def();
+      const g = svg.querySelector('.hov'); const hl = svg.querySelector('.hl');
+      const hit = svg.querySelector('.hit');
+      hit.onmousemove = (e) => {
+        const b = svg.getBoundingClientRect(); const px = ((e.clientX - b.left) / b.width) * W;
+        const i = Math.max(start, Math.min(last, Math.round(start + ((px - PL) / (W - PL - PR)) * span)));
+        g.style.display = ''; hl.setAttribute('x1', x(i)); hl.setAttribute('x2', x(i));
+        g.querySelectorAll('circle').forEach((c) => c.remove());
+        lines.forEach((l) => { if (l.values[i] == null) return; const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', x(i)); c.setAttribute('cy', y(l.values[i])); c.setAttribute('r', 3.5); c.setAttribute('fill', l.color); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', 1.5); g.appendChild(c); });
+        if (ro) ro.innerHTML = `<b>${months[i]}</b>${lines.map((l) => (l.values[i] == null ? '' : `<span><span class="sw" style="background:${l.color}"></span>${FL.esc(l.label)} <b>${l.values[i]}</b></span>`)).join('')}`;
+        o.onHover && o.onHover(i);
+      };
+      hit.onmouseleave = () => { g.style.display = 'none'; def(); o.onHover && o.onHover(null); };
+    };
+    render(true);
+    return { update(next, animate = false) { o = { ...o, ...next }; render(animate); }, get opts() { return o; } };
+  };
+  FL.TOPIC_COLORS = ['#0D9488', '#3B5BDB', '#E0527A', '#5F7D16', '#9C36B5'];
+})();
+</script>
+<script>/* generated by build.py: Grid Scan = real Bothell run #2; trends = sample */
+window.FLDATA = {"GS":{"practice":{"title":"Bothell Family Dentistry","rating":4.9,"reviews":218,"address":"19515 N Creek Pkwy S Ste 213, Bothell, WA 98011","domain":"bothellfamilydentistry.com","city":"Bothell, WA","lat":47.769557,"lng":-122.1855818},"keywords":["dentist near me","dentist in bothell","emergency dentist bothell","botox bothell","invisalign bothell"],"competitors":[{"place_id":"ChIJV1CyUvUOkFQROxMyW5CP9FY","title":"Norman Bolosan, DDS, PC","rating":4.7,"reviews":15,"address":"19515 N Creek Pkwy #212, Bothell, WA 98011","lat":47.769557,"lng":-122.1855818},{"place_id":"ChIJEQQv6EMOkFQRWCOJSQsfGkQ","title":"Accent Dental Center Bothell","rating":4.8,"reviews":247,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7686516,"lng":-122.1863214},{"place_id":"ChIJEQQv6EMOkFQRRUcY1zA3cuw","title":"Dr. Fernando Caballero, DDS","rating":null,"reviews":null,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7685933,"lng":-122.18616709999999},{"place_id":"ChIJEQQv6EMOkFQRm8bs3KMXxKA","title":"Accent Dental Center: Dr. Isabel Perez, DDS, PS","rating":5,"reviews":2,"address":"11511 NE 195th St #104, Bothell, WA 98011","lat":47.7685933,"lng":-122.18616709999999},{"place_id":"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns","title":"Annigan Dental","rating":4.7,"reviews":144,"address":"19115 112th Ave NE b101, Bothell, WA 98011","lat":47.765884299999996,"lng":-122.19126139999999},{"place_id":"ChIJ72xfL-QPkFQRuS35wXhbSdg","title":"Beardslee Dental","rating":4.8,"reviews":114,"address":"18807 Beardslee Blvd Unit 105, Bothell, WA 98011","lat":47.7641978,"lng":-122.19375199999999},{"place_id":"ChIJbZwxG2kOkFQRgYkIEQc3hOs","title":"Northshore Dental Center","rating":4.9,"reviews":21,"address":"18404 104th Ave NE, Bothell, WA 98011","lat":47.7613895,"lng":-122.20121979999999},{"place_id":"ChIJNaK6cVYPkFQRHdVKvg_p5ec","title":"Bothell Dental Care","rating":4.7,"reviews":96,"address":"10036 NE 185th St, Bothell, WA 98011","lat":47.7618659,"lng":-122.20589349999999}],"grids":{"dentist near me":{"own":[[5,1,1,1,1,1,1,1,1],[3,1,1,1,1,1,1,1,1],[4,1,1,21,21,1,1,1,1],[5,1,1,1,1,1,1,1,2],[9,3,2,1,1,1,1,1,2],[18,13,4,4,1,1,1,1,2],[20,18,11,3,2,1,1,2,10],[16,18,11,3,1,1,3,8,14],[11,12,10,2,1,2,10,13,20]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,20,18,16,10,9],[21,21,21,18,17,15,16,14,12],[21,21,20,21,21,6,11,18,19],[21,21,18,5,4,5,5,15,21],[21,21,20,6,4,4,9,16,21],[21,21,21,16,6,5,16,21,21],[21,21,21,21,18,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[8,6,2,2,2,2,2,2,2],[6,3,2,2,2,2,2,2,2],[7,3,2,1,1,2,2,2,2],[10,4,2,2,2,2,2,2,5],[14,11,4,2,2,2,2,2,5],[21,15,5,5,2,2,2,3,6],[21,21,16,5,4,2,3,4,12],[21,20,16,5,4,2,5,12,16],[15,15,13,5,4,3,11,17,21]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,20,7,21,21,21,21],[21,21,21,21,13,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,18,17],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,16,21,21,21,21],[21,21,21,17,6,17,21,21,21],[21,21,21,21,11,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[15,10,7,3,3,3,3,3,3],[11,7,3,3,3,3,3,3,4],[11,6,3,2,2,3,3,3,4],[11,5,3,3,3,3,3,3,9],[11,6,1,3,3,3,3,3,11],[19,11,2,2,3,3,3,6,10],[21,16,4,2,1,3,4,11,17],[18,16,7,2,3,3,7,14,19],[13,14,12,3,2,5,13,19,21]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[18,16,12,9,5,5,5,5,5],[15,13,7,4,4,4,4,7,9],[13,12,4,3,3,4,4,8,12],[13,8,4,4,5,6,4,7,15],[12,4,3,4,5,5,4,9,16],[17,5,1,1,4,4,5,11,12],[18,11,1,1,3,4,7,14,21],[15,12,1,1,2,5,11,17,20],[10,7,2,1,3,7,16,20,21]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[20,19,18,17,16,14,12,4,4],[17,17,16,16,13,14,13,8,7],[15,14,13,11,9,11,15,11,11],[14,13,11,11,11,13,17,14,18],[15,13,11,13,14,11,17,15,19],[13,6,6,7,9,12,17,17,20],[11,4,5,7,8,12,16,20,21],[6,3,2,4,6,14,19,21,21],[5,4,3,6,8,16,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[17,14,15,14,10,9,7,6,21],[13,12,12,10,8,7,9,9,21],[10,11,7,5,6,7,8,13,21],[8,9,7,6,6,7,7,11,21],[6,7,7,8,9,7,12,13,21],[5,2,7,8,8,7,13,13,21],[3,2,9,10,7,8,13,18,21],[2,4,6,8,5,10,15,19,21],[3,1,1,4,6,12,21,21,21]]},"dentist in bothell":{"own":[[2,1,1,1,1,1,1,1,1],[2,1,1,1,1,1,1,1,1],[2,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1],[3,1,1,1,1,1,1,1,1],[6,3,2,1,1,1,1,1,1],[9,8,2,2,1,1,1,1,1],[5,7,1,1,1,1,1,1,2],[3,3,1,1,1,1,1,1,1]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,19,11,9],[21,21,21,21,21,18,16,11,9],[21,21,21,20,17,15,15,12,9],[21,21,21,17,9,11,13,12,9],[21,21,21,12,6,8,13,12,10],[21,21,21,21,9,13,15,12,10],[21,21,21,21,21,17,19,12,10],[21,21,21,21,21,21,18,17,16],[21,21,21,21,21,21,21,20,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[10,8,5,2,3,3,3,2,2],[9,6,4,2,2,2,2,2,2],[8,5,3,2,2,2,2,2,2],[7,6,2,2,2,2,2,2,2],[10,7,2,2,2,2,2,2,2],[13,8,6,3,2,2,2,2,2],[16,15,13,4,2,2,2,2,2],[13,11,10,4,3,2,2,3,3],[10,10,5,4,3,3,2,3,3]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,19],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,10,19,21,21,21],[21,21,21,21,17,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,14,21,21,21,20],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[13,11,11,11,9,8,7,4,3],[12,11,10,9,8,6,7,4,3],[11,9,7,7,5,4,4,4,3],[12,8,7,4,4,4,4,4,3],[11,9,4,3,3,4,4,4,3],[17,12,3,4,3,3,4,4,3],[18,16,7,3,3,4,4,5,4],[15,15,12,6,5,4,7,5,5],[13,11,11,7,5,5,5,5,5]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[16,15,12,14,11,10,8,5,4],[14,13,11,10,10,9,8,5,4],[12,11,9,8,8,7,7,5,4],[11,9,8,8,8,6,7,5,4],[12,8,6,5,5,5,6,5,4],[15,6,1,2,4,5,6,5,4],[15,11,1,1,4,5,6,6,5],[14,10,8,3,4,5,6,6,7],[12,9,6,6,6,6,6,6,6]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,19,17,9,6],[21,21,21,21,21,20,18,10,6],[20,18,19,19,20,18,14,10,8],[20,19,18,20,19,18,15,11,8],[20,17,17,20,21,18,16,11,8],[21,15,17,19,20,16,16,11,8],[13,4,12,19,16,15,15,11,8],[12,6,11,15,15,15,15,14,12],[14,14,13,15,15,15,16,15,13]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[7,6,6,9,5,4,4,3,21],[6,4,5,5,5,4,4,3,21],[3,3,4,3,3,3,3,3,21],[4,3,3,3,3,3,3,3,21],[4,3,3,4,4,3,3,3,21],[4,2,4,5,5,4,3,3,21],[2,1,3,5,5,3,3,4,21],[1,2,2,2,2,3,4,4,21],[1,1,2,2,2,2,3,4,21]]},"emergency dentist bothell":{"own":[[10,9,8,5,5,5,5,4,3],[10,8,7,4,4,4,4,4,3],[9,8,5,4,4,3,4,4,3],[12,8,5,4,4,4,4,4,3],[13,9,6,4,3,4,4,4,3],[14,10,8,4,4,4,4,4,3],[15,11,10,6,4,4,4,5,4],[12,10,10,7,5,4,4,5,4],[10,9,9,8,6,4,4,5,4]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,13,9],[21,21,21,21,21,21,21,17,11],[21,21,21,21,21,21,21,19,16],[21,21,21,21,16,18,21,21,16],[21,21,21,18,17,15,21,21,18],[21,21,21,21,17,18,21,21,20],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,1,2,2,2,1],[2,2,2,2,2,2,2,2,1],[3,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1],[2,2,2,2,2,2,2,2,1]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,15,10],[21,21,21,21,21,21,21,16,13],[21,21,21,21,21,21,21,18,15],[21,21,21,21,17,21,21,18,15],[21,21,21,16,21,10,20,20,17],[21,21,21,20,11,15,21,20,18],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[5,3,3,3,3,3,3,3,2],[4,3,3,3,3,3,3,3,2],[3,3,3,3,3,7,3,3,2],[4,3,3,3,3,3,3,3,2],[4,4,3,3,4,3,3,3,2],[5,5,3,3,3,3,3,3,2],[7,5,3,3,3,3,3,3,2],[6,4,3,3,3,3,3,3,2],[3,3,3,3,3,3,7,3,2]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[21,21,20,20,20,18,15,8,6],[21,21,20,20,19,18,17,9,7],[21,20,18,18,18,11,16,10,7],[21,20,17,16,14,12,14,10,8],[21,17,14,12,9,12,13,10,9],[21,17,10,7,12,11,13,11,10],[21,16,11,10,10,11,13,11,13],[20,18,12,10,12,12,13,15,15],[19,18,17,14,13,13,12,16,15]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[17,17,16,15,15,13,11,7,4],[17,17,17,15,13,11,10,7,5],[15,14,12,11,11,12,9,7,5],[14,13,11,11,11,9,9,7,5],[15,12,9,10,11,9,9,8,6],[10,7,6,11,10,9,9,9,6],[8,8,4,8,9,9,10,9,6],[8,6,4,9,9,9,10,9,7],[8,8,8,9,9,9,10,9,8]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[14,14,14,14,12,9,9,6,21],[13,12,11,11,11,9,9,6,21],[10,10,10,10,10,8,8,6,21],[9,10,8,7,7,8,8,6,21],[9,8,8,7,10,8,8,6,21],[7,6,9,8,8,7,8,7,21],[9,6,7,7,7,7,9,7,21],[7,5,8,6,7,7,9,7,21],[7,7,7,7,8,8,8,8,21]]},"botox bothell":{"own":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]]},"invisalign bothell":{"own":[[11,7,7,7,7,6,5,5,5],[10,7,7,7,6,6,6,5,5],[10,8,7,6,5,5,6,5,6],[9,9,7,5,5,4,6,5,6],[11,10,8,7,6,5,6,6,6],[13,7,14,9,7,5,6,7,3],[13,15,16,13,8,6,8,8,8],[14,14,14,12,8,9,9,8,9],[13,14,13,10,9,9,10,9,11]],"ChIJV1CyUvUOkFQROxMyW5CP9FY":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRWCOJSQsfGkQ":[[8,6,6,5,4,4,4,3,3],[7,6,6,5,4,4,4,3,3],[9,6,6,5,4,4,4,3,4],[8,7,6,4,4,5,4,3,4],[8,8,7,5,4,4,4,3,4],[9,9,10,6,5,4,4,5,4],[10,13,14,10,5,5,6,6,7],[10,11,11,8,6,5,7,7,8],[9,9,7,6,6,8,9,8,8]],"ChIJEQQv6EMOkFQRRUcY1zA3cuw":[[21,21,21,21,21,21,21,15,14],[21,21,21,21,21,21,21,17,16],[21,21,21,21,21,21,21,20,19],[21,21,21,21,19,21,21,21,19],[21,21,21,16,13,17,21,20,20],[21,21,21,21,15,20,21,20,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJEQQv6EMOkFQRm8bs3KMXxKA":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJUZ3nM2cOkFQRLKqa_e9Z_ns":[[13,13,10,9,8,8,8,6,6],[12,11,9,8,8,8,8,6,7],[11,10,8,8,8,9,9,7,8],[10,10,8,8,8,10,9,7,9],[10,9,5,6,7,7,9,9,9],[11,14,6,10,6,7,10,9,12],[11,12,8,6,6,8,10,9,10],[11,12,10,6,7,10,11,10,10],[12,11,8,9,8,11,11,10,12]],"ChIJ72xfL-QPkFQRuS35wXhbSdg":[[17,16,16,15,15,13,13,8,8],[15,14,13,12,13,13,13,9,9],[14,13,12,12,12,13,14,10,10],[13,12,12,13,12,8,13,10,11],[14,11,10,10,10,12,13,10,12],[14,10,7,7,10,12,13,10,9],[14,11,7,7,9,11,13,11,13],[15,13,8,7,10,13,14,12,13],[15,15,14,11,13,13,14,13,13]],"ChIJbZwxG2kOkFQRgYkIEQc3hOs":[[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21],[21,21,21,21,21,21,21,21,21]],"ChIJNaK6cVYPkFQRHdVKvg_p5ec":[[19,19,19,19,20,20,19,12,21],[17,17,19,20,21,21,20,14,21],[15,16,19,19,21,21,20,17,21],[14,15,16,19,21,12,21,17,21],[12,14,18,20,21,21,21,19,21],[8,11,17,19,21,21,21,19,21],[8,8,17,19,20,20,21,19,21],[6,7,15,19,20,21,21,18,21],[8,10,15,19,19,20,21,18,21]]}},"spacingMi":0.25,"size":9,"pricePerPoint":0.002,"alsoFound":[{"title":"Dr. Fernando Caballero, DDS","why":"A dentist's own listing"}]},"MT":{"practice":{"title":"Bothell Family Dentistry","domain":"bothellfamilydentistry.com","city":"Bothell, WA","state":"Washington"},"months":["Oct 2021","Nov 2021","Dec 2021","Jan 2022","Feb 2022","Mar 2022","Apr 2022","May 2022","Jun 2022","Jul 2022","Aug 2022","Sep 2022","Oct 2022","Nov 2022","Dec 2022","Jan 2023","Feb 2023","Mar 2023","Apr 2023","May 2023","Jun 2023","Jul 2023","Aug 2023","Sep 2023","Oct 2023","Nov 2023","Dec 2023","Jan 2024","Feb 2024","Mar 2024","Apr 2024","May 2024","Jun 2024","Jul 2024","Aug 2024","Sep 2024","Oct 2024","Nov 2024","Dec 2024","Jan 2025","Feb 2025","Mar 2025","Apr 2025","May 2025","Jun 2025","Jul 2025","Aug 2025","Sep 2025","Oct 2025","Nov 2025","Dec 2025","Jan 2026","Feb 2026","Mar 2026","Apr 2026","May 2026","Jun 2026","Jul 2026","Aug 2026","Sep 2026","Oct 2026"],"inProgress":true,"asOf":"Sep 2026","topics":[{"topic":"Dental implants","short":"Implants","verdict":"growing","rating":8,"ratingParts":[{"label":"Demand is growing","points":3},{"label":"Large search volume","points":3},{"label":"Steady all year","points":1},{"label":"Searched by name","points":1}],"yoy":1.18,"searchesPerMonth":6600,"searches12":[6524,7167,7130,6758,6720,6970,6643,5950,5802,6294,6178,6328],"prior12":[5665,6014,5793,5651,5732,6011,5700,4912,5124,5393,5444,5336],"phrases":[{"phrase":"dental implants","values":[66,71,64,72,71,67,64,62,63,66,64,68,66,74,80,80,78,80,76,76,68,70,66,78,74,80,80,83,87,78,76,76,78,71,74,84,86,84,84,91,91,84,91,87,79,83,86,91,89,91,97,95,93,93,88,88,92,95,88,96,100]},{"phrase":"tooth implant","values":[50,53,62,58,62,58,59,53,47,47,49,58,57,61,63,66,66,58,64,61,62,59,64,62,64,64,70,70,66,71,68,68,64,61,63,67,74,67,75,70,78,78,72,72,66,74,70,74,74,80,82,80,76,84,78,76,76,79,79,80,84]},{"phrase":"implant dentist","values":[45,39,45,46,46,50,39,47,39,41,43,39,45,49,49,49,55,50,46,51,47,50,45,43,46,54,53,51,58,51,49,51,50,50,51,47,51,59,63,63,58,54,61,55,53,53,55,55,57,58,61,63,64,61,62,59,54,57,55,58,61]},{"phrase":"all on 4 implants","values":[33,32,30,36,32,34,36,34,30,33,28,29,36,37,38,33,41,41,38,39,33,32,30,34,39,38,43,37,43,41,34,41,37,38,34,36,36,45,42,43,42,47,41,45,43,43,38,43,42,42,46,49,42,46,50,50,46,49,42,46,45]}],"drive":0,"combined":[48,49,50,53,53,52,50,49,45,47,46,48,51,55,58,57,60,57,56,57,52,53,51,54,56,59,62,60,64,60,57,59,57,55,56,58,62,64,66,67,67,66,66,65,60,63,62,66,66,68,72,72,69,71,70,68,67,70,66,70,72],"peakIndex":50,"peakMonthName":"January","corpus12":[52,58,60,59,58,57,52,50,45,44,46,49],"gateRefused":[{"phrase":"implants bothell wa","why":"names a place"}]},{"topic":"Emergency dentist","short":"Emergency","verdict":"growing","rating":7,"ratingParts":[{"label":"Demand is growing","points":3},{"label":"Medium search volume","points":2},{"label":"Winter peak","points":1},{"label":"Searched by name","points":1}],"yoy":1.11,"searchesPerMonth":3100,"searches12":[3490,3645,3586,3311,3056,2928,2551,2727,2842,2971,2952,3438],"prior12":[3164,3240,3225,3113,2724,2647,2276,2561,2484,2660,2562,3155],"phrases":[{"phrase":"emergency dentist","values":[62,68,77,74,68,58,61,55,52,56,53,59,73,82,85,85,77,68,65,62,62,56,70,70,83,83,91,89,82,79,62,61,59,68,71,79,88,85,89,91,86,74,79,74,64,73,70,79,91,89,100,97,91,83,79,73,76,80,83,86,89]},{"phrase":"dentist open saturday","values":[55,67,67,59,61,52,47,45,39,38,45,59,65,65,64,67,68,62,52,45,42,45,56,56,64,68,74,71,70,61,58,52,47,58,53,67,68,77,74,70,68,65,67,56,55,64,56,70,71,74,80,79,80,71,67,58,56,58,62,77,85]},{"phrase":"broken tooth","values":[42,45,56,44,42,39,32,36,30,36,41,44,44,55,48,53,47,45,36,38,39,44,44,41,48,59,62,52,53,52,41,36,39,45,48,45,52,55,55,64,62,53,53,50,48,42,52,58,58,64,61,59,61,52,53,53,44,55,50,53,58]}],"drive":0,"combined":[53,60,67,59,57,50,47,45,40,43,46,54,61,67,66,68,64,58,51,48,48,48,57,56,65,70,76,71,68,64,54,50,48,57,57,64,69,72,73,75,72,64,66,60,56,60,59,69,73,76,80,78,77,69,66,61,59,64,65,72,77],"peakIndex":50,"peakMonthName":"December","corpus12":[52,51,53,58,54,56,52,45,46,42,40,45],"gateRefused":[]},{"topic":"Invisalign","short":"Invisalign","verdict":"stable","rating":6,"ratingParts":[{"label":"Demand is steady","points":2},{"label":"Large search volume","points":3},{"label":"January peak","points":0},{"label":"Searched by name","points":1}],"yoy":1.01,"searchesPerMonth":4400,"searches12":[4889,4785,4576,4905,4588,4379,4272,4111,4154,4186,4405,4300],"prior12":[5077,4805,4453,4962,4430,4385,4207,4172,4059,4207,4553,4055],"phrases":[{"phrase":"invisalign","values":[93,96,100,97,96,87,91,88,79,81,85,88,84,97,93,97,93,99,90,81,85,84,79,87,85,96,94,93,94,90,94,90,84,78,79,87,88,96,99,99,91,99,88,85,82,78,78,87,88,99,93,100,100,96,87,84,85,82,87,82,88]},{"phrase":"clear aligners","values":[69,75,76,85,81,81,74,65,69,66,71,72,69,79,79,87,76,81,76,71,65,69,65,75,76,78,79,76,81,78,69,68,71,72,68,65,78,79,84,78,81,74,71,71,68,68,62,75,72,76,84,76,82,78,75,69,69,65,71,69,78]},{"phrase":"invisalign cost","values":[60,65,68,68,69,65,62,60,51,51,59,60,54,60,65,59,68,60,54,60,56,56,54,51,57,65,60,68,62,65,59,56,59,51,51,53,53,62,69,69,60,65,62,56,60,47,57,53,63,65,60,65,62,60,56,57,57,53,53,59,59]}],"drive":0,"combined":[74,79,81,83,82,78,76,71,66,66,72,73,69,79,79,81,79,80,73,71,69,70,66,71,73,80,78,79,79,78,74,71,71,67,66,68,73,79,84,82,77,79,74,71,70,64,66,72,74,80,79,80,81,78,73,70,70,67,70,70,75],"peakIndex":38,"peakMonthName":"January","corpus12":[40,42,49,46,50,45,39,39,34,32,33,35],"gateRefused":[]},{"topic":"Sedation dentistry","short":"Sedation","verdict":"emerging","rating":5,"ratingParts":[{"label":"Demand is emerging","points":3},{"label":"Small search volume","points":1},{"label":"Steady all year","points":1},{"label":"Searched by name","points":0}],"yoy":1.34,"searchesPerMonth":720,"searches12":[733,730,733,721,706,772,760,699,668,736,658,710],"prior12":[547,534,560,551,534,576,566,509,500,541,472,530],"phrases":[{"phrase":"sedation dentist","values":[41,30,41,54,41,59,43,43,38,46,43,38,38,57,43,62,49,54,68,65,46,65,51,43,49,62,73,76,78,76,65,81,62,57,57,62,73,65,70,86,86,95,81,78,81,84,81,86,70,78,78,100,84,100,97,89,100,92,95,95,97]},{"phrase":"sleep dentistry","values":[24,19,32,41,30,38,35,32,35,43,41,27,35,32,46,41,43,51,49,43,54,41,43,49,43,49,43,62,51,51,54,65,65,54,51,54,59,65,65,65,76,68,62,70,68,59,68,62,73,68,62,68,86,86,89,81,68,78,65,84,81]},{"phrase":"iv sedation dentist","values":[27,32,16,27,35,24,41,24,35,30,19,38,27,38,43,30,41,49,43,30,30,43,35,30,30,30,38,51,43,38,57,43,51,51,38,35,43,38,46,59,43,59,49,49,49,57,59,41,54,59,57,70,54,59,70,54,57,54,65,62,54]}],"drive":0,"combined":[31,27,30,41,35,40,40,33,36,40,34,34,33,42,44,44,44,51,53,46,43,50,43,41,41,47,51,63,57,55,59,63,59,54,49,50,58,56,60,70,68,74,64,66,66,67,69,63,66,68,66,79,75,82,85,75,75,75,75,80,77],"peakIndex":54,"peakMonthName":"March","corpus12":[49,56,58,62,58,57,52,48,43,41,45,47],"gateRefused":[]},{"topic":"Teeth whitening","short":"Whitening","verdict":"decaying","rating":4,"ratingParts":[{"label":"Demand is falling","points":0},{"label":"Medium search volume","points":2},{"label":"Summer peak","points":1},{"label":"Searched by name","points":1}],"yoy":0.82,"searchesPerMonth":2900,"searches12":[2340,2368,2437,2770,2937,3046,3447,3527,3558,3286,2904,2693],"prior12":[2893,2915,3043,3388,3492,3703,4248,4230,4222,4134,3447,3229],"phrases":[{"phrase":"teeth whitening","values":[89,76,75,82,83,86,100,99,97,96,90,81,81,69,67,69,76,78,85,94,93,92,88,85,75,68,62,68,71,78,88,88,86,88,78,76,64,58,60,60,64,76,79,86,82,78,79,74,54,57,53,50,54,61,76,81,83,81,71,65,50]},{"phrase":"professional teeth whitening","values":[74,61,61,58,71,78,79,83,88,86,78,72,65,64,62,54,60,74,75,81,85,81,78,65,64,60,49,56,64,69,67,76,71,78,64,62,54,49,43,50,50,62,61,67,74,68,64,56,44,43,46,40,49,51,56,65,69,62,64,46,46]},{"phrase":"zoom whitening","values":[54,57,54,49,56,57,64,65,69,62,57,62,56,51,43,51,44,57,64,61,61,58,61,56,49,47,36,43,46,53,54,64,60,61,51,51,42,42,40,43,42,46,51,58,54,51,46,43,39,31,39,33,39,39,43,47,47,46,42,43,31]}],"drive":0,"combined":[72,65,63,63,70,74,81,82,85,81,75,72,67,61,57,58,60,70,75,79,80,77,76,69,63,58,49,56,60,67,70,76,72,76,64,63,53,50,48,51,52,61,64,70,70,66,63,58,46,44,46,41,47,50,58,64,66,63,59,51,42],"peakIndex":8,"peakMonthName":"June","corpus12":[29,31,37,34,35,36,27,25,21,21,21,22],"gateRefused":[]}],"suggestedTopics":["Dental implants","Invisalign","Emergency dentist","Teeth whitening","Sedation dentistry","Root canals","Pediatric dentistry","Dental crowns"],"pricePerPhrase":0.006},"PAST":[{"name":"Bothell Family Dentistry","city":"Bothell, WA","client":true,"status":"complete","when":"Oct 28, 2:14 PM","cost":0.81,"gs":"28 of 81","mt":"3 of 5 rising"},{"name":"Northgate Smile Studio","city":"Seattle, WA","client":false,"status":"running","when":"Oct 29, 9:02 AM","cost":0.42,"gs":"","mt":""},{"name":"Cedar Park Dental","city":"Austin, TX","client":true,"status":"complete","when":"Oct 27, 4:40 PM","cost":1.62,"gs":"22 of 81","mt":"2 of 4 rising"},{"name":"Lakeview Family Dental","city":"Boulder, CO","client":true,"status":"complete","when":"Oct 27, 11:05 AM","cost":0.98,"gs":"71 of 81","mt":"1 of 3 rising"},{"name":"Summit Ridge Dentistry","city":"Denver, CO","client":false,"status":"failed","when":"Oct 26, 3:51 PM","cost":0.12,"gs":"","mt":""},{"name":"Harbor Point Dental","city":"Tacoma, WA","client":false,"status":"complete","when":"Oct 25, 10:20 AM","cost":0.81,"gs":"9 of 81","mt":"4 of 5 rising"}]};
+</script>
+<style>
+#page{min-height:calc(100vh - 80px)}
+.rail{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rchip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:6px 11px;font-size:13px;color:var(--muted);transition:background .2s,border-color .2s,color .2s,opacity .2s;max-width:320px}
+.rchip .n{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:800;background:var(--soft);color:var(--muted);flex:none}
+.rchip b{color:var(--ink);font-weight:600}
+.rchip span.v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rchip.done{cursor:pointer}.rchip.done .n{background:var(--up);color:#fff}.rchip.done:hover{border-color:#A7D8CF;background:#FAFDFC}
+.rchip.now{border-color:var(--a);background:var(--aTint);color:var(--aInk)}.rchip.now .n{background:var(--a);color:#fff}
+.rchip.later{opacity:.55;cursor:default}
+.railbar{height:3px;border-radius:3px;background:var(--line);margin:12px 0 0;overflow:hidden}
+.railbar i{display:block;height:3px;background:linear-gradient(90deg,var(--a),var(--a2));transition:width .5s var(--ease)}
+#stage{position:relative}
+.q-screen{padding:7vh 0 24px;min-height:calc(100vh - 230px)}
+.q-screen.in{animation:qIn .5s var(--ease) both}
+.q-screen.in.back{animation-name:qInBack}
+.q-screen.out{position:absolute;inset:0 0 auto 0;animation:qOut .32s ease both;pointer-events:none}
+.q-screen.out.back{animation-name:qOutBack}
+@keyframes qIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes qInBack{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@keyframes qOut{to{opacity:0;transform:translateY(-40px)}}
+@keyframes qOutBack{to{opacity:0;transform:translateY(40px)}}
+.q-k{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--aInk);margin-bottom:14px}
+.q-title{margin:0 0 30px;font-size:54px;font-weight:800;line-height:1.06;letter-spacing:-.03em;color:var(--ink);max-width:900px}
+.q-body{max-width:780px}
+.q-foot{display:flex;align-items:center;gap:16px;margin-top:34px;flex-wrap:wrap}
+.kbd{font:600 11px 'JetBrains Mono',monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:2px 7px;color:var(--muted);background:#fff}
+.hint{font-size:13px;color:var(--faint);display:inline-flex;gap:8px;align-items:center}
+.back{border:0;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:8px 4px}
+.back:hover{color:var(--ink)}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.csearch{position:relative}
+.cmenu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;border:1px solid var(--line);border-radius:10px;background:#fff;padding:4px;box-shadow:0 12px 32px rgba(11,16,32,.12)}
+.cmenu button{display:block;width:100%;text-align:left;border:0;background:none;border-radius:7px;padding:8px 10px;font-size:14px;color:var(--body)}
+.cmenu button:hover{background:var(--soft)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.tile{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:15px 16px;font-size:16px;font-weight:600;color:var(--ink);min-height:56px;transition:background .2s,box-shadow .2s,border-color .2s,transform .1s}
+.tile:active{transform:scale(.98)}
+.tile .bx{width:20px;height:20px;border-radius:6px;border:1.5px solid #D0D5DD;display:grid;place-items:center;font-size:12px;color:#fff;flex:none;transition:background .2s,border-color .2s}
+.tile.on{background:var(--aTint);border-color:transparent;box-shadow:0 0 0 1.5px var(--a)}
+.tile.on .bx{background:var(--a);border-color:var(--a)}
+.tile .src{margin-left:auto;font-size:11.5px;font-weight:500;color:var(--faint)}
+.addrow{display:flex;gap:8px;margin-top:14px;max-width:520px}
+.count{font:600 13px 'JetBrains Mono',monospace;color:var(--muted)}
+.tstep{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+.tstep button{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:8px;background:var(--soft);padding:6px 10px;font-size:13px;font-weight:600;color:var(--muted)}
+.tstep button.on{background:var(--aTint);color:var(--aInk)}
+.tstep button .sw{width:8px;height:8px;border-radius:2px}
+.tstep button.ok:after{content:'✓';color:var(--up);font-size:11px}
+.pcard{border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadowPanel);background:#fff}
+.pcard h3{margin:0 0 4px;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.ph{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-top:8px;font-size:16px;color:var(--ink);animation:flRise .3s var(--ease) both}
+.ph .t{flex:1;min-width:0}
+.ph.off .t{text-decoration:line-through;color:var(--faint)}
+.ph .rm{border:0;background:none;color:var(--faint);font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+.ph .rm:hover{color:var(--down);background:#FDECEF}
+.ready-s{font-size:44px;font-weight:800;line-height:1.3;letter-spacing:-.025em;color:var(--ink);max-width:980px;margin:0}
+.ready-s button{border:0;background:none;font:inherit;color:var(--aInk);padding:0 3px;border-bottom:4px solid var(--a);border-radius:6px 6px 0 0}
+.ready-s button:hover{background:var(--aTint)}
+.pastwrap{margin-top:10px;max-width:1100px;animation:flRise .45s var(--ease) both}
+.live-row{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:40px;align-items:start;margin-top:18px}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--faint);transition:color .3s}
+.tl li:last-child{border-bottom:0}
+.tl li.now{color:var(--ink);font-weight:600}.tl li.done{color:var(--body)}
+.tl .sw{width:10px;height:10px;border-radius:3px;opacity:.35;transition:opacity .3s}
+.tl li.now .sw,.tl li.done .sw{opacity:1}
+.tl .st{font-size:13px;font-weight:600;white-space:nowrap}
+.rep{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px;align-items:start}
+.rnav{position:sticky;top:84px;padding-top:44px}
+.rnav a{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;text-decoration:none;transition:background .2s}
+.rnav a:hover{background:var(--soft)}
+.rnav a.on{background:var(--aTint)}
+.rnav .no{margin-top:1px;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:800;background:var(--soft);color:var(--muted)}
+.rnav a.on .no{background:var(--a);color:#fff}
+.rnav b{display:block;font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+.rnav a.on b{color:var(--aInk)}
+.rnav small{display:block;font-size:12.5px;color:var(--muted)}
+.rprog{margin:16px 10px 0;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.rprog i{display:block;height:3px;background:var(--a);width:0;transition:width .2s}
+.opener h1{margin:12px 0 0;font-size:40px;font-weight:800;line-height:1.14;letter-spacing:-.025em;color:var(--ink);max-width:860px}
+.ocards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 8px}
+.ocard{text-align:left;border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px 18px;transition:border-color .2s,box-shadow .2s}
+.ocard:hover{border-color:#A7D8CF;box-shadow:0 10px 26px rgba(11,16,32,.07)}
+.ocard .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.ocard .v{margin:6px 0 4px;font-size:19px;font-weight:800;line-height:1.3;color:var(--ink)}
+.ocard .g{font-size:13px;font-weight:600;color:var(--aInk)}
+.tsec{border-top:1px solid var(--line);padding:48px 0;scroll-margin-top:110px}
+.tsec h2{margin:8px 0 6px;font-size:30px;font-weight:800;line-height:1.2;letter-spacing:-.02em;color:var(--ink);max-width:760px}
+.vtag{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;letter-spacing:0;text-transform:none}
+.ctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:20px 0 4px}
+.toggles{display:flex;flex-wrap:wrap;gap:6px}
+.tog{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:5px 10px;font-size:12.5px;font-weight:600;color:var(--body);transition:opacity .2s,background .2s}
+.tog i{width:12px;height:2.5px;border-radius:1px}
+.tog.off{opacity:.45;background:var(--soft)}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:36px;margin-top:26px;align-items:start}
+.sublab{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.rate .big{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1}
+.rate ul{list-style:none;margin:12px 0 0;padding:0}
+.rate li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rate li b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.rate li.z{color:var(--faint)}
+.nexts{display:flex;align-items:center;gap:14px;margin-top:26px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:90;background:var(--ink);color:#fff;border-radius:10px;padding:10px 16px;font-size:14px;box-shadow:0 12px 30px rgba(11,16,32,.25);animation:flRise .3s var(--ease)}
+@media (max-width:1000px){.rep{grid-template-columns:1fr}.rnav{display:none}.live-row,.duo{grid-template-columns:1fr}.ocards{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.q-title{font-size:38px}.ready-s{font-size:32px}}
+</style></head><body><div id="page"></div>
+<script>
+(function () {
+  const D = FLDATA.MT; const PAST = FLDATA.PAST; const GS = FLDATA.GS;
+  const C = FL.TOPIC_COLORS; const E = FL.esc; const page = document.getElementById('page');
+  const shell0 = FL.shell({ tool: 'trends', name: 'Market Trends' });
+  const shell = { right: (html) => shell0.right(html ? `<span style="display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap">${html}</span>` : '') };
+  const DATA = Object.fromEntries(D.topics.map((t) => [t.topic.toLowerCase(), t]));
+  const VERD = { growing: ['Growing', '↑', 'var(--up)', '#E8F5EC'], emerging: ['Emerging', '↑', 'var(--up)', '#E8F5EC'], stable: ['Steady', '→', 'var(--muted)', 'var(--soft)'], decaying: ['Falling', '↓', 'var(--down)', '#FDECEF'] };
+  const rising = (t) => t.verdict === 'growing' || t.verdict === 'emerging';
+  const vtag = (t) => { const v = VERD[t.verdict]; return `<span class="vtag" style="color:${v[2]};background:${v[3]}">${v[1]} ${v[0]}</span>`; };
+  function change(r) {
+    const d = r - 1; const a = Math.abs(d);
+    if (a < 0.05) return 'about level with last year';
+    const fr = [[0.1, 'a tenth'], [0.2, 'a fifth'], [0.25, 'a quarter'], [0.33, 'a third'], [0.5, 'a half']];
+    let b = fr[0]; fr.forEach((f) => { if (Math.abs(f[0] - a) < Math.abs(b[0] - a)) b = f; });
+    return `${d > 0 ? 'up' : 'down'} about ${b[1]} on last year`;
+  }
+  function seeded(str) { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
+  function genSeries(seed, base, slope, season) { const r = seeded(seed); const v = []; for (let i = 0; i < 61; i++) v.push(Math.max(2, Math.min(100, Math.round(base + slope * i + season * Math.cos(((9 + i) % 12) * Math.PI / 6) + r() * 8 - 4)))); return v; }
+  /* A topic the sample data does not hold (typed by the SEO): a believable stand-in. */
+  function madeUp(name) {
+    const r = seeded(name); const slope = r() * 0.3 - 0.08; const n = name.toLowerCase();
+    return { topic: name, short: name.split(' ')[0], verdict: slope > 0.12 ? 'growing' : slope < -0.05 ? 'decaying' : 'stable', rating: 3 + Math.floor(r() * 3), yoy: 1 + slope * 0.8,
+      searchesPerMonth: 400 + Math.round(r() * 1100), peakMonthName: 'March', phrases: [{ phrase: n, values: genSeries(n, 40, slope, 4) }, { phrase: `${n} cost`, values: genSeries(`${n} cost`, 28, slope, 3) }],
+      ratingParts: [{ label: slope > 0.12 ? 'Demand is growing' : 'Demand is steady', points: slope > 0.12 ? 3 : 2 }, { label: 'Small search volume', points: 1 }, { label: 'Steady all year', points: 1 }, { label: 'Searched by name', points: 0 }],
+      searches12: null, prior12: null, gateRefused: [] };
+  }
+  const topicData = (name) => DATA[name.toLowerCase()] || madeUp(name);
+
+  /* ---------------- state ---------------- */
+  const S = { step: 1, practice: null, picked: 0, topics: [], tilesTyped: false, drafts: {}, pIdx: 0, phraseWait: false, typed: new Set(), clientsOnly: false, clientFilter: 'all' };
+  const QS = ['Practice', 'Topics', 'Phrases', 'Run'];
+  const okPhrases = (t) => (S.drafts[t] || []).filter((p) => !p.off);
+  const phraseCount = () => S.topics.reduce((n, t) => n + okPhrases(t).length, 0);
+  const price = () => FL.money(phraseCount() * D.pricePerPhrase);
+
+  /* ---------------- How it works ---------------- */
+  const svg = (inner) => `<svg viewBox="0 0 300 200" style="width:100%;height:100%" aria-hidden="true">${inner}</svg>`;
+  const pathOf = (vals, x0, x1, y0, y1, max = 100) => vals.map((v, i) => `${i ? 'L' : 'M'}${(x0 + (i / (vals.length - 1)) * (x1 - x0)).toFixed(1)},${(y1 - (v / max) * (y1 - y0)).toFixed(1)}`).join('');
+  FL.method({
+    teaser: 'Each phrase is read from Google Trends over five years across the practice\'s state, then each topic is measured against dental searches overall. Click for the whole method.',
+    kicker: 'Market Trends', title: 'How it works',
+    sections: [
+      { title: 'What the numbers mean', caption: '100 is always the busiest month in the group.',
+        body: ['Google Trends does not give search counts. It gives interest from 0 to 100, where 100 is the busiest month for the phrases read together, and every other month is measured against it.', 'So a 50 means half as many searches as that busiest month. When a new busiest month arrives, it becomes the 100 and the rest of the line scales down.'],
+        figure: (el) => { const raw = [30, 34, 40, 38, 52, 48, 60, 55, 72, 66, 58, 64, 80, 74]; return FL.loop(13, 650, (s) => {
+          const vis = raw.slice(0, s + 2); const mx = Math.max(...vis); const sc = vis.map((v) => (v * 100) / mx); const pi = sc.indexOf(100);
+          const x = (i) => 24 + (i / (raw.length - 1)) * 250; const y = (v) => 170 - v * 1.35;
+          el.innerHTML = svg(`<line x1="24" x2="274" y1="${y(100)}" y2="${y(100)}" stroke="#C3C8D2" stroke-dasharray="3 3"/><text x="20" y="${y(100) + 4}" font-size="10" text-anchor="end" fill="#667085">100</text><line x1="24" x2="274" y1="170" y2="170" stroke="#E7E9EE"/>
+            <path d="${sc.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v)}`).join('')}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="${x(pi)}" cy="${y(100)}" r="4.5" fill="#0F766E" stroke="#fff" stroke-width="2"/><text x="${x(pi)}" y="${y(100) - 10}" font-size="11" font-weight="700" text-anchor="middle" fill="#0B1020">busiest month</text>`); }); } },
+      { title: 'Topics and phrases', caption: 'Several phrases, one topic line.',
+        body: ['A topic is what patients want ("Dental implants"). A phrase is how they type it ("tooth implant", "implant dentist").', 'Each phrase is read on its own, then the phrases are combined into one line for the topic. The head phrase, the one most people use, leads the chart. Phrases that name a place are left out, since the reading already covers the whole state.'],
+        figure: (el) => { const ph = ['dental implants', 'tooth implant', 'implant dentist']; return FL.loop(3, 1100, (s) => {
+          el.innerHTML = svg(ph.map((p, i) => { const y = 50 + i * 50; const on = i === s; return `<rect x="12" y="${y - 14}" width="116" height="28" rx="7" fill="${on ? '#E6F4F1' : '#fff'}" stroke="${on ? '#0F766E' : '#E7E9EE'}"/><text x="70" y="${y + 4}" font-size="10.5" font-weight="600" text-anchor="middle" fill="#0B1020">${p}</text><path d="M128 ${y} C 165 ${y}, 165 100, 196 100" fill="none" stroke="${on ? '#0F766E' : '#C3C8D2'}" stroke-width="${on ? 2.2 : 1.4}"/>`; }).join('') +
+            '<rect x="196" y="82" width="94" height="36" rx="9" fill="#0F766E"/><text x="243" y="104" font-size="11" font-weight="700" text-anchor="middle" fill="#fff">Dental implants</text>'); }); } },
+      { title: 'Growing, steady, falling or emerging', caption: 'The topic against dental searches overall.',
+        body: ['Every topic is measured against dental searches overall in the same state. If all dental searches rose a tenth this year, a topic that also rose a tenth is called steady, not growing.', 'Growing means it is outpacing dental searches. Falling means it is losing ground. Emerging means it started small and is climbing fast.'],
+        figure: (el) => { const shapes = [['Growing', [30, 34, 37, 42, 47, 53, 60, 68], '#15803D'], ['Steady', [44, 46, 45, 47, 46, 48, 47, 49], '#667085'], ['Falling', [66, 63, 58, 55, 50, 46, 42, 37], '#E11D48'], ['Emerging', [8, 9, 10, 13, 18, 26, 37, 52], '#15803D']]; const base = [40, 41, 42, 43, 44, 45, 46, 47];
+          return FL.loop(4, 1500, (s) => { const [w, v, c] = shapes[s]; el.innerHTML = svg(`<text x="20" y="32" font-size="20" font-weight="800" fill="${c}">${w}</text>
+            <path d="${pathOf(base, 20, 280, 50, 180)}" fill="none" stroke="#98A2B3" stroke-width="1.6" stroke-dasharray="4 3"/><text x="280" y="${180 - 0.47 * 130 - 8}" font-size="10" text-anchor="end" fill="#667085">dental searches overall</text>
+            <path d="${pathOf(v, 20, 280, 50, 180)}" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linejoin="round"/>`); }); } },
+      { title: 'Seasons', caption: 'Teeth whitening, two years of months.',
+        body: ['Many topics rise and fall with the calendar: whitening before summer, emergencies over the winter holidays, aligners in January.', 'The check finds the months each topic peaks, so a page can go live a month or two before the rise.'],
+        figure: (el) => { const v = [42, 46, 54, 66, 80, 88, 76, 60, 50, 44, 40, 38, 44, 48, 56, 70, 84, 92, 78, 62, 52, 46, 42, 40];
+          return FL.loop(24, 160, (s) => { const n = s + 1; const x = (i) => 20 + (i / 23) * 260; const y = (val) => 170 - val * 1.3;
+            el.innerHTML = svg(`<rect x="${x(4) - 6}" y="40" width="${x(6) - x(4) + 12}" height="135" rx="6" fill="#E6F4F1"/><rect x="${x(16) - 6}" y="40" width="${x(18) - x(16) + 12}" height="135" rx="6" fill="#E6F4F1"/>
+            <text x="${x(5)}" y="34" font-size="10.5" font-weight="700" text-anchor="middle" fill="#115E59">May to Jul</text><text x="${x(17)}" y="34" font-size="10.5" font-weight="700" text-anchor="middle" fill="#115E59">May to Jul</text>
+            <path d="${v.slice(0, n).map((val, i) => `${i ? 'L' : 'M'}${x(i)},${y(val)}`).join('')}" fill="none" stroke="#0F766E" stroke-width="2.2" stroke-linejoin="round"/>
+            ${['J', 'J', 'J', 'J'].map((m, k) => `<text x="${x(k * 6)}" y="190" font-size="10" text-anchor="middle" fill="#667085">${['Jan', 'Jul', 'Jan', 'Jul'][k]}</text>`).join('')}`); }); } },
+      { title: 'The 1 to 10 rating', caption: 'Points add up to the rating.',
+        body: ['The rating orders the topics so the strongest opportunity comes first. It adds points for direction, for how many people search, for how steady the demand is through the year, and for whether people search the topic by name.', 'It never changes the call itself: a falling topic is still called falling, whatever its rating.'],
+        figure: (el) => { const parts = [['Demand is growing', 3], ['Large search volume', 3], ['Steady all year', 1], ['Searched by name', 1]];
+          return FL.loop(6, 900, (s) => { const shown = parts.slice(0, Math.min(s, 4)); const tot = shown.reduce((a, p) => a + p[1], 0);
+            el.innerHTML = svg(`${shown.map((p, i) => `<text x="20" y="${40 + i * 24}" font-size="12" fill="#273043">${p[0]}</text><text x="190" y="${40 + i * 24}" font-size="12" font-weight="700" text-anchor="end" fill="#0B1020">+${p[1]}</text>`).join('')}
+            <text x="276" y="74" font-size="40" font-weight="900" text-anchor="end" fill="#0F766E">${tot}</text><text x="276" y="92" font-size="11" text-anchor="end" fill="#667085">of 10</text>
+            ${Array.from({ length: 10 }, (_, i) => `<rect x="${20 + i * 26}" y="152" width="22" height="14" rx="3" fill="${i < tot ? '#0F766E' : '#E4E7EC'}" style="transition:fill .3s"/>`).join('')}`); }); } },
+    ],
+  });
+
+  /* ---------------- frame for the flow ---------------- */
+  let stage; let railEl;
+  function frame() {
+    page.innerHTML = `<div class="rail" id="rail"></div><div class="railbar"><i id="railbar"></i></div><div id="stage"></div><div id="pastHost"></div>`;
+    stage = document.getElementById('stage'); railEl = document.getElementById('rail');
+    shell.right('');
+  }
+  function drawRail() {
+    const sum = [S.practice ? S.practice.title : 'Which practice', S.topics.length ? `${S.topics.length} topic${S.topics.length === 1 ? '' : 's'}` : 'What patients want', phraseCount() && S.step > 3 ? `${phraseCount()} phrases` : 'How they search', price()];
+    railEl.innerHTML = QS.map((q, i) => { const n = i + 1; const st = n < S.step ? 'done' : n === S.step ? 'now' : 'later';
+      return `<button type="button" class="rchip ${st}" data-jump="${n}" ${st === 'later' ? 'disabled' : ''}><span class="n">${st === 'done' ? '✓' : n}</span><b>${q}</b>${st === 'done' || n === S.step ? `<span class="v">${E(n === 4 ? (S.step === 4 ? price() : '') : sum[i])}</span>` : ''}</button>`; }).join('');
+    railEl.querySelectorAll('.rchip.done').forEach((b) => { b.onclick = () => go(+b.dataset.jump); });
+    document.getElementById('railbar').style.width = `${((S.step - 1) / 3) * 100}%`;
+  }
+  function go(n) {
+    const back = n < S.step; S.step = n;
+    const old = stage.querySelector('.q-screen');
+    if (old) { old.classList.remove('in'); old.classList.add('out'); if (back) old.classList.add('back'); setTimeout(() => old.remove(), 340); }
+    const el = FL.h(`<section class="q-screen in ${back ? 'back' : ''}"></section>`);
+    stage.appendChild(el);
+    drawRail();
+    ({ 1: q1, 2: q2, 3: q3, 4: q4 })[n](el);
+    document.getElementById('pastHost').innerHTML = '';
+    if (n === 1 && !S.practice) pastChecks(document.getElementById('pastHost'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const f = el.querySelector('[autofocus]'); if (f) setTimeout(() => f.focus(), 60);
+  }
+  const head = (n, title) => `<div class="q-k">Question ${n} of 4</div><h1 class="q-title">${title}</h1>`;
+  const foot = (n, next, label) => `<div class="q-foot">${n > 1 ? '<button type="button" class="back" data-back>← Back</button>' : ''}<button type="button" class="btn btn-go btn-big" data-next>${label}</button><span class="hint"><span class="kbd">Enter ↵</span></span></div>`;
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' || e.target.dataset?.own) return;
+    const b = document.querySelector('#stage .q-screen.in [data-next]');
+    if (b && !b.disabled) { e.preventDefault(); b.click(); }
+  });
+
+  /* ---------------- Q1: which practice ---------------- */
+  function q1(el) {
+    const p = GS.practice;
+    el.innerHTML = `${head(1, 'Which practice?')}<div class="q-body" id="q1b"></div>`;
+    const b = el.querySelector('#q1b');
+    const form = () => {
+      b.innerHTML = `<label class="field csearch"><span>Client</span><input class="input" id="cs" data-own="1" placeholder="Search clients, or fill in a prospect below" autocomplete="off"><div id="cm"></div></label>
+        <div class="fields"><label class="field"><span>Domain <i>*</i></span><input class="input" id="f1" value="${p.domain}"></label>
+        <label class="field"><span>Business name <i>*</i></span><input class="input" id="f2" value="${E(p.title)}"></label>
+        <label class="field"><span>City and state <i>*</i></span><input class="input" id="f3" value="${p.city}"></label></div>
+        ${foot(1, 2, 'Find the practice')}`;
+      const cs = b.querySelector('#cs'); const cm = b.querySelector('#cm');
+      const names = [...new Set([p.title, ...PAST.filter((r) => r.client).map((r) => r.name)])];
+      cs.oninput = () => { const q = cs.value.trim().toLowerCase(); const hits = q ? names.filter((n) => n.toLowerCase().includes(q)) : [];
+        cm.innerHTML = hits.length ? `<div class="cmenu">${hits.map((n) => `<button type="button">${E(n)}</button>`).join('')}</div>` : '';
+        cm.querySelectorAll('button').forEach((x) => { x.onclick = () => { cs.value = x.textContent; cm.innerHTML = ''; b.querySelector('#f2').value = x.textContent; }; }); };
+      cs.onkeydown = (e) => { if (e.key === 'Enter') { const f = cm.querySelector('button'); if (f) { e.preventDefault(); f.click(); } } };
+      b.querySelector('[data-next]').onclick = find;
+    };
+    const find = async () => {
+      b.innerHTML = FL.mapSearch(`Looking up ${b.querySelector('#f2')?.value || p.title} on Google Maps…`);
+      await FL.wait(1700);
+      const cands = [{ title: p.title, address: p.address, rating: p.rating, reviews: p.reviews, gbp: true }, ...GS.competitors.filter((c) => /Bothell/.test(c.title)).slice(0, 2)];
+      const draw = () => {
+        b.innerHTML = `<div role="radiogroup" style="display:flex;flex-direction:column;gap:8px">${cands.map((c, i) => `<div class="found ${i === S.picked ? 'on' : ''} rise" style="animation-delay:${i * 90}ms" role="radio" tabindex="0" data-i="${i}"><span class="lt">${E(c.title[0])}</span><span><b>${E(c.title)}</b><small>${E(c.address)} · ${c.rating} (${c.reviews} reviews)</small>${c.gbp ? '<small style="color:var(--aInk);font-weight:600">From their Google Business Profile</small>' : ''}</span></div>`).join('')}</div>
+          <div class="q-foot"><button type="button" class="btn btn-go btn-big" data-next>That's the one</button><button type="button" class="btn btn-line" id="chg">Change the name or city</button><span class="hint"><span class="kbd">Enter ↵</span></span></div>`;
+        b.querySelectorAll('.found').forEach((f) => { f.onclick = () => { S.picked = +f.dataset.i; draw(); }; });
+        b.querySelector('#chg').onclick = form;
+        b.querySelector('[data-next]').onclick = () => { S.practice = { ...cands[S.picked], domain: p.domain, city: p.city }; go(2); };
+      };
+      draw();
+    };
+    if (S.practice) { b.innerHTML = `<div class="found on"><span class="lt">${E(S.practice.title[0])}</span><span><b>${E(S.practice.title)}</b><small>${E(S.practice.address)} · ${S.practice.domain}</small></span></div>
+      <div class="q-foot"><button type="button" class="btn btn-go btn-big" data-next>Keep this practice</button><button type="button" class="btn btn-line" id="other">Pick a different practice</button></div>`;
+      b.querySelector('[data-next]').onclick = () => go(2);
+      b.querySelector('#other').onclick = () => { S.practice = null; S.topics = []; S.drafts = {}; S.tilesTyped = false; S.typed.clear(); go(1); };
+    } else form();
+  }
+
+  /* ---------------- Q2: what do its patients want ---------------- */
+  function q2(el) {
+    el.innerHTML = `${head(2, `What do ${E(S.practice.title)}'s patients want?`)}<div class="q-body" id="q2b" style="max-width:980px"></div>`;
+    const b = el.querySelector('#q2b');
+    const draw = async (typeIn) => {
+      const all = [...new Set([...D.suggestedTopics, ...S.topics])];
+      b.innerHTML = `<div class="tiles">${all.map((t, i) => `<button type="button" class="tile ${S.topics.includes(t) ? 'on' : ''} rise" style="animation-delay:${typeIn ? i * 70 : 0}ms" data-t="${E(t)}"><span class="bx">${S.topics.includes(t) ? '✓' : ''}</span><span class="lb">${typeIn ? '' : E(t)}</span>${D.suggestedTopics.includes(t) ? '' : '<span class="src">added</span>'}</button>`).join('')}</div>
+        <div class="addrow"><input class="input" id="add" data-own="1" placeholder="Add a topic, in the client's words"><button type="button" class="btn btn-line" id="addb">Add</button></div>
+        <div class="q-foot"><button type="button" class="back" data-back>← Back</button><button type="button" class="btn btn-go btn-big" data-next></button><span class="count" id="cnt"></span><span class="hint"><span class="kbd">Enter ↵</span></span></div>`;
+      const sync = () => { const n = S.topics.length; const nx = b.querySelector('[data-next]'); nx.disabled = !n; nx.textContent = n ? `Use these ${n} topic${n === 1 ? '' : 's'}` : 'Pick a topic'; b.querySelector('#cnt').textContent = `${n} of 10`; drawRail(); };
+      b.querySelectorAll('.tile').forEach((x) => { x.onclick = () => { const t = x.dataset.t; const i = S.topics.indexOf(t);
+        if (i >= 0) S.topics.splice(i, 1); else if (S.topics.length < 10) S.topics.push(t); else return;
+        x.classList.toggle('on', S.topics.includes(t)); x.querySelector('.bx').textContent = S.topics.includes(t) ? '✓' : ''; sync(); }; });
+      const add = () => { const inp = b.querySelector('#add'); const v = inp.value.trim().replace(/^./, (c) => c.toUpperCase()); if (!v || S.topics.length >= 10 || S.topics.some((t) => t.toLowerCase() === v.toLowerCase())) return; S.topics.push(v); draw(false); };
+      b.querySelector('#addb').onclick = add; b.querySelector('#add').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } };
+      b.querySelector('[data-back]').onclick = () => go(1);
+      b.querySelector('[data-next]').onclick = () => { S.topics.forEach((t) => { if (!S.drafts[t]) { const d = topicData(t); S.drafts[t] = [...d.phrases.map((p) => ({ term: p.phrase })), ...(d.gateRefused || []).map((g) => ({ term: g.phrase, off: true, why: g.why, gate: true }))]; } }); S.pIdx = 0; go(3); };
+      sync();
+      if (typeIn) { for (const x of b.querySelectorAll('.tile')) await FL.type(x.querySelector('.lb'), x.dataset.t, { cps: 420 }); S.tilesTyped = true; }
+    };
+    if (S.tilesTyped) { draw(false); return; }
+    S.topics = D.topics.map((t) => t.topic);
+    b.innerHTML = `<div class="pcard" style="display:flex;gap:18px;align-items:flex-start;max-width:640px">${FL.orb()}<div id="stl" style="flex:1"></div></div>`;
+    const st = FL.steps(b.querySelector('#stl'), [`Reading ${S.practice.domain}`, 'Finding the services it names', 'Checking which ones people search for']);
+    (async () => { for (let i = 0; i < 3; i++) { st.set(i, 'now'); await FL.wait(750); st.set(i, 'done'); } await FL.wait(250); draw(true); })();
+  }
+
+  /* ---------------- Q3: how do people search for each ---------------- */
+  function q3(el) {
+    el.innerHTML = `${head(3, 'How do people search for each?')}<div class="q-body" id="q3b"></div>`;
+    const b = el.querySelector('#q3b');
+    if (!S.phraseWait) {
+      b.innerHTML = `<div class="pcard" style="display:flex;gap:18px;align-items:flex-start;max-width:640px">${FL.orb()}<div style="flex:1"><div class="panel-head">Writing phrases</div><div id="stl"></div></div></div>`;
+      const st = FL.steps(b.querySelector('#stl'), S.topics.map((t) => t));
+      (async () => { for (let i = 0; i < S.topics.length; i++) { st.set(i, 'now'); await FL.wait(330); st.set(i, 'done'); } await FL.wait(250); S.phraseWait = true; drawTopic(); })();
+    } else drawTopic();
+    async function drawTopic() {
+      const t = S.topics[S.pIdx]; const list = S.drafts[t]; const last = S.pIdx === S.topics.length - 1;
+      const fresh = !S.typed.has(t); S.typed.add(t);
+      const gen = (S.gen = (S.gen || 0) + 1);   // a later draw (Enter while typing) wins; this one stops
+      b.innerHTML = `<div class="tstep">${S.topics.map((x, i) => `<button type="button" data-i="${i}" class="${i === S.pIdx ? 'on' : ''} ${S.typed.has(x) && i !== S.pIdx ? 'ok' : ''}"><span class="sw" style="background:${C[i % 5]}"></span>${E(x)}</button>`).join('')}</div>
+        <div class="pcard fade"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h3>${E(t)}</h3><span class="count">${S.pIdx + 1} of ${S.topics.length}</span></div>
+        <div id="rows"></div>
+        <div class="addrow"><input class="input" id="add" data-own="1" placeholder="Add a phrase, three words at most"><button type="button" class="btn btn-line" id="addb">Add</button><span class="count" id="pc" style="align-self:center;white-space:nowrap"></span></div></div>
+        <div class="q-foot"><button type="button" class="back" data-back>← Back</button><button type="button" class="btn btn-go btn-big" data-next>${last ? 'Phrases look right' : `Next: ${E(S.topics[S.pIdx + 1])}`}</button><span class="hint"><span class="kbd">Enter ↵</span></span></div>`;
+      const rows = b.querySelector('#rows');
+      const sync = () => { const n = list.filter((p) => !p.off).length; b.querySelector('#pc').textContent = `${n} of 5`; b.querySelector('[data-next]').disabled = !n; b.querySelector('#addb').disabled = n >= 5; };
+      const rowHtml = (p, i, typing) => {
+        const headIdx = list.findIndex((x) => !x.off);
+        const tag = p.gate ? `<span class="tag" data-tip-h="Left out" data-tip="${p.why === 'names a place' ? 'This phrase names a place. The reading already covers the whole state, so a city in the phrase would split it.' : E(p.why)}">left out: ${E(p.why)}</span>`
+          : i === headIdx ? '<span class="tag a" data-tip-h="Head phrase" data-tip="The way most people search this topic. It leads the topic\'s line on the chart.">head phrase</span>' : p.mine ? '<span class="tag a">added</span>' : '';
+        return `<div class="ph ${p.off ? 'off' : ''}" style="animation-delay:${typing ? 0 : i * 40}ms"><span class="t">${typing ? '' : E(p.term)}</span>${tag}${p.gate ? '' : `<button type="button" class="rm" aria-label="Remove ${E(p.term)}" data-rm="${i}">×</button>`}</div>`;
+      };
+      const drawRows = () => { rows.innerHTML = list.map((p, i) => rowHtml(p, i, false)).join(''); rows.querySelectorAll('[data-rm]').forEach((x) => { x.onclick = () => { list.splice(+x.dataset.rm, 1); drawRows(); drawRail(); }; }); sync(); };
+      if (fresh && !FL.reduce) {
+        rows.innerHTML = '';
+        b.querySelector('[data-next]').onclick = () => { S.typed.add(t); if (last) go(4); else { S.pIdx += 1; drawTopic(); } };
+        for (let i = 0; i < list.length; i++) { if (gen !== S.gen) return; const r = FL.h(rowHtml(list[i], i, true)); rows.appendChild(r); await FL.type(r.querySelector('.t'), list[i].term, { cps: 260 }); }
+        if (gen !== S.gen) return;
+      }
+      drawRows();
+      b.querySelectorAll('.tstep button').forEach((x) => { x.onclick = () => { S.pIdx = +x.dataset.i; drawTopic(); }; });
+      const add = () => { const inp = b.querySelector('#add'); const v = inp.value.trim().toLowerCase(); if (!v || v.split(/\s+/).length > 3 || list.filter((p) => !p.off).length >= 5 || list.some((p) => p.term === v)) return; list.push({ term: v, mine: true }); inp.value = ''; drawRows(); };
+      b.querySelector('#addb').onclick = add; b.querySelector('#add').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); add(); } };
+      b.querySelector('[data-back]').onclick = () => { if (S.pIdx > 0) { S.pIdx -= 1; drawTopic(); } else go(2); };
+      b.querySelector('[data-next]').onclick = () => { if (last) go(4); else { S.pIdx += 1; drawTopic(); } };
+    }
+  }
+
+  /* ---------------- Q4: ready ---------------- */
+  function q4(el) {
+    const n = S.topics.length; const k = phraseCount();
+    el.innerHTML = `<div class="q-k">Ready</div><p class="ready-s rise">Check how demand is moving for <button type="button" data-j="2">${n} topic${n === 1 ? '' : 's'}</button> around <button type="button" data-j="1">${E(S.practice.title)}</button> in <button type="button" data-j="1">${E(S.practice.city)}</button>, read through <button type="button" data-j="3">${k} phrases</button>.</p>
+      <div class="q-foot" style="margin-top:44px"><button type="button" class="back" data-back>← Back</button><button type="button" class="btn btn-go btn-big ready" data-next id="run">Run it · ${price()}</button><span class="small">About a minute. It keeps going if this page is closed.</span></div>`;
+    el.querySelectorAll('[data-j]').forEach((x) => { x.onclick = () => go(+x.dataset.j); });
+    el.querySelector('[data-back]').onclick = () => go(3);
+    el.querySelector('#run').onclick = async (e) => { const r = e.currentTarget; r.classList.remove('ready'); r.disabled = true; r.innerHTML = `Starting…${FL.sheen()}`; await FL.wait(1000); live(); };
+  }
+
+  /* ---------------- Past checks ---------------- */
+  function pastChecks(host) {
+    host.innerHTML = `<section class="pastwrap"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:12px"><h2 class="eyebrow" style="margin:0;flex:1">Past checks <span style="font-weight:500;text-transform:none;letter-spacing:0" id="pn"></span></h2>
+      <button type="button" class="switch ${S.clientsOnly ? 'on' : ''}" id="co" role="switch"><i></i>Clients only</button><span id="cf"></span></div><div id="rows" style="display:flex;flex-direction:column;gap:8px"></div></section>`;
+    const names = PAST.filter((r) => r.client).map((r) => r.name);
+    FL.dropdown(host.querySelector('#cf'), { label: 'Filter past checks by client', value: S.clientFilter, options: [{ value: 'all', label: 'All clients and prospects' }, ...names.map((n) => ({ value: n, label: n, count: 1 }))], onChange: (v) => { S.clientFilter = v; rows(); } });
+    host.querySelector('#co').onclick = (e) => { S.clientsOnly = !S.clientsOnly; e.currentTarget.classList.toggle('on', S.clientsOnly); rows(); };
+    const rows = () => {
+      const list = PAST.filter((r) => (!S.clientsOnly || r.client) && (S.clientFilter === 'all' || r.name === S.clientFilter));
+      host.querySelector('#pn').textContent = list.length;
+      host.querySelector('#rows').innerHTML = list.map((r, i) => `<button type="button" class="past" data-s="${r.status}" style="animation-delay:${i * 40}ms"><span class="p1"><b>${E(r.name)}</b><span>${E(r.city)} <span class="tag ${r.client ? 'a' : ''}" style="margin-left:6px">${r.client ? 'Client' : 'Prospect'}</span></span></span>
+        <span>${r.status === 'running' ? '<span style="display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--aInk);font-size:13.5px"><span class="turning"></span>Reading Google Trends</span>' : r.status === 'failed' ? '<span style="font-weight:600;color:var(--down);font-size:13.5px">Stopped</span>' : `<b class="grad" style="font-size:22px;font-weight:900;letter-spacing:-.02em">${E(r.mt.split(' rising')[0])}</b><span style="display:block;font-size:12px;color:var(--muted)">topics rising</span>`}</span>
+        <span class="p3">${E(r.when)}<br>${FL.money(r.cost)}</span></button>`).join('') || '<p class="small">No checks for this client yet.</p>';
+      host.querySelectorAll('.past').forEach((x) => { x.onclick = () => { S.practice = { ...GS.practice, domain: GS.practice.domain, city: GS.practice.city }; seedDefaults(); if (x.dataset.s === 'running') live(); else result(); }; });
+    };
+    rows();
+  }
+  function seedDefaults() { S.topics = D.topics.map((t) => t.topic); S.tilesTyped = true; S.phraseWait = true; S.topics.forEach((t) => { S.typed.add(t); if (!S.drafts[t]) { const d = topicData(t); S.drafts[t] = [...d.phrases.map((p) => ({ term: p.phrase })), ...(d.gateRefused || []).map((g) => ({ term: g.phrase, off: true, why: g.why, gate: true }))]; } }); }
+
+  /* The checked topics: phrases as edited, combined into one line per topic. */
+  function finalTopics() {
+    return S.topics.map((name, k) => {
+      const d = topicData(name); const lead = d.phrases[0].values;
+      const phrases = okPhrases(name).map((p) => { const have = d.phrases.find((x) => x.phrase === p.term); if (have) return { phrase: p.term, values: have.values }; const r = seeded(p.term); const f = 0.35 + r() * 0.3; return { phrase: p.term, values: lead.map((v) => Math.max(1, Math.round(v * f + r() * 6 - 3))) }; });
+      const combined = lead.map((_, i) => Math.round(phrases.reduce((a, p) => a + p.values[i], 0) / phrases.length));
+      return { ...d, color: C[k % 5], phrases, combined };
+    });
+  }
+
+  /* ---------------- live run ---------------- */
+  async function live() {
+    const T = finalTopics(); const total = T.reduce((a, t) => a + t.phrases.length, 0);
+    shell.right(`<b style="color:var(--ink)">${E(S.practice.title)}</b><span style="color:var(--muted)">Check running</span>`);
+    page.innerHTML = `<div class="rise"><div class="eyebrow" style="display:flex;align-items:center;gap:10px"><span class="turning"></span>Reading Google Trends · ${E(D.practice.state)}</div>
+      <div style="height:30px;margin-top:12px;font-size:13.5px;color:var(--muted)"><span id="ask">Starting the check</span><div class="shimmer-line"></div></div>
+      <div id="lc" style="margin-top:8px"></div>
+      <div class="live-row"><div><div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:14px"><span class="h-big grad" id="big">0 of ${T.length}</span><span style="font-size:17px;color:var(--muted)">topics are rising so far</span></div>
+        <p class="lede" style="margin:14px 0 0">Each line is one topic, drawn as its phrases come back. The count settles as the last topics land.</p>
+        <p class="mono" style="font-size:12px;color:var(--faint);margin-top:18px" id="spend"></p></div>
+        <ul class="tl" id="tl">${T.map((t) => `<li><span class="sw" style="background:${t.color}"></span><span>${E(t.topic)}</span><span class="st">waiting</span></li>`).join('')}</ul></div></div>`;
+    const lines = T.map((t) => ({ key: t.topic, label: t.topic, short: t.short, color: t.color, width: 2, values: t.combined.map(() => null), hidden: true }));
+    const chart = FL.lineChart(document.getElementById('lc'), { months: D.months, lines, height: 250, readoutDefault: `<b>${T.length} topics</b><span>Google interest in ${E(D.practice.state)}, each topic against its own busiest month</span>`, draw: false });
+    const lis = document.querySelectorAll('#tl li'); let read = 0; let up = 0; const ask = document.getElementById('ask'); const spend = document.getElementById('spend');
+    const money = () => { spend.textContent = `${read} of ${total} phrases read · ${FL.money(read * D.pricePerPhrase)} spent so far · keeps going if this page is closed`; };
+    money();
+    for (let k = 0; k < T.length; k++) {
+      const t = T[k]; const li = lis[k]; li.className = 'now'; li.querySelector('.st').textContent = `0 of ${t.phrases.length} phrases`;
+      for (let j = 0; j < t.phrases.length; j++) {
+        ask.innerHTML = 'Reading “<span id="aq"></span>” on Google Trends';
+        await FL.type(document.getElementById('aq'), t.phrases[j].phrase, { cps: 240 });
+        await FL.wait(260); read += 1; money(); li.querySelector('.st').textContent = `${j + 1} of ${t.phrases.length} phrases`;
+      }
+      lines[k].hidden = false;
+      for (let m = 0; m <= 60; m += FL.reduce ? 60 : 3) { lines[k].values = t.combined.map((v, i) => (i <= m ? v : null)); chart.update({ lines }); await FL.wait(16); }
+      lines[k].values = t.combined; chart.update({ lines });
+      const v = VERD[t.verdict]; li.className = 'done'; li.querySelector('.st').innerHTML = `<span style="color:${v[2]}">${v[1]} ${v[0]}</span>`;
+      if (rising(t)) { up += 1; const big = document.getElementById('big'); big.textContent = `${up} of ${T.length}`; big.animate([{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 400, easing: 'ease-out' }); }
+    }
+    ask.textContent = 'All phrases are in. Putting the report together.';
+    await FL.wait(1300);
+    result(T);
+  }
+
+  /* ---------------- result ---------------- */
+  let spy = null;
+  function searchesChart(host, t) {
+    const lab = D.months.slice(49); const a = t.searches12; const b = t.prior12;
+    const W = Math.max(380, Math.round(host.clientWidth || 560)); const H = 180; const PL = 40; const PR = 84; const PT = 10; const PB = 24;
+    const top = Math.max(...a, ...b) * 1.1; const stepK = top > 4000 ? 2000 : top > 1000 ? 1000 : 200; const mx = Math.ceil(top / stepK) * stepK;
+    const x = (i) => PL + (i / 11) * (W - PL - PR); const y = (v) => PT + (1 - v / mx) * (H - PT - PB);
+    const p = (vals) => vals.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+    const def = `<b>${FL.fmt(Math.round(a.reduce((s, v) => s + v, 0) / 12))}</b><span>a month on average this year, against ${FL.fmt(Math.round(b.reduce((s, v) => s + v, 0) / 12))} the year before</span>`;
+    host.innerHTML = `<div class="readout">${def}</div><svg viewBox="0 0 ${W} ${H}" style="display:block;width:100%;overflow:visible">
+      ${[0, mx / 2, mx].map((v) => `<line x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}" stroke="#EEF0F3"/><text x="${PL - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="#667085">${v >= 1000 ? `${+(v / 1000).toFixed(1)}k` : v}</text>`).join('')}
+      ${lab.map((m, i) => (i % 2 === 0 ? `<text x="${x(i)}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#667085">${m.slice(0, 3)}</text>` : '')).join('')}
+      <path d="${p(b)}" fill="none" stroke="#98A2B3" stroke-width="1.6" stroke-dasharray="4 3"/><path d="${p(a)}" fill="none" stroke="${t.color}" stroke-width="2"/>
+      <text x="${x(11) + 8}" y="${y(a[11]) + 4}" font-size="11.5" font-weight="700" fill="#273043">This year</text><text x="${x(11) + 8}" y="${y(b[11]) + (Math.abs(y(a[11]) - y(b[11])) < 14 ? (y(b[11]) > y(a[11]) ? 14 : -10) : 4)}" font-size="11.5" fill="#273043">Year before</text>
+      <g class="hv" style="display:none"><line class="hl" y1="${PT}" y2="${H - PB}" stroke="#94A3B8" stroke-dasharray="3 3"/><circle class="c1" r="3.5" fill="${t.color}" stroke="#fff" stroke-width="1.5"/><circle class="c2" r="3.5" fill="#98A2B3" stroke="#fff" stroke-width="1.5"/></g>
+      <rect class="hit" x="${PL}" y="0" width="${W - PL - PR}" height="${H}" fill="transparent"/></svg>`;
+    const s = host.querySelector('svg'); const g = s.querySelector('.hv'); const ro = host.querySelector('.readout');
+    s.querySelector('.hit').onmousemove = (e) => { const r = s.getBoundingClientRect(); const i = Math.max(0, Math.min(11, Math.round(((((e.clientX - r.left) / r.width) * W) - PL) / (W - PL - PR) * 11)));
+      g.style.display = ''; g.querySelector('.hl').setAttribute('x1', x(i)); g.querySelector('.hl').setAttribute('x2', x(i));
+      g.querySelector('.c1').setAttribute('cx', x(i)); g.querySelector('.c1').setAttribute('cy', y(a[i])); g.querySelector('.c2').setAttribute('cx', x(i)); g.querySelector('.c2').setAttribute('cy', y(b[i]));
+      ro.innerHTML = `<b>${lab[i]}</b><span><span class="sw" style="background:${t.color}"></span>This year <b>${FL.fmt(a[i])}</b></span><span><span class="sw" style="background:#98A2B3"></span>Year before <b>${FL.fmt(b[i])}</b></span>`; };
+    s.querySelector('.hit').onmouseleave = () => { g.style.display = 'none'; ro.innerHTML = def; };
+  }
+  function headline(t) {
+    const c = change(t.yoy);
+    return { growing: `${t.topic} is growing, ${c}.`, emerging: `${t.topic} is small but climbing fast, ${c}.`, stable: `${t.topic} is holding steady, ${c}.`, decaying: `${t.topic} is losing interest, ${c}.` }[t.verdict];
+  }
+  function result(T0) {
+    if (spy) spy.disconnect();
+    const T = (T0 || finalTopics()).slice().sort((a, b) => b.rating - a.rating);
+    shell.right(`<b style="color:var(--ink)">${E(S.practice.title)}</b><span style="color:var(--muted)">Check · Oct 29</span><button type="button" class="btn btn-line" id="share">Share report</button><button type="button" class="btn btn-line" id="newc">New check</button>`);
+    document.getElementById('newc').onclick = () => { Object.assign(S, { step: 1, practice: null, picked: 0, topics: [], tilesTyped: false, drafts: {}, pIdx: 0, phraseWait: false }); S.typed.clear(); frame(); go(1); };
+    document.getElementById('share').onclick = () => toast('Report link and access code copied');
+    const ups = T.filter(rising).sort((a, b) => b.yoy - a.yoy); const downs = T.filter((t) => t.verdict === 'decaying').sort((a, b) => a.yoy - b.yoy);
+    const big = T.slice().sort((a, b) => b.searchesPerMonth - a.searchesPerMonth)[0];
+    const lc = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+    const city = S.practice.city.split(',')[0];
+    const h1 = ups.length ? `Demand for ${ups.slice(0, 2).map((t) => lc(t.topic)).join(' and ')} is climbing around ${city}.${downs.length ? ` ${downs[0].topic} is fading.` : ''}` : `Demand around ${city} is holding steady across these topics.`;
+    const cards = [ups[0] && ['Fastest rising', `${ups[0].topic}, ${change(ups[0].yoy).replace(' on last year', '')}`, ups[0]], ['Biggest demand', `${big.topic}, about ${FL.fmt(big.searchesPerMonth)} searches a month`, big], downs[0] && ['Fading', `${downs[0].topic}, ${change(downs[0].yoy).replace(' on last year', '')}`, downs[0], true]].filter(Boolean);
+    const id = (t) => `t-${t.topic.toLowerCase().replace(/[^a-z]+/g, '-')}`;
+    page.innerHTML = `<div class="rep fade"><nav class="rnav" aria-label="Report contents"><div class="eyebrow" style="margin:0 0 10px 10px">On this page</div>
+      ${T.map((t, i) => `<a href="#${id(t)}" data-id="${id(t)}"><span class="no">${i + 1}</span><span><b>${E(t.topic)}</b><small>${VERD[t.verdict][0]} · rated ${t.rating} of 10</small></span></a>`).join('')}
+      <div class="rprog"><i id="rp"></i></div><button type="button" class="btn-link" style="margin:14px 0 0 10px;font-size:13px;text-decoration:none" id="top">Back to the top ↑</button></nav>
+      <div style="min-width:0"><div class="opener" style="padding:44px 0 20px"><div class="eyebrow" style="color:var(--aInk)">${T.length} topics · ${E(D.practice.state)} · read as of ${D.asOf}</div><h1>${E(h1)}</h1>
+        <div class="ocards">${cards.map(([k, v, t, bad]) => `<button type="button" class="ocard" data-go="${id(t)}"><div class="k" style="${bad ? 'color:#9F1239' : ''}">${k}</div><div class="v">${E(v)}</div><div class="g">See the topic ↓</div></button>`).join('')}</div></div>
+        ${T.map((t, i) => `<section class="tsec" id="${id(t)}"><div class="eyebrow" style="color:var(--aInk);display:flex;align-items:center;gap:10px"><span class="tag a" style="font-weight:800">${i + 1}</span>${E(t.topic)} ${vtag(t)}</div>
+          <h2>${E(headline(t))}</h2><p class="lede" style="margin:0">About ${FL.fmt(t.searchesPerMonth)} searches a month in ${E(D.practice.state)}, busiest in ${t.peakMonthName}.</p>
+          <div class="ctrl"><div class="toggles" data-tg></div><span data-rg></span></div><div data-ch></div>
+          <div class="duo"><div><div class="sublab">Searches a month, this year and the year before</div><div data-sc></div></div>
+            <div class="rate"><div class="sublab"><span class="tipword" data-tip-h="Rating" data-tip="Orders the topics so the strongest opportunity comes first. It never changes the call: a falling topic is still falling.">Rating</span></div>
+              <div style="margin-top:6px"><span class="big grad">${t.rating}</span><span style="font-size:15px;color:var(--muted)"> of 10</span></div>
+              <ul>${t.ratingParts.map((p) => `<li class="${p.points ? '' : 'z'}"><span>${E(p.label)}</span><b>+${p.points}</b></li>`).join('')}</ul></div></div>
+          <div class="nexts"><button type="button" class="btn ${t.verdict === 'decaying' ? 'btn-line' : 'btn-soft'}" data-plan="${E(t.topic)}">Plan a page on ${E(lc(t.topic))}</button>${t.verdict === 'decaying' ? '<span class="small">Interest is falling: a page here is lower priority.</span>' : ''}</div></section>`).join('')}</div></div>`;
+    T.forEach((t) => {
+      const sec = document.getElementById(id(t)); const greys = ['#475569', '#8B98A9', '#64748B', '#B6BCC8'];
+      const lines = t.phrases.map((p, k) => ({ key: p.phrase, label: p.phrase, values: p.values, color: k === 0 ? t.color : greys[(k - 1) % 4], width: k === 0 ? 2.4 : 1.6, lead: k === 0, dash: k === 2 ? '4 3' : '' }));
+      const def = `<b>${E(t.topic)}</b><span>${E(change(t.yoy))} · busiest in ${t.peakMonthName}</span>`;
+      const ch = FL.lineChart(sec.querySelector('[data-ch]'), { months: D.months, lines, height: 250, readoutDefault: def });
+      const tg = sec.querySelector('[data-tg]');
+      tg.innerHTML = lines.map((l) => `<button type="button" class="tog" data-k="${E(l.key)}"><i style="background:${l.color}"></i>${E(l.label)}</button>`).join('');
+      tg.querySelectorAll('.tog').forEach((b) => { b.onclick = () => { const l = lines.find((x) => x.key === b.dataset.k); if (!l.hidden && lines.filter((x) => !x.hidden).length === 1) return; l.hidden = !l.hidden; b.classList.toggle('off', l.hidden); ch.update({ lines }); }; });
+      FL.segmented(sec.querySelector('[data-rg]'), { label: 'Range', value: '60', options: [{ value: '12', label: '12 months' }, { value: '24', label: '24 months' }, { value: '60', label: '5 years' }], onChange: (v) => ch.update({ range: +v }, true) });
+      const sc = sec.querySelector('[data-sc]');
+      if (t.searches12) searchesChart(sc, t); else sc.innerHTML = '<p class="small" style="margin-top:10px">No search counts for this topic yet: it is too small for the clickstream panel to size.</p>';
+      sec.querySelector('[data-plan]').onclick = (e) => { const b = e.currentTarget; b.innerHTML = `<span style="color:var(--up)">✓</span> In the calendar ideas for ${E(S.practice.title)}`; b.disabled = true; };
+    });
+    const jump = (i) => document.getElementById(i)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    page.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => jump(b.dataset.go); });
+    page.querySelectorAll('.rnav a').forEach((a) => { a.onclick = (e) => { e.preventDefault(); jump(a.dataset.id); }; });
+    document.getElementById('top').onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    spy = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) page.querySelectorAll('.rnav a').forEach((a) => a.classList.toggle('on', a.dataset.id === e.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
+    page.querySelectorAll('.tsec').forEach((s) => spy.observe(s));
+    window.scrollTo({ top: 0 });
+  }
+  const rp = () => { const el = document.getElementById('rp'); if (!el) return; const r = page.getBoundingClientRect(); const p = Math.max(0, Math.min(1, -r.top / Math.max(1, r.height - innerHeight))); el.style.width = `${Math.round(p * 100)}%`; };
+  window.addEventListener('scroll', rp, { passive: true });
+  function toast(msg) { const t = FL.h(`<div class="toast">${E(msg)}</div>`); document.body.appendChild(t); setTimeout(() => t.remove(), 2200); }
+
+  frame(); go(1);
+})();
+</script></body></html>
