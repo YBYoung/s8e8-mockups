@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Described: Reader Popup</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js"></script>
+<script src="ai-visibility-described-data.js?v=1029e"></script>
+<script src="ai-visibility-described-kit.js?v=1029e"></script>
+<style>
+/* the Insights tab as it is live: contents rail on the left, sections in the standard frame */
+.tabpage { display:grid; grid-template-columns:210px minmax(0,1fr); gap:36px; align-items:start; }
+.rail { position:sticky; top:118px; padding-top:48px; align-self:start; }
+.rail .eyebrow { margin:0 0 10px 10px; }
+.ri { display:grid; grid-template-columns:20px minmax(0,1fr); gap:6px; padding:8px 10px; border-radius:8px; font:600 14px/1.3 Inter; color:var(--ink); }
+.ri small { display:block; font:500 12.5px Inter; color:var(--muted); margin-top:2px; } .ri small.alert { color:#BE123C; }
+.ri .n { display:inline-grid; place-items:center; width:18px; height:18px; border-radius:5px; font:700 11px Inter; color:var(--muted); }
+.ri.on { background:var(--a-tint); } .ri.on .n { background:var(--a); color:#fff; } .ri.on { color:var(--a-ink); }
+.isec { display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:40px; padding:48px 0; border-top:1px solid var(--line); align-items:start; }
+.isec .eyebrow { display:flex; align-items:center; }
+.isec h2 { margin:8px 0 10px; font:800 28px/1.2 Inter; letter-spacing:-.02em; color:var(--ink); max-width:700px; }
+.isec .lede { font-size:16px; max-width:600px; }
+.list { margin-top:22px; max-width:560px; }
+.faded { opacity:.45; }
+/* section 3: the figure on the right is the list you pick from */
+.figh { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:16px 0 2px; padding-left:10px; } .figh:first-child { margin-top:0; }
+.pick { width:100%; display:grid; grid-template-columns:minmax(0,1fr) 150px 58px; gap:12px; align-items:center; background:none; border:0; border-radius:8px; padding:6px 10px; text-align:left; font:400 14px Inter; color:var(--ink); outline:none; }
+.pick:focus-visible { box-shadow:0 0 0 2px var(--a); }
+.pick:hover { background:#FAFAFB; } .pick.on { background:var(--a-tint); color:var(--a-ink); font-weight:600; }
+.pick .bar { display:block; height:10px; } .pick .bar i { display:block; height:100%; border-radius:0 4px 4px 0; min-width:3px; }
+.pick .ct { text-align:right; font-size:13.5px; color:var(--muted); } .pick .ct b { color:var(--ink); }
+.read { min-height:520px; }
+.read .tag { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; }
+.read h3 { margin:4px 0 6px; font:700 15px/1.35 Inter; color:var(--ink); }
+.read .q { font-size:14px; } .read .q cite a { white-space:nowrap; }
+.read .worth { display:block; } .read .worth .btn { display:block; margin:10px 0 0; }
+.figh span { font-weight:500; letter-spacing:0; text-transform:none; font-size:12.5px; margin-left:6px; }
+.byai { display:flex; flex-wrap:wrap; gap:4px 14px; font-size:13px; color:var(--muted); margin:0 0 14px; } .byai b { color:var(--ink); }
+.sov { display:grid; grid-template-columns:minmax(0,1fr) 120px 40px; gap:10px; align-items:center; font-size:13.5px; color:var(--ink); padding:5px 0; }
+.sov .bar { height:10px; border-radius:0 4px 4px 0; display:block; }
+
+/* reading a whole answer in place */
+.q .readall { background:none; border:0; padding:0; margin-left:10px; color:var(--a-ink); font:600 12.5px Inter; white-space:nowrap; }
+.whole { display:grid; grid-template-rows:0fr; transition:grid-template-rows .35s cubic-bezier(.4,0,.2,1); } .q.open .whole { grid-template-rows:1fr; } .whole > div { overflow:hidden; min-height:0; }
+.ans { margin-top:12px; padding:14px 16px; background:#fff; border-radius:8px; font-size:14px; line-height:1.6; color:var(--body); }
+.ans p { margin:0 0 10px; } .ans ul { margin:0 0 10px; padding-left:20px; } .ans li { margin:3px 0; } .ans h4 { margin:12px 0 6px; font:700 14px Inter; color:var(--ink); }
+.ans .pm { background:#EEF0FF; color:#4338CA; font-weight:600; border-radius:4px; padding:0 2px; }
+.ans .src { display:inline-block; margin:0 2px; padding:0 6px; border-radius:6px; background:#EEF0F4; color:#475467; font:500 11.5px Inter; vertical-align:1px; }
+.ans .hl { border-radius:4px; padding:1px 2px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+.ans .hl.praise { background:#DCFCE7; } .ans .hl.warn { background:#FBD5DD; } .ans .hl.list { background:#E4E7EC; }
+.wfoot { display:flex; gap:16px; align-items:center; margin-top:10px; font-size:12.5px; }
+.wfoot .less { background:none; border:0; padding:0; color:var(--a-ink); font:600 12.5px Inter; }
+.wfoot a { color:var(--muted); }
+.q.open cite .readall { display:none; }
+
+/* the reader popup */
+.q .readall { background:none; border:0; padding:0; margin-left:10px; color:var(--a-ink); font:600 12.5px Inter; white-space:nowrap; }
+.rmodal { position:fixed; inset:0; z-index:60; background:rgba(11,16,32,.38); display:grid; place-items:center; opacity:0; transition:opacity .18s; }
+.rmodal.in { opacity:1; } .rmodal .rbox { transform:translateY(8px) scale(.99); transition:transform .2s cubic-bezier(.2,.8,.2,1); } .rmodal.in .rbox { transform:none; }
+.rbox { width:min(1180px, 94vw); height:min(820px, 88vh); background:#fff; border-radius:14px; box-shadow:0 24px 60px rgba(16,24,40,.22); display:flex; flex-direction:column; overflow:hidden; }
+.rhead { display:flex; justify-content:space-between; align-items:center; padding:16px 22px; border-bottom:1px solid var(--line); }
+.rtitle { font:800 18px Inter; color:var(--ink); margin-top:2px; }
+.rx:focus { outline:none; } .rx:focus-visible { box-shadow:0 0 0 2px var(--a); }
+.rx { width:34px; height:34px; border-radius:8px; border:1px solid var(--line); background:#fff; font-size:20px; line-height:1; color:var(--muted); }
+.rcols { flex:1; min-height:0; display:grid; grid-template-columns:250px 300px minmax(0,1fr); }
+.rtopics, .rlist, .rread { overflow:auto; min-height:0; }
+.rtopics { padding:14px 10px; border-right:1px solid var(--line); background:#FCFCFD; }
+.rgrp { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin:14px 8px 4px; } .rgrp:first-child { margin-top:0; }
+.rtopic { width:100%; display:grid; grid-template-columns:12px minmax(0,1fr) auto; gap:8px; align-items:center; background:none; border:0; border-radius:8px; padding:7px 8px; text-align:left; font:500 13.5px Inter; color:var(--ink); }
+.rtopic .sw { margin:0; } .rtopic .ct { font-size:12.5px; } .rtopic:hover { background:#F2F4F7; } .rtopic.on { background:var(--a-tint); color:var(--a-ink); font-weight:600; }
+.rlist { padding:14px 12px; border-right:1px solid var(--line); }
+.rlh { font-size:12.5px; color:var(--muted); margin:0 6px 8px; }
+.rcard { width:100%; display:block; text-align:left; background:none; border:0; border-radius:10px; padding:10px 12px; margin-bottom:4px; color:var(--body); }
+.rcard:hover { background:#FAFAFB; } .rcard.on { background:var(--a-tint); }
+.rmeta { display:block; font:600 12.5px Inter; color:var(--ink); } .rq { display:block; font-size:12.5px; color:var(--muted); margin:2px 0 4px; }
+.rsnip { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; font-size:13.5px; line-height:1.45; color:var(--ink); }
+.rread { padding:20px 28px 0; display:flex; flex-direction:column; }
+.rtag { font:700 11px Inter; letter-spacing:.1em; text-transform:uppercase; }
+.rwho { font-size:13.5px; color:var(--muted); margin:4px 0 10px; }
+.rans { margin:0; padding:0; background:none; font-size:15px; flex:1; }
+.rfoot { position:sticky; bottom:0; display:flex; gap:14px; align-items:center; padding:12px 0 14px; margin-top:8px; background:linear-gradient(to bottom, rgba(255,255,255,.85), #fff 30%); border-top:1px solid #F0F2F5; font-size:13px; color:var(--muted); }
+.rfoot button { border:1px solid var(--line); background:#fff; border-radius:8px; padding:6px 12px; font:600 13px Inter; color:var(--ink); } .rfoot button:disabled { opacity:.35; cursor:default; }
+.rfoot a { margin-left:auto; color:var(--muted); }
+@media (max-width:1100px) { .tabpage { grid-template-columns:1fr; } .rail { display:none; } }
+@media (max-width:900px) { .isec { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div id="top"></div>
+<main class="shell" id="m"></main>
+<script>
+const { D, ai, lower, toneRows, offers } = DK;
+const FULL = window.DV2_ANSWERS || null, PRACTICE = 'Kari Mann Dental Studio';
+const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+/** A line as the quote was cleaned: links to their words, citation marks, bold and code marks gone, long dashes as commas. */
+const plain = (t) => t.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\[\d+\]/g, '').replace(/\*\*|__|`/g, '').replace(/\\([^\w\s])/g, '$1')
+  .replace(/\s*[—–]\s*/g, ', ').replace(/\s+([.,;:!?])/g, '$1').replace(/\s+/g, ' ').trim();
+const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return 'source'; } };
+function inline(t) {   // markdown links become source chips or words, bold stays bold, the practice's name is marked
+  let h = esc(t.replace(/\s*[\u2014\u2013]\s*/g, ', ')).replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, (m, label, url) => (/^\d+$|^https?:|\.(com|org|net)/.test(label) ? `<span class="src">${host(url)}</span>` : label))
+    .replace(/\[(\d+)\]/g, '').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  return h.split(PRACTICE).join(`<span class="pm">${PRACTICE}</span>`);
+}
+function answerHtml(id, quoteText, kind) {
+  const want = plain(quoteText), head = want.slice(0, 48);
+  let hit = false;
+  const line = (raw) => {
+    const body = raw.replace(/^\s*(?:[-*]|\d+\.)\s+/, '').replace(/^#+\s*/, '');
+    const p = plain(body);
+    if (!hit && (p.includes(want) || (head.length > 30 && p.includes(head)))) {
+      hit = true; const at = p.includes(want) ? p.indexOf(want) : p.indexOf(head), len = p.includes(want) ? want.length : Math.max(head.length, p.indexOf('.', at) + 1 - at);
+      const mark = (x) => esc(x).split(PRACTICE).join(`<span class="pm">${PRACTICE}</span>`);
+      return `${mark(p.slice(0, at))}<span class="hl ${kind}" data-hl>${mark(p.slice(at, at + len))}</span>${mark(p.slice(at + len))}`;
+    }
+    return inline(body);
+  };
+  return (FULL[id] || '').split(/\n\s*\n/).map((block) => {
+    const lines = block.split('\n').filter((l) => l.trim());
+    if (!lines.length) return '';
+    if (lines.every((l) => /^\s*(?:[-*]|\d+\.)\s+/.test(l))) return `<ul>${lines.map((l) => `<li>${line(l)}</li>`).join('')}</ul>`;
+    if (/^#+\s/.test(lines[0])) return `<h4>${line(lines[0])}</h4>${lines.length > 1 ? `<p>${lines.slice(1).map(line).join('<br>')}</p>` : ''}`;
+    return `<p>${lines.map(line).join('<br>')}</p>`;
+  }).join('');
+}
+/** A quote with a way into the reader. */
+const quote = (q, warn) => `<div class="q ${warn ? 'warn' : ''}">"${q.text}"<cite>${ai(q.surface)} &nbsp;"${q.question}"<button class="readall" type="button" data-a="${q.answer_id}">Read the whole answer</button></cite></div>`;
+
+/* ---- the reader popup: topics, their answers, the whole answer ---- */
+const TOPICS = [
+  ...D.themes.map((t, i) => ({ id: `t${i}`, grp: 'What AI praises', name: t.name, ct: `${t.answers}`, kind: 'praise', quotes: t.quotes })),
+  ...D.concerns.map((c, i) => ({ id: `c${i}`, grp: 'What AI warns about', name: c.name, ct: `${c.answers} of ${c.of}`, kind: 'warn', quotes: c.quotes })),
+  { id: 'list', grp: 'Listed, not praised', name: 'Listed like a directory', ct: `${D.tone.neutral}`, kind: 'list', quotes: [D.listed.example] },
+];
+const KIND = { praise: ['Praised for', 'var(--praise)'], warn: ['Warned about', 'var(--warn)'], list: ['Listed, not praised', 'var(--muted)'] };
+const R = { topic: null, at: 0 };
+document.body.insertAdjacentHTML('beforeend', `<div class="rmodal" id="rm" hidden><div class="rbox" role="dialog" aria-modal="true" aria-label="What AI said">
+  <div class="rhead"><div><div class="eyebrow">What AI said about</div><div class="rtitle">${PRACTICE}</div></div><button class="rx" type="button" aria-label="Close">×</button></div>
+  <div class="rcols"><nav class="rtopics" id="rt"></nav><div class="rlist" id="rl"></div><article class="rread" id="rr"></article></div></div></div>`);
+const rm = document.getElementById('rm');
+function drawTopics() {
+  let g = '';
+  document.getElementById('rt').innerHTML = TOPICS.map((t) => { const h = t.grp !== g ? `<div class="rgrp">${t.grp}</div>` : ''; g = t.grp;
+    return `${h}<button class="rtopic${t.id === R.topic.id ? ' on' : ''}" data-t="${t.id}"><span class="sw" style="background:${KIND[t.kind][1]}"></span><span>${t.name}</span><span class="ct">${t.ct}</span></button>`; }).join('');
+}
+function drawList() {
+  const t = R.topic;
+  document.getElementById('rl').innerHTML = `<div class="rlh">${t.quotes.length === 1 ? '1 answer' : `${t.quotes.length} answers`} quoted</div>` + t.quotes.map((q, i) =>
+    `<button class="rcard${i === R.at ? ' on' : ''}" data-i="${i}"><span class="rmeta">${ai(q.surface)}</span><span class="rq">"${q.question}"</span><span class="rsnip">"${q.text}"</span></button>`).join('');
+}
+function drawAnswer() {
+  const t = R.topic, q = t.quotes[R.at], [label, color] = KIND[t.kind];
+  const body = FULL && FULL[q.answer_id] ? answerHtml(q.answer_id, q.text, t.kind) : '<p>This answer did not load. Reload the page to read it here.</p>';
+  const rr = document.getElementById('rr');
+  rr.innerHTML = `<div class="rtag" style="color:${color}">${label}: ${t.name}</div><div class="rwho">${ai(q.surface)} asked "${q.question}"</div>
+    <div class="ans rans">${body}</div>
+    <div class="rfoot"><button type="button" data-step="-1" ${R.at === 0 ? 'disabled' : ''}>‹ Previous</button><span>${R.at + 1} of ${t.quotes.length}</span><button type="button" data-step="1" ${R.at === t.quotes.length - 1 ? 'disabled' : ''}>Next ›</button><a href="#" onclick="return false">See it among all answers</a></div>`;
+  rr.scrollTop = 0;
+  requestAnimationFrame(() => { const hl = rr.querySelector('[data-hl]'); if (hl) hl.scrollIntoView({ block: 'center' }); });
+}
+function show(topicId, at = 0) { R.topic = TOPICS.find((t) => t.id === topicId); R.at = at; drawTopics(); drawList(); drawAnswer(); }
+function openReader(answerId) {
+  const t = TOPICS.find((x) => x.id === CURRENT && x.quotes.some((q) => q.answer_id === answerId)) || TOPICS.find((x) => x.quotes.some((q) => q.answer_id === answerId));
+  show(t.id, t.quotes.findIndex((q) => q.answer_id === answerId));
+  rm.hidden = false; document.body.style.overflow = 'hidden'; requestAnimationFrame(() => rm.classList.add('in'));
+  rm.querySelector('.rx').focus();
+}
+function closeReader() { rm.classList.remove('in'); document.body.style.overflow = ''; setTimeout(() => { rm.hidden = true; }, 180); }
+let CURRENT = 't0';
+document.addEventListener('click', (e) => {
+  const open = e.target.closest('.readall'); if (open) { openReader(+open.dataset.a); return; }
+  if (e.target === rm || e.target.closest('.rx')) { closeReader(); return; }
+  const tp = e.target.closest('.rtopic'); if (tp) { show(tp.dataset.t); return; }
+  const cd = e.target.closest('.rcard'); if (cd) { R.at = +cd.dataset.i; drawList(); drawAnswer(); return; }
+  const st = e.target.closest('[data-step]'); if (st && !st.disabled) { R.at += +st.dataset.step; drawList(); drawAnswer(); }
+});
+document.addEventListener('keydown', (e) => {
+  if (rm.hidden) return;
+  if (e.key === 'Escape') closeReader();
+  const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+  if (step && R.at + step >= 0 && R.at + step < R.topic.quotes.length) { e.preventDefault(); R.at += step; drawList(); drawAnswer(); }
+});
+TRK.topbar(document.getElementById('top'), { mock: '3 in the page, the reader popup', tab: 'Insights', note: 'Read the whole answer opens a reader: topics on the left, their answers in the middle, the whole answer on the right with the quoted sentence tinted. Esc or a click outside closes it; arrow keys step through answers. Inside the Insights tab as it is live: the contents rail, the end of section 2, the start of section 4. Real data: Kari Mann Dental Studio\'s Snapshot of Oct 28.' });
+const rail = [['Facts AI gets wrong', '19 wrong facts', 'alert'], ['AI Share of Voice', 'about 9 of every 100'], ['How AI describes it', `${D.tone.positive} of ${D.named} praise it`],
+  ['Every time, sometimes, never', '25 to win'], ['Own pages AI cites', '15 pages'], ['Where sources come from', 'coastdental.com leads']];
+const items = [
+  ...D.themes.map((t, i) => ({ id: `t${i}`, grp: 'What AI praises', name: t.name, w: t.answers / D.named, c: 'var(--praise)', ct: `<b>${t.answers}</b>` })),
+  ...D.concerns.map((c, i) => ({ id: `c${i}`, grp: 'What AI warns about', name: c.name, w: c.answers / c.of, c: 'var(--warn)', ct: `<b>${c.answers}</b> of ${c.of}` })),
+  { id: 'list', grp: 'Everything else', name: 'Listed, not praised', w: D.tone.neutral / D.named, c: 'var(--list)', ct: `<b>${D.tone.neutral}</b>` },
+  { id: 'ai', grp: 'Everything else', name: 'How each AI describes it', w: 0, ct: '5 AIs' },
+  { id: 'offers', grp: 'Everything else', name: 'What AI says it offers', w: 0, ct: `${D.offers.length}` },
+];
+let g = '';
+const BASE = { 'What AI praises': `of the ${D.named} answers`, 'What AI warns about': `of the ${D.concerns[0].of} asked about it by name`, 'Everything else': '' };
+const figure = items.map((x) => { const h = x.grp !== g ? `<div class="figh">${x.grp}<span>${BASE[x.grp]}</span></div>` : ''; g = x.grp;
+  return `${h}<button class="pick" data-id="${x.id}"><span>${x.name}</span>${x.w ? `<span class="bar"><i style="width:${x.w * 100}%;background:${x.c}"></i></span>` : '<span></span>'}<span class="ct">${x.ct}</span></button>`; }).join('');
+const sovRows = [['Kari Mann Dental Studio', 229, 'var(--a)'], ['Cape Dental Care', 170, 'var(--rose)'], ['Sunset Harbor Dental', 157, 'var(--rose)'], ['Coast Dental Cape Coral', 106, 'var(--rose)']];
+
+document.getElementById('m').innerHTML = `<div class="tabpage">
+  <nav class="rail"><div class="eyebrow grey">On this page</div>${rail.map(([n, v, a], i) => `<div class="ri${i === 2 ? ' on' : ''}"><span class="n">${i + 1}</span><span>${n}<small class="${a || ''}">${v}</small></span></div>`).join('')}</nav>
+  <div>
+    <section class="isec faded"><div><div class="eyebrow"><span class="num">2</span>AI Share of Voice</div>
+      <h2>AI names Kari Mann Dental Studio more than any other dentist: 229 times, ahead of Cape Dental Care (170).</h2>
+      <p class="lede">That is about 9 of every 100 times AI named a dentist, the biggest share among the 243 practices it named.</p></div>
+      <div>${sovRows.map(([n, v, c]) => `<div class="sov"><span>${n}</span><span class="bar" style="width:${v / 229 * 120}px;background:${c}"></span><span>${v}</span></div>`).join('')}</div></section>
+
+    <section class="isec" id="s3"><div><div class="eyebrow"><span class="num">3</span>How AI describes it</div>
+      <h2>${D.verdict}</h2>
+      <p class="lede">Of the ${D.named} answers that name Kari Mann Dental Studio, ${D.tone.positive} praise it and ${D.tone.neutral} just list it.</p>
+      <div class="list">${figure}</div></div>
+      <div class="read fade" id="read"></div></section>
+
+    <section class="isec faded"><div><div class="eyebrow"><span class="num">4</span>Named every time, sometimes, or never</div>
+      <h2>AI names Kari Mann Dental Studio only sometimes on 25 questions: the easiest ground to win.</h2>
+      <p class="lede">When AI already names a practice now and then, a little more evidence (a page, reviews that say it, a listing) can make it every time.</p></div>
+      <div class="small">Who does dental implants well in Cape Coral? &nbsp;<b style="color:var(--ink)">17 of 23</b></div></section>
+  </div></div>`;
+
+function read(id) {
+  if (id[0] === 't') { const t = D.themes[+id.slice(1)];
+    return `<div class="tag" style="color:var(--praise)">Praised for</div><h3>${t.name}</h3><p class="sub">In <b style="color:var(--ink)">${t.answers}</b> of the ${D.named} answers that name the practice, ${t.ais === 5 ? 'all 5 AIs' : `${t.ais} AIs`}.</p>${t.quotes.map((q) => quote(q)).join('')}`; }
+  if (id[0] === 'c') { const c = D.concerns[+id.slice(1)];
+    return `<div class="tag" style="color:var(--warn)">Warned about</div><h3>${c.name}</h3><p class="sub">Asked about the practice by name, AI brought up ${lower(c.name)} in <b style="color:var(--ink)">${c.answers} of the ${c.of}</b> answers${c.elsewhere ? `, and in ${c.elsewhere} other answers` : ''}.</p>
+      <div class="byai">${c.by_ai.map((x) => `<span>${ai(x.surface)} <b>${x.answers} of ${x.of}</b></span>`).join('')}</div>
+      ${c.quotes.slice(0, 2).map((q) => quote(q, true)).join('')}${c.suggestion ? `<div class="worth"><span><b>Worth doing:</b> ${c.suggestion}</span><button class="btn" type="button">Make a task</button></div>` : ''}`; }
+  if (id === 'list') return `<div class="tag" style="color:var(--muted)">Listed, not praised</div><h3>${D.tone.neutral} answers name it like a directory</h3><p class="sub">Name, services, address, phone, and no opinion. Not a bad sign: a listing still sends people.</p>${quote(D.listed.example)}`;
+  if (id === 'ai') return `<h3 style="margin-bottom:14px">How each AI describes it</h3>${toneRows()}`;
+  return `<h3 style="margin-bottom:6px">What AI says it offers</h3><p class="sub">Services, not praise: kept apart so the praise stays praise.</p>${offers()}`;
+}
+const r = document.getElementById('read');
+function pick(id) {
+  CURRENT = id;
+  document.querySelectorAll('.pick').forEach((b) => b.classList.toggle('on', b.dataset.id === id));
+  r.classList.remove('fade'); void r.offsetWidth; r.classList.add('fade'); r.innerHTML = read(id);
+}
+document.querySelectorAll('.pick').forEach((b) => { b.onclick = () => pick(b.dataset.id); });
+pick('t0');
+window.scrollTo(0, 0);
+</script>
+</body>
+</html>
