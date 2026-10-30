@@ -697,7 +697,7 @@ a{color:var(--aInk)}
       <line x1="${x}" x2="${x}" y1="${y + 6}" y2="${Y1 - 20}" stroke="#D1D5DB" stroke-dasharray="1.5 2.5"/>${T(x, Y1 - 8, 'our data starts Sep 2025', { s: 9.5, c: '#9CA3AF', a: 'middle' })}`; };
   K.clGut = (k, i0, i1) => { const c = K.cl(k); const y = c.yR(c.v[59]);
     return [{ x0: xw(59, i0, i1), y: y - 7, t: 'Our clients', w: 700, c: ROSE_D }, { x0: xw(59, i0, i1), y: y + 7, t: 'combined', w: 700, c: ROSE_D }]; };
-  K.clSer = (k) => { const c = K.cl(k); return { name: 'Our clients combined', vals: c.v, y: c.yR, kind: 'rose', key: { c: ROSE, w: 2 }, fmt: (v) => v.toFixed(1) }; };
+  K.clSer = (k) => { const c = K.cl(k); return { name: 'Our clients’ average', vals: c.v, y: c.yR, kind: 'rose', key: { c: ROSE, w: 2 }, fmt: (v) => v.toFixed(1) }; };
   K.hvCall = (k, i0, i1, s) => ({ ...K.hvLines(i0, i1, [s, K.clSer(k)], 'Google Trends 0 to 100, Washington · our clients: showings per practice a week'), cols: 2,
     title: (i) => (i === 60 ? 'Oct 2026, not over yet' : i === 59 ? 'Sep 2026 · Expedition missing 3 of 4 weeks' : i === CL0 ? 'Sep 2025 · our data starts, 2 weeks' : FL.ml(M[i])) });
   /* one compact chip row under a chart: [{ c, w, dash, cs, t }] */
@@ -1067,10 +1067,10 @@ a{color:var(--aInk)}
   /* ===== tongue tie ===== */
   const near = (prev, keys) => keys.includes(prev);
   const TTK = ['tt-call', 'tt-phr', 'tt-who', 'tt-land']; const PDK = ['pd-call', 'pd-land', 'pd-step']; const PDYK = ['pdy-call', 'pdy-who', 'pdy-land', 'pdy-season'];
-  /* r4 (owner 10/29): the Trends line and our clients combined share ONE chart: Trends on the grey 0 to 100 left
+  /* r4 (owner 10/29): the Trends line and our clients’ average share ONE chart: Trends on the grey 0 to 100 left
      scale, our clients in rose on a small rose right-hand scale. Lines named at their ends; one chip row as the key. */
   const yc = yv;
-  const CALL_KEY = [{ c: TEAL, w: 2, t: 'Google demand, 0 to 100' }, { c: K.ROSE, w: 2, cs: true, t: 'Our clients combined, showings per practice a week' }];
+  const CALL_KEY = [{ c: TEAL, w: 2, t: 'Google demand, 0 to 100' }, { c: K.ROSE, w: 2, cs: true, t: 'Our clients’ average, showings per client a week' }];
   const callLabels = (k, ch, l, headT, gut, foot) => `${K.title(headT, `${TERM[k][0].toUpperCase()}${TERM[k].slice(1)} in Washington, Jul to Sep this year against last year`)}${K.winLabels(k, ...W24)}
       ${K.y0100()}${K.xTicks(...W24)}${K.notOver(...W24)}${K.clLabels(k, ...W24)}${K.gutter([...gut, ...K.clGut(k, ...W24)], Y0, Y1 + 6, 568)}${K.keyRow(CALL_KEY)}${K.foot(foot)}`;
   const callBuild = (S, k, prev, keys, lane, d0) => {
@@ -1086,13 +1086,13 @@ a{color:var(--aInk)}
     const YR = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
     const top = (f) => YR.reduce((b, m) => (f(m) > f(b) ? m : b));
     if (k === 'tt') { const pk = top(v); const [lo, hi] = span(YR);
-      return `<b>Our clients combined did not follow these searches.</b> Their showings rose from about ${r(v('2025-10'))} a week per practice in October 2025 to about ${r(v(pk))} in ${FL.MONF[+pk.slice(5) - 1]}, then fell back to about ${r(v('2026-08'))} by August. Google’s score stayed between ${lo} and ${hi} all year.`; }
+      return `<b>Our clients’ average did not follow these searches.</b> Their showings rose from about ${r(v('2025-10'))} a week per practice in October 2025 to about ${r(v(pk))} in ${FL.MONF[+pk.slice(5) - 1]}, then fell back to about ${r(v('2026-08'))} by August. Google’s score stayed between ${lo} and ${hi} all year.`; }
     if (k === 'pd') { const pk = top(v); const pg = top(g);
-      return `<b>Our clients combined followed these searches over the winter:</b> searches peaked in ${FL.MONF[+pg.slice(5) - 1]} and our clients’ showings in ${FL.MONF[+pk.slice(5) - 1]}. In summer searches rose again to about ${r(mean(['2026-07', '2026-08'], g))}, but our clients stayed near ${r(mean(['2026-07', '2026-08'], v), 10)} showings a week per practice.`; }
+      return `<b>Our clients’ average followed these searches over the winter:</b> searches peaked in ${FL.MONF[+pg.slice(5) - 1]} and our clients’ showings in ${FL.MONF[+pk.slice(5) - 1]}. In summer searches rose again to about ${r(mean(['2026-07', '2026-08'], g))}, but our clients stayed near ${r(mean(['2026-07', '2026-08'], v), 10)} showings a week per practice.`; }
     const [lo, hi] = span(YR.slice(3, 11));
-    return `<b>Our clients combined did not follow these searches.</b> Google’s score held between ${lo} and ${hi} from January to August, while our clients’ showings fell from about ${r(mean(['2026-01', '2026-02', '2026-03'], v), 5)} a week per practice in January to March to about ${r(mean(['2026-04', '2026-05', '2026-06', '2026-07'], v), 5)} from April to July.`;
+    return `<b>Our clients’ average did not follow these searches.</b> Google’s score held between ${lo} and ${hi} from January to August, while our clients’ showings fell from about ${r(mean(['2026-01', '2026-02', '2026-03'], v), 5)} a week per practice in January to March to about ${r(mean(['2026-04', '2026-05', '2026-06', '2026-07'], v), 5)} from April to July.`;
   };
-  const CLCAP = ' Rose, on the right-hand scale: our clients combined, Search Console showings per practice a week, Sep 2025 to Oct 2026, for searches containing the phrase. Hatched: September 2026, when Expedition is missing 3 of its 4 weeks.';
+  const CLCAP = ' Rose, on the right-hand scale: our clients’ average, Search Console showings per client a week, Sep 2025 to Oct 2026, for searches containing the phrase. Hatched: September 2026, when Expedition is missing 3 of its 4 weeks.';
   chapters.push({
     key: 'tt-call', kick: kick('Tongue tie', 'where searches stand'),
     head: 'Tongue tie searches are <span class="g">close to Rising</span>, not there yet.',
@@ -1101,7 +1101,7 @@ a{color:var(--aInk)}
       'Dental searches overall held flat, so tongue tie pulled ahead of them.',
       'Rising needs more than 15 in every 100 ahead, so it stays Steady for now.',
       'Its busiest recent month, May 2026, ran about 1.3 times its usual level: lively, not a spike.'],
-    table: { cols: ['Detail', ''], rows: [['Weeks with a Google score', '240 of 262'], ['Busiest week, scored 100', 'Dec 17, 2023'], ['Searches a month, US', `about ${csR('tongue tie')}`]] },
+    table: { cols: ['Detail', ''], rows: [['Weeks with a Google score', '240 of 262'], ['Busiest week, scored 100', 'Dec 17, 2023'], ['Average searches a month, US', `about ${csR('tongue tie')}`]] },
     link: [['hiw-rising']],
     cap: `Tongue tie, Google Trends in Washington, Oct 2024 to Oct 2026. Grey: Jul to Sep 2025, last year. Teal: Jul to Sep 2026, this year. Each with its average as a level line.${CLCAP}`,
     build(S, { prev }) { callBuild(S, 'tt', prev, TTK, 0, 650); },
@@ -1420,7 +1420,7 @@ a{color:var(--aInk)}
 })();
 </script>
 <script>
-FL.shell({ mock: "<b>Market Trends \u00b7 Story \u00b7 V6 Two questions per page</b> <span class=\"src\">\u00b7 data: Expedition Pediatric Dentistry, check #22 (read for Washington, Oct 29, 2026); Search Console and Google Analytics by page for Expedition, and Search Console for all our practices combined (local snapshot, Oct 2025 to Oct 2026)</span>\n<ul><li>V5's crowded \"how patients reach the page\" is now two chapters per topic: <b>who sees it</b> (one picture: Expedition's showings a week against our other practices, one scale) and <b>where patients land</b> (one row per page: showings, visits, calls or forms, then the pin).</li>\n<li>Pediatric dentist's \"who sees it\" is one tile (11th of 209, nothing to chart). r4: the year is a compact panel of fixed size at the foot of the figure; only its pins animate. The opening and the plan keep the full band.</li>\n<li>Method moved out: why the pin follows calls or forms, how avg. position is averaged, and new users per page sit in How it works. r3: national and local searches, avg. position. r4: our clients combined on the same chart as each Trends line; national and local on one chart, two scales.</li></ul>\n<span class=\"nr\">V6 pins (owner ruling 10/29): every pin is an action. Write = no page, a new page for the content calendar; Improve = a page listed outside the top results or bringing few visits, for the On-Page tool; a page that performs well gets no pin. New users per page needs a new read (stored for the whole site only). Rose under each Trends line = our clients combined, every client including Expedition, averaged per reporting practice a week.</span>" });
+FL.shell({ mock: "<b>Market Trends \u00b7 Story \u00b7 V6 Two questions per page</b> <span class=\"src\">\u00b7 data: Expedition Pediatric Dentistry, check #22 (read for Washington, Oct 29, 2026); Search Console and Google Analytics by page for Expedition, and Search Console for all our practices combined (local snapshot, Oct 2025 to Oct 2026)</span>\n<ul><li>V5's crowded \"how patients reach the page\" is now two chapters per topic: <b>who sees it</b> (one picture: Expedition's showings a week against our other practices, one scale) and <b>where patients land</b> (one row per page: showings, visits, calls or forms, then the pin).</li>\n<li>Pediatric dentist's \"who sees it\" is one tile (11th of 209, nothing to chart). r4: the year is a compact panel of fixed size at the foot of the figure; only its pins animate. The opening and the plan keep the full band.</li>\n<li>Method moved out: why the pin follows calls or forms, how avg. position is averaged, and new users per page sit in How it works. r3: national and local searches, avg. position. r4: our clients\u2019 average on the same chart as each Trends line; national and local on one chart, two scales.</li></ul>\n<span class=\"nr\">V6 pins (owner ruling 10/29): every pin is an action. Write = no page, a new page for the content calendar; Improve = a page listed outside the top results or bringing few visits, for the On-Page tool; a page that performs well gets no pin. New users per page needs a new read (stored for the whole site only). Rose on each Trends chart = our clients\u2019 average, every client including Expedition, averaged per reporting practice a week.</span>" });
 const HIW = 'mt2-how-it-works.html';
 FL.$('.method-btn').addEventListener('click', () => window.open(HIW, 'mt-how-it-works'));
 FL.$('.method-btn').title = 'Opens How it works in its own window';
