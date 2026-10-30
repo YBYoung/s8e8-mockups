@@ -1573,11 +1573,14 @@ a{color:var(--aInk)}
     FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
   };
   /* variants: { A: { name, render(host) }, B: ... } */
-  SA.variants = function (V) {
+  SA.variants = function (V, keep) {
+    if (keep && keep.length) { V = Object.fromEntries(Object.entries(V).filter(([k]) => keep.includes(k)));
+      const mb = FL.$('.mockbar'); if (mb) mb.prepend(FL.h(`<div style="margin-bottom:4px;color:#0F766E;font-weight:700">Owner’s pick, Oct 30: ${keep.map((k) => `${k}, ${FL.esc(V[k].name)}`).join(' + ')}. Round 2 shows only the pick.</div>`)); }
     const keys = Object.keys(V); const host = document.getElementById('page');
     let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
     const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
     document.body.appendChild(bar);
+    if (keys.length === 1) { FL.$$('button', bar).forEach((b) => (b.style.display = 'none')); }
     const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
       FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
       bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
@@ -1597,7 +1600,7 @@ const S1 = {};
 S1.R = [null,
   { n: 1, name: 'Honest crawl', c: '#99D5CC', tip: 'A real browser that says who it is: our crawler’s name and a contact address. Reads almost every site.' },
   { n: 2, name: 'Plain retry', c: '#0F766E', tip: 'If the browser is turned away, ask again with a plain page request, more slowly. Some firewalls only block browsers they take for bots. Live today.' },
-  { n: 3, name: 'Static address', c: '#0891B2', tip: 'Ask again from one fixed internet address that we publish, so a web host can allow it once and for good. Not built yet.', sample: 1 },
+  { n: 3, name: 'Static address', c: '#0891B2', tip: 'Ask again from one fixed internet address. Not built yet.', sample: 1 },
   { n: 4, name: 'Managed fetch', c: '#334155', tip: 'A paid fetching service reads the page for us. Last resort, a small cost per page, logged in the cost ledger. Not built yet.', sample: 1 }];
 S1.GOOGLE = { name: 'Google check', tip: 'Search Console tells us which of these pages Google has indexed. Used for the indexing checks only, never to read a page.' };
 S1.STAGES = [
@@ -1682,8 +1685,8 @@ S1.blockedEnd = () => `<div class="s1-end bad">
   <h2>kayjordandds.com’s firewall turned the crawler away</h2>
   <p>Cloudflare, the security service in front of the site, answered every request with a challenge page instead of the page itself. We tried all four ways in on 3 pages; none got through, so we stopped rather than keep knocking.</p>
   <div class="s1-tried">${[1, 2, 3, 4].map((r) => `<div>${S1.rung(r)}<span>${['Challenge page (403)', 'Refused (403)', 'Refused (403)', 'Challenge not passed'][r - 1]}</span></div>`).join('')}</div>
-  <div class="s1-endrow"><div class="s1-next"><b>Next:</b> send the web host a short note asking it to allow our crawler’s published address. ${SA.sample('The note and the published address are a proposal; rung 3 (the address) is not built yet.')}</div>
-  <div style="display:flex;gap:8px"><button class="btn btn-line" onclick="FL.toast('Copies a note for the web host: our crawler name, its address, and why.')">Copy the note for the web host</button><button class="btn btn-go" onclick="FL.toast('Tries again later (not part of this mockup).')">Try again</button></div></div></div>`;
+  <div class="s1-endrow"><div class="s1-next">The audit stops here: nothing on this site could be read.</div>
+  <div style="display:flex;gap:8px"><button class="btn btn-go" onclick="FL.toast('Tries again later (not part of this mockup).')">Try again</button></div></div></div>`;
 S1.head = (s, kick) => `<div class="kick">${kick}</div><h1 class="h1 s1-h">Reading ${FL.esc(s.domain)}</h1>`;
 S1.headDone = (host, s) => { const h = host.querySelector('.s1-h'); if (h) h.textContent = s.done ? s.domain : `Reading ${s.domain}`; };
 
@@ -1784,5 +1787,6 @@ window.SCREEN = {
   variants: { A: S1A, B: S1B, C: S1C },
 };
 </script>
-<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+<script>const KEEP={"s1": ["C"], "s2": ["B"], "s6": ["A"], "s7": ["A"]};</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants, window.SCREEN.keep || KEEP['s1']);</script>
 </body></html>

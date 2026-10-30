@@ -254,6 +254,22 @@ a{color:var(--aInk)}
 .s5a-top>div:first-child{min-width:0}
 .s5a-top p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s5a-team .seg button{white-space:nowrap}
+/* round 2: batched task groups */
+.gcard{border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:5px 0;cursor:pointer;background:#fff}
+.gcard:hover{background:var(--soft)}
+.gcard.focus{background:var(--aTint);border-color:#99D5CC}
+.gcard .g1{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13.5px}
+.gcard .g1 .nm{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcard .g1 .meta{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center;white-space:nowrap}
+.gcard .g2{display:flex;flex-wrap:wrap;gap:2px 10px;margin:3px 0 0 26px;font-size:11.5px;color:var(--body)}
+.gcard .gi{display:inline-flex;align-items:center;gap:4px}
+.gcard .gi i{width:7px;height:7px;border-radius:2px;display:inline-block}
+.gcard .gi i.now{background:#DC2626}.gcard .gi i.soon{background:#2563EB}.gcard .gi i.tidy{background:#fff;border:1.5px solid #A3ACB9;width:6px;height:6px}
+.gcard .g3{display:flex;gap:14px;margin:2px 0 0 26px;font-size:11.5px;color:var(--muted)}
+.s5-left-out{margin-top:8px;font-size:11.5px;color:var(--muted);line-height:1.45}
+.s5-draft{margin-top:2px;font-size:12px;color:#0F766E}
+.s5a-right .cap{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.av.wr{background:#5da283}
 </style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
 <script>window.D={
  "client": "Liberty Family Dentistry",
@@ -1589,11 +1605,14 @@ a{color:var(--aInk)}
     FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
   };
   /* variants: { A: { name, render(host) }, B: ... } */
-  SA.variants = function (V) {
+  SA.variants = function (V, keep) {
+    if (keep && keep.length) { V = Object.fromEntries(Object.entries(V).filter(([k]) => keep.includes(k)));
+      const mb = FL.$('.mockbar'); if (mb) mb.prepend(FL.h(`<div style="margin-bottom:4px;color:#0F766E;font-weight:700">Owner’s pick, Oct 30: ${keep.map((k) => `${k}, ${FL.esc(V[k].name)}`).join(' + ')}. Round 2 shows only the pick.</div>`)); }
     const keys = Object.keys(V); const host = document.getElementById('page');
     let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
     const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
     document.body.appendChild(bar);
+    if (keys.length === 1) { FL.$$('button', bar).forEach((b) => (b.style.display = 'none')); }
     const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
       FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
       bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
@@ -1604,225 +1623,158 @@ a{color:var(--aInk)}
   };
 })();
 </script>
-<script>/* Screen 5 (#1426): "Make the Asana tasks". Three directions: A dialog, B plan by due date, C inline on the result list.
-   Every direction has two states: first run (Oct 22 crawl) and after a re-crawl (Nov 19, sample). */
+<script>/* Screen 5 (#1426), round 2: "Make the Asana tasks". Owner picked A (dialog with live task preview) and asked
+   that issue types done on the same page in one sitting be batched into one task. Groups are a PROPOSAL.
+   Two states: first run (Oct 22 crawl) and after a re-crawl (Nov 19, sample). */
 (function () {
   const CLIENT = D.client;
-  const TODAY = 'Oct 30, 2026';
-  const DUE = { now: 'Nov 6, 2026', soon: 'Nov 20, 2026', tidy: null };
-  const DUE_SHORT = { now: 'Nov 6', soon: 'Nov 20', tidy: 'No due date' };
-  const TEAM = { seo: { n: 'Maya Ortiz', i: 'MO' }, ms: { n: 'Jordan Lee', i: 'JL' } };
+  const esc = FL.esc;
+  const TEAM = { seo: { n: 'Maya Ortiz', i: 'MO' }, writer: { n: 'Sam Price', i: 'SP' }, ms: { n: 'Jordan Lee', i: 'JL' } };
   const PROJECT = `${CLIENT} SEO`;
   const ORDER = { now: 0, soon: 1, tidy: 2 };
-  const ISS = D.issues.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level]);
-  const esc = FL.esc;
-  const hm = (m) => (m == null ? null : m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? ` ${m % 60}m` : ''}` : `${m}m`);
-  const taskName = (i) => `${i.name} - ${CLIENT}`;
+  const DUE = { now: 'Nov 6, 2026', soon: 'Nov 20, 2026', tidy: null };
   const DUE_RE = { now: 'Nov 26, 2026', soon: 'Dec 10, 2026', tidy: null };
-  /* new tasks after the re-crawl count from Nov 19; an updated open task keeps its date (proposal) */
-  const dueOf = (i, re) => (re && i.rc && (i.rc.kind === 'new' || i.rc.kind === 'ret') ? DUE_RE : DUE)[i.level];
+  const hm = (m) => (!m ? null : m >= 60 ? `${Math.floor(m / 60)}h${m % 60 ? ` ${m % 60}m` : ''}` : `${m}m`);
+  const byKey = Object.fromEntries(D.issues.map((i) => [i.key, i]));
 
-  /* re-crawl state (sample): what the tool does with each issue type's task on Nov 19 */
-  const RECRAWL = {
-    dup_title: { kind: 'upd', label: 'Updates the open task', note: '8 fixed, 0 new', count: 18 },
-    no_meta: { kind: 'upd', label: 'Updates the open task', note: '12 fixed, 2 new', count: 17 },
-    broken_pages: { kind: 'ret', label: 'New task: last one was completed, the issue came back', note: '1 page again', count: 1 },
-    redirect_chain: { kind: 'new', label: 'New task', note: 'first time found', count: 1 },
-  };
-  const recrawlIssues = () => {
-    const base = ISS.filter((i) => RECRAWL[i.key]).map((i) => ({ ...i, count: RECRAWL[i.key].count, rc: RECRAWL[i.key] }));
-    const same = ISS.filter((i) => !RECRAWL[i.key]).map((i) => ({ ...i, rc: { kind: 'same', label: 'Open task, no change', note: 'left as is' } }));
-    return base.concat(same);
+  /* short words for one page line in a batched task */
+  const SHORT = { dup_title: 'shared title', no_meta: 'no description', no_h1: 'no heading', long_title: 'title too long',
+    dup_meta: 'shared description', missing_alt: 'images with no alt text', broken_pages: 'does not load', redirect_chain: 'link bounces through redirects',
+    noindex_ranking: 'Google told to skip it', not_in_sitemap: 'missing from the sitemap', thin_service: 'little text' };
+  /* accepted drafts from "Draft the fixes" (written by hand for the mockup, not model output) */
+  const DRAFT = {
+    '/team': 'Title: Meet Our Bloomington Dentists | Liberty Family Dentistry',
+    '/services': 'Title: Dental Services in Bloomington, IN | Liberty Family',
+    '/articles': 'Title: Dental Articles | Liberty Family Dentistry, Bloomington',
+    '/reviews': 'Title: Patient Reviews | Liberty Family Dentistry, Bloomington',
   };
 
-  const GUIDE = {
-    dup_title: ['Google cannot tell these pages apart, so it may show the wrong one or none.', 'Webflow: Page settings, SEO, Title tag (for CMS pages, set the title field on the collection template).', 'WordPress: the SEO title box (Yoast or Rank Math) on each page.', 'Trap: most of these are empty review pages. Hiding them from Google may be better than retitling them; ask before deleting anything.'],
-    no_meta: ['Google writes its own snippet from random page text, which rarely sells the visit.', 'Webflow: Page settings, SEO, Meta description.', 'WordPress: the meta description box (Yoast or Rank Math).', 'Trap: do not paste one description on every page; that creates a new issue.'],
-    no_h1: ['The page has no main heading, so Google and screen readers lose the page’s topic.', 'Webflow: change the first heading element to H1.', 'WordPress: set the first heading block to H1.', 'Trap: one H1 per page; the logo is not the H1.'],
-  };
-  const guide = (k) => GUIDE[k] || ['Why it matters and the steps for Webflow and WordPress, from the fixed guide for this issue type.', 'Copied into every task of this type.'];
+  /* PROPOSED groups: what one person fixes on the same pages in one sitting */
+  const GROUPS = [
+    { key: 'text', name: 'Page titles, descriptions and headings', who: 'seo', keys: ['dup_title', 'no_meta', 'no_h1', 'long_title', 'dup_meta', 'missing_alt'],
+      why: 'All done in the same place for each page (Webflow page settings or the CMS item), so one task lists each page once with everything to change on it.',
+      guide: ['Webflow static page: Pages panel, the page’s settings, SEO settings: Title tag and Meta description.', 'Webflow CMS page: edit the collection item; the template maps its title and description fields.', 'Heading: make the first heading on the page an H1, one per page.', 'Alt text: Assets panel, the image’s settings, Alt text; or the image settings on the canvas.'] },
+    { key: 'broken', name: 'Broken pages and redirects', who: 'seo', keys: ['broken_pages', 'redirect_chain'],
+      why: 'Both are fixed in Webflow’s 301 redirects and by correcting the links that point at them.',
+      guide: ['Site settings, Publishing, 301 redirects: send the dead address to the closest live page.', 'Then change the links on the linking pages so they point straight at the live page.'] },
+    { key: 'google', name: 'Pages Google can’t see', who: 'seo', keys: ['noindex_ranking', 'not_in_sitemap'],
+      why: 'Both decide what Google is allowed and invited to read, and are checked together.',
+      guide: ['Page settings, SEO: turn off “Exclude from search results” on a page that should rank.', 'Site settings, SEO: the auto sitemap includes every page that is not excluded; republish after the change.'] },
+    { key: 'thin', name: 'Thin service pages', who: 'writer', keys: ['thin_service'],
+      why: 'Writing work, usually for a different person, so it stays its own task.',
+      guide: ['Add the practice’s own detail: who it is for, what happens at the visit, cost and insurance questions, the dentist who does it.'] },
+  ].map((g) => {
+    const its = g.keys.map((k) => byKey[k]).filter(Boolean);
+    const lvl = its.map((i) => i.level).sort((a, b) => ORDER[a] - ORDER[b])[0];
+    const pages = {};
+    its.forEach((i) => i.pages.forEach((p) => { (pages[p.url] = pages[p.url] || []).push(i.key); }));
+    return { ...g, its, lvl, minutes: its.reduce((s, i) => s + (i.minutes || 0), 0), pages, nPages: Object.keys(pages).length,
+      real: its.some((i) => i.real), allSample: its.every((i) => !i.real) };
+  });
+  const LEFT_OUT = D.issues.filter((i) => !GROUPS.some((g) => g.keys.includes(i.key)));
 
-  /* ---------- the Asana task preview (what gets created) ---------- */
-  function asanaCard(i, { recrawl, compact } = {}) {
-    const rc = recrawl && i.rc;
-    const due = dueOf(i, recrawl);
-    const shown = i.pages.slice(0, compact ? 3 : 4);
-    const est = hm(i.minutes);
+  /* re-crawl state (sample): one remembered task per group, never duplicated */
+  const RC = {
+    text: { kind: 'upd', label: 'Updates the open task', note: '20 pages fixed, 2 new' },
+    broken: { kind: 'ret', label: 'New task: the last one was completed and the issue came back', note: '1 page again' },
+    google: { kind: 'upd', label: 'Updates the open task', note: '1 fixed, 0 new' },
+    thin: { kind: 'same', label: 'Open task, no change', note: '' },
+  };
+  const dueOf = (g, re) => (re && (RC[g.key].kind === 'ret' || RC[g.key].kind === 'new') ? DUE_RE : DUE)[g.lvl];
+  const tagFor = (rc) => `<span class="tag ${rc.kind}">${esc(rc.label)}${rc.note ? `: ${esc(rc.note)}` : ''}</span>`;
+  const taskName = (g) => `${g.name} - ${CLIENT}`;
+
+  function asanaCard(g, re) {
+    const rc = re && RC[g.key];
+    const due = dueOf(g, re);
+    const who = TEAM[g.who];
+    const urls = Object.keys(g.pages).sort((a, b) => g.pages[b].length - g.pages[a].length || (DRAFT[b] ? 1 : 0) - (DRAFT[a] ? 1 : 0));
+    const show = [...urls.filter((u) => DRAFT[u]).slice(0, 2), ...urls.filter((u) => !DRAFT[u]).slice(0, 3)];
+    const line = (u) => `<li><span class="u">${esc(u)}</span>: ${g.pages[u].map((k) => SHORT[k]).join(', ')}${DRAFT[u] ? `<div class="s5-draft">Draft: ${esc(DRAFT[u])} ${SA.sample('Accepted in Draft the fixes. Written by hand for the mockup, not model output.')}</div>` : ''}</li>`;
     const fields = `
-      <div class="k">Assignee</div><div class="v"><span class="av seo">${TEAM.seo.i}</span>${TEAM.seo.n} ${SA.sample('Placeholder names: the real task uses the strategy’s SEO assignee and Marketing Strategist.')}</div>
-      <div class="k">Due date</div><div class="v">${due ? `<span class="as-due">${due}</span>` : '<span class="as-none">No due date</span>'}${rc && rc.kind === 'upd' ? ' <span class="prop" data-tip-h="Proposal" data-tip="An updated open task keeps the due date it already had.">kept</span>' : ''}</div>
+      <div class="k">Assignee</div><div class="v"><span class="av ${g.who === 'writer' ? 'wr' : 'seo'}">${who.i}</span>${who.n} ${SA.sample('Placeholder names: the real task uses the strategy’s team.')}</div>
+      <div class="k">Due date</div><div class="v">${due ? `<span class="as-due">${due}</span> <span class="prop" data-tip-h="Proposal" data-tip="A batched task is due by the most urgent level inside it: Fix now 1 week, Fix soon 3 weeks, Tidy up only: no date.">earliest level</span>` : '<span class="as-none">No due date</span>'}${rc && rc.kind === 'upd' ? ' <span class="prop" data-tip-h="Proposal" data-tip="An updated open task keeps the due date it already had.">kept</span>' : ''}</div>
       <div class="k">Projects</div><div class="v"><span class="chip proj"><i style="background:#4573d2"></i>${esc(PROJECT)}</span><span style="color:#6d6e6f;font-size:12px">Address Audit Issues</span></div>
       <div class="k"></div><div class="v"><span class="chip proj"><i style="background:#e8384f"></i>Audit Issues</span></div>
-      <div class="k">Estimated time</div><div class="v">${est ? `<span class="chip est">${est}</span> <span class="prop" data-tip-h="Proposal" data-tip="Minutes per issue type are a proposal for the owner to set. They make the task count in Weekly Workload.">proposal</span>` : '<span class="as-none">Not set</span>'}</div>
-      <div class="k">Week</div><div class="v"><span class="chip wk">No week</span> <span class="prop" data-tip-h="Proposal" data-tip="Every task dialog offers No week, This week, Next week. No week puts the task on the Weekly Workload board with the Week field empty.">proposal</span></div>
-      <div class="k">Collaborators</div><div class="v"><span class="av seo">${TEAM.seo.i}</span><span class="av ms">${TEAM.ms.i}</span><span style="color:#6d6e6f;font-size:12px">${TEAM.ms.n} (MS) follows</span></div>`;
-    const pagesList = `<h4>${i.count} page${i.count === 1 ? '' : 's'}</h4><ul>${shown.map((p) => `<li><span class="u">${esc(p.url)}</span>: ${esc(p.problem)}</li>`).join('')}</ul>${i.count > shown.length ? `<div class="more">and ${i.count - shown.length} more, all listed in the task</div>` : ''}`;
-    const g = guide(i.key);
-    const body = `<div class="as-desc">${pagesList}
-      ${compact ? '' : `<h4>Fix guide</h4><div>${esc(g[0])}</div><ul>${g.slice(1).map((s) => `<li>${esc(s)}</li>`).join('')}</ul>`}
-      <div style="margin-top:8px"><a href="#" onclick="return false">Open this issue in Site Audit</a> <span style="color:#6d6e6f">(run of ${recrawl ? 'Nov 19' : 'Oct 22'}, 2026)</span></div></div>`;
-    const comment = rc && rc.kind === 'upd' ? `<div class="as-comment"><span class="av" style="background:#0F766E">OQ</span><div><span class="who">OpenedQueries</span> · Nov 19<br><span class="men">@${TEAM.seo.n}</span> <span class="men">@${TEAM.ms.n}</span> Re-crawl: ${esc(rc.note)}. Page list above is updated.</div></div>` : '';
-    const top = rc ? `<div style="margin-bottom:8px">${tagFor(rc)}</div>` : '';
-    return `<div class="as as-card">${top}<span class="as-done">✓ Mark complete</span><div class="as-title">${esc(taskName(i))}</div><div class="as-fields">${fields}</div>${body}${comment}</div>`;
+      <div class="k">Estimated time</div><div class="v"><span class="chip est">${hm(g.minutes)}</span> <span class="prop" data-tip-h="Proposal" data-tip="The sum of the minutes for each issue type inside the task. Minutes per type are a proposal for the owner.">sum, proposal</span></div>
+      <div class="k">Collaborators</div><div class="v"><span class="av ms">${TEAM.ms.i}</span><span style="color:#6d6e6f;font-size:12px">${TEAM.ms.n} (MS) follows</span></div>`;
+    const body = `<div class="as-desc"><h4>${g.nPages} page${g.nPages === 1 ? '' : 's'}, each listed once with everything to change</h4><ul>${show.map(line).join('')}</ul>${g.nPages > show.length ? `<div class="more">and ${g.nPages - show.length} more, all listed in the task</div>` : ''}
+      <h4>How to fix it in Webflow</h4><ul>${g.guide.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <div style="margin-top:8px"><a href="#" onclick="return false">Open in Site Audit</a> <span style="color:#6d6e6f">(run of ${re ? 'Nov 19' : 'Oct 22'}, 2026)</span></div></div>`;
+    const comment = rc && rc.kind === 'upd' ? `<div class="as-comment"><span class="av" style="background:#0F766E">OQ</span><div><span class="who">OpenedQueries</span> · Nov 19<br><span class="men">@${who.n}</span> <span class="men">@${TEAM.ms.n}</span> Re-crawl: ${esc(rc.note)}. Page list above is updated.</div></div>` : '';
+    return `<div class="as as-card">${rc ? `<div style="margin-bottom:8px">${tagFor(rc)}</div>` : ''}<span class="as-done">✓ Mark complete</span><div class="as-title">${esc(taskName(g))}</div><div class="as-fields">${fields}</div>${body}${comment}</div>`;
   }
-  const tagFor = (rc) => `<span class="tag ${rc.kind}">${esc(rc.label)}${rc.kind === 'same' ? '' : `: ${esc(rc.note)}`}</span>`;
 
   function stateBar(host, cur, on) {
-    const el = FL.h(`<div class="s5-state"><div class="seg"><button data-s="first">First run, Oct 22 crawl</button><button data-s="re">After a re-crawl, Nov 19 ${''}</button></div><span>${cur === 're' ? `Re-crawl is a sample: the tool remembers each issue type’s task and never makes a duplicate.` : 'Real counts from the Oct 22 crawl; Fix now items are samples.'}</span></div>`);
+    const el = FL.h(`<div class="s5-state"><b style="color:var(--ink);font-size:14px;margin-right:6px">Opened from the result page.</b><div class="seg"><button data-s="first">First run, Oct 22 crawl</button><button data-s="re">After a re-crawl, Nov 19</button></div><span>${cur === 're' ? 'Re-crawl is a sample: the tool remembers each group’s task and never makes a duplicate.' : 'Real page counts from the Oct 22 crawl; Fix now items are samples.'}</span></div>`);
     el.querySelectorAll('button').forEach((b) => { b.classList.toggle('on', b.dataset.s === cur); b.onclick = () => on(b.dataset.s); });
     host.appendChild(el);
   }
-  const head = (sub) => `<div class="s5-head"><div><div class="kick">Site Audit · ${esc(CLIENT)}</div><h1 class="h1">Make the Asana tasks</h1><p class="sub">${sub}</p></div></div>`;
 
-  /* run progress: one task at a time; calls step(i, phase) then done() */
   function runProgress(n, step, done) {
     let k = 0;
-    const tick = () => { if (k >= n) { done(); return; } step(k, 'busy'); setTimeout(() => { step(k, 'ok'); k += 1; tick(); }, FL.reduce ? 0 : 420); };
+    const tick = () => { if (k >= n) { done(); return; } step(k, 'busy'); setTimeout(() => { step(k, 'ok'); k += 1; tick(); }, FL.reduce ? 0 : 520); };
     tick();
   }
 
-  /* ================= A: dialog ================= */
   function renderA(host, state = 'first') {
     host.innerHTML = '';
     const re = state === 're';
-    const list = re ? recrawlIssues() : ISS;
-    const sel = new Set(list.filter((i) => !re || i.rc.kind !== 'same').map((i) => i.key));
-    let focus = list[0].key;
+    const sel = new Set(GROUPS.filter((g) => !re || RC[g.key].kind !== 'same').map((g) => g.key));
+    let focus = 'text';
     stateBar(host, state, (s) => renderA(host, s));
-    host.firstChild.insertAdjacentHTML('afterbegin', '<b style="color:var(--ink);font-size:14px;margin-right:6px">Opened from the result page.</b>');
     const back = FL.h(`<div class="s5a-back"><div class="s5a-ghost"><div class="g1"></div><div class="g2"></div><div class="g3"></div><div class="g3"></div><div class="g3"></div><div class="g3"></div></div>
-      <div class="s5a-dlg" role="dialog"><div class="s5a-top"><div><h3>${re ? 'Update the Asana tasks' : 'Make the Asana tasks'}</h3><p>${esc(CLIENT)} · crawl of ${re ? 'Nov 19' : 'Oct 22'}, 2026 · ${re ? 'updates open tasks, never duplicates' : 'tick the issue types to send'}</p></div><div class="s5a-team"><span><span class="av seo">${TEAM.seo.i}</span> ${TEAM.seo.n.split(' ')[0]}</span><span><span class="av ms">${TEAM.ms.i}</span> ${TEAM.ms.n.split(' ')[0]} (MS)</span><span class="seg"><button class="on">No week</button><button>This week</button><button>Next week</button></span><button class="x" style="border:0;background:none;font-size:22px;color:var(--muted)">×</button></div></div>
+      <div class="s5a-dlg" role="dialog"><div class="s5a-top"><div><h3>${re ? 'Update the Asana tasks' : 'Make the Asana tasks'}</h3><p>${esc(CLIENT)} · crawl of ${re ? 'Nov 19' : 'Oct 22'}, 2026 · <span class="tipword" data-tip-h="One task per sitting (proposal)" data-tip="Issue types fixed on the same pages in the same place are batched into one task, so the person opens each page once.">one task per kind of work</span></p></div><div class="s5a-team"><span><span class="av ms">${TEAM.ms.i}</span> ${TEAM.ms.n.split(' ')[0]} (MS)</span><span class="seg"><button class="on">No week</button><button>This week</button><button>Next week</button></span><button class="x" style="border:0;background:none;font-size:22px;color:var(--muted)">×</button></div></div>
       <div class="s5a-body"><div class="s5a-left"></div><div class="s5a-right"></div></div>
       <div class="s5a-foot"><span class="sum"></span><span class="act"></span></div></div></div>`);
     host.appendChild(back);
     const L = back.querySelector('.s5a-left'); const R = back.querySelector('.s5a-right');
     const draw = () => {
-      L.innerHTML = ['now', 'soon', 'tidy'].map((lv) => {
-        const its = list.filter((i) => i.level === lv); if (!its.length) return '';
-        return `<div><div class="grp"><span>${SA.lv(lv)}</span><span>${lv === 'tidy' ? 'no due date' : `due ${re ? DUE_RE[lv].replace(', 2026', '') + ' if new' : DUE_SHORT[lv]}`}</span></div>${its.map((i) => `<div class="irow ${focus === i.key ? 'focus' : ''}" data-k="${i.key}"><span class="cb ${sel.has(i.key) ? 'on' : ''}" data-cb="${i.key}"></span><span class="nm">${esc(i.name)}</span><span class="meta">${re ? `<span class="tag ${i.rc.kind}" style="font-size:10.5px">${{ upd: 'update', ret: 'new', new: 'new', same: 'no change' }[i.rc.kind]}</span>` : ''}${i.count} pg${i.real ? '' : SA.sample()}</span></div>`).join('')}</div>`;
-      }).join('');
-      const fi = list.find((i) => i.key === focus);
-      R.innerHTML = `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px">Preview: the task exactly as Asana will show it</div>${asanaCard(fi, { recrawl: re })}`;
-      const chosen = list.filter((i) => sel.has(i.key));
-      const mins = chosen.reduce((s, i) => s + (i.minutes || 0), 0);
-      const nNew = chosen.filter((i) => !re || i.rc.kind === 'new' || i.rc.kind === 'ret').length;
-      const nUpd = re ? chosen.filter((i) => i.rc.kind === 'upd').length : 0;
-      back.querySelector('.sum').innerHTML = `<b>${re ? `${nUpd} updates, ${nNew} new tasks` : `${chosen.length} tasks`}</b> · <b>${hm(mins)}</b> estimated · ${re ? 'new tasks due from Nov 19' : `due ${chosen.some((i) => i.level === 'now') ? 'Nov 6 and ' : ''}Nov 20`}`;
+      L.innerHTML = `<div class="grp"><span>Tasks to make</span><span class="tipword" data-tip-h="Proposal: not sent" data-tip="${LEFT_OUT.map((i) => `${i.name} (${i.count})`).join(', ')}: Tidy up, no task. Most are the same empty review pages already in the first task.">${GROUPS.length} tasks, not ${GROUPS.reduce((s, g) => s + g.its.length, 0)}</span></div>` + GROUPS.map((g) => `<div class="gcard ${focus === g.key ? 'focus' : ''}" data-k="${g.key}">
+          <div class="g1"><span class="cb ${sel.has(g.key) ? 'on' : ''}" data-cb="${g.key}"></span><span class="nm">${esc(g.name)}</span><span class="meta">${re ? `<span class="tag ${RC[g.key].kind}" style="font-size:10.5px">${{ upd: 'update', ret: 'new again', new: 'new', same: 'no change' }[RC[g.key].kind]}</span>` : ''}${g.nPages} pg${g.allSample ? SA.sample() : ''}</span></div>
+          <div class="g2">${g.its.map((i) => `<span class="gi" data-tip-h="${esc(i.name)}" data-tip="${SA.LV[i.level].name}, ${i.count} page${i.count === 1 ? '' : 's'}"><i class="${i.level}"></i>${esc(SHORT[i.key])}</span>`).join('')}</div>
+          <div class="g3"><span>${g.lvl === 'tidy' ? 'No due date' : `Due ${(re && RC[g.key].kind === 'ret' ? DUE_RE : DUE)[g.lvl].replace(', 2026', '')}`}</span><span>${hm(g.minutes)}</span><span>${TEAM[g.who].n.split(' ')[0]}</span></div></div>`).join('')
+        ;
+      const fg = GROUPS.find((g) => g.key === focus);
+      R.innerHTML = `<div class="cap">Preview: the task exactly as Asana will show it</div>${asanaCard(fg, re)}`;
+      const chosen = GROUPS.filter((g) => sel.has(g.key));
+      const mins = chosen.reduce((s, g) => s + g.minutes, 0);
+      const nUpd = re ? chosen.filter((g) => RC[g.key].kind === 'upd').length : 0;
+      back.querySelector('.sum').innerHTML = `<b>${re ? `${nUpd} updates, ${chosen.length - nUpd} new` : `${chosen.length} tasks`}</b> · <b>${hm(mins)}</b> estimated · ${re ? 'new tasks due from Nov 19' : 'due Nov 6 and Nov 20'}`;
       back.querySelector('.act').innerHTML = `<button class="btn btn-line" style="margin-right:8px">Cancel</button><button class="btn btn-go go">${re ? 'Update Asana' : `Make ${chosen.length} tasks`}</button>`;
       back.querySelector('.go').onclick = () => create(chosen);
     };
-    L.onclick = (e) => { const cb = e.target.closest('[data-cb]'); const r = e.target.closest('.irow'); if (!r) return; if (cb) { sel.has(cb.dataset.cb) ? sel.delete(cb.dataset.cb) : sel.add(cb.dataset.cb); } focus = r.dataset.k; draw(); };
+    L.onclick = (e) => { const c = e.target.closest('.gcard'); if (!c) return; const cb = e.target.closest('[data-cb]'); if (cb) { sel.has(cb.dataset.cb) ? sel.delete(cb.dataset.cb) : sel.add(cb.dataset.cb); } focus = c.dataset.k; draw(); };
     const create = (chosen) => {
-      L.innerHTML = `<div class="grp"><span>Sending to Asana, one at a time</span><span class="cnt">0 of ${chosen.length}</span></div>` + chosen.map((i) => `<div class="irow" data-r="${i.key}"><span class="st"><span class="cb"></span></span><span class="nm">${esc(i.name)}</span><span class="meta lk"></span></div>`).join('');
+      L.innerHTML = `<div class="grp"><span>Sending to Asana, one at a time</span><span class="cnt">0 of ${chosen.length}</span></div>` + chosen.map((g) => `<div class="irow" data-r="${g.key}"><span class="st"><span class="cb"></span></span><span class="nm">${esc(taskName(g))}</span><span class="meta lk"></span></div>`).join('');
       back.querySelector('.act').innerHTML = '<span class="prog"><span class="spin"></span>Working</span>';
       runProgress(chosen.length, (k, ph) => {
-        const i = chosen[k]; const row = L.querySelector(`[data-r="${i.key}"]`);
+        const g = chosen[k]; const row = L.querySelector(`[data-r="${g.key}"]`);
         row.querySelector('.st').innerHTML = ph === 'busy' ? '<span class="spin"></span>' : '<span class="ok"></span>';
-        if (ph === 'ok') { row.querySelector('.lk').innerHTML = `<a class="olink" href="#" onclick="return false">${re && i.rc.kind === 'upd' ? 'Updated' : 'Open'} in Asana ↗</a>`; L.querySelector('.cnt').textContent = `${k + 1} of ${chosen.length}`; }
-        if (ph === 'busy') { R.innerHTML = `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px">${re && i.rc.kind === 'upd' ? 'Updating' : 'Making'} now</div>${asanaCard(i, { recrawl: re })}`; }
+        if (ph === 'ok') { row.querySelector('.lk').innerHTML = `<a class="olink" href="#" onclick="return false">${re && RC[g.key].kind === 'upd' ? 'Updated' : 'Open'} in Asana ↗</a>`; L.querySelector('.cnt').textContent = `${k + 1} of ${chosen.length}`; }
+        if (ph === 'busy') R.innerHTML = `<div class="cap">${re && RC[g.key].kind === 'upd' ? 'Updating' : 'Making'} now</div>${asanaCard(g, re)}`;
       }, () => {
         back.querySelector('.act').innerHTML = '<button class="btn btn-go">Done</button>';
-        const cap = R.querySelector('div'); if (cap) cap.textContent = 'Last one made';
-        back.querySelector('.sum').innerHTML = `<b>All in Asana.</b> The result page now shows “Task made” with its link on each issue type.`;
+        const cap = R.querySelector('.cap'); if (cap) cap.textContent = 'Last one made';
+        back.querySelector('.sum').innerHTML = '<b>All in Asana.</b> The result page now shows “Task made” with its link on each issue type.';
       });
     };
     draw();
   }
 
-  /* ================= B: the plan, by due date ================= */
-  function renderB(host, state = 'first') {
-    host.innerHTML = '';
-    const re = state === 're';
-    const list = re ? recrawlIssues() : ISS;
-    const sel = new Set(list.filter((i) => !re || i.rc.kind !== 'same').map((i) => i.key));
-    let focus = list.find((i) => i.level === 'soon').key;
-    host.insertAdjacentHTML('beforeend', head('The tasks laid out by when they are due, so the team sees the workload before it lands. Click a task to see it as Asana will.'));
-    stateBar(host, state, (s) => renderB(host, s));
-    const wrap = FL.h('<div><div class="s5b-cols"></div><div class="sticky"><span class="sum"></span><span class="act"></span></div></div>');
-    host.appendChild(wrap);
-    const cols = wrap.querySelector('.s5b-cols');
-    const COL = re ? [['now', 'Fix now', 'New tasks due Nov 26'], ['soon', 'Fix soon', 'New due Dec 10; updated keep theirs'], ['tidy', 'Tidy up', 'No due date']]
-      : [['now', 'Due Nov 6', 'Fix now: one week from today'], ['soon', 'Due Nov 20', 'Fix soon: three weeks from today'], ['tidy', 'No due date', 'Tidy up: when there is time']];
-    const draw = () => {
-      cols.innerHTML = COL.map(([lv, h, sub]) => {
-        const its = list.filter((i) => i.level === lv);
-        const mins = its.filter((i) => sel.has(i.key)).reduce((s, i) => s + (i.minutes || 0), 0);
-        return `<div class="s5b-col ${lv === 'tidy' ? 'none' : ''}"><h4><span>${h}</span><span class="tot">${hm(mins) || '0m'}</span></h4><div class="lvl">${SA.lv(lv, sub)}</div>
-          ${its.map((i) => `<div class="tcard ${focus === i.key ? 'focus' : ''} ${sel.has(i.key) ? '' : 'off'}" data-k="${i.key}"><div class="t1"><span class="cb ${sel.has(i.key) ? 'on' : ''}" data-cb="${i.key}"></span><span class="nm">${esc(i.name)}</span></div>
-            <div class="t2"><span>${i.count} page${i.count === 1 ? '' : 's'}${i.real ? '' : SA.sample()}</span><span>${re ? `<span class="tag ${i.rc.kind}">${{ upd: 'update', ret: 'new again', new: 'new', same: 'no change' }[i.rc.kind]}</span> ` : ''}${hm(i.minutes) || ''}</span></div></div>`).join('')}</div>`;
-      }).join('') + `<div class="s5b-side">${asanaCard(list.find((i) => i.key === focus), { recrawl: re, compact: true })}</div>`;
-      const chosen = list.filter((i) => sel.has(i.key));
-      const mins = chosen.reduce((s, i) => s + (i.minutes || 0), 0);
-      wrap.querySelector('.sum').innerHTML = `<b>${chosen.length} task${chosen.length === 1 ? '' : 's'}</b> · <b>${hm(mins)}</b> for ${TEAM.seo.n} ${SA.sample('Placeholder name')} · in <b>${esc(PROJECT)}</b>, Address Audit Issues, and <b>Audit Issues</b>`;
-      wrap.querySelector('.act').innerHTML = `<button class="btn btn-go go">${re ? 'Update Asana' : 'Make the Asana tasks'}</button>`;
-      wrap.querySelector('.go').onclick = () => {
-        wrap.querySelector('.act').innerHTML = '<span class="prog"><span class="spin"></span>Sending one at a time</span>';
-        runProgress(chosen.length, (k, ph) => {
-          const c = cols.querySelector(`.tcard[data-k="${chosen[k].key}"] .t1 > span:first-child`);
-          if (c) c.outerHTML = ph === 'busy' ? '<span class="spin"></span>' : '<span class="ok"></span>';
-          if (ph === 'ok') { const t2 = cols.querySelector(`.tcard[data-k="${chosen[k].key}"] .t2 span:last-child`); if (t2) t2.innerHTML = '<a class="olink" href="#" onclick="return false">In Asana ↗</a>'; }
-        }, () => { wrap.querySelector('.act').innerHTML = '<span style="color:var(--aInk);font-weight:600">All in Asana</span>'; });
-      };
-    };
-    cols.onclick = (e) => { const cb = e.target.closest('[data-cb]'); const c = e.target.closest('.tcard'); if (!c) return; if (cb) { sel.has(cb.dataset.cb) ? sel.delete(cb.dataset.cb) : sel.add(cb.dataset.cb); } focus = c.dataset.k; draw(); };
-    draw();
-  }
-
-  /* ================= C: inline on the result list ================= */
-  function renderC(host, state = 'first') {
-    host.innerHTML = '';
-    const re = state === 're';
-    const list = re ? recrawlIssues() : ISS;
-    const sel = new Set(list.filter((i) => !re || i.rc.kind !== 'same').map((i) => i.key));
-    let open = re ? 'dup_title' : 'dup_title';
-    host.insertAdjacentHTML('beforeend', head('No separate screen: each issue type on the result shows the task it will become. Open a row to see the task.'));
-    stateBar(host, state, (s) => renderC(host, s));
-    const wrap = FL.h('<div><div class="s5c-list"></div><div class="sticky"><span class="sum"></span><span class="act"></span></div></div>');
-    host.appendChild(wrap);
-    const L = wrap.querySelector('.s5c-list');
-    const fut = (i) => {
-      if (!sel.has(i.key)) return '<span class="tx" style="color:var(--faint)">Left out</span>';
-      if (re) return `${tagFor(i.rc)}`;
-      return `<span class="tx">Will make <b>${esc(taskName(i))}</b> · ${i.level === 'tidy' ? 'no due date' : `due ${DUE_SHORT[i.level]}`}${i.minutes ? ` · ${hm(i.minutes)}` : ''}</span>`;
-    };
-    const draw = () => {
-      L.innerHTML = ['now', 'soon', 'tidy'].map((lv) => {
-        const its = list.filter((i) => i.level === lv);
-        return `<div class="s5c-grp"><span>${SA.lv(lv)}</span><span>${its.length} issue types · ${lv === 'tidy' ? 'no due date' : `due ${DUE_SHORT[lv]}`}</span></div>` + its.map((i) => `<div class="s5c-row ${open === i.key ? 'open' : ''}" data-k="${i.key}"><span class="cb ${sel.has(i.key) ? 'on' : ''}" data-cb="${i.key}"></span><span class="nm">${esc(i.name)}${i.real ? '' : SA.sample()}</span><span class="pg">${i.count} pg</span><span class="fut">${fut(i)}</span><span class="chev">›</span></div>${open === i.key ? `<div class="s5c-exp"><div class="why"><h5>The task</h5>Lands in <b>${esc(PROJECT)}</b>, section Address Audit Issues, and in the global <b>Audit Issues</b> project. ${i.level === 'tidy' ? 'No due date (Tidy up).' : `Due ${dueOf(i, re)} (${SA.LV[i.level].name}).`} ${TEAM.ms.n} (MS) follows. ${re ? (i.rc.kind === 'upd' ? 'The open task gets the new page list and a comment to the team with what changed; it keeps its due date.' : i.rc.kind === 'ret' ? 'The last task for this was completed, so the tool makes a fresh one rather than reopening it.' : i.rc.kind === 'new' ? 'First time this issue type is found, so a new task.' : 'Nothing changed, so the open task is left alone.') : 'On the next crawl the tool updates this same task with the new page list and a “x fixed, y new” comment; if the task was completed and the issue comes back, it makes a new one.'}</div><div class="mini-as">${asanaCard(i, { recrawl: re, compact: true }).replace('as as-card', 'as')}</div></div>` : ''}`).join('');
-      }).join('');
-      const chosen = list.filter((i) => sel.has(i.key));
-      const mins = chosen.reduce((s, i) => s + (i.minutes || 0), 0);
-      wrap.querySelector('.sum').innerHTML = re ? `<b>${chosen.filter((i) => i.rc.kind === 'upd').length} to update, ${chosen.filter((i) => i.rc.kind !== 'upd').length} new</b> · open tasks with no change are left as they are` : `<b>${chosen.length} tasks</b> · <b>${hm(mins)}</b> estimated <span class="prop" data-tip-h="Proposal" data-tip="Estimated minutes per issue type are a proposal for the owner.">proposal</span> · made ${TODAY}`;
-      wrap.querySelector('.act').innerHTML = `<button class="btn btn-go go">${re ? 'Update Asana' : `Make ${chosen.length} Asana tasks`}</button>`;
-      wrap.querySelector('.go').onclick = () => {
-        open = null; draw();
-        wrap.querySelector('.act').innerHTML = '<span class="prog"><span class="spin"></span>Sending one at a time</span>';
-        runProgress(chosen.length, (k, ph) => {
-          const row = L.querySelector(`.s5c-row[data-k="${chosen[k].key}"]`);
-          row.querySelector('span:first-child').outerHTML = ph === 'busy' ? '<span class="spin"></span>' : '<span class="ok"></span>';
-          if (ph === 'ok') row.querySelector('.fut').innerHTML = `<span class="tx" style="color:var(--aInk);font-weight:600">Task ${re && chosen[k].rc.kind === 'upd' ? 'updated' : 'made'}</span><a class="olink" href="#" onclick="return false">Open in Asana ↗</a>`;
-        }, () => { wrap.querySelector('.act').innerHTML = '<span style="color:var(--aInk);font-weight:600">All in Asana</span>'; });
-      };
-    };
-    L.onclick = (e) => { const r = e.target.closest('.s5c-row'); if (!r) return; const cb = e.target.closest('[data-cb]'); if (cb) { sel.has(cb.dataset.cb) ? sel.delete(cb.dataset.cb) : sel.add(cb.dataset.cb); } else open = open === r.dataset.k ? null : r.dataset.k; draw(); };
-    draw();
-  }
-
   window.SCREEN = {
     title: 'Site Audit 5: Make the Asana tasks',
-    mock: `<b>Site Audit · 5 Make the Asana tasks · 3 directions</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (185 pages, real on-page counts)</span>
-<ul><li>A Dialog: wide two-column dialog (no scroll), issue types to tick on the left, the exact Asana task on the right; progress one task at a time, then links.</li>
-<li>B Plan by due date: tasks laid out in Due Nov 6 / Due Nov 20 / No due date columns with hours per column; preview beside.</li>
-<li>C Inline on the result: each issue row says the task it will become; open a row to see it. No separate screen.</li></ul>
-<span class="nr">Toggle “After a re-crawl” to see the update rule (2 updated, 1 new again after completion, 1 new). Samples: names Maya Ortiz / Jordan Lee, the Fix now items, the Nov 19 re-crawl. Proposals: estimated minutes per type, Week default “No week”, which type sits at which level.</span>`,
+    keep: ['A'],
+    mock: `<b>Site Audit · 5 Make the Asana tasks · round 2 (owner picked A)</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (185 pages, real on-page counts)</span>
+<ul><li>Issue types fixed on the same pages in one sitting are batched: 4 tasks instead of 11 (one per issue type). Each page is listed once with everything to change on it, plus its accepted draft from Draft the fixes.</li>
+<li>Left: tick tasks (each shows the issue types inside, their levels, due date, time, who). Right: the exact Asana task. Progress one task at a time, then links.</li>
+<li>Toggle “After a re-crawl”: the update rule now runs per task (2 updated, 1 new again after completion, 1 unchanged).</li></ul>
+<span class="nr">PROPOSALS: the four groups; due date = the most urgent level inside; estimated time = the sum; other thin pages get no task; guide is Webflow only. Samples: names, Fix now items, the Nov 19 re-crawl, the drafts. Open idea for the spec (not decided): this tool overlaps Site Content (titles, descriptions, alt text, publishing), so Site Content could become this tool.</span>`,
     right: '<span class="who">Liberty Family Dentistry</span><span class="when">Crawled Oct 22, 2026 · 185 pages</span>',
-    variants: {
-      A: { name: 'Dialog with live task preview', render: (h) => renderA(h) },
-      B: { name: 'Plan by due date', render: (h) => renderB(h) },
-      C: { name: 'Inline on the result', render: (h) => renderC(h) },
-    },
+    variants: { A: { name: 'Dialog, one task per kind of work', render: (h) => renderA(h) } },
   };
 })();
 </script>
-<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+<script>const KEEP={"s1": ["C"], "s2": ["B"], "s6": ["A"], "s7": ["A"]};</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants, window.SCREEN.keep || KEEP['s5']);</script>
 </body></html>

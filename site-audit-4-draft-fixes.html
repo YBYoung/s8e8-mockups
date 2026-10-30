@@ -211,6 +211,19 @@ a{color:var(--aInk)}
 .imgalt{display:flex;gap:10px;align-items:flex-start}
 .imgalt .ph{flex:none;width:64px;height:48px;border-radius:6px;background:repeating-linear-gradient(45deg,#EEF0F3 0 6px,#F6F7FA 6px 12px)}
 .imgalt p{margin:0;font-size:13.5px}
+
+/* D (round 2): view switch, where-it-goes marker, heading preview */
+.vseg{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.vseg .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--soft);gap:2px}
+.vseg .seg button{border:0;background:none;border-radius:6px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0}
+.vseg .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(11,16,32,.08)}
+.where{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:help}
+.where:before{content:'';width:8px;height:8px;border-radius:2px;flex:none}
+.where.app{color:var(--aInk)}.where.app:before{background:var(--a)}
+.where.hand{color:var(--muted)}.where.hand:before{border:1.5px solid #98A2B3;width:5px;height:5px}
+.t4 .dr.h1d{font-weight:700}
+.h1prev{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.25}
+.h1prev.none{font-size:14px;font-weight:400;font-style:italic;color:var(--muted)}
 </style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
 <script>window.D={
  "client": "Liberty Family Dentistry",
@@ -1546,11 +1559,14 @@ a{color:var(--aInk)}
     FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
   };
   /* variants: { A: { name, render(host) }, B: ... } */
-  SA.variants = function (V) {
+  SA.variants = function (V, keep) {
+    if (keep && keep.length) { V = Object.fromEntries(Object.entries(V).filter(([k]) => keep.includes(k)));
+      const mb = FL.$('.mockbar'); if (mb) mb.prepend(FL.h(`<div style="margin-bottom:4px;color:#0F766E;font-weight:700">Owner’s pick, Oct 30: ${keep.map((k) => `${k}, ${FL.esc(V[k].name)}`).join(' + ')}. Round 2 shows only the pick.</div>`)); }
     const keys = Object.keys(V); const host = document.getElementById('page');
     let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
     const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
     document.body.appendChild(bar);
+    if (keys.length === 1) { FL.$$('button', bar).forEach((b) => (b.style.display = 'none')); }
     const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
       FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
       bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
@@ -1587,6 +1603,7 @@ a{color:var(--aInk)}
     T('/articles/botox-for-tmj-an-alternative-treatment', 'Botox for TMJ: An Alternative Treatment | Bloomington, IN'),
     T('/articles/how-dentists-can-help-your-sleep-apnea', 'How a Dentist Can Help With Sleep Apnea | Bloomington, IN'),
     { url: '/video', kind: 'description', now: '', draft: 'Watch short videos from Liberty Family Dentistry: meet the Bloomington team, tour the office and see what a first visit looks like.' },
+    { url: '/video', kind: 'h1', now: '', draft: 'Videos From Our Bloomington Dental Team' },
     { url: '/team', kind: 'alt', sample: true, now: '9 of 9 images have no alt text', draft: 'Liberty Family Dentistry team at the front desk of the Bloomington office (and 8 more)' },
     { url: '/', kind: 'alt', sample: true, now: '4 of 11 images have no alt text', draft: 'Patient smiling in the chair after a cleaning at Liberty Family Dentistry (and 3 more)' },
   ];
@@ -1595,7 +1612,7 @@ a{color:var(--aInk)}
   const SKIPPED = 26;
   const COST = { est: '$0.04', real: '$0.03' };
   const COSTTIP = 'The estimate comes from the number of pages and fields, per the tool cost ledger. Every run is logged with its real cost. The figures here are a sample.';
-  const KIND = { title: 'Title', description: 'Description', alt: 'Alt text' };
+  const KIND = { title: 'Title', description: 'Description', h1: 'Heading (H1)', alt: 'Alt text' };
   const counts = () => `${ITEMS.filter((x) => x.kind === 'title').length} titles, ${ITEMS.filter((x) => x.kind === 'description').length} description, alt text on ${ITEMS.filter((x) => x.kind === 'alt').length} pages`;
   const len = (it, s) => (LIMIT[it.kind] ? `<span class="len ${s.length > LIMIT[it.kind] ? 'bad' : s ? 'ok' : ''}" data-tip-h="Length" data-tip="Google shows about ${LIMIT[it.kind]} characters of a ${it.kind}; the rest is cut off.">${s.length} of ${LIMIT[it.kind]}</span>` : '');
   let GEN = 0;
@@ -1700,20 +1717,79 @@ a{color:var(--aInk)}
     wireDock(host, re);
   }
 
+  /* ---------- D (round 2, owner pick A + C as view options) ---------- */
+  // Where each draft can go, from our code (app/routers/site_content.py publish path): static pages take only
+  // title + description through Webflow's Pages API; H1 and alt text on a static page have no API field.
+  // CMS items take any field the collection has. Which Liberty pages are CMS is a SAMPLE guess (/articles = blog collection).
+  const isCms = (u) => u.startsWith('/articles/');
+  const where = (it) => {
+    const cms = isCms(it.url); const meta = it.kind === 'title' || it.kind === 'description';
+    if (meta && !cms) return { k: 'app', t: 'Publishes from the app', h: 'A static page’s meta title and description go to Webflow from the app, the same way Site Content publishes them today.' };
+    if (cms) return { k: 'app', t: 'Publishes from the app', h: 'This page comes from a CMS collection. The app writes the draft into the matching collection field; if the collection has no field for it, the app says so and it is done by hand.' };
+    return { k: 'hand', t: 'By hand in Webflow', h: `Webflow’s Pages API has no field for a static page’s ${it.kind === 'h1' ? 'main heading' : 'image alt text'}, so the app cannot publish it. The draft goes into the Asana task and is pasted in the Webflow Designer.` };
+  };
+  const whereHtml = (it) => { const w = where(it); return `<span class="where ${w.k}" data-tip-h="Gets to the site" data-tip="${E(w.h)} Which pages are CMS pages here is a sample.">${w.t}</span>`; };
+  let VIEW = 'table';
+  const viewSeg = () => `<div class="vseg"><span>View</span><div class="seg"><button data-view="table" class="${VIEW === 'table' ? 'on' : ''}">Table</button><button data-view="google" class="${VIEW === 'google' ? 'on' : ''}">As Google shows it</button></div></div>`;
+  const headD = () => `<div class="s4-head"><div>
+      <button class="s3-back" style="font-size:13px;color:var(--muted);border:0;background:none;padding:0;margin-bottom:10px" onclick="FL.toast('Back to the result page (screen 2).')">← Back to the audit</button>
+      <div class="kick">Draft the fixes</div><h1 class="h1">Draft meta titles, descriptions, headings and alt text</h1>
+      <p class="sub">Writes only these four things for each page. It never changes the page’s text, images or layout. The team reads every draft before it goes anywhere.</p></div>${viewSeg()}</div>`;
+  const runPanelD = (phase, done) => runPanel(phase, done)
+    .replace(`Draft the fixes · about ${COST.est}`, `Draft titles, descriptions, headings and alt text · about ${COST.est}`)
+    .replace(counts(), `${ITEMS.filter((x) => x.kind === 'title').length} meta titles, ${ITEMS.filter((x) => x.kind === 'description').length} description, ${ITEMS.filter((x) => x.kind === 'h1').length} heading, alt text on ${ITEMS.filter((x) => x.kind === 'alt').length} pages`);
+  const tableD = () => `<table class="t4"><thead><tr><th style="width:24%">Page</th><th style="width:25%">Now</th><th>Draft</th><th style="width:150px">Gets to the site</th><th style="width:140px"></th></tr></thead><tbody>
+      ${ITEMS.map((it) => `<tr class="${it.acc ? 'on' : ''}"><td><div class="url">${E(it.url)}</div><div class="kind" style="margin-top:3px">${KIND[it.kind]}${it.sample ? SA.sample('Today’s crawl does not read images, so this row is made up.') : ''}</div></td>
+        <td><div class="now ${it.now && it.kind !== 'alt' ? '' : 'empty'}">${it.now ? E(it.now) : 'none'}</div>${it.now && LIMIT[it.kind] ? `<div style="margin-top:3px">${len(it, it.now)}</div>` : ''}</td>
+        <td>${it.state === 'wait' ? '<span style="color:var(--faint)">Not drafted yet</span>' : it.state === 'writing' ? '<span class="writing">Writing</span>' : `<div class="dr ${it.kind === 'h1' ? 'h1d' : ''}" data-ed="${it.i}">${E(it.draft)}</div><div style="margin-top:3px">${len(it, it.draft)}</div>`}</td>
+        <td>${whereHtml(it)}</td>
+        <td style="text-align:right">${it.state === 'ready' ? `<button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</td></tr>`).join('')}
+      </tbody></table>`;
+  const googleD = () => `<div class="c4">${ITEMS.map((it) => {
+        const known = ITEMS.find((x) => x.url === it.url && x.kind === 'title');
+        const title = it.kind === 'title' ? it.now : known ? known.now : it.url === '/video' ? 'Video' : 'Liberty Family Dentistry';
+        const ready = it.state === 'ready';
+        const onPage = it.kind === 'alt' || it.kind === 'h1';
+        const block = (txt, muted) => (it.kind === 'h1' ? `<div class="h1prev ${muted ? 'none' : ''}">${muted ? 'No main heading on the page' : E(txt)}</div>` : `<div class="imgalt"><span class="ph"></span><p ${muted ? 'style="color:var(--muted)"' : ''}>${E(txt)}</p></div>`);
+        const after = it.kind === 'title' ? serp(it.url, it.draft, META[it.url]) : it.kind === 'description' ? serp(it.url, title, it.draft) : block(it.draft, false);
+        const right = !ready ? `<div style="padding:22px 0;color:var(--faint)">${it.state === 'writing' ? '<span class="writing">Writing</span>' : 'Not drafted yet'}</div>` : after;
+        const left = onPage ? block(it.now, true) : serp(it.url, title, it.kind === 'description' ? '' : META[it.url]);
+        return `<div class="card pair"><div class="top"><span><span class="kind">${KIND[it.kind]}</span> <span class="url" style="margin-left:6px">${E(it.url)}</span>${it.sample ? SA.sample('Today’s crawl does not read images, so this one is made up.') : ''}<span style="margin-left:10px">${whereHtml(it)}</span></span>
+          <span>${ready ? `${LIMIT[it.kind] ? len(it, it.draft) : ''} <button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}" style="margin-left:8px">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</span></div>
+          <div class="cols"><div><div class="cap">${onPage ? 'On the page today' : 'In Google today'}</div>${left}</div><div><div class="cap">With the draft</div><div data-ed="${it.i}">${right}</div></div></div></div>`;
+      }).join('')}</div>`;
+  let PH = 'idle'; let DONE = 0;
+  function renderD(host) {
+    host.innerHTML = `${headD()}${runPanelD(PH, DONE)}${VIEW === 'table' ? tableD() : googleD()}${PH === 'done' ? dock() : ''}`;
+    const re = () => renderD(host);
+    host.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => { VIEW = b.dataset.view; re(); }));
+    host.querySelector('[data-run]')?.addEventListener('click', () => stream((k) => { PH = 'run'; DONE = k; re(); }, () => { PH = 'done'; DONE = ITEMS.length; re(); }));
+    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); PH = 'idle'; DONE = 0; re(); });
+    host.querySelectorAll('[data-acc]').forEach((b) => (b.onclick = () => { const it = ITEMS[+b.dataset.acc]; it.acc = !it.acc; re(); }));
+    host.querySelectorAll('[data-edit]').forEach((b) => (b.onclick = () => {
+      const it = ITEMS[+b.dataset.edit]; let el = host.querySelector(`[data-ed="${it.i}"]`);
+      if (VIEW === 'google') { el.innerHTML = `<div contenteditable="true" style="font-size:15px;padding:6px">${E(it.draft)}</div>`; el = el.firstChild; } else el.contentEditable = 'true';
+      el.focus(); el.onblur = () => { it.draft = el.textContent; re(); };
+    }));
+    wireDock(host, re);
+  }
+
   window.SCREEN = {
     title: 'Site Audit 4: Draft the fixes',
-    mock: `<b>Site Audit · Screen 4 · Draft the fixes</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (real titles and descriptions as they are today). Press “Draft the fixes” to watch the drafts arrive page by page.</span>
-<ul><li><b>A Table:</b> one row per fix, today’s text struck through next to the draft, character counts, Accept or Edit per row, Accept all.</li>
-<li><b>B One at a time:</b> a queue on the left and one big review card; A accept, E edit, S skip, arrow keys to move; review starts while the rest are still being written.</li>
-<li><b>C As Google shows it:</b> each page as a Google result today and with the draft, so a cut-off title or a missing description is visible at a glance.</li></ul>
-<span class="nr">Drafts are hand-written mockup text, not model output. The cost (about ${COST.est} before, ${COST.real} logged after) is a sample. Alt text rows are samples: today’s crawl does not read images. The 26 pages with no words are left out of drafting (proposal). Accepted drafts go into the Asana task body (#1425).</span>`,
+    keep: ['D'],
+    mock: `<b>Site Audit · Screen 4 · Draft meta titles, descriptions, headings and alt text · round 2</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (real titles and descriptions as they are today). Press the draft button to watch the drafts arrive page by page.</span>
+<ul><li><b>Owner pick 10/30: A + C as two views</b> of one run (Table, As Google shows it); accepting or editing in one view carries to the other. Scope says it plainly in the title, the line under it and the button: meta titles, descriptions, headings (H1, added 10/30) and alt text, nothing else.</li>
+<li><b>Gets to the site</b>, checked in our code (Site Content’s publish path): a static page’s meta title and description publish from the app; its H1 and alt text cannot (Webflow’s Pages API has no field for them), so those are done by hand in the Webflow Designer. CMS pages publish any field their collection has.</li></ul>
+<span class="nr">Drafts are hand-written mockup text, not model output. Cost (about ${COST.est} before, ${COST.real} logged after) is a sample. Which Liberty pages are CMS pages is a sample (articles shown as CMS). Alt text rows are samples (today’s crawl does not read images). Only one real page lacks an H1 and has words (/video); the other 26 are the empty stubs, left out of drafting (proposal). Accepted drafts go into the Asana task; publishing straight to Webflow (as Site Content does today) is an open question for the owner.</span>`,
     variants: {
       A: { name: 'Before and after table', render: (h) => { reset(); renderA(h); } },
       B: { name: 'One page at a time', render: (h) => { reset(); cur = 0; renderB(h); } },
       C: { name: 'As Google shows it', render: (h) => { reset(); renderC(h); } },
+      D: { name: 'Table or As Google shows it', render: (h) => { reset(); PH = 'idle'; DONE = 0; VIEW = 'table'; renderD(h); } },
     },
   };
 })();
 </script>
-<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+<script>const KEEP={"s1": ["C"], "s2": ["B"], "s6": ["A"], "s7": ["A"]};</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants, window.SCREEN.keep || KEEP['s4']);</script>
 </body></html>

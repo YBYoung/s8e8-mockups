@@ -204,6 +204,26 @@ a{color:var(--aInk)}
 .rp-prose .hl-new{outline:0;padding:2px 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone;border-bottom:1.5px dashed #0F766E;border-radius:2px}
 .ah-bar{height:4px;border-radius:2px;background:#E3E5E8;overflow:hidden;margin-top:6px}
 .ah-bar i{display:block;height:100%;width:65%;background:#0F766E}
+/* round 2: internal report header (no client branding) + presentation section */
+.rp-int{font-family:Inter,sans-serif}
+.ri-h{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);background:#FAFAFA}
+.ri-h b{display:block;font-size:14px;color:var(--ink)}.ri-h span{font-size:12px;color:var(--muted)}
+.ri-tag{font-size:11px!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aInk)!important;background:var(--aTint);border-radius:4px;padding:2px 7px}
+.pr-ctl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--body);margin-bottom:10px}
+.sw{width:34px;height:20px;border-radius:6px;background:#D0D5DD;position:relative;cursor:pointer;flex:none;transition:background .2s}
+.sw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:4px;background:#fff;transition:left .2s var(--ease)}
+.sw.on{background:var(--a)}.sw.on i{left:16px}
+.sw.dis{opacity:.45;cursor:not-allowed}
+.pr-slide{aspect-ratio:16/9;border:1px solid var(--line);border-radius:8px;background:#fff;padding:20px 24px;display:flex;flex-direction:column;transition:opacity .3s}
+.pr-slide.off{opacity:.38}
+.sl-top{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:auto}
+.sl-k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk);margin-top:12px}
+.sl-t{font-size:22px;font-weight:900;line-height:1.2;letter-spacing:-.02em;color:var(--ink);margin-top:6px}
+.sl-c{display:flex;gap:26px;margin-top:16px}
+.sl-c b{display:block;font-size:30px;font-weight:900;color:var(--ink);line-height:1}
+.sl-f{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:12px}
+.sl-empty{font-size:15px;color:var(--muted);margin:10px 0 auto}
+.pr-note{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.5}
 </style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
 <script>window.D={
  "client": "Liberty Family Dentistry",
@@ -1539,11 +1559,14 @@ a{color:var(--aInk)}
     FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
   };
   /* variants: { A: { name, render(host) }, B: ... } */
-  SA.variants = function (V) {
+  SA.variants = function (V, keep) {
+    if (keep && keep.length) { V = Object.fromEntries(Object.entries(V).filter(([k]) => keep.includes(k)));
+      const mb = FL.$('.mockbar'); if (mb) mb.prepend(FL.h(`<div style="margin-bottom:4px;color:#0F766E;font-weight:700">Owner’s pick, Oct 30: ${keep.map((k) => `${k}, ${FL.esc(V[k].name)}`).join(' + ')}. Round 2 shows only the pick.</div>`)); }
     const keys = Object.keys(V); const host = document.getElementById('page');
     let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
     const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
     document.body.appendChild(bar);
+    if (keys.length === 1) { FL.$$('button', bar).forEach((b) => (b.style.display = 'none')); }
     const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
       FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
       bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
@@ -1554,95 +1577,74 @@ a{color:var(--aInk)}
   };
 })();
 </script>
-<script>/* Screen 8 (#1426): the one "Technical health" line in the client performance report, and the team-only
-   "Run the site audit" prompt when the practice has no run in the last 90 days. Three directions, two states each. */
+<script>/* Screen 8 (#1426), round 2: owner picked C (a Technical health group in the number strip). Performance reports
+   are never sent to clients; they feed the SEO Strategy presentation, where every section can be switched on or off.
+   Left: the internal performance report. Right: the same group as one optional presentation section (sample frame). */
 (function () {
   const esc = FL.esc;
   const L = D.levels; const n = (k) => L[k].types;
-  const COL = { now: '#DC2626', soon: '#2563EB', tidy: '#94A3B8' };
-  const HEAD = `${n('now')} things to fix now, ${n('soon')} to fix soon, ${n('tidy')} to tidy up`;
-  const TIP = { now: 'Fix now: something that loses a visitor or Google, like a page that does not load.', soon: 'Fix soon: something that weakens a page that works, like pages sharing one title.', tidy: 'Tidy up: worth doing when there is time, like titles that run long.' };
-  const link = `<a href="#" onclick="return false" data-tip-h="Open question" data-tip="Linked to the run, per the ruling. For a client this has to be a shared view of the audit (like the Grid Scan report link). Should the client see the full audit, or only this line?">See the full audit</a>`;
+  const TIP = { now: 'Fix now: loses a visitor or Google, like a page that does not load.', soon: 'Fix soon: weakens a page that works, like pages sharing one title.', tidy: 'Tidy up: worth doing when there is time, like titles that run long.' };
+  const link = '<a href="#" onclick="return false">Open the audit</a>';
 
-  /* surrounding report: grey skeleton so no performance numbers are invented */
-  const rpHead = () => `<div class="rp-h"><div class="rb"></div><div class="in"><span class="wm">STUDIO EIGHTY EIGHT</span><div class="cl"><b>${esc(D.client)}</b><span>Jul to Sep 2026</span></div></div></div>`;
   const skTiles = (label, c) => `<div><div class="hd"><i style="background:${c}"></i>${label}</div>${[0, 1].map(() => '<div class="tile"><span class="sk" style="width:60px;height:8px;display:block"></span><span class="sk" style="width:34px;height:12px;display:block"></span></div>').join('')}</div>`;
   const skLines = (k) => Array.from({ length: k }, (_, i) => `<div class="sk" style="height:8px;margin:7px 0;width:${[96, 88, 92, 70, 84][i % 5]}%"></div>`).join('');
-  function reportFrame(inner) { return `<div class="rp">${rpHead()}<div class="rp-b"><div class="rp-t">Q3 2026 Performance Report</div><div class="rp-p">Jul to Sep 2026</div>${inner}</div></div>`; }
-  const counts = () => ['now', 'soon', 'tidy'].map((k) => `<span data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><i style="background:${COL[k]}"></i><b>${n(k)}</b>${SA.LV[k].name.toLowerCase()}</span>`).join('');
-  const absent = (where) => `<div class="absent">No Technical health ${where} in this report: the practice has had no site audit in the last 90 days. The client never sees a prompt; the team does (right).</div>`;
+  const group = (date) => `<div class="hl-new" style="border-radius:0"><div class="hd"><i style="background:#0F766E"></i>Technical health</div>${['now', 'soon', 'tidy'].map((k) => `<div class="tile" data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><span class="l">${SA.LV[k].name}</span><span class="v">${n(k)}</span></div>`).join('')}<div style="font-size:9.5px;color:#a8a29e;margin-top:4px">Site audit, ${date} · ${link}</div></div>`;
 
-  /* team side */
-  const runRow = (has) => has
-    ? `<div class="ah-row"><span class="k">Site audit</span><span class="v"><span class="ah-dot" style="background:var(--good)"></span><b>Oct 22, 2026</b> · ${HEAD}</span><button class="ah-btn ghost">Open the run</button></div>`
-    : `<div class="ah-row"><span class="k">Site audit</span><span class="v"><span class="ah-dot" style="background:var(--bad)"></span><b>None in 90 days</b> · last Jun 30 ${SA.sample('No Site Audit runs exist yet; the date is made up.')}</span><button class="ah-btn">Run the site audit</button></div>`;
-  function hubPane(has) {
-    return `<div class="ah"><div class="ah-h"><h3>${esc(D.client)}</h3><span>Q3 2026 report · draft</span></div>
-      <div class="ah-card"><div class="ah-row"><span class="k">Search Console</span><span class="v"><span class="ah-dot" style="background:var(--good)"></span>Connected</span><span></span></div>
-      <div class="ah-row"><span class="k">Analytics</span><span class="v"><span class="ah-dot" style="background:var(--good)"></span>Connected</span><span></span></div>
-      <div class="ah-row"><span class="k">Business Profile</span><span class="v"><span class="ah-dot" style="background:var(--good)"></span>Connected</span><span></span></div>
-      ${runRow(has)}</div>
-      <div class="ah-note">${has ? 'The report reads the practice’s latest run. A newer run before sending updates the line.' : 'Without a run the report leaves out Technical health. The run takes a few minutes and the draft picks up the line when it finishes; sending without it is allowed.'}</div></div>`;
+  function report(has, running) {
+    const ph = has ? '' : running
+      ? `<div class="ph" style="display:block"><div class="t"><b>Crawling libertyfamilydentistry.com</b> · 120 of about 185 pages ${SA.sample('Progress numbers are made up.')}</div><div class="ah-bar"><i></i></div><div class="o">About 2 minutes left. The Technical health group fills in this draft when it finishes.</div></div>`
+      : `<div class="ph"><div><div class="t"><b>Technical health is missing:</b> no site audit for ${esc(D.client)} in the last 90 days.</div><div class="o">Shows in the draft only; runs in a few minutes.</div></div><button class="ah-btn" id="s8run">Run the site audit</button></div>`;
+    return `<div class="rp rp-int"><div class="ri-h"><div><b>Q3 2026 Performance Report</b><span>${esc(D.client)} · Jul to Sep 2026</span></div><span class="ri-tag">Team view · draft</span></div>
+      <div class="rp-b"><div class="rp-strip">${skTiles('Search visibility', '#29ABE2')}${skTiles('Website traffic', '#34d399')}${skTiles('Listing activity', '#a78bfa')}${has ? group('Oct 22') : ''}</div>${ph}
+      <div class="rp-prose"><h2>Brief summary</h2>${skLines(4)}</div></div></div>`;
   }
-  function hubRegister(has) {
-    const rows = [['Lefberg Dental', 'Oct 2', true], [D.client, has ? 'Oct 22' : null, true], ['Song Dental', null, false], ['Arkansas Family Dental', 'Oct 22', false]];
-    return `<div class="ah"><div class="ah-h"><h3>Audit Hub</h3><span>Q3 2026 · 4 of 41 shown</span></div>
-      <table class="ah-tbl"><thead><tr><th>Client</th><th>Status</th><th>Site audit</th></tr></thead><tbody>
-      ${rows.map(([c, d, s], i) => `<tr class="${i === 1 ? 'sel' : ''}"><td><b>${esc(c)}</b></td><td class="q">${s ? 'Draft ready' : 'Waiting on data'}</td><td>${d ? `<span class="ah-dot" style="background:var(--good)"></span>${d}` : '<span class="ah-run">Run the site audit</span>'}</td></tr>`).join('')}
-      </tbody></table><div class="ah-note">A new “Site audit” column in the Data health view ${SA.sample('Other rows are illustrative.')}. Clicking “Run the site audit” starts a run for that practice; the column shows the progress.</div></div>`;
+
+  function slide(has, on) {
+    const body = has
+      ? `<div class="sl-k">Where the website stands</div><div class="sl-t">${n('now')} things to fix now, ${n('soon')} to fix soon, ${n('tidy')} to tidy up</div>
+         <div class="sl-c">${['now', 'soon', 'tidy'].map((k) => `<div data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><b>${n(k)}</b>${SA.lv(k)}</div>`).join('')}</div>
+         <div class="sl-f">Site audit of Oct 22, 2026 · 185 pages read</div>`
+      : `<div class="sl-k">Where the website stands</div><div class="sl-empty">No site audit in the last 90 days. Run one to include this section.</div>`;
+    return `<div class="pr-ctl"><span class="sw ${on && has ? 'on' : ''} ${has ? '' : 'dis'}" id="s8sw" role="switch" aria-checked="${on && has}"><i></i></span><span><b>Include in the presentation</b> <span class="prop" data-tip-h="Proposal" data-tip="On by default whenever the practice has a run in the last 90 days.">on by default, proposal</span></span></div>
+      <div class="pr-slide ${on && has ? '' : 'off'}"><div class="sl-top"><span>SEO Strategy · ${esc(D.client)}</span><span>Section 4 of 9 ${SA.sample('The presentation does not exist yet; its frame and section count are made up.')}</span></div>${body}</div>
+      <div class="pr-note">Every section of the presentation (Market Trends, Grid Scan, AI Visibility, the site audit, the plan) can be switched on or off before it is shown.</div>`;
   }
 
   function stateBar(host, cur, on) {
-    const el = FL.h(`<div class="s8-state"><div class="seg"><button data-s="has">Latest run Oct 22, 2026</button><button data-s="none">No run in the last 90 days</button></div><span>${cur === 'has' ? 'Counts are Liberty’s real Oct 22 crawl (issue types per level; the Fix now ones are samples).' : 'The client report leaves the line out; the team sees the prompt.'}</span></div>`);
+    const el = FL.h(`<div class="s8-state"><div class="seg"><button data-s="has">Latest run Oct 22, 2026</button><button data-s="none">No run in the last 90 days</button></div><span>${cur === 'has' ? 'Counts are Liberty’s real Oct 22 crawl (issue types per level; the Fix now ones are samples).' : 'The draft shows the team a prompt in the spot the group would fill.'}</span></div>`);
     el.querySelectorAll('button').forEach((b) => { b.classList.toggle('on', b.dataset.s === cur); b.onclick = () => on(b.dataset.s); });
     host.appendChild(el);
   }
-  const head = (sub) => `<div><div class="kick">Site Audit · outside the tool</div><h1 class="h1">The Technical health line</h1><p class="sub">${sub}</p></div>`;
-  const lay = (host, sub, state, rerender, left, right, capR) => {
-    host.innerHTML = head(sub);
-    stateBar(host, state, rerender);
-    host.insertAdjacentHTML('beforeend', `<div class="s8-grid"><div><div class="s8-cap"><span>The client report</span><span>client sees</span></div>${left}</div><div><div class="s8-cap"><span>${capR}</span><span>team only</span></div>${right}</div></div>`);
-  };
 
-  /* A: its own short block under the metric strip */
-  function renderA(host, state = 'has') {
-    const has = state === 'has';
-    const block = has ? `<div class="th hl-new"><span class="k">Technical health · site audit of Oct 22, 2026</span>${link}<span class="s">${HEAD}. Each one is a task on our list.</span><span></span><span class="c">${counts()}</span></div>` : absent('block');
-    const left = reportFrame(`<div class="rp-strip">${skTiles('Search visibility', '#29ABE2')}${skTiles('Website traffic', '#34d399')}${skTiles('Listing activity', '#a78bfa')}</div>${block}<div class="rp-prose"><h2>Brief summary</h2>${skLines(5)}</div>`);
-    lay(host, 'A short block of its own under the numbers: the headline, three counts with a hover per level, linked to the run.', state, (s) => renderA(host, s), left, hubPane(has), 'Audit Hub, the practice’s draft');
-  }
-  /* B: one sentence in the opening paragraph */
-  function renderB(host, state = 'has') {
-    const has = state === 'has';
-    const sentence = has ? ` <span class="hl-new">Our site audit of Oct 22 found ${n('now')} things on your website to fix now and ${n('soon')} to fix soon; they are on our list. ${link}</span>` : '';
-    const left = reportFrame(`<div class="rp-strip">${skTiles('Search visibility', '#29ABE2')}${skTiles('Website traffic', '#34d399')}${skTiles('Listing activity', '#a78bfa')}</div><div class="rp-prose"><div class="sk" style="height:8px;margin:7px 0;width:94%"></div><div class="sk" style="height:8px;margin:7px 0;width:58%;display:inline-block"></div>${sentence}${has ? '' : absent('sentence')}<h2>Brief summary</h2>${skLines(4)}</div>`);
-    lay(host, 'One plain sentence inside the opening paragraph, written the same way every quarter. Tidy up stays out of the client’s view.', state, (s) => renderB(host, s), left, hubRegister(has), 'Audit Hub, the client list');
-  }
-  /* C: a fourth group in the metric strip */
   function renderC(host, state = 'has') {
     const has = state === 'has';
-    const grp = has ? `<div class="hl-new" style="border-radius:0"><div class="hd"><i style="background:#0F766E"></i>Technical health</div>${['now', 'soon', 'tidy'].map((k) => `<div class="tile" data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><span class="l">${SA.LV[k].name}</span><span class="v">${n(k)}</span></div>`).join('')}<div style="font-size:9.5px;color:#a8a29e;margin-top:4px">Site audit, Oct 22 · ${link}</div></div>` : '';
-    const ph = has ? '' : `<div class="ph"><div><div class="t"><b>Technical health is missing:</b> no site audit for ${esc(D.client)} in the last 90 days.</div><div class="o">Only the team sees this box; it is never sent.</div></div><button class="ah-btn">Run the site audit</button></div>`;
-    const left = reportFrame(`<div class="rp-strip">${skTiles('Search visibility', '#29ABE2')}${skTiles('Website traffic', '#34d399')}${skTiles('Listing activity', '#a78bfa')}${grp}</div>${ph}<div class="rp-prose"><h2>Brief summary</h2>${skLines(5)}</div>`);
-    const right = `<div class="ah"><div class="ah-h"><h3>Where the prompt lives</h3><span>proposal</span></div><div class="ah-note" style="font-size:12.5px">The prompt sits inside the draft preview the team checks before sending (the dashed box on the left), in the spot the Technical health group will fill. ${has ? 'With a run in the last 90 days, the group reads the latest one and no prompt shows.' : 'After a click, the box turns into the run’s progress:'}</div>${has ? '' : `<div class="ah-card"><div style="font-size:12.5px"><b>Crawling libertyfamilydentistry.com</b> · 120 of about 185 pages ${SA.sample('Progress numbers are made up.')}</div><div class="ah-bar"><i></i></div><div class="ah-note" style="margin-top:6px">About 2 minutes left. The group fills in this draft when it finishes.</div></div>`}</div>`;
-    lay(host, 'A fourth group in the report’s number strip, next to search, traffic and listing: three counts, one per level.', state, (s) => renderC(host, s), left, right, 'The draft preview');
+    let on = true; let running = false;
+    host.innerHTML = '<div><div class="kick">Site Audit · outside the tool</div><h1 class="h1">Technical health</h1><p class="sub">A fourth group in the performance report’s number strip, and the same counts as an optional section of the SEO Strategy presentation.</p></div>';
+    stateBar(host, state, (s) => renderC(host, s));
+    const grid = FL.h('<div class="s8-grid"></div>');
+    host.appendChild(grid);
+    const draw = () => {
+      grid.innerHTML = `<div><div class="s8-cap"><span>Performance report</span><span>team only, never sent</span></div>${report(has, running)}</div>
+        <div><div class="s8-cap"><span>SEO Strategy presentation</span><span>one optional section</span></div>${slide(has, on)}</div>`;
+      const sw = grid.querySelector('#s8sw'); if (sw && has) sw.onclick = () => { on = !on; draw(); };
+      const rb = grid.querySelector('#s8run'); if (rb) rb.onclick = () => { running = true; draw(); };
+    };
+    draw();
   }
 
   window.SCREEN = {
-    title: 'Site Audit 8: Technical health line',
-    mock: `<b>Site Audit · 8 Technical health in the performance report · 3 directions</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (issue types per level); the report around it is grey placeholder, no numbers invented</span>
-<ul><li>A Own block: a short block under the metric strip; prompt in the Audit Hub draft pane as a new “Site audit” data row.</li>
-<li>B One sentence: one fixed sentence in the opening paragraph (Fix now and Fix soon only); prompt as a “Site audit” column on the Audit Hub list.</li>
-<li>C Strip group: a fourth group in the number strip; prompt as a team-only dashed box inside the draft preview.</li></ul>
-<span class="nr">Toggle “No run in the last 90 days” for the prompt. Proposals: all wording, counting issue types (not pages), “they are on our list”. Open question: does the link take the client to a shared full audit? Fix now types are samples; the Jun 30 last-run date is a sample. Client report may say “you”; team panes say “the practice”.</span>`,
-    right: '<span class="who">Liberty Family Dentistry</span><span class="when">Q3 2026 report</span>',
-    variants: {
-      A: { name: 'Own block under the numbers', render: (h) => renderA(h) },
-      B: { name: 'One sentence in the summary', render: (h) => renderB(h) },
-      C: { name: 'A group in the number strip', render: (h) => renderC(h) },
-    },
+    title: 'Site Audit 8: Technical health',
+    keep: ['C'],
+    mock: `<b>Site Audit · 8 Technical health · round 2 (owner picked C)</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (issue types per level); the report around it is grey placeholder, no numbers invented</span>
+<ul><li>Left: the performance report as the team sees it (never sent to clients); Technical health is a fourth group in the number strip, linked to the audit.</li>
+<li>Right: the same counts as one section of the SEO Strategy presentation, with an “Include in the presentation” switch. Every section of the presentation can be switched on or off.</li>
+<li>Toggle “No run in the last 90 days”: the draft shows a Run the site audit box in the group’s spot (click it to see progress); the presentation section can’t be included until there is a run.</li></ul>
+<span class="nr">Samples: the presentation frame and section count (it does not exist yet), the run progress numbers, Fix now types. Proposals: all wording, counting issue types not pages, the section on by default.</span>`,
+    right: '<span class="who">Liberty Family Dentistry</span><span class="when">Q3 2026</span>',
+    variants: { C: { name: 'A group in the number strip', render: (h) => renderC(h) } },
   };
 })();
 </script>
-<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+<script>const KEEP={"s1": ["C"], "s2": ["B"], "s6": ["A"], "s7": ["A"]};</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants, window.SCREEN.keep || KEEP['s8']);</script>
 </body></html>
