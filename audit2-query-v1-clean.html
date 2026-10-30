@@ -168,8 +168,8 @@ input{font:inherit}
 @keyframes qblink{0%,100%{opacity:1}50%{opacity:.15}}
 
 /* launcher (C1, C2, C4): a link on the page */
-.qlwrap{position:absolute;right:30px;bottom:22px;display:flex;align-items:center}
-.ql{display:inline-flex;align-items:center;gap:8px;border:0;background:#fff;padding:6px 4px;border-radius:4px;font-size:14px;font-weight:600;color:var(--a);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;text-decoration-thickness:1px;transition:text-decoration-color .2s,color .2s}
+.qlwrap{position:absolute;right:32px;bottom:44px;display:flex;align-items:center}
+.ql{display:inline-flex;align-items:center;gap:8px;border:0;background:#fff;padding:8px;border-radius:4px;font-size:14px;font-weight:600;color:var(--a);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;text-decoration-thickness:1px;transition:text-decoration-color .2s,color .2s}
 .ql:hover,.ql.hov{text-decoration-color:currentColor;color:var(--aInk)}
 .qhello{position:absolute;right:100%;margin-right:14px;white-space:nowrap;font-size:12.5px;color:var(--muted);opacity:0;pointer-events:none}
 .qhello b{color:var(--body);font-weight:600}
@@ -304,6 +304,7 @@ input{font:inherit}
 .d4 .cqf:focus-within,.d4 .cqf.focus{border-top-color:var(--a)}
 .d4 .cqin{border-bottom:0;padding:2px 0}
 .d4 .cqin .qslot{width:84px}
+.ql svg{width:22px;height:22px}
 </style></head><body>
 <div id="bar">
   <div class="r1"><b class="t">Query V1, cleaner</b><span class="lab">Tool</span><div class="seg" id="segTool"></div><span class="lab">Direction</span><div class="seg" id="segDir"></div><span class="sample">Sample answers written for the mockup</span></div>
@@ -565,7 +566,7 @@ function B(label, st) { return `<span class="blank ${st === 'ok' ? 'ok' : ''} ${
 const mark = () => '<svg class="qg" viewBox="0 0 20 14" aria-hidden="true"><path d="M2.5 1.5 L8 7 L2.5 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect class="qcur" x="10.5" y="10.6" width="7" height="2" rx="1" fill="currentColor"/></svg>';
 
 const DIRS = [
-  { n: 1, label: 'C1 Quiet text', w: 392, note: '<b>C1 Quiet text.</b> "Ask Query" is a link, not a button. Inside: hairlines only, numbers in a borderless two-column list, "Add" appears on hover or keyboard focus, the input is one underlined line.' },
+  { n: 1, label: 'C1 Quiet text', w: 392, note: '<b>C1 Quiet text (owner pick).</b> The launcher is the Query mark alone, 44px off the bottom; the one-time note beside it says what it is. Inside: hairlines only, numbers in a borderless two-column list, "Add" appears on hover or keyboard focus, the input is one underlined line.' },
   { n: 2, label: 'C2 Paper', w: 440, note: '<b>C2 Paper.</b> The panel reads like a note page on a faint tint: wider margins, larger text, no cards. Evidence is an indented quote with a grey rule; suggestions are underlined phrases inside the answer, one click adds.' },
   { n: 3, label: 'C3 Edge tab', w: 384, note: '<b>C3 Minimal chrome.</b> The launcher is a slim "Query" tab on the right edge that pulls the panel out and back. The header says only "Query · Expedition". The rest as C1.' },
   { n: 4, label: 'C4 Clean pick', w: 400, note: '<b>C4 Clean pick.</b> One hairline under the header (in line with the page header), one above the input, nothing boxed. Each suggestion keeps a thin + so it is findable without hovering; one click anywhere on the line adds it and the + turns into a check. Close is a word, Esc works.' },
@@ -641,7 +642,7 @@ function panelHTML(open) {
 }
 function launcherHTML() {
   if (S.d === 3) return '<span class="qhello tabh" id="hello"></span>';
-  return '<div class="qlwrap" id="fab"><span class="qhello" id="hello"></span><button class="ql" id="qlaunch">' + mark() + '<span>Ask Query</span></button></div>';
+  return '<div class="qlwrap" id="fab"><span class="qhello" id="hello"></span><button class="ql" id="qlaunch" aria-label="Ask Query about Expedition" title="Ask Query">' + mark() + '</button></div>';
 }
 const list = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} or ${xs[xs.length - 1]}`);
 function blockHTML(b, added = []) {
