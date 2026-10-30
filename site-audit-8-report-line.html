@@ -143,7 +143,7 @@ a{color:var(--aInk)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:2px;background:#fff}
 .seg button{border:0;background:none;border-radius:6px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--aTint);color:var(--aInk)}
-.s8-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;align-items:start}
+.s8-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:30px;align-items:start}
 .s8-cap{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between}
 /* client report frame (S8E8 brand, Montserrat, as the live report) */
 .rp{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;font-family:Montserrat,Inter,sans-serif;color:#1c1917}
@@ -214,7 +214,7 @@ a{color:var(--aInk)}
 .sw i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:4px;background:#fff;transition:left .2s var(--ease)}
 .sw.on{background:var(--a)}.sw.on i{left:16px}
 .sw.dis{opacity:.45;cursor:not-allowed}
-.pr-slide{aspect-ratio:16/9;border:1px solid var(--line);border-radius:8px;background:#fff;padding:20px 24px;display:flex;flex-direction:column;transition:opacity .3s}
+.pr-slide{aspect-ratio:16/9;max-width:1100px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:20px 24px;display:flex;flex-direction:column;transition:opacity .3s}
 .pr-slide.off{opacity:.38}
 .sl-top{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:auto}
 .sl-k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk);margin-top:12px}
@@ -224,6 +224,16 @@ a{color:var(--aInk)}
 .sl-f{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:12px}
 .sl-empty{font-size:15px;color:var(--muted);margin:10px 0 auto}
 .pr-note{margin-top:10px;font-size:12.5px;color:var(--muted);line-height:1.5}
+
+/* round 3: client-facing context on the presentation section */
+.sl-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.sl-head .sl-c{margin-top:0}
+.sl-groups{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;margin-top:18px}
+.sl-g{border-top:1px solid var(--line);padding-top:10px}
+.sl-gh{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink)}
+.sl-g dl{margin:6px 0 0;display:grid;grid-template-columns:118px minmax(0,1fr);gap:3px 12px;font-size:13px;line-height:1.45}
+.sl-g dt{color:var(--muted);font-weight:600}
+.sl-g dd{margin:0;color:var(--body)}
 </style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
 <script>window.D={
  "client": "Liberty Family Dentistry",
@@ -243,8 +253,8 @@ a{color:var(--aInk)}
    "types": 5
   },
   "tidy": {
-   "pages": 74,
-   "types": 5
+   "pages": 152,
+   "types": 7
   }
  },
  "issues": [
@@ -860,240 +870,730 @@ a{color:var(--aInk)}
   },
   {
    "key": "long_title",
-   "name": "Titles too long for Google",
+   "name": "Titles Google cuts off",
    "level": "tidy",
    "group": "onpage",
    "real": true,
-   "count": 38,
-   "minutes": 60,
+   "count": 11,
+   "minutes": 30,
    "pages": [
-    {
-     "url": "/articles",
-     "title": "Dental Articles - Liberty Family Dentistry in Bloomington, IN",
-     "words": 593,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/reviews",
-     "title": "Dentist Reviews in Bloomington, IN - Liberty Family Dentistry",
-     "words": 1246,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/team",
-     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
-     "words": 367,
-     "problem": "65 characters (Google shows about 60)"
-    },
-    {
-     "url": "/services",
-     "title": "Dental Services in Bloomington, IN - Liberty Family Dentistry",
-     "words": 751,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/first-visit",
-     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
-     "words": 290,
-     "problem": "63 characters (Google shows about 60)"
-    },
-    {
-     "url": "/services/dental-implants",
-     "title": "Dental Implants in Bloomington, IN - Liberty Family Dentistry",
-     "words": 794,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/accessibility",
-     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
-     "words": 324,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/privacy-practices",
-     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
-     "words": 828,
-     "problem": "61 characters (Google shows about 60)"
-    },
     {
      "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
      "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
      "words": 361,
-     "problem": "68 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
-     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
-     "words": 1024,
-     "problem": "64 characters (Google shows about 60)"
+     "problem": "633 of 600 pixels"
     },
     {
      "url": "/articles/are-your-gums-healthy",
      "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
      "words": 372,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/ask-these-4-questions-before-getting-implants",
-     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
-     "words": 365,
-     "problem": "63 characters (Google shows about 60)"
+     "problem": "604 of 600 pixels"
     },
     {
      "url": "/articles/attention-parents-sealants-help-prevent-cavities",
      "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
      "words": 400,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/benefits-of-dental-sealants",
-     "title": "Dental sealants in Bloomington, IN | Liberty Family Dentistry",
-     "words": 390,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/botox-for-tmj-an-alternative-treatment",
-     "title": "Botox for TMJ: An Alternative Treatment | Liberty Family Dentistry",
-     "words": 800,
-     "problem": "66 characters (Google shows about 60)"
+     "problem": "601 of 600 pixels"
     },
     {
      "url": "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it",
      "title": "Breaking Down Barriers: Understanding Dental Phobia and How to Overcome It",
      "words": 907,
-     "problem": "74 characters (Google shows about 60)"
+     "problem": "707 of 600 pixels"
     },
     {
      "url": "/articles/how-dental-implants-can-rejuvenate-your-smile",
      "title": "How Dental Implants Can Rejuvenate Your Smile | Liberty Family Dentistry",
      "words": 887,
-     "problem": "72 characters (Google shows about 60)"
+     "problem": "664 of 600 pixels"
     },
     {
      "url": "/articles/how-dentists-can-help-your-sleep-apnea",
      "title": "How Dentists Can Help Your Sleep Apnea | Liberty Family Dentistry",
      "words": 809,
-     "problem": "65 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
-     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
-     "words": 710,
-     "problem": "66 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/look-younger-and-feel-better",
-     "title": "Botox treatment in Bloomington, IN | Liberty Family Dentistry",
-     "words": 359,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "602 of 600 pixels"
     },
     {
      "url": "/articles/look-your-best-this-summer-with-botox-treatment",
      "title": "Look Your Best This Summer With Botox Treatment | Liberty Family Dentistry, Bloomington, IN",
      "words": 897,
-     "problem": "91 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/misconceptions-about-dental-implants",
-     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
-     "words": 444,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "841 of 600 pixels"
     },
     {
      "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
      "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
      "words": 397,
-     "problem": "70 characters (Google shows about 60)"
+     "problem": "659 of 600 pixels"
     },
     {
      "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
      "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
      "words": 673,
-     "problem": "79 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/professional-whitening-vs-over-the-counter",
-     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
-     "words": 390,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "679 of 600 pixels"
     },
     {
      "url": "/articles/restore-your-tooth-in-one-visit-with-dental-bonding",
      "title": "Restore Your Tooth in One Visit with Dental Bonding | Bloomington, IN",
      "words": 324,
-     "problem": "69 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
-     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
-     "words": 863,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "627 of 600 pixels"
     },
     {
      "url": "/articles/sleep-is-critical-to-health",
      "title": "Sleep Apnea treatment in Bloomington, IN | Liberty Family Dentistry",
      "words": 421,
-     "problem": "67 characters (Google shows about 60)"
+     "problem": "601 of 600 pixels"
+    }
+   ]
+  },
+  {
+   "key": "long_meta",
+   "name": "Descriptions Google cuts off",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 97,
+   "minutes": 90,
+   "pages": [
+    {
+     "url": "/covid-19",
+     "title": "COVID-19 Safety Procedures | Liberty Family Dentistry",
+     "words": 411,
+     "problem": "977 of 960 pixels"
     },
     {
-     "url": "/articles/summer-smiles-5-tips-to-keep-your-smile-bright",
-     "title": "Summer Smiles: 5 Tips to Keep Your Smile Bright After Whitening",
-     "words": 1066,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/2015-benefits-expiring-soon",
+     "title": "2015 Benefits Expiring soon | Bloomington, IN",
+     "words": 556,
+     "problem": "1633 of 960 pixels"
     },
     {
-     "url": "/articles/the-advantages-of-laser-dentistry",
-     "title": "The Advantages of Laser Dentistry | Dentist in Bloomington, IN",
+     "url": "/articles/2019-new-years-resolutions-for-your-smile",
+     "title": "2019 New Year's Resolutions for Your Smile | Bloomington, IN",
+     "words": 349,
+     "problem": "2203 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-critical-insurance-questions-before-2017",
+     "title": "3 Critical Insurance Questions Before 2017 | Bloomington, IN",
+     "words": 372,
+     "problem": "1204 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-reasons-our-dentists-prefer-implants",
+     "title": "3 Reasons Our Dentists Prefer Implants | Bloomington, IN",
+     "words": 398,
+     "problem": "1484 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-reasons-personalized-dentistry-matters",
+     "title": "3 Reasons Personalized Dentistry Matters | Bloomington, IN",
+     "words": 347,
+     "problem": "1918 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-unexpected-tips-to-keep-cavities-away",
+     "title": "3 Unexpected Tips to Keep Cavities Away | Bloomington, IN",
+     "words": 382,
+     "problem": "1610 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-benefits-of-tooth-colored-fillings",
+     "title": "4 Benefits of Tooth Colored Fillings | Bloomington, IN",
+     "words": 376,
+     "problem": "2083 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-reasons-dental-implants-are-so-popular",
+     "title": "4 Reasons Dental Implants Are So Popular | Bloomington, IN",
+     "words": 387,
+     "problem": "1257 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-reasons-to-whiten-your-summer-smile",
+     "title": "4 Reasons to Whiten Your Summer Smile | Bloomington, IN",
+     "words": 462,
+     "problem": "2021 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-things-to-know-about-dental-implants",
+     "title": "4 Things To Know about Dental Implants | Bloomington, IN",
+     "words": 383,
+     "problem": "1955 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-benefits-of-veneers",
+     "title": "5 Benefits of Veneers | Bloomington, IN",
+     "words": 326,
+     "problem": "1507 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-dental-innovations-that-benefit-you",
+     "title": "5 Dental Innovations That Benefit You | Bloomington, IN",
+     "words": 503,
+     "problem": "1679 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-fascinating-facts-about-dental-implants",
+     "title": "5 Fascinating Facts about Dental Implants | Bloomington, IN",
+     "words": 427,
+     "problem": "1862 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-habits-for-gum-health",
+     "title": "5 Habits for Gum Health | Bloomington, IN",
+     "words": 511,
+     "problem": "1435 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
+     "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
+     "words": 361,
+     "problem": "1198 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-dental-visits-are-essential",
+     "title": "5 Reasons Dental Visits Are Essential | Bloomington, IN",
+     "words": 413,
+     "problem": "1337 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-patients-love-invisalign",
+     "title": "5 Reasons Patients Love Invisalign\u00ae | Bloomington, IN",
+     "words": 428,
+     "problem": "2111 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-to-consider-traditional-braces",
+     "title": "5 Reasons to Consider Traditional Braces",
+     "words": 1056,
+     "problem": "1017 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-tips-for-healthy-enamel",
+     "title": "5 Tips for Healthy Enamel | Bloomington, IN",
+     "words": 397,
+     "problem": "1485 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-warning-signs-of-gum-disease",
+     "title": "5 Warning Signs of Gum Disease | Bloomington, IN",
+     "words": 373,
+     "problem": "2080 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-advantages-of-dental-implants",
+     "title": "7 Advantages Of Dental Implants | Bloomington, IN",
+     "words": 397,
+     "problem": "1864 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-causes-of-bad-breath",
+     "title": "7 Causes of Bad Breath | Bloomington, IN",
+     "words": 444,
+     "problem": "1189 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-healthy-holiday-teeth-tips",
+     "title": "7 Healthy Holiday Teeth Tips | Bloomington, IN",
+     "words": 438,
+     "problem": "2299 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-tips-to-help-children-love-to-brush",
+     "title": "7 Tips To Help Children Love To Brush | Bloomington, IN",
+     "words": 488,
+     "problem": "1374 of 960 pixels"
+    },
+    {
+     "url": "/articles/a-quick-guide-to-toothpaste",
+     "title": "A Quick Guide To Toothpaste | Bloomington, IN",
+     "words": 633,
+     "problem": "1100 of 960 pixels"
+    },
+    {
+     "url": "/articles/accelerated-smile-makeover",
+     "title": "Accelerated Smile Makeover | Bloomington, IN",
+     "words": 408,
+     "problem": "1070 of 960 pixels"
+    },
+    {
+     "url": "/articles/advances-in-digital-x-rays-and-their-benefits",
+     "title": "Digital X-Rays | Benefits and Advances in Technology",
      "words": 779,
-     "problem": "62 characters (Google shows about 60)"
+     "problem": "1127 of 960 pixels"
+    },
+    {
+     "url": "/articles/are-you-brushing-wrong",
+     "title": "Are You Brushing Wrong? | Bloomington, IN",
+     "words": 461,
+     "problem": "1481 of 960 pixels"
+    },
+    {
+     "url": "/articles/are-you-grinding-your-teeth",
+     "title": "Are You Grinding Your Teeth?  | Bloomington, IN",
+     "words": 528,
+     "problem": "1914 of 960 pixels"
+    },
+    {
+     "url": "/articles/ask-these-4-questions-before-getting-implants",
+     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
+     "words": 365,
+     "problem": "2437 of 960 pixels"
+    },
+    {
+     "url": "/articles/attention-parents-sealants-help-prevent-cavities",
+     "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
+     "words": 400,
+     "problem": "1869 of 960 pixels"
+    },
+    {
+     "url": "/articles/back-to-school-smile",
+     "title": "Back To School Smile | Bloomington, IN",
+     "words": 431,
+     "problem": "2174 of 960 pixels"
+    },
+    {
+     "url": "/articles/back-to-school-smile-tips",
+     "title": "Back to School Smile Tips | Bloomington, IN",
+     "words": 480,
+     "problem": "2091 of 960 pixels"
+    },
+    {
+     "url": "/articles/bad-breath-solutions",
+     "title": "Bad Breath Solutions | Bloomington, IN",
+     "words": 568,
+     "problem": "1707 of 960 pixels"
+    },
+    {
+     "url": "/articles/beautiful-cavity-repair",
+     "title": "Beautiful Cavity Repair | Bloomington, IN",
+     "words": 334,
+     "problem": "2225 of 960 pixels"
+    },
+    {
+     "url": "/articles/beautifully-straight-smiles-for-all-ages",
+     "title": "Beautifully Straight Smiles for All Ages | Bloomington, IN",
+     "words": 355,
+     "problem": "1717 of 960 pixels"
+    },
+    {
+     "url": "/articles/before-you-whiten-your-teeth",
+     "title": "Before You Whiten Your Teeth | Bloomington, IN",
+     "words": 440,
+     "problem": "1376 of 960 pixels"
+    },
+    {
+     "url": "/articles/benefits-of-teeth-whitening",
+     "title": "Benefits of Teeth Whitening | Bloomington, IN",
+     "words": 370,
+     "problem": "2021 of 960 pixels"
+    },
+    {
+     "url": "/articles/braces-for-adults",
+     "title": "Braces For Adults?  | Bloomington, IN",
+     "words": 397,
+     "problem": "1909 of 960 pixels"
+    },
+    {
+     "url": "/articles/dental-solution-to-sleep-apnea",
+     "title": "Dental Solution to Sleep Apnea | Bloomington, IN",
+     "words": 374,
+     "problem": "1122 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-experience-dental-anxiety",
+     "title": "Do You Experience Dental Anxiety? | Bloomington, IN",
+     "words": 424,
+     "problem": "1899 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-get-enough-sleep",
+     "title": "Do You Get Enough Sleep? | Bloomington, IN",
+     "words": 425,
+     "problem": "1685 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-have-a-loose-or-missing-tooth",
+     "title": "Do You Have a Loose or Missing Tooth? | Bloomington, IN",
+     "words": 468,
+     "problem": "2883 of 960 pixels"
+    },
+    {
+     "url": "/articles/every-six-months",
+     "title": "Every Six Months?  | Bloomington, IN",
+     "words": 474,
+     "problem": "2005 of 960 pixels"
+    },
+    {
+     "url": "/articles/five-healthy-reasons-to-smile",
+     "title": "Five Healthy Reasons to Smile | Bloomington, IN",
+     "words": 434,
+     "problem": "2258 of 960 pixels"
+    },
+    {
+     "url": "/articles/five-surprising-things-your-mouth-reveals",
+     "title": "Five Surprising Things Your Mouth Reveals | Bloomington, IN",
+     "words": 468,
+     "problem": "3442 of 960 pixels"
+    },
+    {
+     "url": "/articles/four-ways-your-smile-can-help-you",
+     "title": "Four Ways Your Smile Can Help You | Bloomington, IN",
+     "words": 397,
+     "problem": "1190 of 960 pixels"
+    },
+    {
+     "url": "/articles/how-to-choose-the-right-dentist-for-your-family",
+     "title": "How to Choose the Right Dentist for Your Family",
+     "words": 1028,
+     "problem": "1032 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-cosmetic-dentistry-for-you",
+     "title": "Is Cosmetic Dentistry for You? | Bloomington, IN",
+     "words": 453,
+     "problem": "2268 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-your-mouth-always-dry",
+     "title": "Is Your Mouth Always Dry? | Bloomington, IN",
+     "words": 436,
+     "problem": "1645 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-your-tongue-healthy",
+     "title": "Is Your Tongue Healthy? | Bloomington, IN",
+     "words": 461,
+     "problem": "2205 of 960 pixels"
+    },
+    {
+     "url": "/articles/keep-your-teeth-with-root-canal-therapy",
+     "title": "Keep Your Teeth With Root Canal Therapy",
+     "words": 1085,
+     "problem": "1015 of 960 pixels"
+    },
+    {
+     "url": "/articles/keeping-teeth-white",
+     "title": "Keeping Teeth White | Bloomington, IN",
+     "words": 371,
+     "problem": "1216 of 960 pixels"
+    },
+    {
+     "url": "/articles/liberty-is-open-for-dental-emergencies",
+     "title": "Liberty Is Open For Dental Emergencies | Bloomington, IN",
+     "words": 261,
+     "problem": "1076 of 960 pixels"
+    },
+    {
+     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
+     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
+     "words": 710,
+     "problem": "1195 of 960 pixels"
+    },
+    {
+     "url": "/articles/make-dental-hygiene-fun-for-your-kids",
+     "title": "Make Dental Hygiene Fun For Your Kids | Bloomington, IN",
+     "words": 482,
+     "problem": "2065 of 960 pixels"
+    },
+    {
+     "url": "/articles/making-dental-treatment-comfortable",
+     "title": "Making Dental Treatment Comfortable  | Bloomington, IN",
+     "words": 430,
+     "problem": "1765 of 960 pixels"
+    },
+    {
+     "url": "/articles/maximize-your-annual-insurance-benefits",
+     "title": "Maximize Your Annual Insurance Benefits | Bloomington, IN",
+     "words": 352,
+     "problem": "1577 of 960 pixels"
+    },
+    {
+     "url": "/articles/misconceptions-about-dental-implants",
+     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
+     "words": 444,
+     "problem": "2157 of 960 pixels"
+    },
+    {
+     "url": "/articles/new-smile-habits-for-2016",
+     "title": "New Smile Habits For 2016 | Bloomington, IN",
+     "words": 505,
+     "problem": "1703 of 960 pixels"
+    },
+    {
+     "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
+     "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
+     "words": 397,
+     "problem": "1259 of 960 pixels"
+    },
+    {
+     "url": "/articles/ouch-when-to-call-liberty-for-dental-pain",
+     "title": "Ouch! When To Call Liberty For Dental Pain | Bloomington, IN",
+     "words": 504,
+     "problem": "2032 of 960 pixels"
+    },
+    {
+     "url": "/articles/overcoming-your-dental-anxiety",
+     "title": "How to Beat Dental Anxiety | Liberty Family Dentistry",
+     "words": 651,
+     "problem": "1295 of 960 pixels"
+    },
+    {
+     "url": "/articles/pain-free-dental-x-rays",
+     "title": "Pain-free Dental X-rays | Bloomington, IN",
+     "words": 360,
+     "problem": "989 of 960 pixels"
+    },
+    {
+     "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
+     "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
+     "words": 673,
+     "problem": "1092 of 960 pixels"
+    },
+    {
+     "url": "/articles/post-surgery-healing-boost",
+     "title": "Post Surgery Healing Boost | Bloomington, IN",
+     "words": 386,
+     "problem": "1826 of 960 pixels"
+    },
+    {
+     "url": "/articles/preventative-benefits-of-mouthwash",
+     "title": "Preventative Benefits of Mouthwash | Bloomington, IN",
+     "words": 442,
+     "problem": "1872 of 960 pixels"
+    },
+    {
+     "url": "/articles/professional-whitening-vs-over-the-counter",
+     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
+     "words": 390,
+     "problem": "2264 of 960 pixels"
+    },
+    {
+     "url": "/articles/relax-and-rest-easy-with-sedation-dentistry",
+     "title": "Relax and Rest Easy with Sedation Dentistry",
+     "words": 1055,
+     "problem": "1207 of 960 pixels"
+    },
+    {
+     "url": "/articles/same-day-crowns-with-cerec",
+     "title": "Same Day Crowns with CEREC\u00ae | Bloomington, IN",
+     "words": 372,
+     "problem": "2082 of 960 pixels"
+    },
+    {
+     "url": "/articles/say-goodbye-to-dentures",
+     "title": "Say Goodbye To Dentures | Bloomington, IN",
+     "words": 351,
+     "problem": "2422 of 960 pixels"
+    },
+    {
+     "url": "/articles/secure-your-dentures",
+     "title": "Secure your Dentures | Bloomington, IN",
+     "words": 301,
+     "problem": "1002 of 960 pixels"
+    },
+    {
+     "url": "/articles/simple-cavity-prevention-secret",
+     "title": "Simple Cavity Prevention Secret | Bloomington, IN",
+     "words": 395,
+     "problem": "1887 of 960 pixels"
+    },
+    {
+     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
+     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
+     "words": 863,
+     "problem": "1034 of 960 pixels"
+    },
+    {
+     "url": "/articles/snoring-problem-solved-without-cpap",
+     "title": "Snoring Problem Solved Without CPAP | Bloomington, IN",
+     "words": 385,
+     "problem": "1157 of 960 pixels"
+    },
+    {
+     "url": "/articles/solutions-for-dry-mouth",
+     "title": "Solutions For Dry Mouth | Bloomington, IN",
+     "words": 513,
+     "problem": "1405 of 960 pixels"
+    },
+    {
+     "url": "/articles/solutions-for-straight-teeth",
+     "title": "Solutions for Straight Teeth | Bloomington, IN",
+     "words": 330,
+     "problem": "1591 of 960 pixels"
+    },
+    {
+     "url": "/articles/start-the-year-off-right-with-dental-implants",
+     "title": "Start the Year Off Right with Dental Implants",
+     "words": 1069,
+     "problem": "1112 of 960 pixels"
+    },
+    {
+     "url": "/articles/teeth-sensitive-to-hot-or-cold",
+     "title": "Teeth Sensitive To Hot Or Cold?  | Bloomington, IN",
+     "words": 591,
+     "problem": "1016 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-best-solution-to-missing-teeth",
+     "title": "The Best Solution To Missing Teeth | Bloomington, IN",
+     "words": 388,
+     "problem": "1918 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-impact-of-nutrition-on-oral-health",
+     "title": "The Impact of Nutrition on Oral Health",
+     "words": 781,
+     "problem": "1241 of 960 pixels"
     },
     {
      "url": "/articles/the-importance-of-sports-mouthguards",
      "title": "The Importance of Sports Mouthguards | Liberty Family Dentistry",
      "words": 620,
-     "problem": "63 characters (Google shows about 60)"
+     "problem": "1010 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-liberty-difference",
+     "title": "The Liberty Difference | Bloomington, IN",
+     "words": 445,
+     "problem": "982 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-magic-of-invisalign",
+     "title": "The Magic of Invisalign\u00ae  | Bloomington, IN",
+     "words": 426,
+     "problem": "1853 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-magic-of-same-day-crowns",
+     "title": "The Magic Of Same Day Crowns | Bloomington, IN",
+     "words": 334,
+     "problem": "1927 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-role-of-fluoride-in-dental-health",
+     "title": "The Role of Fluoride in Dental Health",
+     "words": 640,
+     "problem": "966 of 960 pixels"
+    },
+    {
+     "url": "/articles/three-reasons-everyone-should-floss",
+     "title": "Three Reasons Everyone Should Floss  | Bloomington, IN",
+     "words": 376,
+     "problem": "1084 of 960 pixels"
+    },
+    {
+     "url": "/articles/tips-for-choosing-a-dentist",
+     "title": "Tips for Choosing a Dentist | Bloomington, IN",
+     "words": 384,
+     "problem": "1527 of 960 pixels"
     },
     {
      "url": "/articles/tips-for-managing-tooth-sensitivity",
      "title": "Tips for Managing Tooth Sensitivity | Liberty Family Dentistry",
      "words": 679,
-     "problem": "62 characters (Google shows about 60)"
+     "problem": "1187 of 960 pixels"
     },
     {
-     "url": "/articles/tips-for-preventing-gum-disease",
-     "title": "Tips for Preventing Gum Disease from Your Dentist in Bloomington",
-     "words": 808,
-     "problem": "64 characters (Google shows about 60)"
+     "url": "/articles/tooth-replacement-for-life",
+     "title": "Tooth Replacement For Life | Bloomington, IN",
+     "words": 387,
+     "problem": "1350 of 960 pixels"
     },
     {
-     "url": "/articles/understanding-orthodontic-relapse-why-teeth-shift-after-treatment",
-     "title": "Orthodontic Relapse: Why Teeth Shift Back and How to Prevent It",
-     "words": 1388,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/use-it-or-lose-it",
+     "title": "Use It or Lose It | Bloomington, IN",
+     "words": 451,
+     "problem": "2044 of 960 pixels"
     },
     {
-     "url": "/topics/cosmetic-dentistry",
-     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 183,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/what-sugary-drinks-do-to-our-teeth",
+     "title": "What Sugary Drinks Do To Our Teeth | Bloomington, IN",
+     "words": 497,
+     "problem": "1197 of 960 pixels"
     },
     {
-     "url": "/topics/general-dentistry",
-     "title": "General Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 3896,
-     "problem": "62 characters (Google shows about 60)"
+     "url": "/articles/whats-happening-at-liberty",
+     "title": "What's Happening At Liberty?  | Bloomington, IN",
+     "words": 413,
+     "problem": "2001 of 960 pixels"
     },
     {
-     "url": "/topics/pediatric-dentistry",
-     "title": "Pediatric Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 397,
-     "problem": "64 characters (Google shows about 60)"
+     "url": "/articles/why-is-invisalign-so-popular",
+     "title": "Why is Invisalign\u00ae So Popular? | Bloomington, IN",
+     "words": 408,
+     "problem": "1236 of 960 pixels"
     },
     {
-     "url": "/topics/preventative-care",
-     "title": "Preventative Care  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 1112,
-     "problem": "62 characters (Google shows about 60)"
+     "url": "/articles/why-straighten-your-teeth",
+     "title": "Why Straighten Your Teeth? | Bloomington, IN",
+     "words": 327,
+     "problem": "1896 of 960 pixels"
+    },
+    {
+     "url": "/articles/why-we-screen-for-oral-cancer",
+     "title": "Why We Screen for Oral Cancer | Bloomington, IN",
+     "words": 444,
+     "problem": "1334 of 960 pixels"
+    }
+   ]
+  },
+  {
+   "key": "short_meta",
+   "name": "Descriptions too short",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 8,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/team",
+     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
+     "words": 367,
+     "problem": "84 characters (under 100)"
+    },
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "82 characters (under 100)"
+    },
+    {
+     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
+     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
+     "words": 1024,
+     "problem": "90 characters (under 100)"
+    },
+    {
+     "url": "/articles/are-your-gums-healthy",
+     "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 372,
+     "problem": "91 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-dentists-can-cure-headaches",
+     "title": "How Dentists Can Cure Headaches | Liberty Family Dentistry",
+     "words": 929,
+     "problem": "67 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-to-handle-dental-emergencies",
+     "title": "How to Handle Dental Emergencies",
+     "words": 851,
+     "problem": "95 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-to-maintain-healthy-gums",
+     "title": "How to Maintain Healthy Gums",
+     "words": 675,
+     "problem": "70 characters (under 100)"
+    },
+    {
+     "url": "/articles/same-day-crowns-how-they-work",
+     "title": "Same Day Crowns: How They Work | Liberty Family Dentistry",
+     "words": 840,
+     "problem": "85 characters (under 100)"
     }
    ]
   },
@@ -1583,7 +2083,7 @@ a{color:var(--aInk)}
 (function () {
   const esc = FL.esc;
   const L = D.levels; const n = (k) => L[k].types;
-  const TIP = { now: 'Fix now: loses a visitor or Google, like a page that does not load.', soon: 'Fix soon: weakens a page that works, like pages sharing one title.', tidy: 'Tidy up: worth doing when there is time, like titles that run long.' };
+  const TIP = { now: 'Fix now: loses a visitor or Google, like a page that does not load.', soon: 'Fix soon: weakens a page that works, like pages sharing one title.', tidy: 'Tidy up: worth doing when there is time, like titles Google cuts off.' };
   const link = '<a href="#" onclick="return false">Open the audit</a>';
 
   const skTiles = (label, c) => `<div><div class="hd"><i style="background:${c}"></i>${label}</div>${[0, 1].map(() => '<div class="tile"><span class="sk" style="width:60px;height:8px;display:block"></span><span class="sk" style="width:34px;height:12px;display:block"></span></div>').join('')}</div>`;
@@ -1599,10 +2099,37 @@ a{color:var(--aInk)}
       <div class="rp-prose"><h2>Brief summary</h2>${skLines(4)}</div></div></div>`;
   }
 
+  /* Client-facing context per Asana group: what it is, why it matters, what S8E8 will do. Wording is a proposal. */
+  const iss = (k) => D.issues.find((i) => i.key === k);
+  const pagesIn = (keys) => new Set(keys.flatMap((k) => (iss(k) ? iss(k).pages.map((p) => p.url) : []))).size;
+  const worst = (keys) => ['now', 'soon', 'tidy'].find((l) => keys.some((k) => iss(k) && iss(k).level === l));
+  const anySample = (keys) => keys.some((k) => iss(k) && !iss(k).real);
+  const CG = [
+    { keys: ['dup_title', 'no_meta', 'no_h1', 'long_title', 'long_meta', 'short_meta', 'dup_meta', 'missing_alt'], name: 'How the pages look in Google',
+      what: (c) => `${c} pages have a title or short description that is missing, repeated or too long for Google to show in full.`,
+      why: 'That text is what a patient reads in the results before choosing a practice. When it is missing or cut off, Google writes its own, or shows the wrong page.',
+      act: 'We write a clear title and description for each page, sized to fit what Google shows, and describe the images for people who cannot see them.' },
+    { keys: ['broken_pages', 'redirect_chain'], name: 'Links that go nowhere',
+      what: (c) => `${c} links on the site lead to pages that no longer exist, or take a long way round to get there.`,
+      why: 'A patient who clicks lands on an error page instead of the answer they wanted, and Google reads it as a site that is not looked after.',
+      act: 'We point each one at the right live page and correct the links that lead to it.' },
+    { keys: ['noindex_ranking', 'not_in_sitemap'], name: 'Pages Google can’t find',
+      what: (c) => `${c} pages are hidden from Google by a setting, or missing from the list of pages the site gives Google.`,
+      why: 'A page Google cannot see cannot bring in a new patient, however good it is.',
+      act: 'We switch the setting off where a page should be found and make sure every page is on the list.' },
+    { keys: ['thin_service'], name: 'Service pages with little to say',
+      what: (c) => `${c} service page${c === 1 ? ' has' : 's have'} only a few sentences.`,
+      why: 'Patients comparing practices want detail before they call, and Google has little reason to show a page that says little.',
+      act: 'We add what patients ask about: who the treatment is for, what happens at the visit, and questions about cost and insurance.' },
+  ];
+  const cgroup = (g) => { const c = pagesIn(g.keys); return `<div class="sl-g"><div class="sl-gh">${SA.lv(worst(g.keys), '')}<b>${esc(g.name)}</b>${anySample(g.keys) ? SA.sample() : ''}</div>
+    <dl><dt>What it is</dt><dd>${esc(g.what(c))}</dd><dt>Why it matters</dt><dd>${esc(g.why)}</dd><dt>What we’ll do</dt><dd>${esc(g.act)}</dd></dl></div>`; };
+
   function slide(has, on) {
     const body = has
-      ? `<div class="sl-k">Where the website stands</div><div class="sl-t">${n('now')} things to fix now, ${n('soon')} to fix soon, ${n('tidy')} to tidy up</div>
-         <div class="sl-c">${['now', 'soon', 'tidy'].map((k) => `<div data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><b>${n(k)}</b>${SA.lv(k)}</div>`).join('')}</div>
+      ? `<div class="sl-head"><div><div class="sl-k">Where the website stands</div><div class="sl-t">${n('now')} things to fix now, ${n('soon')} to fix soon, ${n('tidy')} to tidy up</div></div>
+         <div class="sl-c">${['now', 'soon', 'tidy'].map((k) => `<div data-tip-h="${SA.LV[k].name}" data-tip="${TIP[k]}"><b>${n(k)}</b>${SA.lv(k)}</div>`).join('')}</div></div>
+         <div class="sl-groups">${CG.map(cgroup).join('')}</div>
          <div class="sl-f">Site audit of Oct 22, 2026 · 185 pages read</div>`
       : `<div class="sl-k">Where the website stands</div><div class="sl-empty">No site audit in the last 90 days. Run one to include this section.</div>`;
     return `<div class="pr-ctl"><span class="sw ${on && has ? 'on' : ''} ${has ? '' : 'dis'}" id="s8sw" role="switch" aria-checked="${on && has}"><i></i></span><span><b>Include in the presentation</b> <span class="prop" data-tip-h="Proposal" data-tip="On by default whenever the practice has a run in the last 90 days.">on by default, proposal</span></span></div>
@@ -1636,8 +2163,8 @@ a{color:var(--aInk)}
     title: 'Site Audit 8: Technical health',
     keep: ['C'],
     mock: `<b>Site Audit · 8 Technical health · round 2 (owner picked C)</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (issue types per level); the report around it is grey placeholder, no numbers invented</span>
-<ul><li>Left: the performance report as the team sees it (never sent to clients); Technical health is a fourth group in the number strip, linked to the audit.</li>
-<li>Right: the same counts as one section of the SEO Strategy presentation, with an “Include in the presentation” switch. Every section of the presentation can be switched on or off.</li>
+<ul><li><b>Round 3 (owner 10/30):</b> when the section is in the presentation it explains itself in words a patient-facing client understands: per kind of work, what it is, why it matters, what we’ll do (same four groups as the Asana tasks). Report on top, presentation section full width below so it has room.</li><li>Top: the performance report as the team sees it (never sent to clients); Technical health is a fourth group in the number strip, linked to the audit.</li>
+<li>Below: the same counts as one section of the SEO Strategy presentation, with an “Include in the presentation” switch. Every section of the presentation can be switched on or off.</li>
 <li>Toggle “No run in the last 90 days”: the draft shows a Run the site audit box in the group’s spot (click it to see progress); the presentation section can’t be included until there is a run.</li></ul>
 <span class="nr">Samples: the presentation frame and section count (it does not exist yet), the run progress numbers, Fix now types. Proposals: all wording, counting issue types not pages, the section on by default.</span>`,
     right: '<span class="who">Liberty Family Dentistry</span><span class="when">Q3 2026</span>',

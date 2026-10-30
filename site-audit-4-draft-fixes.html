@@ -224,6 +224,38 @@ a{color:var(--aInk)}
 .t4 .dr.h1d{font-weight:700}
 .h1prev{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.25}
 .h1prev.none{font-size:14px;font-weight:400;font-style:italic;color:var(--muted)}
+
+/* round 3: inline edit, pixel widths, bulk select */
+.s4-back{font-size:13px;color:var(--muted);border:0;background:none;padding:0;margin-bottom:10px}
+.t4 .c0{width:34px;padding-right:0}
+.t4 .c5{text-align:right;white-space:nowrap}
+.t4 tr.picked td{background:#F0F7FF}
+.t4 tr.more td{padding:6px 10px;background:var(--soft)}
+.iss{font-size:12px;color:var(--muted);margin-top:2px}
+.kind{display:block;margin-top:3px}
+.lenrow{margin-top:3px}
+.pend{color:var(--faint)}
+textarea.dr{display:block;width:100%;resize:none;overflow:hidden;border:1px solid transparent;border-radius:6px;background:transparent;padding:4px 6px;margin:-5px -7px 0;font:500 13.5px/1.45 Inter,system-ui,sans-serif;color:var(--ink);cursor:text;transition:border-color .15s,background .15s}
+textarea.dr:hover{border-color:var(--line);background:#fff}
+textarea.dr:focus{outline:0;border-color:var(--a);background:#fff;box-shadow:0 0 0 3px var(--aTint)}
+textarea.dr.h1d{font-weight:700}
+input.sel{width:15px;height:15px;accent-color:#0F766E;cursor:pointer;margin:0}
+input.sel:disabled{cursor:default;opacity:.35}
+.st{font-size:12.5px;font-weight:600}
+.st.ok{color:var(--aInk)}.st.ok:before{content:'✓ '}
+.st.sk{color:var(--faint)}
+.gbar{display:flex;align-items:center;gap:18px;margin:0 0 12px;font-size:13px;color:var(--muted)}
+.gbar label{display:flex;align-items:center;gap:8px;font-weight:600;color:var(--ink);cursor:pointer}
+.pair.picked{border-color:#93C5FD;background:#FAFCFF}
+.pair.on{background:#F7FBFA}
+.pair .tl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.pair .tl .iss{margin:0}
+.pair .tr{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.gedit{cursor:text;border-radius:4px;outline:1px dashed transparent;outline-offset:3px}
+.gedit:hover{outline-color:#C3C8D2}
+.gedit[contenteditable=true]{outline:1px solid var(--a);background:#fff}
+.dock .selact{display:flex;align-items:center;gap:10px}
+.dock{bottom:76px}
 </style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
 <script>window.D={
  "client": "Liberty Family Dentistry",
@@ -243,8 +275,8 @@ a{color:var(--aInk)}
    "types": 5
   },
   "tidy": {
-   "pages": 74,
-   "types": 5
+   "pages": 152,
+   "types": 7
   }
  },
  "issues": [
@@ -860,240 +892,730 @@ a{color:var(--aInk)}
   },
   {
    "key": "long_title",
-   "name": "Titles too long for Google",
+   "name": "Titles Google cuts off",
    "level": "tidy",
    "group": "onpage",
    "real": true,
-   "count": 38,
-   "minutes": 60,
+   "count": 11,
+   "minutes": 30,
    "pages": [
-    {
-     "url": "/articles",
-     "title": "Dental Articles - Liberty Family Dentistry in Bloomington, IN",
-     "words": 593,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/reviews",
-     "title": "Dentist Reviews in Bloomington, IN - Liberty Family Dentistry",
-     "words": 1246,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/team",
-     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
-     "words": 367,
-     "problem": "65 characters (Google shows about 60)"
-    },
-    {
-     "url": "/services",
-     "title": "Dental Services in Bloomington, IN - Liberty Family Dentistry",
-     "words": 751,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/first-visit",
-     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
-     "words": 290,
-     "problem": "63 characters (Google shows about 60)"
-    },
-    {
-     "url": "/services/dental-implants",
-     "title": "Dental Implants in Bloomington, IN - Liberty Family Dentistry",
-     "words": 794,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/accessibility",
-     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
-     "words": 324,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/privacy-practices",
-     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
-     "words": 828,
-     "problem": "61 characters (Google shows about 60)"
-    },
     {
      "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
      "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
      "words": 361,
-     "problem": "68 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
-     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
-     "words": 1024,
-     "problem": "64 characters (Google shows about 60)"
+     "problem": "633 of 600 pixels"
     },
     {
      "url": "/articles/are-your-gums-healthy",
      "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
      "words": 372,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/ask-these-4-questions-before-getting-implants",
-     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
-     "words": 365,
-     "problem": "63 characters (Google shows about 60)"
+     "problem": "604 of 600 pixels"
     },
     {
      "url": "/articles/attention-parents-sealants-help-prevent-cavities",
      "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
      "words": 400,
-     "problem": "67 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/benefits-of-dental-sealants",
-     "title": "Dental sealants in Bloomington, IN | Liberty Family Dentistry",
-     "words": 390,
-     "problem": "61 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/botox-for-tmj-an-alternative-treatment",
-     "title": "Botox for TMJ: An Alternative Treatment | Liberty Family Dentistry",
-     "words": 800,
-     "problem": "66 characters (Google shows about 60)"
+     "problem": "601 of 600 pixels"
     },
     {
      "url": "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it",
      "title": "Breaking Down Barriers: Understanding Dental Phobia and How to Overcome It",
      "words": 907,
-     "problem": "74 characters (Google shows about 60)"
+     "problem": "707 of 600 pixels"
     },
     {
      "url": "/articles/how-dental-implants-can-rejuvenate-your-smile",
      "title": "How Dental Implants Can Rejuvenate Your Smile | Liberty Family Dentistry",
      "words": 887,
-     "problem": "72 characters (Google shows about 60)"
+     "problem": "664 of 600 pixels"
     },
     {
      "url": "/articles/how-dentists-can-help-your-sleep-apnea",
      "title": "How Dentists Can Help Your Sleep Apnea | Liberty Family Dentistry",
      "words": 809,
-     "problem": "65 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
-     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
-     "words": 710,
-     "problem": "66 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/look-younger-and-feel-better",
-     "title": "Botox treatment in Bloomington, IN | Liberty Family Dentistry",
-     "words": 359,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "602 of 600 pixels"
     },
     {
      "url": "/articles/look-your-best-this-summer-with-botox-treatment",
      "title": "Look Your Best This Summer With Botox Treatment | Liberty Family Dentistry, Bloomington, IN",
      "words": 897,
-     "problem": "91 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/misconceptions-about-dental-implants",
-     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
-     "words": 444,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "841 of 600 pixels"
     },
     {
      "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
      "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
      "words": 397,
-     "problem": "70 characters (Google shows about 60)"
+     "problem": "659 of 600 pixels"
     },
     {
      "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
      "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
      "words": 673,
-     "problem": "79 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/professional-whitening-vs-over-the-counter",
-     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
-     "words": 390,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "679 of 600 pixels"
     },
     {
      "url": "/articles/restore-your-tooth-in-one-visit-with-dental-bonding",
      "title": "Restore Your Tooth in One Visit with Dental Bonding | Bloomington, IN",
      "words": 324,
-     "problem": "69 characters (Google shows about 60)"
-    },
-    {
-     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
-     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
-     "words": 863,
-     "problem": "61 characters (Google shows about 60)"
+     "problem": "627 of 600 pixels"
     },
     {
      "url": "/articles/sleep-is-critical-to-health",
      "title": "Sleep Apnea treatment in Bloomington, IN | Liberty Family Dentistry",
      "words": 421,
-     "problem": "67 characters (Google shows about 60)"
+     "problem": "601 of 600 pixels"
+    }
+   ]
+  },
+  {
+   "key": "long_meta",
+   "name": "Descriptions Google cuts off",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 97,
+   "minutes": 90,
+   "pages": [
+    {
+     "url": "/covid-19",
+     "title": "COVID-19 Safety Procedures | Liberty Family Dentistry",
+     "words": 411,
+     "problem": "977 of 960 pixels"
     },
     {
-     "url": "/articles/summer-smiles-5-tips-to-keep-your-smile-bright",
-     "title": "Summer Smiles: 5 Tips to Keep Your Smile Bright After Whitening",
-     "words": 1066,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/2015-benefits-expiring-soon",
+     "title": "2015 Benefits Expiring soon | Bloomington, IN",
+     "words": 556,
+     "problem": "1633 of 960 pixels"
     },
     {
-     "url": "/articles/the-advantages-of-laser-dentistry",
-     "title": "The Advantages of Laser Dentistry | Dentist in Bloomington, IN",
+     "url": "/articles/2019-new-years-resolutions-for-your-smile",
+     "title": "2019 New Year's Resolutions for Your Smile | Bloomington, IN",
+     "words": 349,
+     "problem": "2203 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-critical-insurance-questions-before-2017",
+     "title": "3 Critical Insurance Questions Before 2017 | Bloomington, IN",
+     "words": 372,
+     "problem": "1204 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-reasons-our-dentists-prefer-implants",
+     "title": "3 Reasons Our Dentists Prefer Implants | Bloomington, IN",
+     "words": 398,
+     "problem": "1484 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-reasons-personalized-dentistry-matters",
+     "title": "3 Reasons Personalized Dentistry Matters | Bloomington, IN",
+     "words": 347,
+     "problem": "1918 of 960 pixels"
+    },
+    {
+     "url": "/articles/3-unexpected-tips-to-keep-cavities-away",
+     "title": "3 Unexpected Tips to Keep Cavities Away | Bloomington, IN",
+     "words": 382,
+     "problem": "1610 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-benefits-of-tooth-colored-fillings",
+     "title": "4 Benefits of Tooth Colored Fillings | Bloomington, IN",
+     "words": 376,
+     "problem": "2083 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-reasons-dental-implants-are-so-popular",
+     "title": "4 Reasons Dental Implants Are So Popular | Bloomington, IN",
+     "words": 387,
+     "problem": "1257 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-reasons-to-whiten-your-summer-smile",
+     "title": "4 Reasons to Whiten Your Summer Smile | Bloomington, IN",
+     "words": 462,
+     "problem": "2021 of 960 pixels"
+    },
+    {
+     "url": "/articles/4-things-to-know-about-dental-implants",
+     "title": "4 Things To Know about Dental Implants | Bloomington, IN",
+     "words": 383,
+     "problem": "1955 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-benefits-of-veneers",
+     "title": "5 Benefits of Veneers | Bloomington, IN",
+     "words": 326,
+     "problem": "1507 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-dental-innovations-that-benefit-you",
+     "title": "5 Dental Innovations That Benefit You | Bloomington, IN",
+     "words": 503,
+     "problem": "1679 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-fascinating-facts-about-dental-implants",
+     "title": "5 Fascinating Facts about Dental Implants | Bloomington, IN",
+     "words": 427,
+     "problem": "1862 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-habits-for-gum-health",
+     "title": "5 Habits for Gum Health | Bloomington, IN",
+     "words": 511,
+     "problem": "1435 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
+     "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
+     "words": 361,
+     "problem": "1198 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-dental-visits-are-essential",
+     "title": "5 Reasons Dental Visits Are Essential | Bloomington, IN",
+     "words": 413,
+     "problem": "1337 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-patients-love-invisalign",
+     "title": "5 Reasons Patients Love Invisalign\u00ae | Bloomington, IN",
+     "words": 428,
+     "problem": "2111 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-reasons-to-consider-traditional-braces",
+     "title": "5 Reasons to Consider Traditional Braces",
+     "words": 1056,
+     "problem": "1017 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-tips-for-healthy-enamel",
+     "title": "5 Tips for Healthy Enamel | Bloomington, IN",
+     "words": 397,
+     "problem": "1485 of 960 pixels"
+    },
+    {
+     "url": "/articles/5-warning-signs-of-gum-disease",
+     "title": "5 Warning Signs of Gum Disease | Bloomington, IN",
+     "words": 373,
+     "problem": "2080 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-advantages-of-dental-implants",
+     "title": "7 Advantages Of Dental Implants | Bloomington, IN",
+     "words": 397,
+     "problem": "1864 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-causes-of-bad-breath",
+     "title": "7 Causes of Bad Breath | Bloomington, IN",
+     "words": 444,
+     "problem": "1189 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-healthy-holiday-teeth-tips",
+     "title": "7 Healthy Holiday Teeth Tips | Bloomington, IN",
+     "words": 438,
+     "problem": "2299 of 960 pixels"
+    },
+    {
+     "url": "/articles/7-tips-to-help-children-love-to-brush",
+     "title": "7 Tips To Help Children Love To Brush | Bloomington, IN",
+     "words": 488,
+     "problem": "1374 of 960 pixels"
+    },
+    {
+     "url": "/articles/a-quick-guide-to-toothpaste",
+     "title": "A Quick Guide To Toothpaste | Bloomington, IN",
+     "words": 633,
+     "problem": "1100 of 960 pixels"
+    },
+    {
+     "url": "/articles/accelerated-smile-makeover",
+     "title": "Accelerated Smile Makeover | Bloomington, IN",
+     "words": 408,
+     "problem": "1070 of 960 pixels"
+    },
+    {
+     "url": "/articles/advances-in-digital-x-rays-and-their-benefits",
+     "title": "Digital X-Rays | Benefits and Advances in Technology",
      "words": 779,
-     "problem": "62 characters (Google shows about 60)"
+     "problem": "1127 of 960 pixels"
+    },
+    {
+     "url": "/articles/are-you-brushing-wrong",
+     "title": "Are You Brushing Wrong? | Bloomington, IN",
+     "words": 461,
+     "problem": "1481 of 960 pixels"
+    },
+    {
+     "url": "/articles/are-you-grinding-your-teeth",
+     "title": "Are You Grinding Your Teeth?  | Bloomington, IN",
+     "words": 528,
+     "problem": "1914 of 960 pixels"
+    },
+    {
+     "url": "/articles/ask-these-4-questions-before-getting-implants",
+     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
+     "words": 365,
+     "problem": "2437 of 960 pixels"
+    },
+    {
+     "url": "/articles/attention-parents-sealants-help-prevent-cavities",
+     "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
+     "words": 400,
+     "problem": "1869 of 960 pixels"
+    },
+    {
+     "url": "/articles/back-to-school-smile",
+     "title": "Back To School Smile | Bloomington, IN",
+     "words": 431,
+     "problem": "2174 of 960 pixels"
+    },
+    {
+     "url": "/articles/back-to-school-smile-tips",
+     "title": "Back to School Smile Tips | Bloomington, IN",
+     "words": 480,
+     "problem": "2091 of 960 pixels"
+    },
+    {
+     "url": "/articles/bad-breath-solutions",
+     "title": "Bad Breath Solutions | Bloomington, IN",
+     "words": 568,
+     "problem": "1707 of 960 pixels"
+    },
+    {
+     "url": "/articles/beautiful-cavity-repair",
+     "title": "Beautiful Cavity Repair | Bloomington, IN",
+     "words": 334,
+     "problem": "2225 of 960 pixels"
+    },
+    {
+     "url": "/articles/beautifully-straight-smiles-for-all-ages",
+     "title": "Beautifully Straight Smiles for All Ages | Bloomington, IN",
+     "words": 355,
+     "problem": "1717 of 960 pixels"
+    },
+    {
+     "url": "/articles/before-you-whiten-your-teeth",
+     "title": "Before You Whiten Your Teeth | Bloomington, IN",
+     "words": 440,
+     "problem": "1376 of 960 pixels"
+    },
+    {
+     "url": "/articles/benefits-of-teeth-whitening",
+     "title": "Benefits of Teeth Whitening | Bloomington, IN",
+     "words": 370,
+     "problem": "2021 of 960 pixels"
+    },
+    {
+     "url": "/articles/braces-for-adults",
+     "title": "Braces For Adults?  | Bloomington, IN",
+     "words": 397,
+     "problem": "1909 of 960 pixels"
+    },
+    {
+     "url": "/articles/dental-solution-to-sleep-apnea",
+     "title": "Dental Solution to Sleep Apnea | Bloomington, IN",
+     "words": 374,
+     "problem": "1122 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-experience-dental-anxiety",
+     "title": "Do You Experience Dental Anxiety? | Bloomington, IN",
+     "words": 424,
+     "problem": "1899 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-get-enough-sleep",
+     "title": "Do You Get Enough Sleep? | Bloomington, IN",
+     "words": 425,
+     "problem": "1685 of 960 pixels"
+    },
+    {
+     "url": "/articles/do-you-have-a-loose-or-missing-tooth",
+     "title": "Do You Have a Loose or Missing Tooth? | Bloomington, IN",
+     "words": 468,
+     "problem": "2883 of 960 pixels"
+    },
+    {
+     "url": "/articles/every-six-months",
+     "title": "Every Six Months?  | Bloomington, IN",
+     "words": 474,
+     "problem": "2005 of 960 pixels"
+    },
+    {
+     "url": "/articles/five-healthy-reasons-to-smile",
+     "title": "Five Healthy Reasons to Smile | Bloomington, IN",
+     "words": 434,
+     "problem": "2258 of 960 pixels"
+    },
+    {
+     "url": "/articles/five-surprising-things-your-mouth-reveals",
+     "title": "Five Surprising Things Your Mouth Reveals | Bloomington, IN",
+     "words": 468,
+     "problem": "3442 of 960 pixels"
+    },
+    {
+     "url": "/articles/four-ways-your-smile-can-help-you",
+     "title": "Four Ways Your Smile Can Help You | Bloomington, IN",
+     "words": 397,
+     "problem": "1190 of 960 pixels"
+    },
+    {
+     "url": "/articles/how-to-choose-the-right-dentist-for-your-family",
+     "title": "How to Choose the Right Dentist for Your Family",
+     "words": 1028,
+     "problem": "1032 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-cosmetic-dentistry-for-you",
+     "title": "Is Cosmetic Dentistry for You? | Bloomington, IN",
+     "words": 453,
+     "problem": "2268 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-your-mouth-always-dry",
+     "title": "Is Your Mouth Always Dry? | Bloomington, IN",
+     "words": 436,
+     "problem": "1645 of 960 pixels"
+    },
+    {
+     "url": "/articles/is-your-tongue-healthy",
+     "title": "Is Your Tongue Healthy? | Bloomington, IN",
+     "words": 461,
+     "problem": "2205 of 960 pixels"
+    },
+    {
+     "url": "/articles/keep-your-teeth-with-root-canal-therapy",
+     "title": "Keep Your Teeth With Root Canal Therapy",
+     "words": 1085,
+     "problem": "1015 of 960 pixels"
+    },
+    {
+     "url": "/articles/keeping-teeth-white",
+     "title": "Keeping Teeth White | Bloomington, IN",
+     "words": 371,
+     "problem": "1216 of 960 pixels"
+    },
+    {
+     "url": "/articles/liberty-is-open-for-dental-emergencies",
+     "title": "Liberty Is Open For Dental Emergencies | Bloomington, IN",
+     "words": 261,
+     "problem": "1076 of 960 pixels"
+    },
+    {
+     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
+     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
+     "words": 710,
+     "problem": "1195 of 960 pixels"
+    },
+    {
+     "url": "/articles/make-dental-hygiene-fun-for-your-kids",
+     "title": "Make Dental Hygiene Fun For Your Kids | Bloomington, IN",
+     "words": 482,
+     "problem": "2065 of 960 pixels"
+    },
+    {
+     "url": "/articles/making-dental-treatment-comfortable",
+     "title": "Making Dental Treatment Comfortable  | Bloomington, IN",
+     "words": 430,
+     "problem": "1765 of 960 pixels"
+    },
+    {
+     "url": "/articles/maximize-your-annual-insurance-benefits",
+     "title": "Maximize Your Annual Insurance Benefits | Bloomington, IN",
+     "words": 352,
+     "problem": "1577 of 960 pixels"
+    },
+    {
+     "url": "/articles/misconceptions-about-dental-implants",
+     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
+     "words": 444,
+     "problem": "2157 of 960 pixels"
+    },
+    {
+     "url": "/articles/new-smile-habits-for-2016",
+     "title": "New Smile Habits For 2016 | Bloomington, IN",
+     "words": 505,
+     "problem": "1703 of 960 pixels"
+    },
+    {
+     "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
+     "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
+     "words": 397,
+     "problem": "1259 of 960 pixels"
+    },
+    {
+     "url": "/articles/ouch-when-to-call-liberty-for-dental-pain",
+     "title": "Ouch! When To Call Liberty For Dental Pain | Bloomington, IN",
+     "words": 504,
+     "problem": "2032 of 960 pixels"
+    },
+    {
+     "url": "/articles/overcoming-your-dental-anxiety",
+     "title": "How to Beat Dental Anxiety | Liberty Family Dentistry",
+     "words": 651,
+     "problem": "1295 of 960 pixels"
+    },
+    {
+     "url": "/articles/pain-free-dental-x-rays",
+     "title": "Pain-free Dental X-rays | Bloomington, IN",
+     "words": 360,
+     "problem": "989 of 960 pixels"
+    },
+    {
+     "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
+     "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
+     "words": 673,
+     "problem": "1092 of 960 pixels"
+    },
+    {
+     "url": "/articles/post-surgery-healing-boost",
+     "title": "Post Surgery Healing Boost | Bloomington, IN",
+     "words": 386,
+     "problem": "1826 of 960 pixels"
+    },
+    {
+     "url": "/articles/preventative-benefits-of-mouthwash",
+     "title": "Preventative Benefits of Mouthwash | Bloomington, IN",
+     "words": 442,
+     "problem": "1872 of 960 pixels"
+    },
+    {
+     "url": "/articles/professional-whitening-vs-over-the-counter",
+     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
+     "words": 390,
+     "problem": "2264 of 960 pixels"
+    },
+    {
+     "url": "/articles/relax-and-rest-easy-with-sedation-dentistry",
+     "title": "Relax and Rest Easy with Sedation Dentistry",
+     "words": 1055,
+     "problem": "1207 of 960 pixels"
+    },
+    {
+     "url": "/articles/same-day-crowns-with-cerec",
+     "title": "Same Day Crowns with CEREC\u00ae | Bloomington, IN",
+     "words": 372,
+     "problem": "2082 of 960 pixels"
+    },
+    {
+     "url": "/articles/say-goodbye-to-dentures",
+     "title": "Say Goodbye To Dentures | Bloomington, IN",
+     "words": 351,
+     "problem": "2422 of 960 pixels"
+    },
+    {
+     "url": "/articles/secure-your-dentures",
+     "title": "Secure your Dentures | Bloomington, IN",
+     "words": 301,
+     "problem": "1002 of 960 pixels"
+    },
+    {
+     "url": "/articles/simple-cavity-prevention-secret",
+     "title": "Simple Cavity Prevention Secret | Bloomington, IN",
+     "words": 395,
+     "problem": "1887 of 960 pixels"
+    },
+    {
+     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
+     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
+     "words": 863,
+     "problem": "1034 of 960 pixels"
+    },
+    {
+     "url": "/articles/snoring-problem-solved-without-cpap",
+     "title": "Snoring Problem Solved Without CPAP | Bloomington, IN",
+     "words": 385,
+     "problem": "1157 of 960 pixels"
+    },
+    {
+     "url": "/articles/solutions-for-dry-mouth",
+     "title": "Solutions For Dry Mouth | Bloomington, IN",
+     "words": 513,
+     "problem": "1405 of 960 pixels"
+    },
+    {
+     "url": "/articles/solutions-for-straight-teeth",
+     "title": "Solutions for Straight Teeth | Bloomington, IN",
+     "words": 330,
+     "problem": "1591 of 960 pixels"
+    },
+    {
+     "url": "/articles/start-the-year-off-right-with-dental-implants",
+     "title": "Start the Year Off Right with Dental Implants",
+     "words": 1069,
+     "problem": "1112 of 960 pixels"
+    },
+    {
+     "url": "/articles/teeth-sensitive-to-hot-or-cold",
+     "title": "Teeth Sensitive To Hot Or Cold?  | Bloomington, IN",
+     "words": 591,
+     "problem": "1016 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-best-solution-to-missing-teeth",
+     "title": "The Best Solution To Missing Teeth | Bloomington, IN",
+     "words": 388,
+     "problem": "1918 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-impact-of-nutrition-on-oral-health",
+     "title": "The Impact of Nutrition on Oral Health",
+     "words": 781,
+     "problem": "1241 of 960 pixels"
     },
     {
      "url": "/articles/the-importance-of-sports-mouthguards",
      "title": "The Importance of Sports Mouthguards | Liberty Family Dentistry",
      "words": 620,
-     "problem": "63 characters (Google shows about 60)"
+     "problem": "1010 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-liberty-difference",
+     "title": "The Liberty Difference | Bloomington, IN",
+     "words": 445,
+     "problem": "982 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-magic-of-invisalign",
+     "title": "The Magic of Invisalign\u00ae  | Bloomington, IN",
+     "words": 426,
+     "problem": "1853 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-magic-of-same-day-crowns",
+     "title": "The Magic Of Same Day Crowns | Bloomington, IN",
+     "words": 334,
+     "problem": "1927 of 960 pixels"
+    },
+    {
+     "url": "/articles/the-role-of-fluoride-in-dental-health",
+     "title": "The Role of Fluoride in Dental Health",
+     "words": 640,
+     "problem": "966 of 960 pixels"
+    },
+    {
+     "url": "/articles/three-reasons-everyone-should-floss",
+     "title": "Three Reasons Everyone Should Floss  | Bloomington, IN",
+     "words": 376,
+     "problem": "1084 of 960 pixels"
+    },
+    {
+     "url": "/articles/tips-for-choosing-a-dentist",
+     "title": "Tips for Choosing a Dentist | Bloomington, IN",
+     "words": 384,
+     "problem": "1527 of 960 pixels"
     },
     {
      "url": "/articles/tips-for-managing-tooth-sensitivity",
      "title": "Tips for Managing Tooth Sensitivity | Liberty Family Dentistry",
      "words": 679,
-     "problem": "62 characters (Google shows about 60)"
+     "problem": "1187 of 960 pixels"
     },
     {
-     "url": "/articles/tips-for-preventing-gum-disease",
-     "title": "Tips for Preventing Gum Disease from Your Dentist in Bloomington",
-     "words": 808,
-     "problem": "64 characters (Google shows about 60)"
+     "url": "/articles/tooth-replacement-for-life",
+     "title": "Tooth Replacement For Life | Bloomington, IN",
+     "words": 387,
+     "problem": "1350 of 960 pixels"
     },
     {
-     "url": "/articles/understanding-orthodontic-relapse-why-teeth-shift-after-treatment",
-     "title": "Orthodontic Relapse: Why Teeth Shift Back and How to Prevent It",
-     "words": 1388,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/use-it-or-lose-it",
+     "title": "Use It or Lose It | Bloomington, IN",
+     "words": 451,
+     "problem": "2044 of 960 pixels"
     },
     {
-     "url": "/topics/cosmetic-dentistry",
-     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 183,
-     "problem": "63 characters (Google shows about 60)"
+     "url": "/articles/what-sugary-drinks-do-to-our-teeth",
+     "title": "What Sugary Drinks Do To Our Teeth | Bloomington, IN",
+     "words": 497,
+     "problem": "1197 of 960 pixels"
     },
     {
-     "url": "/topics/general-dentistry",
-     "title": "General Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 3896,
-     "problem": "62 characters (Google shows about 60)"
+     "url": "/articles/whats-happening-at-liberty",
+     "title": "What's Happening At Liberty?  | Bloomington, IN",
+     "words": 413,
+     "problem": "2001 of 960 pixels"
     },
     {
-     "url": "/topics/pediatric-dentistry",
-     "title": "Pediatric Dentistry  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 397,
-     "problem": "64 characters (Google shows about 60)"
+     "url": "/articles/why-is-invisalign-so-popular",
+     "title": "Why is Invisalign\u00ae So Popular? | Bloomington, IN",
+     "words": 408,
+     "problem": "1236 of 960 pixels"
     },
     {
-     "url": "/topics/preventative-care",
-     "title": "Preventative Care  - Liberty Family Dentistry, Bloomington, IN",
-     "words": 1112,
-     "problem": "62 characters (Google shows about 60)"
+     "url": "/articles/why-straighten-your-teeth",
+     "title": "Why Straighten Your Teeth? | Bloomington, IN",
+     "words": 327,
+     "problem": "1896 of 960 pixels"
+    },
+    {
+     "url": "/articles/why-we-screen-for-oral-cancer",
+     "title": "Why We Screen for Oral Cancer | Bloomington, IN",
+     "words": 444,
+     "problem": "1334 of 960 pixels"
+    }
+   ]
+  },
+  {
+   "key": "short_meta",
+   "name": "Descriptions too short",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 8,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/team",
+     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
+     "words": 367,
+     "problem": "84 characters (under 100)"
+    },
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "82 characters (under 100)"
+    },
+    {
+     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
+     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
+     "words": 1024,
+     "problem": "90 characters (under 100)"
+    },
+    {
+     "url": "/articles/are-your-gums-healthy",
+     "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 372,
+     "problem": "91 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-dentists-can-cure-headaches",
+     "title": "How Dentists Can Cure Headaches | Liberty Family Dentistry",
+     "words": 929,
+     "problem": "67 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-to-handle-dental-emergencies",
+     "title": "How to Handle Dental Emergencies",
+     "words": 851,
+     "problem": "95 characters (under 100)"
+    },
+    {
+     "url": "/articles/how-to-maintain-healthy-gums",
+     "title": "How to Maintain Healthy Gums",
+     "words": 675,
+     "problem": "70 characters (under 100)"
+    },
+    {
+     "url": "/articles/same-day-crowns-how-they-work",
+     "title": "Same Day Crowns: How They Work | Liberty Family Dentistry",
+     "words": 840,
+     "problem": "85 characters (under 100)"
     }
    ]
   },
@@ -1577,150 +2099,58 @@ a{color:var(--aInk)}
   };
 })();
 </script>
-<script>/* Screen 4 (#1426): "Draft the fixes". The model writes titles, descriptions and alt text; drafts sit next to each page.
-   Current titles/descriptions are REAL (crawl 319). Drafts are hand-written mockup text, not model output. Cost is a sample. */
+<script>/* Screen 4 (#1426, round 3): Draft meta titles, descriptions, headings and alt text.
+   GENERATED by tools/s4_inject.py from tools/s4.tpl.js + tools/s4_rows.json. Edit those, not this file.
+   Current titles/descriptions are REAL (crawl 319). Drafts are hand-written mockup text, each measured with the app's
+   pixel math (services/serp_pixel_width.py). Cost and alt rows are samples. */
 (function () {
   const E = FL.esc;
-  const raw = (u) => D.issues.flatMap((i) => i.pages).find((p) => p.url === u);
-  const META = { // real meta descriptions today (crawl 319)
-    '/team': "Meet the Liberty Family Dentistry dentists \u2013 Bloomington's most trusted dental team.",
-    '/first-visit': "Discover what you can expect when visiting Bloomington's most trusted dental team.",
-    '/accessibility': 'At Liberty Family Dentistry, we strive to make our dental practice accessible in every way, from our interior, to our online presence.',
-    '/articles/5-key-questions-about-your-2019-insurance-benefits': 'The holiday season is upon us and 2020 is just around the corner. As we move toward the end of the year, you may want to evaluate if you are leaving any 2019 insurance benefits on the table?',
-    '/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it': 'Dental phobia? Liberty Family Dentistry in Bloomington offers all the solutions to ease anxiety so you can relax during treatment. Book your visit now.',
-    '/articles/how-dental-implants-can-rejuvenate-your-smile': 'Dental implants can give you an entirely new smile. Learn more from the experts at Liberty Family Dentistry.',
-    '/articles/botox-for-tmj-an-alternative-treatment': "We\u2019ve all heard of Botox as a cosmetic treatment, but did you know it has medical uses as well? Learn more here.",
-    '/articles/how-dentists-can-help-your-sleep-apnea': 'Sleep apnea is a debilitating disorder - fortunately, with advancements in dental technology, the experts at Liberty Family Dentistry can help.',
-  };
-  const T = (url, draft) => ({ url, kind: 'title', now: raw(url)?.title ?? '', draft, h1: '' });
-  const ITEMS = [
-    T('/team', 'Meet Our Bloomington, IN Dentists | Liberty Family Dentistry'),
-    T('/first-visit', 'Your First Visit | Liberty Family Dentistry, Bloomington'),
-    T('/accessibility', 'Accessibility Statement | Liberty Family Dentistry'),
-    T('/articles/5-key-questions-about-your-2019-insurance-benefits', '5 Questions About Your Dental Insurance Benefits'),
-    T('/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it', 'Dental Phobia: How to Overcome It | Bloomington, IN'),
-    T('/articles/how-dental-implants-can-rejuvenate-your-smile', 'How Dental Implants Can Rejuvenate Your Smile'),
-    T('/articles/botox-for-tmj-an-alternative-treatment', 'Botox for TMJ: An Alternative Treatment | Bloomington, IN'),
-    T('/articles/how-dentists-can-help-your-sleep-apnea', 'How a Dentist Can Help With Sleep Apnea | Bloomington, IN'),
-    { url: '/video', kind: 'description', now: '', draft: 'Watch short videos from Liberty Family Dentistry: meet the Bloomington team, tour the office and see what a first visit looks like.' },
-    { url: '/video', kind: 'h1', now: '', draft: 'Videos From Our Bloomington Dental Team' },
-    { url: '/team', kind: 'alt', sample: true, now: '9 of 9 images have no alt text', draft: 'Liberty Family Dentistry team at the front desk of the Bloomington office (and 8 more)' },
-    { url: '/', kind: 'alt', sample: true, now: '4 of 11 images have no alt text', draft: 'Patient smiling in the chair after a cleaning at Liberty Family Dentistry (and 3 more)' },
-  ];
-  ITEMS.forEach((it, i) => { it.i = i; it.state = 'wait'; it.acc = false; it.skip = false; });
-  const LIMIT = { title: 60, description: 160 };
-  const SKIPPED = 26;
-  const COST = { est: '$0.04', real: '$0.03' };
+  /* ---- pixel math: verbatim port of app/frontend/src/lib/serp-pixel-width.ts (the content calendar's) ---- */
+  const TITLE_CHAR_WIDTHS = {" ": 5.6, "!": 5.6, "\"": 7.0, "#": 11.2, "$": 11.2, "%": 17.8, "&": 13.4, "'": 3.8, "(": 6.6, ")": 6.6, "*": 7.8, "+": 11.8, ",": 5.6, "-": 6.6, ".": 5.6, "/": 5.6, "0": 11.2, "1": 11.2, "2": 11.2, "3": 11.2, "4": 11.2, "5": 11.2, "6": 11.2, "7": 11.2, "8": 11.2, "9": 11.2, ":": 5.6, ";": 5.6, "<": 11.8, "=": 11.8, ">": 11.8, "?": 11.2, "@": 20.4, "A": 13.4, "B": 13.4, "C": 14.4, "D": 14.4, "E": 13.4, "F": 12.2, "G": 15.6, "H": 14.4, "I": 5.6, "J": 10.0, "K": 13.4, "L": 11.2, "M": 16.6, "N": 14.4, "O": 15.6, "P": 13.4, "Q": 15.6, "R": 14.4, "S": 13.4, "T": 12.2, "U": 14.4, "V": 13.4, "W": 18.8, "X": 13.4, "Y": 13.4, "Z": 12.2, "[": 5.6, "\\": 5.6, "]": 5.6, "^": 9.4, "_": 11.2, "`": 6.6, "a": 11.2, "b": 11.2, "c": 10.0, "d": 11.2, "e": 11.2, "f": 5.6, "g": 11.2, "h": 11.2, "i": 4.4, "j": 4.4, "k": 10.0, "l": 4.4, "m": 16.6, "n": 11.2, "o": 11.2, "p": 11.2, "q": 11.2, "r": 6.6, "s": 10.0, "t": 5.6, "u": 11.2, "v": 10.0, "w": 14.4, "x": 10.0, "y": 10.0, "z": 10.0, "{": 6.6, "|": 5.2, "}": 6.6, "~": 11.8};
+  const DESC_CHAR_WIDTHS = {" ": 3.9, "!": 4.4, "\"": 5.6, "#": 7.8, "$": 7.8, "%": 12.4, "&": 9.3, "'": 3.1, "(": 4.7, ")": 4.7, "*": 5.4, "+": 8.2, ",": 3.9, "-": 4.7, ".": 3.9, "/": 3.9, "0": 7.8, "1": 7.8, "2": 7.8, "3": 7.8, "4": 7.8, "5": 7.8, "6": 7.8, "7": 7.8, "8": 7.8, "9": 7.8, ":": 3.9, ";": 3.9, "<": 8.2, "=": 8.2, ">": 8.2, "?": 7.8, "@": 14.2, "A": 9.3, "B": 9.3, "C": 10.1, "D": 10.1, "E": 9.3, "F": 8.5, "G": 10.9, "H": 10.1, "I": 3.9, "J": 7.0, "K": 9.3, "L": 7.8, "M": 11.7, "N": 10.1, "O": 10.9, "P": 9.3, "Q": 10.9, "R": 10.1, "S": 9.3, "T": 8.5, "U": 10.1, "V": 9.3, "W": 13.2, "X": 9.3, "Y": 9.3, "Z": 8.5, "[": 3.9, "\\": 3.9, "]": 3.9, "^": 6.6, "_": 7.8, "`": 4.7, "a": 7.8, "b": 7.8, "c": 7.0, "d": 7.8, "e": 7.8, "f": 3.9, "g": 7.8, "h": 7.8, "i": 3.1, "j": 3.1, "k": 7.0, "l": 3.1, "m": 11.7, "n": 7.8, "o": 7.8, "p": 7.8, "q": 7.8, "r": 4.7, "s": 7.0, "t": 3.9, "u": 7.8, "v": 7.0, "w": 10.1, "x": 7.0, "y": 7.0, "z": 7.0, "{": 4.7, "|": 3.6, "}": 4.7, "~": 8.2};
+  const TITLE_DEFAULT_WIDTH = 11.2; const DESC_DEFAULT_WIDTH = 7.8;
+  const TITLE_MAX_PX = 600; const DESC_MAX_PX = 960;
+  function measureSerpWidth(text, mode) {
+    if (!text) return 0;
+    const widths = mode === 'title' ? TITLE_CHAR_WIDTHS : DESC_CHAR_WIDTHS;
+    const defaultWidth = mode === 'title' ? TITLE_DEFAULT_WIDTH : DESC_DEFAULT_WIDTH;
+    let total = 0;
+    for (const char of text) total += widths[char] ?? defaultWidth;
+    return Math.round(total * 10) / 10;
+  }
+  function findSerpTruncation(text, mode, maxPx) {
+    if (!text) return -1;
+    const rawLimit = maxPx ?? (mode === 'title' ? TITLE_MAX_PX : DESC_MAX_PX);
+    const widths = mode === 'title' ? TITLE_CHAR_WIDTHS : DESC_CHAR_WIDTHS;
+    const defaultWidth = mode === 'title' ? TITLE_DEFAULT_WIDTH : DESC_DEFAULT_WIDTH;
+    let fullWidth = 0;
+    for (const char of text) fullWidth += widths[char] ?? defaultWidth;
+    if (fullWidth <= rawLimit) return -1;
+    const ellipsisWidth = (widths['.'] ?? defaultWidth) * 3;
+    const limit = rawLimit - ellipsisWidth;
+    let total = 0;
+    for (let i = 0; i < text.length; i++) { total += widths[text[i]] ?? defaultWidth; if (total > limit) return i; }
+    return -1;
+  }
+  const truncateByPixel = (text, mode) => { if (!text) return ''; const i = findSerpTruncation(text, mode); return i === -1 ? text : text.slice(0, i) + '...'; };
+  window.S4PX = { measureSerpWidth, findSerpTruncation };
+
+  const R = {"rows": [{"url": "/articles/5-key-questions-about-your-2019-insurance-benefits", "kind": "title", "issue": "Title Google cuts off", "now": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN", "draft": "5 Questions About Your Dental Insurance Benefits", "meta": "The holiday season is upon us and 2020 is just around the corner. As we move toward the end of the year, you may want to evaluate if you are leaving any 2019 insurance benefits on the table?", "px_now": 633.0, "px_draft": 449.0}, {"url": "/articles/are-your-gums-healthy", "kind": "title", "issue": "Title Google cuts off", "now": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry", "draft": "Are Your Gums Healthy? Gum Disease Signs to Watch", "meta": "Periodontal treatment for gum disease. Contact Liberty Family Dentistry in Bloomington, IN.", "px_now": 603.8, "px_draft": 490.6}, {"url": "/articles/attention-parents-sealants-help-prevent-cavities", "kind": "title", "issue": "Title Google cuts off", "now": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN", "draft": "Sealants for Kids: How They Help Prevent Cavities", "meta": "While regular brushing and flossing is critical to cavity prevention and overall oral health, even good brushing cannot always reach all the grooves and depressions in your teeth. Food particles often get caught in hard to reach places like the premolars and molars, leading to the development of cavities.", "px_now": 601.2, "px_draft": 451.6}, {"url": "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it", "kind": "title", "issue": "Title Google cuts off", "now": "Breaking Down Barriers: Understanding Dental Phobia and How to Overcome It", "draft": "Dental Phobia: How to Feel Calm at the Dentist", "meta": "Dental phobia? Liberty Family Dentistry in Bloomington offers all the solutions to ease anxiety so you can relax during treatment. Book your visit now.", "px_now": 707.2, "px_draft": 420.6}, {"url": "/articles/how-dental-implants-can-rejuvenate-your-smile", "kind": "title", "issue": "Title Google cuts off", "now": "How Dental Implants Can Rejuvenate Your Smile | Liberty Family Dentistry", "draft": "How Dental Implants Can Rejuvenate Your Smile", "meta": "Dental implants can give you an entirely new smile. Learn more from the experts at Liberty Family Dentistry.", "px_now": 663.8, "px_draft": 438.2}, {"url": "/articles/how-dentists-can-help-your-sleep-apnea", "kind": "title", "issue": "Title Google cuts off", "now": "How Dentists Can Help Your Sleep Apnea | Liberty Family Dentistry", "draft": "How a Dentist Can Help Your Sleep Apnea", "meta": "Sleep apnea is a debilitating disorder - fortunately, with advancements in dental technology, the experts at Liberty Family Dentistry can help.", "px_now": 601.6, "px_draft": 382.8}, {"url": "/articles/look-your-best-this-summer-with-botox-treatment", "kind": "title", "issue": "Title Google cuts off", "now": "Look Your Best This Summer With Botox Treatment | Liberty Family Dentistry, Bloomington, IN", "draft": "Botox in Bloomington: Look Your Best This Summer", "meta": "Botox is safe, effective and very affordable. Look and feel your best this summer with Botox injections, available at our dental practice in Bloomington, IN.", "px_now": 841.2, "px_draft": 463.0}, {"url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year", "kind": "title", "issue": "Title Google cuts off", "now": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN", "draft": "New Year, Whiter Smile: Teeth Whitening Options", "meta": "After the challenges of 2020, many are ready for a new year. How will you set a new tone for the new year? New focus? New habits? New career? New hope? How about a new whiter and brighter smile?", "px_now": 658.6, "px_draft": 444.8}, {"url": "/articles/pediatric-dentistry-establishing-healthy-habits-early", "kind": "title", "issue": "Title Google cuts off", "now": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry", "draft": "Healthy Habits Early: A Guide to Pediatric Dentistry", "meta": "Pediatric dentists like Jeffrey Jones, DDS undergo specialized training that teaches them the nuances of child-friendly dentistry. Contact Liberty Family Dentistry in Bloomington.", "px_now": 679.2, "px_draft": 456.0}, {"url": "/articles/restore-your-tooth-in-one-visit-with-dental-bonding", "kind": "title", "issue": "Title Google cuts off", "now": "Restore Your Tooth in One Visit with Dental Bonding | Bloomington, IN", "draft": "Dental Bonding: Restore a Tooth in One Visit", "meta": "Faster and more cost-effective than dental implants and crowns, dental bonding at Liberty can restore your tooth and your smile in one short visit.", "px_now": 626.8, "px_draft": 400.8}, {"url": "/articles/sleep-is-critical-to-health", "kind": "title", "issue": "Title Google cuts off", "now": "Sleep Apnea treatment in Bloomington, IN | Liberty Family Dentistry", "draft": "Sleep Apnea Treatment in Bloomington, IN", "meta": "Sleep apnea treatment to stop snoring and restore restful sleep. Contact Liberty Family Dentistry in Bloomington, IN.", "px_now": 600.8, "px_draft": 381.8}, {"url": "/covid-19", "kind": "description", "issue": "Description Google cuts off", "now": "At Liberty Family Dentistry in Bloomington, Indiana, we believe that your dental care is essential! Discover the ways we are keeping you safe during your visit.", "draft": "How Liberty Family Dentistry keeps patients safe in Bloomington, Indiana: the steps we take before, during and after each visit.", "title": "COVID-19 Safety Procedures | Liberty Family Dentistry", "px_now": 976.8, "px_draft": 786.3}, {"url": "/articles/2015-benefits-expiring-soon", "kind": "description", "issue": "Description Google cuts off", "now": "The New Year is almost here! What does that mean for you? You may be leaving money on the table. Any unused dental benefits for 2015 will disappear. Here are two important steps to help you make sure you’re getting the most from your dental insurance plan.", "draft": "Unused dental benefits disappear at the end of the year. Two simple steps to get the most from your dental insurance plan.", "title": "2015 Benefits Expiring soon | Bloomington, IN", "px_now": 1632.8, "px_draft": 762.4}, {"url": "/articles/2019-new-years-resolutions-for-your-smile", "kind": "description", "issue": "Description Google cuts off", "now": "Here are a couple of fun facts about New Year’s Resolutions as we begin the 2019. Topping the resolution’s chart every year is a commitment to get more exercise. Gyms and workout facilities love this time of year as people kick off their new campaigns. Unfortunately, after three months, dedication falters as half of all resolutions have kicked the bucket.", "draft": "New Year’s resolutions often fade by spring. A few small, lasting habits that keep your smile healthy all year long.", "title": "2019 New Year's Resolutions for Your Smile | Bloomington, IN", "px_now": 2203.4, "px_draft": 706.0}, {"url": "/articles/3-critical-insurance-questions-before-2017", "kind": "description", "issue": "Description Google cuts off", "now": "Have you taken advantage of your benefits for 2016? Most dental insurance plans call for all benefits to reset at the beginning of the calendar year meaning that any unused 2016 benefits vanish.", "draft": "Most dental plans reset every January, so unused benefits vanish. Three questions to ask your insurer before the year ends.", "title": "3 Critical Insurance Questions Before 2017 | Bloomington, IN", "px_now": 1204.5, "px_draft": 771.0}, {"url": "/articles/3-reasons-our-dentists-prefer-implants", "kind": "description", "issue": "Description Google cuts off", "now": "This is one of the most common questions the Liberty team receives when we offer treatment options to patients. When it comes to tooth replacement, our dentists would consistently choose dental implants for ourselves and our loved ones.", "draft": "Why the dentists at Liberty Family Dentistry choose dental implants over other tooth replacements for their own families.", "title": "3 Reasons Our Dentists Prefer Implants | Bloomington, IN", "px_now": 1484.1, "px_draft": 743.5}, {"url": "/articles/3-reasons-personalized-dentistry-matters", "kind": "description", "issue": "Description Google cuts off", "now": "Dentistry has always been a personal experience. It’s your body, your teeth, your smile, and it demands a special level of care. Although high volume dental chains are popping up everywhere, people still prefer a dentist who remembers their name, lives in their community, and authentically cares about them.", "draft": "Why a dentist who knows your name, lives in Bloomington and plans your care around you makes a real difference to your smile.", "title": "3 Reasons Personalized Dentistry Matters | Bloomington, IN", "px_now": 1917.6, "px_draft": 798.9}, {"url": "/articles/3-unexpected-tips-to-keep-cavities-away", "kind": "description", "issue": "Description Google cuts off", "now": "From an early age, we are taught the basics of good oral health care habits. Brush properly at least twice a day. Floss daily. Rinse regularly with the appropriate mouthwash. Visit the Liberty team every six months for a thorough professional cleaning and exam.", "draft": "Beyond brushing and flossing: three simple, unexpected habits that help keep cavities away between your dental visits.", "title": "3 Unexpected Tips to Keep Cavities Away | Bloomington, IN", "px_now": 1610.3, "px_draft": 738.0}, {"url": "/articles/4-benefits-of-tooth-colored-fillings", "kind": "description", "issue": "Description Google cuts off", "now": "As Bloomington's most trusted dental team, we offer our patients the latest innovations in cavity treatment. If you’ve had a cavity filled in the past, you may be among the millions of Americans who reveal a little silver sparkle every time you smile. Today's cavity care solutions bring oral health and beauty together for a pain-free solution.", "draft": "Tooth colored fillings repair cavities without the silver sparkle. Four benefits of the filling most patients now choose.", "title": "4 Benefits of Tooth Colored Fillings | Bloomington, IN", "px_now": 2083.3, "px_draft": 710.6}, {"url": "/team", "kind": "description", "issue": "Description too short", "now": "Meet the Liberty Family Dentistry dentists – Bloomington's most trusted dental team.", "draft": "Meet the dentists and team at Liberty Family Dentistry in Bloomington, IN: who they are, what they do and why patients stay.", "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry", "px_now": 522.9, "px_draft": 771.5}, {"url": "/first-visit", "kind": "description", "issue": "Description too short", "now": "Discover what you can expect when visiting Bloomington's most trusted dental team.", "draft": "What to expect at your first visit to Liberty Family Dentistry in Bloomington: paperwork, the exam, X-rays and your care plan.", "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN", "px_now": 524.4, "px_draft": 768.4}, {"url": "/articles/how-dentists-can-cure-headaches", "kind": "description", "issue": "Description too short", "now": "Do you suffer from headaches related to TMJ? Your dentist can help.", "draft": "Frequent headaches can start in the jaw. How TMJ causes them and how a dentist in Bloomington can help bring lasting relief.", "title": "How Dentists Can Cure Headaches | Liberty Family Dentistry", "px_now": 428.7, "px_draft": 784.7}, {"url": "/video", "kind": "description", "issue": "No description", "now": "", "draft": "Watch short videos from Liberty Family Dentistry: meet the Bloomington team, tour the office and see what a first visit is like.", "title": "Video", "px_now": 0, "px_draft": 769.9}, {"url": "/video", "kind": "h1", "issue": "No main heading", "now": "", "draft": "Videos From Our Bloomington Dental Team"}, {"url": "/team", "kind": "alt", "issue": "Images with no alt text", "sample": true, "now": "9 of 9 images have no alt text", "draft": "Liberty Family Dentistry team at the front desk of the Bloomington office (and 8 more)"}, {"url": "/", "kind": "alt", "issue": "Images with no alt text", "sample": true, "now": "4 of 11 images have no alt text", "draft": "Patient smiling in the chair after a cleaning at Liberty Family Dentistry (and 3 more)"}], "long_meta_total": 97, "long_title_total": 11, "short_meta_total": 8};
+  const ITEMS = R.rows.map((r, i) => ({ ...r, i, state: 'wait', acc: false, skip: false }));
+  const MODE = { title: 'title', description: 'description' };
+  const KIND = { title: 'Meta title', description: 'Meta description', h1: 'Heading (H1)', alt: 'Alt text' };
+  const MORE = { long_meta: R.long_meta_total - ITEMS.filter((x) => x.issue === 'Description Google cuts off').length, short_meta: R.short_meta_total - ITEMS.filter((x) => x.issue === 'Description too short').length };
+  const RUN_TOTAL = ITEMS.length + MORE.long_meta + MORE.short_meta;
+  const COST = { est: '$0.15', real: '$0.12' };
   const COSTTIP = 'The estimate comes from the number of pages and fields, per the tool cost ledger. Every run is logged with its real cost. The figures here are a sample.';
-  const KIND = { title: 'Title', description: 'Description', h1: 'Heading (H1)', alt: 'Alt text' };
-  const counts = () => `${ITEMS.filter((x) => x.kind === 'title').length} titles, ${ITEMS.filter((x) => x.kind === 'description').length} description, alt text on ${ITEMS.filter((x) => x.kind === 'alt').length} pages`;
-  const len = (it, s) => (LIMIT[it.kind] ? `<span class="len ${s.length > LIMIT[it.kind] ? 'bad' : s ? 'ok' : ''}" data-tip-h="Length" data-tip="Google shows about ${LIMIT[it.kind]} characters of a ${it.kind}; the rest is cut off.">${s.length} of ${LIMIT[it.kind]}</span>` : '');
-  let GEN = 0;
-  const reset = () => (GEN++, ITEMS).forEach((it) => { it.state = 'wait'; it.acc = false; it.skip = false; });
-
-  const head = () => `<div class="s4-head"><div>
-      <button class="s3-back" style="font-size:13px;color:var(--muted);border:0;background:none;padding:0;margin-bottom:10px" onclick="FL.toast('Back to the result page (screen 2).')">← Back to the audit</button>
-      <div class="kick">Draft the fixes</div><h1 class="h1">Titles, descriptions and alt text, written for each page</h1>
-      <p class="sub">From “Titles too long for Google”, “Pages with no description” and “Images with no alt text”. The team reads every draft before it goes anywhere.</p></div></div>`;
-  const runPanel = (phase, done) => `<div class="card run"><div class="l">${phase === 'idle'
-      ? `<b>${ITEMS.length} fixes to draft</b> on ${new Set(ITEMS.map((x) => x.url)).size} pages: ${counts()}.<small>${SKIPPED} pages are left out: they have no words to write from (see “Pages sharing one title”).</small>`
-      : phase === 'run' ? `<b>Writing ${done} of ${ITEMS.length}</b>, page by page. Drafts appear as they are written; review can start now.<div class="prog"><i style="width:${(done / ITEMS.length) * 100}%"></i></div>`
-        : `<b>${ITEMS.length} drafts ready.</b> Accept, edit or skip each one.<small class="ledger">Logged to the cost ledger: <b>${COST.real}</b> on Oct 30, 2026 ${SA.sample(COSTTIP)}</small>`}</div>
-    <div class="r">${phase === 'idle' ? `<button class="btn btn-go" data-run>Draft the fixes · about ${COST.est}</button><span class="est" data-tip-h="Cost" data-tip="${COSTTIP}">estimate before running ${SA.sample(COSTTIP)}</span>` : phase === 'run' ? '<span class="est">Writing…</span>' : '<button class="btn btn-line" data-again>Draft again</button>'}</div></div>`;
-  const dock = () => { const n = ITEMS.filter((x) => x.acc).length; return `<div class="dock" data-dock><span><b>${n}</b> accepted. Accepted drafts go into the Asana task body, next to each page.</span><span class="btnrow"><button class="btn btn-line" data-accall>Accept all</button><button class="btn btn-go" data-task ${n ? '' : 'disabled style="opacity:.5"'}>Put ${n} in the Asana task</button></span></div>`; };
-  function stream(onTick, onDone) {
-    let k = 0; const g = GEN; const step = () => { if (g !== GEN) return; if (k > 0) ITEMS[k - 1].state = 'ready'; if (k < ITEMS.length) ITEMS[k].state = 'writing'; onTick(k); if (k === ITEMS.length) return onDone(); k++; setTimeout(step, FL.reduce ? 0 : 380); };
-    step();
-  }
-  const wireDock = (host, rerender) => {
-    host.querySelector('[data-accall]')?.addEventListener('click', () => { ITEMS.forEach((x) => { if (x.state === 'ready') x.acc = true; }); rerender(); });
-    host.querySelector('[data-task]')?.addEventListener('click', () => FL.toast(`${ITEMS.filter((x) => x.acc).length} drafts added to the Asana task body, each under its page.`));
+  const PXTIP = { title: 'Google shows about 600 pixels of a title, then cuts it off with “...”. Measured the same way the content calendar measures titles.', description: 'Google shows about 960 pixels of a description, then cuts it off. Under 100 characters is too short. Measured the same way the content calendar measures descriptions.' };
+  /* px badge: "633 / 600 px", red when over, red when a description is under 100 characters */
+  const badge = (kind, s) => {
+    const mode = MODE[kind]; if (!mode) return '';
+    const px = measureSerpWidth(s, mode); const max = mode === 'title' ? TITLE_MAX_PX : DESC_MAX_PX;
+    const over = px > max; const short = mode === 'description' && s.length > 0 && s.length < 100;
+    return `<span class="len ${over || short ? 'bad' : s ? 'ok' : ''}" data-tip-h="${mode === 'title' ? 'Title width' : 'Description width'}" data-tip="${PXTIP[mode]}">${Math.round(px)} / ${max} px${over ? ', cut off' : short ? `, ${s.length} characters, too short` : ''}</span>`;
   };
-
-  /* ---------- A: before and after table ---------- */
-  function renderA(host, phase = 'idle', done = 0) {
-    host.innerHTML = `${head()}${runPanel(phase, done)}
-      <table class="t4"><thead><tr><th style="width:26%">Page</th><th style="width:28%">Now</th><th>Draft</th><th style="width:150px"></th></tr></thead><tbody>
-      ${ITEMS.map((it) => `<tr class="${it.acc ? 'on' : ''}"><td><div class="url">${E(it.url)}</div><div class="kind" style="margin-top:3px">${KIND[it.kind]}${it.sample ? SA.sample('Today’s crawl does not read images, so this row is made up.') : ''}</div></td>
-        <td><div class="now ${it.now && it.kind !== 'alt' ? '' : 'empty'}">${it.now ? E(it.now) : 'none'}</div>${it.now && LIMIT[it.kind] ? `<div style="margin-top:3px">${len(it, it.now)}</div>` : ''}</td>
-        <td>${it.state === 'wait' ? '<span style="color:var(--faint)">Not drafted yet</span>' : it.state === 'writing' ? '<span class="writing">Writing</span>' : `<div class="dr" data-ed="${it.i}">${E(it.draft)}</div><div style="margin-top:3px">${len(it, it.draft)}</div>`}</td>
-        <td style="text-align:right">${it.state === 'ready' ? `<button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</td></tr>`).join('')}
-      </tbody></table>${phase === 'done' ? dock() : ''}`;
-    const re = () => renderA(host, phase, done);
-    host.querySelector('[data-run]')?.addEventListener('click', () => stream((k) => renderA(host, 'run', k), () => { phase = 'done'; renderA(host, 'done', ITEMS.length); }));
-    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); renderA(host); });
-    host.querySelectorAll('[data-acc]').forEach((b) => (b.onclick = () => { const it = ITEMS[+b.dataset.acc]; it.acc = !it.acc; re(); }));
-    host.querySelectorAll('[data-edit]').forEach((b) => (b.onclick = () => { const el = host.querySelector(`[data-ed="${b.dataset.edit}"]`); el.contentEditable = 'true'; el.focus(); el.onblur = () => { ITEMS[+b.dataset.edit].draft = el.textContent; re(); }; }));
-    wireDock(host, re);
-  }
-
-  /* ---------- B: one page at a time, keyboard flow ---------- */
-  let cur = 0; let keyH = null;
-  function renderB(host, phase = 'idle', done = 0) {
-    const it = ITEMS[cur];
-    const st = (x) => (x.acc ? 'ok' : x.skip ? 'skip' : x.state === 'ready' ? 'ready' : '');
-    host.innerHTML = `${head()}${runPanel(phase, done)}
-      <div class="b4"><div class="q card" style="padding:8px">${ITEMS.map((x) => `<div class="${x.i === cur ? 'cur' : ''}" data-go="${x.i}"><i class="${st(x)}"></i>${KIND[x.kind]} · ${E(x.url)}</div>`).join('')}</div>
-      <div><div class="card rc">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="u">${E(it.url)}</span><span class="len">${cur + 1} of ${ITEMS.length}</span></div>
-        <div class="ctx">${KIND[it.kind]}${it.sample ? SA.sample('Today’s crawl does not read images, so this one is made up.') : ''}</div>
-        <div class="lbl"><span>Now</span>${it.now && LIMIT[it.kind] ? len(it, it.now) : ''}</div><div class="nowt">${it.now ? E(it.now) : '<i>none</i>'}</div>
-        <div class="lbl"><span>Draft</span>${it.state === 'ready' ? len(it, it.draft) : ''}</div>
-        <div class="drt ${it.kind !== 'title' ? 'meta' : ''}" data-ed>${it.state === 'ready' ? E(it.draft) : it.state === 'writing' ? '<span class="writing">Writing</span>' : '<span style="color:var(--faint);font-weight:400;font-size:17px">Not drafted yet</span>'}</div>
-        <div class="acts">${it.state === 'ready' ? `<button class="btn btn-go" data-k="a">${it.acc ? 'Accepted' : 'Accept'}<span class="kb">A</span></button><button class="btn btn-line" data-k="e">Edit<span class="kb">E</span></button><button class="btn btn-line" data-k="s">Skip<span class="kb">S</span></button>` : ''}
-          <span style="margin-left:auto" class="len">Next page <span class="kb">↓</span> Previous <span class="kb">↑</span></span></div>
-      </div>${phase === 'done' ? dock() : ''}</div></div>`;
-    const re = () => renderB(host, phase, done);
-    host.querySelector('[data-run]')?.addEventListener('click', () => { cur = 0; stream((k) => { done = k; phase = 'run'; renderB(host, 'run', k); }, () => { phase = 'done'; done = ITEMS.length; re(); }); });
-    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); cur = 0; renderB(host); });
-    host.querySelectorAll('[data-go]').forEach((d) => (d.onclick = () => { cur = +d.dataset.go; re(); }));
-    const act = (k) => {
-      const x = ITEMS[cur]; if (k === 'next') { cur = Math.min(ITEMS.length - 1, cur + 1); return re(); } if (k === 'prev') { cur = Math.max(0, cur - 1); return re(); }
-      if (x.state !== 'ready') return;
-      if (k === 'a') { x.acc = true; x.skip = false; cur = Math.min(ITEMS.length - 1, cur + 1); re(); }
-      if (k === 's') { x.skip = true; x.acc = false; cur = Math.min(ITEMS.length - 1, cur + 1); re(); }
-      if (k === 'e') { const el = host.querySelector('[data-ed]'); el.contentEditable = 'true'; el.focus(); el.onblur = () => { x.draft = el.textContent; re(); }; }
-    };
-    host.querySelectorAll('[data-k]').forEach((b) => (b.onclick = () => act(b.dataset.k)));
-    if (keyH) removeEventListener('keydown', keyH);
-    keyH = (e) => { if (!host.querySelector('.b4') || e.target.closest('[contenteditable=true],input,textarea')) return; const m = { a: 'a', e: 'e', s: 's', ArrowDown: 'next', ArrowUp: 'prev' }[e.key]; if (m) { e.preventDefault(); act(m); } };
-    addEventListener('keydown', keyH);
-    wireDock(host, re);
-  }
-
-  /* ---------- C: how each page shows in Google, before and after ---------- */
-  const cut = (s, n) => (s.length > n ? `${s.slice(0, n - 3).trimEnd()} ...` : s);
-  const serp = (url, title, desc) => `<div class="serp"><div class="site"><span class="fav">L</span><span>Liberty Family Dentistry<small>libertyfamilydentistry.com${url === '/' ? '' : ` › ${E(url.split('/').filter(Boolean).join(' › ')).slice(0, 48)}`}</small></span></div>
-      <div class="t">${E(cut(title, 60))}</div><div class="d ${desc ? '' : 'none'}">${desc ? E(cut(desc, 158)) : 'No description, so Google picks a line from the page.'}</div></div>`;
-  function renderC(host, phase = 'idle', done = 0) {
-    host.innerHTML = `${head()}${runPanel(phase, done)}
-      <div class="c4">${ITEMS.map((it) => {
-        const known = ITEMS.find((x) => x.url === it.url && x.kind === 'title');
-        const title = it.kind === 'title' ? it.now : known ? known.now : it.url === '/video' ? 'Video' : 'Liberty Family Dentistry';
-        const ready = it.state === 'ready';
-        const after = it.kind === 'title' ? serp(it.url, it.draft, META[it.url]) : it.kind === 'description' ? serp(it.url, title, it.draft) : '';
-        const right = !ready ? `<div style="padding:22px 0;color:var(--faint)">${it.state === 'writing' ? '<span class="writing">Writing</span>' : 'Not drafted yet'}</div>`
-          : it.kind === 'alt' ? `<div class="imgalt"><span class="ph"></span><p>${E(it.draft)}</p></div>` : after;
-        const left = it.kind === 'alt' ? `<div class="imgalt"><span class="ph"></span><p style="color:var(--muted)">${E(it.now)}</p></div>` : serp(it.url, title, it.kind === 'description' ? '' : META[it.url]);
-        return `<div class="card pair"><div class="top"><span><span class="kind">${KIND[it.kind]}</span> <span class="url" style="margin-left:6px">${E(it.url)}</span>${it.sample ? SA.sample('Today’s crawl does not read images, so this one is made up.') : ''}</span>
-          <span>${ready ? `${LIMIT[it.kind] ? len(it, it.draft) : ''} <button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}" style="margin-left:8px">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</span></div>
-          <div class="cols"><div><div class="cap">${it.kind === 'alt' ? 'Today' : 'In Google today'}</div>${left}</div><div><div class="cap">${it.kind === 'alt' ? 'With the draft' : 'With the draft'}</div><div data-ed="${it.i}">${right}</div></div></div></div>`;
-      }).join('')}</div>${phase === 'done' ? dock() : ''}`;
-    const re = () => renderC(host, phase, done);
-    host.querySelector('[data-run]')?.addEventListener('click', () => stream((k) => renderC(host, 'run', k), () => { phase = 'done'; renderC(host, 'done', ITEMS.length); }));
-    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); renderC(host); });
-    host.querySelectorAll('[data-acc]').forEach((b) => (b.onclick = () => { const it = ITEMS[+b.dataset.acc]; it.acc = !it.acc; re(); }));
-    host.querySelectorAll('[data-edit]').forEach((b) => (b.onclick = () => {
-      const it = ITEMS[+b.dataset.edit]; const box = host.querySelector(`[data-ed="${it.i}"]`);
-      box.innerHTML = `<div contenteditable="true" style="font-size:15px;padding:6px">${E(it.draft)}</div>`; const el = box.firstChild; el.focus(); el.onblur = () => { it.draft = el.textContent; re(); };
-    }));
-    wireDock(host, re);
-  }
-
-  /* ---------- D (round 2, owner pick A + C as view options) ---------- */
-  // Where each draft can go, from our code (app/routers/site_content.py publish path): static pages take only
-  // title + description through Webflow's Pages API; H1 and alt text on a static page have no API field.
-  // CMS items take any field the collection has. Which Liberty pages are CMS is a SAMPLE guess (/articles = blog collection).
   const isCms = (u) => u.startsWith('/articles/');
   const where = (it) => {
     const cms = isCms(it.url); const meta = it.kind === 'title' || it.kind === 'description';
@@ -1729,64 +2159,109 @@ a{color:var(--aInk)}
     return { k: 'hand', t: 'By hand in Webflow', h: `Webflow’s Pages API has no field for a static page’s ${it.kind === 'h1' ? 'main heading' : 'image alt text'}, so the app cannot publish it. The draft goes into the Asana task and is pasted in the Webflow Designer.` };
   };
   const whereHtml = (it) => { const w = where(it); return `<span class="where ${w.k}" data-tip-h="Gets to the site" data-tip="${E(w.h)} Which pages are CMS pages here is a sample.">${w.t}</span>`; };
-  let VIEW = 'table';
-  const viewSeg = () => `<div class="vseg"><span>View</span><div class="seg"><button data-view="table" class="${VIEW === 'table' ? 'on' : ''}">Table</button><button data-view="google" class="${VIEW === 'google' ? 'on' : ''}">As Google shows it</button></div></div>`;
-  const headD = () => `<div class="s4-head"><div>
-      <button class="s3-back" style="font-size:13px;color:var(--muted);border:0;background:none;padding:0;margin-bottom:10px" onclick="FL.toast('Back to the result page (screen 2).')">← Back to the audit</button>
+
+  let VIEW = 'table'; let PH = 'idle'; let DONE = 0; let GEN = 0;
+  const SEL = new Set(); let lastSel = null;
+  const reset = () => { GEN++; PH = 'idle'; DONE = 0; SEL.clear(); lastSel = null; ITEMS.forEach((it) => { it.state = 'wait'; it.acc = false; it.skip = false; it.draft = R.rows[it.i].draft; }); };
+
+  const head = () => `<div class="s4-head"><div>
+      <button class="s4-back" onclick="FL.toast('Back to the result page (screen 2).')">← Back to the audit</button>
       <div class="kick">Draft the fixes</div><h1 class="h1">Draft meta titles, descriptions, headings and alt text</h1>
-      <p class="sub">Writes only these four things for each page. It never changes the page’s text, images or layout. The team reads every draft before it goes anywhere.</p></div>${viewSeg()}</div>`;
-  const runPanelD = (phase, done) => runPanel(phase, done)
-    .replace(`Draft the fixes · about ${COST.est}`, `Draft titles, descriptions, headings and alt text · about ${COST.est}`)
-    .replace(counts(), `${ITEMS.filter((x) => x.kind === 'title').length} meta titles, ${ITEMS.filter((x) => x.kind === 'description').length} description, ${ITEMS.filter((x) => x.kind === 'h1').length} heading, alt text on ${ITEMS.filter((x) => x.kind === 'alt').length} pages`);
-  const tableD = () => `<table class="t4"><thead><tr><th style="width:24%">Page</th><th style="width:25%">Now</th><th>Draft</th><th style="width:150px">Gets to the site</th><th style="width:140px"></th></tr></thead><tbody>
-      ${ITEMS.map((it) => `<tr class="${it.acc ? 'on' : ''}"><td><div class="url">${E(it.url)}</div><div class="kind" style="margin-top:3px">${KIND[it.kind]}${it.sample ? SA.sample('Today’s crawl does not read images, so this row is made up.') : ''}</div></td>
-        <td><div class="now ${it.now && it.kind !== 'alt' ? '' : 'empty'}">${it.now ? E(it.now) : 'none'}</div>${it.now && LIMIT[it.kind] ? `<div style="margin-top:3px">${len(it, it.now)}</div>` : ''}</td>
-        <td>${it.state === 'wait' ? '<span style="color:var(--faint)">Not drafted yet</span>' : it.state === 'writing' ? '<span class="writing">Writing</span>' : `<div class="dr ${it.kind === 'h1' ? 'h1d' : ''}" data-ed="${it.i}">${E(it.draft)}</div><div style="margin-top:3px">${len(it, it.draft)}</div>`}</td>
-        <td>${whereHtml(it)}</td>
-        <td style="text-align:right">${it.state === 'ready' ? `<button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</td></tr>`).join('')}
+      <p class="sub">Writes only these four things for each page. It never changes the page’s text, images or layout. Click any draft to change it; the width updates as you type.</p></div>
+      <div class="vseg"><span>View</span><div class="seg"><button data-view="table" class="${VIEW === 'table' ? 'on' : ''}">Table</button><button data-view="google" class="${VIEW === 'google' ? 'on' : ''}">As Google shows it</button></div></div></div>`;
+  const runPanel = () => `<div class="card run"><div class="l">${PH === 'idle'
+      ? `<b>${RUN_TOTAL} fixes to draft:</b> ${R.long_title_total} titles Google cuts off, ${R.long_meta_total} descriptions Google cuts off, ${R.short_meta_total} descriptions too short, 1 page with no description, 1 heading, alt text on 2 pages.<small>26 pages are left out: they have no words to write from (see “Pages sharing one title”).</small>`
+      : PH === 'run' ? `<b>Writing ${DONE} of ${ITEMS.length} shown here</b>, page by page. Review can start now.<div class="prog"><i style="width:${(DONE / ITEMS.length) * 100}%"></i></div>`
+        : `<b>Drafts ready.</b> Select rows to accept or skip them together; shift-click to select a run of rows.<small class="ledger">Logged to the cost ledger: <b>${COST.real}</b> on Oct 30, 2026 ${SA.sample(COSTTIP)}</small>`}</div>
+    <div class="r">${PH === 'idle' ? `<button class="btn btn-go" data-run>Draft titles, descriptions, headings and alt text · about ${COST.est}</button><span class="est" data-tip-h="Cost" data-tip="${COSTTIP}">estimate before running ${SA.sample(COSTTIP)}</span>` : PH === 'run' ? '<span class="est">Writing…</span>' : '<button class="btn btn-line" data-again>Draft again</button>'}</div></div>`;
+  const status = (it) => (it.acc ? '<span class="st ok">Accepted</span>' : it.skip ? '<span class="st sk">Skipped</span>' : it.state === 'ready' ? `<button class="acc" data-acc="${it.i}">Accept</button>` : '');
+  const chk = (it) => `<input type="checkbox" class="sel" data-sel="${it.i}" ${SEL.has(it.i) ? 'checked' : ''} ${it.state === 'ready' ? '' : 'disabled'} aria-label="Select ${E(it.url)}">`;
+  const draftBox = (it) => it.state === 'wait' ? '<span class="pend">Not drafted yet</span>' : it.state === 'writing' ? '<span class="writing">Writing</span>'
+    : `<textarea class="dr ${it.kind === 'h1' ? 'h1d' : ''}" data-ed="${it.i}" rows="1" spellcheck="false">${E(it.draft)}</textarea><div class="lenrow" data-len="${it.i}">${badge(it.kind, it.draft)}</div>`;
+  const moreRow = (n, label) => (n > 0 ? `<tr class="more"><td colspan="6"><button class="lnk" data-t="Opens the other ${n} ${label} (drafted in the same run).">Show all ${n + ITEMS.filter((x) => x.issue === (label === 'descriptions Google cuts off' ? 'Description Google cuts off' : 'Description too short')).length} ${label}</button></td></tr>` : '');
+  const tableView = () => {
+    const ready = ITEMS.filter((x) => x.state === 'ready'); const all = ready.length > 0 && ready.every((x) => SEL.has(x.i));
+    const rowsFor = (pred) => ITEMS.filter(pred).map((it) => `<tr class="${it.acc ? 'on' : ''} ${SEL.has(it.i) ? 'picked' : ''}"><td class="c0">${chk(it)}</td>
+        <td><div class="url">${E(it.url)}</div><div class="kind">${KIND[it.kind]}${it.sample ? SA.sample('Today’s crawl does not read images, so this row is made up.') : ''}</div><div class="iss">${E(it.issue)}</div></td>
+        <td><div class="now ${it.now && it.kind !== 'alt' ? '' : 'empty'}">${it.now ? E(it.now) : 'none'}</div>${it.now && MODE[it.kind] ? `<div class="lenrow">${badge(it.kind, it.now)}</div>` : ''}</td>
+        <td>${draftBox(it)}</td><td>${whereHtml(it)}</td><td class="c5">${status(it)}</td></tr>`).join('');
+    return `<table class="t4"><thead><tr><th class="c0"><input type="checkbox" class="sel" data-all ${all ? 'checked' : ''} ${ready.length ? '' : 'disabled'} aria-label="Select all"></th><th style="width:22%">Page</th><th style="width:25%">Now</th><th>Draft</th><th style="width:150px">Gets to the site</th><th style="width:96px"></th></tr></thead><tbody>
+      ${rowsFor((x) => x.issue === 'Title Google cuts off')}
+      ${rowsFor((x) => x.issue === 'Description Google cuts off')}${moreRow(MORE.long_meta, 'descriptions Google cuts off')}
+      ${rowsFor((x) => x.issue === 'Description too short')}${moreRow(MORE.short_meta, 'descriptions too short')}
+      ${rowsFor((x) => ['No description', 'No main heading', 'Images with no alt text'].includes(x.issue))}
       </tbody></table>`;
-  const googleD = () => `<div class="c4">${ITEMS.map((it) => {
-        const known = ITEMS.find((x) => x.url === it.url && x.kind === 'title');
-        const title = it.kind === 'title' ? it.now : known ? known.now : it.url === '/video' ? 'Video' : 'Liberty Family Dentistry';
-        const ready = it.state === 'ready';
-        const onPage = it.kind === 'alt' || it.kind === 'h1';
-        const block = (txt, muted) => (it.kind === 'h1' ? `<div class="h1prev ${muted ? 'none' : ''}">${muted ? 'No main heading on the page' : E(txt)}</div>` : `<div class="imgalt"><span class="ph"></span><p ${muted ? 'style="color:var(--muted)"' : ''}>${E(txt)}</p></div>`);
-        const after = it.kind === 'title' ? serp(it.url, it.draft, META[it.url]) : it.kind === 'description' ? serp(it.url, title, it.draft) : block(it.draft, false);
-        const right = !ready ? `<div style="padding:22px 0;color:var(--faint)">${it.state === 'writing' ? '<span class="writing">Writing</span>' : 'Not drafted yet'}</div>` : after;
-        const left = onPage ? block(it.now, true) : serp(it.url, title, it.kind === 'description' ? '' : META[it.url]);
-        return `<div class="card pair"><div class="top"><span><span class="kind">${KIND[it.kind]}</span> <span class="url" style="margin-left:6px">${E(it.url)}</span>${it.sample ? SA.sample('Today’s crawl does not read images, so this one is made up.') : ''}<span style="margin-left:10px">${whereHtml(it)}</span></span>
-          <span>${ready ? `${LIMIT[it.kind] ? len(it, it.draft) : ''} <button class="acc ${it.acc ? 'on' : ''}" data-acc="${it.i}" style="margin-left:8px">${it.acc ? 'Accepted' : 'Accept'}</button><button class="lnk" data-edit="${it.i}">Edit</button>` : ''}</span></div>
-          <div class="cols"><div><div class="cap">${onPage ? 'On the page today' : 'In Google today'}</div>${left}</div><div><div class="cap">With the draft</div><div data-ed="${it.i}">${right}</div></div></div></div>`;
+  };
+  const serp = (url, title, desc, edit) => `<div class="serp"><div class="site"><span class="fav">L</span><span>Liberty Family Dentistry<small>libertyfamilydentistry.com${url === '/' ? '' : ` › ${E(url.split('/').filter(Boolean).join(' › ')).slice(0, 48)}`}</small></span></div>
+      <div class="t" ${edit === 't' ? 'data-gedit' : ''}>${E(truncateByPixel(title, 'title'))}</div><div class="d ${desc ? '' : 'none'}" ${edit === 'd' ? 'data-gedit' : ''}>${desc ? E(truncateByPixel(desc, 'description')) : 'No description, so Google picks a line from the page.'}</div></div>`;
+  const googleView = () => {
+    const ready = ITEMS.filter((x) => x.state === 'ready'); const all = ready.length > 0 && ready.every((x) => SEL.has(x.i));
+    return `<div class="gbar"><label><input type="checkbox" class="sel" data-all ${all ? 'checked' : ''} ${ready.length ? '' : 'disabled'}> Select all</label><span>Click a draft title or description to change it. Google’s cut-off is drawn exactly: text past 600 or 960 pixels becomes “...”.</span></div>
+      <div class="c4">${ITEMS.map((it) => {
+        const title = it.kind === 'title' ? it.now : it.title || (it.url === '/' ? 'Liberty Family Dentistry' : 'Video');
+        const onPage = it.kind === 'alt' || it.kind === 'h1'; const ready = it.state === 'ready';
+        const block = (txt, muted) => (it.kind === 'h1' ? `<div class="h1prev ${muted ? 'none' : ''}" ${muted ? '' : 'data-gedit'}>${muted ? 'No main heading on the page' : E(txt)}</div>` : `<div class="imgalt"><span class="ph"></span><p ${muted ? 'style="color:var(--muted)"' : 'data-gedit'}>${E(txt)}</p></div>`);
+        const left = onPage ? block(it.now, true) : serp(it.url, title, it.kind === 'description' ? it.now : it.meta);
+        const right = !ready ? `<div class="pend" style="padding:22px 0">${it.state === 'writing' ? '<span class="writing">Writing</span>' : 'Not drafted yet'}</div>`
+          : it.kind === 'title' ? serp(it.url, it.draft, it.meta, 't') : it.kind === 'description' ? serp(it.url, title, it.draft, 'd') : block(it.draft, false);
+        return `<div class="card pair ${SEL.has(it.i) ? 'picked' : ''} ${it.acc ? 'on' : ''}" data-card="${it.i}"><div class="top"><span class="tl">${chk(it)}<span class="kind">${KIND[it.kind]}</span><span class="url">${E(it.url)}</span><span class="iss">${E(it.issue)}</span>${it.sample ? SA.sample('Today’s crawl does not read images, so this one is made up.') : ''}${whereHtml(it)}</span>
+          <span class="tr"><span data-len="${it.i}">${ready ? badge(it.kind, it.draft) : ''}</span>${status(it)}</span></div>
+          <div class="cols"><div><div class="cap">${onPage ? 'On the page today' : 'In Google today'}</div>${left}</div><div><div class="cap">With the draft</div>${right}</div></div></div>`;
       }).join('')}</div>`;
-  let PH = 'idle'; let DONE = 0;
-  function renderD(host) {
-    host.innerHTML = `${headD()}${runPanelD(PH, DONE)}${VIEW === 'table' ? tableD() : googleD()}${PH === 'done' ? dock() : ''}`;
-    const re = () => renderD(host);
+  };
+  const dock = () => {
+    const ns = [...SEL].filter((i) => ITEMS[i].state === 'ready').length; const na = ITEMS.filter((x) => x.acc).length;
+    return `<div class="dock">${ns ? `<span class="selact"><b>${ns} selected</b><button class="btn btn-go" data-bulk="acc">Accept</button><button class="btn btn-line" data-bulk="skip">Skip</button><button class="lnk" data-bulk="clear">Clear</button></span>` : `<span><b>${na}</b> accepted. Accepted drafts go into the Asana task, next to each page.</span>`}
+      <span class="btnrow"><button class="btn btn-line" data-accall>Accept all</button><button class="btn ${ns ? 'btn-line' : 'btn-go'}" data-task ${na ? '' : 'disabled style="opacity:.5"'}>Put ${na} in the Asana task</button></span></div>`;
+  };
+  function stream(onTick, onDone) {
+    let k = 0; const g = GEN; const step = () => { if (g !== GEN) return; if (k > 0) ITEMS[k - 1].state = 'ready'; if (k < ITEMS.length) ITEMS[k].state = 'writing'; onTick(k); if (k === ITEMS.length) return onDone(); k++; setTimeout(step, FL.reduce ? 0 : 220); };
+    step();
+  }
+  const fit = (ta) => { ta.style.height = 'auto'; ta.style.height = `${ta.scrollHeight}px`; };
+
+  function render(host) {
+    const y = window.scrollY;
+    host.innerHTML = `${head()}${runPanel()}${VIEW === 'table' ? tableView() : googleView()}${PH !== 'idle' ? dock() : ''}`;
+    window.scrollTo(0, y);
+    const re = () => render(host);
     host.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => { VIEW = b.dataset.view; re(); }));
     host.querySelector('[data-run]')?.addEventListener('click', () => stream((k) => { PH = 'run'; DONE = k; re(); }, () => { PH = 'done'; DONE = ITEMS.length; re(); }));
-    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); PH = 'idle'; DONE = 0; re(); });
-    host.querySelectorAll('[data-acc]').forEach((b) => (b.onclick = () => { const it = ITEMS[+b.dataset.acc]; it.acc = !it.acc; re(); }));
-    host.querySelectorAll('[data-edit]').forEach((b) => (b.onclick = () => {
-      const it = ITEMS[+b.dataset.edit]; let el = host.querySelector(`[data-ed="${it.i}"]`);
-      if (VIEW === 'google') { el.innerHTML = `<div contenteditable="true" style="font-size:15px;padding:6px">${E(it.draft)}</div>`; el = el.firstChild; } else el.contentEditable = 'true';
-      el.focus(); el.onblur = () => { it.draft = el.textContent; re(); };
+    host.querySelector('[data-again]')?.addEventListener('click', () => { reset(); re(); });
+    host.querySelectorAll('[data-t]').forEach((b) => (b.onclick = () => FL.toast(b.dataset.t)));
+    host.querySelectorAll('[data-acc]').forEach((b) => (b.onclick = () => { const it = ITEMS[+b.dataset.acc]; it.acc = true; it.skip = false; re(); }));
+    /* selection: click toggles; shift-click sets every row between the last click and this one */
+    host.querySelectorAll('input[data-sel]').forEach((c) => c.addEventListener('click', (e) => {
+      const i = +c.dataset.sel; const on = c.checked; const order = VIEW === 'table' ? tableOrder() : ITEMS.map((x) => x.i);
+      if (e.shiftKey && lastSel !== null) { const a = order.indexOf(lastSel); const b = order.indexOf(i); order.slice(Math.min(a, b), Math.max(a, b) + 1).forEach((j) => { if (ITEMS[j].state === 'ready') (on ? SEL.add(j) : SEL.delete(j)); }); } else (on ? SEL.add(i) : SEL.delete(i));
+      lastSel = i; re();
     }));
-    wireDock(host, re);
+    host.querySelectorAll('input[data-all]').forEach((c) => (c.onclick = () => { const ready = ITEMS.filter((x) => x.state === 'ready'); if (c.checked) ready.forEach((x) => SEL.add(x.i)); else SEL.clear(); re(); }));
+    host.querySelectorAll('[data-bulk]').forEach((b) => (b.onclick = () => { const k = b.dataset.bulk; [...SEL].forEach((i) => { const it = ITEMS[i]; if (k === 'acc') { it.acc = true; it.skip = false; } if (k === 'skip') { it.skip = true; it.acc = false; } }); SEL.clear(); re(); }));
+    host.querySelector('[data-accall]')?.addEventListener('click', () => { ITEMS.forEach((x) => { if (x.state === 'ready') { x.acc = true; x.skip = false; } }); re(); });
+    host.querySelector('[data-task]')?.addEventListener('click', () => FL.toast(`${ITEMS.filter((x) => x.acc).length} drafts added to the Asana task, each under its page.`));
+    /* table: the draft IS the editor; live width while typing, no re-render until blur */
+    host.querySelectorAll('textarea[data-ed]').forEach((ta) => { fit(ta); const it = ITEMS[+ta.dataset.ed];
+      ta.oninput = () => { it.draft = ta.value.replace(/\n/g, ' '); host.querySelector(`[data-len="${it.i}"]`).innerHTML = badge(it.kind, it.draft); fit(ta); }; });
+    /* google view: click the draft title/description to edit the full text in place; the cut-off redraws on blur */
+    host.querySelectorAll('[data-card]').forEach((card) => { const it = ITEMS[+card.dataset.card]; const el = card.querySelector('[data-gedit]'); if (!el) return;
+      el.title = 'Click to change'; el.classList.add('gedit');
+      el.onclick = () => { if (el.isContentEditable) return; el.contentEditable = 'true'; el.textContent = it.draft; el.focus(); document.getSelection().selectAllChildren(el); document.getSelection().collapseToEnd(); };
+      el.oninput = () => { it.draft = el.textContent; card.querySelector(`[data-len="${it.i}"]`).innerHTML = badge(it.kind, it.draft); };
+      el.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } };
+      el.onblur = () => re(); });
   }
+  const tableOrder = () => { const g = ['Title Google cuts off', 'Description Google cuts off', 'Description too short']; const out = []; g.forEach((s) => ITEMS.filter((x) => x.issue === s).forEach((x) => out.push(x.i))); ITEMS.filter((x) => !g.includes(x.issue)).forEach((x) => out.push(x.i)); return out; };
 
   window.SCREEN = {
-    title: 'Site Audit 4: Draft the fixes',
+    title: 'Site Audit 4: Draft meta titles, descriptions, headings and alt text',
     keep: ['D'],
-    mock: `<b>Site Audit · Screen 4 · Draft meta titles, descriptions, headings and alt text · round 2</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (real titles and descriptions as they are today). Press the draft button to watch the drafts arrive page by page.</span>
-<ul><li><b>Owner pick 10/30: A + C as two views</b> of one run (Table, As Google shows it); accepting or editing in one view carries to the other. Scope says it plainly in the title, the line under it and the button: meta titles, descriptions, headings (H1, added 10/30) and alt text, nothing else.</li>
-<li><b>Gets to the site</b>, checked in our code (Site Content’s publish path): a static page’s meta title and description publish from the app; its H1 and alt text cannot (Webflow’s Pages API has no field for them), so those are done by hand in the Webflow Designer. CMS pages publish any field their collection has.</li></ul>
-<span class="nr">Drafts are hand-written mockup text, not model output. Cost (about ${COST.est} before, ${COST.real} logged after) is a sample. Which Liberty pages are CMS pages is a sample (articles shown as CMS). Alt text rows are samples (today’s crawl does not read images). Only one real page lacks an H1 and has words (/video); the other 26 are the empty stubs, left out of drafting (proposal). Accepted drafts go into the Asana task; publishing straight to Webflow (as Site Content does today) is an open question for the owner.</span>`,
-    variants: {
-      A: { name: 'Before and after table', render: (h) => { reset(); renderA(h); } },
-      B: { name: 'One page at a time', render: (h) => { reset(); cur = 0; renderB(h); } },
-      C: { name: 'As Google shows it', render: (h) => { reset(); renderC(h); } },
-      D: { name: 'Table or As Google shows it', render: (h) => { reset(); PH = 'idle'; DONE = 0; VIEW = 'table'; renderD(h); } },
-    },
+    mock: `<b>Site Audit · Screen 4 · Draft meta titles, descriptions, headings and alt text · round 3</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (real titles and descriptions as they are today). Press the draft button to watch the drafts arrive.</span>
+<ul><li><b>Round 3 (owner 10/30):</b> widths in <b>pixels</b>, not characters, with the content calendar’s exact math (same Arial width tables, 600 px title, 960 px description, under 100 characters = too short). Google view cuts text at the same pixel point. Rows are the real pixel issues: ${R.long_title_total} titles and ${R.long_meta_total} descriptions Google cuts off, ${R.short_meta_total} too short.</li>
+<li>Click a draft to change it (no Edit button); the width updates as you type. Tick boxes, select all, and <b>shift-click</b> to select a run of rows, then Accept or Skip them together. Works in both views.</li>
+<li>Gets to the site, checked in our code: a static page’s meta title and description publish from the app; its H1 and alt text are done by hand in Webflow. CMS pages publish any field their collection has.</li></ul>
+<span class="nr">Drafts are hand-written mockup text, each measured with the app’s pixel math (every one fits). Cost is a sample. Which Liberty pages are CMS pages is a sample (articles shown as CMS). Alt text rows are samples. The 26 empty stub pages are left out of drafting (proposal). Accepted drafts go into the Asana task.</span>`,
+    variants: { D: { name: 'Table or As Google shows it', render: (h) => { reset(); VIEW = 'table'; render(h); } } },
   };
 })();
 </script>
