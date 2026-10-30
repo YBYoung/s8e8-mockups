@@ -269,6 +269,62 @@ a{color:var(--aInk)}
 .cp-steps li.now .mk{border-color:#0F766E;border-top-color:transparent;animation:s1spin .8s linear infinite}
 .btn-quiet{background:none;border:0;color:var(--aInk);font-weight:600;font-size:13.5px;padding:8px 6px}
 
+.c1-n{font-variant-numeric:tabular-nums}
+.c1-end:empty{display:none}
+.c1a-tries{display:inline-flex;align-items:center;margin-left:14px}
+/* C */
+.c1c-strip{margin-top:22px;padding:16px 18px}
+.c1c-segs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.c1c-seg{font-size:12px;font-weight:600;color:var(--faint);cursor:help}
+.c1c-seg i{display:block;height:4px;border-radius:2px;background:var(--soft);margin-bottom:6px}
+.c1c-seg.done{color:var(--body)}.c1c-seg.done i{background:var(--a)}
+.c1c-seg.on{color:var(--ink)}.c1c-seg.on i{background:linear-gradient(90deg,var(--a),var(--aSoft))}
+.c1c-line{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:15px;color:var(--ink2);min-height:26px}
+.c1c-cur{max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.c1c-fresh{margin-left:auto}
+.c1c-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;min-height:24px}
+.c1c-chips span{font-size:12.5px;padding:2px 8px;border-radius:4px;background:var(--soft);color:var(--body)}
+.c1c-chips span.w{background:#F1F2F5;color:var(--ink)}
+.c1c-chips span.n{background:var(--aTint);color:var(--aInk)}
+.c1c-log{max-width:880px}
+.c1c-ev{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;padding:8px 16px;border-bottom:1px solid #F0F1F4;font-size:14px}
+.c1c-ev.warn span:last-child{color:var(--ink)}.c1c-ev.ok span:last-child{color:#166534}.c1c-ev.note span:last-child{color:var(--aInk)}
+.c2-v{padding:16px 18px;border:1px solid var(--line);border-radius:8px;background:#fff;animation:rise .3s var(--ease);max-width:820px}
+.c2-v.bad{background:#FFFBFB}
+.c2-v.rest{background:var(--soft)}
+.c2-vt{display:flex;align-items:center;gap:10px}
+.c2-vt b{font-size:17px;color:var(--ink);font-weight:800;letter-spacing:-.01em}
+.c2-vt span[class^=c2-]{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none}
+.c2-ok{background:#15803D}.c2-x{background:var(--now)}.c2-w{background:var(--ink2)}.c2-r{background:#A3ACB9}
+.c2-v p{margin:8px 0 0;font-size:15px;max-width:720px}
+.c2-acts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.c2-in{display:inline-flex;align-items:center;gap:8px}
+.c2-input{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;font-size:13.5px;width:230px}
+.c2-input:focus{outline:2px solid #0F766E47;border-color:var(--a)}
+.c2-flag{display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:12.5px;color:var(--muted);max-width:720px}
+.c2-flag .sample{margin:2px 0 0;flex:none}
+.c2-none{color:var(--faint)}
+.s1c-step.bad .s1c-mk{background:var(--now);color:#fff}
+.s1c-step.rest .s1c-mk{background:#A3ACB9;color:#fff;font-size:16px}
+.s1c-step.warn .s1c-mk{background:var(--ink2);color:#fff}
+/* B */
+.c2b-tab{margin-top:22px;max-width:1000px}
+.c2b-hd,.c2b-row{display:grid;grid-template-columns:180px minmax(0,1fr) minmax(0,1.3fr) 36px;gap:14px;align-items:center;padding:10px 16px}
+.c2b-hd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--line)}
+.c2b-row{border-bottom:1px solid #F0F1F4;font-size:14px;min-height:46px}
+.c2b-row .src{font-weight:600;color:var(--ink)}
+.c2b-row .url{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c2b-row .land{display:flex;align-items:center;gap:8px;color:var(--body)}
+.c2b-row .arr{color:var(--faint)}
+.c2b-row .mark i{font-style:normal;font-weight:800;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:13px}
+.c2b-row .mark .ok{background:#DCFCE7;color:#15803D}.c2b-row .mark .d{background:#F1F2F5;color:var(--ink)}.c2b-row .mark .x{background:var(--nowTint);color:var(--now)}
+.c2b-v{margin-top:18px}
+.c2b-next{margin-top:10px;font-size:14px;color:var(--muted)}
+.c2-in-strip{margin-top:14px}
+.c2-in-strip .c2-v{max-width:none;border:0;padding:0;background:none;animation:none}
+.c1c-seg.bad{color:var(--now)}.c1c-seg.bad i{background:var(--now)}
+.c1c-seg.rest{color:var(--ink2)}.c1c-seg.rest i{background:#A3ACB9}
+.c2-ev .c2b-tab{margin-top:0}
 .c3-att{margin-top:10px;font-size:12.5px;color:var(--muted)}
 .c3-segs{display:grid;grid-template-columns:repeat(4,28px);gap:4px}
 .c3-segs i{height:4px;border-radius:2px;background:var(--soft);cursor:help}
@@ -733,6 +789,7 @@ a{color:var(--aInk)}
   CP.tip = (word, head, text) => `<span class="tipword" data-tip-h="${FL.esc(head)}" data-tip="${FL.esc(text)}">${word}</span>`;
   CP.rung = (r, label) => `<span class="s1-rg" data-tip-h="${r}. ${CPS.R[r].name}" data-tip="${FL.esc(CPS.R[r].tip)}"><i style="background:${CPS.R[r].c}"></i>${label ?? CPS.R[r].name}</span>`;
   CP.tries = (tries) => (tries || []).map((x) => `<span class="s1-try ${x.ok ? 'ok' : 'no'}">${CP.rung(x.r, `${x.r}`)}<span>${FL.esc(x.msg)}</span></span>`).join('<span class="s1-arr">›</span>');
+  CP.t = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}`;
   CP.mins = (sec) => (sec < 60 ? 'under a minute' : `${Math.round(sec / 60)} min`);
 
   /* the plain notes that can sit under the live numbers; one line each, newest state only */
@@ -791,11 +848,11 @@ window.C2CASES = {
     rows: [['Stored website', 'wgioms.com', 'does not exist', 'bad']],
     title: 'wgioms.com doesn’t exist', line: 'No server answers to that name, so there is no site at this address. Check the spelling, or enter the practice’s real website.',
     actions: [['input', 'Enter a different domain']] },
-  cert: { label: 'Broken certificate', practice: 'Westfield Center Dental Care', typed: 'westfieldfamilydentistry.com', kind: 'stop', combo: 1,
+  cert: { label: 'Broken certificate', practice: 'Westfield Center Dental Care', typed: 'westfieldfamilydentistry.com', kind: 'stop',
     rows: [['Stored website', 'westfieldfamilydentistry.com', 'certificate expired Jul 30, 2026', 'bad'], ['Google listing', 'westfieldcenterdental.com', 'westfieldcenterdental.com', 'diff']],
     title: 'westfieldfamilydentistry.com can’t be opened safely', line: 'Its security certificate expired on Jul 30, 2026, so browsers and our crawler refuse the connection. The Google listing names a different site, westfieldcenterdental.com, which opens fine.',
     actions: [['go', 'Crawl westfieldcenterdental.com'], ['line', 'Try again'], ['input', 'Enter a different domain']] },
-  robots: { label: 'robots.txt says no', practice: 'Lefberg Dental', typed: 'www.lefbergdental.com', kind: 'rest', flag: 1,
+  robots: { label: 'robots.txt says no', practice: 'Lefberg Dental', typed: 'www.lefbergdental.com', kind: 'rest',
     rows: [['Stored website', 'www.lefbergdental.com', 'lefbergdental.com · robots.txt lets named search engines in, no one else', 'bad'], ['Google listing', 'lefbergdental.com', 'lefbergdental.com', 'same']],
     title: 'The site asks crawlers like ours to stay out', line: 'lefbergdental.com’s robots.txt lets about 40 named search engines in, Google among them, and asks every other crawler to stay out, ours included. We always obey it, so there’s nothing to crawl. Google can still read the site.', actions: [] },
   parked: { label: 'Parked', practice: 'Whole Dental Wellness', typed: 'www.wholedentalbirmingham.com', kind: 'stop', note: 'This domain sits in Whole Dental’s client record; its strategy uses wholedental.com. Shown as if it were the crawl’s start.',
@@ -810,6 +867,50 @@ window.C2CASES = {
     rows: [['Typed website', 'iragreenedds.com', 'iragreenedds.com · “Ira M. Greene, DDS”', 'diff'], ['Google listing', '', 'not linked', 'none'], ['Search Console', '', 'not linked', 'none']],
     title: 'We couldn’t confirm this is Twinkle Tooth’s site', line: 'Nothing is linked to check it against, and the home page is titled “Ira M. Greene, DDS”, not Twinkle Tooth.',
     actions: [['go', 'Crawl anyway'], ['input', 'Change domain']] },
+};
+/* #1413 screen 2: the "Check the domain" step, every named cause from #1409, with its actions. */
+const C2 = { CASE: 'pass' };
+C2.ctl = (host, go) => { const c = FL.h(`<div class="s1-ctl"><b>Mockup</b> case: ${Object.entries(C2CASES).map(([k, v]) => `<button data-c="${k}">${FL.esc(v.label)}</button>`).join('')}<span class="sep"></span><button data-a="replay">Replay</button></div>`);
+  FL.$$('button[data-c]', c).forEach((b) => b.classList.toggle('on', b.dataset.c === C2.CASE));
+  c.onclick = (e) => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.c) C2.CASE = b.dataset.c; go(); }; host.appendChild(c); };
+C2.btn = ([k, label, hint]) => k === 'input' ? `<span class="c2-in"><input class="c2-input" placeholder="${hint ? '(the website on the Google listing)' : 'practice-website.com'}">${hint ? SA.sample('The Google listing’s website is read live from Google; this mockup does not have it.') : ''}<button class="btn btn-line" onclick="FL.toast('Checks the new domain, then crawls it.')">${FL.esc(label)}</button></span>`
+  : k === 'save' ? `<button class="btn btn-quiet" data-tip-h="Save as the website" data-tip="Updates the stored website on the client and on its strategies, together. Logged with who, when, and the old and new address. The crawl never changes it on its own." onclick="FL.toast('Saved and logged (not part of this mockup).')">${FL.esc(label)}</button>`
+  : `<button class="btn ${k === 'go' ? 'btn-go' : 'btn-line'}" onclick="FL.toast('${k === 'go' ? 'Starts the crawl on that site.' : 'Not part of this mockup.'}')">${FL.esc(label)}</button>`;
+C2.flags = (c) => [c.unverified, c.note, c.combo ? 'Two #1409 rows meet here (broken certificate + a witness naming another site); the actions combine both.' : '', c.flag ? 'The #1409 ruling says “note that Google is blocked too”. That is true only for sites not launched yet; Lefberg lets Google in, so this wording differs.' : ''].filter(Boolean);
+C2.flagHtml = (c) => C2.flags(c).map((f) => `<div class="c2-flag">${SA.sample(f)}<span>${FL.esc(f)}</span></div>`).join('');
+C2.verdict = (c) => { const cls = { go: 'ok', stop: 'bad', rest: 'rest', warn: 'warn' }[c.kind];
+  return `<div class="c2-v ${cls}"><div class="c2-vt">${c.kind === 'go' ? '<span class="c2-ok">✓</span>' : c.kind === 'stop' ? '<span class="c2-x">×</span>' : c.kind === 'warn' ? '<span class="c2-w">!</span>' : '<span class="c2-r">–</span>'}<b>${FL.esc(c.title)}</b>${c.sample ? SA.sample('A prospect case built from Twinkle Tooth’s real stored site; no prospect crawl has run this way.') : ''}</div>
+    <p>${FL.esc(c.line)}</p>${c.actions.length ? `<div class="c2-acts">${c.actions.map(C2.btn).join('')}</div>` : ''}${C2.flagHtml(c)}</div>`; };
+C2.after = (c) => (c.kind === 'go' ? 'go' : 'stop');
+C2.checking = ['Looking up the address', 'Following where the home page lands', 'Comparing it with the Google listing and Search Console'];
+C2.run = (host, draw) => { clearTimeout(C2._t); let k = 0; const tick = () => { draw(k); if (k < 3) { k++; C2._t = setTimeout(tick, 650); } }; tick(); };
+
+/* round 2 (owner 10/30): verdict first inside screen 1 C's live line, the evidence table under it, then the log */
+C2.table = (c, k) => `<div class="c2b-tab card"><div class="c2b-hd"><span>Where it comes from</span><span>Address</span><span>Lands on</span><span></span></div>${c.rows.map((r, i) => { const shown = k >= 3 || i < k;
+  return `<div class="c2b-row ${shown ? r[3] : 'wait'}"><span class="src">${FL.esc(r[0])}</span><span class="url">${FL.esc(r[1]) || '<span class="c2-none">none</span>'}</span><span class="land">${shown ? (r[3] === 'none' && !r[2] ? '<span class="c2-none">nothing to compare</span>' : `<span class="arr">→</span>${FL.esc(r[2])}`) : '<span class="s1-turn"></span>'}</span><span class="mark">${shown ? { same: '<i class="ok">✓</i>', diff: '<i class="d">≠</i>', bad: '<i class="x">×</i>', none: '' }[r[3]] : ''}</span></div>`; }).join('')}</div>`;
+C2.log = (c, k) => { const L = [[1, `Looked up ${c.typed || 'the stored website'}`]];
+  if (k >= 2) L.push([2, c.rows[0][3] === 'bad' || c.rows[0][3] === 'none' ? `Home page: ${c.rows[0][2]}` : `Home page lands on ${c.rows[0][2]}`]);
+  if (k >= 3) { c.rows.slice(1).forEach((r) => L.push([3, `${r[0]}: ${r[3] === 'none' ? 'nothing to compare' : r[3] === 'same' ? `${r[2]}, matches` : r[2]}`])); L.push([4, c.title]); }
+  return L.reverse().map(([t, x], i) => `<div class="c1c-ev ${i === 0 && k >= 3 ? { go: 'ok', stop: 'warn', rest: '', warn: 'warn' }[c.kind] : ''}"><span class="cp-mono">0:0${t}</span><span>${FL.esc(x)}</span></div>`).join(''); };
+const C2V = { name: 'Verdict first in the live line, where each address lands under it', render(host) {
+  const go = () => { host.innerHTML = ''; C2.ctl(host, go); const c = C2CASES[C2.CASE]; FL.$('.fl-right .who').textContent = c.practice;
+    host.appendChild(FL.h(`<div class="c1c"><div class="kick">Site Audit · crawl</div><h1 class="h1">${c.typed ? `Reading ${FL.esc(c.typed.replace(/^www\./, ''))}` : FL.esc(c.practice)}</h1>
+      <div class="c1c-strip card"></div><div class="s1a-logh">Where each address lands</div><div class="c2-ev"></div><div class="s1a-logh">What happened</div><div class="c1c-log card"></div></div>`));
+    C2.run(host, (k) => { const done = k >= 3; const ok = done && c.kind === 'go';
+      const seg = CP.STAGES.map((st, i) => { const cl = i === 0 ? (!done ? 'on' : ok ? 'done' : c.kind === 'rest' ? 'rest' : 'bad') : ok && i === 1 ? 'on' : ''; return `<span class="c1c-seg ${cl}" data-tip-h="${st.name}" data-tip="${FL.esc(st.tip)}"><i></i>${st.name}</span>`; }).join('');
+      host.querySelector('.c1c-strip').innerHTML = `<div class="c1c-segs">${seg}</div>${!done ? `<div class="c1c-line">${CP.dot()}<span>Checking the domain: ${C2.checking[k].toLowerCase()}…</span><span class="cp-mono c1c-fresh">2 to 5 seconds</span></div>`
+        : `<div class="c2-in-strip">${C2.verdict(c)}</div>${ok ? `<div class="c1c-line">${CP.dot()}<span>Reading the sitemap: opening ${FL.esc(c.rows[0][2])}/sitemap.xml</span><span class="cp-mono c1c-fresh">updated just now</span></div>` : ''}`}`;
+      host.querySelector('.c2-ev').innerHTML = C2.table(c, k);
+      host.querySelector('.c1c-log').innerHTML = C2.log(c, k); }); };
+  go();
+} };
+
+window.SCREEN = {
+  title: 'Crawl progress 2: checking the domain, every named cause',
+  mock: `<b>Crawl progress · 2 Checking the domain, round 2</b> <span class="src">· owner picks Oct 30: screen 1 C for the strip; here the verdict leads inside that live line, the “where each address lands” table sits under it as the evidence, then the log. Every #1409 cause on a real practice from the Oct 30 domain check: Liberty, Smile Haus, SST, Twinkle Tooth, Duck Duck Tooth (live domain read off the staging page Oct 30), Hilltop (Squarespace “Coming Soon”), Winter Garden (no DNS, rechecked Oct 30), Westfield Center (certificate expired Jul 30), Lefberg (robots.txt allowlist), Whole Dental (parked leftover), Gulf Breeze (no domain).</span>
+<span class="nr">Approved Oct 30: Lefberg says “Google can still read the site”; Westfield shows both causes’ buttons. Green check = crawl goes ahead; red cross = stopped with a cause; grey dash = nothing to crawl, not a failure; “!” = waits for a click. Buttons do nothing here.</span>`,
+  right: '<span class="who">Liberty Family Dentistry</span><span class="when">Started today, 2:14 PM</span>',
+  variants: { C: C2V },
 };
 /* #1413 screen 3: the same crawl inside the strategy. One crawl per website (#1408 rule 7): the strategy attaches to the run the tool started. */
 const C3 = { DOM: null };
@@ -829,21 +930,10 @@ C3.line = (s) => s.stage === 'wait' ? CP.waitLine(s) : s.stage === 'pages' ? `<b
 C3.doneLine = (s) => `${FL.esc(s.out.h)}${s.out.misses.length ? `. ${FL.esc(s.out.misses[0][0])} not kept: ${FL.esc(s.out.misses[0][1].replace(/^./, (x) => x.toLowerCase()))}` : ''}`;
 C3.domain = (c) => { const cls = { stop: 'bad', rest: 'rest', warn: 'warn', go: 'ok' }[c.kind];
   return `<div class="c3-dom ${cls}"><b>${FL.esc(c.title)}</b><p>${FL.esc(c.line)}</p>${c.actions.filter((a) => a[0] !== 'input').length ? `<div class="c2-acts">${c.actions.filter((a) => a[0] !== 'input').map(([k, l]) => `<button class="btn ${k === 'go' ? 'btn-go' : k === 'save' ? 'btn-quiet' : 'btn-line'}" onclick="FL.toast('Not part of this mockup.')">${FL.esc(l)}</button>`).join('')}</div>` : ''}</div>`; };
-C3.go = (host, build, draw) => { const go = () => { host.innerHTML = ''; C3.ctl(host, go); host.appendChild(FL.h(build()));
+C3.log = (s, dom) => dom ? `<div class="s1a-logh">Where each address lands</div>${C2.table(dom, 3)}` : `<div class="s1a-logh">What happened</div><div class="c1c-log card">${s.events.slice(0, 10).map((e) => `<div class="c1c-ev ${e.kind}"><span class="cp-mono">${CP.t(e.at)}</span><span>${FL.esc(e.txt)}</span></div>`).join('') || '<div class="s1a-empty">Nothing yet.</div>'}</div>`;
+C3.go = (host, build, draw0) => { const draw = (s, d) => { C3._s = s; C3._d = d; draw0(s, d); }; C3._redraw = () => draw(C3._s, C3._d); const go = () => { host.innerHTML = ''; C3.ctl(host, go); host.appendChild(FL.h(build()));
   if (C3.DOM) { clearInterval(CP._t); const c = C2CASES[C3.DOM]; FL.$('.fl-right .who').textContent = c.practice; draw(null, c); return; }
   CP.run((s) => draw(s, null)); }; go(); };
-
-/* ---------- A: a station in the strategy's run list ---------- */
-const C3A = { name: 'A station in the strategy’s run list', render(host) {
-  C3.go(host, () => `<div><div class="kick">Run strategy</div><h1 class="h1">2027 strategy</h1><p class="sub">Each station feeds the next. The website crawl comes first, because Site Content Analysis reads its pages.</p><div class="c3a-list card"></div></div>`, (s, dom) => {
-    host.querySelector('.c3a-list').innerHTML = C3.STATIONS.map(([n, st], i) => {
-      if (i === 0) { const state = dom ? (dom.kind === 'rest' ? 'rest' : 'bad') : s.done ? 'done' : 'on';
-        const body = dom ? C3.domain(dom) : s.done ? `<div class="c3a-sub">${C3.doneLine(s)}</div>` : `<div class="c3a-live">${C3.mini(s)}<div class="c3a-l"><span>${C3.line(s)}</span>${s.stage === 'pages' && s.cur ? `<span class="url">${FL.esc(s.cur)}</span>` : ''}<span class="cp-mono">${CP.fresh(s)}</span></div>${CP.notesHtml(s)}${C3.attach(s)}</div>`;
-        return `<div class="c3a-row ${state}"><span class="mk">${state === 'done' ? '✓' : state === 'on' ? CP.spin() : state === 'bad' ? '×' : '–'}</span><div><div class="c3a-t"><b>${n}</b><span class="c3a-tag">${dom ? (dom.kind === 'rest' ? 'Nothing to crawl' : 'Stopped') : s.done ? 'Done' : 'Running'}</span></div>${body}</div></div>`; }
-      const waits = st === 'needs'; const done = st === 'done';
-      return `<div class="c3a-row ${done ? 'done' : 'todo'}"><span class="mk">${done ? '✓' : i + 1}</span><div><div class="c3a-t"><b>${n}</b><span class="c3a-tag">${done ? 'Done' : waits ? (s && s.done ? 'Ready' : 'Waits for the crawl') : 'Not started'}</span></div></div></div>`; }).join('');
-  });
-} };
 
 /* ---------- B: a slim strip pinned across every strategy page ---------- */
 const C3B = { name: 'A slim strip pinned across every strategy page', render(host) {
@@ -852,39 +942,17 @@ const C3B = { name: 'A slim strip pinned across every strategy page', render(hos
     if (dom) S.innerHTML = `<span class="c3b-mk ${dom.kind === 'rest' ? 'rest' : 'bad'}">${dom.kind === 'rest' ? '–' : '×'}</span><span class="c3b-t"><b>Website crawl ${dom.kind === 'rest' ? 'has nothing to read' : 'stopped'}:</b> ${FL.esc(dom.title)}</span><button class="btn-quiet c3b-tg">${open ? 'Hide' : 'See why'}</button>`;
     else if (s.done) S.innerHTML = `<span class="c3b-mk ok">✓</span><span class="c3b-t"><b>Website crawl done:</b> ${C3.doneLine(s)}</span><button class="btn-quiet c3b-tg">${open ? 'Hide' : 'Details'}</button>`;
     else S.innerHTML = `${CP.dot()}<span class="c3b-t"><b>Website crawl:</b> ${C3.line(s)}</span>${C3.mini(s)}${CP.notes(s).length ? `<span class="c3b-n">${FL.esc(CP.notes(s)[0].t.split('.')[0])}</span>` : ''}<button class="btn-quiet c3b-tg">${open ? 'Hide' : 'Details'}</button>`;
-    S.querySelector('.c3b-tg').onclick = () => { S.dataset.open = open ? '0' : '1'; if (dom || (s && s.done)) draw(s, dom); };
-    host.querySelector('.c3b-open').innerHTML = open ? `<div class="c3b-panel card">${dom ? C3.domain(dom) : s.done ? CP.end(s, '<button class="btn btn-line" onclick="FL.toast(\'Not part of this mockup.\')">Open in the Site Audit</button>') : `<div class="c3a-l">${s.stage === 'pages' && s.cur ? `Reading <span class="url">${FL.esc(s.cur)}</span>` : ''}<span class="cp-mono">${CP.fresh(s)}</span></div>${CP.notesHtml(s)}${C3.attach(s)}`}</div>` : '';
-  });
-} };
-
-/* ---------- C: the Audience page card, where the crawl lives today, in the kit style ---------- */
-const C3C = { name: 'The Audience page card, redone in the kit style', render(host) {
-  C3.go(host, () => `<div><div class="kick">Audience</div><h1 class="h1">Who the practice’s patients are</h1><p class="sub">Where the crawl shows today (“Crawling … N pages found so far”), rebuilt with the kit.</p><div class="c3c card"><div class="c3c-l"><div class="s1-lh">Website crawl</div><ul class="cp-steps"></ul></div><div class="c3c-r"></div></div></div>`, (s, dom) => {
-    const si = s ? CP.stageIdx(s) : 0;
-    host.querySelector('.cp-steps').innerHTML = CP.STAGES.map((st, i) => { const state = dom ? (i === 0 ? (dom.kind === 'rest' ? 'rest' : 'bad') : 'wait') : s.done || i < si ? 'done' : i === si ? 'now' : 'wait'; return `<li class="${state}"><span class="mk">${state === 'done' ? '✓' : state === 'bad' ? '×' : state === 'rest' ? '–' : ''}</span>${st.name}</li>`; }).join('');
-    const R = host.querySelector('.c3c-r');
-    if (dom) { R.innerHTML = C3.domain(dom); return; }
-    if (s.done) { R.innerHTML = `<div class="c3c-big cp-grad">${FL.fmt(s.kept)}</div><div class="c3c-cap">${C3.doneLine(s)}</div><div class="c2-acts"><button class="btn btn-go" onclick="FL.toast('Not part of this mockup.')">Use these pages</button><button class="btn btn-line" onclick="FL.toast('Not part of this mockup.')">Open in the Site Audit</button></div>`; R.dataset.m = ''; return; }
-    if (R.dataset.m !== 'live') { R.dataset.m = 'live'; R.innerHTML = `<div class="c1b-eye">${CP.dot()}<span class="e"></span></div><div class="c3c-big cp-grad"><span class="n">0</span><span class="of"></span></div><div class="c3c-cap"></div><div class="c3c-cur"></div><div class="c3c-notes"></div><div class="cp-mono c3c-foot"></div>`; }
-    R.querySelector('.e').textContent = s.stage === 'wait' ? 'Waiting for a free crawler' : `Step ${si + 1} of 4 · ${CP.STAGES[si].name}`;
-    const n = R.querySelector('.n'); const v = s.stage === 'wait' ? s.ahead : s.stage === 'embed' ? s.embedded : s.kept; CP.count(n, v);
-    R.querySelector('.of').textContent = s.stage === 'pages' ? ` of ${FL.fmt(s.sitemapTotal)}` : s.stage === 'embed' ? ` of ${FL.fmt(s.kept)}` : '';
-    R.querySelector('.c3c-cap').textContent = s.stage === 'wait' ? 'crawls ahead of this one' : s.stage === 'embed' ? 'pages mapped by topic' : s.stage === 'pages' ? 'sitemap pages kept so far' : s.detail;
-    R.querySelector('.c3c-cur').innerHTML = s.stage === 'pages' && s.cur ? `Reading <span class="url">${FL.esc(s.cur)}</span>` : '&nbsp;';
-    R.querySelector('.c3c-notes').innerHTML = CP.notesHtml(s) + C3.attach(s);
-    R.querySelector('.c3c-foot').textContent = `${CP.mins(s.clock)} so far · ${CP.fresh(s)} · keeps going if this page is closed`;
+    S.querySelector('.c3b-tg').onclick = () => { S.dataset.open = open ? '0' : '1'; if (dom || (s && s.done)) C3._redraw(); };
+    host.querySelector('.c3b-open').innerHTML = open ? `<div class="c3b-panel card">${dom ? C3.domain(dom) : s.done ? CP.end(s, '<button class="btn btn-line" onclick="FL.toast(\'Not part of this mockup.\')">Open in the Site Audit</button>') : `<div class="c3a-l">${s.stage === 'pages' && s.cur ? `Reading <span class="url">${FL.esc(s.cur)}</span>` : ''}<span class="cp-mono">${CP.fresh(s)}</span></div>${CP.notesHtml(s)}${C3.attach(s)}`}${C3.log(s, dom)}</div>` : '';
   });
 } };
 
 window.SCREEN = {
   title: 'Crawl progress 3: the same crawl inside the strategy',
   shell: C3.shell,
-  mock: `<b>Crawl progress · 3 Inside the strategy</b> <span class="src">· same simulated crawls as screen 1, seen from a strategy. Today the strategy shows the crawl on the Audience page and the setup wizard (“Crawling … N pages found so far”, polled every 3 s); Run Strategy shows nothing.</span>
-<ul><li>A: the crawl is the first station in the run list; Site Content Analysis waits for it.</li>
-<li>B: a slim strip pinned under the strategy header on every page, with a Details drop-down.</li>
-<li>C: the Audience page card, redone with the kit: StepList on the left, the big CountUp on the right.</li></ul>
-<span class="nr">The crawl station’s place in the run list is a proposal: the order of stations belongs to the workflow spec. “Domain check stops” shows the #1409 causes inside the strategy (Twinkle Tooth, Hilltop, Duck Duck Tooth).</span>`,
-  variants: { A: C3A, B: C3B, C: C3C },
+  mock: `<b>Crawl progress · 3 Inside the strategy, round 2</b> <span class="src">· owner pick Oct 30: B, a slim strip pinned under the strategy header on every page; it is screen 1’s live line, and Details opens the same log (or, when the domain check stops, where each address lands). Today the strategy shows the crawl only on the Audience page and the setup wizard (“Crawling … N pages found so far”).</span>
+<span class="nr">“Domain check stops” shows the #1409 causes inside the strategy (Twinkle Tooth, Hilltop, Duck Duck Tooth).</span>`,
+  variants: { B: C3B },
 };
 </script>
 <script>(window.SCREEN.shell||SA.shell)({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>

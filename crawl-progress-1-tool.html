@@ -270,27 +270,8 @@ a{color:var(--aInk)}
 .btn-quiet{background:none;border:0;color:var(--aInk);font-weight:600;font-size:13.5px;padding:8px 6px}
 
 .c1-n{font-variant-numeric:tabular-nums}
-.c1a-wait:empty{display:none}
-.c1a-waitbox{display:flex;align-items:center;gap:12px;max-width:880px;margin-bottom:14px;padding:12px 16px;border:1px solid var(--line);border-radius:8px;font-size:14.5px;color:var(--ink2)}
-.c1a-tries{display:inline-flex;align-items:center;margin-left:14px}
-.s1c-cur{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
-.s1c-prog .cp-mono{margin-left:auto}
 .c1-end:empty{display:none}
-/* B */
-.c1b-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:44px;margin-top:26px;align-items:start}
-.c1b-eye{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#667085}
-.c1b-big{margin-top:14px;font-size:88px;font-weight:900;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.c1b-big .of{font-size:40px;letter-spacing:-.02em}
-.c1b-cap{margin-top:8px;font-size:17px;color:#273043}
-.c1b-cur{margin-top:14px;min-height:30px;font-size:13.5px;color:#667085}
-.c1b-cur .c1a-tries{display:flex;margin:6px 0 0}
-.c1b-notes .cp-notes{max-width:640px}
-.c1b-foot{margin-top:16px}
-.c1b-side{border-left:1px solid var(--line);padding-left:24px}
-.c1b-side .cp-steps{margin-top:10px}
-.c1b-log{margin-top:22px;display:flex;flex-direction:column;gap:6px}
-.c1b-ev{font-size:12.5px;color:var(--muted);line-height:1.4}
-.c1b-ev.warn{color:var(--ink2)}.c1b-ev.ok{color:#166534}.c1b-ev.note{color:var(--aInk)}
+.c1a-tries{display:inline-flex;align-items:center;margin-left:14px}
 /* C */
 .c1c-strip{margin-top:22px;padding:16px 18px}
 .c1c-segs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -721,6 +702,7 @@ a{color:var(--aInk)}
   CP.tip = (word, head, text) => `<span class="tipword" data-tip-h="${FL.esc(head)}" data-tip="${FL.esc(text)}">${word}</span>`;
   CP.rung = (r, label) => `<span class="s1-rg" data-tip-h="${r}. ${CPS.R[r].name}" data-tip="${FL.esc(CPS.R[r].tip)}"><i style="background:${CPS.R[r].c}"></i>${label ?? CPS.R[r].name}</span>`;
   CP.tries = (tries) => (tries || []).map((x) => `<span class="s1-try ${x.ok ? 'ok' : 'no'}">${CP.rung(x.r, `${x.r}`)}<span>${FL.esc(x.msg)}</span></span>`).join('<span class="s1-arr">›</span>');
+  CP.t = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, '0')}`;
   CP.mins = (sec) => (sec < 60 ? 'under a minute' : `${Math.round(sec / 60)} min`);
 
   /* the plain notes that can sit under the live numbers; one line each, newest state only */
@@ -755,55 +737,6 @@ C1.go = (host, build, draw) => { const go = () => { host.innerHTML = ''; CP.ctl(
 C1.domain = () => CPS.cases[CP.CASE].domain;
 C1.pageLine = (s) => `<b class="c1-n">${FL.fmt(Math.min(s.kept, s.sitemapTotal + s.found))}</b> of ${FL.fmt(s.sitemapTotal)} sitemap pages kept`;
 
-/* ---------- A: Run C, grown ---------- */
-const C1A = { name: 'Run C grown: four crawl steps, live detail inside the step', render(host) {
-  C1.go(host, () => `<div class="s1c">${C1.head({ domain: C1.domain() })}
-    <p class="sub">Four steps, a few minutes. It keeps going if this page is closed. Every crawl ends Complete, or stops with the reason.</p>
-    <div class="c1a-wait"></div><div class="s1c-steps"></div><div class="c1-end"></div></div>`, (s) => {
-    const si = CP.stageIdx(s); const W = host.querySelector('.c1a-wait');
-    W.innerHTML = s.stage === 'wait' ? `<div class="c1a-waitbox">${CP.dot()}<span>${CP.waitLine(s)}</span></div>` : '';
-    const note = { domain: s.domainNote ? `Same site as the Google listing` : '', sitemap: s.sitemapTotal ? `${FL.fmt(s.sitemapTotal)} pages listed` : '',
-      pages: si > 2 ? `${FL.fmt(s.kept)} kept${s.found ? `, ${s.found} found through links` : ''}${s.blocked ? `, ${FL.fmt(s.blocked)} turned away` : ''}` : '', embed: si > 3 ? `${FL.fmt(s.embedded)} pages mapped` : '' };
-    host.querySelector('.s1c-steps').innerHTML = CP.STAGES.map((st, i) => {
-      const state = s.stage === 'wait' ? 'todo' : i < si ? 'done' : i === si ? 'on' : 'todo'; let body = '';
-      if (state === 'on' && st.k === 'pages') {
-        const tot = s.sitemapTotal; const pct = Math.min(1, s.kept / Math.max(1, tot));
-        body = `<div class="s1c-body"><div class="s1c-prog"><span>${C1.pageLine(s)}${s.found ? `, <b>${s.found}</b> more found through links` : ''}</span><span class="s1c-mini"><i style="width:${(pct * 100).toFixed(1)}${'%'}"></i></span><span class="cp-mono">${CP.fresh(s)}</span></div>
-          <div class="s1c-cur">${s.cur ? `<span class="url">${FL.esc(s.cur)}</span>${s.tries ? `<span class="c1a-tries">${CP.tries(s.tries)}</span>` : ''}` : '&nbsp;'}</div>
-          ${CP.notesHtml(s)}</div>`;
-      } else if (state === 'on' && st.k === 'embed') body = `<div class="s1c-body"><div class="s1c-prog"><span><b class="c1-n">${FL.fmt(s.embedded)}</b> of ${FL.fmt(s.kept)} pages mapped</span><span class="s1c-mini"><i style="width:${(100 * s.embedded / Math.max(1, s.kept)).toFixed(1)}${'%'}"></i></span></div></div>`;
-      else if (state === 'on') body = `<div class="s1c-body"><div class="s1c-det">${FL.esc(s.detail)}</div></div>`;
-      return `<div class="s1c-step ${state}"><span class="s1c-mk">${state === 'done' ? '<svg viewBox="0 0 16 16"><path d="M4 8.5l2.5 2.5L12 5.5"/></svg>' : state === 'on' ? '<span class="s1-turn"></span>' : i + 1}</span>
-        <div class="s1c-main"><div class="s1c-t"><b class="tipword" data-tip-h="${st.name}" data-tip="${FL.esc(st.tip)}">${st.name}</b><span class="s1c-note">${note[st.k]}</span></div>${body}</div></div>`;
-    }).join('');
-    host.querySelector('.c1-end').innerHTML = s.done ? CP.end(s) : '';
-  });
-} };
-
-/* ---------- B: the kit live layout (TurningDot eyebrow, big CountUp, current page line) ---------- */
-const C1B = { name: 'Tools kit live layout: one big number, steps at the side', render(host) {
-  C1.go(host, () => `<div class="c1b">${C1.head({ domain: C1.domain() })}
-    <div class="c1b-grid"><div class="c1b-live"></div><div class="c1b-side"><div class="s1-lh">Steps</div><ul class="cp-steps"></ul><div class="c1b-log"></div></div></div><div class="c1-end"></div></div>`, (s) => {
-    const si = CP.stageIdx(s); const L = host.querySelector('.c1b-live');
-    host.querySelector('.cp-steps').innerHTML = CP.STAGES.map((st, i) => { const state = s.done || i < si ? 'done' : i === si ? 'now' : 'wait'; return `<li class="${state}"><span class="mk">${state === 'done' ? '✓' : ''}</span>${st.name}</li>`; }).join('');
-    host.querySelector('.c1b-log').innerHTML = s.events.slice(0, 5).map((e) => `<div class="c1b-ev ${e.kind}">${FL.esc(e.txt)}</div>`).join('');
-    if (s.done) { L.innerHTML = ''; host.querySelector('.c1-end').innerHTML = CP.end(s); return; }
-    host.querySelector('.c1-end').innerHTML = '';
-    const mode = s.stage === 'wait' ? 'wait' : s.stage === 'pages' ? 'pages' : s.stage === 'embed' ? 'embed' : 'pre';
-    if (L.dataset.mode !== mode) { L.dataset.mode = mode; L.innerHTML = `<div class="c1b-eye">${CP.dot()}<span class="e"></span></div><div class="c1b-big cp-grad"><span class="n">0</span><span class="of"></span></div><div class="c1b-cap"></div><div class="c1b-cur"></div><div class="cp-shim"></div><div class="c1b-notes"></div><div class="cp-mono c1b-foot"></div>`; }
-    const eye = { wait: 'Waiting for a free crawler', pre: `Step ${si + 1} of 4 · ${CP.STAGES[Math.max(0, si)].name}`, pages: 'Step 3 of 4 · Read every page', embed: 'Step 4 of 4 · Map what each page is about' }[mode];
-    L.querySelector('.e').textContent = eye;
-    const big = L.querySelector('.c1b-big'); const n = big.querySelector('.n');
-    if (mode === 'wait') { CP.count(n, s.ahead); big.querySelector('.of').textContent = ''; L.querySelector('.c1b-cap').textContent = s.ahead === 1 ? 'crawl ahead of this one' : 'crawls ahead of this one'; L.querySelector('.c1b-cur').textContent = 'At most 3 crawls run at once, so the app stays quick for everyone.'; }
-    else if (mode === 'pages') { CP.count(n, s.kept); big.querySelector('.of').textContent = ` of ${FL.fmt(s.sitemapTotal)}`; L.querySelector('.c1b-cap').innerHTML = `sitemap pages kept so far${s.found ? `, plus ${s.found} found through links` : ''}`;
-      L.querySelector('.c1b-cur').innerHTML = s.cur ? `Reading <span class="url">${FL.esc(s.cur)}</span>${s.tries ? `<div class="c1a-tries">${CP.tries(s.tries)}</div>` : ''}` : (s.paused ? 'Paused' : '&nbsp;'); }
-    else if (mode === 'embed') { CP.count(n, s.embedded); big.querySelector('.of').textContent = ` of ${FL.fmt(s.kept)}`; L.querySelector('.c1b-cap').textContent = 'pages mapped by what they are about'; L.querySelector('.c1b-cur').textContent = 'For the Relevance Analyzer. The audit does not wait for this.'; }
-    else { n.textContent = '…'; n._v = 0; big.querySelector('.of').textContent = ''; L.querySelector('.c1b-cap').textContent = s.sitemapTotal ? `${s.sitemapTotal} pages in the sitemap` : 'pages to read'; L.querySelector('.c1b-cur').textContent = s.detail; }
-    L.querySelector('.c1b-notes').innerHTML = CP.notesHtml(s);
-    L.querySelector('.c1b-foot').textContent = `${CP.mins(s.clock)} so far · ${CP.fresh(s)} · keeps going if this page is closed`;
-  });
-} };
-
 /* ---------- C: one live line over a plain log of what happened ---------- */
 const C1C = { name: 'One live line, then a log of what happened', render(host) {
   C1.go(host, () => `<div class="c1c">${C1.head({ domain: C1.domain() })}
@@ -823,13 +756,10 @@ const C1C = { name: 'One live line, then a log of what happened', render(host) {
 
 window.SCREEN = {
   title: 'Crawl progress 1: the live strip in the tool',
-  mock: `<b>Crawl progress · 1 The live strip in the tool</b> <span class="src">· hosted in the approved Site Audit run screen (Run C, #1426). Cases are real practices: Liberty (crawl of Oct 22, sitemap Oct 30), Guava (429 rate limit), Dublin Dental Care (lost 60 pages to a session drop on Oct 9), Smile Haus (13 pages), Kay Jordan (Cloudflare on /articles), all from the #1412 re-crawl. The endings are what the #1408 bar promises, not what today’s crawler does.</span>
-<ul><li>A: Run C, grown to the four crawl steps; the page step carries the live count, the current page, and plain notes (slowed down, paused for a server update, browser reopened).</li>
-<li>B: the tools kit live layout (TurningDot, one big CountUp number, the current page line, a footer), with the steps and the latest events at the side.</li>
-<li>C: one live line with the four steps as a strip, then a plain log of what happened and when.</li></ul>
-<span class="nr">Today the screen gets a page count every 3 pages; nothing else. The new crawl’s 5 second heartbeat carries every number here. Two wordings are proposals for open #1422 questions: “Picked back up after a server update” (question 4) and “at most 3 crawls at once” (question 6).</span>`,
+  mock: `<b>Crawl progress · 1 The live strip in the tool, round 2</b> <span class="src">· owner pick Oct 30: C, one live line with the four steps as a strip, then a plain log of what happened. Hosted in the approved Site Audit run screen. Cases are real practices from the #1412 re-crawl: Liberty, Guava (429 rate limit), Dublin Dental Care (lost 60 pages to a session drop on Oct 9), Smile Haus, Kay Jordan (Cloudflare on /articles). The endings are what the #1408 bar promises, not what today’s crawler does.</span>
+<span class="nr">Approved Oct 30: page mapping runs after the crawl and the audit does not wait for it. Proposals for open #1422 questions: “Picked back up after a server update” (question 4), at most 3 crawls at once (question 6).</span>`,
   right: '<span class="who">Liberty Family Dentistry</span><span class="when">Started today, 2:14 PM</span>',
-  variants: { A: C1A, B: C1B, C: C1C },
+  variants: { C: C1C },
 };
 </script>
 <script>(window.SCREEN.shell||SA.shell)({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
