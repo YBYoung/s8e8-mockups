@@ -471,9 +471,9 @@ a{color:var(--aInk)}
 </script>
 <script>/* V6 core (from v5.js): geometry, persistent marks, the year band, and the two "reach" pictures.
    New in V6 (owner 10/29, "this section is incredibly complex"):
-   - the year band is a thin strip at the bottom of the figure in every middle chapter; it rises as a drawer only
-     while a pin lands (end of each "where patients land", the held level, the season), then sinks back.
-     The opening and the plan keep the full band.
+   - r4 (owner 10/29, "it bleeds and meshes over itself"): the year band is a compact panel of FIXED height at the
+     foot of the figure in every chapter from the first topic chapter on (v6band.js); only its pins animate.
+     The opening and the plan keep the large band; the two swap by cross-fade, never by a height tween.
    - "how patients reach the page" is split: WHO SEES IT (one picture, one scale: Expedition's showings a week
      against our other practices' average) and WHERE PATIENTS LAND (one row per page as a small path:
      showings -> visits -> calls or forms, ending in the work for that page).
@@ -484,8 +484,9 @@ a{color:var(--aInk)}
 (function () {
   const D = window.D; const M = D.months; const P = D.phrases; const T = FL.T; const put = FL.put; const fmt = FL.fmt;
   const K = (window.V6K = { D, M, P, T, put, fmt });
-  K.VH = 480;
-  const X0 = 36; const X1 = 540; const Y0 = 70; const Y1 = 360;
+  /* r4: the figure grows to make room for a fixed compact year band at its foot (BT down); the plot ends at Y1 */
+  K.VH = 552; K.BT = 420;
+  const X0 = 36; const X1 = 540; const Y0 = 70; const Y1 = 352;
   Object.assign(K, { X0, X1, Y0, Y1 });
   const yv = (K.yv = (v) => Y1 - (v / 100) * (Y1 - Y0));
   const xw = (K.xw = (i, i0, i1) => X0 + ((i - i0) / (i1 - i0)) * (X1 - X0));
@@ -509,18 +510,19 @@ a{color:var(--aInk)}
   const at = (K.at = (x, y, n = N) => Array.from({ length: n }, () => [x, y]));
   K.W24 = [idx('2024-10'), 60]; K.W12 = [idx('2025-10'), 60]; K.W36 = [idx('2023-10'), 60];
 
-  /* ---------- the year band: four geometries of the same marks ---------- */
+  /* ---------- the year band (r4) ----------
+     open / plan: the large band, drawn by the engine marks below. cb: the compact band, one fixed panel at the foot
+     of the figure in every chapter from the first topic chapter on (v6band.js). The two never tween into each other:
+     one fades out while the other fades in at its final size. */
   const GEO = (K.GEO = {
-    open: { name: 'open', x0: 0, x1: 640, months: 96, top: (l) => 142 + l * 100, h: 44 },
-    thin: { name: 'thin', x0: 100, x1: 636, head: 437, top: (l) => 446 + l * 8, h: 5 },
-    grow: { name: 'grow', x0: 100, x1: 636, head: 330, months: 346, top: (l) => 354 + l * 40, h: 34 },
+    open: { name: 'open', x0: 0, x1: 640, months: 96, top: (l) => 142 + l * 110, h: 44 },
+    cb: { name: 'cb', x0: 112, x1: 640, head: K.BT + 15, months: K.BT + 30, top: (l) => K.BT + 37 + l * 26, h: 23 },
     plan: { name: 'plan', x0: 100, x1: 636, head: 60, months: 78, top: (l) => 86 + l * 46, h: 40 },
   });
-  const THIN = GEO.thin; const GROW = GEO.grow;
   const CW = (K.CW = (g) => (g.x1 - g.x0) / 12);
   const bx = (K.bx = (g, k) => g.x0 + (k + 0.5) * CW(g));
   const mid = (K.mid = (g, l) => g.top(l) + g.h / 2);
-  const cell = (K.cell = (g, l, k0, k1 = k0, inset = g.name === 'thin' ? 0.6 : 3) => ({ x: g.x0 + k0 * CW(g) + inset, y: g.top(l) + (g.name === 'thin' ? 0 : inset), width: (k1 - k0 + 1) * CW(g) - 2 * inset, height: g.h - (g.name === 'thin' ? 0 : 2 * inset) }));
+  const cell = (K.cell = (g, l, k0, k1 = k0, inset = g.name === 'cb' ? 1.5 : 3) => ({ x: g.x0 + k0 * CW(g) + inset, y: g.top(l) + inset, width: (k1 - k0 + 1) * CW(g) - 2 * inset, height: g.h - 2 * inset }));
   const BM = (K.BM = ['Nov ’26', 'Dec', 'Jan ’27', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct']);
   const LANE = (K.LANE = {
     tt: { verdict: 'Steady, close to Rising', short: 'close to Rising', act: 'Improve the frenectomy service page, now',
@@ -540,12 +542,11 @@ a{color:var(--aInk)}
   const PIN_IDS = (K.PIN_IDS = Object.keys(PINS));
   const ACT_IDS = (K.ACT_IDS = PIN_IDS.filter((id) => PINS[id].act));
   /* the held level starts after the pediatric dentist pin's cells, so the two never overlap */
-  const heldX0 = (K.heldX0 = (g) => g.x0 + 2 * CW(g) + (g.name === 'thin' ? 3 : 8));
+  const heldX0 = (K.heldX0 = (g) => g.x0 + 2 * CW(g) + (g.name === 'cb' ? 5 : 8));
   K.ORD = {};
   const lit = (K.lit = (id, ch) => K.ORD[id] <= ch);
   const pinLit = (K.pinLit = (id) => { const p = PINS[id]; return { fill: p.fill, stroke: p.fill, dash: 'none' }; });
   const pinQuiet = { fill: '#fff', stroke: QUIET, dash: '3 2' };
-  const pinQuietThin = { fill: '#fff', stroke: QUIET, dash: 'none' };
   const heldLit = (K.heldLit = { stroke: TEAL, sw: 2.4, dash: 'none', o: 1 }); const heldQuiet = { stroke: QUIET, sw: 1.4, dash: '4 3', o: 1 };
 
   /* ---------- marks ---------- */
@@ -556,8 +557,6 @@ a{color:var(--aInk)}
     ['lvl-a', 'lvl-b'].forEach((id) => fig.mk(id, 'line', L.top, { stroke: '#0F172A', 'stroke-opacity': 0.5 }, { x1: X0, x2: X0, y1: Y0, y2: Y0, o: 0 }));
     fig.mk('usual', 'line', L.top, { stroke: '#0F172A', 'stroke-opacity': 0.45 }, { x1: X0, x2: X0, y1: Y1, y2: Y1, o: 0 });
     fig.mk('brk', 'path', L.top, { fill: 'none', stroke: '#0F172A', 'stroke-width': 1.2 }, { pts: at(X1, Y1, 4), o: 0 });
-    /* the drawer: a white sheet under the band that rises over the plot's foot while a pin lands */
-    fig.mk('drawer', 'rect', L.top, { rx: 6, stroke: '#E7E9EE', 'pointer-events': 'none' }, { x: 84, y: 436, width: 556, height: 44, o: 0, fill: '#fff' });
     const g = GEO.open;
     LANES.forEach((k, l) => fig.mk(`lane${l}`, 'rect', L.top, { rx: 3 }, { x: g.x0, width: g.x1 - g.x0, y: g.top(l), height: g.h, o: 0, fill: '#F6F7FA' }));
     for (let k = 0; k <= 12; k++) fig.mk(`col${k}`, 'line', L.top, { stroke: '#fff', 'stroke-width': 2 }, { x1: g.x0 + k * CW(g), x2: g.x0 + k * CW(g), y1: g.top(0), y2: g.top(2) + g.h, o: 0 });
@@ -570,6 +569,13 @@ a{color:var(--aInk)}
     fig.mk('yrm-cs', 'path', L.marks, { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
     fig.mk('yrm', 'path', L.marks, { fill: 'none', stroke: TEAL, 'stroke-width': 2.2, 'stroke-linejoin': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
     fig.mk('own', 'path', L.lines, { fill: 'none', stroke: ROSE, 'stroke-dasharray': '6 3', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 11), o: 0, sw: 2 });
+    /* r4 who sees it: national (slate, left scale) and local (teal, right scale) on one chart */
+    fig.mk('wn', 'path', L.lines, { fill: 'none', stroke: '#64748B', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 11), o: 0, sw: 1.6 });
+    fig.mk('wl-cs', 'path', L.lines, { fill: 'none', stroke: '#fff', 'stroke-width': 4.4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 11), o: 0 });
+    fig.mk('wl', 'path', L.lines, { fill: 'none', stroke: TEAL, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 11), o: 0, sw: 2.2 });
+    fig.mk('wn-oct', 'circle', L.marks, { fill: '#fff', stroke: '#64748B', 'stroke-width': 1.4, 'stroke-dasharray': '2 1.5' }, { cx: X1, cy: Y1, r: 3.2, o: 0 });
+    fig.mk('wl-oct', 'circle', L.marks, { fill: '#fff', stroke: TEAL, 'stroke-width': 1.6, 'stroke-dasharray': '2 1.5' }, { cx: X1, cy: Y1, r: 3.4, o: 0 });
+    fig.mk('cr-end', 'circle', L.marks, { stroke: '#fff', 'stroke-width': 1.5 }, { cx: X1, cy: Y1, r: 3.6, o: 0, fill: ROSE });
     fig.mk('own-oct', 'circle', L.marks, { fill: '#fff', stroke: ROSE, 'stroke-width': 1.6, 'stroke-dasharray': '2 1.5' }, { cx: X1, cy: Y1, r: 3.4, o: 0 });
     fig.mk('cr-cs', 'path', L.lines, { fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
     fig.mk('cr', 'path', L.lines, { fill: 'none', stroke: ROSE, 'stroke-width': 2.2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, { pts: at(X0, Y1, 12), o: 0 });
@@ -583,77 +589,59 @@ a{color:var(--aInk)}
     fig.mk('chip', 'rect', L.top, { rx: 4, 'stroke-width': 1.3, 'pointer-events': 'none' }, { x: 0, y: 0, width: 10, height: 10, o: 0, fill: '#fff', stroke: TEAL });
     const ct = fig.mk('chip-t', 'text', L.top, { 'font-size': 11, 'font-weight': 700, 'text-anchor': 'middle', 'pointer-events': 'none' }, { x: 0, y: 0, o: 0, fill: TEAL_D });
     ct.el.textContent = '';
-    ['pk', 'dp'].forEach((id) => L.top.appendChild(fig.m.get(id).el)); // drops land on top of the risen sheet
     fig.mk('hfly', 'line', L.top, { 'stroke-linecap': 'round', 'pointer-events': 'none' }, { x1: X0, x2: X0, y1: Y1, y2: Y1, o: 0, stroke: TEAL, sw: 2.6 });
+    K.cbInit(L.top);
   };
 
-  /* ---------- band state (built per chapter) ---------- */
+  /* ---------- band state (built per chapter) ----------
+     cb: the engine's large-band marks fade out where they are (no geometry change) and the compact panel takes over.
+     open / plan: the compact panel fades out; the large band is placed at its final geometry while invisible
+     (pre), then fades in after the previous chapter's content has left. Nothing ever tweens between sizes. */
+  K.bigShown = null;
+  const BIG_IDS = () => [...LANES.map((_, l) => `lane${l}`), ...Array.from({ length: 13 }, (_, k) => `col${k}`), ...PIN_IDS, 'p-held'];
   K.band = function (S, g, ch, active, { first = false, delay = 0, hold = [] } = {}) {
     K.cur = { ch, active, hold: [...hold] };
+    if (g.name === 'cb') { const fromBig = K.bigShown != null; BIG_IDS().forEach((id) => put(S, id, { o: 0 }, { dur: 0 })); K.bigShown = null; K.cbSet(ch, active, { hold, delay: fromBig ? 520 : 0 }); return; }
+    K.cbHide();
+    const swap = !first && K.bigShown !== g.name; K.bigShown = g.name;
+    const d = swap ? 450 : delay;
     LANES.forEach((k, l) => {
-      const on = active === l;
-      put(S, `lane${l}`, { x: g.x0, width: g.x1 - g.x0, y: g.top(l), height: g.h, o: 1, fill: on ? (g.name === 'thin' ? '#BFE0D9' : '#EEF6F4') : (g.name === 'thin' ? '#ECEEF2' : '#F6F7FA'),
+      const on = active === l; const geo = { x: g.x0, width: g.x1 - g.x0, y: g.top(l), height: g.h };
+      put(S, `lane${l}`, { ...geo, o: 1, fill: on ? '#EEF6F4' : '#F6F7FA',
         attr: { 'data-ro-t': `${TERM[k]}: ${LANE[k].verdict}`, 'data-ro-n': 'Google’s 0 to 100, Washington', 'data-ro-b': LANE[k].ro } },
-      first ? { pre: { x: g.x0, width: 0, y: g.top(l), height: g.h }, delay: 200 + l * 140 } : { delay });
+      first ? { pre: { ...geo, width: 0 }, delay: 200 + l * 140 } : swap ? { pre: { ...geo, o: 0 }, delay: d } : { delay: d });
     });
-    for (let k = 0; k <= 12; k++) { const x = g.x0 + k * CW(g); put(S, `col${k}`, { x1: x, x2: x, y1: g.top(0), y2: g.top(2) + g.h, o: g.name === 'thin' ? 0 : 1 }, first ? { delay: 900 } : { delay }); }
-    put(S, 'drawer', { x: 84, y: 436, width: 556, height: 44, o: 0 });
-    K.pins(S, ch, g, { delay, first, hold });
+    for (let k = 0; k <= 12; k++) { const x = g.x0 + k * CW(g); const geo = { x1: x, x2: x, y1: g.top(0), y2: g.top(2) + g.h }; put(S, `col${k}`, { ...geo, o: 1 }, first ? { delay: 900 } : swap ? { pre: { ...geo, o: 0 }, delay: d } : { delay: d }); }
+    K.pins(S, ch, g, { delay: d, first, hold, swap });
   };
-  const pinStyle = (id, on, g) => (on ? pinLit(id) : g.name === 'thin' ? pinQuietThin : pinQuiet);
-  K.pins = function (S, ch, g, { delay = 0, first = false, hold = [] } = {}) {
+  const pinStyle = (id, on) => (on ? pinLit(id) : pinQuiet);
+  K.pins = function (S, ch, g, { delay = 0, first = false, hold = [], swap = false } = {}) {
     PIN_IDS.forEach((id, j) => {
       const p = PINS[id]; const c = cell(g, p.lane, p.k0, p.k1 ?? p.k0); const on = lit(id, ch) && !hold.includes(id);
-      put(S, id, { ...c, o: 1, ...pinStyle(id, on, g), attr: { 'data-ro-t': p.t, 'data-ro-n': `${p.n} · ${on ? 'explained above' : 'explained further down'}`, 'data-ro-b': p.b } },
-        first ? { pre: { ...c, o: 0, ...pinQuiet }, delay: 1100 + j * 140 } : { delay });
+      put(S, id, { ...c, o: 1, ...pinStyle(id, on), attr: { 'data-ro-t': p.t, 'data-ro-n': `${p.n} · ${on ? 'explained above' : 'explained further down'}`, 'data-ro-b': p.b } },
+        first ? { pre: { ...c, o: 0, ...pinQuiet }, delay: 1100 + j * 140 } : swap ? { pre: { ...c, o: 0, ...pinStyle(id, on) }, delay } : { delay });
     });
     const hl = K.heldY(g);
     const on = lit('p-held', ch) && !hold.includes('p-held');
-    put(S, 'p-held', { x1: heldX0(g), x2: g.x1 - 8, y1: hl, y2: hl, ...(on ? heldLit : heldQuiet), ...(g.name === 'thin' ? { sw: on ? 2 : 1, dash: on ? 'none' : '3 2' } : {}),
+    put(S, 'p-held', { x1: heldX0(g), x2: g.x1 - 8, y1: hl, y2: hl, ...(on ? heldLit : heldQuiet),
       attr: { 'data-ro-t': 'Pediatric dentist searches, all year: held near 50', 'data-ro-n': `Google Trends, Washington · a level, not a pin · ${on ? 'explained above' : 'explained further down'}`, 'data-ro-b': 'Searches tripled in summer 2025 and held near 50 on Google’s 0 to 100 scale. The level the home page work is planned at.' } },
-    first ? { pre: { x1: heldX0(g), x2: heldX0(g), y1: hl, y2: hl, ...heldQuiet, o: 0 }, delay: 1500 } : { delay });
+    first ? { pre: { x1: heldX0(g), x2: heldX0(g), y1: hl, y2: hl, ...heldQuiet, o: 0 }, delay: 1500 } : swap ? { pre: { x1: heldX0(g), x2: g.x1 - 8, y1: hl, y2: hl, ...(on ? heldLit : heldQuiet), o: 0 }, delay } : { delay });
   };
-  K.heldY = (g) => (g.name === 'thin' ? mid(g, 1) : mid(g, 1) + (g.name === 'plan' ? 9 : g.name === 'open' ? 10 : 8));
-  /* light one pin now (after its chip lands); in the grown band its label turns white */
-  K.light = (fig, id) => {
-    K.cur.hold = K.cur.hold.filter((h) => h !== id);
-    if (id === 'p-held') fig.set('p-held', heldLit, { dur: 500 }); else fig.set(id, pinLit(id), { dur: 0 });
-    fig.svg.querySelectorAll(`[data-pt="${id}"]`).forEach((t) => { t.style.transition = 'fill .4s'; t.setAttribute('fill', PINS[id] && PINS[id].dark ? '#fff' : PINS[id] ? MUTED : TEAL_D); });
-  };
-  /* the drawer: grow the strip into a readable band, or sink it back */
-  K.drawer = function (fig, up, { dur = 700 } = {}) {
-    const g = up ? GROW : THIN;
-    fig.set('drawer', up ? { y: 314, height: 166, o: 1 } : { y: 436, height: 44, o: 0 }, { dur });
-    LANES.forEach((k, l) => fig.set(`lane${l}`, { x: g.x0, width: g.x1 - g.x0, y: g.top(l), height: g.h, fill: K.cur.active === l ? (up ? '#EEF6F4' : '#BFE0D9') : (up ? '#F6F7FA' : '#ECEEF2') }, { dur }));
-    for (let k = 0; k <= 12; k++) { const x = g.x0 + k * CW(g); fig.set(`col${k}`, { x1: x, x2: x, y1: g.top(0), y2: g.top(2) + g.h, o: up ? 1 : 0 }, { dur }); }
-    PIN_IDS.forEach((id) => { const p = PINS[id]; const on = lit(id, K.cur.ch) && !K.cur.hold.includes(id); fig.set(id, { ...cell(g, p.lane, p.k0, p.k1 ?? p.k0), ...pinStyle(id, on, g) }, { dur }); });
-    const hl = K.heldY(g); const hon = lit('p-held', K.cur.ch) && !K.cur.hold.includes('p-held');
-    fig.set('p-held', { x1: heldX0(g), x2: g.x1 - 8, y1: hl, y2: hl, sw: up ? (hon ? 2.4 : 1.4) : (hon ? 2 : 1) }, { dur });
-    const th = fig.svg.querySelector('[data-bl="thin"]'); const gr = fig.svg.querySelector('[data-bl="grow"]'); const un = fig.svg.querySelectorAll('[data-under]');
-    if (th) th.style.opacity = up ? 0 : 1;
-    if (gr) gr.style.opacity = up ? 1 : 0;
-    un.forEach((u) => { u.style.opacity = up ? 0 : 1; });
-    /* any other label the sheet would cover steps aside while it is up */
-    fig.svg.querySelectorAll('[data-layer="lab"] text, [data-layer="lab"] line, [data-layer="lab"] path, [data-layer="lab"] circle, [data-layer="lab"] rect').forEach((t) => {
-      if (t.closest('[data-bl]') || t.closest('[data-under]')) return;
-      const b = t.getBBox(); if (b.y + b.height < 314) return;
-      t.style.transition = 'opacity .3s'; t.style.opacity = up ? 0 : ''; });
-  };
-  /* the usual end-of-chapter landing: drawer up, something lands at `land` ms, drawer down at `down` ms */
-  K.landing = function (fig, later, { up = 2400, down = 5600 } = {}) { later(up, () => K.drawer(fig, true)); later(down, () => K.drawer(fig, false)); };
-
-  const laneFlat = (K.laneFlat = (i0, i1, l, g = THIN) => Array.from({ length: N }, (_, i) => [xw(i, i0, i1), mid(g, l)]));
+  K.heldY = (g) => mid(g, 1) + (g.name === 'plan' ? 9 : g.name === 'open' ? 10 : 6);
+  /* lines rise out of the plot's own floor (r4: never out of the band) */
+  const floorFlat = (K.floorFlat = (i0, i1) => Array.from({ length: N }, (_, i) => [xw(i, i0, i1), Y1]));
+  K.laneFlat = (i0, i1, l, g = GEO.open) => Array.from({ length: N }, (_, i) => [xw(i, i0, i1), mid(g, l)]);
   const LOOK = { lead: { stroke: TEAL, sw: 2.2, o: 1 }, ghost: { stroke: '#C3C8D2', sw: 1.4, o: 1 }, faint: { stroke: TEAL, sw: 1.6, o: 0.3 } };
   K.line = function (S, k, i0, i1, look = 'lead', { delay = 0, y = yv, rise = null } = {}) {
     const v = VALS[k]; const st = typeof look === 'string' ? LOOK[look] : look;
     const o = { delay }; const ot = { delay };
-    if (rise != null) { const f = laneFlat(i0, i1, rise); o.pre = { pts: f, o: 0 }; ot.pre = { pts: [f[59], f[59]], o: 0 }; }
+    if (rise != null) { const f = floorFlat(i0, i1); o.pre = { pts: f, o: 0 }; ot.pre = { pts: [f[59], f[59]], o: 0 }; }
     put(S, `ln-${k}`, { pts: linePts(v, i0, i1, y), ...st }, o);
     put(S, `tl-${k}`, { pts: tailPts(v, i0, i1, y), stroke: st.stroke, sw: Math.min(1.8, st.sw), o: st.o }, ot);
     if (LANES.includes(k)) put(S, `cs-${k}`, { pts: linePts(v, i0, i1, y), o: look === 'lead' ? 1 : 0 }, rise != null ? { delay, pre: { pts: o.pre.pts, o: 0 } } : { delay });
   };
   K.base = function (S) {
-    ['g0', 'g50', 'g100', 'base', 'lg0', 'lg1', 'win-a', 'win-b', 'gap', 'lvl-a', 'lvl-b', 'usual', 'brk', 'pk', 'dp', 'end', 'yrm', 'yrm-cs', 'own', 'own-oct', 'cr', 'cr-cs', 'cr-tl', 'chip', 'chip-t', 'hfly', 'drawer'].forEach((id) => put(S, id, { o: 0 }));
+    ['g0', 'g50', 'g100', 'base', 'lg0', 'lg1', 'win-a', 'win-b', 'gap', 'lvl-a', 'lvl-b', 'usual', 'brk', 'pk', 'dp', 'end', 'yrm', 'yrm-cs', 'own', 'own-oct', 'cr', 'cr-cs', 'cr-tl', 'chip', 'chip-t', 'hfly', 'wn', 'wl', 'wl-cs', 'wn-oct', 'wl-oct', 'cr-end'].forEach((id) => put(S, id, { o: 0 }));
     ['bk', 'ank', 'comb', 'pd', 'pdy', 'tt'].forEach((k) => { put(S, `ln-${k}`, { o: 0 }); put(S, `tl-${k}`, { o: 0 }); if (LANES.includes(k)) put(S, `cs-${k}`, { o: 0 }); });
     for (let k = 0; k < 4; k++) { put(S, `yr${k}`, { o: 0 }); put(S, `card${k}`, { o: 0 }); }
   };
@@ -670,67 +658,74 @@ a{color:var(--aInk)}
   };
   const winX = (i0, i1, ym) => { const i = idx(ym); return (xw(i, i0, i1) + xw(i + 2, i0, i1)) / 2; };
   K.winLabels = (k, i0, i1, { only = null } = {}) => { const p = P[TERM[k]];
-    const a = winX(i0, i1, '2025-07'); const b = Math.min(winX(i0, i1, '2026-07'), X1 - 50);
+    const a = winX(i0, i1, '2025-07'); const b = Math.min(winX(i0, i1, '2026-07'), X1 - 64); // r4: clear of the right-hand scale
     return `${only === 'win-b' ? '' : `${T(a, Y0 - 17, 'last year', { s: 11, w: 700, c: '#475569', a: 'middle' })}${T(a, Y0 - 5, `Jul to Sep ’25 · avg ${p.prev.toFixed(1)}`, { s: 10, c: MUTED, a: 'middle', extra: 'class="num"' })}`}
       ${T(b, Y0 - 17, 'this year', { s: 11, w: 700, c: TEAL_D, a: 'middle' })}${T(b, Y0 - 5, `Jul to Sep ’26 · avg ${p.cur.toFixed(1)}`, { s: 10, c: MUTED, a: 'middle', extra: 'class="num"' })}`; };
   K.endDot = (S, k, i0, i1, c = TEAL, delay = 300, y = yv) => put(S, 'end', { cx: xw(59, i0, i1), cy: y(VALS[k][59]), r: 4, fill: c, o: 1 }, { delay });
 
-  /* ---------- OUR CLIENTS COMBINED (r3, owner 10/29) ----------
-     In each "where searches stand" chapter the Trends line sits in a shorter top panel and, under it on the same
-     months, our clients' combined Search Console showings: ALL our clients, Expedition included, on the phrase
-     (lowercased search contains it), averaged per practice that reported that week, then over the month's weeks
-     (src/combined_extract.py). Own scale, own panel. Data from Sep 2025 (2 weeks), drawn Oct 2025 on; Oct 2026 dotted;
-     Sep 2026 hatched: Expedition is missing 3 of its 4 weeks. */
-  const CP = (K.CP = { t1: 226, r0: 282, r1: Y1 });
-  K.yc = (v) => CP.t1 - (v / 100) * (CP.t1 - Y0);
+  /* ---------- OUR CLIENTS COMBINED (r3; r4 owner 10/29: on the SAME chart as the Trends line) ----------
+     Our clients' combined Search Console showings: ALL our clients, Expedition included, on the phrase (lowercased
+     search contains it), averaged per practice that reported that week, then over the month's weeks
+     (src/combined_extract.py). Rose #DB2777 on its own right-hand scale (rose ticks); Trends keeps the grey 0 to 100
+     on the left. Starts Sep 2025, where our data begins (2 weeks); Oct 2026 dotted; Sep 2026 hatched: Expedition is
+     missing 3 of its 4 weeks. White casing so it reads over the shaded Jul to Sep windows. */
   const CLP = { tt: 'tongue tie', pd: 'pediatric dentist', pdy: 'pediatric dentistry' }; const CLMAX = { tt: 20, pd: 250, pdy: 60 };
-  const CLI = Array.from({ length: 12 }, (_, j) => idx('2025-10') + j);
+  const CL0 = idx('2025-09');
+  const CLI = Array.from({ length: 59 - CL0 + 1 }, (_, j) => CL0 + j);
+  const yR = (max) => (x) => Y1 - (x / max) * (Y1 - Y0);
   K.cl = (k) => {
     const C = D.cl; const ph = C.phrases[CLP[k]]; const v = {}; const seen = {}; const rep = {};
-    C.months.forEach((m, j) => { const i = M.indexOf(m); if (i >= CLI[0]) { v[i] = ph.mAvg[j]; seen[i] = ph.mSeen[j]; rep[i] = C.mReporting[j]; } });
-    return { v, seen, rep, max: CLMAX[k], ph, all: C.practicesAll, yR: (x) => CP.r1 - (x / CLMAX[k]) * (CP.r1 - CP.r0) };
+    C.months.forEach((m, j) => { const i = M.indexOf(m); if (i >= CL0) { v[i] = ph.mAvg[j]; seen[i] = ph.mSeen[j]; rep[i] = C.mReporting[j]; } });
+    return { v, seen, rep, max: CLMAX[k], ph, all: C.practicesAll, yR: yR(CLMAX[k]) };
   };
-  K.gridC = (S) => { [['g0', 0], ['g50', 50], ['g100', 100]].forEach(([id, v]) => put(S, id, { x1: X0, x2: X1, y1: K.yc(v), y2: K.yc(v), o: 1 }));
-    put(S, 'lg0', { x1: X0, x2: X1, y1: CP.r0, y2: CP.r0, o: 1, stroke: '#EEF0F3' }); put(S, 'base', { x1: X0, x2: X1, y1: Y1, y2: Y1, o: 1 }); };
-  /* the act: once the Trends line has landed, our clients' line rises out of its own floor, month by month under it */
-  K.clPanel = (S, k, i0, i1, delay = 1700) => {
-    const c = K.cl(k); const pts = CLI.map((i) => [xw(i, i0, i1), c.yR(c.v[i])]); const flat = pts.map(([x]) => [x, CP.r1]);
+  /* the act: once the Trends line has landed, our clients' line rises out of the floor, under the same months */
+  K.clLine = (S, k, i0, i1, delay = 1700) => {
+    const c = K.cl(k); const pts = CLI.map((i) => [xw(i, i0, i1), c.yR(c.v[i])]); const flat = pts.map(([x]) => [x, Y1]);
     put(S, 'cr-cs', { pts, o: 1 }, { pre: { pts: flat, o: 0 }, delay, dur: 1000 });
-    put(S, 'cr', { pts, o: 1, sw: 2.2, stroke: ROSE }, { pre: { pts: flat, o: 0, sw: 2.2, stroke: ROSE }, delay, dur: 1000 });
+    put(S, 'cr', { pts, o: 1, sw: 2, stroke: ROSE }, { pre: { pts: flat, o: 0, sw: 2, stroke: ROSE }, delay, dur: 1000 });
     const tl = [[xw(59, i0, i1), c.yR(c.v[59])], [xw(60, i0, i1), c.yR(c.v[60])]];
-    put(S, 'cr-tl', { pts: tl, o: 1 }, { pre: { pts: tl.map(([x]) => [x, CP.r1]), o: 0 }, delay: delay + 300, dur: 900 });
-    const h = hw(i0, i1); put(S, 'gap', { x: xw(59, i0, i1) - h, width: 2 * h, y: CP.r0, height: CP.r1 - CP.r0, o: 1 }, { delay });
+    put(S, 'cr-tl', { pts: tl, o: 1 }, { pre: { pts: tl.map(([x]) => [x, Y1]), o: 0 }, delay: delay + 300, dur: 900 });
+    put(S, 'cr-end', { cx: tl[0][0], cy: tl[0][1], o: 1 }, { pre: { cx: tl[0][0], cy: Y1, o: 0 }, delay, dur: 1000 });
+    const h = hw(i0, i1); put(S, 'gap', { x: xw(59, i0, i1) - h, width: 2 * h, y: Y0, height: Y1 - Y0, o: 1 }, { delay });
   };
-  K.clLabels = (k, i0, i1) => { const c = K.cl(k);
-    return `<line x1="${X0}" x2="${X0 + 16}" y1="${CP.r0 - 14}" y2="${CP.r0 - 14}" stroke="${ROSE}" stroke-width="2.2" stroke-linecap="round"/>${T(X0 + 22, CP.r0 - 10, 'Our clients combined · Search Console showings per practice a week', { s: 10.5, w: 700, c: ROSE_D })}
-      ${K.yTicks([[CP.r1, '0'], [CP.r0, fmt(c.max)]])}
-      ${T(xw(idx('2025-04'), i0, i1), (CP.r0 + CP.r1) / 2 + 4, 'Our clients’ data starts Sep 2025', { s: 10.5, c: '#9CA3AF', a: 'middle' })}`; };
+  /* right-hand rose axis + a quiet note where the rose line starts */
+  K.rTicks = (labels, c) => labels.map(([v, t]) => T(X1 + 5, v + 3.5, t, { s: 10, w: 600, c, extra: 'class="num"' })).join('');
+  K.clLabels = (k, i0, i1) => { const c = K.cl(k); const x = xw(CL0, i0, i1); const y = c.yR(c.v[CL0]);
+    /* the middle rose tick steps aside when a line ends level with it (the end-label leaders run through that column) */
+    const ym = (Y0 + Y1) / 2; const clash = [c.yR(c.v[59]), yv(VALS[k][59])].some((v) => Math.abs(v - ym) < 12);
+    return `${K.rTicks([[Y1, '0'], ...(clash ? [] : [[ym, fmt(c.max / 2)]]), [Y0, fmt(c.max)]], ROSE_D)}
+      <line x1="${x}" x2="${x}" y1="${y + 6}" y2="${Y1 - 20}" stroke="#D1D5DB" stroke-dasharray="1.5 2.5"/>${T(x, Y1 - 8, 'our data starts Sep 2025', { s: 9.5, c: '#9CA3AF', a: 'middle' })}`; };
   K.clGut = (k, i0, i1) => { const c = K.cl(k); const y = c.yR(c.v[59]);
     return [{ x0: xw(59, i0, i1), y: y - 7, t: 'Our clients', w: 700, c: ROSE_D }, { x0: xw(59, i0, i1), y: y + 7, t: 'combined', w: 700, c: ROSE_D }]; };
-  K.clSer = (k) => { const c = K.cl(k); return { name: 'Our clients combined', vals: c.v, y: c.yR, kind: 'rose', key: { c: ROSE, w: 2.2 }, fmt: (v) => `${v.toFixed(1)} a week` }; };
-  K.hvCall = (k, i0, i1, s) => ({ ...K.hvLines(i0, i1, [s, K.clSer(k)], 'Google Trends, Washington, 0 to 100 · our clients: showings per practice a week'),
-    title: (i) => (i === 60 ? 'Oct 2026, not over yet' : i === 59 ? 'Sep 2026 · Expedition missing 3 of 4 weeks' : FL.ml(M[i])) });
+  K.clSer = (k) => { const c = K.cl(k); return { name: 'Our clients combined', vals: c.v, y: c.yR, kind: 'rose', key: { c: ROSE, w: 2 }, fmt: (v) => v.toFixed(1) }; };
+  K.hvCall = (k, i0, i1, s) => ({ ...K.hvLines(i0, i1, [s, K.clSer(k)], 'Google Trends 0 to 100, Washington · our clients: showings per practice a week'), cols: 2,
+    title: (i) => (i === 60 ? 'Oct 2026, not over yet' : i === 59 ? 'Sep 2026 · Expedition missing 3 of 4 weeks' : i === CL0 ? 'Sep 2025 · our data starts, 2 weeks' : FL.ml(M[i])) });
+  /* one compact chip row under a chart: [{ c, w, dash, cs, t }] */
+  K.keyRow = (items, y = Y1 + 42) => { let x = 0; let s = '';
+    items.forEach((d) => { const w = 34 + d.t.length * 5.3;
+      s += `<rect x="${x}" y="${y - 11}" width="${w.toFixed(1)}" height="16" rx="4" fill="#F6F7F9"/>${d.cs ? `<line x1="${x + 7}" x2="${x + 23}" y1="${y - 3}" y2="${y - 3}" stroke="#fff" stroke-width="${d.w + 2.4}" stroke-linecap="round"/>` : ''}<line x1="${x + 7}" x2="${x + 23}" y1="${y - 3}" y2="${y - 3}" stroke="${d.c}" stroke-width="${d.w}" stroke-linecap="round" ${d.dash ? `stroke-dasharray="${d.dash}"` : ''}/>${T(x + 29, y + 0.5, d.t, { s: 10, c: '#475569' })}`;
+      x += w + 8; });
+    return s; };
 
   /* ---------- text helpers ---------- */
   K.xTicks = (i0, i1, every = 3, y0 = Y1) => { let s = ''; let py = null; for (let i = i0; i <= i1; i++) { if ((i - i0) % every !== 0) continue; const m = +M[i].slice(5); const y = M[i].slice(0, 4); const lab = y !== py ? `${FL.MON[m - 1]} ${y}` : FL.MON[m - 1]; py = y; const x = xw(i, i0, i1); s += `<line x1="${x}" x2="${x}" y1="${y0}" y2="${y0 + 4}" stroke="#D1D5DB"/>${T(x, y0 + 15, lab, { s: 10.5, c: '#9CA3AF', a: 'middle' })}`; } return s; };
   K.yTicks = (labels) => labels.map(([v, t]) => T(X0 - 6, v + 3.5, t, { s: 10.5, c: '#9CA3AF', a: 'end', extra: 'class="num"' })).join('');
   K.y0100 = () => K.yTicks([[yv(0), '0'], [yv(50), '50'], [yv(100), '100']]);
   K.title = (t, sub) => `${T(0, 18, t, { s: 15, w: 800, c: INK })}${sub ? T(0, 35, sub, { s: 11.5, c: MUTED }) : ''}`;
-  K.gutter = (items, top = Y0, bottom = Y1 + 6) => FL.spread(items, 14, top, bottom).map((d) => `${Math.abs(d.ly - d.y) > 2 ? `<path d="M${d.x0 + 4},${d.y} h6 L${548},${d.ly - 3.5}" fill="none" stroke="#C3C8D2"/>` : ''}${T(552, d.ly, d.t, { s: 11.5, w: d.w || 500, c: d.c || '#273043' })}`).join('');
-  /* the plot's foot note sits above the strip; it hides while the drawer is up */
-  K.foot = (t) => `<g data-under="1" style="transition:opacity .3s">${T(0, 412, t, { s: 10.5, c: MUTED })}</g>`;
-  K.footEnd = (t) => T(0, 474, t, { s: 10.5, c: MUTED });
+  K.gutter = (items, top = Y0, bottom = Y1 + 6, lx = 552) => FL.spread(items, 14, top, bottom).map((d) => `${Math.abs(d.ly - d.y) > 2 ? `<path d="M${d.x0 + 4},${d.y} h${lx - 552 + 6} L${lx - 4},${d.ly - 3.5}" fill="none" stroke="#C3C8D2"/>` : ''}${T(lx, d.ly, d.t, { s: 11.5, w: d.w || 500, c: d.c || '#273043' })}`).join('');
+  /* the plot's foot note: one line between the plot and the year band, never under it */
+  K.foot = (t) => T(0, K.BT - 10, t, { s: 10.5, c: MUTED });
+  K.footEnd = (t) => T(0, 518, t, { s: 10.5, c: MUTED });
   K.fadeIn = (s) => (FL.reduce ? '' : `style="animation:fade .35s ease ${s}s both"`);
   K.notOver = (i0, i1) => T(xw(60, i0, i1), Y1 + 27, 'not over', { s: 9.5, c: '#9CA3AF', a: 'middle' });
 
-  /* band text. open / plan: as V5. thin: one quiet line over the strip, plus the grown band's text, hidden until it rises */
+  /* band text for the large bands (open / plan); the compact band draws its own (v6band.js) */
   const pinTexts = (g, isLit, fs0) => PIN_IDS.map((id) => {
     const p = PINS[id]; const fs = g.name === 'open' ? fs0 : p.fs || fs0; const c = cell(g, p.lane, p.k0, p.k1 ?? p.k0); const cx = c.x + c.width / 2; const cy = c.y + c.height / 2;
     const on = isLit(id); const col = on && p.dark ? '#fff' : on && p.l1 === 'dip' ? MUTED : TEAL_D;
     const ex = `pointer-events="none" data-pt="${id}"`;
     return p.l2 ? `${T(cx, cy - 1.5, p.l1, { s: fs, w: 700, c: col, a: 'middle', extra: ex })}${T(cx, cy + fs, p.l2, { s: fs, w: 600, c: col, a: 'middle', extra: ex })}` : T(cx, cy + 3, p.l1, { s: fs + 0.5, w: 700, c: col, a: 'middle', extra: ex });
   }).join('');
-  const countLit = (ch) => ACT_IDS.filter((id) => lit(id, ch)).length;
   K.bandLabels = function (g, ch, active, { lighting = [] } = {}) {
     let s = '';
     const isLit = (id) => lit(id, ch) && !lighting.includes(id);
@@ -750,17 +745,7 @@ a{color:var(--aInk)}
       s += T(bx(g, 5.5), K.heldY(g) - 8, K.heldText(ch), { s: 10, w: 600, c: TEAL_D, a: 'middle', extra: 'pointer-events="none"' });
       return s;
     }
-    /* thin strip */
-    const n = countLit(ch);
-    const th = `${T(0, THIN.head + 1, 'The year ahead', { s: 10, w: 700, c: '#475569' })}${T(88, THIN.head + 1, `Nov 2026 to Oct 2027 · ${n} of ${ACT_IDS.length} pins explained`, { s: 10, c: GREY })}
-      ${active != null ? T(THIN.x0 - 6, mid(THIN, active) + 3, TERM[LANES[active]], { s: 9, w: 700, c: TEAL_D, a: 'end' }) : ''}`;
-    let gr = `${T(0, GROW.head, 'The year ahead · Nov 2026 to Oct 2027', { s: 10.5, w: 700, c: '#475569' })}${T(640, GROW.head, `${n} of ${ACT_IDS.length} pins explained`, { s: 10.5, c: GREY, a: 'end' })}`;
-    gr += BM.map((m, k) => T(bx(GROW, k), GROW.months, m, { s: 10, w: k === 0 || k === 2 ? 700 : 500, c: GREY, a: 'middle' })).join('');
-    LANES.forEach((k, l) => { const on = active == null || active === l; const y = mid(GROW, l);
-      gr += `${T(0, y - 1, TERM[k], { s: 11, w: on ? 700 : 600, c: on ? INK : GREY })}${T(0, y + 11, LANE[k].short, { s: 9.5, c: on ? MUTED : '#B6BCC8' })}`; });
-    gr += pinTexts(GROW, isLit, 9.5);
-    gr += T(bx(GROW, 5.5), K.heldY(GROW) - 8, K.heldText(ch), { s: 10, w: 600, c: isLit('p-held') || lighting.includes('p-held') ? TEAL_D : QUIET, a: 'middle', extra: 'pointer-events="none"' });
-    return `<g data-bl="thin" style="transition:opacity .3s">${th}</g><g data-bl="grow" style="opacity:0;transition:opacity .35s">${gr}</g>`;
+    return ''; // cb: the compact band draws its own text (v6band.js)
   };
   K.heldText = (ch) => (ch >= (K.ORD.level ?? 99) ? 'searches held near 50 all year' : 'where searches settle');
 
@@ -770,9 +755,106 @@ a{color:var(--aInk)}
   K.idleHint = (title, note = '') => () => ({ title, note, slots: [] });
 })();
 </script>
+<script>/* V6 r4 (owner 10/29): the compact year band. One panel of FIXED geometry at the foot of the figure, present in
+   every chapter from the first topic chapter on: header, month row, three topic rows, legend line. Its geometry
+   never animates. Only these change: the row being discussed gets a light tint; a landing pin fades and settles
+   into its month cell (opacity + a short translate and scale, house easing); outlined pins fill once explained;
+   the held line draws along its row. It sits below the plot's foot note, so it never covers chart or page rows. */
+(function () {
+  const K = window.V6K;
+  const { T, PINS, PIN_IDS, ACT_IDS, LANES, TERM, LANE, BM, TEAL, TEAL_D, INK, MUTED, GREY, QUIET } = K;
+  const g = K.GEO.cb; const BT = K.BT; const NS = FL.NS;
+  const EASE = 'cubic-bezier(.2,.8,.2,1)';
+  /* short labels so every pin fits its cell at this size; the hover carries the detail */
+  const LAB = { 'p-tt': ['improve now'], 'p-pd': ['improve now'], 'p-pub': ['improve', 'by June'], 'p-dip': ['dip'], 'p-peak': ['peak'] };
+  const txtOn = (id) => (PINS[id].dark ? '#fff' : PINS[id].l1 === 'dip' ? MUTED : TEAL_D);
+  let root = null; const E = {}; const q = (k) => E[k] || (E[k] = root.querySelector(`[data-cb="${k}"]`));
+  const lit = (id, ch, hold) => K.ORD[id] <= ch && !hold.includes(id);
+
+  K.cbInit = function (layer) {
+    root = document.createElementNS(NS, 'g'); root.setAttribute('data-band', '1');
+    root.style.transition = 'opacity .45s'; root.style.opacity = 0; root.style.pointerEvents = 'none';
+    const mid = (l) => g.top(l) + g.h / 2;
+    let s = `<rect data-bandbox="${BT}" x="0" y="${BT}" width="640" height="${K.VH - BT}" fill="#fff"/>
+      <line x1="0" x2="640" y1="${BT + 0.5}" y2="${BT + 0.5}" stroke="#E7E9EE"/>
+      ${T(0, g.head, 'The year ahead · Nov 2026 to Oct 2027', { s: 10.5, w: 700, c: '#475569' })}
+      <text data-cb="count" x="640" y="${g.head}" font-size="10.5" font-weight="500" fill="${GREY}" text-anchor="end"></text>
+      ${BM.map((m, k) => T(K.bx(g, k), g.months, m, { s: 9.5, w: k === 0 || k === 2 ? 700 : 500, c: k === 0 || k === 2 ? '#475569' : GREY, a: 'middle' })).join('')}`;
+    LANES.forEach((k, l) => {
+      s += `<g data-ro-t="${FL.esc(`${TERM[k]}: ${LANE[k].verdict}`)}" data-ro-n="Google’s 0 to 100, Washington" data-ro-b="${FL.esc(LANE[k].ro)}">
+        <rect data-cb="lane${l}" x="${g.x0}" y="${g.top(l)}" width="${g.x1 - g.x0}" height="${g.h}" rx="3" fill="#F6F7FA" style="transition:fill .5s"/>
+        <rect x="0" y="${g.top(l)}" width="${g.x0}" height="${g.h}" fill="transparent"/>
+        <text data-cb="name${l}" x="0" y="${(mid(l) + 3.5).toFixed(1)}" font-size="10" font-weight="700" fill="#475569" style="transition:fill .5s">${TERM[k]}</text></g>`;
+    });
+    for (let k = 1; k < 12; k++) { const x = g.x0 + k * K.CW(g); s += `<line x1="${x}" x2="${x}" y1="${g.top(0)}" y2="${g.top(2) + g.h}" stroke="#fff" stroke-width="2"/>`; }
+    /* the held level: a quiet dashed line, and a lit line that draws over it */
+    const hy = K.heldY(g); const hx0 = K.heldX0(g); const hx1 = g.x1 - 8;
+    s += `<g data-ro-t="Pediatric dentist searches, all year: held near 50" data-ro-n="Google Trends, Washington · a level, not a pin" data-ro-b="Searches tripled in summer 2025 and held near 50 on Google’s 0 to 100 scale. The level the home page work is planned at.">
+      <rect x="${hx0}" y="${g.top(1)}" width="${hx1 - hx0}" height="${g.h}" fill="transparent"/>
+      <line x1="${hx0}" x2="${hx1}" y1="${hy}" y2="${hy}" stroke="${QUIET}" stroke-width="1.2" stroke-dasharray="3 2"/>
+      <line data-cb="held" x1="${hx0}" x2="${hx1}" y1="${hy}" y2="${hy}" stroke="${TEAL}" stroke-width="2" stroke-linecap="round" style="opacity:0"/>
+      <text data-cb="heldT" x="${K.bx(g, 6.5)}" y="${hy - 4}" font-size="9" font-weight="600" fill="${QUIET}" text-anchor="middle" style="transition:fill .5s"></text></g>`;
+    PIN_IDS.forEach((id) => {
+      const p = PINS[id]; const c = K.cell(g, p.lane, p.k0, p.k1 ?? p.k0); const cx = c.x + c.width / 2; const cy = c.y + c.height / 2; const L = LAB[id];
+      const txt = L.length === 1 ? T(cx, cy + 3.2, L[0], { s: 9, w: 700, c: TEAL_D, a: 'middle' }) : `${T(cx, cy - 1.2, L[0], { s: 8.5, w: 700, c: TEAL_D, a: 'middle' })}${T(cx, cy + 7.6, L[1], { s: 8.5, w: 600, c: TEAL_D, a: 'middle' })}`;
+      s += `<g data-cb="g-${id}" data-ro-t="${FL.esc(p.t)}" data-ro-b="${FL.esc(p.b)}">
+        <rect x="${c.x}" y="${c.y}" width="${c.width}" height="${c.height}" rx="3" fill="#fff" stroke="${QUIET}" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <rect data-cb="f-${id}" x="${c.x}" y="${c.y}" width="${c.width}" height="${c.height}" rx="3" fill="${p.fill}" stroke="${p.fill}" stroke-width="1.2" style="opacity:0;transform-box:fill-box;transform-origin:center"/>
+        <g data-cb="t-${id}" style="transition:fill .4s">${txt}</g></g>`;
+    });
+    /* legend line */
+    const ly = BT + 124;
+    s += `<rect x="0" y="${ly - 9}" width="20" height="11" rx="2.5" fill="#fff" stroke="${QUIET}" stroke-dasharray="3 2"/>${T(26, ly, 'outlined: explained further down', { s: 9.5, c: MUTED })}
+      <rect x="196" y="${ly - 9}" width="20" height="11" rx="2.5" fill="${TEAL}"/>${T(222, ly, 'filled: explained', { s: 9.5, c: MUTED })}
+      ${T(326, ly, 'dip and peak: season marks, not pins', { s: 9.5, c: MUTED })}`;
+    root.innerHTML = s; layer.appendChild(root);
+  };
+  const paintText = (id, on) => q(`t-${id}`).querySelectorAll('text').forEach((t) => t.setAttribute('fill', on ? txtOn(id) : TEAL_D));
+  const count = (ch, hold) => { q('count').textContent = `${ACT_IDS.filter((id) => lit(id, ch, hold)).length} of ${ACT_IDS.length} pins explained`; };
+  /* the state of a chapter: tint, lit pins, held line, counter. Fills fade; nothing moves. */
+  K.cbSet = function (ch, active, { hold = [], delay = 0 } = {}) {
+    /* coming from a large band: wait until that chapter's content has faded out, then fade in at final size */
+    root.style.transition = `opacity .45s ${delay}ms`; root.style.opacity = 1; root.style.pointerEvents = '';
+    K.cb = { ch, hold: [...hold] };
+    LANES.forEach((k, l) => { q(`lane${l}`).setAttribute('fill', active === l ? '#E3F2EE' : '#F6F7FA'); q(`name${l}`).setAttribute('fill', active === l ? INK : '#475569'); });
+    PIN_IDS.forEach((id) => {
+      const on = lit(id, ch, hold); const f = q(`f-${id}`);
+      f.style.transition = 'opacity .5s'; f.style.transform = 'none'; f.style.opacity = on ? 1 : 0; f.setAttribute('stroke-width', 1.2);
+      paintText(id, on); q(`g-${id}`).setAttribute('data-ro-n', `${PINS[id].n} · ${on ? 'explained above' : 'explained further down'}`);
+    });
+    const hon = lit('p-held', ch, hold); const hl = q('held');
+    hl.style.transition = 'opacity .5s'; hl.style.strokeDasharray = ''; hl.style.strokeDashoffset = ''; hl.style.opacity = hon ? 1 : 0;
+    const ht = q('heldT'); ht.textContent = hon ? 'searches held near 50 all year' : 'where searches settle'; ht.setAttribute('fill', hon ? TEAL_D : QUIET);
+    count(ch, hold);
+  };
+  K.cbHide = () => { if (!root) return; root.style.transition = 'opacity .25s'; root.style.opacity = 0; root.style.pointerEvents = 'none'; };
+  /* a pin lands: it fades in a little above and a little large, then settles into its cell (0.8s, house easing) */
+  K.cbLand = function (id) {
+    const st = K.cb; st.hold = st.hold.filter((h) => h !== id);
+    if (id === 'p-held') {
+      const hl = q('held'); const len = hl.getTotalLength();
+      hl.style.transition = 'none'; hl.style.strokeDasharray = `${len} ${len}`; hl.style.strokeDashoffset = len; hl.style.opacity = 1; hl.getBoundingClientRect();
+      hl.style.transition = `stroke-dashoffset .9s ${EASE}`; hl.style.strokeDashoffset = 0;
+      const ht = q('heldT'); ht.textContent = 'searches held near 50 all year'; ht.setAttribute('fill', TEAL_D);
+    } else {
+      const f = q(`f-${id}`);
+      f.style.transition = 'none'; f.style.opacity = 0; f.style.transform = 'translate(0px,-4px) scale(1.12)'; f.getBoundingClientRect();
+      f.style.transition = `opacity .6s ${EASE}, transform .8s ${EASE}`; f.style.opacity = 1; f.style.transform = 'translate(0px,0px) scale(1)';
+      setTimeout(() => paintText(id, true), 250);
+      q(`g-${id}`).setAttribute('data-ro-n', `${PINS[id].n} · explained above`);
+    }
+    count(st.ch, st.hold);
+  };
+  /* a lit pin pulses once (its outline thickens and returns): used when the season explains June */
+  K.cbPulse = function (id) {
+    const f = q(`f-${id}`); f.style.transition = 'stroke-width .25s'; f.setAttribute('stroke', TEAL_D); f.style.strokeWidth = '3.2';
+    setTimeout(() => { f.style.transition = 'stroke-width .4s'; f.style.strokeWidth = ''; }, 280);
+  };
+})();
+</script>
 <script>/* V6 reach pictures (split from V5's one crowded figure).
-   WHO SEES IT: two stacked panels, each its own scale: Expedition's national and local showings a week
-   (grouped by the words in the search; owner 10/29 replaced the per-practice average). Sep 2026 hatched: Expedition is missing 3 of its 4 weeks.
+   WHO SEES IT: one chart, two scales (r4): Expedition's national (left) and local (right) showings a week
+   (grouped by the words in the search). Sep 2026 hatched: Expedition is missing 3 of its 4 weeks.
    WHERE PATIENTS LAND: one row per page, read left to right: showings in Google -> visits -> calls or forms
    (one dot each), ending in the work for that page: Improve (On-Page) or Covered (no pin). Sorted by calls or forms; top 3 pages only.
    Data: D.c5 from src/combined5_extract.py (V5's read-only pull, synonyms count). */
@@ -813,12 +895,15 @@ a{color:var(--aInk)}
     return o;
   };
 
-  /* ---------- WHO SEES IT (V6 split, owner 10/29) ----------
-     Two stacked panels, each on its own scale: Expedition's showings a week in NATIONAL searches
-     above, LOCAL searches (a place, a care word, a cost or booking) below. Grouped by the words in
-     the search (src6/split_extract.py). Sep 2026 hatched: Expedition is missing 3 of its 4 weeks. */
+  /* ---------- WHO SEES IT (V6 split; r4 owner 10/29: one chart, two scales) ----------
+     Expedition's showings a week in NATIONAL searches (slate #64748B, 1.6px, left scale) and LOCAL searches
+     (a place, a care word, a cost or booking; OQ teal 2.2px with a white casing, right scale: the Improve pins are
+     about local). About 20 times apart, so each has its own scale and its tick labels in its line's colour.
+     Grouped by the words in the search (src6/split_extract.py). Sep 2026 hatched: Expedition is missing 3 of its
+     4 weeks; Oct 2026 a dotted ring, not over. The plot ends at XQ to leave room for the right scale and the end labels. */
   const SP = D.split;
-  const PA = (K.PA = { a0: 84, a1: 196, b0: 246, b1: Y1 });
+  const XQ = (K.XQ = 498); const SLATE = (K.SLATE = '#64748B');
+  const xq = (K.xq = (i) => X0 + ((i - K.W12[0]) / (60 - K.W12[0])) * (XQ - X0));
   K.WHO_TIP = {
     reach: 'National searches: every search that is not local, such as frenectomy or what is a frenectomy. Unclear searches count here. Sorted only by the words in the search; it says nothing about who searched.',
     patients: 'Local searches: the search names a place such as Bellevue or near me, a care word such as dentist, doctor or clinic, a cost, or booking. Everything else is national. Sorted only by the words in the search; it says nothing about who searched.',
@@ -832,33 +917,51 @@ a{color:var(--aInk)}
     return { T, g, tot, own, R: T.groups.reach, Pt: T.groups.patients, nextP: T.top.find((r) => r !== own) };
   };
   K.who = function (S, sp, yA, yB) {
-    put(S, 'g100', { x1: X0, x2: X1, y1: PA.a0, y2: PA.a0, o: 1 }); put(S, 'lg0', { x1: X0, x2: X1, y1: PA.a1, y2: PA.a1, o: 1, stroke: '#D1D5DB' });
-    put(S, 'g50', { x1: X0, x2: X1, y1: PA.b0, y2: PA.b0, o: 1 }); put(S, 'base', { x1: X0, x2: X1, y1: PA.b1, y2: PA.b1, o: 1 });
-    const ra = OI.map((i) => [xw(i, ...K.W12), yA(sp.g.reach[i])]); const pb = OI.map((i) => [xw(i, ...K.W12), yB(sp.g.patients[i])]);
-    /* the act: national rises out of its floor first, then local rises out of its own, much lower scale */
-    put(S, 'own', { pts: ra, o: 1, sw: 2, dash: 'none', stroke: ROSE }, { pre: { pts: ra.map(([x]) => [x, PA.a1]), o: 0 }, delay: 200, dur: 1000 });
-    put(S, 'cr-cs', { pts: pb, o: 1 }, { pre: { pts: pb.map(([x]) => [x, PA.b1]), o: 0 }, delay: 1000, dur: 1000 });
-    put(S, 'cr', { pts: pb, o: 1, sw: 2, stroke: ROSE }, { pre: { pts: pb.map(([x]) => [x, PA.b1]), o: 0 }, delay: 1000, dur: 1000 });
-    put(S, 'own-oct', { cx: xw(60, ...K.W12), cy: yA(sp.g.reach[60]), o: 1 }, { pre: { cx: xw(60, ...K.W12), cy: PA.a1, o: 0 }, delay: 1100, dur: 900 });
-    put(S, 'pk', { cx: xw(60, ...K.W12), cy: yB(sp.g.patients[60]), r: 3.4, stroke: ROSE, o: 1 }, { pre: { cx: xw(60, ...K.W12), cy: PA.b1, r: 3.4, stroke: ROSE, o: 0 }, delay: 1900, dur: 900 });
-    const h = K.hw(...K.W12);
-    put(S, 'gap', { x: xw(59, ...K.W12) - h, width: 2 * h, y: PA.a0, height: PA.b1 - PA.a0, o: 1 }, { delay: 1900 });
+    [['g0', Y1], ['g50', (Y0 + Y1) / 2], ['g100', Y0]].forEach(([id, y]) => put(S, id, { x1: X0, x2: XQ, y1: y, y2: y, o: 1 }));
+    put(S, 'base', { x1: X0, x2: XQ, y1: Y1, y2: Y1, o: 1 });
+    const ra = OI.map((i) => [xq(i), yA(sp.g.reach[i])]); const pb = OI.map((i) => [xq(i), yB(sp.g.patients[i])]);
+    /* the act: national rises out of the floor first, then local rises on its own scale over it */
+    put(S, 'wn', { pts: ra, o: 1 }, { pre: { pts: ra.map(([x]) => [x, Y1]), o: 0 }, delay: 200, dur: 1000 });
+    put(S, 'wl-cs', { pts: pb, o: 1 }, { pre: { pts: pb.map(([x]) => [x, Y1]), o: 0 }, delay: 1000, dur: 1000 });
+    put(S, 'wl', { pts: pb, o: 1 }, { pre: { pts: pb.map(([x]) => [x, Y1]), o: 0 }, delay: 1000, dur: 1000 });
+    put(S, 'wn-oct', { cx: xq(60), cy: yA(sp.g.reach[60]), o: 1 }, { pre: { cx: xq(60), cy: Y1, o: 0 }, delay: 1100, dur: 900 });
+    put(S, 'wl-oct', { cx: xq(60), cy: yB(sp.g.patients[60]), o: 1 }, { pre: { cx: xq(60), cy: Y1, o: 0 }, delay: 1900, dur: 900 });
+    const h = (xq(60) - xq(59)) / 2;
+    put(S, 'gap', { x: xq(59) - h, width: 2 * h, y: Y0, height: Y1 - Y0, o: 1 }, { delay: 1900 });
   };
-  const sideNum = (y, big, lines, tip) => `<g data-ro-t="${FL.esc(tip[0])}" data-ro-n="Search Console, last 12 months" data-ro-b="${FL.esc(tip[1])}">${T(552, y, big, { s: 15, w: 800, c: INK, extra: 'class="num"' })}${lines.map((l, j) => T(552, y + 14 + j * 13, l, { s: 10.5, c: MUTED })).join('')}<rect x="548" y="${y - 16}" width="92" height="${20 + lines.length * 13}" fill="transparent"/></g>`;
-  K.whoLabels = (sp, yA, yB, tA, tB, share) => {
-    const R = sp.R; const Pt = sp.Pt;
-    return `${T(0, PA.a0 - 9, 'National searches', { s: 11.5, w: 700, c: INK })}
-      ${T(0, PA.b0 - 9, 'Local searches', { s: 11.5, w: 700, c: INK })}
-      ${K.yTicks(tA.map((v) => [yA(v), fmt(v)]))}${K.yTicks(tB.map((v) => [yB(v), fmt(v)]))}${K.xTicks(...K.W12, 2)}
-      ${T(xw(59, ...K.W12), PA.a0 + 13, 'no data', { s: 10, w: 600, c: MUTED, a: 'middle' })}${T(xw(59, ...K.W12), PA.a0 + 25, 'for 3', { s: 10, c: MUTED, a: 'middle' })}${T(xw(59, ...K.W12), PA.a0 + 37, 'weeks', { s: 10, c: MUTED, a: 'middle' })}
-      ${K.notOver(...K.W12)}
-      ${sideNum(PA.a0 + 14, fmt(R.imp), ['showings', `${fmt(R.clk)} clicks`, share[0]], [`National searches: ${fmt(R.imp)} showings, ${fmt(R.clk)} clicks`, K.WHO_TIP.reach])}
-      ${sideNum(PA.b0 + 14, fmt(Pt.imp), ['showings', `${fmt(Pt.clk)} clicks`, share[1]], [`Local searches: ${fmt(Pt.imp)} showings, ${fmt(Pt.clk)} clicks`, sp === K.SPY ? K.WHO_TIP.patientsY : K.WHO_TIP.patients])}`;
+  /* end labels in each line's colour, carrying the totals; spread apart with leaders when they collide */
+  const endLab = (sp, yA, yB) => {
+    const R = sp.R; const Pt = sp.Pt; const lx = 540;
+    const it = [{ k: 'n', y: yA(sp.g.reach[58]), c: SLATE, head: 'National', l: [`${fmt(R.imp)} showings`, `${fmt(R.clk)} clicks`], tip: [`National searches: ${fmt(R.imp)} showings, ${fmt(R.clk)} clicks`, K.WHO_TIP.reach] },
+      { k: 'l', y: yB(sp.g.patients[58]), c: TEAL_D, head: 'Local', l: [`${fmt(Pt.imp)} showings`, `${fmt(Pt.clk)} clicks`], tip: [`Local searches: ${fmt(Pt.imp)} showings, ${fmt(Pt.clk)} clicks`, sp.T === SP.topics.pdy ? K.WHO_TIP.patientsY : K.WHO_TIP.patients] }];
+    return FL.spread(it, 44, Y0 + 12, Y1 - 28).map((d) => { const top = d.ly - 12;
+      return `<g data-ro-t="${FL.esc(d.tip[0])}" data-ro-n="Search Console, last 12 months" data-ro-b="${FL.esc(d.tip[1])}">
+        ${Math.abs(d.ly - d.y) > 3 ? `<path d="M${xq(58) + 5},${d.y} L${lx - 5},${top + 8}" fill="none" stroke="#C3C8D2"/>` : ''}
+        ${T(lx, top + 11, d.head, { s: 11.5, w: 700, c: d.c })}${d.l.map((t, j) => T(lx, top + 24 + j * 12, t, { s: 10, w: 600, c: d.c, extra: 'class="num"' })).join('')}
+        <rect x="${lx - 4}" y="${top - 2}" width="${644 - lx}" height="44" fill="transparent"/></g>`; }).join(''); };
+  K.whoLabels = (sp, yA, yB, tA, tB) => {
+    let ticks = ''; for (let i = K.W12[0]; i <= 60; i += 2) { const m = +M[i].slice(5); const y = M[i].slice(0, 4); const lab = m === 10 || m === 1 ? `${FL.MON[m - 1]} ${y}` : FL.MON[m - 1]; ticks += `<line x1="${xq(i)}" x2="${xq(i)}" y1="${Y1}" y2="${Y1 + 4}" stroke="#D1D5DB"/>${T(xq(i), Y1 + 15, lab, { s: 10.5, c: '#9CA3AF', a: 'middle' })}`; }
+    return `${tA.map((v) => T(X0 - 3, yA(v) + 3.5, fmt(v), { s: 9, w: 600, c: SLATE, a: 'end', extra: 'class="num"' })).join('')}
+      ${tB.map((v) => T(XQ + 5, yB(v) + 3.5, fmt(v), { s: 9.5, w: 600, c: TEAL_D, extra: 'class="num"' })).join('')}${ticks}
+      ${T(xq(59), Y0 + 13, 'no data', { s: 10, w: 600, c: MUTED, a: 'middle' })}${T(xq(59), Y0 + 25, 'for 3', { s: 10, c: MUTED, a: 'middle' })}${T(xq(59), Y0 + 37, 'weeks', { s: 10, c: MUTED, a: 'middle' })}
+      ${T(xq(60), Y1 + 27, 'not over', { s: 9.5, c: '#9CA3AF', a: 'middle' })}
+      ${endLab(sp, yA, yB)}
+      ${K.keyRow([{ c: SLATE, w: 1.6, t: 'National searches, left scale' }, { c: TEAL, w: 2.2, cs: true, t: 'Local searches, right scale' }])}`;
   };
-  K.whoHv = (sp, yA, yB) => ({ i0: CI[0], i1: 60, x: (i) => xw(i, ...K.W12), note: 'Expedition’s showings in Google a week · grouped by the words in the search', cols: 2,
+  /* the lead point: read the two shapes in plain words, numbers from the data */
+  K.whoShape = (k, sp) => {
+    const v = (n, ms) => K.avg(ms.map((m) => sp.g[n][idx(m)])); const r = (x) => fmt(x >= 1000 ? Math.round(x / 500) * 500 : Math.round(x / 5) * 5);
+    if (k === 'tt') { const lo = sp.g.patients[idx('2026-05')]; const hi = sp.g.patients[idx('2026-08')];
+      const nat = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08'].map((m) => sp.g.reach[idx(m)]);
+      return `<b>Local showings have climbed since May</b>, from about ${r(lo)} a week in May to about ${r(hi)} in August, while national held between about ${r(Math.min(...nat))} and ${r(Math.max(...nat))} a week since January.`; }
+    const w = v('patients', ['2025-11', '2025-12', '2026-01']); const s = v('patients', ['2026-04', '2026-05', '2026-06', '2026-07']);
+    const np = v('reach', ['2026-04', '2026-05']); const nl = v('reach', ['2026-06', '2026-07', '2026-08']);
+    return `<b>Local showings fell through the spring</b>, from about ${r(w)} a week in winter to about ${r(s)} from April on, while national rose to about ${r(np)} in April and May, then settled near ${r(nl)}.`;
+  };
+  K.whoHv = (sp, yA, yB) => ({ i0: CI[0], i1: 60, x: xq, note: 'Expedition’s showings in Google a week · sorted by the words in the search', cols: 2,
     title: (i) => (i === 59 ? 'Sep 2026 · Expedition missing 3 of 4 weeks' : i === 60 ? 'Oct 2026, 2 weeks so far' : FL.ml(M[i])),
-    series: [{ name: 'National searches', vals: sp.g.reach, y: yA, kind: 'rose', key: { c: ROSE, w: 2 }, fmt: (v) => fmt(Math.round(v)) },
-      { name: 'Local searches', vals: sp.g.patients, y: yB, kind: 'rose', key: { c: ROSE, w: 2 }, fmt: (v) => fmt(Math.round(v)) }] });
+    series: [{ name: 'National searches, left scale', vals: sp.g.reach, y: yA, kind: 'other', key: { c: SLATE, w: 1.6 }, fmt: (v) => fmt(Math.round(v)) },
+      { name: 'Local searches, right scale', vals: sp.g.patients, y: yB, kind: 'lead', key: { c: TEAL, w: 2.2 }, fmt: (v) => fmt(Math.round(v)) }] });
   K.plotHit = { x: X0, y: Y0, width: X1 - X0, height: Y1 - Y0 };
 
   /* ---------- WHERE PATIENTS LAND ---------- */
@@ -901,28 +1004,25 @@ a{color:var(--aInk)}
         ${T(NX.imp, y, fmt(p.imp || 0), { s: 15, w: 700, c: '#334155', a: 'middle', extra: 'class="num" pointer-events="none"' })}${T(NX.imp, y + 16, `avg. position ${Math.round(p.place)}`, { s: 10.5, c: p.place > 10 ? INK : MUTED, a: 'middle', extra: `font-weight="${p.place > 10 ? 700 : 500}" pointer-events="none"` })}
         ${T(NX.ses, y, ses, { s: 15, w: 800, c: p.ses != null ? INK : GREY, a: 'middle', extra: 'class="num" pointer-events="none"' })}
         ${ke == null ? T(NX.ke, y, 'none', { s: 15, w: 800, c: GREY, a: 'middle', extra: 'pointer-events="none"' }) : `${T(NX.ke, y, String(ke), { s: 15, w: 800, c: ke ? TEAL_D : GREY, a: 'middle', extra: 'class="num" pointer-events="none"' })}${ke ? `<g pointer-events="none" data-dots="${j}">${dots(ke, NX.ke, y + 12, per)}</g>` : `<circle cx="${NX.ke}" cy="${y + 12}" r="2.1" fill="none" stroke="#C3C8D2" pointer-events="none"/>`}`}
-        <rect x="${c.x}" y="${c.y}" width="${c.width}" height="${c.height}" rx="4" fill="${keep ? '#E6F4F1' : '#fff'}" stroke="${keep ? '#99D5CC' : TEAL}"/>${T(c.x + c.width / 2, c.y + 15, verdict, { s: 11, w: 700, c: TEAL_D, a: 'middle' })}${when ? T(c.x + c.width / 2, c.y + c.height + 13, when, { s: 9.5, w: 600, c: keep ? GREY : TEAL_D, a: 'middle' }) : ''}
+        <rect data-chip="${j}" x="${c.x}" y="${c.y}" width="${c.width}" height="${c.height}" rx="4" fill="${keep ? '#E6F4F1' : '#fff'}" stroke="${keep ? '#99D5CC' : TEAL}" style="transition:fill .4s"/>${T(c.x + c.width / 2, c.y + 15, verdict, { s: 11, w: 700, c: TEAL_D, a: 'middle', extra: `data-chipt="${j}" style="transition:fill .4s"` })}${when ? T(c.x + c.width / 2, c.y + c.height + 13, when, { s: 9.5, w: 600, c: keep ? GREY : TEAL_D, a: 'middle' }) : ''}
         ${j < rows.length - 1 ? `<line x1="0" x2="640" y1="${y + 42}" y2="${y + 42}" stroke="#F1F2F5"/>` : ''}</g>`;
     });
     if (extra) s += T(0, RY(rows.length) - 20, extra, { s: 10.5, c: MUTED, extra: K.fadeIn(from + rows.length * step) });
     s += T(NX.ke, 96, DOTS, { s: 9.5, c: '#9CA3AF', a: 'middle' });
     return s;
   };
-  /* the page lines replace the plot: Expedition's line folds into the top row's showings, the rest sinks */
+  /* the page lines replace the plot: Expedition's lines fold into the top row's showings, the rest sinks */
   K.landMarks = function (S) {
-    put(S, 'own', { pts: K.at(NX.imp, RY(0) - 5, 11), o: 0 }, { dur: 800 });
-    put(S, 'cr', { pts: K.at(NX.imp, RY(0) - 5, 12), o: 0 }, { dur: 800 }); put(S, 'cr-cs', { pts: K.at(NX.imp, RY(0) - 5, 12), o: 0 }, { dur: 800 });
+    const pt = (n) => K.at(NX.imp, RY(0) - 5, n);
+    ['wn', 'wl', 'wl-cs'].forEach((id) => put(S, id, { pts: pt(11), o: 0 }, { dur: 800 }));
+    put(S, 'cr', { pts: pt(12), o: 0 }, { dur: 800 }); put(S, 'cr-cs', { pts: pt(12), o: 0 }, { dur: 800 });
   };
-  /* the chip: appears on the deciding row's verdict, the drawer rises, the chip flies to its pin, the pin lights */
-  K.chipFly = function (fig, later, j, word, to, pinId, { t0 = 2600, down = 5900, pulse = false } = {}) {
-    const v = K.CHIP(j); const ct = fig.m.get('chip-t').el; ct.textContent = word;
-    fig.pre('chip', { ...v, o: 0, fill: '#fff', stroke: TEAL }); fig.pre('chip-t', { x: v.x + v.width / 2, y: v.y + 15, o: 0, fill: TEAL_D });
-    later(t0, () => { fig.set('chip', { o: 1 }, { dur: 0 }); fig.set('chip-t', { o: 1 }, { dur: 0 }); K.drawer(fig, true); });
-    later(t0 + 800, () => { fig.set('chip', { ...to, fill: TEAL, stroke: TEAL }, { dur: 900 }); fig.set('chip-t', { x: to.x + to.width / 2, y: to.y + to.height / 2 + 3.5, fill: '#fff' }, { dur: 900 }); });
-    later(t0 + 1450, () => fig.set('chip-t', { o: 0 }, { dur: 0 }));
-    later(t0 + 1750, () => { K.light(fig, pinId); fig.set('chip', { o: 0 }, { dur: 0 }); fig.set('chip-t', { o: 0 }, { dur: 0 });
-      if (pulse) { fig.set('p-held', { sw: 5 }, { dur: 250 }); later(t0 + 2050, () => fig.set('p-held', { sw: 2.4 }, { dur: 400 })); } });
-    later(down, () => K.drawer(fig, false));
+  /* r4: the deciding row's own Improve chip fills where it is, then its pin lands in the year band below;
+     nothing travels across the figure */
+  K.chipFly = function (fig, later, j, word, pinId, { t0 = 2400 } = {}) {
+    later(t0, () => { const r = fig.svg.querySelector(`[data-chip="${j}"]`); const t = fig.svg.querySelector(`[data-chipt="${j}"]`);
+      if (r) r.setAttribute('fill', TEAL); if (t) t.setAttribute('fill', '#fff'); });
+    later(t0 + 500, () => K.cbLand(pinId));
   };
 })();
 </script>
@@ -934,7 +1034,7 @@ a{color:var(--aInk)}
   const { M, P, T, put, fmt, xw, yv, idx, GEO, LANES, TERM, VALS, tt, pd, pdy, W24, W12, W36, X0, Y0, Y1, TEAL, TEAL_D, ROSE_D, INK, MUTED, GREY, csR } = K;
   /* the chapter that explains (lights) each pin */
   K.ORD = { 'p-tt': 4, 'p-pd': 6, 'p-held': 7, level: 7, 'p-pub': 10, 'p-dip': 11, 'p-peak': 11 };
-  const G = GEO.thin; const GR = GEO.grow;
+  const G = GEO.cb;
   const kick = (topic, q) => `${topic} · <span class="kq">${q}</span>`;
   const chapters = [];
   const HOVER_LINE = K.idleHint('Hover the chart to read any month');
@@ -958,8 +1058,8 @@ a{color:var(--aInk)}
     },
     labelsAt: 500, labelsPre: () => '',
     labels: () => `${K.title('Expedition’s plan for the year ahead', 'Nov 2026 to Oct 2027 · one row per topic · searches read for Washington')}${K.bandLabels(GEO.open, 0, null)}
-      <rect x="0" y="414" width="26" height="14" rx="3" fill="#fff" stroke="${K.QUIET}" stroke-dasharray="3 2"/>${T(34, 425, 'outlined: explained further down', { s: 11, c: MUTED })}
-      <rect x="240" y="414" width="26" height="14" rx="3" fill="${TEAL}"/>${T(274, 425, 'filled: explained', { s: 11, c: MUTED })}
+      <rect x="0" y="436" width="26" height="14" rx="3" fill="#fff" stroke="${K.QUIET}" stroke-dasharray="3 2"/>${T(34, 447, 'outlined: explained further down', { s: 11, c: MUTED })}
+      <rect x="240" y="436" width="26" height="14" rx="3" fill="${TEAL}"/>${T(274, 447, 'filled: explained', { s: 11, c: MUTED })}
       ${K.footEnd('Steady, Rising and Fading: each topic against dental searches overall, July to September against a year earlier.')}`,
     idle: K.idleHint('Hover a pin or a row to read it'),
   });
@@ -967,15 +1067,17 @@ a{color:var(--aInk)}
   /* ===== tongue tie ===== */
   const near = (prev, keys) => keys.includes(prev);
   const TTK = ['tt-call', 'tt-phr', 'tt-who', 'tt-land']; const PDK = ['pd-call', 'pd-land', 'pd-step']; const PDYK = ['pdy-call', 'pdy-who', 'pdy-land', 'pdy-season'];
-  /* r3: the Trends line sits in a shorter top panel; our clients combined sit under it on the same months (K.clPanel) */
-  const yc = K.yc;
+  /* r4 (owner 10/29): the Trends line and our clients combined share ONE chart: Trends on the grey 0 to 100 left
+     scale, our clients in rose on a small rose right-hand scale. Lines named at their ends; one chip row as the key. */
+  const yc = yv;
+  const CALL_KEY = [{ c: TEAL, w: 2, t: 'Google demand, 0 to 100' }, { c: K.ROSE, w: 2, cs: true, t: 'Our clients combined, showings per practice a week' }];
   const callLabels = (k, ch, l, headT, gut, foot) => `${K.title(headT, `${TERM[k][0].toUpperCase()}${TERM[k].slice(1)} in Washington, Jul to Sep this year against last year`)}${K.winLabels(k, ...W24)}
-      ${K.yTicks([[yc(0), '0'], [yc(50), '50'], [yc(100), '100']])}${K.xTicks(...W24)}${K.notOver(...W24)}${K.clLabels(k, ...W24)}${K.gutter([...gut, ...K.clGut(k, ...W24)])}${K.bandLabels(G, ch, l)}${K.foot(foot)}`;
+      ${K.y0100()}${K.xTicks(...W24)}${K.notOver(...W24)}${K.clLabels(k, ...W24)}${K.gutter([...gut, ...K.clGut(k, ...W24)], Y0, Y1 + 6, 568)}${K.keyRow(CALL_KEY)}${K.foot(foot)}`;
   const callBuild = (S, k, prev, keys, lane, d0) => {
-    K.gridC(S); K.band(S, G, [1, 5, 8][lane], lane);
-    K.line(S, k, ...W24, 'lead', { delay: near(prev, keys) ? 0 : d0, rise: near(prev, keys) ? null : lane, y: yc });
-    K.windows(S, k, ...W24, { delay: d0 + 700, y: yc, y1: K.CP.t1 }); K.endDot(S, k, ...W24, TEAL, d0 + 700, yc);
-    K.clPanel(S, k, ...W24, d0 + 1300);
+    K.grid(S); K.band(S, G, [1, 5, 8][lane], lane);
+    K.line(S, k, ...W24, 'lead', { delay: near(prev, keys) ? 0 : d0, rise: near(prev, keys) ? null : lane });
+    K.windows(S, k, ...W24, { delay: d0 + 700 }); K.endDot(S, k, ...W24, TEAL, d0 + 700);
+    K.clLine(S, k, ...W24, d0 + 1300);
   };
   /* the lead point per topic: does our clients' visibility follow demand? numbers read from the data, words chosen per topic */
   const clW = (k) => { const c = K.cl(k); const v = (m) => c.v[idx(m)]; const g = (m) => VALS[k][idx(m)]; const r = (x, n = 1) => fmt(Math.round(x / n) * n);
@@ -990,7 +1092,7 @@ a{color:var(--aInk)}
     const [lo, hi] = span(YR.slice(3, 11));
     return `<b>Our clients combined did not follow these searches.</b> Google’s score held between ${lo} and ${hi} from January to August, while our clients’ showings fell from about ${r(mean(['2026-01', '2026-02', '2026-03'], v), 5)} a week per practice in January to March to about ${r(mean(['2026-04', '2026-05', '2026-06', '2026-07'], v), 5)} from April to July.`;
   };
-  const CLCAP = ' Below, rose: our clients combined, Search Console showings per practice a week on its own scale, Oct 2025 to Oct 2026, for searches containing the phrase. Hatched: September, when Expedition is missing 3 of its 4 weeks.';
+  const CLCAP = ' Rose, on the right-hand scale: our clients combined, Search Console showings per practice a week, Sep 2025 to Oct 2026, for searches containing the phrase. Hatched: September 2026, when Expedition is missing 3 of its 4 weeks.';
   chapters.push({
     key: 'tt-call', kick: kick('Tongue tie', 'where searches stand'),
     head: 'Tongue tie searches are <span class="g">close to Rising</span>, not there yet.',
@@ -1004,7 +1106,7 @@ a{color:var(--aInk)}
     cap: `Tongue tie, Google Trends in Washington, Oct 2024 to Oct 2026. Grey: Jul to Sep 2025, last year. Teal: Jul to Sep 2026, this year. Each with its average as a level line.${CLCAP}`,
     build(S, { prev }) { callBuild(S, 'tt', prev, TTK, 0, 650); },
     labelsAt: 700, labelsPre: () => '',
-    labels: () => callLabels('tt', 1, 0, 'Steady: 14 in 100 ahead, Rising needs over 15', [{ x0: xw(59, ...W24), y: yc(tt.m[59]), t: 'tongue tie', w: 700, c: INK }], 'Rising needs more than 15 in every 100 ahead of dental searches overall.'),
+    labels: () => callLabels('tt', 1, 0, 'Steady: 14 in 100 ahead, Rising needs over 15', [{ x0: xw(59, ...W24), y: yc(tt.m[59]), t: 'tongue tie', w: 700, c: TEAL_D }], 'Rising needs more than 15 in every 100 ahead of dental searches overall.'),
     hv: K.hvCall('tt', ...W24, K.ser('tt', 'tongue tie', 'lead', yc)),
     idle: HOVER_LINE,
   });
@@ -1031,19 +1133,19 @@ a{color:var(--aInk)}
     labels: () => `${K.title('74 in 100 searches say tongue tie', 'The topic line mixes both phrases by their searches a month')}
       ${K.y0100()}${K.xTicks(...W24)}
       ${K.gutter([{ x0: xw(59, ...W24), y: yv(tt.m[59]), t: 'tongue tie', w: 700, c: INK }, { x0: xw(59, ...W24), y: yv(VALS.comb[59]), t: 'topic line', c: '#0D9488' }, { x0: xw(59, ...W24), y: yv(0) - 4, t: 'ankyloglossia', c: MUTED }])}
-      ${K.bandLabels(G, 2, 0)}${K.foot('Ankyloglossia: too few searches in Washington to read, so it never sets the word.')}`,
+      ${K.foot('Ankyloglossia: too few searches in Washington to read, so it never sets the word.')}`,
     hv: K.hvLines(...W24, [K.ser('tt', 'tongue tie'), { ...K.ser('comb', 'topic line', 'other'), key: { c: '#0D9488', w: 2, dash: '6 4' } }, { ...K.ser('ank', 'ankyloglossia', 'other'), key: { c: '#8B98A9', w: 1.4, dash: '2 3' } }]),
     idle: HOVER_LINE,
   });
 
-  /* WHO SEES IT: one picture, one scale */
+  /* WHO SEES IT (r4, owner 10/29): national and local on ONE chart, two scales (national left, local right) */
   const who = (o) => ({
     key: o.key, kick: kick(o.topic, 'who sees it'), head: o.head, tiles: o.tiles, points: o.points, link: [['hiw-pages', 'How showings and avg. position are measured']], mock: o.mock, cap: o.cap,
-    hit: { x: K.X0, y: K.PA.a0, width: K.X1 - K.X0, height: K.PA.b1 - K.PA.a0 },
+    hit: { x: K.X0, y: Y0, width: K.XQ - K.X0, height: Y1 - Y0 },
     build(S) { K.band(S, G, o.ch, o.lane); K.who(S, o.sp, o.yA, o.yB); },
     labelsAt: 400, labelsPre: () => '',
-    labels: () => `${K.title(o.figT, 'Expedition’s showings a week, Oct 2025 to Oct 2026 · grouped by the words searched · own scales')}
-      ${K.whoLabels(o.sp, o.yA, o.yB, o.tA, o.tB, o.share)}${K.bandLabels(G, o.ch, o.lane)}${K.foot(o.foot)}`,
+    labels: () => `${K.title(o.figT, 'Expedition’s showings a week, Oct 2025 to Oct 2026 · sorted by the words searched')}
+      ${K.whoLabels(o.sp, o.yA, o.yB, o.tA, o.tB)}${K.foot(o.foot)}`,
     hv: K.whoHv(o.sp, o.yA, o.yB),
     idle: K.idleHint('Hover the chart to read any month', 'showings in Google a week'),
   });
@@ -1057,7 +1159,7 @@ a{color:var(--aInk)}
     build(S) { K.band(S, G, o.ch, o.lane, { hold: o.hold || [] }); K.landMarks(S); },
     enter(fig, later) { o.fly(fig, later); },
     labels: () => `${K.title(o.figT, 'Expedition’s pages, last 12 months · Search Console, then Google Analytics')}
-      ${K.paths(o.rows, { extra: o.extra })}${K.bandLabels(G, o.ch, o.lane, { lighting: o.hold || [] })}${K.foot('Calls or forms: none recorded on the whole site May to July 2026, a tracking gap, not a drop.')}`,
+      ${K.paths(o.rows, { extra: o.extra })}${K.foot('Calls or forms: none recorded on the whole site May to July 2026, a tracking gap, not a drop.')}`,
     idle: K.idleHint('Hover a page to read all its numbers', 'last 12 months'),
   });
   const MOCK_LAND = 'New users per page needs a new read (stored for the whole site only).';
@@ -1067,13 +1169,12 @@ a{color:var(--aInk)}
     key: 'tt-who', topic: 'Tongue tie', ch: 3, lane: 0, sp: spT,
     head: 'Most of Expedition’s tongue tie showings come from <span class="g">national searches, not local ones</span>.',
     tiles: [[`1st of ${spT.T.practices}`, `our practices; ${times(ownT / nxT[1])} the next`, K.WHO_TIP.rank], [fmt(spT.R.imp), 'National searches: showings', K.WHO_TIP.reach], [fmt(spT.Pt.imp), 'Local searches: showings', K.WHO_TIP.patients]],
-    points: [`Expedition shows up ${times(ownT / nxT[1])} as often as ${nxT[0]}, the next practice, and ${times(ownT / pedT[1])} as often as ${pedT[0]}, the next pediatric practice.`,
+    points: [K.whoShape('tt', spT), `Expedition shows up ${times(ownT / nxT[1])} as often as ${nxT[0]}, the next practice, and ${times(ownT / pedT[1])} as often as ${pedT[0]}, the next pediatric practice.`,
       `About ${in100(spT.R.imp, spT.Pt.imp)} in every 100 showings come from national searches: ${q(spT.R.top[0])}, ${q(spT.R.top[1])}. They bring ${fmt(spT.R.clk)} of the ${fmt(spT.R.clk + spT.Pt.clk)} clicks.`,
       `Local searches: ${fmt(spT.Pt.imp)} showings, ${spT.Pt.clk} clicks. Here Expedition is ${K.ord(spT.Pt.rank)} of our practices, behind ${spT.Pt.next[0][0]} and ${spT.Pt.next[1][0]}.`,
       'AI answers now settle many searches on Google’s own page, without a click.'],
-    cap: 'Expedition’s showings a week for searches with tongue tie, frenectomy or ankyloglossia, split into national and local by the words in the search, each panel on its own scale. Hatched: Expedition is missing 3 weeks of September.',
-    yA: K.ySc(K.PA.a0, K.PA.a1, 12000), yB: K.ySc(K.PA.b0, K.PA.b1, 1000), tA: [0, 6000, 12000], tB: [0, 500, 1000],
-    share: [`about ${in100(spT.R.imp, spT.Pt.imp)} in 100`, `about ${in100(spT.Pt.imp, spT.R.imp)} in 100`],
+    cap: 'Expedition’s showings a week for searches with tongue tie, frenectomy or ankyloglossia, sorted into national and local by the words in the search. One chart, two scales: national (slate) on the left, local (teal) on the right. Hatched: Expedition is missing 3 weeks of September.',
+    yA: K.ySc(Y0, Y1, 12000), yB: K.ySc(Y0, Y1, 1000), tA: [0, 6000, 12000], tB: [0, 500, 1000],
     figT: 'Tongue tie: who sees Expedition’s site',
     foot: 'Local: the search names a place, a care word such as dentist, a cost or booking. Every other search is national.',
   }));
@@ -1086,13 +1187,13 @@ a{color:var(--aInk)}
       'Improve: get it into the first 10 results for those patient searches. On-Page tool, November.',
       'Covered: the frenectomy guide article brings 2,544 visits at avg. position 6, mostly from national searches, and 3 calls or forms. Nothing to add to it this year.'],
     mock: `<b>Mockup:</b> ${MOCK_LAND}`,
-    cap: 'Expedition’s three most visited tongue tie pages, sorted by calls or forms. The service page’s Improve drops onto November.',
+    cap: 'Expedition’s three most visited tongue tie pages, sorted by calls or forms. The service page’s Improve lands on November in the year below.',
     figT: 'Tongue tie: where patients land',
     rows: [['Frenectomy', 'service page', '/frenectomy', 'Improve', 'Nov · On-Page', 'Improve a page: the page for local searches; avg. position 23, past the first 10 results. On-Page tool, November.'],
       ['Frenectomy guide', 'article', '/articles/what-is-a-frenectomy-a-comprehensive-guide-for-parents', 'Covered', 'no pin', 'Performs well: avg. position 6, and it brings the most visits. No pin.'],
       ['Frenectomy questions', 'article', '/articles/frenectomy-surgery-best-questions-to-ask-your-pediatric-dentist', 'Covered', 'no pin', 'Performs well: avg. position 6, 420 visits. No pin.']],
     extra: '+1 older page: 21,858 showings, 20 visits, 1 call or form.',
-    fly: (fig, later) => K.chipFly(fig, later, 0, 'improve', K.cell(GR, 0, 0, 1), 'p-tt'),
+    fly: (fig, later) => K.chipFly(fig, later, 0, 'Improve', 'p-tt'),
   }));
 
   /* ===== pediatric dentist ===== */
@@ -1107,7 +1208,7 @@ a{color:var(--aInk)}
     link: [['hiw-rising']],
     cap: `Pediatric dentist, Google Trends in Washington, Oct 2024 to Oct 2026. Grey: Jul to Sep 2025, last year. Teal: Jul to Sep 2026, this year. Each with its average as a level line.${CLCAP} Searches containing pediatric dentist include pediatric dentistry ones.`,
     build(S, { prev }) { callBuild(S, 'pd', prev, PDK, 1, 450); },
-    labels: () => callLabels('pd', 5, 1, 'Steady: 7 in 100 behind dental searches overall', [{ x0: xw(59, ...W24), y: yc(pd.m[59]) - 6, t: 'pediatric', w: 700, c: INK }, { x0: xw(59, ...W24), y: yc(pd.m[59]) + 8, t: 'dentist', w: 700, c: INK }], 'Fading needs more than 15 in every 100 behind dental searches overall.'),
+    labels: () => callLabels('pd', 5, 1, 'Steady: 7 in 100 behind dental searches overall', [{ x0: xw(59, ...W24), y: yc(pd.m[59]) - 6, t: 'pediatric', w: 700, c: TEAL_D }, { x0: xw(59, ...W24), y: yc(pd.m[59]) + 8, t: 'dentist', w: 700, c: TEAL_D }], 'Fading needs more than 15 in every 100 behind dental searches overall.'),
     hv: K.hvCall('pd', ...W24, K.ser('pd', 'pediatric dentist', 'lead', yc)),
     idle: HOVER_LINE,
   });
@@ -1121,12 +1222,12 @@ a{color:var(--aInk)}
       'These searches have no repeating season, so the work starts now: November, in the On-Page tool.',
       'Weak spot: emergency searches, avg. position 28, with no clicks.'],
     mock: `<b>Mockup:</b> the home page’s avg. position over all its searches is 13, pulled down by searches like “ford expedition”. The preventative care page also meets the Improve rule, avg. position 36 with no visits: marked, not pinned, for the owner to decide. ${MOCK_LAND}`,
-    cap: 'Expedition’s pediatric dentist pages, sorted by calls or forms. The home page’s Improve drops onto November, on the pediatric dentist row.',
+    cap: 'Expedition’s pediatric dentist pages, sorted by calls or forms. The home page’s Improve lands on November, on the pediatric dentist row below.',
     figT: 'Pediatric dentist: where patients land',
     rows: [['Home page', 'Expedition’s pediatric dentist page', '/', 'Improve', 'Nov · On-Page', 'Improve a page: avg. position 7 on local searches, below the top 3. On-Page tool, November.'],
       ['Benefits of a pediatric dentist', 'article', '/articles/benefits-of-a-pediatric-dentist', 'Improve', 'Jun · On-Page', 'Improve a page: avg. position 17, 16 visits. Pinned to June by the pediatric dentistry season.'],
       ['Preventative care', 'service page', '/dental-services/preventative', 'Improve', 'not pinned yet', 'Meets the Improve rule, avg. position 36 with no visits, but is not on this year’s plan yet.']],
-    fly: (fig, later) => K.chipFly(fig, later, 0, 'improve', K.cell(GR, 1, 0, 1), 'p-pd'),
+    fly: (fig, later) => K.chipFly(fig, later, 0, 'Improve', 'p-pd'),
   }));
   const PK = idx('2025-08'); const bkJun = K.D.basketMedian[idx('2025-06')]; const bkAug = K.D.basketMedian[idx('2025-08')];
   chapters.push({
@@ -1138,7 +1239,7 @@ a{color:var(--aInk)}
       `Dental searches overall rose far less: about ${K.BK24} in 2024, about ${K.BK26} this year.`,
       'So the home page work is planned at the new level: searches near 50 all year.'],
     link: [['hiw-rising', 'Why topics are measured against dental searches overall']],
-    cap: 'Pediatric dentist, Washington, Oct 2023 to Oct 2026. Dashed: dental searches overall. Teal: Jul to Sep 2026, with its average; that level then slides into the year ahead.',
+    cap: 'Pediatric dentist, Washington, Oct 2023 to Oct 2026. Dashed: dental searches overall. Teal: Jul to Sep 2026, with its average; that level then draws along the pediatric dentist row of the year below.',
     build(S) {
       K.grid(S); K.band(S, G, 7, 1, { hold: ['p-held'] }); K.line(S, 'pd', ...W36);
       put(S, 'ln-bk', { pts: K.linePts(VALS.bk, ...W36), stroke: '#475569', sw: 1.5, dash: '4 3', o: 1 }, { pre: { pts: K.linePts(VALS.bk, ...W36), stroke: '#475569', sw: 1.5, dash: '4 3', o: 0 }, delay: 200 });
@@ -1154,11 +1255,8 @@ a{color:var(--aInk)}
     },
     enter(fig, later) {
       later(1150, () => { const t = fig.svg.querySelector('[data-bracket]'); if (t) FL.countTo(t, 3.0, { from: 1, ms: 900, fmt: (v) => `${v.toFixed(1)} times` }); });
-      later(2700, () => K.drawer(fig, true));
-      const hl = K.heldY(GR);
-      later(3100, () => fig.set('hfly', { x1: K.heldX0(GR), x2: GR.x1 - 8, y1: hl, y2: hl }, { dur: 1000 }));
-      later(4150, () => { K.light(fig, 'p-held'); fig.set('hfly', { o: 0 }, { dur: 0 }); const t = fig.svg.querySelector('[data-held-new]'); if (t) t.style.opacity = 1; });
-      later(6200, () => K.drawer(fig, false));
+      /* the Jul to Sep level (hfly, on the chart) is carried into the year: the held line draws along its row below */
+      later(3000, () => K.cbLand('p-held'));
     },
     labels: () => { const xp = xw(PK, ...W36);
       return `${K.title('A jump that held: about 50 now', 'Pediatric dentist in Washington, against its usual level')}${K.winLabels('pd', ...W36, { only: 'win-b' })}
@@ -1167,7 +1265,7 @@ a{color:var(--aInk)}
       ${T(xp - 6, yv(pd.peak) - 8, 'peak, Aug 2025: 61', { s: 10.5, w: 700, c: INK, a: 'end' })}
       <text x="${xp + 20}" y="${yv(68)}" font-size="12" font-weight="800" fill="${INK}" data-bracket="1">1.0 times</text>
       ${K.gutter([{ x0: xw(59, ...W36), y: yv(pd.m[59]) - 7, t: 'pediatric', w: 700, c: INK }, { x0: xw(59, ...W36), y: yv(pd.m[59]) + 7, t: 'dentist', w: 700, c: INK }, { x0: xw(59, ...W36), y: yv(VALS.bk[59]) + 8, t: 'dental overall', c: '#475569' }])}
-      ${K.bandLabels(G, 7, 1, { lighting: ['p-held'] })}${K.foot(`Dental searches overall: ${Math.round(bkJun)} in Jun 2025, ${Math.round(bkAug)} in Aug 2025, about 1.25 times. Pediatric dentist: about 3 times.`)}`; },
+      ${K.foot(`Dental searches overall: ${Math.round(bkJun)} in Jun 2025, ${Math.round(bkAug)} in Aug 2025, about 1.25 times. Pediatric dentist: about 3 times.`)}`; },
     hv: K.hvLines(...W36, [K.ser('pd', 'pediatric dentist'), K.ser('bk', 'dental searches overall', 'other')]),
     idle: HOVER_LINE,
   });
@@ -1184,7 +1282,7 @@ a{color:var(--aInk)}
     link: [['hiw-rising']],
     cap: `Pediatric dentistry, Google Trends in Washington, Oct 2024 to Oct 2026. Grey: Jul to Sep 2025, last year. Teal: Jul to Sep 2026, this year. Each with its average as a level line.${CLCAP}`,
     build(S, { prev }) { callBuild(S, 'pdy', prev, PDYK, 2, 450); },
-    labels: () => callLabels('pdy', 8, 2, 'Steady, on the Fading line: 15 in 100 behind', [{ x0: xw(59, ...W24), y: yc(pdy.m[59]) - 6, t: 'pediatric', w: 700, c: INK }, { x0: xw(59, ...W24), y: yc(pdy.m[59]) + 8, t: 'dentistry', w: 700, c: INK }], 'Sep 2026 scored 56.5 against 73.0 in Sep 2025: most of the drop.'),
+    labels: () => callLabels('pdy', 8, 2, 'Steady, on the Fading line: 15 in 100 behind', [{ x0: xw(59, ...W24), y: yc(pdy.m[59]) - 6, t: 'pediatric', w: 700, c: TEAL_D }, { x0: xw(59, ...W24), y: yc(pdy.m[59]) + 8, t: 'dentistry', w: 700, c: TEAL_D }], 'Sep 2026 scored 56.5 against 73.0 in Sep 2025: most of the drop.'),
     hv: K.hvCall('pdy', ...W24, K.ser('pdy', 'pediatric dentistry', 'lead', yc)),
     idle: HOVER_LINE,
   });
@@ -1195,13 +1293,12 @@ a{color:var(--aInk)}
     key: 'pdy-who', topic: 'Pediatric dentistry', ch: 9, lane: 2, sp: spY,
     head: `Expedition shows up less on local pediatric dentistry searches: <span class="g">about ${summerY} times a week, down from ${winterY}</span>.`,
     tiles: [[`${K.ord(spY.T.rank)} of ${spY.T.practices}`, 'our practices, name searches left out', K.WHO_TIP.rank], [fmt(spY.R.imp), 'National searches: showings', K.WHO_TIP.reach], [fmt(spY.Pt.imp), 'Local searches: showings', K.WHO_TIP.patientsY]],
-    points: [`${spY.T.top[0][0]} leads with ${fmt(spY.T.top[0][1])} showings, ${times(spY.T.top[0][1] / ownY)} Expedition’s ${fmt(ownY)}.`,
+    points: [K.whoShape('pdy', spY), `${spY.T.top[0][0]} leads with ${fmt(spY.T.top[0][1])} showings, ${times(spY.T.top[0][1] / ownY)} Expedition’s ${fmt(ownY)}.`,
       `National searches, about ${Math.round(in100(spY.R.imp, spY.Pt.imp) / 10)} in 10 showings: mostly ${q(spY.R.top[0])} and ${q(spY.R.top[1])}, with ${spY.R.clk} clicks in all.`,
       `Local showings fell from about ${winterY} a week last winter to about ${summerY} this summer. Expedition is ${K.ord(spY.Pt.rank)} of our practices there.`,
       `Searches that name Expedition are set aside: ${fmt(spY.T.ownName[0])} showings, ${fmt(spY.T.ownName[1])} clicks, most of its clicks.`],
-    cap: 'Expedition’s showings a week for searches with pediatric, kids or children’s dentistry, name searches left out, split into national and local by the words in the search, each panel on its own scale. Hatched: Expedition is missing 3 weeks of September.',
-    yA: K.ySc(K.PA.a0, K.PA.a1, 300), yB: K.ySc(K.PA.b0, K.PA.b1, 200), tA: [0, 150, 300], tB: [0, 100, 200],
-    share: [`about ${Math.round(in100(spY.R.imp, spY.Pt.imp) / 10)} in 10`, `about ${Math.round(in100(spY.Pt.imp, spY.R.imp) / 10)} in 10`],
+    cap: 'Expedition’s showings a week for searches with pediatric, kids or children’s dentistry, name searches left out, sorted into national and local by the words in the search. One chart, two scales: national (slate) on the left, local (teal) on the right. Hatched: Expedition is missing 3 weeks of September.',
+    yA: K.ySc(Y0, Y1, 300), yB: K.ySc(Y0, Y1, 200), tA: [0, 150, 300], tB: [0, 100, 200],
     figT: 'Pediatric dentistry: who sees Expedition’s site',
     foot: 'Local: the search names a place, a cost or booking. Every other search is national. Searches naming a practice are left out.',
   }));
@@ -1214,12 +1311,12 @@ a{color:var(--aInk)}
       'Local searches find the home page at avg. position 8, so its November pin covers them too.',
       'Why June and not now: the season, next.'],
     mock: `<b>Mockup:</b> the special health care needs page also meets the Improve rule, 282 showings and 1 visit: marked, not pinned, for the owner to decide. ${MOCK_LAND}`,
-    cap: 'Expedition’s pediatric dentistry pages, sorted by calls or forms. The benefits article’s Improve drops onto June; the next chapter shows why June.',
+    cap: 'Expedition’s pediatric dentistry pages, sorted by calls or forms. The benefits article’s Improve lands on June in the year below; the next chapter shows why June.',
     figT: 'Pediatric dentistry: where patients land',
     rows: [['Home page', 'Expedition’s pediatric dentistry page', '/', 'Improve', 'Nov · same pin', 'Covered by the November home page pin: avg. position 8 on local searches like bellevue pediatric dentistry.'],
       ['Benefits of a pediatric dentist', 'article', '/articles/benefits-of-a-pediatric-dentist', 'Improve', 'Jun · On-Page', 'Improve a page: avg. position 17, past the first 10 results, 16 visits. On-Page tool, by June.'],
       ['Special health care needs', 'service page', '/dental-services/pediatric-dentistry-for-children-with-special-health-care-needs', 'Improve', 'not pinned yet', 'Meets the Improve rule, 1 visit in a year, but is not on this year’s plan yet.']],
-    fly: (fig, later) => K.chipFly(fig, later, 1, 'improve', K.cell(GR, 2, 7, 7), 'p-pub'),
+    fly: (fig, later) => K.chipFly(fig, later, 1, 'Improve', 'p-pub'),
   }));
   window.V6CH = { chapters, kick, TTK, PDK, PDYK };
 })();
@@ -1229,7 +1326,7 @@ a{color:var(--aInk)}
 (function () {
   const K = window.V6K; const { chapters, kick } = window.V6CH;
   const { T, put, xw, yv, idx, avg, GEO, pdy, Y0, Y1, TEAL, TEAL_D, INK, MUTED, GREY, PINS } = K;
-  const G = GEO.thin; const GR = GEO.grow; const PG = GEO.plan;
+  const G = GEO.cb; const PG = GEO.plan;
   const YRS = [2022, 2023, 2024, 2025];
   const yrRel = YRS.map((y) => { const i = idx(`${y}-01`); const seg = pdy.m.slice(i, i + 12); const a = avg(seg); return seg.map((v) => v / a); });
   const yrMean = yrRel[0].map((_, m) => avg(yrRel.map((a) => a[m])));
@@ -1238,7 +1335,6 @@ a{color:var(--aInk)}
   const WF = [idx('2021-11'), idx('2025-12')];
   const bandOrder = (arr) => Array.from({ length: 12 }, (_, k) => arr[kToM(k)]);
   const pkVals = yrRel.map((a) => Math.max(...a)); const dcVals = yrRel.map((a) => a[11]);
-  const pinC = (id, g) => { const p = PINS[id]; const c = K.cell(g, p.lane, p.k0, p.k1 ?? p.k0); return [c.x + c.width / 2, c.y + c.height / 2]; };
   const LAT = 1.8;
   const SEASON = ['p-dip', 'p-peak']; // season marks; the June pin was lit by the page chapter and pulses here
   chapters.push({
@@ -1250,21 +1346,19 @@ a{color:var(--aInk)}
       `December was the quietest month every year, about ${avg(dcVals).toFixed(1)} times an average month.`,
       'Tongue tie and pediatric dentist have no repeating season, so their pins are now, in November.'],
     link: [['hiw-seasons', 'How a season is found']],
-    labelsAt: LAT * 1000, labelsPre: () => `${K.title('Four years of pediatric dentistry, in Washington', 'Nov 2021 to Dec 2025, then each year laid onto the coming one')}${K.bandLabels(G, 11, 2, { lighting: SEASON })}`,
+    labelsAt: LAT * 1000, labelsPre: () => `${K.title('Four years of pediatric dentistry, in Washington', 'Nov 2021 to Dec 2025, then each year laid onto the coming one')}`,
+    /* r4: the peak and dip stay marked on the chart, straight above their month columns; their marks fade in on the
+       band row below, then the June pin pulses. Nothing travels across the figure. */
     enter(fig, later) {
       later(1000, () => ['ln-pdy', 'cs-pdy', 'tl-pdy'].forEach((id) => fig.set(id, { o: 0 })));
-      later(2900, () => K.drawer(fig, true));
-      const [px, py] = pinC('p-peak', GR); const [dx, dy] = pinC('p-dip', GR);
-      later(3500, () => { fig.set('pk', { cx: px, cy: py, r: 2 }, { dur: 700 }); fig.set('dp', { cx: dx, cy: dy, r: 2 }, { dur: 700 }); });
-      later(4200, () => { K.light(fig, 'p-peak'); K.light(fig, 'p-dip'); fig.set('pk', { o: 0 }, { dur: 0 }); fig.set('dp', { o: 0 }, { dur: 0 }); });
-      later(4700, () => fig.set('p-pub', { sw: 4 }, { dur: 250 }));
-      later(5050, () => fig.set('p-pub', { sw: 1.3 }, { dur: 400 }));
-      later(6600, () => K.drawer(fig, false));
+      later(3000, () => K.cbLand('p-peak'));
+      later(3300, () => K.cbLand('p-dip'));
+      later(4400, () => K.cbPulse('p-pub'));
     },
-    cap: 'Pediatric dentistry, Washington: 2022 to 2025, each calendar year against its own average month, laid onto the months of the year ahead. Bold: the 4-year average. Peak and dip drop onto its row, then the June pin pulses: two months before the peak.',
+    cap: 'Pediatric dentistry, Washington: 2022 to 2025, each calendar year against its own average month, laid onto the months of the year ahead. Bold: the 4-year average. Peak and dip are marked on its row of the year below, then the June pin pulses: two months before the peak.',
     build(S) {
       put(S, 'base', { x1: G.x0, x2: G.x1, y1: Y1, y2: Y1, o: 1 }); K.band(S, G, 11, 2, { hold: SEASON });
-      K.line(S, 'pdy', ...WF, 'lead');
+      K.line(S, 'pdy', ...WF, 'lead', { delay: 400 }); // r4: waits for the previous page rows or the large band to fade first
       YRS.forEach((y, n) => {
         const cont = Array.from({ length: 12 }, (_, k) => { const i = idx(`${y - 1}-11`) + k; return [xw(i, ...WF), yv(pdy.m[i])]; });
         put(S, `yr${n}`, { pts: bandOrder(yrRel[n]).map((r, k) => [K.bx(G, k), yr(r)]), stroke: n % 2 ? '#475569' : '#8B98A9', sw: 1.2, dash: n % 2 ? '4 3' : 'none', o: 0.85 }, { pre: { pts: cont, o: 0 }, delay: 1000 + n * 120 });
@@ -1280,7 +1374,7 @@ a{color:var(--aInk)}
       ${K.BM.map((m, k) => T(K.bx(G, k), Y1 + 16, m, { s: 10, c: '#9CA3AF', a: 'middle' })).join('')}
       ${T(K.bx(G, 9), yr(yrMean[7]) - 12, `Aug, about ${yrMean[7].toFixed(1)} times`, { s: 11.5, w: 700, c: INK, a: 'middle' })}
       ${T(K.bx(G, 1) + 10, yr(0.66), `Dec, about ${avg(dcVals).toFixed(1)} times`, { s: 11.5, w: 700, c: INK })}
-      ${K.bandLabels(G, 11, 2, { lighting: SEASON })}${K.foot('A season: the same busiest months in at least 2 of the last 3 full years.')}`,
+      ${K.foot('A season: the same busiest months in at least 2 of the last 3 full years.')}`,
     hit: { x: G.x0, y: Y0, width: G.x1 - G.x0, height: Y1 - Y0 },
     hv: { i0: 0, i1: 11, x: (k) => K.bx(G, k), note: 'times an average month, Washington', title: (k) => `${FL.MONF[kToM(k)]}, 2022 to 2025`, cols: 5,
       series: [{ name: 'avg', vals: bandOrder(yrMean), y: yr, kind: 'lead', key: { c: TEAL, w: 2.2 }, fmt: (v) => v.toFixed(2) }, ...YRS.map((y, n) => ({ name: String(y), vals: bandOrder(yrRel[n]), y: yr, kind: 'other', key: { c: n % 2 ? '#475569' : '#8B98A9', w: 1.2, dash: n % 2 ? '4 3' : '' }, fmt: (v) => v.toFixed(2) }))] },
@@ -1294,8 +1388,7 @@ a{color:var(--aInk)}
     { pin: 'p-pub', when: 'Jun 2027', who: 'pediatric dentistry', verb: 'improve a page · On-Page', head: 'Refresh the benefits article by June', why: 'Avg. position 17, 16 visits; ready two months before the July to August peak.', hv: ['Benefits article: avg. position 17, 16 visits', 'Search Console and Google Analytics', `${K.HV.place} ${K.HV.match}`] },
     { pin: null, when: 'Calendar', who: 'new pages only', verb: 'write · content calendar', head: 'No new page this year', why: 'Expedition already has a page for each topic, so nothing goes to the content calendar.', hv: ['No Write pins', 'the pin rule', 'Write means no page covers the topic. Only Write pins go to the content calendar, which is for new content only. Expedition has a page for all three topics.'] },
   ];
-  const CARD = (j) => ({ x: 0, y: 236 + j * 56, width: 640, height: 48 });
-  const pinBox = (id, j) => { if (!id) return { ...CARD(j), y: CARD(j).y + 20, height: 8 }; const p = PINS[id]; return K.cell(PG, p.lane, p.k0, p.k1 ?? p.k0); };
+  const CARD = (j) => ({ x: 0, y: 244 + j * 64, width: 640, height: 50 });
   chapters.push({
     key: 'plan', kick: 'The plan · Nov 2026 to Oct 2027',
     head: 'Expedition’s year: <span class="g">improve two pages in November</span>, one more by June.',
@@ -1309,7 +1402,8 @@ a{color:var(--aInk)}
     cap: 'The finished year: every pin lit, each turned into a step with the page and the reason behind it, in calendar order.',
     build(S) {
       K.band(S, PG, 12, null, { delay: 250 });
-      PLAN.forEach((p, j) => put(S, `card${j}`, { ...CARD(j), o: 1, fill: '#fff' }, { pre: { ...pinBox(p.pin, j), o: 0, fill: p.pin ? '#E6F4F1' : '#EEF0F3' }, delay: 1250 + j * 160 }));
+      /* r4: each card fades in and settles a few pixels; no card grows out of a pin cell across the band */
+      PLAN.forEach((p, j) => put(S, `card${j}`, { ...CARD(j), o: 1, fill: '#fff' }, { pre: { ...CARD(j), y: CARD(j).y + 6, o: 0, fill: '#fff' }, delay: 1250 + j * 160, dur: 700 }));
     },
     labelsAt: 1150, labelsPre: () => '',
     labels: () => `${K.title('Expedition’s plan, Nov 2026 to Oct 2027', 'Searches read for Washington · pages from Expedition’s own data · in calendar order')}
@@ -1326,7 +1420,7 @@ a{color:var(--aInk)}
 })();
 </script>
 <script>
-FL.shell({ mock: "<b>Market Trends \u00b7 Story \u00b7 V6 Two questions per page</b> <span class=\"src\">\u00b7 data: Expedition Pediatric Dentistry, check #22 (read for Washington, Oct 29, 2026); Search Console and Google Analytics by page for Expedition, and Search Console for all our practices combined (local snapshot, Oct 2025 to Oct 2026)</span>\n<ul><li>V5's crowded \"how patients reach the page\" is now two chapters per topic: <b>who sees it</b> (one picture: Expedition's showings a week against our other practices, one scale) and <b>where patients land</b> (one row per page: showings, visits, calls or forms, then the pin).</li>\n<li>Pediatric dentist's \"who sees it\" is one tile (11th of 209, nothing to chart). The year is a thin strip at the foot of the figure; it rises only while a pin lands. The opening and the plan keep the full band.</li>\n<li>Method moved out: why the pin follows calls or forms, how avg. position is averaged, and new users per page sit in How it works. r3: national and local searches, avg. position, and our clients combined under each Trends line.</li></ul>\n<span class=\"nr\">V6 pins (owner ruling 10/29): every pin is an action. Write = no page, a new page for the content calendar; Improve = a page listed outside the top results or bringing few visits, for the On-Page tool; a page that performs well gets no pin. New users per page needs a new read (stored for the whole site only). Rose under each Trends line = our clients combined, every client including Expedition, averaged per reporting practice a week.</span>" });
+FL.shell({ mock: "<b>Market Trends \u00b7 Story \u00b7 V6 Two questions per page</b> <span class=\"src\">\u00b7 data: Expedition Pediatric Dentistry, check #22 (read for Washington, Oct 29, 2026); Search Console and Google Analytics by page for Expedition, and Search Console for all our practices combined (local snapshot, Oct 2025 to Oct 2026)</span>\n<ul><li>V5's crowded \"how patients reach the page\" is now two chapters per topic: <b>who sees it</b> (one picture: Expedition's showings a week against our other practices, one scale) and <b>where patients land</b> (one row per page: showings, visits, calls or forms, then the pin).</li>\n<li>Pediatric dentist's \"who sees it\" is one tile (11th of 209, nothing to chart). r4: the year is a compact panel of fixed size at the foot of the figure; only its pins animate. The opening and the plan keep the full band.</li>\n<li>Method moved out: why the pin follows calls or forms, how avg. position is averaged, and new users per page sit in How it works. r3: national and local searches, avg. position. r4: our clients combined on the same chart as each Trends line; national and local on one chart, two scales.</li></ul>\n<span class=\"nr\">V6 pins (owner ruling 10/29): every pin is an action. Write = no page, a new page for the content calendar; Improve = a page listed outside the top results or bringing few visits, for the On-Page tool; a page that performs well gets no pin. New users per page needs a new read (stored for the whole site only). Rose under each Trends line = our clients combined, every client including Expedition, averaged per reporting practice a week.</span>" });
 const HIW = 'mt2-how-it-works.html';
 FL.$('.method-btn').addEventListener('click', () => window.open(HIW, 'mt-how-it-works'));
 FL.$('.method-btn').title = 'Opens How it works in its own window';
