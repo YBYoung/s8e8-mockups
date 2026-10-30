@@ -1,0 +1,1069 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Query on the tools · mockup</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>.oq-rail{position:fixed;inset:0 auto 0 0;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}
+:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;
+  --up:#15803D;--down:#E11D48;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --shadowPanel:0 20px 50px rgba(11,16,32,.10);
+  --barH:104px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer;color:inherit}
+input{font:inherit}
+
+/* ---------- mockup bar (grey, outside the design) ---------- */
+#bar{position:relative;z-index:80;background:#F2F4F7;border-bottom:1px solid #E4E7EC;padding:8px 16px 8px 16px;font-size:12px;color:#475467}
+#bar .r1,#bar .r2{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+#bar .r2{margin-top:6px}
+#bar .r3{margin-top:5px;font-size:11.5px;color:#667085;line-height:1.45;min-height:17px}
+#bar b.t{color:#101828;font-size:12.5px;white-space:nowrap}
+.seg{display:inline-flex;border:1px solid #D0D5DD;border-radius:6px;overflow:hidden;background:#fff;flex:none}
+.seg button{border:0;background:#fff;padding:4px 9px;font-size:11.5px;font-weight:600;color:#475467;border-right:1px solid #EAECF0;white-space:nowrap}
+.seg button:last-child{border-right:0}
+.seg button.on{background:#101828;color:#fff}
+.seg button:disabled{color:#C0C5CF;cursor:not-allowed}
+.barbtn{border:1px solid #D0D5DD;background:#fff;border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:700;color:#101828;white-space:nowrap}
+.barbtn.on{background:#101828;color:#fff}
+.sample{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.04em;color:#667085;text-transform:uppercase;white-space:nowrap;margin-left:auto}
+.lab{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;white-space:nowrap}
+
+/* ---------- stage: the app ---------- */
+#stage{position:relative;height:calc(100vh - var(--barH));min-height:640px;overflow:hidden;background:#fff}
+#stage .oq-rail{position:absolute!important;top:0;bottom:0;left:0}
+#main{position:absolute;top:0;bottom:0;left:56px;right:var(--mr,0px);overflow-y:auto;overflow-x:hidden;transition:right .45s var(--ease),padding-bottom .3s}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px 90px}
+.top{position:sticky;top:0;z-index:30;margin:0 -40px 22px;padding:0 40px;height:53px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink);white-space:nowrap}
+.tmark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.tmark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.tright{display:flex;align-items:center;gap:14px;font-size:13px;white-space:nowrap}
+.hiw{display:flex;align-items:center;gap:6px;color:var(--aInk);font-weight:600}
+.hiw i{width:12px;height:12px;border-radius:3px;background:var(--a);opacity:.85}
+.who{color:var(--ink);font-weight:700}
+.who small{font-weight:500;color:var(--muted);margin-left:6px}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;transition:box-shadow .2s,transform .1s,background .2s,opacity .2s}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,23,42,.16)}
+.btn-go:disabled{opacity:.4;box-shadow:none}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;font-size:13px}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.panel-head{margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.h-sentence{margin:8px 0 0;max-width:1000px;font-size:40px;font-weight:800;line-height:1.3;letter-spacing:-.025em;color:var(--ink)}
+.blank{display:inline;margin:0 2px;padding:0 4px;border:0;background:none;color:var(--aInk);font:inherit;border-radius:6px 6px 0 0;border-bottom:4px dotted var(--a);transition:background .2s}
+.blank.open{background:var(--aTint)}
+.blank.ok{border-bottom-style:solid}
+.blank .tick{margin-left:2px;vertical-align:.6em;font-size:.5em;color:var(--up)}
+.blank .cnt{display:inline-block}
+.bump{animation:bump .6s var(--ease)}
+@keyframes bump{0%{transform:none}35%{transform:translateY(-6px);color:var(--a)}100%{transform:none}}
+.panel{margin-top:22px;max-width:860px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px 22px;box-shadow:var(--shadowPanel)}
+.panel p.lead{margin:0 0 12px;font-size:14px;color:var(--muted)}
+.rise{animation:rise .35s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fadein{animation:fadein .35s ease both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.runrow{display:flex;align-items:center;gap:16px;margin-top:22px}
+.runrow .small{font-size:14px;color:var(--muted)}
+
+/* practice panel (no client) */
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.field>span{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--body)}
+.field>span i{color:var(--down);font-style:normal}
+.input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--ink);background:#fff;display:flex;align-items:center;gap:8px}
+.input.ph{color:var(--faint)}
+.input.focus{border-color:var(--a);box-shadow:0 0 0 4px var(--aTint)}
+.ctag{font-size:11.5px;font-weight:600;padding:1px 6px;border-radius:5px;background:var(--aTint);color:var(--aInk)}
+.dd{position:relative}
+.ddmenu{position:absolute;left:0;right:0;top:48px;z-index:5;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadowPanel);padding:4px}
+.ddmenu div{padding:8px 10px;border-radius:6px;font-size:14px;color:var(--ink);display:flex;gap:8px;align-items:center}
+.ddmenu div.hl{background:var(--aTint)}
+
+/* MT phrases panel */
+.pgroup{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pgroup:first-of-type{border-top:0}
+.pgroup .tn{font-weight:700;color:var(--ink);font-size:14.5px;display:flex;align-items:center;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:30px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:4px 8px;font-size:13.5px;background:var(--soft);color:var(--body);white-space:nowrap}
+.chip.head{background:var(--aTint);color:var(--aInk);font-weight:700}
+.chip.thin{background:#fff;border:1px dashed #D0D5DD;color:var(--faint)}
+.chip.thin small{font-size:11px}
+.chip.fromq{background:#fff;box-shadow:inset 0 0 0 1px var(--aSoft);color:var(--aInk);font-weight:600}
+.fromtag{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.04em;color:var(--a);text-transform:uppercase}
+.pfoot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.pfoot .mono{font-size:13px;color:var(--muted)}
+.landed{animation:landed 1.4s var(--ease)}
+@keyframes landed{0%{box-shadow:0 0 0 0 var(--a)}30%{box-shadow:0 0 0 4px var(--aTint),inset 0 0 0 1px var(--a)}100%{}}
+
+/* GS searches panel */
+.slots{display:flex;flex-direction:column;gap:6px}
+.slot{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:10px;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;font-size:14.5px;color:var(--ink)}
+.slot .num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--aTint);color:var(--aInk)}
+.slot.empty{border-style:dashed;color:var(--faint)}
+.slot.empty .num{background:var(--soft);color:var(--faint)}
+.slot .w{display:flex;align-items:center;gap:6px;min-width:0}
+.slot .w b{font-weight:600}
+
+/* AIV questions panel */
+.qgroup-h{display:flex;justify-content:space-between;padding:10px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.qrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;color:var(--body);margin-bottom:6px}
+.qrow .bx{width:18px;height:18px;border-radius:5px;background:var(--a);color:#fff;font-size:11px;display:grid;place-items:center;flex:none}
+.qrow .qt{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
+.ttag{font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.tt-city{background:#EEF0FF;color:#4338CA}.tt-near{background:#F3EEFF;color:#7C3AED}.tt-research{background:#E0F2FE;color:#0369A1}
+
+/* ---------- MT results page ---------- */
+.tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin:-8px -40px 30px;padding:0 40px}
+.tabs span{padding:10px 0;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs span.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--a)}
+.res{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:40px;align-items:start}
+.kick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)}
+.res h2{margin:10px 0 12px;font-size:32px;font-weight:900;line-height:1.12;letter-spacing:-.02em;color:var(--ink)}
+.res h2 em{font-style:normal;color:var(--a)}
+.res .lede{font-size:15.5px;margin:0 0 16px}
+.rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.rtile{position:relative;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.rtile b{display:block;font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.rtile small{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.rpoints{margin:0;padding:0;list-style:none}
+.rpoints li{position:relative;padding-left:16px;margin:0 0 8px;font-size:14.5px}
+.rpoints li:before{content:'';position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:2px;background:#9CC9C2}
+.fig{position:sticky;top:70px}
+.readout{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;font-size:14px;color:var(--ink);font-weight:600}
+.readout.idle{color:var(--muted);font-weight:500}
+.figt{margin:14px 0 2px;font-size:15px;font-weight:800;color:var(--ink)}
+.figs{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.chart{display:block;overflow:visible}
+#chartHost{width:100%;min-height:320px}
+.chart text{font-family:Inter,sans-serif}
+
+/* ---------- Query: the mark ---------- */
+.qm{display:inline-grid;place-items:center;flex:none;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));color:#fff}
+.qm svg{width:62%;height:auto;overflow:visible}
+.qm.s{border-radius:5px}
+.qcur{animation:qblink 1.5s ease-in-out infinite}
+@keyframes qblink{0%,100%{opacity:1}50%{opacity:.15}}
+#q{position:absolute;inset:0;pointer-events:none;z-index:50}
+#q>*{pointer-events:auto}
+
+/* conversation pieces, shared by every variation */
+.qmsgs{display:flex;flex-direction:column;gap:10px}
+.qu{align-self:flex-end;max-width:88%;background:var(--ink);color:#fff;border-radius:10px 10px 3px 10px;padding:7px 11px;font-size:13px;line-height:1.45}
+.qa{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.55;color:var(--body)}
+.qa-p{margin:0 0 8px}
+.qa-p:last-child{margin-bottom:0}
+.qa-p b{color:var(--ink)}
+.qa-ev{border:1px solid var(--line);border-radius:8px;margin:4px 0 10px;overflow:hidden}
+.qa-ev h6{margin:0;padding:5px 10px;font:600 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--soft)}
+.qa-ev .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:5px 10px;border-top:1px solid var(--line);font-size:12.5px;align-items:baseline}
+.qa-ev .r span{color:var(--ink);min-width:0}
+.qa-ev .r b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700;white-space:nowrap}
+.qa-ev .r b small{font-weight:500;color:var(--muted);margin-left:4px}
+.qa-adds{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.qa-addh{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 4px}
+.qadd{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--aSoft);background:#fff;border-radius:6px;padding:4px 8px 4px 5px;font-size:12.5px;color:var(--ink);text-align:left;transition:background .2s,border-color .2s}
+.qadd .pl{width:16px;height:16px;border-radius:4px;background:var(--a);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none;line-height:1}
+.qadd small{color:var(--muted);font-size:11.5px}
+.qadd.done{background:var(--aTint);border-color:transparent;color:var(--aInk)}
+.qadd.done .pl{background:var(--up)}
+.qadd.have{border-style:dashed;border-color:#D0D5DD;color:var(--muted)}
+.qadd.have .pl{background:#D0D5DD}
+.qadd.press{transform:scale(.95)}
+.qa-src{font-size:11px;color:var(--faint);margin-top:8px;line-height:1.45}
+.qa-next{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.qa-next button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 8px;font-size:12px;color:var(--aInk);font-weight:600}
+.qthink{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.qthink i{width:6px;height:12px;border-radius:2px;background:var(--a);animation:qblink .9s ease-in-out infinite}
+.qcaret{display:inline-block;width:6px;height:13px;border-radius:1px;background:var(--a);vertical-align:-2px;margin-left:2px;animation:qblink .7s infinite}
+.qstart{display:flex;flex-direction:column;gap:6px}
+.qstart button{text-align:left;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:flex-start}
+.qstart button:before{content:'';width:3px;align-self:stretch;border-radius:2px;background:var(--aSoft);flex:none}
+.qstart button.hot{background:var(--aTint);border-color:var(--aSoft)}
+.qknows{font-size:11.5px;color:var(--muted);line-height:1.45}
+.qknows b{color:var(--body);font-weight:600}
+.qin{display:flex;align-items:center;gap:8px;border:1px solid #D6D3D1;border-radius:10px;background:#fff;padding:8px 10px;font-size:13px;color:var(--faint);min-height:40px}
+.qin .tx{flex:1;min-width:0;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qin .tx.ph{color:var(--faint)}
+.qin .send{width:26px;height:26px;border-radius:7px;background:var(--a);display:grid;place-items:center;flex:none;opacity:.45}
+.qin .send.on{opacity:1}
+.qin .send svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:2.2}
+.qin.focus{border-color:var(--a);box-shadow:0 0 0 3px var(--aTint)}
+.qx{border:0;background:none;color:var(--faint);width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:15px}
+.qx:hover{background:var(--soft);color:var(--ink)}
+
+/* V1 familiar panel */
+.v1fab{position:absolute;right:24px;bottom:24px;display:flex;align-items:center;gap:8px}
+.v1fab .qm{width:40px;height:40px;border-radius:10px;box-shadow:0 6px 18px rgba(11,16,32,.22)}
+.v1fab .hello{background:var(--ink);color:#fff;font-size:12.5px;padding:7px 10px;border-radius:8px;white-space:nowrap;box-shadow:0 6px 18px rgba(11,16,32,.18)}
+.v1fab .hello b{color:#fff}
+.v1pan{position:absolute;top:0;bottom:0;right:0;width:400px;background:#FBFBFC;border-left:1px solid var(--line);box-shadow:-4px 0 24px rgba(0,0,0,.07);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .45s var(--ease)}
+.v1pan.on{transform:none}
+.qhead{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--line);background:#fff}
+.qhead .nm{font-size:14px;font-weight:800;color:var(--ink)}
+.qhead .tl{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--aInk);background:var(--aTint);padding:2px 6px;border-radius:5px}
+.qhead .sp{flex:1}
+.qctx{padding:8px 14px;border-bottom:1px solid var(--line);background:#fff}
+.qbody{flex:1;overflow-y:auto;padding:14px}
+.qfoot{padding:10px 14px 14px;border-top:1px solid var(--line);background:#fff}
+.qfoot small{display:block;text-align:center;font-size:10px;color:var(--faint);margin-top:6px}
+.pushnote{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.04em;color:var(--faint);text-transform:uppercase}
+
+/* V2 inline */
+.v2slot{margin-top:12px;min-height:44px}
+.v2line{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px;border-radius:10px;background:var(--soft);font-size:14px;color:var(--ink);transition:background .2s}
+.v2line .qm{width:22px;height:22px;border-radius:6px}
+.v2line .hint{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2line .go{margin-left:auto;font-size:12px;color:var(--aInk);font-weight:700;white-space:nowrap}
+.v2box{border:1px solid var(--aSoft);border-radius:12px;background:#fff;overflow:hidden}
+.v2box .bar{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--line)}
+.v2box .bar .qm{width:22px;height:22px;border-radius:6px}
+.v2box .bar .qin{flex:1;border:0;padding:0 4px;min-height:28px;box-shadow:none}
+.v2box .ans{padding:10px 12px 12px;max-height:330px;overflow-y:auto}
+.v2box .ans .qa{border:0;padding:0}
+.v2box .ans .qu{display:none}
+.v2wipe{animation:v2wipe .55s var(--ease) both;transform-origin:left center}
+@keyframes v2wipe{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+
+/* V3 docked rail */
+.v3rail{position:absolute;top:0;bottom:0;right:0;width:340px;background:#FBFBFC;border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .45s var(--ease)}
+.v3rail.on{transform:none}
+.v3rail.col{transform:translateX(296px)}
+.v3tab{position:absolute;left:0;top:0;bottom:0;width:44px;display:flex;flex-direction:column;align-items:center;padding-top:14px;gap:10px;border-right:1px solid var(--line);background:#fff;opacity:0;pointer-events:none;transition:opacity .3s}
+.v3rail.col .v3tab{opacity:1;pointer-events:auto}
+.v3tab .qm{width:26px;height:26px}
+.v3tab span{writing-mode:vertical-rl;font:600 10px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--aInk)}
+.v3step{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.v3sec{margin-bottom:14px}
+.ev{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.ev p{margin:0;font-size:12.5px;line-height:1.45;color:var(--body)}
+.ev p b{color:var(--ink)}
+.ev small{display:block;font-size:10.5px;color:var(--faint);margin-top:2px}
+.ev .addb{border:1px solid var(--aSoft);background:#fff;color:var(--aInk);font-size:11.5px;font-weight:700;border-radius:6px;padding:3px 8px}
+.ev .addb.done{background:var(--aTint);border-color:transparent;color:var(--up)}
+
+/* V4 sparkles */
+.spk{display:inline-grid;place-items:center;width:20px;height:20px;border:0;padding:0;border-radius:5px;background:transparent;vertical-align:middle;transition:background .2s}
+.spk .qm{width:16px;height:16px;border-radius:4px}
+.spk:hover,.spk.hot{background:var(--aTint)}
+.spk.pop{animation:spkin .45s var(--ease) both}
+@keyframes spkin{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.v4pop{position:absolute;transition:top .35s cubic-bezier(.2,.8,.2,1);width:410px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 44px rgba(11,16,32,.16);display:flex;flex-direction:column;max-height:420px;transform-origin:top left;animation:popin .3s var(--ease) both}
+.v4pop.out{animation:popout .25s ease both}
+@keyframes popin{from{opacity:0;transform:translateY(-4px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes popout{to{opacity:0;transform:translateY(-4px) scale(.97)}}
+.v4pop .arrow{position:absolute;top:-6px;width:12px;height:12px;background:#fff;border-left:1px solid var(--line);border-top:1px solid var(--line);transform:rotate(45deg)}
+.v4pop .ph{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--ink)}
+.v4pop .ph .qm{width:18px;height:18px;border-radius:5px}
+.v4pop .pb{padding:10px 12px;overflow-y:auto}
+.v4pop .pb .qa{border:0;padding:0}
+.v4pop .pb .qu{display:none}
+
+/* V5 command bar */
+.v5btn{display:inline-flex;align-items:center;gap:8px;height:30px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 6px 5px 8px;font-size:13px;color:var(--muted);font-weight:500}
+.v5btn .qm{width:18px;height:18px;border-radius:5px}
+.v5btn kbd{font:600 10.5px 'JetBrains Mono',monospace;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--body)}
+.v5btn.off{opacity:.65}
+.v5btn.off .qm{background:#C9CED8}
+.v5scrim{position:absolute;inset:0;background:rgba(11,16,32,.18);animation:fadein .2s both}
+.v5cmd{position:absolute;left:50%;top:76px;width:620px;margin-left:-310px;background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(11,16,32,.28);border:1px solid var(--line);overflow:hidden;animation:cmdin .28s var(--ease) both}
+@keyframes cmdin{from{opacity:0;transform:translateY(-10px) scale(.98)}to{opacity:1;transform:none}}
+.v5cmd.out{animation:cmdout .2s ease both}
+@keyframes cmdout{to{opacity:0;transform:translateY(-8px) scale(.98)}}
+.v5cmd .ci{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);font-size:16px}
+.v5cmd .ci .qm{width:24px;height:24px;border-radius:6px}
+.v5cmd .ci .tx{flex:1;color:var(--ink)}
+.v5cmd .ci .tx.ph{color:var(--faint)}
+.v5cmd .ci kbd{font:600 10.5px 'JetBrains Mono',monospace;background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted)}
+.v5cmd .cs{padding:8px}
+.v5cmd .cs h6{margin:4px 8px 6px;font:600 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.v5cmd .cs div{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:14px;color:var(--ink)}
+.v5cmd .cs div.hl{background:var(--aTint)}
+.v5cmd .cs div small{margin-left:auto;color:var(--faint);font-size:12px}
+.v5cmd .cs div i{width:6px;height:6px;border-radius:2px;background:var(--aSoft);flex:none}
+.v5sheet{position:absolute;bottom:0;background:#fff;border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;box-shadow:0 -14px 40px rgba(11,16,32,.14);display:flex;flex-direction:column;transform:translateY(105%);transition:transform .45s var(--ease)}
+.v5sheet.on{transform:none}
+.v5sheet .grab{width:40px;height:4px;border-radius:2px;background:#D0D5DD;margin:8px auto 0}
+.v5sheet .sh{display:flex;align-items:center;gap:10px;padding:8px 18px 10px;border-bottom:1px solid var(--line)}
+.v5sheet .sh .qm{width:22px;height:22px;border-radius:6px}
+.v5sheet .sh b{font-size:14px;color:var(--ink)}
+.v5sheet .sh .q{font-size:13px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v5sheet .sb{padding:12px 18px 18px;overflow-y:auto}
+.v5sheet .sb .qa{border:0;padding:0}
+.v5sheet .sb .qu{display:none}
+.v5sheet.wide .sb{column-count:2;column-gap:28px}
+.v5sheet.wide .sb .qa>*{break-inside:avoid}
+.hinttoast{position:absolute;top:64px;right:28px;background:var(--ink);color:#fff;font-size:12.5px;padding:8px 11px;border-radius:8px;box-shadow:0 8px 22px rgba(11,16,32,.2);white-space:nowrap}
+.hinttoast kbd{font:600 10.5px 'JetBrains Mono',monospace;background:rgba(255,255,255,.14);border-radius:4px;padding:1px 5px}
+.disabledtip{position:absolute;top:58px;right:40px;background:#fff;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:6px 10px;border-radius:8px;box-shadow:0 8px 22px rgba(11,16,32,.08);white-space:nowrap}
+
+/* fake cursor + flying chip */
+#cur{position:absolute;left:0;top:0;width:22px;height:22px;z-index:90;pointer-events:none;transition:transform .7s var(--ease),opacity .3s;opacity:0}
+#cur.on{opacity:1}
+#cur svg{width:22px;height:22px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.ripple{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:8px;border:2px solid var(--a);z-index:89;pointer-events:none;animation:rip .5s ease-out forwards}
+@keyframes rip{from{transform:scale(.3);opacity:.9}to{transform:scale(1.4);opacity:0}}
+.flyer{position:absolute;z-index:85;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s;margin:0}
+
+/* the owner note below the stage */
+#note{background:#F2F4F7;border-top:1px solid #E4E7EC;padding:18px 24px 28px;font-size:13px;color:#475467}
+#note h4{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#344054}
+#note ul{margin:0;padding-left:18px;max-width:980px}
+#note li{margin-bottom:4px}
+</style></head><body>
+<div id="bar">
+  <div class="r1"><b class="t">Query on the tools</b><span class="lab">Tool</span><div class="seg" id="segTool"></div><span class="lab">Variation</span><div class="seg" id="segVar"></div><span class="sample">Sample answers written for the mockup</span></div>
+  <div class="r2"><span class="lab">Step</span><div class="seg" id="segStep"></div><button class="barbtn" id="play">Play all steps</button><span style="font-size:11.5px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Data: Expedition Pediatric Dentistry, client 180 · Search Console and Google Analytics by page, Oct 2025 to Oct 2026 · Trends check #22, read for Washington</span></div>
+  <div class="r3" id="cap"></div>
+</div>
+<div id="stage"><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><main id="main"></main><div id="q"></div><div id="cur"><svg viewBox="0 0 24 24"><path d="M4 2l15 10-7 1.5L8.5 21z" fill="#0B1020" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg></div></div>
+<section id="note"><h4>What it needs to work (for the owner)</h4><ul>
+<li>Query must receive the <b>tool name</b>, the <b>current setup state</b> (practice, typed topics, phrases, searches or questions, the open step) and the <b>run id</b> on a results page. Today it only gets the client and strategy.</li>
+<li>Its context needs the client's <b>Search Console search phrases</b> (performance_cache_queries: showings and clicks by search) and <b>page outcomes</b> (performance_cache_pages: visits and calls or forms per page). Neither is in client_context_core or query_site_knowledge today.</li>
+<li>"Add" needs a small client-side bridge: the answer returns structured suggestions (kind + text) next to the prose, and the tool page listens for them and drops them into its setup fields.</li>
+<li>Show Query on /tools/* only when a client_id is set. Prospects, with no client, never see it. Today showClientAssistant leaves /tools/* out entirely.</li>
+<li>Mockup gaps: search positions are not in performance_cache_queries, so answers quote showings and clicks only. Grid Scan and AI Visibility results pages are not shown: there is no Expedition run of either.</li>
+</ul></section>
+<script>// Real numbers only. Search Console = performance_cache_queries / performance_cache_pages (client 180,
+// weeks Oct 6 2025 to Oct 12 2026; Expedition's site has no rows for the weeks of Sep 7, 14, 21).
+// Google Analytics = performance_cache_pages source ga4, same window. Trends = check #22, read for Washington.
+const SRC_SC = 'Search Console, Expedition’s own site, last 12 months: showings in Google and clicks. Three weeks of September 2026 are missing.';
+const SRC_GA = 'Google Analytics, Expedition’s own account, last 12 months: visits and calls or forms.';
+
+const TOOLS = {
+  mt: {
+    name: 'Market Trends', accent: '#0F766E', ink: '#115E59', tint: '#E6F4F1', soft: '#99D5CC', a2: '#0891B2',
+    icon: '<svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+    eyebrow: 'New check',
+    sentence0: () => `Check how demand is moving for ${B('which topics')} around ${B('which practice', 'open')} in ${B('which state')}, read through ${B('the search phrases')}.`,
+    sentence: (n) => `Check how demand is moving for ${B('3 topics', 'ok')} around ${B('Expedition Pediatric Dentistry', 'ok')} in ${B('Washington', 'ok')}, read through <span style="white-space:nowrap">${B(`<span class="cnt" data-count>${n}</span> search phrases`, 'open')}.</span>`,
+    base: 5, unit: 'phrase',
+    stepName: 'Search phrases',
+    starters: ['What other words do patients use for tongue tie?', 'Which of these topics bring Expedition calls or forms?', 'Are any of these phrases too small to read?'],
+    v3prompts: ['What other words do patients use for tongue tie?', 'Which phrases bring Expedition calls or forms?'],
+    v3ev: [
+      { html: 'Expedition shows up <b>285,893</b> times a year for “frenectomy”', src: 'Search Console, last 12 months', add: 'frenectomy' },
+      { html: 'Every search with “tongue tie” in it: <b>7,583</b> showings, 3 clicks', src: 'Search Console, last 12 months' },
+      { html: 'Frenectomy guide article: <b>2,544</b> visits, 3 calls or forms', src: 'Google Analytics, last 12 months' },
+    ],
+    v4: { anchor: 'tongue tie', label: 'Find other words for this topic' },
+    cmd: ['What other words do patients use for tongue tie?', 'Which of these topics bring Expedition calls or forms?', 'Are any of these phrases too small to read?'],
+    ans: {
+      q: 'What other words do patients use for tongue tie?',
+      blocks: [
+        { p: 'Patients who find Expedition rarely type “tongue tie”. They type **frenectomy**, the name of the procedure.' },
+        { ev: { h: 'Searches that showed Expedition’s site', rows: [
+          ['frenectomy', '285,893', '894 clicks'], ['frenectomy procedure', '32,010', '244 clicks'],
+          ['what is a frenectomy', '10,563', '42 clicks'], ['labial frenectomy', '10,541', '24 clicks'],
+          ['every search with “tongue tie” in it', '7,583', '3 clicks']] } },
+        { p: 'All searches with frenectomy, frenotomy or frenulectomy in them add up to **458,255 showings and 1,533 clicks**, about 60 times the tongue tie searches.', compact: false },
+        { p: 'The page they land on is the frenectomy guide article: **2,544 visits and 3 calls or forms**. The frenectomy service page had 144 visits and 6 calls or forms.' },
+        { p: '“frenectomy” is not one of this check’s 5 phrases yet, so Google Trends has no line for it.', compact: false },
+        { adds: { h: 'Add to Tongue tie', items: [
+          { id: 'frenectomy', label: 'frenectomy', sub: '285,893 showings' },
+          { id: 'frenectomy procedure', label: 'frenectomy procedure', sub: '32,010' },
+          { id: 'labial frenectomy', label: 'labial frenectomy', sub: '10,541' },
+          { id: 'lip tie', label: 'lip tie', sub: '8,096, a related release' }] } },
+        { src: SRC_SC + ' ' + SRC_GA },
+      ],
+      auto: ['frenectomy', 'frenectomy procedure'],
+    },
+  },
+  gs: {
+    name: 'Grid Scan', accent: '#0F766E', ink: '#115E59', tint: '#E6F4F1', soft: '#99D5CC', a2: '#0891B2',
+    icon: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16"/></svg>',
+    eyebrow: 'New scan',
+    sentence0: () => `Scan where ${B('which practice', 'open')} shows up on Google Maps for ${B('which searches')}, across ${B('a 2-mile grid')} around the office, next to ${B('nearby practices')}.`,
+    sentence: (n) => `Scan where ${B('Expedition Pediatric Dentistry', 'ok')} shows up on Google Maps for ${B(`<span class="cnt" data-count>${n}</span> searches`, 'open')}, across ${B('a 2-mile grid', 'ok')} around the office, next to ${B('nearby practices')}.`,
+    base: 2, unit: 'search',
+    stepName: 'Which searches',
+    starters: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?', 'Which services bring Expedition calls or forms?'],
+    v3prompts: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?'],
+    v3ev: [
+      { html: '“kids dentist bellevue” showed Expedition <b>2,951</b> times', src: 'Search Console, last 12 months', add: 'kids dentist bellevue', have: true },
+      { html: '“lip tie doctor bellevue”: <b>2,534</b> showings, 0 clicks', src: 'Search Console, last 12 months', add: 'lip tie doctor bellevue' },
+      { html: 'Home page: <b>81</b> calls or forms from 1,265 visits', src: 'Google Analytics, last 12 months' },
+    ],
+    v4: { anchor: 'kids dentist bellevue', label: 'Other ways parents search this' },
+    cmd: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?', 'Which services bring Expedition calls or forms?'],
+    ans: {
+      q: 'Which searches should this scan cover?',
+      blocks: [
+        { p: 'Start with the local searches that already show Expedition in Google, and match each to a page that brings calls or forms.' },
+        { ev: { h: 'Local searches that showed Expedition’s site', rows: [
+          ['kids dentist bellevue', '2,951', '6 clicks'], ['bellevue pediatric dentistry', '2,615', '8 clicks'],
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['emergency pediatric dentist near me', '1,972', '0 clicks'],
+          ['pediatric dentist near me', '1,587', '5 clicks']] } },
+        { p: 'Behind them: the home page brought **81 calls or forms from 1,265 visits**. Lip tie searches belong to the frenectomy service page: 144 visits, 6 calls or forms.' },
+        { p: 'These are Google search counts, not Maps. They show what parents type near Bellevue; the scan shows where Expedition sits on the map.', compact: false },
+        { adds: { h: 'Add to the scan', items: [
+          { id: 'pediatric dentist near me', label: 'pediatric dentist near me', sub: 'in the scan', have: true },
+          { id: 'kids dentist bellevue', label: 'kids dentist bellevue', sub: 'in the scan', have: true },
+          { id: 'bellevue pediatric dentistry', label: 'bellevue pediatric dentistry', sub: '2,615' },
+          { id: 'lip tie doctor bellevue', label: 'lip tie doctor bellevue', sub: '2,534' },
+          { id: 'emergency pediatric dentist near me', label: 'emergency pediatric dentist near me', sub: '1,972' }] } },
+        { src: SRC_SC + ' ' + SRC_GA },
+      ],
+      auto: ['bellevue pediatric dentistry', 'lip tie doctor bellevue', 'emergency pediatric dentist near me'],
+    },
+    ans4: {
+      q: 'Other ways parents search “kids dentist bellevue”',
+      blocks: [
+        { p: 'Parents near Bellevue word this a few ways. Each of these showed Expedition’s site in Google:' },
+        { ev: { h: 'Close wordings', rows: [
+          ['bellevue pediatric dentistry', '2,615', '8 clicks'], ['bellevue kids dentist', '2,587', '3 clicks'],
+          ['kids dentist bellevue washington', '2,424', '0 clicks'], ['pediatric dentist bellevue', '1,862', '14 clicks']] } },
+        { p: '“pediatric dentist bellevue” brought the most clicks of these: **14**.' },
+        { adds: { h: 'Add to the scan', items: [
+          { id: 'pediatric dentist bellevue', label: 'pediatric dentist bellevue', sub: '1,862' },
+          { id: 'bellevue pediatric dentistry', label: 'bellevue pediatric dentistry', sub: '2,615' }] } },
+        { src: SRC_SC },
+      ],
+      auto: ['pediatric dentist bellevue', 'bellevue pediatric dentistry'],
+    },
+  },
+  aiv: {
+    name: 'AI Visibility', accent: '#4F46E5', ink: '#4338CA', tint: '#EEF0FF', soft: '#C7C9FB', a2: '#9333EA',
+    icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" stroke-dasharray="2 2.6"/><circle cx="12" cy="12" r="2.2"/></svg>',
+    eyebrow: 'New check',
+    sentence0: () => `Check how AI talks about ${B('which practice', 'open')} in ${B('which city')}, across ${B('the questions')} patients ask, next to ${B('nearby practices')}.`,
+    sentence: (n) => `Check how AI talks about ${B('Expedition Pediatric Dentistry', 'ok')} in ${B('Bellevue, WA', 'ok')}, across ${B(`<span class="cnt" data-count>${n}</span> questions`, 'open')} patients ask, next to ${B('nearby practices')}.`,
+    base: 3, unit: 'question',
+    stepName: 'What patients ask',
+    starters: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?', 'Which questions are research, not looking for a dentist?'],
+    v3prompts: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?'],
+    v3ev: [
+      { html: '“emergency pediatric dentist near me”: <b>1,972</b> showings, 0 clicks', src: 'Search Console, last 12 months', add: 'q-emergency' },
+      { html: 'White crown searches: <b>59,513</b> showings, 103 clicks', src: 'Search Console, last 12 months', add: 'q-crowns' },
+      { html: 'Frenectomy searches: <b>458,255</b> showings, 1,533 clicks', src: 'Search Console, last 12 months' },
+    ],
+    v4: { anchor: 'Which pediatric dentist in Bellevue does frenectomies?', label: 'Why this question, and what else?' },
+    cmd: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?', 'Which questions are research, not looking for a dentist?'],
+    ans: {
+      q: 'Which questions would Expedition’s patients ask an AI?',
+      blocks: [
+        { p: 'Parents ask AI the way they search. These are drafted from Expedition’s real Google searches, one for each service that brings visits.' },
+        { ev: { h: 'The searches behind each question', rows: [
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['infant frenectomy near me', '1,837', '0 clicks'],
+          ['emergency pediatric dentist near me', '1,972', '0 clicks'], ['every search with “crown” in it', '59,513', '103 clicks'],
+          ['pediatric dentistry for special needs bellevue', '320', '0 clicks']] } },
+        { p: 'The white crowns guide brought **805 visits and 5 calls or forms**, so a research question about crowns is worth reading too. Research questions sit on their own line and never count in the headline.', compact: false },
+        { adds: { h: 'Add to the questions', items: [
+          { id: 'q-liptie', label: 'Where can I get my baby’s lip tie or tongue tie released near me?', sub: 'Near me' },
+          { id: 'q-emergency', label: 'Is there an emergency pediatric dentist open near me?', sub: 'Near me' },
+          { id: 'q-crowns', label: 'Are white crowns safe for my toddler’s baby teeth?', sub: 'Research' },
+          { id: 'q-special', label: 'Which pediatric dentist in Bellevue treats kids with special needs?', sub: 'Names the city' }] } },
+        { src: SRC_SC + ' ' + SRC_GA + ' The questions themselves are drafted words, not data.' },
+      ],
+      auto: ['q-liptie', 'q-emergency', 'q-crowns'],
+    },
+    ans4: {
+      q: 'Why “Which pediatric dentist in Bellevue does frenectomies?”',
+      blocks: [
+        { p: 'Frenectomy is what Expedition’s site is found for most: searches with frenectomy, frenotomy or frenulectomy in them showed it **458,255 times**, with 1,533 clicks.' },
+        { p: 'Parents also ask about the baby, not the procedure, and those searches bring no clicks yet:' },
+        { ev: { h: 'Searches about the baby', rows: [
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['infant frenectomy near me', '1,837', '0 clicks'],
+          ['tongue tie treatment bellevue', '333', '0 clicks']] } },
+        { adds: { h: 'Add next to it', items: [
+          { id: 'q-liptie', label: 'Where can I get my baby’s lip tie or tongue tie released near me?', sub: 'Near me' }] } },
+        { src: SRC_SC },
+      ],
+      auto: ['q-liptie'],
+    },
+  },
+};
+TOOLS.mt.ans4 = TOOLS.mt.ans;
+
+// what each added id becomes in the setup
+const ADDED_AIV = {
+  'q-liptie': { text: 'Where can I get my baby’s lip tie or tongue tie released near me?', kind: 'near', group: 'Frenectomy' },
+  'q-emergency': { text: 'Is there an emergency pediatric dentist open near me?', kind: 'near', group: 'Emergency care' },
+  'q-crowns': { text: 'Are white crowns safe for my toddler’s baby teeth?', kind: 'research', group: 'White crowns' },
+  'q-special': { text: 'Which pediatric dentist in Bellevue treats kids with special needs?', kind: 'city', group: 'Pediatric dentistry' },
+};
+
+// MT results: pediatric dentistry, Google Trends read for Washington (check #22), Oct 2024 to Oct 2026
+const PD = {
+  months: ['Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025', 'Sep 2025', 'Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Jul 2026', 'Aug 2026', 'Sep 2026', 'Oct 2026'],
+  v: [60.2, 49.2, 47.6, 67.2, 70.0, 67.8, 62.0, 69.0, 67.6, 83.5, 82.4, 73.0, 71.0, 62.2, 54.0, 74.2, 79.5, 72.4, 73.8, 80.4, 71.0, 71.0, 75.2, 56.5, 67.2],
+};
+const RESULTS = {
+  starters: ['Why is pediatric dentistry on the edge of Fading?', 'Is the September drop real?', 'Which page carries pediatric dentistry?'],
+  ans: {
+    q: 'Why is pediatric dentistry on the edge of Fading?',
+    blocks: [
+      { p: 'Because last summer was its busiest in the five years this check reads, and this September fell well short of it.' },
+      { ev: { h: 'Google Trends, read for Washington, 0 to 100', rows: [
+        ['Jul, Aug, Sep 2025', '84, 82, 73', 'about 80'], ['Jul, Aug, Sep 2026', '71, 75, 57', 'about 68'],
+        ['Sep 2026', '57', 'lowest of 5; 67 to 73 before']] } },
+      { p: 'That is about 15 in every 100 lower than last year. Dental searches overall in Washington held about level over the same months, so pediatric dentistry slipped behind them by the same amount: right on the Fading line, not past it.' },
+      { p: 'October is not over yet: 67 so far. The next check will show whether September was a one-off.', compact: false },
+      { p: 'Expedition’s own site shows a fall too: local pediatric dentistry searches showed it about 60 times a week this summer, down from about 190 last winter.', compact: false },
+      { next: ['Compare the last 3 summers', 'Which page carries pediatric dentistry?'] },
+      { src: 'Google Trends from check #22, read for Washington; 100 is the busiest week. Expedition’s weekly showings from Search Console, last 12 months.' },
+    ],
+    auto: [],
+  },
+};
+
+const STEPS = [
+  { k: 'none', label: '0 No client' }, { k: 'arrive', label: '1 Client picked' }, { k: 'open', label: '2 Open' },
+  { k: 'ask', label: '3 Ask' }, { k: 'add', label: '4 Use a suggestion' }, { k: 'close', label: '5 Close' }, { k: 'results', label: '6 Results page' },
+];
+const VARS = [
+  { n: 1, label: 'V1 Familiar panel' }, { n: 2, label: 'V2 Inline' }, { n: 3, label: 'V3 Helper rail' }, { n: 4, label: 'V4 Sparkles' }, { n: 5, label: 'V5 Command bar' },
+];
+
+// mockup-bar captions: what each step shows, per variation
+const CAP = {
+  1: ['No client picked: no Query button anywhere. A prospect check never shows it.',
+    'Expedition is picked from the client list. Query’s button pops in at the bottom right in the tool’s colour and says once that it knows Expedition.',
+    'The button opens the familiar side panel. It PUSHES the page left, so nothing on the setup is covered. Starter questions are about this tool’s step.',
+    'A starter is sent. Query reads Expedition’s searches and pages, then streams the answer, every number with its source.',
+    '+ on a suggestion drops it straight into the setup and the sentence count goes up.',
+    'The panel closes and the page slides back. Added items keep a small "from Query" tag.'],
+  2: ['No client picked: the "Ask Query" line does not exist.',
+    'Expedition is picked. A slim "Ask Query about Expedition" line wipes in under the list, in the space kept for it.',
+    'Clicking the line turns it into a question box in place, with a suggested question.',
+    'The answer opens under it, compact, inside the setup panel. Nothing floats.',
+    'Suggestions arrive as chips with a +. Each one flies a few centimetres up into the list.',
+    'The box folds back into the slim line.'],
+  3: ['No client picked: no helper rail; the setup has the full width.',
+    'Expedition is picked. The helper rail slides in from the right and the setup makes room. It shows prompts and evidence for the current step.',
+    'A prompt for this step is picked.',
+    'The answer streams inside the rail, under the step’s evidence.',
+    'Add buttons drop suggestions into the setup next to it.',
+    'The rail collapses to a slim tab; the setup gets its width back. It stays a tab on results pages.'],
+  4: ['No client picked: no Query marks.',
+    'Expedition is picked. A small Query mark appears beside each item, one after another.',
+    'The mark beside an item opens a popover anchored to it.',
+    'The popover answers about that one item.',
+    'Its + chips drop into the setup next to the popover; the popover steps down if the row grows.',
+    'The popover closes. On a results page the popover always opens over the text column, never the chart.'],
+  5: ['No client picked: the header shows "Pick a client to ask about them" instead of Query.',
+    'Expedition is picked. "Ask about Expedition" with its shortcut appears in the header, plus a one-time hint.',
+    'Cmd+K opens the command bar with suggestions for this tool.',
+    'The answer comes up in a sheet from the bottom; the setup list stays visible above it.',
+    '+ in the sheet drops the item into the setup above.',
+    'Esc closes the sheet. On a results page the sheet covers only the text column, never the chart.'],
+};
+const CAP_RES = {
+  1: 'Results page: the panel pushes the Story left, so the chart shrinks but is never covered.',
+  2: 'Results page: the Ask line sits under the chapter’s points and opens in place in the text column.',
+  3: 'Results page: the rail is a tab here (setup only when docked). Opened, it docks and the Story makes room.',
+  4: 'Results page: a Query mark beside the verdict tile opens a popover over the text column, not the chart.',
+  5: 'Results page: Cmd+K, then the sheet covers only the text column, never the chart.',
+};
+</script><script>// Query on the tools: one stage, 3 tools x 5 variations x 7 steps. Each step = a static
+// "before" state, then that step's motion. All waits go through w() so a new run cancels the old one.
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const CANCEL = Symbol('cancel');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let RUN = { dead: false };
+async function w(ms) { const r = RUN; await sleep(ms); if (r.dead) throw CANCEL; }
+const S = { tool: 'mt', v: 1, step: 0, playing: false };
+const T = () => TOOLS[S.tool];
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const md = (s) => { let t = esc(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>'); return t.replace(/\*\*[^*]*$/, (m) => m.replace(/\*\*/g, '')); };
+function B(label, st) { return `<span class="blank ${st === 'ok' ? 'ok' : ''} ${st === 'open' ? 'open' : ''}">${label}${st === 'ok' ? '<span class="tick">✓</span>' : ''}</span>`; }
+function qm(size, cls = '') { return `<span class="qm ${cls}" style="width:${size}px;height:${size}px"><svg viewBox="0 0 20 14" fill="none"><path d="M2.5 1 L8.5 7 L2.5 13" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><rect class="qcur" x="10.5" y="10" width="7" height="2.6" rx="1.2" fill="#fff"/></svg></span>`; }
+const ansFor = () => (S.v === 4 ? T().ans4 : T().ans);
+const SEND = '<svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>';
+
+/* ---------------- theme + bar ---------------- */
+function applyTheme() {
+  const t = T(); const r = document.documentElement.style;
+  r.setProperty('--a', t.accent); r.setProperty('--aInk', t.ink); r.setProperty('--aTint', t.tint); r.setProperty('--aSoft', t.soft); r.setProperty('--a2', t.a2);
+  $$('.oq-rail-item').forEach((a) => a.classList.toggle('is-active', a.title === t.name));
+}
+function renderBar() {
+  $('#segTool').innerHTML = Object.keys(TOOLS).map((k) => `<button data-tool="${k}" class="${S.tool === k ? 'on' : ''}">${TOOLS[k].name}</button>`).join('');
+  $('#segVar').innerHTML = VARS.map((v) => `<button data-v="${v.n}" class="${S.v === v.n ? 'on' : ''}">${v.label}</button>`).join('');
+  $('#segStep').innerHTML = STEPS.map((s, i) => `<button data-step="${i}" class="${S.step === i ? 'on' : ''}" ${i === 6 && S.tool !== 'mt' ? 'disabled title="The results example is on Market Trends"' : ''}>${s.label}</button>`).join('');
+  $('#play').classList.toggle('on', S.playing); $('#play').textContent = S.playing ? 'Stop' : 'Play all steps';
+  $('#cap').textContent = `${VARS[S.v - 1].label}, step ${S.step}: ${S.step === 6 ? CAP_RES[S.v] : CAP[S.v][S.step]}`;
+  $$('#segTool button').forEach((b) => { b.onclick = () => { S.tool = b.dataset.tool; if (S.step === 6 && S.tool !== 'mt') S.step = 5; stopPlay(); go(S.step); }; });
+  $$('#segVar button').forEach((b) => { b.onclick = () => { S.v = +b.dataset.v; stopPlay(); go(S.step); }; });
+  $$('#segStep button').forEach((b) => { b.onclick = () => { stopPlay(); go(+b.dataset.step); }; });
+  document.documentElement.style.setProperty('--barH', `${$('#bar').offsetHeight}px`);
+}
+
+/* ---------------- pages ---------------- */
+function preFor(step) {
+  if (step === 6) return { results: true, client: true, arrived: true };
+  return { client: step >= 2, arrived: step >= 2, open: step >= 3, answered: step >= 4, added: step >= 5 };
+}
+function topHTML(pre) {
+  const t = T();
+  const who = pre.results ? '<span class="who">Expedition Pediatric Dentistry<small>Check #22 · Oct 29, 2026 · read for Washington</small></span>'
+    : (pre.client ? '<span class="who">Expedition Pediatric Dentistry<small>Client</small></span>' : '');
+  return `<div class="top"><div class="brand"><span class="tmark">${t.icon}</span>${t.name}</div><div class="tright"><span id="hslot"></span><span class="hiw"><i></i>How it works</span>${who}</div></div>`;
+}
+function setupHTML(pre) {
+  const t = T();
+  const n = t.base + (pre.added ? ansFor().auto.length : 0);
+  return `<div class="wrap">${topHTML(pre)}<div class="eyebrow">${t.eyebrow}</div>
+    <h1 class="h-sentence" id="sent">${pre.client ? t.sentence(n) : t.sentence0()}</h1>
+    <div id="panelHost">${pre.client ? stepPanel(pre, n) : practicePanel()}</div>
+    <div class="runrow"><button class="btn btn-go" disabled>Run it</button><span class="small">${pre.client ? 'Confirm the open blank, then run it.' : 'Confirm the dotted blanks first.'}</span></div></div>`;
+}
+function practicePanel() {
+  const f = (lab, ph) => `<label class="field"><span>${lab} <i>*</i></span><div class="input ph" data-f="${lab}">${ph}</div></label>`;
+  return `<section class="panel" id="pp"><div class="panel-head">Which practice</div>
+    <label class="field"><span>Client</span><div class="dd"><div class="input ph" id="clientBox">Pick a client, or leave it empty for a prospect</div></div></label>
+    <div class="fields">${f('Domain', 'practice.com')}${f('Business name', 'As it appears on Google')}${f('City and state', 'City, ST')}</div>
+    <div style="margin-top:14px"><button class="btn btn-go" id="findBtn">Find the practice</button></div></section>`;
+}
+const spk = (key) => `<span class="spkslot" data-spk="${esc(key)}"></span>`;
+function stepPanel(pre, n) {
+  const t = T(); const added = pre.added ? ansFor().auto : [];
+  const v2 = S.v === 2 ? '<div class="v2slot" id="v2slot"></div>' : '';
+  if (S.tool === 'mt') {
+    const fq = (p) => `<span class="chip fromq">${esc(p)} <span class="fromtag">from Query</span></span>`;
+    const g = (name, chips, drop) => `<div class="pgroup"><div class="tn">${name}</div><div class="chips" ${drop ? 'data-drop' : ''}>${chips}</div></div>`;
+    return `<section class="panel" id="sp"><div class="panel-head">${t.stepName}</div><p class="lead">Each phrase is read on its own on Google Trends, then they add up to the topic.</p>
+      ${g('Tongue tie', `<span class="chip head">tongue tie ${spk('tongue tie')}</span><span class="chip thin">ankyloglossia <small>too few searches</small></span>${added.map(fq).join('')}`, true)}
+      ${g('Preventative pediatric dentistry', `<span class="chip head">pediatric dentist ${spk('pediatric dentist')}</span><span class="chip thin">children’s dentist <small>too few searches</small></span>`)}
+      ${g('Pediatric dentistry', `<span class="chip head">pediatric dentistry ${spk('pediatric dentistry')}</span>`)}
+      <div class="pfoot"><span class="mono"><span data-count>${n}</span> phrases</span><button class="btn btn-go">Use these phrases</button></div>${v2}</section>`;
+  }
+  if (S.tool === 'gs') {
+    const filled = ['pediatric dentist near me', 'kids dentist bellevue', ...added];
+    const rows = [0, 1, 2, 3, 4].map((i) => filled[i]
+      ? `<div class="slot"><span class="num">${i + 1}</span><span class="w"><b>${esc(filled[i])}</b>${i < 2 ? spk(filled[i]) : ''}</span>${i >= 2 ? '<span class="fromtag">from Query</span>' : '<span></span>'}</div>`
+      : `<div class="slot empty"><span class="num">${i + 1}</span><span class="w">Empty: type a search</span><span></span></div>`).join('');
+    return `<section class="panel" id="sp"><div class="panel-head">${t.stepName}</div><p class="lead">Up to 5. Each one is typed from every spot on the grid, the way a patient standing there would.</p>
+      <div class="slots">${rows}</div><div class="pfoot"><span class="mono"><span data-count>${n}</span> of 5 searches</span><button class="btn btn-go">Use these searches</button></div>${v2}</section>`;
+  }
+  const base = [
+    { text: 'What is a good kids dentist in Bellevue, WA?', kind: 'city', group: 'Pediatric dentistry' },
+    { text: 'Which pediatric dentist near me takes new patients?', kind: 'near', group: 'Pediatric dentistry' },
+    { text: 'Which pediatric dentist in Bellevue does frenectomies?', kind: 'city', group: 'Frenectomy' },
+  ];
+  const all = [...base, ...added.map((id) => ({ ...ADDED_AIV[id], fromq: true }))];
+  const groups = [...new Set(all.map((q) => q.group))];
+  return `<section class="panel" id="sp"><div class="panel-head">${t.stepName}</div><p class="lead">Grouped by service. Each question is asked of every AI, several times.</p>
+    <div id="qgroups">${groups.map((gname) => `<div data-group="${esc(gname)}"><div class="qgroup-h"><span>${esc(gname)}</span></div>${all.filter((q) => q.group === gname).map(qrow).join('')}</div>`).join('')}</div>
+    <div class="pfoot"><span class="mono"><span data-count>${n}</span> questions</span><button class="btn btn-go">Use these</button></div>${v2}</section>`;
+}
+const KIND = { city: ['tt-city', 'Names the city'], near: ['tt-near', 'Near me'], research: ['tt-research', 'Research'] };
+function qrow(q) {
+  return `<div class="qrow"><span class="bx">✓</span><span class="qt">${esc(q.text)}${q.fromq ? '' : spk(q.text)}</span>${q.fromq ? '<span class="fromtag">from Query</span>' : ''}<span class="ttag ${KIND[q.kind][0]}">${KIND[q.kind][1]}</span></div>`;
+}
+
+/* MT results page: one Story chapter, pediatric dentistry */
+function resultsHTML() {
+  const v2 = S.v === 2 ? '<div class="v2slot" id="v2slot"></div>' : '';
+  return `<div class="wrap">${topHTML({ results: true })}<div class="tabs"><span class="on">Story</span><span>Topics</span><span>Phrases</span></div>
+  <div class="res"><div id="rtext" style="position:relative">
+    <div class="kick">Pediatric dentistry · where searches stand</div>
+    <h2>Pediatric dentistry is <em>Steady, right on the Fading line</em>.</h2>
+    <p class="lede">Searches for pediatric dentistry were about 15 in every 100 lower this July to September than the same months last year.</p>
+    <div class="rtiles"><div class="rtile"><b>68</b><small>Jul to Sep 2026, Google’s 0 to 100 scale</small></div><div class="rtile"><b>80</b><small>the same months in 2025</small></div><div class="rtile" id="vtile"><b style="font-size:18px;display:flex;align-items:center;gap:4px">Steady ${spk('verdict')}</b><small>on the Fading line</small></div></div>
+    <ul class="rpoints"><li>Dental searches overall in Washington held about level over the same months.</li><li>September 2026 read 57, the lowest September in five years of this read.</li><li>Its season repeats: busiest in late summer, quietest every December.</li></ul>${v2}
+  </div><div class="fig" id="fig"><div class="readout idle" id="readout">Hover the chart to read any month</div>
+    <div class="figt">Pediatric dentistry searches, read for Washington</div><div class="figs">Google Trends, 0 to 100, where 100 is its busiest week · Oct 2024 to Oct 2026</div><div id="chartHost">${chartSVG(560)}</div></div></div></div>`;
+}
+function chartSVG(W) {
+  const H = 320, L = 30, R = 46, TP = 52, BT = 34, n = PD.v.length - 1;
+  const x = (i) => L + i * (W - L - R) / n, y = (v) => TP + (1 - v / 100) * (H - TP - BT), hw = (W - L - R) / n / 2;
+  const pts = PD.v.slice(0, 24).map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const band = (a, b, fill, l1, l2, avg) => `<rect x="${x(a) - hw}" y="${TP}" width="${x(b) - x(a) + 2 * hw}" height="${H - TP - BT}" fill="${fill}"/>
+    <line x1="${x(a) - hw}" x2="${x(b) + hw}" y1="${y(avg)}" y2="${y(avg)}" stroke="#0B1020" stroke-opacity=".45" stroke-width="1"/>
+    <text x="${(x(a) + x(b)) / 2}" y="${TP - 28}" text-anchor="middle" font-size="11" fill="#667085">${l1}</text><text x="${(x(a) + x(b)) / 2}" y="${TP - 10}" text-anchor="middle" font-size="12" font-weight="700" fill="#0B1020">${l2}</text>`;
+  const xl = W > 520 ? [[0, 'Oct 2024'], [3, 'Jan 2025'], [6, 'Apr'], [9, 'Jul'], [12, 'Oct'], [15, 'Jan 2026'], [18, 'Apr'], [21, 'Jul'], [24, 'Oct, not over']] : [[0, 'Oct 2024'], [6, 'Apr 2025'], [12, 'Oct'], [18, 'Apr 2026'], [24, 'Oct, not over']];
+  return `<svg class="chart" id="chart" data-w="${W}" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Pediatric dentistry searches by month">
+    ${[0, 50, 100].map((g) => `<line x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}" stroke="#EEF0F4"/><text x="${L - 6}" y="${y(g) + 4}" text-anchor="end" font-size="10.5" fill="#98A2B3">${g}</text>`).join('')}
+    ${band(9, 11, '#F3F4F6', 'Jul to Sep 2025', 'about 80', 79.6)}${band(21, 23, '#E3F2EE', 'Jul to Sep 2026', 'about 68', 67.6)}
+    <path d="${pts}" fill="none" stroke="#0D9488" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M${x(23)},${y(56.5)}L${x(24)},${y(67.2)}" fill="none" stroke="#0D9488" stroke-width="2" stroke-dasharray="2 3"/>
+    <rect x="${x(23) - 3.5}" y="${y(56.5) - 3.5}" width="7" height="7" rx="2" fill="#0D9488"/><text x="${x(23)}" y="${y(56.5) + 18}" text-anchor="middle" font-size="11" font-weight="700" fill="#0B1020">57</text>
+    <text x="${x(24) + 6}" y="${y(67.2) + 4}" font-size="11" fill="#667085">67</text>
+    ${xl.map(([i, l]) => `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" font-size="10.5" fill="#667085">${l}</text>`).join('')}
+    <line id="guide" x1="0" x2="0" y1="${TP}" y2="${H - BT}" stroke="#0B1020" stroke-opacity=".25" visibility="hidden"/>
+    <rect id="hov" x="${L}" y="${TP}" width="${W - L - R}" height="${H - TP - BT}" fill="transparent"/></svg>`;
+}
+let chartRO = null;
+function mountChart() {
+  const host = $('#chartHost'); if (!host) return; if (chartRO) chartRO.disconnect();
+  let last = 0;
+  chartRO = new ResizeObserver(() => { const wd = Math.round(host.clientWidth); if (wd && Math.abs(wd - last) > 1) { last = wd; host.innerHTML = chartSVG(wd); wireChart(); } });
+  chartRO.observe(host);
+}
+function wireChart() {
+  const svg = $('#chart'); if (!svg) return; const hov = $('#hov'), g = $('#guide'), ro = $('#readout');
+  const W = +svg.dataset.w, L = 30, R = 46, n = PD.v.length - 1;
+  hov.addEventListener('mousemove', (e) => {
+    const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svg.getScreenCTM().inverse());
+    const i = Math.max(0, Math.min(n, Math.round((q.x - L) / ((W - L - R) / n)))); const xx = L + i * (W - L - R) / n;
+    g.setAttribute('x1', xx); g.setAttribute('x2', xx); g.setAttribute('visibility', 'visible');
+    ro.classList.remove('idle'); ro.textContent = `${PD.months[i]}: ${Math.round(PD.v[i])} on Google’s 0 to 100 scale${i === n ? ', month not over' : ''}`;
+  });
+  hov.addEventListener('mouseleave', () => { g.setAttribute('visibility', 'hidden'); ro.classList.add('idle'); ro.textContent = 'Hover the chart to read any month'; });
+}
+
+/* ---------------- shared Query pieces ---------------- */
+function answerHTML(ans, compact, added) {
+  return ans.blocks.filter((b) => !(compact && b.compact === false)).map((b) => {
+    if (b.p) return `<p class="qa-p">${md(b.p)}</p>`;
+    if (b.ev) return `<div class="qa-ev"><h6>${esc(b.ev.h)}</h6>${b.ev.rows.map(evRow).join('')}</div>`;
+    if (b.adds) return `<div class="qa-addh">${esc(b.adds.h)}</div><div class="qa-adds">${b.adds.items.map((it) => addBtn(it, added && ans.auto.includes(it.id))).join('')}</div>`;
+    if (b.next) return `<div class="qa-addh">Ask next</div><div class="qa-next">${b.next.map((x) => `<button>${esc(x)}</button>`).join('')}</div>`;
+    if (b.src) return `<div class="qa-src">${esc(b.src)}</div>`;
+    return '';
+  }).join('');
+}
+const evRow = (r) => `<div class="r"><span>${esc(r[0])}</span><b>${esc(r[1])}<small>${esc(r[2])}</small></b></div>`;
+const addBtn = (it, done) => `<button class="qadd ${done ? 'done' : ''} ${it.have ? 'have' : ''}" data-id="${esc(it.id)}"><span class="pl">${done || it.have ? '✓' : '+'}</span><span>${esc(it.label)} <small>${esc(it.sub)}</small></span></button>`;
+function convHTML(ans, compact, added) { return `<div class="qmsgs"><div class="qu">${esc(ans.q)}</div><div class="qa">${answerHTML(ans, compact, added)}</div></div>`; }
+const startersHTML = (list) => `<div class="qstart">${list.map((s) => `<button data-starter>${esc(s)}</button>`).join('')}</div>`;
+function qinHTML(text, ph = 'Ask about Expedition…') { return `<div class="qin"><span class="tx ${text ? '' : 'ph'}">${text ? esc(text) : ph}</span><span class="send ${text ? 'on' : ''}">${SEND}</span></div>`; }
+
+async function stream(host, ans, compact, scroller) {
+  host.innerHTML = '<div class="qthink"><i></i>Reading Expedition’s searches and pages…</div>';
+  const follow = () => { if (scroller) scroller.scrollTop = scroller.scrollHeight; };
+  follow(); await w(1000); host.innerHTML = '';
+  for (const b of ans.blocks) {
+    if (compact && b.compact === false) continue;
+    if (b.p) {
+      const p = document.createElement('p'); p.className = 'qa-p'; host.appendChild(p);
+      const words = b.p.split(' ');
+      for (let i = 1; i <= words.length; i += 2) { p.innerHTML = md(words.slice(0, i).join(' ')) + '<span class="qcaret"></span>'; follow(); await w(42); }
+      p.innerHTML = md(b.p);
+    } else if (b.ev) {
+      const d = document.createElement('div'); d.className = 'qa-ev'; d.innerHTML = `<h6>${esc(b.ev.h)}</h6>`; host.appendChild(d);
+      for (const r of b.ev.rows) { d.insertAdjacentHTML('beforeend', evRow(r)); d.lastElementChild.classList.add('fadein'); follow(); await w(130); }
+    } else if (b.adds) {
+      host.insertAdjacentHTML('beforeend', `<div class="qa-addh">${esc(b.adds.h)}</div><div class="qa-adds"></div>`);
+      const box = host.lastElementChild;
+      for (const it of b.adds.items) { box.insertAdjacentHTML('beforeend', addBtn(it, false)); box.lastElementChild.classList.add('rise'); follow(); await w(130); }
+    } else if (b.next) {
+      host.insertAdjacentHTML('beforeend', `<div class="qa-addh">Ask next</div><div class="qa-next">${b.next.map((x) => `<button>${esc(x)}</button>`).join('')}</div>`); follow(); await w(150);
+    } else if (b.src) { host.insertAdjacentHTML('beforeend', `<div class="qa-src fadein">${esc(b.src)}</div>`); follow(); }
+    await w(140);
+  }
+}
+async function typeText(el, text, step = 2, ms = 34) {
+  el.classList.remove('ph');
+  for (let i = 1; i <= text.length; i += step) { el.textContent = text.slice(0, i); await w(ms); }
+  el.textContent = text;
+}
+
+/* cursor, fly, scrolling */
+const stageXY = (el, ox = 0.5, oy = 0.5) => { const s = $('#stage').getBoundingClientRect(), r = el.getBoundingClientRect(); return [r.left - s.left + r.width * ox, r.top - s.top + r.height * oy]; };
+async function cursorTo(el, ox = 0.5, oy = 0.5) { const c = $('#cur'); const [x, y] = stageXY(el, ox, oy); c.classList.add('on'); c.style.transform = `translate(${x - 3}px,${y - 2}px)`; await w(760); }
+async function click(el) {
+  const [x, y] = stageXY(el); const r = document.createElement('div'); r.className = 'ripple'; r.style.left = `${x}px`; r.style.top = `${y}px`; $('#stage').appendChild(r);
+  el.classList.add('press'); await w(160); el.classList.remove('press'); setTimeout(() => r.remove(), 600); await w(120);
+}
+function hideCursor() { $('#cur').classList.remove('on'); }
+async function ensureVisible(el, scroller, insetBottom = 0, insetTop = 70) {
+  const sr = scroller.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const viewBottom = sr.bottom - insetBottom - 12;
+  let d = 0;
+  if (r.bottom > viewBottom) d = r.bottom - viewBottom;
+  if (r.top - d < sr.top + insetTop) d = r.top - sr.top - insetTop;
+  if (Math.abs(d) > 2) { scroller.scrollTo({ top: scroller.scrollTop + d, behavior: 'smooth' }); await w(450); }
+}
+async function fly(from, to) {
+  const st = $('#stage').getBoundingClientRect(), a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+  const f = from.cloneNode(true); f.classList.add('flyer'); f.classList.remove('rise', 'press');
+  Object.assign(f.style, { left: `${a.left - st.left}px`, top: `${a.top - st.top}px`, width: `${a.width}px`, boxShadow: '0 10px 24px rgba(11,16,32,.18)', background: '#fff' });
+  $('#stage').appendChild(f); await w(30);
+  f.style.transform = `translate(${b.left - a.left}px,${b.top - a.top}px) scale(${Math.min(1.1, Math.max(0.6, b.height / a.height))})`;
+  await w(900); f.style.opacity = '0'; setTimeout(() => f.remove(), 300);
+}
+function setCount(delta) {
+  $$('[data-count]').forEach((c) => { c.textContent = String(+c.textContent + delta); });
+  const bl = $('#sent [data-count]'); if (bl) { const b = bl.closest('.blank'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+}
+// insert the item hidden, return the element to fly to; reveal() shows it
+function landTarget(id) {
+  if (S.tool === 'mt') {
+    const box = $('[data-drop]'); box.insertAdjacentHTML('beforeend', `<span class="chip fromq" style="visibility:hidden">${esc(id)} <span class="fromtag">from Query</span></span>`);
+    const el = box.lastElementChild; return { el, reveal: () => { el.style.visibility = ''; el.classList.add('landed'); } };
+  }
+  if (S.tool === 'gs') {
+    const el = $('.slot.empty'); const w2 = $('.w', el);
+    return { el: w2, reveal: () => { el.classList.remove('empty'); w2.innerHTML = `<b>${esc(id)}</b>`; el.lastElementChild.outerHTML = '<span class="fromtag">from Query</span>'; el.classList.add('landed'); } };
+  }
+  const q = ADDED_AIV[id]; let g = $(`[data-group="${q.group}"]`);
+  if (!g) { $('#qgroups').insertAdjacentHTML('beforeend', `<div data-group="${esc(q.group)}"><div class="qgroup-h"><span>${esc(q.group)}</span></div></div>`); g = $('#qgroups').lastElementChild; }
+  g.insertAdjacentHTML('beforeend', qrow({ ...q, fromq: true })); const el = g.lastElementChild; el.style.visibility = 'hidden';
+  return { el, reveal: () => { el.style.visibility = ''; el.classList.add('landed'); } };
+}
+async function addMotion(host, scroller, insetBottom = 0) {
+  for (const id of ansFor().auto) {
+    const btn = $(`.qadd[data-id="${CSS.escape(id)}"]`, host); if (!btn) continue;
+    if (scroller) await ensureVisible(btn, scroller, 0, 10);
+    await cursorTo(btn, 0.2); await click(btn);
+    const tg = landTarget(id); await ensureVisible(tg.el, $('#main'), insetBottom);
+    await fly(btn, tg.el);
+    btn.classList.add('done'); $('.pl', btn).textContent = '✓';
+    tg.reveal(); setCount(1); if (S.v === 4 && $('#v4pop')) V[4].place(preFor(S.step)); await w(380);
+  }
+  hideCursor();
+}
+
+/* ---------------- variations ---------------- */
+const V = {};
+const ctxLine = (pre) => pre.results ? 'Knows: <b>Expedition Pediatric Dentistry</b> · this check’s results, chapter on screen · Search Console and Google Analytics'
+  : `Knows: <b>Expedition Pediatric Dentistry</b> · this setup, ${T().stepName.toLowerCase()} step · Search Console and Google Analytics, last 12 months`;
+
+/* V1: the familiar floating button + side panel that pushes the page */
+V[1] = {
+  draw(pre) {
+    if (!pre.arrived) return;
+    $('#q').insertAdjacentHTML('beforeend', `<div class="v1fab" id="fab" style="${pre.open ? 'opacity:0;transform:scale(.6)' : ''}"><span id="hello"></span>${qm(40)}</div>
+      <aside class="v1pan ${pre.open ? 'on' : ''}" id="pan"><div class="qhead">${qm(22)}<span class="nm">Query</span><span class="tl">${T().name}</span><span class="sp"></span><button class="qx" title="New chat">+</button><button class="qx" id="panX" title="Close">✕</button></div>
+      <div class="qctx qknows">${ctxLine(pre)}</div><div class="qbody" id="pbody">${this.body(pre)}</div>
+      <div class="qfoot">${qinHTML(pre.answered ? '' : '')}<small>Enter to send · Paste or attach images, .docx, .csv</small></div></aside>`);
+    if (pre.open) setMr(400);
+  },
+  body(pre) { const a = pre.results ? RESULTS.ans : ansFor(); return pre.answered ? convHTML(a, false, pre.added) : `<p class="qknows" style="margin:0 0 10px">Ask about Expedition. Answers use its Search Console searches, its pages in Google Analytics and this ${pre.results ? 'check' : 'setup'}.</p>${startersHTML(pre.results ? RESULTS.starters : T().starters)}`; },
+  async arrive() {
+    V[1].draw({ arrived: true }); const fab = $('#fab');
+    fab.animate([{ opacity: 0, transform: 'scale(.5) translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 500, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both' });
+    await w(650); const h = $('#hello'); h.className = 'hello'; h.innerHTML = 'Query knows <b>Expedition</b>';
+    const an = h.animate([{ opacity: 0, transform: 'translateX(12px)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: 'ease-out', fill: 'both' });
+    await w(2300); an.reverse(); await w(420); h.className = ''; h.innerHTML = '';
+  },
+  async open(pre) {
+    const fab = $('#fab'); await cursorTo($('.qm', fab)); await click($('.qm', fab));
+    fab.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.6) translateY(6px)' }], { duration: 250, fill: 'both' });
+    $('#pbody').innerHTML = V[1].body({ ...pre, answered: false }); $('#pan').classList.add('on'); setMr(400); hideCursor(); await w(600);
+  },
+  async ask(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const st = $('[data-starter]'); await cursorTo(st, 0.3); st.classList.add('hot'); await click(st);
+    const qi = $('#pan .qin'); qi.classList.add('focus'); await typeText($('.tx', qi), a.q, 3, 22); $('.send', qi).classList.add('on'); await w(300); hideCursor();
+    $('.tx', qi).textContent = 'Ask about Expedition…'; $('.tx', qi).classList.add('ph'); $('.send', qi).classList.remove('on');
+    const b = $('#pbody'); b.innerHTML = `<div class="qmsgs"><div class="qu rise">${esc(a.q)}</div><div class="qa" id="ans"></div></div>`;
+    await stream($('#ans'), a, false, b);
+  },
+  async add() { await addMotion($('#pan'), $('#pbody')); },
+  async close() { await cursorTo($('#panX')); await click($('#panX')); hideCursor(); $('#pan').classList.remove('on'); setMr(0); await w(300);
+    $('#fab').animate([{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none' }], { duration: 400, fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' }); await w(500); },
+};
+
+/* V2: a slim line inside the setup that expands in place */
+V[2] = {
+  slot: () => $('#v2slot'),
+  line: () => `<div class="v2line" id="v2line">${qm(22)}<b>Ask Query about Expedition</b><span class="hint">${esc((S.step === 6 ? RESULTS.starters : T().starters)[0])}</span><span class="go">Ask</span></div>`,
+  box(pre, text) {
+    const a = pre.results ? RESULTS.ans : ansFor();
+    return `<div class="v2box" id="v2box"><div class="bar">${qm(22)}${qinHTML(text)}<button class="qx" id="v2x" title="Close">✕</button></div>
+      <div class="ans" id="v2ans">${pre.answered ? `<div class="qa">${answerHTML(a, true, pre.added)}</div>` : `<div class="qknows" style="margin-bottom:8px">Suggested for this ${pre.results ? 'chapter' : 'step'}:</div>${startersHTML((pre.results ? RESULTS.starters : T().starters).slice(0, 2))}`}</div></div>`;
+  },
+  draw(pre) { const s = this.slot(); if (!pre.arrived || !s) return; s.innerHTML = pre.open ? this.box(pre, pre.answered ? (pre.results ? RESULTS.ans : ansFor()).q : '') : this.line(); },
+  async arrive() { const s = V[2].slot(); s.innerHTML = V[2].line(); s.firstElementChild.classList.add('v2wipe'); await w(900); },
+  async open(pre) {
+    const l = $('#v2line'); await ensureVisible(l, $('#main')); await cursorTo(l, 0.25); await click(l); hideCursor();
+    V[2].slot().innerHTML = V[2].box({ ...pre, answered: false }, ''); $('#v2box').classList.add('rise'); $('#v2box .qin').classList.add('focus');
+    await w(300); await ensureVisible($('#v2box'), $('#main')); await w(300);
+  },
+  async ask(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const st = $('#v2ans [data-starter]'); await cursorTo(st, 0.3); st.classList.add('hot'); await click(st); hideCursor();
+    await typeText($('#v2box .qin .tx'), a.q, 3, 22); await w(250);
+    const host = $('#v2ans'); host.innerHTML = '<div class="qa" id="ans"></div>';
+    const main = $('#main');
+    const keep = setInterval(() => { const r = $('#v2box') && $('#v2box').getBoundingClientRect(), m = main.getBoundingClientRect(); if (r && r.bottom > m.bottom - 10) main.scrollTop += Math.min(18, r.bottom - m.bottom + 10); }, 60);
+    try { await stream($('#ans'), a, true, host); } finally { clearInterval(keep); }
+  },
+  async add() { await addMotion($('#v2box'), $('#v2ans')); },
+  async close() {
+    const x = $('#v2x'); await cursorTo(x); await click(x); hideCursor(); const b = $('#v2box');
+    const h = b.offsetHeight; b.animate([{ height: `${h}px`, opacity: 1 }, { height: '44px', opacity: 0.3 }], { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' }); await w(370);
+    V[2].slot().innerHTML = V[2].line(); $('#v2line').classList.add('fadein'); await w(400);
+  },
+};
+
+/* V3: a docked helper rail during setup */
+V[3] = {
+  html(pre) {
+    const t = T(); const res = pre.results; const a = res ? RESULTS.ans : ansFor();
+    const prompts = res ? RESULTS.starters.slice(0, 2) : t.v3prompts;
+    const ev = res ? [{ html: 'Jul to Sep 2026: <b>68</b>; the same months in 2025: 80', src: 'Google Trends, read for Washington' }, { html: 'September 2026: <b>57</b>, lowest of 5 Septembers', src: 'Google Trends, read for Washington' }] : t.v3ev;
+    const evh = ev.map((e) => `<div class="ev"><div><p>${e.html}</p><small>${e.src}</small></div>${e.add ? `<button data-add="${e.add}" class="addb ${e.have || (pre.added && a.auto.includes(e.add)) ? 'done' : ''}">${e.have || (pre.added && a.auto.includes(e.add)) ? '✓ In' : '+ Add'}</button>` : ''}</div>`).join('');
+    return `<aside class="v3rail on ${pre.collapsed ? 'col' : ''}" id="rail"><div class="v3tab" id="v3tab">${qm(26)}<span>Query · Expedition</span></div>
+      <div class="qhead">${qm(22)}<span class="nm">Query</span><span class="tl">${t.name}</span><span class="sp"></span><button class="qx" id="railX" title="Collapse">»</button></div>
+      <div class="qbody" id="rbody"><div class="v3sec"><div class="v3step">For this ${res ? 'chapter' : `step: ${t.stepName.toLowerCase()}`}</div>${startersHTML(prompts)}</div>
+      <div class="v3sec"><div class="v3step">Evidence for Expedition</div>${evh}</div><div id="rconv">${pre.answered ? convHTML(a, false, pre.added) : ''}</div></div>
+      <div class="qfoot">${qinHTML('')}</div></aside>`;
+  },
+  draw(pre) {
+    if (!pre.arrived) return;
+    const collapsed = pre.results;
+    $('#q').insertAdjacentHTML('beforeend', this.html({ ...pre, collapsed })); setMr(collapsed ? 44 : 340);
+  },
+  async arrive() {
+    $('#q').insertAdjacentHTML('beforeend', V[3].html({ arrived: true })); const r = $('#rail'); r.classList.remove('on'); void r.offsetWidth;
+    r.classList.add('on'); setMr(340); await w(700);
+    $$('#rail .v3sec').forEach((s, i) => s.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 350, delay: 150 * i, fill: 'both' })); await w(700);
+  },
+  async open(pre) {
+    if (pre.results) { const tab = $('#v3tab'); await cursorTo($('.qm', tab)); await click($('.qm', tab)); $('#rail').classList.remove('col'); setMr(340); await w(600); }
+    const st = $('#rail [data-starter]'); await cursorTo(st, 0.3); st.classList.add('hot'); await click(st);
+    const qi = $('#rail .qin'); qi.classList.add('focus'); await typeText($('.tx', qi), st.textContent, 3, 22); $('.send', qi).classList.add('on'); hideCursor(); await w(300);
+  },
+  async ask(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const qi = $('#rail .qin');
+    if ($('.tx', qi).classList.contains('ph')) { const st = $('#rail [data-starter]'); st.classList.add('hot'); await typeText($('.tx', qi), a.q, 3, 22); }
+    await w(250); $('.tx', qi).textContent = 'Ask about Expedition…'; $('.tx', qi).classList.add('ph'); $('.send', qi).classList.remove('on'); qi.classList.remove('focus');
+    $('#rconv').innerHTML = `<div class="qmsgs"><div class="qu rise">${esc(a.q)}</div><div class="qa" id="ans"></div></div>`;
+    await stream($('#ans'), a, false, $('#rbody'));
+  },
+  async add() { await addMotion($('#rconv'), $('#rbody')); $$('#rail .addb[data-add]').forEach((b) => { if (ansFor().auto.includes(b.dataset.add)) { b.classList.add('done'); b.textContent = '✓ In'; } }); },
+  async close() { const x = $('#railX'); await cursorTo(x); await click(x); hideCursor(); $('#rail').classList.add('col'); setMr(44); await w(700); },
+};
+
+/* V4: a Query mark beside each item, opening a popover anchored to it */
+V[4] = {
+  marks(anim) { $$('.spkslot').forEach((s, i) => { s.innerHTML = `<button class="spk ${anim ? 'pop' : ''}" style="animation-delay:${i * 0.09}s" title="Ask Query about this">${qm(16, 's')}</button>`; }); },
+  anchor(pre) { return $(`.spkslot[data-spk="${CSS.escape(pre.results ? 'verdict' : T().v4.anchor)}"] .spk`); },
+  place(pre) {
+    const pop = $('#v4pop'), sp = this.anchor(pre); const host = pre.results ? $('#rtext') : $('#sp'); host.style.position = 'relative';
+    const hr = host.getBoundingClientRect(), ar = sp.getBoundingClientRect(), st = $('#stage').getBoundingClientRect();
+    const below = pre.results || S.tool === 'mt';
+    const width = Math.min(410, pre.results ? hr.width : 420); pop.style.width = `${width}px`;
+    let left = ar.left - hr.left - 24; left = Math.max(pre.results ? 0 : 10, Math.min(left, hr.width - width - (pre.results ? 0 : 10)));
+    pop.style.left = `${left}px`;
+    const arrow = $('.arrow', pop); arrow.style.left = `${ar.left - hr.left - left + ar.width / 2 - 6}px`;
+    if (below) {
+      const ref = pre.results ? $('#vtile') : sp.closest('.pgroup'); const rr = ref.getBoundingClientRect(); const top = rr.bottom - hr.top + 10;
+      pop.style.top = `${top}px`; pop.style.bottom = ''; arrow.style.top = '-7px'; arrow.style.bottom = ''; arrow.style.transform = 'rotate(45deg)';
+      pop.style.maxHeight = `${Math.max(240, st.bottom - (hr.top + top) - 14)}px`;
+    } else {
+      pop.style.top = ''; pop.style.bottom = `${hr.bottom - ar.top + 10}px`; arrow.style.top = ''; arrow.style.bottom = '-7px'; arrow.style.transform = 'rotate(225deg)'; pop.style.transformOrigin = 'bottom left';
+      pop.style.maxHeight = `${Math.max(240, ar.top - 10 - st.top - 64)}px`;
+    }
+  },
+  popHTML(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const label = pre.results ? 'Why is this on the edge of Fading?' : T().v4.label;
+    const q = pre.results ? RESULTS.ans.q : a.q;
+    return `<div class="v4pop" id="v4pop" style="z-index:40"><span class="arrow"></span><div class="ph">${qm(18)}<span style="flex:1">Query · ${esc(label)}</span><button class="qx" id="v4x" title="Close">✕</button></div>
+      <div class="pb" id="v4pb">${pre.answered ? `<div class="qa">${answerHTML(a, true, pre.added)}</div>` : `${startersHTML([q])}<div style="margin-top:8px">${qinHTML('', 'Or ask anything about this…')}</div>`}</div></div>`;
+  },
+  draw(pre) {
+    if (!pre.arrived) return; this.marks(false);
+    if (pre.open) { (pre.results ? $('#rtext') : $('#sp')).insertAdjacentHTML('beforeend', this.popHTML(pre)); this.place(pre); this.anchor(pre).classList.add('hot'); $('#v4pop').style.animation = 'none'; }
+  },
+  async arrive() { V[4].marks(true); await w(1100); },
+  async open(pre) {
+    const sp = V[4].anchor(pre); const below = pre.results || S.tool === 'mt'; await ensureVisible(sp, $('#main'), below ? 380 : 0, below ? 70 : 400); await cursorTo(sp); await click(sp); hideCursor(); sp.classList.add('hot');
+    (pre.results ? $('#rtext') : $('#sp')).insertAdjacentHTML('beforeend', V[4].popHTML({ ...pre, answered: false })); V[4].place(pre); await w(500);
+  },
+  async ask(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const st = $('#v4pop [data-starter]'); await cursorTo(st, 0.3); st.classList.add('hot'); await click(st); hideCursor();
+    const pb = $('#v4pb'); pb.innerHTML = '<div class="qa" id="ans"></div>'; await stream($('#ans'), a, true, pb);
+  },
+  async add() { await addMotion($('#v4pop'), $('#v4pb')); },
+  async close() { const x = $('#v4x'); await cursorTo(x); await click(x); hideCursor(); $('#v4pop').classList.add('out'); await w(260); $('#v4pop').remove(); $$('.spk.hot').forEach((s) => s.classList.remove('hot')); await w(200); },
+};
+
+/* V5: Cmd+K command bar, answer in a sheet */
+V[5] = {
+  btn(on) { return on ? `<button class="v5btn" id="v5btn">${qm(18)}Ask about Expedition <kbd>⌘K</kbd></button>` : `<button class="v5btn off" id="v5btn" disabled>${qm(18)}Pick a client to ask about them</button>`; },
+  sheetH(pre) { return Math.round($('#stage').offsetHeight * (pre.results ? 0.66 : 0.47)); },
+  sheetHTML(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); const h = this.sheetH(pre);
+    let left = 56, width = $('#stage').offsetWidth - 56;
+    if (pre.results) { const c = $('#rtext').getBoundingClientRect(), st = $('#stage').getBoundingClientRect(); left = c.left - st.left - 16; width = c.width + 32; }
+    return `<div class="v5sheet" id="sheet" style="left:${left}px;width:${width}px;height:${h}px"><div class="grab"></div><div class="sh">${qm(22)}<b>Query</b><span class="q">${esc(a.q)}</span><kbd class="mono" style="font-size:10.5px;color:#667085;border:1px solid #E7E9EE;border-radius:4px;padding:1px 5px">Esc</kbd><button class="qx" id="shX" title="Close">✕</button></div>
+      <div class="sb" id="sb">${pre.answered ? `<div class="qa">${answerHTML(a, false, pre.added)}</div>` : '<div class="qa" id="ans"></div>'}</div></div>`;
+  },
+  cmdHTML(pre, text) {
+    const list = pre.results ? RESULTS.starters : T().cmd;
+    let pos = '';
+    if (pre.results) { const c = $('#rtext').getBoundingClientRect(), st = $('#stage').getBoundingClientRect(); pos = `left:${c.left - st.left - 10}px;width:${c.width + 20}px;margin-left:0`; }
+    return `${pre.results ? '<div id="scrim"></div>' : '<div class="v5scrim" id="scrim"></div>'}<div class="v5cmd" id="cmd" style="${pos}"><div class="ci">${qm(24)}<span class="tx ${text ? '' : 'ph'}">${text ? esc(text) : 'Ask about Expedition…'}</span><kbd>Esc</kbd></div>
+      <div class="cs"><h6>For ${pre.results ? 'this chapter' : `this ${T().name} setup`}</h6>${list.map((s, i) => `<div class="${i === 0 ? 'hl' : ''}"><i></i>${esc(s)}<small>${i === 0 ? '↵' : ''}</small></div>`).join('')}
+      <h6 style="margin-top:8px">Knows</h6><div style="color:#667085;font-size:12.5px">Expedition’s Search Console searches, its pages in Google Analytics, ${pre.results ? 'this check' : 'this setup'}</div></div></div>`;
+  },
+  draw(pre) {
+    $('#hslot').innerHTML = this.btn(pre.client && pre.arrived);
+    if (!pre.client) { $('#q').insertAdjacentHTML('beforeend', '<div class="disabledtip">Query appears once a client is picked</div>'); }
+    if (pre.open && !pre.answered) $('#q').insertAdjacentHTML('beforeend', this.cmdHTML(pre, ''));
+    if (pre.answered) { $('#q').insertAdjacentHTML('beforeend', this.sheetHTML(pre)); $('#sheet').classList.add('on'); $('#main').style.paddingBottom = `${this.sheetH(pre)}px`; }
+  },
+  async arrive() {
+    $('#hslot').innerHTML = V[5].btn(true); $('#v5btn').animate([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'none' }], { duration: 450, fill: 'both' });
+    await w(500); $('#q').insertAdjacentHTML('beforeend', '<div class="hinttoast" id="toast">Press <kbd>⌘K</kbd> to ask Query about Expedition</div>');
+    const t = $('#toast'); const an = t.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], { duration: 350, fill: 'both' }); await w(2400); an.reverse(); await w(400); t.remove();
+  },
+  async open(pre) {
+    const b = $('#v5btn'); await cursorTo(b); await click(b); hideCursor();
+    $('#q').insertAdjacentHTML('beforeend', V[5].cmdHTML(pre, '')); await w(700);
+  },
+  async ask(pre) {
+    const a = pre.results ? RESULTS.ans : ansFor(); await typeText($('#cmd .tx'), a.q, 3, 22); await w(350);
+    $('#cmd').classList.add('out'); $('#scrim').animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'both' }); await w(210); $('#cmd').remove(); $('#scrim').remove();
+    $('#q').insertAdjacentHTML('beforeend', V[5].sheetHTML({ ...pre, answered: false })); const sh = $('#sheet'); void sh.offsetWidth; sh.classList.add('on');
+    $('#main').style.paddingBottom = `${V[5].sheetH(pre)}px`; await w(450);
+    await stream($('#ans'), a, false, $('#sb'));
+  },
+  async add(pre) { await addMotion($('#sheet'), $('#sb'), V[5].sheetH(pre)); },
+  async close() { const k = $('#sheet kbd'); k.animate([{ background: '#fff' }, { background: '#E7E9EE' }, { background: '#fff' }], { duration: 400 }); await w(420); $('#sheet').classList.remove('on'); $('#main').style.paddingBottom = ''; await w(500); },
+};
+
+function setMr(px) { $('#main').style.setProperty('--mr', `${px}px`); }
+
+/* ---------------- runner ---------------- */
+function renderStage(pre) {
+  applyTheme();
+  const m = $('#main'); m.style.transition = 'none'; setMr(0); m.style.paddingBottom = ''; m.scrollTop = 0;
+  m.innerHTML = pre.results ? resultsHTML() : setupHTML(pre);
+  $('#q').innerHTML = ''; hideCursor(); $$('.flyer,.ripple').forEach((e) => e.remove());
+  V[S.v].draw(pre); if (pre.results) mountChart();
+  void m.offsetWidth; m.style.transition = '';
+}
+async function pickClient() {
+  const box = $('#clientBox'); await cursorTo(box, 0.3); await click(box); box.classList.add('focus');
+  box.parentElement.insertAdjacentHTML('beforeend', `<div class="ddmenu fadein" id="ddm"><div class="hl">Expedition Pediatric Dentistry <span class="ctag">Client</span></div><div>Bothell Family Dentistry <span class="ctag">Client</span></div><div>Cedar Park Dental <span class="ctag">Client</span></div></div>`);
+  await w(500); const opt = $('#ddm div'); await cursorTo(opt, 0.3); await click(opt);
+  $('#ddm').remove(); box.classList.remove('focus', 'ph'); box.innerHTML = 'Expedition Pediatric Dentistry <span class="ctag">Client</span>';
+  const vals = { Domain: 'expeditionpediatricdentistry.com', 'Business name': 'Expedition Pediatric Dentistry', 'City and state': 'Bellevue, WA' };
+  for (const [k, v] of Object.entries(vals)) { const f = $(`[data-f="${k}"]`); f.classList.remove('ph'); f.textContent = v; f.animate([{ background: 'var(--aTint)' }, { background: '#fff' }], { duration: 600 }); await w(160); }
+  hideCursor(); await w(700); $$('.disabledtip').forEach((e) => e.remove());
+  // the practice is confirmed: the setup moves on to the tool's own step (reading steps skipped in the mockup)
+  const m = $('#main'); m.animate([{ opacity: 1 }, { opacity: 0.2 }], { duration: 220, fill: 'both' }); await w(220);
+  m.innerHTML = setupHTML({ client: true }); if (S.v === 5) $('#hslot').innerHTML = '';
+  m.animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 300, fill: 'both' }); $('#sp').classList.add('rise'); await w(900);
+}
+async function motion(step) {
+  const pre = preFor(step), v = V[S.v];
+  if (step === 0) return;
+  if (step === 1) { await pickClient(); await v.arrive(); return; }
+  if (step === 2) return v.open(pre);
+  if (step === 3) return v.ask(pre);
+  if (step === 4) return v.add(pre);
+  if (step === 5) return v.close(pre);
+  if (step === 6) { await w(600); await v.open(pre); await v.ask({ ...pre, open: true }); }
+}
+async function go(step, keepPlaying) {
+  RUN.dead = true; RUN = { dead: false };
+  S.step = step; if (!keepPlaying) S.playing = false; renderBar();
+  renderStage(preFor(step === 1 ? 0 : step));
+  if (step === 1 && S.v === 5) $('#hslot').innerHTML = V[5].btn(false);
+  S.done = false;
+  try { await motion(step); } catch (e) { if (e !== CANCEL) { console.error(e); } return false; }
+  S.done = true; hideCursor();
+  return true;
+}
+async function playAll() {
+  S.playing = true; const last = S.tool === 'mt' ? 6 : 5;
+  for (let i = 0; i <= last; i++) {
+    if (!S.playing) return; const ok = await go(i, true); if (!ok || !S.playing) return;
+    try { await w(i === 0 ? 1500 : 1300); } catch (e) { return; }
+  }
+  S.playing = false; renderBar();
+}
+function stopPlay() { S.playing = false; }
+$('#play').onclick = () => { if (S.playing) { stopPlay(); RUN.dead = true; renderBar(); } else playAll(); };
+window.addEventListener('resize', () => document.documentElement.style.setProperty('--barH', `${$('#bar').offsetHeight}px`));
+window.QT = { go, S, RUN: () => RUN };
+renderBar(); go(0);
+</script></body></html>
