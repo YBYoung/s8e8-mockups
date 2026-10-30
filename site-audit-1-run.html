@@ -1,0 +1,1788 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Site Audit 1: Run screen</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>.oq-rail{position:fixed;inset:0 auto 0 0;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}
+/* Market Trends Story mockups, round 2. Facelift shared look (AIV experience in OQ teal), trimmed. */
+:root{
+  --ink:#0B1020;--ink2:#0F172A;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;
+  --up:#15803D;--down:#E11D48;--rose:#DB2777;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+a{color:var(--aInk)}
+
+/* mockup bar: outside the design */
+.mockbar{background:#ECEEF1;color:#4B5563;font-size:12px;line-height:1.45;padding:7px 18px;border-bottom:1px solid #DDE1E6}
+.mockbar b{color:#111827;font-weight:700}
+.mockbar .src{color:#6B7280}
+.mockbar ul{margin:3px 0 0;padding:0 0 0 16px}
+.mockbar li{margin:0}
+.mockbar .nr{display:inline-block;margin-top:3px;color:#6B7280}
+
+/* app chrome */
+.fl-app{margin-left:56px;min-height:100vh}
+.mockbar{margin-left:56px}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1240px;margin:0 auto;padding:0 28px 120px}
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 0;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:var(--a);display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-right .who{color:var(--ink);font-weight:700}
+.fl-right .when{color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13.5px;transition:background .2s,box-shadow .2s}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.25)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative;font-size:13.5px}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:var(--a);position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12)}
+
+/* tabs */
+.tabs{position:sticky;top:55px;z-index:20;display:flex;gap:26px;margin:0 -28px 6px;padding:10px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+.tabnote{padding:60px 0;color:var(--muted);font-size:14px}
+
+/* modal (How it works) */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4)}
+.modal .win{position:relative;width:100%;max-width:880px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:rise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:6px;padding:4px 8px}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:8px;background:var(--soft)}
+.figbox svg{display:block;width:100%;height:100%}
+.figbox svg *{transition:opacity .45s, fill .45s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:300;background:var(--ink);color:#fff;border-radius:8px;padding:12px 18px;font-size:14px;box-shadow:0 12px 32px rgba(11,16,32,.25);animation:rise .25s var(--ease)}
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* Story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:44px}
+.chap{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;opacity:.25;transition:opacity .4s}
+.chap.on{opacity:1}
+.chap .k{margin-bottom:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.chap .k .act{color:var(--muted)}
+.chap h2{margin:0;font-size:36px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.chap h2 .g{color:var(--a)}
+.chap h2 .r{color:var(--down)}
+.chap p{margin:14px 0 0;max-width:540px;font-size:17px;line-height:1.6}
+.defs{margin-top:18px;max-width:540px;padding:12px 14px;background:#F8FAFB;border:1px solid var(--line);border-radius:6px}
+.defs .dh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.chap .defs p{margin:0;font-size:13.5px;line-height:1.55;color:#273043}
+.chap .defs p+p{margin-top:6px}
+.chap .note{font-size:13.5px;color:var(--muted);margin-top:12px}
+.facts{margin-top:18px;max-width:540px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.facts div{padding:9px 10px 9px 0;border-bottom:1px solid var(--line)}
+.facts b{display:block;font-size:17px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.facts span{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.qlist{margin-top:16px;max-width:540px;border-top:1px solid var(--line)}
+.qlist div{display:grid;grid-template-columns:minmax(0,1fr) 70px 54px;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.qlist div span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.qlist .h span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)!important}
+.stick{position:sticky;top:104px;height:calc(100vh - 112px);display:flex;flex-direction:column;justify-content:center}
+.ro{height:52px;padding:4px 2px 6px;border-bottom:1px solid #EEF0F3;margin-bottom:6px;overflow:hidden}
+.ro .r1{display:flex;justify-content:space-between;align-items:baseline;height:20px;font-size:13px;white-space:nowrap}
+.ro .r1 .m{font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis}
+.ro .r1 .n{color:var(--muted);font-size:12px;margin-left:12px}
+.ro .r2{display:grid;height:22px;align-items:center;gap:10px;font-size:12.5px;white-space:nowrap}
+.ro .r2 .s{display:flex;align-items:center;gap:6px;overflow:hidden;min-width:0}
+.ro .r2 .s b{color:var(--ink2);font-variant-numeric:tabular-nums}
+.ro .r2 .s span{color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.ro .r2 .s svg{flex:none}
+.ro .r2 .txt{grid-column:1/-1;color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.figsvg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.figsvg text{font-family:Inter,sans-serif}
+.figsvg .num{font-variant-numeric:tabular-nums}
+.figcap{margin-top:6px;min-height:36px;font-size:12.5px;line-height:1.45;color:var(--muted);text-align:center}
+.storyend{margin:24px 0 0;padding:28px;border:1px solid var(--line);border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.storyend.in{opacity:1;transform:none}
+.storyend h3{margin:0;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.storyend p{margin:4px 0 0;color:var(--muted);font-size:14px}
+@media (max-width:1180px){.story{grid-template-columns:minmax(0,1fr) 520px;gap:32px}}
+@media (max-width:980px){.story{grid-template-columns:1fr}.stick{position:static;height:auto}.chap{opacity:1;min-height:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+
+/* Site Audit mockups (#1426): additions on top of the approved facelift base. */
+:root{--now:#DC2626;--nowTint:#FEF2F2;--soon:#2563EB;--soonTint:#EFF6FF;--tidy:#A3ACB9;--tidyTint:#F4F5F7}
+.lv{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:var(--ink)}
+.lv i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.lv.now i{background:var(--now)}.lv.soon i{background:var(--soon)}.lv.tidy i{background:var(--tidy)}
+.sample{display:inline-block;margin-left:6px;padding:0 5px;border:1px dashed #C3C8D2;border-radius:4px;font-size:10.5px;font-weight:600;color:#6B7280;letter-spacing:.02em;vertical-align:1px}
+.card{border:1px solid var(--line);border-radius:8px;background:#fff}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px}
+.url{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;color:var(--ink2)}
+.kick{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.h1{margin:6px 0 0;font-size:34px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.sub{margin:8px 0 0;color:var(--muted);font-size:15px}
+/* variant switcher: outside the design */
+.vbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:500;display:flex;align-items:center;gap:4px;background:#111827;color:#fff;border-radius:10px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:13px}
+.vbar button{border:0;background:none;color:#fff;border-radius:7px;padding:6px 10px}
+.vbar button:hover{background:#374151}
+.vbar button.on{background:#fff;color:#111827;font-weight:700}
+.vbar .lbl{padding:0 10px;color:#D1D5DB;white-space:nowrap}
+.vbar a{color:#9CA3AF;text-decoration:none;padding:0 8px;font-size:12px}
+
+.s1-ctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0 18px;padding:6px 10px;background:#ECEEF1;border:1px solid #DDE1E6;border-radius:6px;font-size:12px;color:#4B5563}
+.s1-ctl b{color:#111827;margin-right:4px}
+.s1-ctl button{border:1px solid #D1D5DB;background:#fff;border-radius:5px;padding:2px 9px;font-size:12px;color:#374151}
+.s1-ctl button.on{background:#111827;color:#fff;border-color:#111827}
+.s1-ctl .sep{width:1px;height:16px;background:#D1D5DB;margin:0 6px}
+.s1-rg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:help;white-space:nowrap}
+.s1-rg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.s1-rg i.g,.s1b-r .sw.g{background:#fff;border:2px solid #4285F4}
+.s1-try{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;white-space:nowrap}
+.s1-try.no>span:last-child{color:var(--muted)}
+.s1-try.ok>span:last-child{color:var(--aInk);font-weight:600}
+.s1-arr{color:var(--faint);margin:0 8px}
+.s1-lh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.s1-turn{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid var(--aTint);border-top-color:var(--a);animation:s1spin .8s linear infinite;flex:none}
+@keyframes s1spin{to{transform:rotate(360deg)}}
+.s1-dotsep{display:inline-block;width:3px;height:3px;border-radius:50%;background:var(--faint);margin:0 12px;vertical-align:middle}
+.s1-end{margin-top:22px;padding:24px 26px;border:1px solid var(--line);border-radius:8px;background:#fff;animation:rise .35s var(--ease)}
+.s1-end.bad{background:#FFFBFB}
+.s1-end h2{margin:6px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink);line-height:1.2}
+.s1-end p{margin:10px 0 0;max-width:720px;font-size:15.5px}
+.s1-endrow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.s1-tried{margin-top:14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.s1-tried div{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:12.5px;color:var(--muted)}
+.s1-next{max-width:560px;font-size:14px}
+/* A */
+.s1a-head{margin-bottom:18px}
+.s1a-line{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--ink)}
+.s1a-det{color:var(--muted)}
+.s1a-bar{height:4px;background:var(--soft);border-radius:2px;margin:14px 0 10px;overflow:hidden}
+.s1a-bar i{display:block;height:100%;background:var(--a);transition:width .3s var(--ease)}
+.s1a-counts{display:flex;gap:22px;font-size:14px;color:var(--body)}
+.s1a-counts b{color:var(--ink);font-variant-numeric:tabular-nums}
+.s1a-cur{margin-top:8px;min-height:24px;display:flex;align-items:center;gap:16px;overflow:hidden}
+.s1a-climb{display:inline-flex;align-items:center}
+.s1a-legend{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin:26px 0 0;padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.s1a-lg{display:inline-flex;align-items:center;gap:7px}
+.s1a-lg b{font-variant-numeric:tabular-nums;color:var(--ink);font-size:13px}
+.s1a-logh{margin:22px 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.s1a-log{height:420px;overflow:hidden}
+.s1a-row{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:16px;align-items:center;padding:7px 16px;border-bottom:1px solid #F0F1F4}
+.s1a-row .url{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s1a-row.climb{background:#F7FBFA}
+.s1a-row.bad{background:#FFF7F7}
+.s1a-how{overflow:hidden;white-space:nowrap}
+.s1a-empty{padding:18px;color:var(--muted);font-size:13.5px}
+/* B */
+.s1b .h1 b{font-variant-numeric:tabular-nums}
+.s1b-det{min-height:24px}
+.s1b-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:36px;margin-top:22px;align-items:start}
+.s1b-field{display:grid;grid-template-columns:repeat(auto-fill,15px);gap:4px}
+.s1b-field.dense{grid-template-columns:repeat(auto-fill,9px);gap:3px}
+.s1b-field i{width:15px;height:15px;border-radius:3px;border:1px solid #DCE0E6;background:#fff;transition:background .25s}
+.s1b-field.dense i{width:9px;height:9px;border-radius:2px}
+.s1b-field i[data-r]{border-color:transparent}
+.s1b-field i.link{border:1px dashed #98A2B3}
+.s1b-field i.link[data-r]{border:1px dashed rgba(255,255,255,.9)}
+.s1b-field i.cur{outline:2px solid var(--ink);outline-offset:1px}
+.s1b-field i.x{background:var(--now)!important;border-color:var(--now);position:relative}
+.s1b-cur{margin-top:14px;min-height:46px}
+.s1b-tries{margin-top:6px;display:flex;align-items:center;flex-wrap:wrap}
+.s1b-cap{margin-top:4px;font-size:12.5px;color:var(--muted)}
+.s1b-side{border-left:1px solid var(--line);padding-left:22px}
+.s1b-r{display:grid;grid-template-columns:14px minmax(0,1fr) 34px;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #F0F1F4}
+.s1b-r .sw{width:12px;height:12px;border-radius:3px;margin-top:4px}
+.s1b-r .sw.link{border:1px dashed #98A2B3;background:#fff}
+.s1b-r b{font-size:13.5px;color:var(--ink)}
+.s1b-r span:not(.sw):not(.sample){display:block;font-size:12.5px;color:var(--muted)}
+.s1b-r em{font-style:normal;text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.s1-lh+.s1b-r{margin-top:6px}
+/* C */
+.s1c .sub{margin-bottom:22px}
+.s1c-steps{max-width:880px;border-top:1px solid var(--line)}
+.s1c-step{display:grid;grid-template-columns:30px minmax(0,1fr);gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.s1c-mk{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--muted);background:var(--soft)}
+.s1c-mk svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.s1c-step.done .s1c-mk{background:var(--a)}
+.s1c-step.on .s1c-mk{background:var(--aTint)}
+.s1c-step.bad .s1c-mk{background:var(--now);color:#fff;font-size:16px}
+.s1c-step.todo b,.s1c-step.skip b{color:var(--faint)}
+.s1c-t{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:26px}
+.s1c-t b{font-size:15.5px;color:var(--ink)}
+.s1c-note{font-size:13.5px;color:var(--muted);text-align:right}
+.s1c-body{margin-top:10px}
+.s1c-det{font-size:14px;color:var(--body)}
+.s1c-prog{display:flex;align-items:center;gap:16px;font-size:14px}
+.s1c-prog b{color:var(--ink);font-variant-numeric:tabular-nums}
+.s1c-mini{flex:1;height:4px;background:var(--soft);border-radius:2px;overflow:hidden;max-width:360px}
+.s1c-mini i{display:block;height:100%;background:var(--a);transition:width .3s}
+.s1c-cur{margin-top:6px;min-height:20px}
+.s1c-ladder{margin-top:12px;padding:12px 14px;background:var(--soft);border-radius:8px}
+.s1c-lh{font-size:13px;color:var(--muted);margin-bottom:6px}
+.s1c-rung{display:grid;grid-template-columns:22px 190px minmax(0,1fr) minmax(0,250px) 34px;gap:10px;align-items:center;padding:6px 0;font-size:13.5px;transition:background .25s}
+.s1c-rung .n{width:20px;height:20px;border-radius:4px;display:grid;place-items:center;color:#fff;font-size:11.5px;font-weight:700}
+.s1c-rung:first-of-type .n{color:var(--aInk)}
+.s1c-rung .d{color:var(--muted)}
+.s1c-rung .t{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s1c-rung.ok .t{color:var(--aInk);font-weight:600}
+.s1c-rung.no .t{color:var(--now)}
+.s1c-rung em{font-style:normal;text-align:right;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.s1c-rung .sample{margin:0 0 0 6px}
+</style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
+<script>window.D={
+ "client": "Liberty Family Dentistry",
+ "client_id": 131,
+ "domain": "libertyfamilydentistry.com",
+ "crawled": "Oct 22, 2026",
+ "crawl_id": 319,
+ "pages": 185,
+ "sitemap_urls": null,
+ "levels": {
+  "now": {
+   "pages": 3,
+   "types": 2
+  },
+  "soon": {
+   "pages": 82,
+   "types": 5
+  },
+  "tidy": {
+   "pages": 74,
+   "types": 5
+  }
+ },
+ "issues": [
+  {
+   "key": "broken_pages",
+   "name": "Pages that don\u2019t load",
+   "level": "now",
+   "group": "broken",
+   "real": false,
+   "count": 2,
+   "minutes": 30,
+   "pages": [
+    {
+     "url": "/services/dental-implants-old",
+     "problem": "404 Not found, linked from 3 pages",
+     "from": [
+      "/services",
+      "/topics/cosmetic-dentistry",
+      "/first-visit"
+     ]
+    },
+    {
+     "url": "/specials",
+     "problem": "404 Not found, linked from the footer on every page",
+     "from": [
+      "every page (footer)"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "noindex_ranking",
+   "name": "Pages Google is told to skip",
+   "level": "now",
+   "group": "indexing",
+   "real": false,
+   "count": 1,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/services/sedation",
+     "problem": "noindex tag, but it brought 41 visits from Google last month"
+    }
+   ]
+  },
+  {
+   "key": "dup_title",
+   "name": "Pages sharing one title",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 26,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    }
+   ]
+  },
+  {
+   "key": "no_meta",
+   "name": "Pages with no description",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 27,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    }
+   ]
+  },
+  {
+   "key": "no_h1",
+   "name": "Pages with no main heading",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 27,
+   "minutes": 45,
+   "pages": [
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    }
+   ]
+  },
+  {
+   "key": "thin_service",
+   "name": "Service pages with little text",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 1,
+   "minutes": 120,
+   "pages": [
+    {
+     "url": "/topics/cosmetic-dentistry",
+     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 183,
+     "problem": "183 words"
+    }
+   ]
+  },
+  {
+   "key": "redirect_chain",
+   "name": "Links that bounce through redirects",
+   "level": "soon",
+   "group": "broken",
+   "real": false,
+   "count": 1,
+   "minutes": 20,
+   "pages": [
+    {
+     "url": "/new-patients",
+     "problem": "2 hops: /new-patients \u2192 /first-visit/ \u2192 /first-visit",
+     "from": [
+      "/",
+      "/contact"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "not_in_sitemap",
+   "name": "Pages missing from the sitemap",
+   "level": "tidy",
+   "group": "indexing",
+   "real": false,
+   "count": 2,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/our-approach",
+     "problem": "Crawled, not listed in sitemap.xml"
+    },
+    {
+     "url": "/video",
+     "problem": "Crawled, not listed in sitemap.xml"
+    }
+   ]
+  },
+  {
+   "key": "long_title",
+   "name": "Titles too long for Google",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 38,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/articles",
+     "title": "Dental Articles - Liberty Family Dentistry in Bloomington, IN",
+     "words": 593,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/reviews",
+     "title": "Dentist Reviews in Bloomington, IN - Liberty Family Dentistry",
+     "words": 1246,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/team",
+     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
+     "words": 367,
+     "problem": "65 characters (Google shows about 60)"
+    },
+    {
+     "url": "/services",
+     "title": "Dental Services in Bloomington, IN - Liberty Family Dentistry",
+     "words": 751,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/services/dental-implants",
+     "title": "Dental Implants in Bloomington, IN - Liberty Family Dentistry",
+     "words": 794,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/accessibility",
+     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
+     "words": 324,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/privacy-practices",
+     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
+     "words": 828,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
+     "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
+     "words": 361,
+     "problem": "68 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
+     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
+     "words": 1024,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/are-your-gums-healthy",
+     "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 372,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/ask-these-4-questions-before-getting-implants",
+     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
+     "words": 365,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/attention-parents-sealants-help-prevent-cavities",
+     "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
+     "words": 400,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/benefits-of-dental-sealants",
+     "title": "Dental sealants in Bloomington, IN | Liberty Family Dentistry",
+     "words": 390,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/botox-for-tmj-an-alternative-treatment",
+     "title": "Botox for TMJ: An Alternative Treatment | Liberty Family Dentistry",
+     "words": 800,
+     "problem": "66 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it",
+     "title": "Breaking Down Barriers: Understanding Dental Phobia and How to Overcome It",
+     "words": 907,
+     "problem": "74 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/how-dental-implants-can-rejuvenate-your-smile",
+     "title": "How Dental Implants Can Rejuvenate Your Smile | Liberty Family Dentistry",
+     "words": 887,
+     "problem": "72 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/how-dentists-can-help-your-sleep-apnea",
+     "title": "How Dentists Can Help Your Sleep Apnea | Liberty Family Dentistry",
+     "words": 809,
+     "problem": "65 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
+     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
+     "words": 710,
+     "problem": "66 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/look-younger-and-feel-better",
+     "title": "Botox treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 359,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/look-your-best-this-summer-with-botox-treatment",
+     "title": "Look Your Best This Summer With Botox Treatment | Liberty Family Dentistry, Bloomington, IN",
+     "words": 897,
+     "problem": "91 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/misconceptions-about-dental-implants",
+     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
+     "words": 444,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
+     "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
+     "words": 397,
+     "problem": "70 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
+     "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
+     "words": 673,
+     "problem": "79 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/professional-whitening-vs-over-the-counter",
+     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
+     "words": 390,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/restore-your-tooth-in-one-visit-with-dental-bonding",
+     "title": "Restore Your Tooth in One Visit with Dental Bonding | Bloomington, IN",
+     "words": 324,
+     "problem": "69 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
+     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
+     "words": 863,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/sleep-is-critical-to-health",
+     "title": "Sleep Apnea treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 421,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/summer-smiles-5-tips-to-keep-your-smile-bright",
+     "title": "Summer Smiles: 5 Tips to Keep Your Smile Bright After Whitening",
+     "words": 1066,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/the-advantages-of-laser-dentistry",
+     "title": "The Advantages of Laser Dentistry | Dentist in Bloomington, IN",
+     "words": 779,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/the-importance-of-sports-mouthguards",
+     "title": "The Importance of Sports Mouthguards | Liberty Family Dentistry",
+     "words": 620,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/tips-for-managing-tooth-sensitivity",
+     "title": "Tips for Managing Tooth Sensitivity | Liberty Family Dentistry",
+     "words": 679,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/tips-for-preventing-gum-disease",
+     "title": "Tips for Preventing Gum Disease from Your Dentist in Bloomington",
+     "words": 808,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/understanding-orthodontic-relapse-why-teeth-shift-after-treatment",
+     "title": "Orthodontic Relapse: Why Teeth Shift Back and How to Prevent It",
+     "words": 1388,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/cosmetic-dentistry",
+     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 183,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/general-dentistry",
+     "title": "General Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 3896,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/pediatric-dentistry",
+     "title": "Pediatric Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 397,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/preventative-care",
+     "title": "Preventative Care  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 1112,
+     "problem": "62 characters (Google shows about 60)"
+    }
+   ]
+  },
+  {
+   "key": "dup_meta",
+   "name": "Pages sharing one description",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 2,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/accessibility",
+     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
+     "words": 324,
+     "problem": "Same description as another page"
+    },
+    {
+     "url": "/privacy-practices",
+     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
+     "words": 828,
+     "problem": "Same description as another page"
+    }
+   ]
+  },
+  {
+   "key": "thin_other",
+   "name": "Other pages with little text",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 30,
+   "minutes": null,
+   "pages": [
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "290 words"
+    },
+    {
+     "url": "/our-approach",
+     "title": "Our Approach - Liberty Family Dentistry in Bloomington, IN",
+     "words": 125,
+     "problem": "125 words"
+    },
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "35 words"
+    },
+    {
+     "url": "/articles/liberty-is-open-for-dental-emergencies",
+     "title": "Liberty Is Open For Dental Emergencies | Bloomington, IN",
+     "words": 261,
+     "problem": "261 words"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    }
+   ]
+  },
+  {
+   "key": "missing_alt",
+   "name": "Images with no alt text",
+   "level": "tidy",
+   "group": "onpage",
+   "real": false,
+   "count": 2,
+   "minutes": 30,
+   "pages": [
+    {
+     "url": "/",
+     "problem": "4 of 11 images have no alt text"
+    },
+    {
+     "url": "/team",
+     "problem": "9 of 9 images have no alt text"
+    }
+   ]
+  }
+ ],
+ "median_words": 431
+};</script>
+<script>/* Shared pieces for the round 2 Story mockups: frame, tabs, hovers, How it works window,
+   and a small tween engine for ONE persistent SVG (marks keyed by id, never unmounted). */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.$ = (s, r = document) => r.querySelector(s);
+  FL.$$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+  FL.round = (n, to) => Math.round(n / to) * to;
+  FL.toast = (msg) => { const t = FL.h(`<div class="toast">${FL.esc(msg)}</div>`); document.body.appendChild(t); setTimeout(() => t.remove(), 2600); };
+
+  /* ---------- frame ---------- */
+  FL.shell = function ({ mock }) {
+    const page = document.getElementById('page');
+    const bar = FL.h(`<div class="mockbar">${mock}</div>`);
+    const app = FL.h(`<div class="fl-app">
+
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>Market Trends</div>
+          <div class="fl-right"><span id="method-slot"></span><span class="who">Expedition Pediatric Dentistry</span><span class="when">Check #22 · Oct 29, 2026 · read for Washington</span>
+          <button class="btn btn-line" id="share">Share report</button><button class="btn btn-line" id="newc">New check</button></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(bar, page);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = '<button type="button" class="method-btn"><span class="dot"></span>How it works</button>';
+    FL.$('#share').onclick = () => FL.toast('Opens the client report: link, access code, PDF and email.');
+    FL.$('#newc').onclick = () => FL.toast('Starts a new check (not part of this mockup).');
+  };
+
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.innerHTML = tabs.map((t) => `<button type="button" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+  };
+
+  /* branded hover for words in the text (never over the chart) */
+  let tipEl = null; let tipFor = null; let tipT = null;
+  const hideTip = () => { clearTimeout(tipT); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return; hideTip(); if (!t) return; tipFor = t;
+    tipT = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      tipEl.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 288))}px`;
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+    }, 120);
+  });
+  addEventListener('scroll', hideTip, true);
+
+  /* How it works: teaser on hover, window on click, a looping real-data picture per section */
+  FL.method = function ({ teaser, title, sections }) {
+    const btn = FL.$('.method-btn'); let tip = null;
+    btn.addEventListener('mouseenter', () => { if (!tip) { tip = FL.h(`<span class="teaser">${FL.esc(teaser)}</span>`); btn.appendChild(tip); } });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px">
+          <div><div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)">Market Trends</div><h2 style="margin:2px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption)}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => s.figure(m.querySelector(`[data-fig="${i}"]`)));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close; m.querySelector('.x').onclick = close;
+    });
+  };
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0; fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* ---------- easing + tween engine ---------- */
+  function bez(p1x, p1y, p2x, p2y) {
+    const cx = 3 * p1x; const bx = 3 * (p2x - p1x) - cx; const ax = 1 - cx - bx;
+    const cy = 3 * p1y; const by = 3 * (p2y - p1y) - cy; const ay = 1 - cy - by;
+    const sx = (t) => ((ax * t + bx) * t + cx) * t; const sy = (t) => ((ay * t + by) * t + cy) * t; const ds = (t) => (3 * ax * t + 2 * bx) * t + cx;
+    return (x) => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const e = sx(t) - x; const d = ds(t); if (Math.abs(e) < 1e-5 || Math.abs(d) < 1e-6) break; t -= e / d; } return sy(t); };
+  }
+  FL.EASE = bez(0.2, 0.8, 0.2, 1);
+  const NS = 'http://www.w3.org/2000/svg';
+  FL.NS = NS;
+  const NUM = ['x', 'y', 'width', 'height', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'tx', 'ty', 's', 'sx'];
+  const STY = { o: 'opacity', stroke: 'stroke', fill: 'fill', sw: 'stroke-width', dash: 'stroke-dasharray', fo: 'fill-opacity' };
+  const ptsD = (p) => p.map((q, i) => `${i ? 'L' : 'M'}${q[0].toFixed(1)},${q[1].toFixed(1)}`).join('');
+
+  FL.Fig = class {
+    constructor(svg) { this.svg = svg; this.m = new Map(); this.tw = []; this.raf = null; this.lab = null; this.labHtml = null; this.labT = null; }
+    layer(name) { const g = document.createElementNS(NS, 'g'); g.setAttribute('data-layer', name); this.svg.appendChild(g); return g; }
+    /* create a mark once; init = {tag, layer, attrs (static), ...targets} */
+    mk(id, tag, layer, attrs = {}, init = {}) {
+      if (this.m.has(id)) return this.m.get(id);
+      const el = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      el.style.transition = 'opacity .5s, stroke .5s, fill .5s, stroke-width .5s';
+      layer.appendChild(el);
+      const mk = { id, el, tag, cur: {} };
+      this.m.set(id, mk);
+      this.apply(mk, init, true);
+      return mk;
+    }
+    write(mk) {
+      const c = mk.cur; const el = mk.el;
+      if (c.pts) el.setAttribute('d', ptsD(c.pts));
+      if ('tx' in c || 's' in c) el.setAttribute('transform', `translate(${(c.tx || 0).toFixed(2)},${(c.ty || 0).toFixed(2)}) scale(${(c.s ?? 1).toFixed(4)},${(c.sx ?? c.s ?? 1).toFixed(4)})`);
+      NUM.forEach((k) => { if (k in c && !['tx', 'ty', 's', 'sx'].includes(k)) el.setAttribute(k, c[k].toFixed(2)); });
+    }
+    /* move a mark to a target. Position over dur (0.9s), style by CSS (0.5s). */
+    apply(mk, t, instant = false, { dur = 900, delay = 0 } = {}) {
+      const el = mk.el;
+      if (t.attr) Object.entries(t.attr).forEach(([k, v]) => (v == null ? el.removeAttribute(k) : el.setAttribute(k, v)));
+      Object.entries(STY).forEach(([k, css]) => {
+        if (!(k in t)) return;
+        el.style.transitionDelay = instant || FL.reduce ? '0s' : `${delay}ms`;
+        if (instant) { const tr = el.style.transition; el.style.transition = 'none'; el.style.setProperty(css, t[k]); el.getBoundingClientRect(); el.style.transition = tr; } else el.style.setProperty(css, t[k]);
+      });
+      const tgt = {};
+      if (t.pts) tgt.pts = t.pts.map((p) => [p[0], p[1]]);
+      NUM.forEach((k) => { if (k in t) tgt[k] = t[k]; });
+      if (!Object.keys(tgt).length) return;
+      this.tw = this.tw.filter((w) => w.mk !== mk);
+      if (instant || FL.reduce || dur === 0) { Object.assign(mk.cur, tgt); this.write(mk); return; }
+      const from = {};
+      Object.keys(tgt).forEach((k) => {
+        if (k === 'pts') { const cp = mk.cur.pts || tgt.pts; from.pts = tgt.pts.map((_, i) => (cp[Math.min(i, cp.length - 1)] || tgt.pts[i]).slice()); } else from[k] = k in mk.cur ? mk.cur[k] : tgt[k];
+      });
+      this.tw.push({ mk, from, to: tgt, t0: performance.now() + delay, dur });
+      if (!this.raf) this.raf = requestAnimationFrame((n) => this.tick(n));
+    }
+    set(id, t, o) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, false, o); }
+    pre(id, t) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, true); }
+    tick(now) {
+      this.tw = this.tw.filter((w) => {
+        const p = Math.min(1, Math.max(0, (now - w.t0) / w.dur)); const e = FL.EASE(p); const c = w.mk.cur;
+        Object.keys(w.to).forEach((k) => {
+          if (k === 'pts') c.pts = w.to.pts.map((q, i) => [w.from.pts[i][0] + (q[0] - w.from.pts[i][0]) * e, w.from.pts[i][1] + (q[1] - w.from.pts[i][1]) * e]);
+          else c[k] = w.from[k] + (w.to[k] - w.from[k]) * e;
+        });
+        if (now >= w.t0) this.write(w.mk);
+        return p < 1;
+      });
+      this.raf = this.tw.length ? requestAnimationFrame((n) => this.tick(n)) : null;
+    }
+    stop() { this.tw = []; }
+    /* draw a path in from its start (a new mark arriving); keeps its points */
+    drawIn(id, { dur = 900, delay = 0 } = {}) {
+      const el = this.m.get(id).el; if (FL.reduce) return;
+      const len = el.getTotalLength(); const keep = el.getAttribute('stroke-dasharray');
+      el.style.strokeDasharray = `${len} ${len}`; el.style.strokeDashoffset = `${len}`; el.getBoundingClientRect();
+      const tr = el.style.transition; el.style.transition = `${tr}, stroke-dashoffset ${dur}ms cubic-bezier(.2,.8,.2,1) ${delay}ms`;
+      el.style.strokeDashoffset = '0';
+      setTimeout(() => { el.style.transition = tr; el.style.strokeDasharray = keep || ''; el.style.strokeDashoffset = ''; }, dur + delay + 30);
+    }
+    /* label layer: old labels out (0.35s), new labels in (0.35s), then count-ups */
+    labels(html, host) {
+      const g = host; if (this.labHtml === html) return; this.labHtml = html;
+      clearTimeout(this.labT);
+      g.style.transition = 'opacity .35s'; g.style.opacity = 0;
+      this.labT = setTimeout(() => {
+        g.innerHTML = html; g.getBoundingClientRect(); g.style.opacity = 1;
+        g.querySelectorAll('[data-count]').forEach((t) => FL.countTo(t, +t.dataset.count, { from: +(t.dataset.from || 0), ms: 900, fmt: (t.dataset.fmt === 'x' ? (v) => `${v.toFixed(1)} times` : (v) => FL.fmt(Math.round(v))) }));
+      }, FL.reduce ? 0 : 350);
+    }
+  };
+  FL.countTo = function (el, to, { from = 0, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (n) => { const p = Math.min(1, (n - t0) / ms); el.textContent = fmt(from + (to - from) * FL.EASE(p)); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+
+  /* ---------- the readout bar above the figure (fixed 52px, fixed slots) ---------- */
+  FL.key = (k = {}) => `<svg width="16" height="8" viewBox="0 0 16 8"><line x1="1" y1="4" x2="15" y2="4" stroke="${k.c || '#0F766E'}" stroke-width="${Math.min(2.6, k.w || 2)}" ${k.dash ? `stroke-dasharray="${k.dash}"` : ''} stroke-linecap="round"/></svg>`;
+  FL.dotKey = (c, hollow) => `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.6" fill="${hollow ? '#fff' : c}" stroke="${c}" stroke-width="1.4"/></svg>`;
+  FL.readout = function (host) {
+    host.innerHTML = '<div class="r1"><span class="m"></span><span class="n"></span></div><div class="r2"></div>';
+    const m = host.querySelector('.m'); const n = host.querySelector('.n'); const r2 = host.querySelector('.r2');
+    return {
+      set({ title = '', note = '', slots = null, text = null, cols = null }) {
+        m.textContent = title; n.textContent = note;
+        if (text != null) { r2.style.gridTemplateColumns = '1fr'; r2.innerHTML = `<span class="txt">${text}</span>`; return; }
+        const s = slots || [];
+        r2.style.gridTemplateColumns = `repeat(${cols || Math.max(1, s.length)}, minmax(0,1fr))`;
+        r2.innerHTML = s.map((x) => `<span class="s">${x.key || ''}<b>${FL.esc(x.v)}</b><span>${FL.esc(x.name)}</span></span>`).join('');
+      },
+    };
+  };
+})();
+</script>
+<script>/* Site Audit mockups (#1426): shell (OQ rail + tool top bar) and the ?v= variant switcher. */
+(function () {
+  const SA = (window.SA = {});
+  SA.LV = { now: { name: 'Fix now', tip: 'Loses a visitor or loses Google: a page that does not load, or a page Google is told to skip. Asana due date: 1 week.' },
+    soon: { name: 'Fix soon', tip: 'Weakens a page that works: shared titles, missing descriptions or headings, thin service pages. Asana due date: 3 weeks.' },
+    tidy: { name: 'Tidy up', tip: 'Worth doing when there is time: long titles, pages left out of the sitemap, missing alt text. No due date.' } };
+  SA.lv = (k, label) => `<span class="lv ${k}" data-tip-h="${SA.LV[k].name}" data-tip="${SA.LV[k].tip}"><i></i>${label ?? SA.LV[k].name}</span>`;
+  SA.sample = (why) => `<span class="sample" data-tip-h="Sample" data-tip="${FL.esc(why || 'Today’s crawl does not keep this, so the mockup shows a made-up example. The new shared crawl keeps it.')}">sample</span>`;
+  SA.shell = function ({ mock, right }) {
+    const page = document.getElementById('page');
+    const bar = FL.h(`<div class="mockbar">${mock}</div>`);
+    const app = FL.h(`<div class="fl-app"><main class="fl-main"><div class="fl-wrap">
+      <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></span>Site Audit</div>
+      <div class="fl-right"><span id="method-slot"><button type="button" class="method-btn"><span class="dot"></span>How it works</button></span>${right ?? '<span class="who">Liberty Family Dentistry</span><span class="when">libertyfamilydentistry.com</span>'}</div></div>
+    </div></main></div>`);
+    page.parentNode.insertBefore(bar, page); page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
+  };
+  /* variants: { A: { name, render(host) }, B: ... } */
+  SA.variants = function (V) {
+    const keys = Object.keys(V); const host = document.getElementById('page');
+    let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
+    const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
+    document.body.appendChild(bar);
+    const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
+      FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
+      bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
+    bar.onclick = (e) => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.k) show(b.dataset.k); else show(keys[(keys.indexOf(cur) + +b.dataset.d + keys.length) % keys.length]); };
+    addEventListener('keydown', (e) => { if (e.target.closest('input,textarea,[contenteditable]')) return;
+      if (e.key === 'ArrowRight') show(keys[(keys.indexOf(cur) + 1) % keys.length]); if (e.key === 'ArrowLeft') show(keys[(keys.indexOf(cur) - 1 + keys.length) % keys.length]); });
+    show(cur);
+  };
+})();
+</script>
+<script>/* #1426 Site Audit mockups, screen 1: the run screen. Paths = Liberty Family Dentistry crawl 319 (Oct 22, 2026); inSitemap = checked against the live sitemap.xml on Oct 30, 2026 (159 URLs). */
+const S1_PATHS=["/", "/services/sedation", "/articles", "/reviews", "/team", "/services", "/first-visit", "/services/orthodontics", "/services/dental-implants", "/services/sleep-apnea", "/our-approach", "/services/invisalign", "/accessibility", "/video", "/covid-19", "/privacy-practices", "/articles/2015-benefits-expiring-soon", "/articles/2019-new-years-resolutions-for-your-smile", "/articles/3-critical-insurance-questions-before-2017", "/articles/3-reasons-our-dentists-prefer-implants", "/articles/3-reasons-personalized-dentistry-matters", "/articles/3-unexpected-tips-to-keep-cavities-away", "/articles/4-benefits-of-tooth-colored-fillings", "/articles/4-reasons-dental-implants-are-so-popular", "/articles/4-reasons-to-whiten-your-summer-smile", "/articles/4-things-to-know-about-dental-implants", "/articles/5-benefits-of-dental-implants", "/articles/5-benefits-of-veneers", "/articles/5-dental-innovations-that-benefit-you", "/articles/5-fascinating-facts-about-dental-implants", "/articles/5-habits-for-gum-health", "/articles/5-key-questions-about-your-2019-insurance-benefits", "/articles/5-popular-smile-enhancements-for-2020", "/articles/5-reasons-dental-visits-are-essential", "/articles/5-reasons-patients-love-invisalign", "/articles/5-reasons-to-consider-traditional-braces", "/articles/5-secrets-your-dentist-wont-tell-you", "/articles/5-tips-for-healthy-enamel", "/articles/5-warning-signs-of-gum-disease", "/articles/7-advantages-of-dental-implants", "/articles/7-causes-of-bad-breath", "/articles/7-healthy-holiday-teeth-tips", "/articles/7-tips-to-help-children-love-to-brush", "/articles/a-quick-guide-to-toothpaste", "/articles/accelerate-healing-after-dental-surgery", "/articles/accelerated-smile-makeover", "/articles/advances-in-digital-x-rays-and-their-benefits", "/articles/are-you-brushing-wrong", "/articles/are-you-grinding-your-teeth", "/articles/are-your-gums-healthy", "/articles/ask-these-4-questions-before-getting-implants", "/articles/attention-parents-sealants-help-prevent-cavities", "/articles/back-to-school-smile", "/articles/back-to-school-smile-tips", "/articles/bad-breath-solutions", "/articles/beautiful-cavity-repair", "/articles/beautifully-straight-smiles-for-all-ages", "/articles/before-you-whiten-your-teeth", "/articles/benefits-of-dental-sealants", "/articles/benefits-of-teeth-whitening", "/articles/beyond-tmj-other-dental-uses-for-botox", "/articles/botox-for-tmj-an-alternative-treatment", "/articles/braces-for-adults", "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it", "/articles/choosing-the-right-toothbrush", "/articles/dental-implants-and-2021-insurance-benefits", "/articles/dental-implants-vs-dental-bridges-which-to-choose", "/articles/dental-solution-to-sleep-apnea", "/articles/do-you-experience-dental-anxiety", "/articles/do-you-get-enough-sleep", "/articles/do-you-have-a-loose-or-missing-tooth", "/articles/dont-wait-use-your-dental-benefits-before-you-lose-them", "/articles/every-six-months", "/articles/exploring-the-link-between-oral-health-and-overall-health", "/articles/five-healthy-reasons-to-smile", "/articles/five-surprising-things-your-mouth-reveals", "/articles/four-ways-your-smile-can-help-you", "/articles/get-a-new-smile-in-less-time-with-same-day-crowns", "/articles/get-the-most-out-of-your-invisalign-r-treatment", "/articles/how-dental-implants-can-rejuvenate-your-smile", "/articles/how-dentists-can-cure-headaches", "/articles/how-dentists-can-help-your-sleep-apnea", "/articles/how-to-choose-the-right-dentist-for-your-family", "/articles/how-to-handle-dental-emergencies", "/articles/how-to-maintain-healthy-gums", "/articles/how-to-treat-tooth-pain-at-home", "/articles/is-cosmetic-dentistry-for-you", "/articles/is-snoring-dangerous", "/articles/is-your-mouth-always-dry", "/articles/is-your-tongue-healthy", "/articles/keep-your-teeth-with-root-canal-therapy", "/articles/keeping-teeth-white", "/articles/liberty-is-open-for-dental-emergencies", "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief", "/articles/look-younger-and-feel-better", "/articles/look-your-best-this-summer-with-botox-treatment", "/articles/make-dental-hygiene-fun-for-your-kids", "/articles/making-dental-treatment-comfortable", "/articles/maximize-your-annual-insurance-benefits", "/articles/misconceptions-about-dental-implants", "/articles/navigating-dental-insurance-maximizing-your-benefits", "/articles/new-smile-habits-for-2016", "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year", "/articles/oral-appliance-vs-cpap-understanding-your-sleep-apnea-treatment-options", "/articles/ouch-when-to-call-liberty-for-dental-pain", "/articles/overcoming-your-dental-anxiety", "/articles/pain-free-dental-x-rays", "/articles/pediatric-dentistry-establishing-healthy-habits-early", "/articles/post-surgery-healing-boost", "/articles/preventative-benefits-of-mouthwash", "/articles/professional-whitening-vs-over-the-counter", "/articles/relax-and-rest-easy-with-sedation-dentistry", "/articles/restore-your-tooth-in-one-visit-with-dental-bonding", "/articles/same-day-crowns-how-they-work", "/articles/same-day-crowns-with-cerec", "/articles/say-goodbye-to-dentures", "/articles/secure-your-dentures", "/articles/simple-cavity-prevention-secret", "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep", "/articles/sleep-is-critical-to-health", "/articles/snoring-problem-solved-without-cpap", "/articles/solutions-for-dry-mouth", "/articles/solutions-for-straight-teeth", "/articles/start-the-year-off-right-with-dental-implants", "/articles/summer-smiles-5-tips-to-keep-your-smile-bright", "/articles/teeth-sensitive-to-hot-or-cold", "/articles/the-advantages-of-laser-dentistry", "/articles/the-best-solution-to-missing-teeth", "/articles/the-impact-of-nutrition-on-oral-health", "/articles/the-importance-of-sports-mouthguards", "/articles/the-liberty-difference", "/articles/the-magic-of-invisalign", "/articles/the-magic-of-same-day-crowns", "/articles/the-parents-guide-to-pediatric-dentistry", "/articles/the-role-of-fluoride-in-dental-health", "/articles/three-reasons-everyone-should-floss", "/articles/tips-for-choosing-a-dentist", "/articles/tips-for-managing-tooth-sensitivity", "/articles/tips-for-preventing-gum-disease", "/articles/tooth-replacement-for-life", "/articles/understanding-dental-sealants-protection-against-decay", "/articles/understanding-invisalign-attachments-ipr-and-refinements", "/articles/understanding-orthodontic-relapse-why-teeth-shift-after-treatment", "/articles/use-it-or-lose-it", "/articles/what-sugary-drinks-do-to-our-teeth", "/articles/what-to-expect-the-first-72-hours-after-implant-surgery", "/articles/whats-happening-at-liberty", "/articles/when-a-cracked-tooth-needs-a-crown-and-when-it-doesnt", "/articles/why-dentists-use-fluoride", "/articles/why-is-invisalign-so-popular", "/articles/why-straighten-your-teeth", "/articles/why-we-screen-for-oral-cancer", "/topics/cosmetic-dentistry", "/topics/dental-implants", "/topics/general-dentistry", "/topics/orthodontics", "/topics/pediatric-dentistry", "/topics/preventative-care", "/topics/sleep-apnea", "/review-sites/angies-list", "/review-sites/facebook", "/review-sites/yelp", "/review-sites/google", "/reviews-view/dawn", "/reviews-view/bret", "/reviews-view/joy", "/reviews-view/rhonda", "/reviews-view/adam", "/reviews-view/tina", "/reviews-view/christine", "/reviews-view/greg", "/reviews-view/kim", "/reviews-view/elza", "/reviews-view/melissa", "/reviews-view/jessica", "/reviews-view/michelle", "/reviews-view/scott", "/reviews-view/joanna", "/reviews-view/dan", "/landing-pages/advanced-technology", "/landing-pages/sleep-apnea", "/landing-pages/sedation-dentistry", "/landing-pages/orthodontics", "/landing-pages/invisalign", "/landing-pages/dental-implants"];
+const S1_INSM=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+/* ---------- the simulated crawl (one engine, three looks) ---------- */
+const S1 = {};
+S1.R = [null,
+  { n: 1, name: 'Honest crawl', c: '#99D5CC', tip: 'A real browser that says who it is: our crawler’s name and a contact address. Reads almost every site.' },
+  { n: 2, name: 'Plain retry', c: '#0F766E', tip: 'If the browser is turned away, ask again with a plain page request, more slowly. Some firewalls only block browsers they take for bots. Live today.' },
+  { n: 3, name: 'Static address', c: '#0891B2', tip: 'Ask again from one fixed internet address that we publish, so a web host can allow it once and for good. Not built yet.', sample: 1 },
+  { n: 4, name: 'Managed fetch', c: '#334155', tip: 'A paid fetching service reads the page for us. Last resort, a small cost per page, logged in the cost ledger. Not built yet.', sample: 1 }];
+S1.GOOGLE = { name: 'Google check', tip: 'Search Console tells us which of these pages Google has indexed. Used for the indexing checks only, never to read a page.' };
+S1.STAGES = [
+  { k: 'verify', name: 'Check the domain' }, { k: 'sitemap', name: 'Read the sitemap' }, { k: 'pages', name: 'Read every page' },
+  { k: 'google', name: 'Ask Google what it has' }, { k: 'sort', name: 'Sort what we found' }];
+S1.ENDING = 'complete';
+S1.climb = (path, top, msgs) => ({ path, top, msgs });
+S1.events = function (mode) {
+  const ev = []; let t = 0; const at = (dt, fn) => { t += dt; ev.push({ t, fn }); };
+  if (mode === 'complete') {
+    const home = ['/'];
+    const sm = S1_PATHS.filter((p, i) => S1_INSM[i] && p !== '/');
+    const links = S1_PATHS.filter((p, i) => !S1_INSM[i] && p !== '/');
+    const order = home.concat(sm, links).map((p) => ({ p, link: links.includes(p) }));
+    const CL = { 21: [2, ['Turned away (429, too many requests)', 'Read, after a 4 second pause']],
+      64: [2, ['Timed out after 15 seconds', 'Read']],
+      101: [3, ['Turned away (403)', 'Turned away (403)', 'Read from the published address']],
+      140: [4, ['Turned away (403)', 'Turned away (403)', 'Turned away (403)', 'Read through the managed fetch']],
+      171: [2, ['Turned away (403)', 'Read']] };
+    at(0, (s) => { s.stage = 'verify'; s.detail = 'Looking up libertyfamilydentistry.com'; });
+    at(900, (s) => { s.detail = 'It answers, and it is the website on the practice’s Google listing'; s.verifyNote = 'Answers; same site as the Google listing'; });
+    at(700, (s) => { s.stage = 'sitemap'; s.detail = 'Opening libertyfamilydentistry.com/sitemap.xml'; });
+    at(900, (s) => { s.sitemapTotal = 159; s.detail = '159 pages listed in the sitemap'; s.sitemapNote = '159 pages listed'; });
+    at(500, (s) => { s.stage = 'pages'; s.detail = 'Reading each page, one at a time, half a second apart'; });
+    order.forEach((o, i) => {
+      const c = CL[i];
+      if (!c) { at(i < 6 ? 220 : 65, (s) => { s.cur = { path: o.p, tries: [{ r: 1, msg: 'Read', ok: 1 }] }; s.read.push({ path: o.p, r: 1, link: o.link }); s.rc[1]++; if (o.link) s.found++; s.log.unshift({ path: o.p, tries: [{ r: 1, msg: 'Read', ok: 1 }] }); }); return; }
+      const [top, msgs] = c; const tries = [];
+      msgs.forEach((m, k) => at(k === 0 ? 120 : 700, (s) => { tries.push({ r: k + 1, msg: m, ok: k === msgs.length - 1 ? 1 : 0 }); s.cur = { path: o.p, tries: tries.slice() }; s.climbing = 1;
+        if (k === msgs.length - 1) { s.read.push({ path: o.p, r: top, link: o.link }); s.rc[top]++; if (o.link) s.found++; s.log.unshift({ path: o.p, tries: tries.slice() }); s.climbing = 0; } }));
+      at(500, () => {});
+    });
+    at(300, (s) => { s.cur = null; s.stage = 'google'; s.detail = 'Asking Search Console which of the 185 pages Google has indexed'; });
+    for (let k = 1; k <= 10; k++) at(200, (s) => { s.google = Math.round(185 * k / 10); });
+    at(300, (s) => { s.googleNote = '172 indexed, 13 not'; s.stage = 'sort'; s.detail = 'Sorting what we found into Fix now, Fix soon and Tidy up'; });
+    at(1100, (s) => { s.stage = 'done'; s.done = 'complete'; s.detail = ''; });
+  } else {
+    const B = [['/', 'The home page'], ['/about-us', 'A sitemap page'], ['/services', 'A sitemap page']];
+    const msgs = ['Cloudflare challenge page instead of the page (403)', 'Plain request refused (403 Forbidden)', 'Refused from the published address (403)', 'Managed fetch could not pass the challenge'];
+    at(0, (s) => { s.stage = 'verify'; s.detail = 'Looking up kayjordandds.com'; });
+    at(900, (s) => { s.detail = 'It answers, behind Cloudflare'; s.verifyNote = 'Answers; Cloudflare in front'; });
+    at(700, (s) => { s.stage = 'sitemap'; s.detail = 'Opening kayjordandds.com/sitemap.xml'; });
+    at(900, (s) => { s.sitemapTotal = 644; s.detail = '644 pages listed in the sitemap'; s.sitemapNote = '644 pages listed'; });
+    at(500, (s) => { s.stage = 'pages'; s.detail = 'Reading each page, one at a time, half a second apart'; });
+    B.forEach(([p]) => { const tries = [];
+      msgs.forEach((m, k) => at(k === 0 ? 300 : 800, (s) => { tries.push({ r: k + 1, msg: m, ok: 0 }); s.cur = { path: p, tries: tries.slice() }; s.climbing = 1;
+        if (k === 3) { s.blocked.push(p); s.log.unshift({ path: p, tries: tries.slice() }); s.climbing = 0; } }));
+      at(400, () => {}); });
+    at(600, (s) => { s.cur = null; s.stage = 'done'; s.done = 'blocked'; s.detail = ''; });
+  }
+  return ev;
+};
+S1.fresh = (mode) => ({ mode, domain: mode === 'complete' ? 'libertyfamilydentistry.com' : 'kayjordandds.com', stage: 'verify', detail: '', sitemapTotal: 0, read: [], rc: [0, 0, 0, 0, 0], found: 0, log: [], blocked: [], cur: null, google: 0, done: null });
+S1.run = function (draw) {
+  clearInterval(S1._t);
+  const ev = S1.events(S1.ENDING); const s = S1.fresh(S1.ENDING); let i = 0; const t0 = performance.now();
+  const step = (to) => { while (i < ev.length && ev[i].t <= to) { ev[i].fn(s); i++; } draw(s); if (i >= ev.length) clearInterval(S1._t); };
+  S1._t = setInterval(() => step(performance.now() - t0), 50);
+  S1.skip = () => { step(Infinity); };
+  step(0);
+};
+S1.mockctl = function (host, rerender) {
+  const c = FL.h(`<div class="s1-ctl"><b>Mockup</b> ending:
+    <button data-e="complete">Complete</button><button data-e="blocked">Blocked</button>
+    <span class="sep"></span><button data-a="replay">Replay</button><button data-a="skip">Skip to the end</button></div>`);
+  const mark = () => FL.$$('button[data-e]', c).forEach((b) => b.classList.toggle('on', b.dataset.e === S1.ENDING));
+  c.onclick = (e) => { const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.e) { S1.ENDING = b.dataset.e; mark(); rerender(); }
+    if (b.dataset.a === 'replay') rerender(); if (b.dataset.a === 'skip') S1.skip(); };
+  mark(); host.appendChild(c);
+};
+S1.rung = (r, label) => `<span class="s1-rg" data-tip-h="${r}. ${S1.R[r].name}" data-tip="${FL.esc(S1.R[r].tip)}"><i style="background:${S1.R[r].c}"></i>${label ?? S1.R[r].name}</span>`;
+S1.tries = (tries) => tries.map((x) => `<span class="s1-try ${x.ok ? 'ok' : 'no'}">${S1.rung(x.r, `${x.r}`)}<span>${FL.esc(x.msg)}</span></span>`).join('<span class="s1-arr">›</span>');
+S1.levelsLine = () => { const L = window.D.levels; return `${SA.lv('now', `${L.now.types} things to fix now`)}<span class="s1-dotsep"></span>${SA.lv('soon', `${L.soon.types} to fix soon`)}<span class="s1-dotsep"></span>${SA.lv('tidy', `${L.tidy.types} to tidy up`)}`; };
+S1.complete = (s) => `<div class="s1-end ok">
+  <div class="kick">Complete</div>
+  <h2>Read all 185 pages of libertyfamilydentistry.com</h2>
+  <p>Every one of the 159 pages in the sitemap, plus 26 more found by following links. ${s.rc[2] + s.rc[3] + s.rc[4]} pages needed a second way in ${SA.sample('Which way in read each page is a sample: today’s crawl does not record it, and ways 3 and 4 are not built yet.')}</p>
+  <div class="s1-endrow"><div class="s1-lvls">${S1.levelsLine()}</div><button class="btn btn-go" onclick="FL.toast('Opens the result page (screen 2).')">See the audit</button></div></div>`;
+S1.blockedEnd = () => `<div class="s1-end bad">
+  <div class="kick" style="color:var(--now)">Blocked</div>
+  <h2>kayjordandds.com’s firewall turned the crawler away</h2>
+  <p>Cloudflare, the security service in front of the site, answered every request with a challenge page instead of the page itself. We tried all four ways in on 3 pages; none got through, so we stopped rather than keep knocking.</p>
+  <div class="s1-tried">${[1, 2, 3, 4].map((r) => `<div>${S1.rung(r)}<span>${['Challenge page (403)', 'Refused (403)', 'Refused (403)', 'Challenge not passed'][r - 1]}</span></div>`).join('')}</div>
+  <div class="s1-endrow"><div class="s1-next"><b>Next:</b> send the web host a short note asking it to allow our crawler’s published address. ${SA.sample('The note and the published address are a proposal; rung 3 (the address) is not built yet.')}</div>
+  <div style="display:flex;gap:8px"><button class="btn btn-line" onclick="FL.toast('Copies a note for the web host: our crawler name, its address, and why.')">Copy the note for the web host</button><button class="btn btn-go" onclick="FL.toast('Tries again later (not part of this mockup).')">Try again</button></div></div></div>`;
+S1.head = (s, kick) => `<div class="kick">${kick}</div><h1 class="h1 s1-h">Reading ${FL.esc(s.domain)}</h1>`;
+S1.headDone = (host, s) => { const h = host.querySelector('.s1-h'); if (h) h.textContent = s.done ? s.domain : `Reading ${s.domain}`; };
+
+/* ---------- A: one quiet line and a log ---------- */
+const S1A = { name: 'One quiet line and a page log', render(host) {
+  const draw = (s) => {
+    const tot = s.sitemapTotal || 0; const smRead = s.read.filter((x) => !x.link).length;
+    const frac = s.stage === 'verify' ? 0.02 : s.stage === 'sitemap' ? 0.05 : s.stage === 'pages' ? 0.05 + 0.8 * (tot ? smRead / tot : 0) : s.stage === 'google' ? 0.85 + 0.12 * s.google / 185 : 1;
+    const top = s.done ? (s.done === 'complete' ? S1.complete(s) : S1.blockedEnd()) : `
+      <div class="s1a-line"><span class="s1-turn"></span><b>${S1.STAGES.find((x) => x.k === s.stage)?.name ?? ''}</b><span class="s1a-det">${FL.esc(s.detail)}</span></div>
+      <div class="s1a-bar"><i style="width:${(frac * 100).toFixed(1)}${'%'}"></i></div>
+      <div class="s1a-counts"><span><b>${FL.fmt(smRead)}</b> of ${tot ? FL.fmt(tot) : '…'} sitemap pages read</span>${s.found ? `<span><b>${s.found}</b> more found through links</span>` : ''}${s.stage === 'google' ? `<span>Google: <b>${s.google}</b> of 185 checked ${SA.sample()}</span>` : ''}</div>
+      <div class="s1a-cur">${s.cur ? `<span class="url">${FL.esc(s.cur.path)}</span>${s.climbing ? `<span class="s1a-climb">${S1.tries(s.cur.tries)}</span>` : ''}` : '&nbsp;'}</div>`;
+    S1.headDone(host, s); host.querySelector('.s1a-top').innerHTML = top;
+    host.querySelector('.s1a-legend').innerHTML = `<span class="s1-lh">Ways in</span>${[1, 2, 3, 4].map((r) => `<span class="s1a-lg">${S1.rung(r)}<b>${s.rc[r]}</b>${S1.R[r].sample ? SA.sample('Not built yet. Pages shown here are a sample.') : ''}</span>`).join('')}<span class="s1a-lg"><span class="s1-rg" data-tip-h="${S1.GOOGLE.name}" data-tip="${S1.GOOGLE.tip}"><i class="g"></i>${S1.GOOGLE.name}</span><b>${s.google}</b></span>`;
+    host.querySelector('.s1a-log').innerHTML = s.log.slice(0, 14).map((x) => `<div class="s1a-row${x.tries.length > 1 ? ' climb' : ''}${x.tries.every((y) => !y.ok) ? ' bad' : ''}"><span class="url">${FL.esc(x.path)}</span><span class="s1a-how">${x.tries.length > 1 ? S1.tries(x.tries) : S1.rung(x.tries[0].r)}</span></div>`).join('') || '<div class="s1a-empty">Pages appear here as they are read.</div>';
+  };
+  const go = () => { host.innerHTML = ''; S1.mockctl(host, go);
+    host.appendChild(FL.h(`<div class="s1a"><div class="s1a-head">${S1.head({ domain: S1.ENDING === 'complete' ? 'libertyfamilydentistry.com' : 'kayjordandds.com' }, 'Site Audit · crawl')}</div>
+      <div class="s1a-top"></div><div class="s1a-legend"></div><div class="s1a-logh">Latest pages</div><div class="s1a-log card"></div></div>`));
+    S1.run(draw); };
+  go();
+} };
+
+/* ---------- B: the page field ---------- */
+const S1B = { name: 'Page field: one square per page', render(host) {
+  let built = null;
+  const draw = (s) => {
+    const n = s.sitemapTotal; const big = n > 300;
+    if (n && built !== n) { built = n; const f = host.querySelector('.s1b-field'); f.classList.toggle('dense', big);
+      f.innerHTML = Array.from({ length: n }, (_, i) => `<i data-i="${i}"></i>`).join(''); }
+    const f = host.querySelector('.s1b-field');
+    const smRead = s.read.filter((x) => !x.link);
+    if (n) {
+      smRead.forEach((x, i) => { const el = f.children[i]; if (el && !el.dataset.r) { el.dataset.r = x.r; el.style.background = S1.R[x.r].c; el.dataset.tip = x.path; el.dataset.tipH = `${x.r}. ${S1.R[x.r].name}`; } });
+      const links = s.read.filter((x) => x.link);
+      while (f.children.length < n + links.length) f.appendChild(FL.h('<i class="link"></i>'));
+      links.forEach((x, i) => { const el = f.children[n + i]; if (!el.dataset.r) { el.dataset.r = x.r; el.style.background = S1.R[x.r].c; el.dataset.tip = `${x.path} (found through a link, not in the sitemap)`; el.dataset.tipH = `${x.r}. ${S1.R[x.r].name}`; } });
+      s.blocked.forEach((p, i) => { const el = f.children[i]; if (el && !el.classList.contains('x')) { el.classList.add('x'); el.dataset.tip = `${p}: turned away on all four ways in`; el.dataset.tipH = 'Blocked'; } });
+      FL.$$('.cur', f).forEach((e) => e.classList.remove('cur'));
+      if (s.cur && !s.done) { const idx = s.blocked.length + (s.mode === 'blocked' ? 0 : smRead.length); const el = f.children[Math.min(idx, f.children.length - 1)]; el && el.classList.add('cur'); }
+    }
+    const readN = s.read.length;
+    host.querySelector('.s1b-big').innerHTML = s.done === 'blocked' ? '<b style="color:var(--now)">0</b> pages read' : `<b>${FL.fmt(readN)}</b> pages read`;
+    host.querySelector('.s1b-det').textContent = s.done ? '' : `${S1.STAGES.find((x) => x.k === s.stage).name} · ${s.detail}`;
+    host.querySelector('.s1b-cur').innerHTML = s.cur ? `<span class="url">${FL.esc(s.cur.path)}</span>${s.climbing ? `<div class="s1b-tries">${S1.tries(s.cur.tries)}</div>` : ''}` : '';
+    host.querySelector('.s1b-side').innerHTML = `<div class="s1-lh">Ways in, in order</div>${[1, 2, 3, 4].map((r) => `<div class="s1b-r"><span class="sw" style="background:${S1.R[r].c}"></span><div><b data-tip-h="${S1.R[r].name}" data-tip="${FL.esc(S1.R[r].tip)}" class="tipword">${r}. ${S1.R[r].name}</b>${S1.R[r].sample ? SA.sample('Not built yet. The squares in this colour are a sample.') : ''}<span>${['Our browser, saying who it is', 'A plain request, more slowly', 'From our one published address', 'A paid service reads it'][r - 1]}</span></div><em>${s.rc[r]}</em></div>`).join('')}
+      <div class="s1b-r"><span class="sw g"></span><div><b class="tipword" data-tip-h="${S1.GOOGLE.name}" data-tip="${S1.GOOGLE.tip}">Google check</b>${SA.sample()}<span>Which pages Google has indexed</span></div><em>${s.google}</em></div>
+      <div class="s1b-r"><span class="sw link"></span><div><b>Found through links</b><span>Not in the sitemap</span></div><em>${s.found}</em></div>`;
+    host.querySelector('.s1b-end').innerHTML = s.done ? (s.done === 'complete' ? S1.complete(s) : S1.blockedEnd()) : '';
+  };
+  const go = () => { host.innerHTML = ''; built = null; S1.mockctl(host, go);
+    host.appendChild(FL.h(`<div class="s1b"><div class="kick">Site Audit · crawl · ${S1.ENDING === 'complete' ? 'libertyfamilydentistry.com' : 'kayjordandds.com'}</div>
+      <div class="s1b-big h1"></div><div class="s1b-det sub"></div>
+      <div class="s1b-grid"><div><div class="s1b-field"></div><div class="s1b-cur"></div><div class="s1b-cap">One square per page in the sitemap, in the order they are read. Dashed squares at the end were found through links.</div></div><div class="s1b-side"></div></div>
+      <div class="s1b-end"></div></div>`));
+    S1.run(draw); };
+  go();
+} };
+
+/* ---------- C: steps, with the ladder explained inline ---------- */
+const S1C = { name: 'Five steps, the ways in explained inside', render(host) {
+  const draw = (s) => {
+    const si = s.done ? 99 : S1.STAGES.findIndex((x) => x.k === s.stage);
+    const blockedStop = s.done === 'blocked';
+    const note = (k) => ({ verify: s.verifyNote, sitemap: s.sitemapNote, pages: blockedStop ? '3 pages turned away on every way in' : s.done || si > 2 ? `${s.read.length} pages read, ${s.found} found through links` : '', google: s.googleNote ? `${s.googleNote} ${SA.sample()}` : '', sort: s.done === 'complete' ? S1.levelsLine() : '' }[k] || '');
+    host.querySelector('.s1c-steps').innerHTML = S1.STAGES.map((st, i) => {
+      const skipped = blockedStop && i > 2; const state = blockedStop && i === 2 ? 'bad' : skipped ? 'skip' : i < si ? 'done' : i === si ? 'on' : 'todo';
+      let body = '';
+      if (state === 'on' && st.k === 'pages') {
+        const smRead = s.read.filter((x) => !x.link).length;
+        body = `<div class="s1c-body"><div class="s1c-prog"><span><b>${smRead}</b> of ${s.sitemapTotal} sitemap pages${s.found ? `, <b>${s.found}</b> found through links` : ''}</span><span class="s1c-mini"><i style="width:${(100 * smRead / Math.max(1, s.sitemapTotal)).toFixed(1)}${'%'}"></i></span></div>
+          <div class="s1c-cur">${s.cur ? `<span class="url">${FL.esc(s.cur.path)}</span>` : ''}</div>
+          <div class="s1c-ladder"><div class="s1c-lh">If a page turns us away, we climb to the next way in, one at a time:</div>
+          ${[1, 2, 3, 4].map((r) => { const t = s.cur && s.climbing ? s.cur.tries.find((x) => x.r === r) : null;
+            return `<div class="s1c-rung ${t ? (t.ok ? 'ok' : 'no') : ''}"><span class="n" style="background:${S1.R[r].c}">${r}</span><span class="nm"><b>${S1.R[r].name}</b>${S1.R[r].sample ? SA.sample('Not built yet; shown as it would work.') : ''}</span><span class="d">${['Our browser, saying who it is', 'A plain page request, more slowly', 'From our one published internet address', 'A paid service reads the page'][r - 1]}</span><span class="t">${t ? FL.esc(t.msg) : ''}</span><em>${s.rc[r] || ''}</em></div>`; }).join('')}</div></div>`;
+      } else if (state === 'on') body = `<div class="s1c-body"><div class="s1c-det">${FL.esc(s.detail)}${st.k === 'google' ? ` <b>${s.google}</b> of 185 ${SA.sample()}` : ''}</div></div>`;
+      return `<div class="s1c-step ${state}"><span class="s1c-mk">${state === 'done' ? '<svg viewBox="0 0 16 16"><path d="M4 8.5l2.5 2.5L12 5.5"/></svg>' : state === 'bad' ? '×' : state === 'on' ? '<span class="s1-turn"></span>' : i + 1}</span>
+        <div class="s1c-main"><div class="s1c-t"><b>${st.name}</b><span class="s1c-note">${skipped ? 'Not reached' : note(st.k)}</span></div>${body}</div></div>`;
+    }).join('');
+    S1.headDone(host, s); host.querySelector('.s1c-end').innerHTML = s.done ? (s.done === 'complete' ? S1.complete(s) : S1.blockedEnd()) : '';
+  };
+  const go = () => { host.innerHTML = ''; S1.mockctl(host, go);
+    host.appendChild(FL.h(`<div class="s1c">${S1.head({ domain: S1.ENDING === 'complete' ? 'libertyfamilydentistry.com' : 'kayjordandds.com' }, 'Site Audit · crawl')}
+      <p class="sub">Five steps, a few minutes. Every crawl ends Complete, or Blocked with the reason.</p><div class="s1c-steps"></div><div class="s1c-end"></div></div>`));
+    S1.run(draw); };
+  go();
+} };
+
+window.SCREEN = {
+  title: 'Site Audit 1: Run screen',
+  mock: `<b>Site Audit · 1 Run screen</b> <span class="src">· data: Liberty Family Dentistry’s real crawl (Oct 22, 2026, 185 pages); sitemap checked live on Oct 30 (159 URLs, all read, 26 more found through links). Blocked ending: kayjordandds.com (Cloudflare, 644 sitemap URLs, three failed crawls on Sep 8).</span>
+<ul><li>A: one quiet line (stage, current page, counts) above a running log of pages; the four ways in sit as a small key with counts.</li>
+<li>B: a field with one square per sitemap page that fills in as pages are read, coloured by the way in that worked; blocked pages are red crosses.</li>
+<li>C: five steps (check the domain, read the sitemap, read every page, ask Google, sort); the ways in are explained inside the page step and light up as a page climbs.</li></ul>
+<span class="nr">Sample: which way in read each page (today’s crawl does not record it), the climbing pages, ways 3 and 4 (not built), the Google check counts, the blocked page paths. Use the grey Mockup bar to switch the ending, replay or skip. Progress streams; no polling.</span>`,
+  right: '<span class="who">Liberty Family Dentistry</span><span class="when">Started Oct 22, 2026, 2:14 PM</span>',
+  variants: { A: S1A, B: S1B, C: S1C },
+};
+</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+</body></html>

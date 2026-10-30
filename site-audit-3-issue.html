@@ -1,0 +1,1716 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Site Audit 3: An issue’s pages and fix guide</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>.oq-rail{position:fixed;inset:0 auto 0 0;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}
+/* Market Trends Story mockups, round 2. Facelift shared look (AIV experience in OQ teal), trimmed. */
+:root{
+  --ink:#0B1020;--ink2:#0F172A;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;
+  --up:#15803D;--down:#E11D48;--rose:#DB2777;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+a{color:var(--aInk)}
+
+/* mockup bar: outside the design */
+.mockbar{background:#ECEEF1;color:#4B5563;font-size:12px;line-height:1.45;padding:7px 18px;border-bottom:1px solid #DDE1E6}
+.mockbar b{color:#111827;font-weight:700}
+.mockbar .src{color:#6B7280}
+.mockbar ul{margin:3px 0 0;padding:0 0 0 16px}
+.mockbar li{margin:0}
+.mockbar .nr{display:inline-block;margin-top:3px;color:#6B7280}
+
+/* app chrome */
+.fl-app{margin-left:56px;min-height:100vh}
+.mockbar{margin-left:56px}
+.fl-main{min-width:0}
+.fl-wrap{max-width:1240px;margin:0 auto;padding:0 28px 120px}
+.fl-top{position:sticky;top:0;z-index:30;margin:0 -28px 0;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.fl-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink)}
+.fl-mark{width:26px;height:26px;border-radius:8px;background:var(--a);display:grid;place-items:center;flex:none}
+.fl-mark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.fl-right{display:flex;align-items:center;gap:12px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+.fl-right .who{color:var(--ink);font-weight:700}
+.fl-right .when{color:var(--muted)}
+.btn{border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:13.5px;transition:background .2s,box-shadow .2s}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,118,110,.25)}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;font-size:13px}
+.btn-line:hover{background:var(--soft)}
+.method-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 10px;font-weight:600;color:var(--aInk);position:relative;font-size:13.5px}
+.method-btn:hover{background:var(--aTint)}
+.method-btn .dot{width:14px;height:14px;border-radius:50%;background:var(--a);position:relative}
+.method-btn .dot:after{content:'';position:absolute;inset:3.5px;border-radius:50%;border:1px dotted #fff}
+.teaser{position:absolute;right:0;top:100%;margin-top:8px;width:300px;z-index:40;border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px 16px;font-size:13px;font-weight:400;line-height:1.5;color:var(--body);text-align:left;box-shadow:0 12px 32px rgba(11,16,32,.12)}
+
+/* tabs */
+.tabs{position:sticky;top:55px;z-index:20;display:flex;gap:26px;margin:0 -28px 6px;padding:10px 28px 0;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px)}
+.tabs button{position:relative;border:0;background:none;padding:0 0 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button.on{color:var(--ink)}
+.tabs .ink{position:absolute;bottom:-1px;height:2px;background:var(--a);transition:left .3s var(--ease),width .3s var(--ease)}
+.tabnote{padding:60px 0;color:var(--muted);font-size:14px}
+
+/* modal (How it works) */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:5vh 16px}
+.modal .bd{position:fixed;inset:0;background:rgba(11,16,32,.4)}
+.modal .win{position:relative;width:100%;max-width:880px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:24px 28px;box-shadow:0 24px 60px rgba(11,16,32,.18);animation:rise .25s var(--ease)}
+.modal .x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);border-radius:6px;padding:4px 8px}
+.msec{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:center;border-top:1px solid var(--line);padding:20px 0}
+.msec h3{margin:0 0 8px;font-size:16.5px;color:var(--ink)}
+.msec p{margin:8px 0;font-size:15px;line-height:1.6}
+.msec figure{margin:0}
+.msec figcaption{margin-top:6px;text-align:center;font-size:12px;color:var(--muted)}
+.figbox{height:200px;overflow:hidden;border-radius:8px;background:var(--soft)}
+.figbox svg{display:block;width:100%;height:100%}
+.figbox svg *{transition:opacity .45s, fill .45s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:300;background:var(--ink);color:#fff;border-radius:8px;padding:12px 18px;font-size:14px;box-shadow:0 12px 32px rgba(11,16,32,.25);animation:rise .25s var(--ease)}
+.tipcard{position:fixed;z-index:200;width:280px;border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px 14px;font-size:13px;line-height:1.5;color:var(--body);box-shadow:0 12px 32px rgba(11,16,32,.12);pointer-events:none}
+.tipcard b{display:block;color:var(--aInk);font-size:13px;margin-bottom:2px}
+.tipword{border-bottom:1px dotted var(--faint);cursor:help}
+
+/* Story */
+.story{display:grid;grid-template-columns:minmax(0,1fr) 600px;gap:44px}
+.chap{min-height:88vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0;opacity:.25;transition:opacity .4s}
+.chap.on{opacity:1}
+.chap .k{margin-bottom:12px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.chap .k .act{color:var(--muted)}
+.chap h2{margin:0;font-size:36px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.chap h2 .g{color:var(--a)}
+.chap h2 .r{color:var(--down)}
+.chap p{margin:14px 0 0;max-width:540px;font-size:17px;line-height:1.6}
+.defs{margin-top:18px;max-width:540px;padding:12px 14px;background:#F8FAFB;border:1px solid var(--line);border-radius:6px}
+.defs .dh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.chap .defs p{margin:0;font-size:13.5px;line-height:1.55;color:#273043}
+.chap .defs p+p{margin-top:6px}
+.chap .note{font-size:13.5px;color:var(--muted);margin-top:12px}
+.facts{margin-top:18px;max-width:540px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.facts div{padding:9px 10px 9px 0;border-bottom:1px solid var(--line)}
+.facts b{display:block;font-size:17px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.facts span{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.qlist{margin-top:16px;max-width:540px;border-top:1px solid var(--line)}
+.qlist div{display:grid;grid-template-columns:minmax(0,1fr) 70px 54px;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.qlist div span:nth-child(n+2){text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+.qlist .h span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)!important}
+.stick{position:sticky;top:104px;height:calc(100vh - 112px);display:flex;flex-direction:column;justify-content:center}
+.ro{height:52px;padding:4px 2px 6px;border-bottom:1px solid #EEF0F3;margin-bottom:6px;overflow:hidden}
+.ro .r1{display:flex;justify-content:space-between;align-items:baseline;height:20px;font-size:13px;white-space:nowrap}
+.ro .r1 .m{font-weight:700;color:var(--ink2);overflow:hidden;text-overflow:ellipsis}
+.ro .r1 .n{color:var(--muted);font-size:12px;margin-left:12px}
+.ro .r2{display:grid;height:22px;align-items:center;gap:10px;font-size:12.5px;white-space:nowrap}
+.ro .r2 .s{display:flex;align-items:center;gap:6px;overflow:hidden;min-width:0}
+.ro .r2 .s b{color:var(--ink2);font-variant-numeric:tabular-nums}
+.ro .r2 .s span{color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.ro .r2 .s svg{flex:none}
+.ro .r2 .txt{grid-column:1/-1;color:var(--body);overflow:hidden;text-overflow:ellipsis}
+.figsvg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.figsvg text{font-family:Inter,sans-serif}
+.figsvg .num{font-variant-numeric:tabular-nums}
+.figcap{margin-top:6px;min-height:36px;font-size:12.5px;line-height:1.45;color:var(--muted);text-align:center}
+.storyend{margin:24px 0 0;padding:28px;border:1px solid var(--line);border-radius:8px;background:var(--soft);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.storyend.in{opacity:1;transform:none}
+.storyend h3{margin:0;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em}
+.storyend p{margin:4px 0 0;color:var(--muted);font-size:14px}
+@media (max-width:1180px){.story{grid-template-columns:minmax(0,1fr) 520px;gap:32px}}
+@media (max-width:980px){.story{grid-template-columns:1fr}.stick{position:static;height:auto}.chap{opacity:1;min-height:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+
+/* Site Audit mockups (#1426): additions on top of the approved facelift base. */
+:root{--now:#DC2626;--nowTint:#FEF2F2;--soon:#2563EB;--soonTint:#EFF6FF;--tidy:#A3ACB9;--tidyTint:#F4F5F7}
+.lv{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:var(--ink)}
+.lv i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.lv.now i{background:var(--now)}.lv.soon i{background:var(--soon)}.lv.tidy i{background:var(--tidy)}
+.sample{display:inline-block;margin-left:6px;padding:0 5px;border:1px dashed #C3C8D2;border-radius:4px;font-size:10.5px;font-weight:600;color:#6B7280;letter-spacing:.02em;vertical-align:1px}
+.card{border:1px solid var(--line);border-radius:8px;background:#fff}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px}
+.url{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;color:var(--ink2)}
+.kick{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--aInk)}
+.h1{margin:6px 0 0;font-size:34px;font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.sub{margin:8px 0 0;color:var(--muted);font-size:15px}
+/* variant switcher: outside the design */
+.vbar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:500;display:flex;align-items:center;gap:4px;background:#111827;color:#fff;border-radius:10px;padding:5px;box-shadow:0 10px 30px rgba(0,0,0,.3);font-size:13px}
+.vbar button{border:0;background:none;color:#fff;border-radius:7px;padding:6px 10px}
+.vbar button:hover{background:#374151}
+.vbar button.on{background:#fff;color:#111827;font-weight:700}
+.vbar .lbl{padding:0 10px;color:#D1D5DB;white-space:nowrap}
+.vbar a{color:#9CA3AF;text-decoration:none;padding:0 8px;font-size:12px}
+
+/* Screen 3: an issue type's pages, fix guide and suggestion */
+.s3-head{padding:26px 0 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.s3-head .h1{font-size:30px}
+.s3-back{font-size:13px;color:var(--muted);border:0;background:none;padding:0;margin-bottom:10px}
+.s3-back:hover{color:var(--aInk)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--soft);gap:2px}
+.seg button{border:0;background:none;border-radius:6px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(11,16,32,.08)}
+.s3-meta{display:flex;gap:18px;align-items:center;margin-top:10px;font-size:13.5px;color:var(--muted)}
+.s3-meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+
+/* suggestion block (shared look) */
+.sugg{border:1px solid #CFE7E2;background:var(--aTint);border-radius:8px;padding:14px 16px}
+.sugg .t{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.sugg p{margin:6px 0 0;font-size:14.5px;color:var(--ink2);line-height:1.5}
+.prop{display:inline-block;padding:0 5px;border:1px dashed #8FC9BF;border-radius:4px;font-size:10.5px;font-weight:600;color:var(--aInk);letter-spacing:.02em;text-transform:none}
+
+/* guide */
+.guide h4{margin:18px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.guide p{margin:0;font-size:14.5px;line-height:1.6}
+.guide ol{margin:6px 0 0;padding-left:20px;font-size:14.5px;line-height:1.6}
+.guide ol li{margin:3px 0}
+.guide .trap{margin-top:14px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);border-radius:8px}
+.guide .trap b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink);margin-bottom:3px}
+.guide .trap p{font-size:14px}
+.plat{margin-top:12px}
+
+/* A: split */
+.sA{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:28px;align-items:start}
+.sA-list .grp{padding:12px 0 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;justify-content:space-between;border-bottom:1px solid var(--line)}
+.sA-row{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:13.5px;align-items:center}
+.sA-row:hover{background:#FAFBFC}
+.sA-row .p{color:var(--muted);font-size:12.5px;text-align:right}
+.sA-side{position:sticky;top:76px;padding:20px 22px;max-height:calc(100vh - 96px);overflow:auto}
+.sA-side .gt{font-size:18px;font-weight:800;color:var(--ink);margin:0}
+
+/* B: guide first, by pattern */
+.sB{max-width:880px}
+.sB-lead{font-size:22px;line-height:1.45;color:var(--ink);font-weight:600;letter-spacing:-.01em;margin:0 0 6px}
+.sB-lead .n{color:var(--a);font-weight:800}
+.pat{border:1px solid var(--line);border-radius:8px;margin-top:12px;background:#fff}
+.pat-h{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:start;padding:16px 18px;cursor:pointer}
+.pat-h .num{width:28px;height:28px;border-radius:6px;background:var(--aTint);color:var(--aInk);display:grid;place-items:center;font-weight:800;font-size:13px}
+.pat-h h3{margin:0;font-size:16px;color:var(--ink)}
+.pat-h .why{margin:3px 0 0;font-size:13.5px;color:var(--muted)}
+.pat-h .fix{margin-top:8px;font-size:14px;color:var(--ink2)}
+.pat-h .fix b{color:var(--aInk)}
+.pat-h .cnt{font-size:13px;color:var(--muted);white-space:nowrap;padding-top:4px}
+.pat-h .chev{display:inline-block;transition:transform .25s var(--ease);margin-left:6px}
+.pat.open .chev{transform:rotate(90deg)}
+.pat-b{display:none;border-top:1px solid var(--line);padding:6px 18px 12px 58px;columns:2;column-gap:28px}
+.pat.open .pat-b{display:block}
+.pat-b div{font-size:12.5px;padding:3px 0;break-inside:avoid}
+.sB-guide{margin-top:34px;padding-top:6px;border-top:1px solid var(--line)}
+.sB-guide .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+
+/* C: table + drawer */
+.sC-tools{display:flex;justify-content:space-between;align-items:center;margin:4px 0 10px;gap:12px}
+.sC-tools .sel{font-size:13.5px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:55px}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr.r:hover td{background:#FAFBFC;cursor:pointer}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl .sg{color:var(--ink2)}
+.tbl .sg b{color:var(--aInk);font-weight:700}
+.tbl tr.x td{background:#FAFBFC;font-size:13px;color:var(--body)}
+.tbl input[type=checkbox]{accent-color:var(--a)}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:480px;background:#fff;border-left:1px solid var(--line);z-index:120;padding:22px 26px;overflow:auto;transform:translateX(100%);transition:transform .35s var(--ease);box-shadow:-12px 0 32px rgba(11,16,32,.06)}
+.drawer.in{transform:none}
+.drawer .x{position:absolute;right:16px;top:14px;border:0;background:none;font-size:22px;color:var(--muted)}
+</style></head><body><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item is-active" data-href="/tools/site-audit" title="Site Audit"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><div id="page"></div>
+<script>window.D={
+ "client": "Liberty Family Dentistry",
+ "client_id": 131,
+ "domain": "libertyfamilydentistry.com",
+ "crawled": "Oct 22, 2026",
+ "crawl_id": 319,
+ "pages": 185,
+ "sitemap_urls": null,
+ "levels": {
+  "now": {
+   "pages": 3,
+   "types": 2
+  },
+  "soon": {
+   "pages": 82,
+   "types": 5
+  },
+  "tidy": {
+   "pages": 74,
+   "types": 5
+  }
+ },
+ "issues": [
+  {
+   "key": "broken_pages",
+   "name": "Pages that don\u2019t load",
+   "level": "now",
+   "group": "broken",
+   "real": false,
+   "count": 2,
+   "minutes": 30,
+   "pages": [
+    {
+     "url": "/services/dental-implants-old",
+     "problem": "404 Not found, linked from 3 pages",
+     "from": [
+      "/services",
+      "/topics/cosmetic-dentistry",
+      "/first-visit"
+     ]
+    },
+    {
+     "url": "/specials",
+     "problem": "404 Not found, linked from the footer on every page",
+     "from": [
+      "every page (footer)"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "noindex_ranking",
+   "name": "Pages Google is told to skip",
+   "level": "now",
+   "group": "indexing",
+   "real": false,
+   "count": 1,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/services/sedation",
+     "problem": "noindex tag, but it brought 41 visits from Google last month"
+    }
+   ]
+  },
+  {
+   "key": "dup_title",
+   "name": "Pages sharing one title",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 26,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "Title is only \u201cLiberty Family Dentistry\u201d, same as 25 other pages"
+    }
+   ]
+  },
+  {
+   "key": "no_meta",
+   "name": "Pages with no description",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 27,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No meta description"
+    }
+   ]
+  },
+  {
+   "key": "no_h1",
+   "name": "Pages with no main heading",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 27,
+   "minutes": 45,
+   "pages": [
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "No H1 heading"
+    }
+   ]
+  },
+  {
+   "key": "thin_service",
+   "name": "Service pages with little text",
+   "level": "soon",
+   "group": "onpage",
+   "real": true,
+   "count": 1,
+   "minutes": 120,
+   "pages": [
+    {
+     "url": "/topics/cosmetic-dentistry",
+     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 183,
+     "problem": "183 words"
+    }
+   ]
+  },
+  {
+   "key": "redirect_chain",
+   "name": "Links that bounce through redirects",
+   "level": "soon",
+   "group": "broken",
+   "real": false,
+   "count": 1,
+   "minutes": 20,
+   "pages": [
+    {
+     "url": "/new-patients",
+     "problem": "2 hops: /new-patients \u2192 /first-visit/ \u2192 /first-visit",
+     "from": [
+      "/",
+      "/contact"
+     ]
+    }
+   ]
+  },
+  {
+   "key": "not_in_sitemap",
+   "name": "Pages missing from the sitemap",
+   "level": "tidy",
+   "group": "indexing",
+   "real": false,
+   "count": 2,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/our-approach",
+     "problem": "Crawled, not listed in sitemap.xml"
+    },
+    {
+     "url": "/video",
+     "problem": "Crawled, not listed in sitemap.xml"
+    }
+   ]
+  },
+  {
+   "key": "long_title",
+   "name": "Titles too long for Google",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 38,
+   "minutes": 60,
+   "pages": [
+    {
+     "url": "/articles",
+     "title": "Dental Articles - Liberty Family Dentistry in Bloomington, IN",
+     "words": 593,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/reviews",
+     "title": "Dentist Reviews in Bloomington, IN - Liberty Family Dentistry",
+     "words": 1246,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/team",
+     "title": "Meet our Bloomington, Indiana Dentists - Liberty Family Dentistry",
+     "words": 367,
+     "problem": "65 characters (Google shows about 60)"
+    },
+    {
+     "url": "/services",
+     "title": "Dental Services in Bloomington, IN - Liberty Family Dentistry",
+     "words": 751,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/services/dental-implants",
+     "title": "Dental Implants in Bloomington, IN - Liberty Family Dentistry",
+     "words": 794,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/accessibility",
+     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
+     "words": 324,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/privacy-practices",
+     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
+     "words": 828,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/5-key-questions-about-your-2019-insurance-benefits",
+     "title": "5 Key Questions about Your 2019 Insurance Benefits | Bloomington, IN",
+     "words": 361,
+     "problem": "68 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/5-secrets-your-dentist-wont-tell-you",
+     "title": "5 Secrets Your Dentist Won't Tell You | Liberty Family Dentistry",
+     "words": 1024,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/are-your-gums-healthy",
+     "title": "Gum disease treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 372,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/ask-these-4-questions-before-getting-implants",
+     "title": "Ask These 4 Questions Before Getting Implants | Bloomington, IN",
+     "words": 365,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/attention-parents-sealants-help-prevent-cavities",
+     "title": "Attention Parents: Sealants Help Prevent Cavities | Bloomington, IN",
+     "words": 400,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/benefits-of-dental-sealants",
+     "title": "Dental sealants in Bloomington, IN | Liberty Family Dentistry",
+     "words": 390,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/botox-for-tmj-an-alternative-treatment",
+     "title": "Botox for TMJ: An Alternative Treatment | Liberty Family Dentistry",
+     "words": 800,
+     "problem": "66 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/breaking-down-barriers-understanding-dental-phobia-and-how-to-overcome-it",
+     "title": "Breaking Down Barriers: Understanding Dental Phobia and How to Overcome It",
+     "words": 907,
+     "problem": "74 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/how-dental-implants-can-rejuvenate-your-smile",
+     "title": "How Dental Implants Can Rejuvenate Your Smile | Liberty Family Dentistry",
+     "words": 887,
+     "problem": "72 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/how-dentists-can-help-your-sleep-apnea",
+     "title": "How Dentists Can Help Your Sleep Apnea | Liberty Family Dentistry",
+     "words": 809,
+     "problem": "65 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/listen-to-your-body-root-canal-treatment-for-lasting-relief",
+     "title": "Root Canal Treatment for Lasting Relief | Liberty Family Dentistry",
+     "words": 710,
+     "problem": "66 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/look-younger-and-feel-better",
+     "title": "Botox treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 359,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/look-your-best-this-summer-with-botox-treatment",
+     "title": "Look Your Best This Summer With Botox Treatment | Liberty Family Dentistry, Bloomington, IN",
+     "words": 897,
+     "problem": "91 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/misconceptions-about-dental-implants",
+     "title": "Fact or Fiction: Popular Misconceptions about Dental Implants",
+     "words": 444,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/new-year-new-you-enjoy-a-whiter-brighter-new-year",
+     "title": "New Year, New You: Enjoy A Whiter, Brighter New Year | Bloomington, IN",
+     "words": 397,
+     "problem": "70 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/pediatric-dentistry-establishing-healthy-habits-early",
+     "title": "Establishing Healthy Habits with Pediatric Dentistry | Liberty Family Dentistry",
+     "words": 673,
+     "problem": "79 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/professional-whitening-vs-over-the-counter",
+     "title": "Professional Whitening Vs. Over-The-Counter | Bloomington, IN",
+     "words": 390,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/restore-your-tooth-in-one-visit-with-dental-bonding",
+     "title": "Restore Your Tooth in One Visit with Dental Bonding | Bloomington, IN",
+     "words": 324,
+     "problem": "69 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/sleep-apnea-treatment-to-restore-rejuvenating-sleep",
+     "title": "Sleep Apnea Treatment | Liberty Family Dentistry, Bloomington",
+     "words": 863,
+     "problem": "61 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/sleep-is-critical-to-health",
+     "title": "Sleep Apnea treatment in Bloomington, IN | Liberty Family Dentistry",
+     "words": 421,
+     "problem": "67 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/summer-smiles-5-tips-to-keep-your-smile-bright",
+     "title": "Summer Smiles: 5 Tips to Keep Your Smile Bright After Whitening",
+     "words": 1066,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/the-advantages-of-laser-dentistry",
+     "title": "The Advantages of Laser Dentistry | Dentist in Bloomington, IN",
+     "words": 779,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/the-importance-of-sports-mouthguards",
+     "title": "The Importance of Sports Mouthguards | Liberty Family Dentistry",
+     "words": 620,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/tips-for-managing-tooth-sensitivity",
+     "title": "Tips for Managing Tooth Sensitivity | Liberty Family Dentistry",
+     "words": 679,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/tips-for-preventing-gum-disease",
+     "title": "Tips for Preventing Gum Disease from Your Dentist in Bloomington",
+     "words": 808,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/articles/understanding-orthodontic-relapse-why-teeth-shift-after-treatment",
+     "title": "Orthodontic Relapse: Why Teeth Shift Back and How to Prevent It",
+     "words": 1388,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/cosmetic-dentistry",
+     "title": "Sedation Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 183,
+     "problem": "63 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/general-dentistry",
+     "title": "General Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 3896,
+     "problem": "62 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/pediatric-dentistry",
+     "title": "Pediatric Dentistry  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 397,
+     "problem": "64 characters (Google shows about 60)"
+    },
+    {
+     "url": "/topics/preventative-care",
+     "title": "Preventative Care  - Liberty Family Dentistry, Bloomington, IN",
+     "words": 1112,
+     "problem": "62 characters (Google shows about 60)"
+    }
+   ]
+  },
+  {
+   "key": "dup_meta",
+   "name": "Pages sharing one description",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 2,
+   "minutes": 15,
+   "pages": [
+    {
+     "url": "/accessibility",
+     "title": "Accessibility Statement | Liberty Family Dentistry, Bloomington, IN",
+     "words": 324,
+     "problem": "Same description as another page"
+    },
+    {
+     "url": "/privacy-practices",
+     "title": "Privacy Practices | Liberty Family Dentistry, Bloomington, IN",
+     "words": 828,
+     "problem": "Same description as another page"
+    }
+   ]
+  },
+  {
+   "key": "thin_other",
+   "name": "Other pages with little text",
+   "level": "tidy",
+   "group": "onpage",
+   "real": true,
+   "count": 30,
+   "minutes": null,
+   "pages": [
+    {
+     "url": "/first-visit",
+     "title": "Your First Visit to Liberty Family Dentistry in Bloomington, IN",
+     "words": 290,
+     "problem": "290 words"
+    },
+    {
+     "url": "/our-approach",
+     "title": "Our Approach - Liberty Family Dentistry in Bloomington, IN",
+     "words": 125,
+     "problem": "125 words"
+    },
+    {
+     "url": "/video",
+     "title": "Video",
+     "words": 35,
+     "problem": "35 words"
+    },
+    {
+     "url": "/articles/liberty-is-open-for-dental-emergencies",
+     "title": "Liberty Is Open For Dental Emergencies | Bloomington, IN",
+     "words": 261,
+     "problem": "261 words"
+    },
+    {
+     "url": "/review-sites/angies-list",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/facebook",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/yelp",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/review-sites/google",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/dawn",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/bret",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/joy",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/rhonda",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/adam",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/tina",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/christine",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/greg",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/kim",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/elza",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/melissa",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/jessica",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/michelle",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/scott",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/joanna",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/reviews-view/dan",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/advanced-technology",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/sleep-apnea",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/sedation-dentistry",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/orthodontics",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/invisalign",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    },
+    {
+     "url": "/landing-pages/dental-implants",
+     "title": "Liberty Family Dentistry",
+     "words": 0,
+     "problem": "0 words"
+    }
+   ]
+  },
+  {
+   "key": "missing_alt",
+   "name": "Images with no alt text",
+   "level": "tidy",
+   "group": "onpage",
+   "real": false,
+   "count": 2,
+   "minutes": 30,
+   "pages": [
+    {
+     "url": "/",
+     "problem": "4 of 11 images have no alt text"
+    },
+    {
+     "url": "/team",
+     "problem": "9 of 9 images have no alt text"
+    }
+   ]
+  }
+ ],
+ "median_words": 431
+};</script>
+<script>/* Shared pieces for the round 2 Story mockups: frame, tabs, hovers, How it works window,
+   and a small tween engine for ONE persistent SVG (marks keyed by id, never unmounted). */
+(function () {
+  const FL = (window.FL = {});
+  FL.reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  FL.esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  FL.$ = (s, r = document) => r.querySelector(s);
+  FL.$$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  FL.h = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+  FL.fmt = (n) => Number(n).toLocaleString('en-US');
+  FL.round = (n, to) => Math.round(n / to) * to;
+  FL.toast = (msg) => { const t = FL.h(`<div class="toast">${FL.esc(msg)}</div>`); document.body.appendChild(t); setTimeout(() => t.remove(), 2600); };
+
+  /* ---------- frame ---------- */
+  FL.shell = function ({ mock }) {
+    const page = document.getElementById('page');
+    const bar = FL.h(`<div class="mockbar">${mock}</div>`);
+    const app = FL.h(`<div class="fl-app">
+
+      <main class="fl-main"><div class="fl-wrap">
+        <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></span>Market Trends</div>
+          <div class="fl-right"><span id="method-slot"></span><span class="who">Expedition Pediatric Dentistry</span><span class="when">Check #22 · Oct 29, 2026 · read for Washington</span>
+          <button class="btn btn-line" id="share">Share report</button><button class="btn btn-line" id="newc">New check</button></div></div>
+      </div></main></div>`);
+    page.parentNode.insertBefore(bar, page);
+    page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('#method-slot').innerHTML = '<button type="button" class="method-btn"><span class="dot"></span>How it works</button>';
+    FL.$('#share').onclick = () => FL.toast('Opens the client report: link, access code, PDF and email.');
+    FL.$('#newc').onclick = () => FL.toast('Starts a new check (not part of this mockup).');
+  };
+
+  FL.tabs = function (host, { tabs, value, onChange }) {
+    host.classList.add('tabs');
+    host.innerHTML = tabs.map((t) => `<button type="button" data-k="${t.key}">${FL.esc(t.label)}</button>`).join('') + '<span class="ink"></span>';
+    const ink = host.querySelector('.ink');
+    const set = (k, fire) => {
+      host.querySelectorAll('button').forEach((b) => { const on = b.dataset.k === k; b.classList.toggle('on', on); if (on) { ink.style.left = `${b.offsetLeft}px`; ink.style.width = `${b.offsetWidth}px`; } });
+      if (fire && onChange) onChange(k);
+    };
+    host.querySelectorAll('button').forEach((b) => { b.onclick = () => set(b.dataset.k, true); });
+    requestAnimationFrame(() => set(value, false));
+  };
+
+  /* branded hover for words in the text (never over the chart) */
+  let tipEl = null; let tipFor = null; let tipT = null;
+  const hideTip = () => { clearTimeout(tipT); tipEl?.remove(); tipEl = null; tipFor = null; };
+  document.addEventListener('mouseover', (e) => {
+    const t = e.target.closest && e.target.closest('[data-tip]');
+    if (t === tipFor) return; hideTip(); if (!t) return; tipFor = t;
+    tipT = setTimeout(() => {
+      const r = t.getBoundingClientRect();
+      tipEl = FL.h(`<div class="tipcard">${t.dataset.tipH ? `<b>${FL.esc(t.dataset.tipH)}</b>` : ''}${FL.esc(t.dataset.tip)}</div>`);
+      document.body.appendChild(tipEl);
+      tipEl.style.left = `${Math.max(8, Math.min(r.left, innerWidth - 288))}px`;
+      if (innerHeight - r.bottom < 130) tipEl.style.bottom = `${innerHeight - r.top + 6}px`; else tipEl.style.top = `${r.bottom + 6}px`;
+    }, 120);
+  });
+  addEventListener('scroll', hideTip, true);
+
+  /* How it works: teaser on hover, window on click, a looping real-data picture per section */
+  FL.method = function ({ teaser, title, sections }) {
+    const btn = FL.$('.method-btn'); let tip = null;
+    btn.addEventListener('mouseenter', () => { if (!tip) { tip = FL.h(`<span class="teaser">${FL.esc(teaser)}</span>`); btn.appendChild(tip); } });
+    btn.addEventListener('mouseleave', () => { tip?.remove(); tip = null; });
+    btn.addEventListener('click', () => {
+      tip?.remove(); tip = null;
+      const m = FL.h(`<div class="modal"><div class="bd"></div><div class="win" role="dialog" aria-modal="true">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px">
+          <div><div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)">Market Trends</div><h2 style="margin:2px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:var(--ink)">${FL.esc(title)}</h2></div>
+          <button class="x" aria-label="Close">×</button></div>
+        ${sections.map((s, i) => `<section class="msec"><div><h3>${FL.esc(s.title)}</h3>${s.body.map((p) => `<p>${p}</p>`).join('')}</div>
+          <figure><div class="figbox" data-fig="${i}"></div><figcaption>${FL.esc(s.caption)}</figcaption></figure></section>`).join('')}
+      </div></div>`);
+      document.body.appendChild(m);
+      const stops = sections.map((s, i) => s.figure(m.querySelector(`[data-fig="${i}"]`)));
+      const close = () => { stops.forEach((f) => f && f()); m.remove(); removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      addEventListener('keydown', onKey);
+      m.querySelector('.bd').onclick = close; m.querySelector('.x').onclick = close;
+    });
+  };
+  FL.loop = function (count, ms, fn) {
+    let s = FL.reduce ? count - 1 : 0; fn(s);
+    if (FL.reduce) return () => {};
+    const t = setInterval(() => { s = (s + 1) % count; fn(s); }, ms);
+    return () => clearInterval(t);
+  };
+
+  /* ---------- easing + tween engine ---------- */
+  function bez(p1x, p1y, p2x, p2y) {
+    const cx = 3 * p1x; const bx = 3 * (p2x - p1x) - cx; const ax = 1 - cx - bx;
+    const cy = 3 * p1y; const by = 3 * (p2y - p1y) - cy; const ay = 1 - cy - by;
+    const sx = (t) => ((ax * t + bx) * t + cx) * t; const sy = (t) => ((ay * t + by) * t + cy) * t; const ds = (t) => (3 * ax * t + 2 * bx) * t + cx;
+    return (x) => { if (x <= 0) return 0; if (x >= 1) return 1; let t = x; for (let i = 0; i < 8; i++) { const e = sx(t) - x; const d = ds(t); if (Math.abs(e) < 1e-5 || Math.abs(d) < 1e-6) break; t -= e / d; } return sy(t); };
+  }
+  FL.EASE = bez(0.2, 0.8, 0.2, 1);
+  const NS = 'http://www.w3.org/2000/svg';
+  FL.NS = NS;
+  const NUM = ['x', 'y', 'width', 'height', 'cx', 'cy', 'r', 'x1', 'y1', 'x2', 'y2', 'tx', 'ty', 's', 'sx'];
+  const STY = { o: 'opacity', stroke: 'stroke', fill: 'fill', sw: 'stroke-width', dash: 'stroke-dasharray', fo: 'fill-opacity' };
+  const ptsD = (p) => p.map((q, i) => `${i ? 'L' : 'M'}${q[0].toFixed(1)},${q[1].toFixed(1)}`).join('');
+
+  FL.Fig = class {
+    constructor(svg) { this.svg = svg; this.m = new Map(); this.tw = []; this.raf = null; this.lab = null; this.labHtml = null; this.labT = null; }
+    layer(name) { const g = document.createElementNS(NS, 'g'); g.setAttribute('data-layer', name); this.svg.appendChild(g); return g; }
+    /* create a mark once; init = {tag, layer, attrs (static), ...targets} */
+    mk(id, tag, layer, attrs = {}, init = {}) {
+      if (this.m.has(id)) return this.m.get(id);
+      const el = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      el.style.transition = 'opacity .5s, stroke .5s, fill .5s, stroke-width .5s';
+      layer.appendChild(el);
+      const mk = { id, el, tag, cur: {} };
+      this.m.set(id, mk);
+      this.apply(mk, init, true);
+      return mk;
+    }
+    write(mk) {
+      const c = mk.cur; const el = mk.el;
+      if (c.pts) el.setAttribute('d', ptsD(c.pts));
+      if ('tx' in c || 's' in c) el.setAttribute('transform', `translate(${(c.tx || 0).toFixed(2)},${(c.ty || 0).toFixed(2)}) scale(${(c.s ?? 1).toFixed(4)},${(c.sx ?? c.s ?? 1).toFixed(4)})`);
+      NUM.forEach((k) => { if (k in c && !['tx', 'ty', 's', 'sx'].includes(k)) el.setAttribute(k, c[k].toFixed(2)); });
+    }
+    /* move a mark to a target. Position over dur (0.9s), style by CSS (0.5s). */
+    apply(mk, t, instant = false, { dur = 900, delay = 0 } = {}) {
+      const el = mk.el;
+      if (t.attr) Object.entries(t.attr).forEach(([k, v]) => (v == null ? el.removeAttribute(k) : el.setAttribute(k, v)));
+      Object.entries(STY).forEach(([k, css]) => {
+        if (!(k in t)) return;
+        el.style.transitionDelay = instant || FL.reduce ? '0s' : `${delay}ms`;
+        if (instant) { const tr = el.style.transition; el.style.transition = 'none'; el.style.setProperty(css, t[k]); el.getBoundingClientRect(); el.style.transition = tr; } else el.style.setProperty(css, t[k]);
+      });
+      const tgt = {};
+      if (t.pts) tgt.pts = t.pts.map((p) => [p[0], p[1]]);
+      NUM.forEach((k) => { if (k in t) tgt[k] = t[k]; });
+      if (!Object.keys(tgt).length) return;
+      this.tw = this.tw.filter((w) => w.mk !== mk);
+      if (instant || FL.reduce || dur === 0) { Object.assign(mk.cur, tgt); this.write(mk); return; }
+      const from = {};
+      Object.keys(tgt).forEach((k) => {
+        if (k === 'pts') { const cp = mk.cur.pts || tgt.pts; from.pts = tgt.pts.map((_, i) => (cp[Math.min(i, cp.length - 1)] || tgt.pts[i]).slice()); } else from[k] = k in mk.cur ? mk.cur[k] : tgt[k];
+      });
+      this.tw.push({ mk, from, to: tgt, t0: performance.now() + delay, dur });
+      if (!this.raf) this.raf = requestAnimationFrame((n) => this.tick(n));
+    }
+    set(id, t, o) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, false, o); }
+    pre(id, t) { const mk = this.m.get(id); if (!mk) throw new Error(`no mark ${id}`); this.apply(mk, t, true); }
+    tick(now) {
+      this.tw = this.tw.filter((w) => {
+        const p = Math.min(1, Math.max(0, (now - w.t0) / w.dur)); const e = FL.EASE(p); const c = w.mk.cur;
+        Object.keys(w.to).forEach((k) => {
+          if (k === 'pts') c.pts = w.to.pts.map((q, i) => [w.from.pts[i][0] + (q[0] - w.from.pts[i][0]) * e, w.from.pts[i][1] + (q[1] - w.from.pts[i][1]) * e]);
+          else c[k] = w.from[k] + (w.to[k] - w.from[k]) * e;
+        });
+        if (now >= w.t0) this.write(w.mk);
+        return p < 1;
+      });
+      this.raf = this.tw.length ? requestAnimationFrame((n) => this.tick(n)) : null;
+    }
+    stop() { this.tw = []; }
+    /* draw a path in from its start (a new mark arriving); keeps its points */
+    drawIn(id, { dur = 900, delay = 0 } = {}) {
+      const el = this.m.get(id).el; if (FL.reduce) return;
+      const len = el.getTotalLength(); const keep = el.getAttribute('stroke-dasharray');
+      el.style.strokeDasharray = `${len} ${len}`; el.style.strokeDashoffset = `${len}`; el.getBoundingClientRect();
+      const tr = el.style.transition; el.style.transition = `${tr}, stroke-dashoffset ${dur}ms cubic-bezier(.2,.8,.2,1) ${delay}ms`;
+      el.style.strokeDashoffset = '0';
+      setTimeout(() => { el.style.transition = tr; el.style.strokeDasharray = keep || ''; el.style.strokeDashoffset = ''; }, dur + delay + 30);
+    }
+    /* label layer: old labels out (0.35s), new labels in (0.35s), then count-ups */
+    labels(html, host) {
+      const g = host; if (this.labHtml === html) return; this.labHtml = html;
+      clearTimeout(this.labT);
+      g.style.transition = 'opacity .35s'; g.style.opacity = 0;
+      this.labT = setTimeout(() => {
+        g.innerHTML = html; g.getBoundingClientRect(); g.style.opacity = 1;
+        g.querySelectorAll('[data-count]').forEach((t) => FL.countTo(t, +t.dataset.count, { from: +(t.dataset.from || 0), ms: 900, fmt: (t.dataset.fmt === 'x' ? (v) => `${v.toFixed(1)} times` : (v) => FL.fmt(Math.round(v))) }));
+      }, FL.reduce ? 0 : 350);
+    }
+  };
+  FL.countTo = function (el, to, { from = 0, ms = 900, fmt = (v) => Math.round(v) } = {}) {
+    if (FL.reduce) { el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    const tick = (n) => { const p = Math.min(1, (n - t0) / ms); el.textContent = fmt(from + (to - from) * FL.EASE(p)); if (p < 1) requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+  };
+
+  /* ---------- the readout bar above the figure (fixed 52px, fixed slots) ---------- */
+  FL.key = (k = {}) => `<svg width="16" height="8" viewBox="0 0 16 8"><line x1="1" y1="4" x2="15" y2="4" stroke="${k.c || '#0F766E'}" stroke-width="${Math.min(2.6, k.w || 2)}" ${k.dash ? `stroke-dasharray="${k.dash}"` : ''} stroke-linecap="round"/></svg>`;
+  FL.dotKey = (c, hollow) => `<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="3.6" fill="${hollow ? '#fff' : c}" stroke="${c}" stroke-width="1.4"/></svg>`;
+  FL.readout = function (host) {
+    host.innerHTML = '<div class="r1"><span class="m"></span><span class="n"></span></div><div class="r2"></div>';
+    const m = host.querySelector('.m'); const n = host.querySelector('.n'); const r2 = host.querySelector('.r2');
+    return {
+      set({ title = '', note = '', slots = null, text = null, cols = null }) {
+        m.textContent = title; n.textContent = note;
+        if (text != null) { r2.style.gridTemplateColumns = '1fr'; r2.innerHTML = `<span class="txt">${text}</span>`; return; }
+        const s = slots || [];
+        r2.style.gridTemplateColumns = `repeat(${cols || Math.max(1, s.length)}, minmax(0,1fr))`;
+        r2.innerHTML = s.map((x) => `<span class="s">${x.key || ''}<b>${FL.esc(x.v)}</b><span>${FL.esc(x.name)}</span></span>`).join('');
+      },
+    };
+  };
+})();
+</script>
+<script>/* Site Audit mockups (#1426): shell (OQ rail + tool top bar) and the ?v= variant switcher. */
+(function () {
+  const SA = (window.SA = {});
+  SA.LV = { now: { name: 'Fix now', tip: 'Loses a visitor or loses Google: a page that does not load, or a page Google is told to skip. Asana due date: 1 week.' },
+    soon: { name: 'Fix soon', tip: 'Weakens a page that works: shared titles, missing descriptions or headings, thin service pages. Asana due date: 3 weeks.' },
+    tidy: { name: 'Tidy up', tip: 'Worth doing when there is time: long titles, pages left out of the sitemap, missing alt text. No due date.' } };
+  SA.lv = (k, label) => `<span class="lv ${k}" data-tip-h="${SA.LV[k].name}" data-tip="${SA.LV[k].tip}"><i></i>${label ?? SA.LV[k].name}</span>`;
+  SA.sample = (why) => `<span class="sample" data-tip-h="Sample" data-tip="${FL.esc(why || 'Today’s crawl does not keep this, so the mockup shows a made-up example. The new shared crawl keeps it.')}">sample</span>`;
+  SA.shell = function ({ mock, right }) {
+    const page = document.getElementById('page');
+    const bar = FL.h(`<div class="mockbar">${mock}</div>`);
+    const app = FL.h(`<div class="fl-app"><main class="fl-main"><div class="fl-wrap">
+      <div class="fl-top"><div class="fl-brand"><span class="fl-mark"><svg viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h3l2-4 2 8 2-4h1"/></svg></span>Site Audit</div>
+      <div class="fl-right"><span id="method-slot"><button type="button" class="method-btn"><span class="dot"></span>How it works</button></span>${right ?? '<span class="who">Liberty Family Dentistry</span><span class="when">libertyfamilydentistry.com</span>'}</div></div>
+    </div></main></div>`);
+    page.parentNode.insertBefore(bar, page); page.parentNode.insertBefore(app, page);
+    app.querySelector('.fl-wrap').appendChild(page);
+    FL.$('.method-btn').onclick = () => FL.toast('Opens “Site Audit · How it works” (not part of this mockup).');
+  };
+  /* variants: { A: { name, render(host) }, B: ... } */
+  SA.variants = function (V) {
+    const keys = Object.keys(V); const host = document.getElementById('page');
+    let cur = new URLSearchParams(location.search).get('v'); if (!keys.includes(cur)) cur = keys[0];
+    const bar = FL.h(`<div class="vbar"><button data-d="-1" aria-label="Previous">←</button>${keys.map((k) => `<button data-k="${k}">${k}</button>`).join('')}<span class="lbl"></span><button data-d="1" aria-label="Next">→</button><a href="index-site-audit.html">all screens</a></div>`);
+    document.body.appendChild(bar);
+    const show = (k) => { cur = k; const u = new URL(location); u.searchParams.set('v', k); history.replaceState(null, '', u);
+      FL.$$('button[data-k]', bar).forEach((b) => b.classList.toggle('on', b.dataset.k === k));
+      bar.querySelector('.lbl').textContent = `${k}: ${V[k].name}`; host.innerHTML = ''; window.scrollTo({ top: 0 }); V[k].render(host); };
+    bar.onclick = (e) => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.k) show(b.dataset.k); else show(keys[(keys.indexOf(cur) + +b.dataset.d + keys.length) % keys.length]); };
+    addEventListener('keydown', (e) => { if (e.target.closest('input,textarea,[contenteditable]')) return;
+      if (e.key === 'ArrowRight') show(keys[(keys.indexOf(cur) + 1) % keys.length]); if (e.key === 'ArrowLeft') show(keys[(keys.indexOf(cur) - 1 + keys.length) % keys.length]); });
+    show(cur);
+  };
+})();
+</script>
+<script>/* Screen 3 (#1426): one issue type's pages, the fixed fix guide, and the rule-based suggestion.
+   Two issues: "Pages sharing one title" (REAL, crawl 319) and "Pages that don't load" (SAMPLE). */
+(function () {
+  const E = FL.esc;
+  const dupIssue = D.issues.find((i) => i.key === 'dup_title');
+  const svc = { 'sleep-apnea': '/services/sleep-apnea', 'sedation-dentistry': '/services/sedation', orthodontics: '/services/orthodontics', invisalign: '/services/invisalign', 'dental-implants': '/services/dental-implants' };
+  const PROP = '<span class="prop" data-tip-h="Proposal" data-tip="The rule behind this suggestion is a proposal for the owner to confirm. The fix guide itself is fixed per issue type.">proposed rule</span>';
+  const SAMPLE_BROKEN = 'Today’s crawl keeps only pages that load, so these two are made up. The new shared crawl keeps every page and the pages that link to it.';
+
+  const pagesOf = (pre) => dupIssue.pages.filter((p) => p.url.startsWith(pre));
+  const name = (u) => u.split('/').pop().replace(/-/g, ' ');
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const lpSugg = (u) => { const s = svc[u.split('/').pop()]; return s ? { short: `Hide from Google; ${s} should rank`, long: `Hide it from Google (noindex). The live service page <span class="url">${s}</span> covers the same treatment and should be the one that ranks.` } : { short: 'Give it its own title', long: `No service page covers it. Give it its own title: “${cap(name(u))} | Liberty Family Dentistry”.` }; };
+
+  const ISSUES = {
+    dup: {
+      tab: 'Pages sharing one title', level: 'soon', real: true, count: dupIssue.count,
+      title: 'Pages sharing one title',
+      lead: `<span class="n">26 pages</span> all use the title “Liberty Family Dentistry”. They come from <span class="n">3 kinds of page</span>, so three changes fix all 26.`,
+      short: '26 pages use the title “Liberty Family Dentistry”. None has any text on it.',
+      patterns: [
+        { folder: '/reviews-view/', label: 'One page per patient review', why: 'Made by the site for each review. The crawler read no words on any of them.', fix: '<b>Hide all 16 from Google</b> (noindex). The reviews already show on /reviews, which has 1,246 words and its own title.', short: 'Hide from Google (noindex)', pages: pagesOf('/reviews-view/') },
+        { folder: '/review-sites/', label: 'Links out to review sites', why: 'One page each for Angie’s List, Facebook, Yelp and Google. No words on them.', fix: '<b>Hide all 4 from Google</b> (noindex). They only send people on to another site.', short: 'Hide from Google (noindex)', pages: pagesOf('/review-sites/') },
+        { folder: '/landing-pages/', label: 'Ad landing pages', why: 'Six pages, no words read. Five of them repeat a live service page.', fix: '<b>Hide the 5 that repeat a service page</b> so the service page ranks; give <span class="url">/landing-pages/advanced-technology</span> its own title.', short: null, pages: pagesOf('/landing-pages/') },
+      ],
+      guide: {
+        what: 'The title is the blue link Google shows for a page, and the name on the browser tab. Each page needs its own.',
+        why: 'When many pages share one title, Google can’t tell which one answers which search. It tends to show one and quietly drop the rest, or rewrites the titles itself.',
+        webflow: ['For a page built from a CMS collection (reviews, landing pages): open the Collection template page, gear icon, SEO settings.', 'Set the title from a field, for example “Review from {Name} | Liberty Family Dentistry”. One change fixes every item.', 'For a single static page: Pages panel, gear icon beside the page, SEO settings, Title tag.', 'Publish the site.'],
+        wordpress: ['Open the page or post and scroll to the Yoast SEO or Rank Math box under the editor.', 'Write a title in the SEO title field.', 'For a whole post type (reviews), set a title template once: Yoast, Settings, Content types, SEO title, using the post title variable.', 'Update the page.'],
+        trap: 'Don’t retype 26 titles by hand when they come from one template: fix the template. And if a page shouldn’t be found at all, a new title is wasted work: hide it from Google instead.',
+      },
+    },
+    broken: {
+      tab: 'Pages that don’t load', level: 'now', real: false, count: 2,
+      title: 'Pages that don’t load',
+      lead: `<span class="n">2 addresses</span> the site still links to come back as “not found”. One is in the footer, so every visitor can hit it.`,
+      short: '2 addresses the site links to come back “not found”.',
+      patterns: [
+        { folder: '/services/dental-implants-old', label: '/services/dental-implants-old', why: 'Not found (404). Linked from /services, /topics/cosmetic-dentistry and /first-visit.', fix: '<b>Send it to /services/dental-implants</b> with a permanent redirect, then point the 3 links straight at the new page.', short: 'Redirect to /services/dental-implants', pages: [{ url: '/services', problem: 'links to it' }, { url: '/topics/cosmetic-dentistry', problem: 'links to it' }, { url: '/first-visit', problem: 'links to it' }] },
+        { folder: '/specials', label: '/specials', why: 'Not found (404). Linked from the footer on every page.', fix: '<b>No close live page.</b> Take the link out of the footer, or bring the specials page back.', short: 'Remove the footer link', pages: [{ url: 'every page', problem: 'footer link' }] },
+      ],
+      guide: {
+        what: 'A link on the site leads to an address that no longer exists, so the visitor lands on a “page not found”.',
+        why: 'The visitor leaves, and Google stops trusting the links that point there. Anything the old page earned from other sites is lost.',
+        webflow: ['Site settings, Publishing tab, 301 redirects.', 'Old path: /services/dental-implants-old. Redirect to: /services/dental-implants.', 'Open each linking page and change the link to the new address.', 'Publish the site.'],
+        wordpress: ['Install or open the Redirection plugin (or Yoast Premium, Redirects).', 'Add a 301 from the old address to the new one.', 'Edit each linking page and update the link.', 'Clear the site cache.'],
+        trap: 'Don’t redirect every dead page to the home page. Google treats that as “not found” anyway. Send it to the closest live page, or let it go.',
+      },
+    },
+  };
+
+  const guideHtml = (g, plat) => `<div class="guide">
+    <h4>What it is</h4><p>${g.what}</p>
+    <h4>Why it matters</h4><p>${g.why}</p>
+    <h4>How to fix it</h4>
+    <div class="seg plat" data-plat><button data-p="webflow" class="${plat === 'webflow' ? 'on' : ''}">Webflow</button><button data-p="wordpress" class="${plat === 'wordpress' ? 'on' : ''}">WordPress</button></div>
+    <ol>${g[plat].map((s) => `<li>${s}</li>`).join('')}</ol>
+    <div class="trap"><b>The trap</b><p>${g.trap}</p></div></div>`;
+  const wirePlat = (root, g, rerender) => root.querySelectorAll('[data-plat] button').forEach((b) => (b.onclick = () => rerender(b.dataset.p)));
+  const switcher = (cur) => `<div class="seg" data-issue>${Object.entries(ISSUES).map(([k, i]) => `<button data-k="${k}" class="${k === cur ? 'on' : ''}">${E(i.tab)}</button>`).join('')}</div>`;
+  const head = (I, extra) => `<div class="s3-head"><div>
+      <button class="s3-back" data-back>← Back to the audit</button>
+      <div style="display:flex;align-items:center;gap:10px">${SA.lv(I.level)}${I.real ? '' : SA.sample(SAMPLE_BROKEN)}</div>
+      <h1 class="h1">${E(I.title)}</h1>
+      <div class="s3-meta"><span><b>${I.count}</b> ${I.count === 1 ? 'page' : 'pages'}</span><span>Crawled ${E(D.crawled)}</span></div>
+    </div><div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end">${switcher(extra.cur)}<div class="btnrow"><button class="btn btn-line" data-t="Adds this issue type to the Asana tasks preview (screen 5).">Add to Asana tasks</button>${extra.btn || ''}</div></div></div>`;
+  const wireCommon = (host, cur, render) => {
+    host.querySelectorAll('[data-issue] button').forEach((b) => (b.onclick = () => render(host, b.dataset.k)));
+    host.querySelector('[data-back]').onclick = () => FL.toast('Back to the result page (screen 2).');
+    host.querySelectorAll('[data-t]').forEach((b) => (b.onclick = () => FL.toast(b.dataset.t)));
+  };
+
+  /* ---------- A: split view, list left, guide sticky right ---------- */
+  function renderA(host, cur = 'dup', plat = 'webflow') {
+    const I = ISSUES[cur];
+    host.innerHTML = `${head(I, { cur })}
+      <div class="sA"><div class="sA-list">
+        <div class="sugg" style="margin-bottom:8px"><div class="t">Suggested fix ${PROP}</div><p>${I.lead}</p></div>
+        ${I.patterns.map((p) => `<div class="grp"><span>${E(p.label)}</span><span>${p.pages.length}</span></div><div style="font-size:13.5px;padding:8px 2px 4px;color:var(--ink2)">${p.fix}</div>
+          ${p.pages.map((pg) => `<div class="sA-row"><span class="url">${E(pg.url)}</span><span class="p">${cur === 'dup' ? (p.short || lpSugg(pg.url).short) : E(pg.problem)}</span></div>`).join('')}`).join('')}
+      </div>
+      <aside class="card sA-side"><p class="gt">How to fix it</p>${guideHtml(I.guide, plat)}
+        <div class="btnrow" style="margin-top:16px"><button class="btn btn-go" data-t="The guide is copied into the Asana task body.">Copy the guide into the task</button></div></aside></div>`;
+    wireCommon(host, cur, renderA);
+    wirePlat(host, I.guide, (p) => renderA(host, cur, p));
+  }
+
+  /* ---------- B: lead answer, kinds of page as numbered fixes, guide below ---------- */
+  function renderB(host, cur = 'dup', plat = 'webflow', open = 0) {
+    const I = ISSUES[cur];
+    host.innerHTML = `${head(I, { cur })}
+      <div class="sB"><p class="sB-lead">${I.lead}</p>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:6px">Each fix below comes from a written rule ${PROP}. Click one to see its pages.</div>
+        ${I.patterns.map((p, i) => `<div class="pat ${i === open ? 'open' : ''}" data-i="${i}"><div class="pat-h">
+            <span class="num">${i + 1}</span>
+            <div><h3>${E(p.label)}</h3><p class="why">${p.why}</p><div class="fix">${p.fix}</div></div>
+            <span class="cnt">${p.pages.length} ${p.pages.length === 1 ? 'page' : 'pages'}<span class="chev">›</span></span></div>
+          <div class="pat-b">${p.pages.map((pg) => `<div><span class="url">${E(pg.url)}</span>${cur === 'dup' && !p.short ? `<div style="color:var(--muted);font-size:12px">${lpSugg(pg.url).short}</div>` : ''}</div>`).join('')}</div></div>`).join('')}
+        <div class="sB-guide"><div class="kick" style="margin-top:22px">The fix guide</div>
+          <h2 style="margin:4px 0 0;font-size:24px;font-weight:900;color:var(--ink);letter-spacing:-.02em">${E(I.title)}: how to fix it</h2>
+          ${guideHtml(I.guide, plat)}</div></div>`;
+    wireCommon(host, cur, renderB);
+    host.querySelectorAll('.pat').forEach((el) => (el.querySelector('.pat-h').onclick = () => renderB(host, cur, plat, el.classList.contains('open') ? -1 : +el.dataset.i)));
+    wirePlat(host, I.guide, (p) => renderB(host, cur, p, open));
+  }
+
+  /* ---------- C: one row per page, suggestion inline, guide in a drawer ---------- */
+  function renderC(host, cur = 'dup') {
+    const I = ISSUES[cur];
+    const rows = I.patterns.flatMap((p) => p.pages.map((pg) => ({ p, pg })));
+    host.innerHTML = `${head(I, { cur, btn: '<button class="btn btn-go" data-drawer>How to fix it</button>' })}
+      <div class="sC-tools"><span class="sel">${I.short} <b style="color:var(--ink)" data-n>${cur === 'dup' ? rows.length : I.patterns.length} selected</b> for the task.</span><span style="font-size:13px;color:var(--muted)">Suggestions from written rules ${PROP}</span></div>
+      <table class="tbl"><thead><tr><th style="width:34px"><input type="checkbox" checked data-all></th><th>Page</th><th class="num" style="width:80px">${cur === 'dup' ? 'Words' : 'Status'}</th><th>${cur === 'dup' ? 'Kind of page' : 'Linked from'}</th><th>Suggested fix</th></tr></thead><tbody>
+      ${cur === 'dup' ? rows.map(({ p, pg }, i) => `<tr class="r" data-i="${i}"><td><input type="checkbox" checked></td><td class="url">${E(pg.url)}</td><td class="num">${pg.words}</td><td>${E(p.label)}</td><td class="sg">${p.short ? `<b>${p.short}</b>` : `<b>${lpSugg(pg.url).short.split(';')[0]}</b>${lpSugg(pg.url).short.includes(';') ? `<div style="font-size:12.5px;color:var(--muted)">${lpSugg(pg.url).short.split('; ')[1]}</div>` : ''}`}</td></tr>`).join('')
+        : I.patterns.map((p, i) => `<tr class="r" data-i="${i}"><td><input type="checkbox" checked></td><td class="url">${E(p.folder)}</td><td class="num">404</td><td>${p.pages.map((x) => `<span class="url">${E(x.url)}</span>`).join('<br>')}</td><td class="sg"><b>${E(p.short)}</b></td></tr>`).join('')}
+      </tbody></table>
+      <aside class="drawer" aria-label="How to fix it"><button class="x" aria-label="Close">×</button><div class="kick">Fix guide</div><h2 style="margin:4px 0 0;font-size:22px;font-weight:900;color:var(--ink)">${E(I.title)}</h2><div data-g></div>
+        <div class="btnrow" style="margin-top:16px"><button class="btn btn-go" data-t="The guide is copied into the Asana task body.">Copy the guide into the task</button></div></aside>`;
+    wireCommon(host, cur, renderC);
+    const dr = host.querySelector('.drawer');
+    const g = (pl) => { dr.querySelector('[data-g]').innerHTML = guideHtml(I.guide, pl); wirePlat(dr, I.guide, g); };
+    g('webflow');
+    host.querySelector('[data-drawer]').onclick = () => dr.classList.add('in');
+    dr.querySelector('.x').onclick = () => dr.classList.remove('in');
+    const boxes = () => host.querySelectorAll('tbody input');
+    const count = () => (host.querySelector('[data-n]').textContent = `${[...boxes()].filter((b) => b.checked).length} selected`);
+    host.querySelector('[data-all]').onchange = (e) => { boxes().forEach((b) => (b.checked = e.target.checked)); count(); };
+    host.querySelectorAll('tbody input').forEach((b) => { b.onclick = (e) => e.stopPropagation(); b.onchange = count; });
+    host.querySelectorAll('tr.r').forEach((tr) => (tr.onclick = () => {
+      const nx = tr.nextElementSibling; if (nx && nx.classList.contains('x')) { nx.remove(); return; }
+      const i = +tr.dataset.i; let body;
+      if (cur === 'dup') { const { p, pg } = rows[i]; body = `${p.why} ${p.short ? p.fix : lpSugg(pg.url).long}`; } else { body = `${I.patterns[i].why} ${I.patterns[i].fix}`; }
+      tr.insertAdjacentHTML('afterend', `<tr class="x"><td></td><td colspan="4">${body}</td></tr>`);
+    }));
+  }
+
+  window.SCREEN = {
+    title: 'Site Audit 3: An issue’s pages and fix guide',
+    mock: `<b>Site Audit · Screen 3 · One issue type: its pages, the fix guide, the suggestion</b> <span class="src">· data: Liberty Family Dentistry, crawl of Oct 22, 2026 (185 pages, real). Switch between two issues at the top right.</span>
+<ul><li><b>A Split:</b> the page list on the left grouped by kind of page, the fix guide pinned on the right.</li>
+<li><b>B Three fixes:</b> leads with the answer (“3 changes fix all 26”), each kind of page is one numbered fix that opens to its pages; the guide reads below like an article.</li>
+<li><b>C Table:</b> one row per page with its suggested fix and a tick box for what goes into the Asana task; click a row for why; the guide slides in from the right.</li></ul>
+<span class="nr">“Pages sharing one title” is real (26 pages, 0 words each, the 5 matching service pages are real). “Pages that don’t load” is a sample: today’s crawl keeps only pages that load. The suggestion rules (no words = hide from Google; repeats a service page = hide so the service page ranks; dead link = closest live page by address words) are proposals. Levels and the Webflow / WordPress switch per practice are proposals too.</span>`,
+    variants: {
+      A: { name: 'Split: pages left, guide right', render: (h) => renderA(h) },
+      B: { name: 'Three fixes, guide below', render: (h) => renderB(h) },
+      C: { name: 'Table with a fix per page', render: (h) => renderC(h) },
+    },
+  };
+})();
+</script>
+<script>SA.shell({ mock: window.SCREEN.mock, right: window.SCREEN.right }); SA.variants(window.SCREEN.variants);</script>
+</body></html>
