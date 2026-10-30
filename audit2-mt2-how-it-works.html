@@ -535,7 +535,7 @@ function liveRating(svg) { // useLoop(5, 700)
 /* ADDED 10/29 for Story V5: one page, from search to call (Expedition /frenectomy, Oct 2025 to Oct 2026, performance_cache_pages) */
 function figPages(svg) {
   const { title, foot } = frame(svg);
-  const rows = [['Showings in Google', '4,461'], ['Average place in Google', '23'], ['Clicks from Google', '7'], ['Visits, every source', '144'], ['Calls or forms', '6']];
+  const rows = [['Showings in Google', '4,461'], ['Avg. position in Google', '23'], ['Clicks from Google', '7'], ['Visits, every source', '144'], ['Calls or forms', '6']];
   const R = rows.map(([t, v], i) => { const y = 48 + i * 21; const g = E(svg, 'g', { opacity: 0, style: 'transition:opacity .45s' });
     E(g, 'line', { x1: 12, x2: 288, y1: y + 6, y2: y + 6, stroke: '#EEF0F3' });
     E(g, 'text', { x: 12, y: y, 'font-size': 11, fill: C.body }, t); E(g, 'text', { x: 288, y: y, 'text-anchor': 'end', 'font-size': 12.5, 'font-weight': 800, fill: C.ink }, v); return g; });
@@ -545,7 +545,7 @@ function figPages(svg) {
   const go = (s) => {
     R.forEach((g, i) => { g.style.opacity = s >= [1, 2, 3, 4, 4][i] ? 1 : 0; });
     W.forEach((w, i) => { const on = s >= 5 && i === 1; w.r.setAttribute('fill', on ? C.teal : '#fff'); w.r.setAttribute('stroke', on ? C.teal : '#E7E9EE'); w.tx.setAttribute('fill', on ? '#fff' : C.muted); });
-    say(title, ['One page, from search to call', 'Google showed it 4,461 times', 'Usually listed about 23rd', 'Only 7 clicks from Google', 'Yet 144 visits and 6 calls or forms', 'So its pin is Improve'][s]);
+    say(title, ['One page, from search to call', 'Google showed it 4,461 times', 'Avg. position 23', 'Only 7 clicks from Google', 'Yet 144 visits and 6 calls or forms', 'So its pin is Improve'][s]);
     say(foot, ['The frenectomy service page, Expedition', 'Search Console, last 12 months', 'Below the first 10 results', 'AI answers settle many searches', 'Google Analytics, every way in', 'Improve a page: the On-Page tool'][s]);
   };
   return { go, dur: [1000, 1100, 1100, 1100, 1300, 2600] };
@@ -589,8 +589,8 @@ const SECTIONS = [
     fixes: 'New section (04, missing method sections). Cost and timing from run #23: cost_usd 0.111, call_count 11, 23 seconds start to finish.' },
   { id: 'hiw-pages', title: 'How patients reach a page, and the pins', isNew: true, fig: figPages, cap: 'The frenectomy service page. Expedition check, last 12 months.',
     body: ['Fewer searches end in a click now, because AI answers settle many of them on the results page. So a topic is never judged on clicks alone. Market Trends finds the practice\'s pages that cover each topic, by their address and by the searches they show up for. Other words for the same care count: frenectomy counts for tongue tie.',
-      'For each page it shows the last 12 months: how often Google showed it and its average place, from Search Console; its clicks; and its visits and calls or forms, from Google Analytics, counting every way people arrive. New visitors per page are not saved yet.',
-      '<b>Pins on the year.</b> Every pin is an action, and its label says where the work goes. Write: no page covers the topic, so the pin is a new page. Only Write pins go to the content calendar, which is for new content only. Improve: a page covers the topic, but Google usually lists it outside the top results, below the top 3 on local searches or past the first 10 on general searches, or it rarely brings visits. The pin says improve a page, and the work goes to the On-Page tool. No pin: a page covers the topic and does well. The Story says so in one line in that topic\'s section, and nothing goes on the year. The month comes from the season: a page does best live two months before a peak that repeats; a topic with no season is pinned to now.'],
+      'For each page it shows the last 12 months: how often Google showed it and its avg. position, from Search Console; its clicks; and its visits and calls or forms, from Google Analytics, counting every way people arrive. New visitors per page are not saved yet.',
+      '<b>Pins on the year.</b> Every pin is an action, and its label says where the work goes. Write: no page covers the topic, so the pin is a new page. Only Write pins go to the content calendar, which is for new content only. Improve: a page covers the topic, but Google usually lists it outside the top results, below the top 3 on local searches or past the first 10 on national searches, or it rarely brings visits. The pin says improve a page, and the work goes to the On-Page tool. No pin: a page covers the topic and does well. The Story says so in one line in that topic\'s section, and nothing goes on the year. The month comes from the season: a page does best live two months before a peak that repeats; a topic with no season is pinned to now.'],
     fixes: 'Added 10/29 for Story V5 (anchor hiw-pages). Pin rule confirmed by the owner 10/29: Write (content calendar), Improve (On-Page tool) or no pin. Keep is gone: every pin is an action. Page numbers come from performance_cache_pages (Search Console and GA4 by page). New users are stored for the whole site only: per page needs a new read. Calls or forms = GA4 key events; none were recorded anywhere on the site from May to July 2026, which looks like a tracking gap.' },
 ];
 
