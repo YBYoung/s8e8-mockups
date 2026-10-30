@@ -141,10 +141,14 @@ a{color:var(--aInk)}
 /* Screen 4: Draft the fixes */
 .s4-head{padding:26px 0 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
 .s4-head .h1{font-size:30px}
-.run{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 20px;margin-bottom:18px}
-.run .l{font-size:15px;color:var(--ink2);line-height:1.5}
+.run{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:12px 16px;margin-bottom:18px}
+.run .l{font-size:14px;color:var(--ink2);line-height:1.5;min-width:0}
+.run .sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.run .sum b{font-size:15px;color:var(--ink)}
+.run .sum .pt{color:var(--body);border-bottom:1px dotted var(--faint);cursor:help;font-variant-numeric:tabular-nums}
+.run .sum .skip{color:var(--muted);font-size:13px;cursor:help}
 .run .l small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
-.run .r{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.run .r{display:flex;flex-direction:row;align-items:center;gap:12px;flex:none}
 .run .est{font-size:12.5px;color:var(--muted)}
 .prog{height:4px;background:var(--soft);border-radius:2px;overflow:hidden;margin-top:10px}
 .prog i{display:block;height:100%;width:0;background:var(--a);transition:width .3s var(--ease)}
@@ -2142,6 +2146,18 @@ input.sel:disabled{cursor:default;opacity:.35}
   const MORE = { long_meta: R.long_meta_total - ITEMS.filter((x) => x.issue === 'Description Google cuts off').length, short_meta: R.short_meta_total - ITEMS.filter((x) => x.issue === 'Description too short').length };
   const RUN_TOTAL = ITEMS.length + MORE.long_meta + MORE.short_meta;
   const COST = { est: '$0.15', real: '$0.12' };
+  const nK = (k) => ITEMS.filter((x) => x.kind === k).length;
+  const nI = (t) => ITEMS.filter((x) => x.issue === t).length;
+  const DESC = { cut: R.long_meta_total, short: R.short_meta_total, none: nK('description') - nI('Description Google cuts off') - nI('Description too short') };
+  const plural = (n, one, many) => `${n === 1 ? one : many}`;
+  const PARTS = [
+    { n: nK('title'), label: plural(nK('title'), 'title', 'titles'), h: 'Titles', tip: 'Titles Google cuts off (wider than 600 pixels), plus any missing.' },
+    { n: DESC.cut + DESC.short + DESC.none, label: plural(DESC.cut + DESC.short + DESC.none, 'description', 'descriptions'), h: 'Descriptions',
+      tip: [DESC.cut && `${DESC.cut} cut off by Google (wider than 960 pixels)`, DESC.short && `${DESC.short} too short (under 100 characters)`, DESC.none && `${DESC.none} missing`].filter(Boolean).join(', ') + '.' },
+    { n: nK('h1'), label: plural(nK('h1'), 'heading', 'headings'), h: 'Headings', tip: 'Pages with words but no main heading (H1).' },
+    { n: nK('alt'), label: 'alt text', h: 'Alt text', tip: 'Images with no alt text, counted by page.' },
+  ].filter((x) => x.n > 0);
+  const STUBS = 26;
   const COSTTIP = 'The estimate comes from the number of pages and fields, per the tool cost ledger. Every run is logged with its real cost. The figures here are a sample.';
   const PXTIP = { title: 'Google shows about 600 pixels of a title, then cuts it off with “...”. Measured the same way the content calendar measures titles.', description: 'Google shows about 960 pixels of a description, then cuts it off. Under 100 characters is too short. Measured the same way the content calendar measures descriptions.' };
   /* px badge: "633 / 600 px", red when over, red when a description is under 100 characters */
@@ -2170,10 +2186,10 @@ input.sel:disabled{cursor:default;opacity:.35}
       <p class="sub">Writes only these four things for each page. It never changes the page’s text, images or layout. Click any draft to change it; the width updates as you type.</p></div>
       <div class="vseg"><span>View</span><div class="seg"><button data-view="table" class="${VIEW === 'table' ? 'on' : ''}">Table</button><button data-view="google" class="${VIEW === 'google' ? 'on' : ''}">As Google shows it</button></div></div></div>`;
   const runPanel = () => `<div class="card run"><div class="l">${PH === 'idle'
-      ? `<b>${RUN_TOTAL} fixes to draft:</b> ${R.long_title_total} titles Google cuts off, ${R.long_meta_total} descriptions Google cuts off, ${R.short_meta_total} descriptions too short, 1 page with no description, 1 heading, alt text on 2 pages.<small>26 pages are left out: they have no words to write from (see “Pages sharing one title”).</small>`
+      ? `<div class="sum"><b>${RUN_TOTAL} fixes</b>${PARTS.map((x) => `<span class="pt" ${x.tip ? `data-tip-h="${x.h}" data-tip="${x.tip}"` : ''}>${x.n} ${x.label}</span>`).join('')}${STUBS ? `<span class="skip" data-tip-h="Left out" data-tip="${STUBS} pages have no words to write from, so there is nothing to draft. See “Pages sharing one title”.">${STUBS} empty pages left out</span>` : ''}</div>`
       : PH === 'run' ? `<b>Writing ${DONE} of ${ITEMS.length} shown here</b>, page by page. Review can start now.<div class="prog"><i style="width:${(DONE / ITEMS.length) * 100}%"></i></div>`
         : `<b>Drafts ready.</b> Select rows to accept or skip them together; shift-click to select a run of rows.<small class="ledger">Logged to the cost ledger: <b>${COST.real}</b> on Oct 30, 2026 ${SA.sample(COSTTIP)}</small>`}</div>
-    <div class="r">${PH === 'idle' ? `<button class="btn btn-go" data-run>Draft titles, descriptions, headings and alt text · about ${COST.est}</button><span class="est" data-tip-h="Cost" data-tip="${COSTTIP}">estimate before running ${SA.sample(COSTTIP)}</span>` : PH === 'run' ? '<span class="est">Writing…</span>' : '<button class="btn btn-line" data-again>Draft again</button>'}</div></div>`;
+    <div class="r">${PH === 'idle' ? `<span class="est" data-tip-h="Cost" data-tip="${COSTTIP}">about ${COST.est} ${SA.sample(COSTTIP)}</span><button class="btn btn-go" data-run>Draft ${RUN_TOTAL} fixes</button>` : PH === 'run' ? '<span class="est">Writing…</span>' : '<button class="btn btn-line" data-again>Draft again</button>'}</div></div>`;
   const status = (it) => (it.acc ? '<span class="st ok">Accepted</span>' : it.skip ? '<span class="st sk">Skipped</span>' : it.state === 'ready' ? `<button class="acc" data-acc="${it.i}">Accept</button>` : '');
   const chk = (it) => `<input type="checkbox" class="sel" data-sel="${it.i}" ${SEL.has(it.i) ? 'checked' : ''} ${it.state === 'ready' ? '' : 'disabled'} aria-label="Select ${E(it.url)}">`;
   const draftBox = (it) => it.state === 'wait' ? '<span class="pend">Not drafted yet</span>' : it.state === 'writing' ? '<span class="writing">Writing</span>'
