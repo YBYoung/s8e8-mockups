@@ -1,0 +1,810 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Query V1, clean directions · mockup</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>.oq-rail{position:fixed;inset:0 auto 0 0;width:56px;background:#fff;border-right:1px solid rgba(231,229,228,.6);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:2px;z-index:40}.oq-rail-item{width:39px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:#44403c}.oq-rail-item:hover{background:#f5f5f4}.oq-rail-item.is-active{background:#1c1917;color:#fff}.oq-rail-item:first-child{color:#a8a29e;margin-bottom:8px}.oq-rail-sep{width:24px;height:1px;background:#e7e5e4;margin:6px 0}.oq-rail-foot{margin-top:auto}.oq-rail-av{position:relative;display:flex;width:28px;height:28px;border-radius:6px;background:#e7e5e4;color:#44403c;font:600 10px Inter,system-ui;align-items:center;justify-content:center}.oq-rail-av i{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;border-radius:2px;background:#16a34a;border:2px solid #fff}
+:root{
+  --ink:#0B1020;--body:#273043;--muted:#667085;--faint:#98A2B3;--line:#E7E9EE;--soft:#F6F7FA;
+  --a:#0F766E;--aInk:#115E59;--aTint:#E6F4F1;--aSoft:#99D5CC;--a2:#0891B2;
+  --up:#15803D;--down:#E11D48;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --shadowPanel:0 20px 50px rgba(11,16,32,.10);
+  --barH:104px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;color:var(--body);background:#fff;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+button{font:inherit;cursor:pointer;color:inherit}
+input{font:inherit}
+
+/* ---------- mockup bar (grey, outside the design) ---------- */
+#bar{position:relative;z-index:80;background:#F2F4F7;border-bottom:1px solid #E4E7EC;padding:8px 16px 8px 16px;font-size:12px;color:#475467}
+#bar .r1,#bar .r2{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+#bar .r2{margin-top:6px}
+#bar .r3{margin-top:5px;font-size:11.5px;color:#667085;line-height:1.45;min-height:17px}
+#bar b.t{color:#101828;font-size:12.5px;white-space:nowrap}
+.seg{display:inline-flex;border:1px solid #D0D5DD;border-radius:6px;overflow:hidden;background:#fff;flex:none}
+.seg button{border:0;background:#fff;padding:4px 9px;font-size:11.5px;font-weight:600;color:#475467;border-right:1px solid #EAECF0;white-space:nowrap}
+.seg button:last-child{border-right:0}
+.seg button.on{background:#101828;color:#fff}
+.seg button:disabled{color:#C0C5CF;cursor:not-allowed}
+.barbtn{border:1px solid #D0D5DD;background:#fff;border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:700;color:#101828;white-space:nowrap}
+.barbtn.on{background:#101828;color:#fff}
+.sample{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.04em;color:#667085;text-transform:uppercase;white-space:nowrap;margin-left:auto}
+.lab{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#98A2B3;white-space:nowrap}
+
+/* ---------- stage: the app ---------- */
+#stage{position:relative;height:calc(100vh - var(--barH));min-height:640px;overflow:hidden;background:#fff}
+#stage .oq-rail{position:absolute!important;top:0;bottom:0;left:0}
+#main{position:absolute;top:0;bottom:0;left:56px;right:var(--mr,0px);overflow-y:auto;overflow-x:hidden;transition:right .45s var(--ease),padding-bottom .3s}
+.wrap{max-width:1180px;margin:0 auto;padding:0 40px 90px}
+.top{position:sticky;top:0;z-index:30;margin:0 -40px 22px;padding:0 40px;height:53px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid #EEF0F4}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;color:var(--ink);white-space:nowrap}
+.tmark{width:26px;height:26px;border-radius:8px;background:linear-gradient(120deg,var(--a),var(--a2));display:grid;place-items:center;flex:none}
+.tmark svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.tright{display:flex;align-items:center;gap:14px;font-size:13px;white-space:nowrap}
+.hiw{display:flex;align-items:center;gap:6px;color:var(--aInk);font-weight:600}
+.hiw i{width:12px;height:12px;border-radius:3px;background:var(--a);opacity:.85}
+.who{color:var(--ink);font-weight:700}
+.who small{font-weight:500;color:var(--muted);margin-left:6px}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:600;font-size:14px;transition:box-shadow .2s,transform .1s,background .2s,opacity .2s}
+.btn-go{background:var(--a);color:#fff;box-shadow:0 6px 18px rgba(15,23,42,.16)}
+.btn-go:disabled{opacity:.4;box-shadow:none}
+.btn-line{background:#fff;border:1px solid var(--line);color:var(--ink);padding:7px 12px;font-size:13px}
+.eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.panel-head{margin-bottom:12px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--aInk)}
+.h-sentence{margin:8px 0 0;max-width:1000px;font-size:40px;font-weight:800;line-height:1.3;letter-spacing:-.025em;color:var(--ink)}
+.blank{display:inline;margin:0 2px;padding:0 4px;border:0;background:none;color:var(--aInk);font:inherit;border-radius:6px 6px 0 0;border-bottom:4px dotted var(--a);transition:background .2s}
+.blank.open{background:var(--aTint)}
+.blank.ok{border-bottom-style:solid}
+.blank .tick{margin-left:2px;vertical-align:.6em;font-size:.5em;color:var(--up)}
+.blank .cnt{display:inline-block}
+.bump{animation:bump .6s var(--ease)}
+@keyframes bump{0%{transform:none}35%{transform:translateY(-6px);color:var(--a)}100%{transform:none}}
+.panel{margin-top:22px;max-width:860px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:18px 22px;box-shadow:var(--shadowPanel)}
+.panel p.lead{margin:0 0 12px;font-size:14px;color:var(--muted)}
+.rise{animation:rise .35s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fadein{animation:fadein .35s ease both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.runrow{display:flex;align-items:center;gap:16px;margin-top:22px}
+.runrow .small{font-size:14px;color:var(--muted)}
+
+/* practice panel (no client) */
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.field>span{display:block;margin-bottom:4px;font-size:12px;font-weight:600;color:var(--body)}
+.field>span i{color:var(--down);font-style:normal}
+.input{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;color:var(--ink);background:#fff;display:flex;align-items:center;gap:8px}
+.input.ph{color:var(--faint)}
+.input.focus{border-color:var(--a);box-shadow:0 0 0 4px var(--aTint)}
+.ctag{font-size:11.5px;font-weight:600;padding:1px 6px;border-radius:5px;background:var(--aTint);color:var(--aInk)}
+.dd{position:relative}
+.ddmenu{position:absolute;left:0;right:0;top:48px;z-index:5;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadowPanel);padding:4px}
+.ddmenu div{padding:8px 10px;border-radius:6px;font-size:14px;color:var(--ink);display:flex;gap:8px;align-items:center}
+.ddmenu div.hl{background:var(--aTint)}
+
+/* MT phrases panel */
+.pgroup{display:grid;grid-template-columns:230px minmax(0,1fr);gap:14px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pgroup:first-of-type{border-top:0}
+.pgroup .tn{font-weight:700;color:var(--ink);font-size:14.5px;display:flex;align-items:center;gap:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-height:30px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:6px;padding:4px 8px;font-size:13.5px;background:var(--soft);color:var(--body);white-space:nowrap}
+.chip.head{background:var(--aTint);color:var(--aInk);font-weight:700}
+.chip.thin{background:#fff;border:1px dashed #D0D5DD;color:var(--faint)}
+.chip.thin small{font-size:11px}
+.chip.fromq{background:#fff;box-shadow:inset 0 0 0 1px var(--aSoft);color:var(--aInk);font-weight:600}
+.fromtag{font:600 10px 'JetBrains Mono',monospace;letter-spacing:.04em;color:var(--a);text-transform:uppercase}
+.pfoot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.pfoot .mono{font-size:13px;color:var(--muted)}
+.landed{animation:landed 1.4s var(--ease)}
+@keyframes landed{0%{box-shadow:0 0 0 0 var(--a)}30%{box-shadow:0 0 0 4px var(--aTint),inset 0 0 0 1px var(--a)}100%{}}
+
+/* GS searches panel */
+.slots{display:flex;flex-direction:column;gap:6px}
+.slot{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:10px;height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;font-size:14.5px;color:var(--ink)}
+.slot .num{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--aTint);color:var(--aInk)}
+.slot.empty{border-style:dashed;color:var(--faint)}
+.slot.empty .num{background:var(--soft);color:var(--faint)}
+.slot .w{display:flex;align-items:center;gap:6px;min-width:0}
+.slot .w b{font-weight:600}
+
+/* AIV questions panel */
+.qgroup-h{display:flex;justify-content:space-between;padding:10px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.qrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;color:var(--body);margin-bottom:6px}
+.qrow .bx{width:18px;height:18px;border-radius:5px;background:var(--a);color:#fff;font-size:11px;display:grid;place-items:center;flex:none}
+.qrow .qt{flex:1;min-width:0;display:flex;align-items:center;gap:6px}
+.ttag{font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.tt-city{background:#EEF0FF;color:#4338CA}.tt-near{background:#F3EEFF;color:#7C3AED}.tt-research{background:#E0F2FE;color:#0369A1}
+
+/* ---------- MT results page ---------- */
+.tabs{display:flex;gap:26px;border-bottom:1px solid var(--line);margin:-8px -40px 30px;padding:0 40px}
+.tabs span{padding:10px 0;font-size:15px;font-weight:600;color:var(--muted)}
+.tabs span.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--a)}
+.res{display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);gap:40px;align-items:start}
+.kick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--aInk)}
+.res h2{margin:10px 0 12px;font-size:32px;font-weight:900;line-height:1.12;letter-spacing:-.02em;color:var(--ink)}
+.res h2 em{font-style:normal;color:var(--a)}
+.res .lede{font-size:15.5px;margin:0 0 16px}
+.rtiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.rtile{position:relative;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.rtile b{display:block;font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.rtile small{display:block;font-size:12px;color:var(--muted);line-height:1.35}
+.rpoints{margin:0;padding:0;list-style:none}
+.rpoints li{position:relative;padding-left:16px;margin:0 0 8px;font-size:14.5px}
+.rpoints li:before{content:'';position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:2px;background:#9CC9C2}
+.fig{position:sticky;top:70px}
+.readout{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;font-size:14px;color:var(--ink);font-weight:600}
+.readout.idle{color:var(--muted);font-weight:500}
+.figt{margin:14px 0 2px;font-size:15px;font-weight:800;color:var(--ink)}
+.figs{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.chart{display:block;overflow:visible}
+#chartHost{width:100%;min-height:320px}
+.chart text{font-family:Inter,sans-serif}
+
+/* fake cursor + flying chip */
+#cur{position:absolute;left:0;top:0;width:22px;height:22px;z-index:90;pointer-events:none;transition:transform .7s var(--ease),opacity .3s;opacity:0}
+#cur.on{opacity:1}
+#cur svg{width:22px;height:22px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.ripple{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:8px;border:2px solid var(--a);z-index:89;pointer-events:none;animation:rip .5s ease-out forwards}
+@keyframes rip{from{transform:scale(.3);opacity:.9}to{transform:scale(1.4);opacity:0}}
+.flyer{position:absolute;z-index:85;pointer-events:none;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s;margin:0}
+
+/* the owner note below the stage */
+#note{background:#F2F4F7;border-top:1px solid #E4E7EC;padding:18px 24px 28px;font-size:13px;color:#475467}
+#note h4{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#344054}
+#note ul{margin:0;padding-left:18px;max-width:980px}
+#note li{margin-bottom:4px}
+
+/* ================= Query V1, clean directions ================= */
+#bar .r3+.r3{margin-top:2px}
+#dirnote{color:#344054}
+#dirnote b{color:#101828}
+:focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:3px}
+#q{position:absolute;inset:0;pointer-events:none;z-index:50}
+#q>*{pointer-events:auto}
+
+/* the mark: a line drawing in the tool colour, no fill */
+.qg{width:15px;height:11px;flex:none;color:var(--a);overflow:visible}
+.qcur{animation:qblink 1.6s ease-in-out infinite}
+@keyframes qblink{0%,100%{opacity:1}50%{opacity:.15}}
+
+/* launcher (C1, C2, C4): a link on the page */
+.qlwrap{position:absolute;right:30px;bottom:22px;display:flex;align-items:center}
+.ql{display:inline-flex;align-items:center;gap:8px;border:0;background:#fff;padding:6px 4px;border-radius:4px;font-size:14px;font-weight:600;color:var(--a);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:5px;text-decoration-thickness:1px;transition:text-decoration-color .2s,color .2s}
+.ql:hover,.ql.hov{text-decoration-color:currentColor;color:var(--aInk)}
+.qhello{position:absolute;right:100%;margin-right:14px;white-space:nowrap;font-size:12.5px;color:var(--muted);opacity:0;pointer-events:none}
+.qhello b{color:var(--body);font-weight:600}
+.qhello.tabh{right:44px;margin:0;top:calc(50% - 9px)}
+
+/* panel */
+.cq{--pad:22px;position:absolute;top:0;bottom:0;right:0;width:var(--pw);background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;transform:translateX(100%);visibility:hidden;transition:transform .45s var(--ease),visibility 0s linear .45s;font-size:13.5px;line-height:1.6;color:var(--body)}
+.cq.on{transform:none;visibility:visible;transition:transform .45s var(--ease),visibility 0s}
+.cqh{display:flex;align-items:center;gap:8px;height:53px;padding:0 var(--pad);border-bottom:1px solid #EEF0F4;flex:none}
+.cqh .nm{font-size:14px;font-weight:700;color:var(--ink)}
+.cqh .sp{flex:1}
+.tl{border:0;background:none;padding:2px 0;margin-left:16px;font-size:12.5px;font-weight:500;color:var(--muted);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:color .2s,text-decoration-color .2s}
+.tl:hover,.tl.hov{color:var(--ink);text-decoration-color:currentColor}
+.tl i{font-style:normal;color:var(--faint);margin-left:6px;font-size:11.5px}
+.cqk{margin:0;padding:12px var(--pad) 0;font-size:12px;color:var(--muted);line-height:1.5;flex:none}
+.cqk b{font-weight:600;color:var(--body)}
+.cqb{flex:1;overflow-y:auto;padding:18px var(--pad) 24px;scrollbar-width:thin;scrollbar-color:#E4E7EC transparent}
+.cqlab{font-size:12px;color:var(--muted);margin:18px 0 4px}
+.cqlab:first-child{margin-top:0}
+
+/* starters: a plain list */
+.cqs{display:flex;width:100%;align-items:baseline;gap:12px;border:0;border-top:1px solid #EEF0F4;background:none;text-align:left;padding:10px 0;font-size:13.5px;line-height:1.45;color:var(--ink);transition:color .2s}
+.cqs:last-child{border-bottom:1px solid #EEF0F4}
+.cqs span{flex:1}
+.cqs i{font-style:normal;color:var(--faint);transition:color .2s,translate .2s}
+.cqs:hover,.cqs.hov{color:var(--aInk)}
+.cqs:hover i,.cqs.hov i,.cqs:focus-visible i{color:var(--a);translate:3px 0}
+
+/* answer */
+.cqq{margin:0 0 10px;font-size:14px;font-weight:600;line-height:1.45;color:var(--ink)}
+.cqp{margin:0 0 12px}
+.cqp b{color:var(--ink);font-weight:600}
+.in{animation:cqin .45s var(--ease) both}
+@keyframes cqin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.cqthink{font-size:12.5px;color:var(--muted);margin:0}
+.qcaret{display:inline-block;width:1.5px;height:14px;background:var(--a);vertical-align:-2px;margin-left:3px;animation:qblink .8s infinite}
+.cqev{margin:2px 0 16px}
+.cqev h6{margin:0 0 4px;font-size:12px;font-weight:500;color:var(--muted)}
+.cqrows{display:grid;grid-template-columns:minmax(0,1fr) auto auto;column-gap:16px;row-gap:3px;font-size:13px;align-items:baseline}
+.cqrows>span{color:var(--ink);min-width:0}
+.cqrows>b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.cqrows>small{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.cqsrc{margin:16px 0 0;font-size:11.5px;line-height:1.5;color:var(--faint)}
+
+/* suggestions as a plain list; "Add" shows on hover or focus */
+.cqadds{list-style:none;margin:0 0 6px;padding:0}
+.cqadd{display:grid;grid-template-columns:minmax(0,1fr) auto 62px;column-gap:12px;align-items:baseline;width:100%;border:0;background:none;padding:5px 0;text-align:left;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.cqadd .sb{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cqadd .act{text-align:right;font-size:12.5px;font-weight:600;color:var(--a);opacity:0;white-space:nowrap;text-decoration:underline;text-underline-offset:3px;transition:opacity .15s}
+.cqadd:hover .act,.cqadd.hov .act,.cqadd:focus-visible .act{opacity:1}
+.cqadd:hover .lb,.cqadd.hov .lb{color:var(--aInk)}
+.cqadd.done .act,.cqadd.have .act{opacity:1;text-decoration:none}
+.cqadd.done .lb{color:var(--aInk)}
+.cqadd.have{color:var(--muted);cursor:default}
+.cqadd.have .lb{color:var(--muted)}
+.cqadd.have .act{color:var(--faint);font-weight:500}
+.cqadd.press .act{opacity:.55}
+
+/* "ask next" as text links */
+.cqnext{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin:0 0 6px}
+.cqnx{border:0;background:none;padding:3px 0;font-size:13.5px;color:var(--a);font-weight:500;text-align:left;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color .2s}
+.cqnx:hover,.cqnx.hov{text-decoration-color:currentColor}
+
+/* input: one underlined line */
+.cqf{flex:none;padding:10px var(--pad) 20px}
+.cqin{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:7px 0;transition:border-color .2s}
+.cqin:focus-within,.cqin.focus{border-bottom-color:var(--a)}
+.cqin input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:13.5px;color:var(--ink);padding:2px 0}
+.cqin input::placeholder{color:var(--faint)}
+.cqin input:focus-visible{outline:0}
+.cqin .qslot{position:relative;width:68px;height:18px;flex:none}
+.cqin .hint,.cqin .send{position:absolute;right:0;top:0;white-space:nowrap;font-size:11.5px;line-height:18px;transition:opacity .2s}
+.cqin .hint{color:var(--faint)}
+.cqin .send{border:0;background:none;padding:0;font-size:12.5px;font-weight:600;color:var(--a);opacity:0;pointer-events:none}
+.cqin.has .hint{opacity:0}
+.cqin.has .send{opacity:1;pointer-events:auto}
+
+/* flying text into the setup */
+.qfly{position:absolute;z-index:85;pointer-events:none;margin:0;color:var(--a);font-weight:600;white-space:nowrap;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .9s}
+.ripple{border-width:1.5px;border-radius:50%;opacity:.6}
+
+/* ---------- C2 Paper ---------- */
+.cq.d2{--pad:34px;background:color-mix(in srgb,var(--aTint) 40%,#fff);border-left:0;font-size:15px;line-height:1.7}
+.d2 .cqh{border-bottom:0;height:64px}
+.d2 .cqh .nm{display:flex;align-items:center;gap:9px;font-size:15px}
+.d2 .who2{font-size:14px;color:var(--muted)}
+.d2 .cqb{padding:6px var(--pad) 30px}
+.d2 .cqintro{margin:0 0 20px;font-size:14px;line-height:1.6;color:var(--muted)}
+.d2 .cqs{font-size:15px;padding:12px 0;border-color:rgba(11,16,32,.07)}
+.d2 .cqs:last-child{border-bottom-color:rgba(11,16,32,.07)}
+.d2 .cqlab{font-size:13px}
+.d2 .cqq{font-size:19px;letter-spacing:-.01em;line-height:1.35;margin:0 0 16px}
+.d2 .cqp{margin:0 0 16px}
+.d2 .cqev{margin:4px 0 20px 2px;padding:2px 0 2px 16px;border-left:2px solid #D0D5DD}
+.d2 .cqev h6{font-size:13px}
+.d2 .cqrows{font-size:14px;row-gap:4px}
+.d2 .cqrows>small{font-size:13px}
+.d2 .cqsrc{font-size:12.5px;margin-top:20px}
+.d2 .cqf{padding:12px var(--pad) 26px}
+.d2 .cqin{border-bottom-color:rgba(11,16,32,.14)}
+.d2 .cqin:focus-within,.d2 .cqin.focus{border-bottom-color:var(--a)}
+.d2 .cqin input{font-size:15px}
+.cqil{border:0;background:none;padding:0;font:inherit;color:var(--ink);text-align:left;cursor:pointer;text-decoration:underline;text-decoration-color:var(--aSoft);text-decoration-thickness:1.5px;text-underline-offset:4px;transition:color .2s,text-decoration-color .2s}
+.cqil:hover,.cqil.hov,.cqil:focus-visible{color:var(--aInk);text-decoration-color:var(--a)}
+.cqil.done{color:var(--aInk);text-decoration-color:transparent;cursor:default}
+.cqil .ck{color:var(--a);font-weight:600;margin-left:3px}
+.cqp .sub{font-size:13px;color:var(--muted)}
+.cqp .have{color:var(--muted)}
+.d2 .cqp.q2{margin-bottom:6px}
+
+/* ---------- C3 Minimal chrome: a slim edge tab is the launcher ---------- */
+.cq.d3{visibility:visible}
+.cq.d3.pre{transform:translateX(calc(100% + 32px))}
+.cqtab{position:absolute;left:-29px;top:calc(50% - 50px);width:28px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;border:0;border-left:1px solid var(--line);border-radius:0;background:#fff;color:var(--a);font-size:12.5px;font-weight:600;letter-spacing:.03em;padding:0;transition:color .2s}
+.cqtab span{writing-mode:vertical-rl;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color .2s}
+.cqtab:hover,.cqtab.hov{color:var(--aInk)}
+.cqtab:hover span,.cqtab.hov span{text-decoration-color:currentColor}
+.cqtab .chev{display:none;font-size:14px;line-height:1}
+.d3.on .cqtab .qg{display:none}
+.d3.on .cqtab .chev{display:block}
+.d3 .cqh .dot{color:var(--faint)}
+.d3 .cqh .who3{font-size:14px;color:var(--muted)}
+
+/* ---------- C4 Clean pick ---------- */
+.d4 .cqk{padding-top:14px}
+.d4 .cqadd{grid-template-columns:14px minmax(0,1fr) auto;column-gap:10px;padding:5px 0}
+.d4 .cqadd .gl{color:var(--a);font-size:15px;line-height:1;font-weight:400;text-align:center}
+.d4 .cqadd:hover .lb,.d4 .cqadd.hov .lb,.d4 .cqadd:focus-visible .lb{color:var(--aInk);text-decoration:underline;text-decoration-color:var(--aSoft);text-underline-offset:4px}
+.d4 .cqadd.done .gl{color:var(--a);font-size:13px}
+.d4 .cqadd.have .gl{color:var(--faint);font-size:13px}
+.d4 .cqf{border-top:1px solid #EEF0F4;padding:14px var(--pad) 18px;transition:border-color .2s}
+.d4 .cqf:focus-within,.d4 .cqf.focus{border-top-color:var(--a)}
+.d4 .cqin{border-bottom:0;padding:2px 0}
+.d4 .cqin .qslot{width:84px}
+</style></head><body>
+<div id="bar">
+  <div class="r1"><b class="t">Query V1, cleaner</b><span class="lab">Tool</span><div class="seg" id="segTool"></div><span class="lab">Direction</span><div class="seg" id="segDir"></div><span class="sample">Sample answers written for the mockup</span></div>
+  <div class="r2"><span class="lab">Moment</span><div class="seg" id="segStep"></div><button class="barbtn" id="play">Play this look</button><span style="font-size:11.5px;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Data: Expedition Pediatric Dentistry, client 180 · Search Console and Google Analytics by page, Oct 2025 to Oct 2026 · Trends check #22, read for Washington</span></div>
+  <div class="r3" id="dirnote"></div>
+  <div class="r3" id="cap"></div>
+</div>
+<div id="stage"><aside class="oq-rail" data-oq-rail><a class="oq-rail-item" data-href="" title="Expand sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right "><path d="m9 18 6-6-6-6"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home "><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></a><a class="oq-rail-item" data-href="" title="Clients"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users "><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></a><a class="oq-rail-item" data-href="" title="Content Strategy"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text "><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line><line x1="10" x2="8" y1="9" y2="9"></line></svg></a><a class="oq-rail-item" data-href="" title="Production"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers "><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path></svg></a><a class="oq-rail-item" data-href="" title="On-Page"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-ruler "><path d="m15 5 4 4"></path><path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"></path><path d="m8 6 2-2"></path><path d="m2 22 5.5-1.5L21.17 6.83a2.82 2.82 0 0 0-4-4L3.5 16.5Z"></path><path d="m18 16 2-2"></path><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"></path></svg></a><a class="oq-rail-item" data-href="" title="Audit Hub"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check "><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg></a><a class="oq-rail-item" data-href="" title="SEO FAQ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open "><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="/tools/ai-visibility" title="AI Visibility"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye "><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><a class="oq-rail-item" data-href="/tools/market-trends" title="Market Trends"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up "><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg></a><a class="oq-rail-item" data-href="/tools/grid-scan" title="Grid Scan"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid3x3 "><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M3 9h18"></path><path d="M3 15h18"></path><path d="M9 3v18"></path><path d="M15 3v18"></path></svg></a><a class="oq-rail-item" data-href="" title="Refiner"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand2 "><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg></a><a class="oq-rail-item" data-href="" title="Retrieval Simulator"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search "><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></a><a class="oq-rail-item" data-href="" title="Query Fan-Out"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-git-fork "><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"></path><path d="M12 12v3"></path></svg></a><a class="oq-rail-item" data-href="" title="Relevance Analyzer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles "><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg></a><div class="oq-rail-sep"></div><a class="oq-rail-item" data-href="" title="SEO Dashboard"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gauge "><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg></a><a class="oq-rail-item" data-href="" title="Client Status"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered "><line x1="10" x2="21" y1="6" y2="6"></line><line x1="10" x2="21" y1="12" y2="12"></line><line x1="10" x2="21" y1="18" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"></path></svg></a><a class="oq-rail-item" data-href="" title="Reports"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bar-chart3 "><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></a><div class="oq-rail-foot"><span class="oq-rail-av">DU<i></i></span></div></aside><main id="main"></main><div id="q"></div><div id="cur"><svg viewBox="0 0 24 24"><path d="M4 2l15 10-7 1.5L8.5 21z" fill="#0B1020" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg></div></div>
+<section id="note"><h4>Same behaviour as the picked V1, only the look changes</h4><ul>
+<li>Removed in all four: the solid launcher block, the tool-name badge in the header, the bordered table in answers, outlined suggestion chips with filled + squares, the boxed input with a filled send button, boxed header icons, boxed evidence.</li>
+<li>Kept: the launcher only appears once a client is picked, the panel pushes the page (never covers it), every answer ends with its sources, one click adds a suggestion to the setup and the sentence count goes up.</li>
+<li>The page itself (setup panel, chips with "from Query", results Story) is unchanged from the earlier mockup; only Query is restyled here.</li>
+<li>Try it by hand once a step finishes: hover or Tab through the suggestions, click one to add it, Esc closes the panel, the launcher opens it again.</li>
+</ul></section>
+<script>// Real numbers only. Search Console = performance_cache_queries / performance_cache_pages (client 180,
+// weeks Oct 6 2025 to Oct 12 2026; Expedition's site has no rows for the weeks of Sep 7, 14, 21).
+// Google Analytics = performance_cache_pages source ga4, same window. Trends = check #22, read for Washington.
+const SRC_SC = 'Search Console, Expedition’s own site, last 12 months: showings in Google and clicks. Three weeks of September 2026 are missing.';
+const SRC_GA = 'Google Analytics, Expedition’s own account, last 12 months: visits and calls or forms.';
+
+const TOOLS = {
+  mt: {
+    name: 'Market Trends', accent: '#0F766E', ink: '#115E59', tint: '#E6F4F1', soft: '#99D5CC', a2: '#0891B2',
+    icon: '<svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+    eyebrow: 'New check',
+    sentence0: () => `Check how demand is moving for ${B('which topics')} around ${B('which practice', 'open')} in ${B('which state')}, read through ${B('the search phrases')}.`,
+    sentence: (n) => `Check how demand is moving for ${B('3 topics', 'ok')} around ${B('Expedition Pediatric Dentistry', 'ok')} in ${B('Washington', 'ok')}, read through <span style="white-space:nowrap">${B(`<span class="cnt" data-count>${n}</span> search phrases`, 'open')}.</span>`,
+    base: 5, unit: 'phrase',
+    stepName: 'Search phrases',
+    starters: ['What other words do patients use for tongue tie?', 'Which of these topics bring Expedition calls or forms?', 'Are any of these phrases too small to read?'],
+    v3prompts: ['What other words do patients use for tongue tie?', 'Which phrases bring Expedition calls or forms?'],
+    v3ev: [
+      { html: 'Expedition shows up <b>285,893</b> times a year for “frenectomy”', src: 'Search Console, last 12 months', add: 'frenectomy' },
+      { html: 'Every search with “tongue tie” in it: <b>7,583</b> showings, 3 clicks', src: 'Search Console, last 12 months' },
+      { html: 'Frenectomy guide article: <b>2,544</b> visits, 3 calls or forms', src: 'Google Analytics, last 12 months' },
+    ],
+    v4: { anchor: 'tongue tie', label: 'Find other words for this topic' },
+    cmd: ['What other words do patients use for tongue tie?', 'Which of these topics bring Expedition calls or forms?', 'Are any of these phrases too small to read?'],
+    ans: {
+      q: 'What other words do patients use for tongue tie?',
+      blocks: [
+        { p: 'Patients who find Expedition rarely type “tongue tie”. They type **frenectomy**, the name of the procedure.' },
+        { ev: { h: 'Searches that showed Expedition’s site', rows: [
+          ['frenectomy', '285,893', '894 clicks'], ['frenectomy procedure', '32,010', '244 clicks'],
+          ['what is a frenectomy', '10,563', '42 clicks'], ['labial frenectomy', '10,541', '24 clicks'],
+          ['every search with “tongue tie” in it', '7,583', '3 clicks']] } },
+        { p: 'All searches with frenectomy, frenotomy or frenulectomy in them add up to **458,255 showings and 1,533 clicks**, about 60 times the tongue tie searches.', compact: false },
+        { p: 'The page they land on is the frenectomy guide article: **2,544 visits and 3 calls or forms**. The frenectomy service page had 144 visits and 6 calls or forms.' },
+        { p: '“frenectomy” is not one of this check’s 5 phrases yet, so Google Trends has no line for it.', compact: false },
+        { adds: { h: 'Add to Tongue tie', items: [
+          { id: 'frenectomy', label: 'frenectomy', sub: '285,893 showings' },
+          { id: 'frenectomy procedure', label: 'frenectomy procedure', sub: '32,010' },
+          { id: 'labial frenectomy', label: 'labial frenectomy', sub: '10,541' },
+          { id: 'lip tie', label: 'lip tie', sub: '8,096, a related release' }] } },
+        { src: SRC_SC + ' ' + SRC_GA },
+      ],
+      auto: ['frenectomy', 'frenectomy procedure'],
+    },
+  },
+  gs: {
+    name: 'Grid Scan', accent: '#0F766E', ink: '#115E59', tint: '#E6F4F1', soft: '#99D5CC', a2: '#0891B2',
+    icon: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9.3h16M4 14.6h16M9.3 4v16M14.6 4v16"/></svg>',
+    eyebrow: 'New scan',
+    sentence0: () => `Scan where ${B('which practice', 'open')} shows up on Google Maps for ${B('which searches')}, across ${B('a 2-mile grid')} around the office, next to ${B('nearby practices')}.`,
+    sentence: (n) => `Scan where ${B('Expedition Pediatric Dentistry', 'ok')} shows up on Google Maps for ${B(`<span class="cnt" data-count>${n}</span> searches`, 'open')}, across ${B('a 2-mile grid', 'ok')} around the office, next to ${B('nearby practices')}.`,
+    base: 2, unit: 'search',
+    stepName: 'Which searches',
+    starters: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?', 'Which services bring Expedition calls or forms?'],
+    v3prompts: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?'],
+    v3ev: [
+      { html: '“kids dentist bellevue” showed Expedition <b>2,951</b> times', src: 'Search Console, last 12 months', add: 'kids dentist bellevue', have: true },
+      { html: '“lip tie doctor bellevue”: <b>2,534</b> showings, 0 clicks', src: 'Search Console, last 12 months', add: 'lip tie doctor bellevue' },
+      { html: 'Home page: <b>81</b> calls or forms from 1,265 visits', src: 'Google Analytics, last 12 months' },
+    ],
+    v4: { anchor: 'kids dentist bellevue', label: 'Other ways parents search this' },
+    cmd: ['Which searches should this scan cover?', 'Do parents name Bellevue or say near me?', 'Which services bring Expedition calls or forms?'],
+    ans: {
+      q: 'Which searches should this scan cover?',
+      blocks: [
+        { p: 'Start with the local searches that already show Expedition in Google, and match each to a page that brings calls or forms.' },
+        { ev: { h: 'Local searches that showed Expedition’s site', rows: [
+          ['kids dentist bellevue', '2,951', '6 clicks'], ['bellevue pediatric dentistry', '2,615', '8 clicks'],
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['emergency pediatric dentist near me', '1,972', '0 clicks'],
+          ['pediatric dentist near me', '1,587', '5 clicks']] } },
+        { p: 'Behind them: the home page brought **81 calls or forms from 1,265 visits**. Lip tie searches belong to the frenectomy service page: 144 visits, 6 calls or forms.' },
+        { p: 'These are Google search counts, not Maps. They show what parents type near Bellevue; the scan shows where Expedition sits on the map.', compact: false },
+        { adds: { h: 'Add to the scan', items: [
+          { id: 'pediatric dentist near me', label: 'pediatric dentist near me', sub: 'in the scan', have: true },
+          { id: 'kids dentist bellevue', label: 'kids dentist bellevue', sub: 'in the scan', have: true },
+          { id: 'bellevue pediatric dentistry', label: 'bellevue pediatric dentistry', sub: '2,615' },
+          { id: 'lip tie doctor bellevue', label: 'lip tie doctor bellevue', sub: '2,534' },
+          { id: 'emergency pediatric dentist near me', label: 'emergency pediatric dentist near me', sub: '1,972' }] } },
+        { src: SRC_SC + ' ' + SRC_GA },
+      ],
+      auto: ['bellevue pediatric dentistry', 'lip tie doctor bellevue', 'emergency pediatric dentist near me'],
+    },
+    ans4: {
+      q: 'Other ways parents search “kids dentist bellevue”',
+      blocks: [
+        { p: 'Parents near Bellevue word this a few ways. Each of these showed Expedition’s site in Google:' },
+        { ev: { h: 'Close wordings', rows: [
+          ['bellevue pediatric dentistry', '2,615', '8 clicks'], ['bellevue kids dentist', '2,587', '3 clicks'],
+          ['kids dentist bellevue washington', '2,424', '0 clicks'], ['pediatric dentist bellevue', '1,862', '14 clicks']] } },
+        { p: '“pediatric dentist bellevue” brought the most clicks of these: **14**.' },
+        { adds: { h: 'Add to the scan', items: [
+          { id: 'pediatric dentist bellevue', label: 'pediatric dentist bellevue', sub: '1,862' },
+          { id: 'bellevue pediatric dentistry', label: 'bellevue pediatric dentistry', sub: '2,615' }] } },
+        { src: SRC_SC },
+      ],
+      auto: ['pediatric dentist bellevue', 'bellevue pediatric dentistry'],
+    },
+  },
+  aiv: {
+    name: 'AI Visibility', accent: '#4F46E5', ink: '#4338CA', tint: '#EEF0FF', soft: '#C7C9FB', a2: '#9333EA',
+    icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" stroke-dasharray="2 2.6"/><circle cx="12" cy="12" r="2.2"/></svg>',
+    eyebrow: 'New check',
+    sentence0: () => `Check how AI talks about ${B('which practice', 'open')} in ${B('which city')}, across ${B('the questions')} patients ask, next to ${B('nearby practices')}.`,
+    sentence: (n) => `Check how AI talks about ${B('Expedition Pediatric Dentistry', 'ok')} in ${B('Bellevue, WA', 'ok')}, across ${B(`<span class="cnt" data-count>${n}</span> questions`, 'open')} patients ask, next to ${B('nearby practices')}.`,
+    base: 3, unit: 'question',
+    stepName: 'What patients ask',
+    starters: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?', 'Which questions are research, not looking for a dentist?'],
+    v3prompts: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?'],
+    v3ev: [
+      { html: '“emergency pediatric dentist near me”: <b>1,972</b> showings, 0 clicks', src: 'Search Console, last 12 months', add: 'q-emergency' },
+      { html: 'White crown searches: <b>59,513</b> showings, 103 clicks', src: 'Search Console, last 12 months', add: 'q-crowns' },
+      { html: 'Frenectomy searches: <b>458,255</b> showings, 1,533 clicks', src: 'Search Console, last 12 months' },
+    ],
+    v4: { anchor: 'Which pediatric dentist in Bellevue does frenectomies?', label: 'Why this question, and what else?' },
+    cmd: ['Which questions would Expedition’s patients ask an AI?', 'Which services should get a question?', 'Which questions are research, not looking for a dentist?'],
+    ans: {
+      q: 'Which questions would Expedition’s patients ask an AI?',
+      blocks: [
+        { p: 'Parents ask AI the way they search. These are drafted from Expedition’s real Google searches, one for each service that brings visits.' },
+        { ev: { h: 'The searches behind each question', rows: [
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['infant frenectomy near me', '1,837', '0 clicks'],
+          ['emergency pediatric dentist near me', '1,972', '0 clicks'], ['every search with “crown” in it', '59,513', '103 clicks'],
+          ['pediatric dentistry for special needs bellevue', '320', '0 clicks']] } },
+        { p: 'The white crowns guide brought **805 visits and 5 calls or forms**, so a research question about crowns is worth reading too. Research questions sit on their own line and never count in the headline.', compact: false },
+        { adds: { h: 'Add to the questions', items: [
+          { id: 'q-liptie', label: 'Where can I get my baby’s lip tie or tongue tie released near me?', sub: 'Near me' },
+          { id: 'q-emergency', label: 'Is there an emergency pediatric dentist open near me?', sub: 'Near me' },
+          { id: 'q-crowns', label: 'Are white crowns safe for my toddler’s baby teeth?', sub: 'Research' },
+          { id: 'q-special', label: 'Which pediatric dentist in Bellevue treats kids with special needs?', sub: 'Names the city' }] } },
+        { src: SRC_SC + ' ' + SRC_GA + ' The questions themselves are drafted words, not data.' },
+      ],
+      auto: ['q-liptie', 'q-emergency', 'q-crowns'],
+    },
+    ans4: {
+      q: 'Why “Which pediatric dentist in Bellevue does frenectomies?”',
+      blocks: [
+        { p: 'Frenectomy is what Expedition’s site is found for most: searches with frenectomy, frenotomy or frenulectomy in them showed it **458,255 times**, with 1,533 clicks.' },
+        { p: 'Parents also ask about the baby, not the procedure, and those searches bring no clicks yet:' },
+        { ev: { h: 'Searches about the baby', rows: [
+          ['lip tie doctor bellevue', '2,534', '0 clicks'], ['infant frenectomy near me', '1,837', '0 clicks'],
+          ['tongue tie treatment bellevue', '333', '0 clicks']] } },
+        { adds: { h: 'Add next to it', items: [
+          { id: 'q-liptie', label: 'Where can I get my baby’s lip tie or tongue tie released near me?', sub: 'Near me' }] } },
+        { src: SRC_SC },
+      ],
+      auto: ['q-liptie'],
+    },
+  },
+};
+TOOLS.mt.ans4 = TOOLS.mt.ans;
+
+// what each added id becomes in the setup
+const ADDED_AIV = {
+  'q-liptie': { text: 'Where can I get my baby’s lip tie or tongue tie released near me?', kind: 'near', group: 'Frenectomy' },
+  'q-emergency': { text: 'Is there an emergency pediatric dentist open near me?', kind: 'near', group: 'Emergency care' },
+  'q-crowns': { text: 'Are white crowns safe for my toddler’s baby teeth?', kind: 'research', group: 'White crowns' },
+  'q-special': { text: 'Which pediatric dentist in Bellevue treats kids with special needs?', kind: 'city', group: 'Pediatric dentistry' },
+};
+
+// MT results: pediatric dentistry, Google Trends read for Washington (check #22), Oct 2024 to Oct 2026
+const PD = {
+  months: ['Oct 2024', 'Nov 2024', 'Dec 2024', 'Jan 2025', 'Feb 2025', 'Mar 2025', 'Apr 2025', 'May 2025', 'Jun 2025', 'Jul 2025', 'Aug 2025', 'Sep 2025', 'Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026', 'Apr 2026', 'May 2026', 'Jun 2026', 'Jul 2026', 'Aug 2026', 'Sep 2026', 'Oct 2026'],
+  v: [60.2, 49.2, 47.6, 67.2, 70.0, 67.8, 62.0, 69.0, 67.6, 83.5, 82.4, 73.0, 71.0, 62.2, 54.0, 74.2, 79.5, 72.4, 73.8, 80.4, 71.0, 71.0, 75.2, 56.5, 67.2],
+};
+const RESULTS = {
+  starters: ['Why is pediatric dentistry on the edge of Fading?', 'Is the September drop real?', 'Which page carries pediatric dentistry?'],
+  ans: {
+    q: 'Why is pediatric dentistry on the edge of Fading?',
+    blocks: [
+      { p: 'Because last summer was its busiest in the five years this check reads, and this September fell well short of it.' },
+      { ev: { h: 'Google Trends, read for Washington, 0 to 100', rows: [
+        ['Jul, Aug, Sep 2025', '84, 82, 73', 'about 80'], ['Jul, Aug, Sep 2026', '71, 75, 57', 'about 68'],
+        ['Sep 2026', '57', 'lowest of 5; 67 to 73 before']] } },
+      { p: 'That is about 15 in every 100 lower than last year. Dental searches overall in Washington held about level over the same months, so pediatric dentistry slipped behind them by the same amount: right on the Fading line, not past it.' },
+      { p: 'October is not over yet: 67 so far. The next check will show whether September was a one-off.', compact: false },
+      { p: 'Expedition’s own site shows a fall too: local pediatric dentistry searches showed it about 60 times a week this summer, down from about 190 last winter.', compact: false },
+      { next: ['Compare the last 3 summers', 'Which page carries pediatric dentistry?'] },
+      { src: 'Google Trends from check #22, read for Washington; 100 is the busiest week. Expedition’s weekly showings from Search Console, last 12 months.' },
+    ],
+    auto: [],
+  },
+};
+
+const STEPS = [
+  { k: 'none', label: '0 No client' }, { k: 'arrive', label: '1 Client picked' }, { k: 'open', label: '2 Open' },
+  { k: 'ask', label: '3 Ask' }, { k: 'add', label: '4 Use a suggestion' }, { k: 'close', label: '5 Close' }, { k: 'results', label: '6 Results page' },
+];
+const VARS = [
+  { n: 1, label: 'V1 Familiar panel' }, { n: 2, label: 'V2 Inline' }, { n: 3, label: 'V3 Helper rail' }, { n: 4, label: 'V4 Sparkles' }, { n: 5, label: 'V5 Command bar' },
+];
+
+// mockup-bar captions: what each step shows, per variation
+const CAP = {
+  1: ['No client picked: no Query button anywhere. A prospect check never shows it.',
+    'Expedition is picked from the client list. Query’s button pops in at the bottom right in the tool’s colour and says once that it knows Expedition.',
+    'The button opens the familiar side panel. It PUSHES the page left, so nothing on the setup is covered. Starter questions are about this tool’s step.',
+    'A starter is sent. Query reads Expedition’s searches and pages, then streams the answer, every number with its source.',
+    '+ on a suggestion drops it straight into the setup and the sentence count goes up.',
+    'The panel closes and the page slides back. Added items keep a small "from Query" tag.'],
+  2: ['No client picked: the "Ask Query" line does not exist.',
+    'Expedition is picked. A slim "Ask Query about Expedition" line wipes in under the list, in the space kept for it.',
+    'Clicking the line turns it into a question box in place, with a suggested question.',
+    'The answer opens under it, compact, inside the setup panel. Nothing floats.',
+    'Suggestions arrive as chips with a +. Each one flies a few centimetres up into the list.',
+    'The box folds back into the slim line.'],
+  3: ['No client picked: no helper rail; the setup has the full width.',
+    'Expedition is picked. The helper rail slides in from the right and the setup makes room. It shows prompts and evidence for the current step.',
+    'A prompt for this step is picked.',
+    'The answer streams inside the rail, under the step’s evidence.',
+    'Add buttons drop suggestions into the setup next to it.',
+    'The rail collapses to a slim tab; the setup gets its width back. It stays a tab on results pages.'],
+  4: ['No client picked: no Query marks.',
+    'Expedition is picked. A small Query mark appears beside each item, one after another.',
+    'The mark beside an item opens a popover anchored to it.',
+    'The popover answers about that one item.',
+    'Its + chips drop into the setup next to the popover; the popover steps down if the row grows.',
+    'The popover closes. On a results page the popover always opens over the text column, never the chart.'],
+  5: ['No client picked: the header shows "Pick a client to ask about them" instead of Query.',
+    'Expedition is picked. "Ask about Expedition" with its shortcut appears in the header, plus a one-time hint.',
+    'Cmd+K opens the command bar with suggestions for this tool.',
+    'The answer comes up in a sheet from the bottom; the setup list stays visible above it.',
+    '+ in the sheet drops the item into the setup above.',
+    'Esc closes the sheet. On a results page the sheet covers only the text column, never the chart.'],
+};
+const CAP_RES = {
+  1: 'Results page: the panel pushes the Story left, so the chart shrinks but is never covered.',
+  2: 'Results page: the Ask line sits under the chapter’s points and opens in place in the text column.',
+  3: 'Results page: the rail is a tab here (setup only when docked). Opened, it docks and the Story makes room.',
+  4: 'Results page: a Query mark beside the verdict tile opens a popover over the text column, not the chart.',
+  5: 'Results page: Cmd+K, then the sheet covers only the text column, never the chart.',
+};
+</script><script>// Query V1, 4 clean looks. Market Trends only, 3 core moments: arrive, open + answer, add one suggestion.
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const CANCEL = Symbol('cancel');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let RUN = { dead: false };
+async function w(ms) { const r = RUN; await sleep(ms); if (r.dead) throw CANCEL; }
+const S = { tool: 'mt', d: 1, m: 0, playing: false, done: false, open: false };
+const T = () => TOOLS.mt;
+const A = () => TOOLS.mt.ans;
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const md = (s) => { const t = esc(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>'); return t.replace(/\*\*[^*]*$/, (m) => m.replace(/\*\*/g, '')); };
+function B(label, st) { return `<span class="blank ${st === 'ok' ? 'ok' : ''} ${st === 'open' ? 'open' : ''}">${label}${st === 'ok' ? '<span class="tick">✓</span>' : ''}</span>`; }
+const mark = () => '<svg class="qg" viewBox="0 0 20 14" aria-hidden="true"><path d="M2.5 1.5 L8 7 L2.5 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect class="qcur" x="10.5" y="10.6" width="7" height="2" rx="1" fill="currentColor"/></svg>';
+
+const DIRS = [
+  { n: 1, label: 'C1 Quiet text', w: 392, note: '<b>C1 Quiet text.</b> "Ask Query" is a link, not a button. Inside: hairlines only, numbers in a borderless two-column list, "Add" appears on hover or keyboard focus, the input is one underlined line.' },
+  { n: 2, label: 'C2 Paper', w: 440, note: '<b>C2 Paper.</b> The panel reads like a note page on a faint tint: wider margins, larger text, no cards. Evidence is an indented quote with a grey rule; suggestions are underlined phrases inside the answer, one click adds.' },
+  { n: 3, label: 'C3 Edge tab', w: 384, note: '<b>C3 Minimal chrome.</b> The launcher is a slim "Query" tab on the right edge that pulls the panel out and back. The header says only "Query · Expedition". The rest as C1.' },
+  { n: 4, label: 'C4 Clean pick', w: 400, note: '<b>C4 Clean pick.</b> One hairline under the header (in line with the page header), one above the input, nothing boxed. Each suggestion keeps a thin + so it is findable without hovering; one click anywhere on the line adds it and the + turns into a check. Close is a word, Esc works.' },
+];
+const MOMENTS = [
+  { label: '1 Launcher arrives', cap: 'Expedition is picked from the client list. Query fades up 6px, says once in grey that it knows Expedition, then the note fades.' },
+  { label: '2 Open and answer', cap: 'Query opens the side panel; it pushes the page left, nothing is covered. A starter is sent and the answer streams in, sources in one grey line.' },
+  { label: '3 Add a suggestion', cap: 'One click on a suggestion drops it into the setup, the sentence count goes up and a small check marks it.' },
+];
+const D = () => DIRS[S.d - 1];
+
+/* ---------- bar ---------- */
+function renderBar() {
+  $('#segTool').innerHTML = '<button class="on">Market Trends</button><button disabled title="Later, for the picked look">Grid Scan</button><button disabled title="Later, for the picked look">AI Visibility</button>';
+  $('#segDir').innerHTML = DIRS.map((d) => `<button data-d="${d.n}" class="${S.d === d.n ? 'on' : ''}">${d.label}</button>`).join('');
+  $('#segStep').innerHTML = MOMENTS.map((m, i) => `<button data-m="${i}" class="${S.m === i ? 'on' : ''}">${m.label}</button>`).join('');
+  $('#play').textContent = S.playing ? 'Stop' : 'Play this look'; $('#play').classList.toggle('on', S.playing);
+  $('#dirnote').innerHTML = D().note;
+  $('#cap').textContent = `Moment ${MOMENTS[S.m].label}: ${MOMENTS[S.m].cap}`;
+  $$('#segDir button').forEach((b) => { b.onclick = () => { S.d = +b.dataset.d; S.playing = false; go(S.m); }; });
+  $$('#segStep button').forEach((b) => { b.onclick = () => { S.playing = false; go(+b.dataset.m); }; });
+  document.documentElement.style.setProperty('--barH', `${$('#bar').offsetHeight}px`);
+}
+
+/* ---------- page (same as src-query, Market Trends only) ---------- */
+function topHTML(client) {
+  const t = T();
+  return `<div class="top"><div class="brand"><span class="tmark">${t.icon}</span>${t.name}</div><div class="tright"><span class="hiw"><i></i>How it works</span>${client ? '<span class="who">Expedition Pediatric Dentistry<small>Client</small></span>' : ''}</div></div>`;
+}
+function setupHTML(client, n) {
+  const t = T();
+  return `<div class="wrap">${topHTML(client)}<div class="eyebrow">${t.eyebrow}</div>
+    <h1 class="h-sentence" id="sent">${client ? t.sentence(n) : t.sentence0()}</h1>
+    <div id="panelHost">${client ? phrasePanel(n) : practicePanel()}</div>
+    <div class="runrow"><button class="btn btn-go" disabled>Run it</button><span class="small">${client ? 'Confirm the open blank, then run it.' : 'Confirm the dotted blanks first.'}</span></div></div>`;
+}
+function practicePanel() {
+  const f = (lab, ph) => `<label class="field"><span>${lab} <i>*</i></span><div class="input ph" data-f="${lab}">${ph}</div></label>`;
+  return `<section class="panel" id="pp"><div class="panel-head">Which practice</div>
+    <label class="field"><span>Client</span><div class="dd"><div class="input ph" id="clientBox">Pick a client, or leave it empty for a prospect</div></div></label>
+    <div class="fields">${f('Domain', 'practice.com')}${f('Business name', 'As it appears on Google')}${f('City and state', 'City, ST')}</div>
+    <div style="margin-top:14px"><button class="btn btn-go">Find the practice</button></div></section>`;
+}
+function phrasePanel(n) {
+  const g = (name, chips, drop) => `<div class="pgroup"><div class="tn">${name}</div><div class="chips" ${drop ? 'data-drop' : ''}>${chips}</div></div>`;
+  return `<section class="panel" id="sp"><div class="panel-head">${T().stepName}</div><p class="lead">Each phrase is read on its own on Google Trends, then they add up to the topic.</p>
+    ${g('Tongue tie', '<span class="chip head">tongue tie</span><span class="chip thin">ankyloglossia <small>too few searches</small></span>', true)}
+    ${g('Preventative pediatric dentistry', '<span class="chip head">pediatric dentist</span><span class="chip thin">children’s dentist <small>too few searches</small></span>')}
+    ${g('Pediatric dentistry', '<span class="chip head">pediatric dentistry</span>')}
+    <div class="pfoot"><span class="mono"><span data-count>${n}</span> phrases</span><button class="btn btn-go">Use these phrases</button></div></section>`;
+}
+
+/* ---------- Query, rendered per look ---------- */
+const knows = () => 'Knows <b>Expedition Pediatric Dentistry</b>: its Search Console searches, its pages in Google Analytics and this setup.';
+function headHTML() {
+  return {
+    1: `${mark()}<b class="nm">Query</b><span class="sp"></span><button class="tl">New</button><button class="tl" id="panX">Close</button>`,
+    2: `<b class="nm">${mark()}Query</b><span class="who2">on Expedition</span><span class="sp"></span><button class="tl" id="panX">Close</button>`,
+    3: '<b class="nm">Query</b><span class="dot">·</span><span class="who3">Expedition</span>',
+    4: `${mark()}<b class="nm">Query</b><span class="sp"></span><button class="tl" id="panX">Close<i>Esc</i></button>`,
+  }[S.d];
+}
+function introHTML() {
+  const intro = S.d === 2 ? '<p class="cqintro">Ask anything about Expedition. Answers use its Search Console searches, its pages in Google Analytics and this setup.</p>' : '';
+  return `${intro}<div class="cqlab">For this step</div>${T().starters.map((s) => `<button class="cqs" data-starter><span>${esc(s)}</span><i>→</i></button>`).join('')}`;
+}
+function panelHTML(open) {
+  const tab = S.d === 3 ? `<button class="cqtab" id="tab" aria-label="Query panel">${mark()}<i class="chev">›</i><span>Query</span></button>` : '';
+  const hint = S.d === 4 ? 'Enter to send' : 'Enter';
+  return `<aside class="cq d${S.d} ${open ? 'on' : ''}" id="pan" style="--pw:${D().w}px">${tab}<header class="cqh">${headHTML()}</header>${S.d === 2 ? '' : `<p class="cqk">${knows()}</p>`}
+    <div class="cqb" id="pbody">${introHTML()}</div>
+    <footer class="cqf"><label class="cqin"><input id="qi" placeholder="Ask about Expedition…" autocomplete="off"><span class="qslot"><span class="hint">${hint}</span><button class="send" tabindex="-1">Send</button></span></label></footer></aside>`;
+}
+function launcherHTML() {
+  if (S.d === 3) return '<span class="qhello tabh" id="hello"></span>';
+  return '<div class="qlwrap" id="fab"><span class="qhello" id="hello"></span><button class="ql" id="qlaunch">' + mark() + '<span>Ask Query</span></button></div>';
+}
+const list = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} or ${xs[xs.length - 1]}`);
+function blockHTML(b, added = []) {
+  if (b.p) return `<p class="cqp">${md(b.p)}</p>`;
+  if (b.ev) return `<div class="cqev"><h6>${esc(b.ev.h)}</h6><div class="cqrows">${b.ev.rows.map((r) => `<span>${esc(r[0])}</span><b>${esc(r[1])}</b><small>${esc(r[2])}</small>`).join('')}</div></div>`;
+  if (b.src) return `<p class="cqsrc">${esc(b.src)}</p>`;
+  if (b.adds) {
+    const its = b.adds.items;
+    if (S.d === 2) {
+      const link = (it) => { const dn = added.includes(it.id); return `<button class="cqil ${dn ? 'done' : ''}" data-id="${esc(it.id)}">${esc(it.label)}${dn ? '<span class="ck">✓</span>' : ''}</button> <span class="sub">${esc(it.sub)}</span>`; };
+      return `<p class="cqp q2">${esc(b.adds.h)}, one click each: ${list(its.map(link))}.</p>`;
+    }
+    const row = (it) => {
+      const dn = added.includes(it.id), hv = it.have;
+      if (S.d === 4) return `<li><button class="cqadd ${dn ? 'done' : ''} ${hv ? 'have' : ''}" data-id="${esc(it.id)}"><span class="gl">${dn || hv ? '✓' : '+'}</span><span class="lb">${esc(it.label)}</span><span class="sb">${esc(it.sub)}</span></button></li>`;
+      return `<li><button class="cqadd ${dn ? 'done' : ''} ${hv ? 'have' : ''}" data-id="${esc(it.id)}"><span class="lb">${esc(it.label)}</span><span class="sb">${esc(it.sub)}</span><span class="act">${dn ? '✓ Added' : hv ? '✓' : 'Add'}</span></button></li>`;
+    };
+    return `<div class="cqlab">${esc(b.adds.h)}</div><ul class="cqadds">${its.map(row).join('')}</ul>`;
+  }
+  return '';
+}
+const convHTML = () => `<p class="cqq">${esc(A().q)}</p><div class="cqa" id="ans">${A().blocks.map((b) => blockHTML(b)).join('')}</div>`;
+
+async function stream(host, scroller) {
+  host.innerHTML = '<p class="cqthink in">Reading Expedition’s searches and pages<span class="qcaret"></span></p>';
+  await w(1000); host.innerHTML = '';
+  for (const b of A().blocks) {
+    if (b.p) {
+      const p = document.createElement('p'); p.className = 'cqp in'; host.appendChild(p);
+      const words = b.p.split(' ');
+      for (let i = 1; i <= words.length; i += 2) { p.innerHTML = md(words.slice(0, i).join(' ')) + '<span class="qcaret"></span>'; await w(40); }
+      p.innerHTML = md(b.p);
+    } else {
+      const tmp = document.createElement('div'); tmp.innerHTML = blockHTML(b);
+      Array.from(tmp.children).forEach((c, i) => { c.classList.add('in'); c.style.animationDelay = `${i * 60}ms`; host.appendChild(c); });
+      await w(260);
+    }
+    await w(120);
+  }
+}
+
+/* cursor + motion helpers */
+const stageXY = (el, ox = 0.5, oy = 0.5) => { const s = $('#stage').getBoundingClientRect(), r = el.getBoundingClientRect(); return [r.left - s.left + r.width * ox, r.top - s.top + r.height * oy]; };
+async function cursorTo(el, ox = 0.5, oy = 0.5) { const c = $('#cur'); const [x, y] = stageXY(el, ox, oy); c.classList.add('on'); c.style.transform = `translate(${x - 3}px,${y - 2}px)`; await w(760); }
+async function click(el) {
+  const [x, y] = stageXY(el); const r = document.createElement('div'); r.className = 'ripple'; r.style.left = `${x}px`; r.style.top = `${y}px`; $('#stage').appendChild(r);
+  el.classList.add('press'); await w(160); el.classList.remove('press'); setTimeout(() => r.remove(), 600); await w(120);
+}
+const hideCursor = () => $('#cur').classList.remove('on');
+async function ensureVisible(el, scroller, inset = 12) {
+  const sr = scroller.getBoundingClientRect(), r = el.getBoundingClientRect();
+  let d = 0; if (r.bottom > sr.bottom - inset) d = r.bottom - sr.bottom + inset + 40; if (r.top - d < sr.top + inset) d = r.top - sr.top - inset;
+  if (Math.abs(d) > 2) { scroller.scrollTo({ top: scroller.scrollTop + d, behavior: 'smooth' }); await w(450); }
+}
+const setMr = (px) => $('#main').style.setProperty('--mr', `${px}px`);
+const mrOpen = () => D().w + (S.d === 3 ? 29 : 0);
+const fadeUp = (el, rev) => el.animate([{ opacity: 0, translate: '0 6px' }, { opacity: 1, translate: '0 0' }], { duration: rev ? 220 : 500, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'both', direction: rev ? 'reverse' : 'normal' });
+
+function drawQuery(open) {
+  $('#q').innerHTML = launcherHTML() + panelHTML(open);
+  if (open) { if ($('#fab')) $('#fab').style.visibility = 'hidden'; setMr(mrOpen()); }
+  S.open = open;
+}
+async function openPanel(auto) {
+  const trg = S.d === 3 ? $('#tab') : $('#qlaunch');
+  if (auto) { await cursorTo(trg, S.d === 3 ? 0.5 : 0.3); trg.classList.add('hov'); await w(300); await click(trg); }
+  trg.classList.remove('hov');
+  if ($('#fab')) { fadeUp($('#fab'), true); setTimeout(() => { if ($('#fab') && S.open) $('#fab').style.visibility = 'hidden'; }, 230); }
+  $('#pan').classList.add('on'); S.open = true; setMr(mrOpen()); hideCursor(); await w(600);
+}
+async function closePanel() {
+  $('#pan').classList.remove('on'); S.open = false; setMr(0); await w(450);
+  if ($('#fab')) { $('#fab').style.visibility = ''; fadeUp($('#fab')); }
+}
+async function askFirst(auto) {
+  const st = $('#pan [data-starter]');
+  if (auto) { await cursorTo(st, 0.35); st.classList.add('hov'); await w(250); await click(st); hideCursor(); }
+  const b = $('#pbody'); b.innerHTML = `<p class="cqq in">${esc(A().q)}</p><div class="cqa" id="ans"></div>`; b.scrollTop = 0;
+  await stream($('#ans'), b);
+}
+function landTarget(id) {
+  const box = $('[data-drop]'); box.insertAdjacentHTML('beforeend', `<span class="chip fromq" style="visibility:hidden">${esc(id)} <span class="fromtag">from Query</span></span>`);
+  const el = box.lastElementChild; return { el, reveal: () => { el.style.visibility = ''; el.classList.add('landed'); } };
+}
+function setCount(delta) {
+  $$('[data-count]').forEach((c) => { c.textContent = String(+c.textContent + delta); });
+  const bl = $('#sent [data-count]'); if (bl) { const b = bl.closest('.blank'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }
+}
+async function addOne(el, auto) {
+  const id = el.dataset.id; const lb = $('.lb', el) || el;
+  if (auto) {
+    await ensureVisible(el, $('#pbody'));
+    await cursorTo(el, S.d === 1 || S.d === 3 ? 0.4 : 0.3); el.classList.add('hov'); await w(450);
+    if ($('.act', el)) await cursorTo($('.act', el), 0.6); await click(el);
+  }
+  el.classList.remove('hov');
+  const tg = landTarget(id);
+  const st = $('#stage').getBoundingClientRect(), a = lb.getBoundingClientRect(), t = tg.el.getBoundingClientRect();
+  const f = document.createElement('span'); f.className = 'qfly'; f.textContent = id; f.style.fontSize = getComputedStyle(lb).fontSize;
+  Object.assign(f.style, { left: `${a.left - st.left}px`, top: `${a.top - st.top}px` }); $('#stage').appendChild(f); await w(30);
+  f.style.transform = `translate(${t.left - a.left + 8}px,${t.top - a.top + 4}px)`; await w(900); f.style.opacity = '0'; setTimeout(() => f.remove(), 300);
+  el.classList.add('done');
+  if ($('.act', el)) $('.act', el).textContent = '✓ Added';
+  if ($('.gl', el)) $('.gl', el).textContent = '✓';
+  if (el.classList.contains('cqil')) el.insertAdjacentHTML('beforeend', '<span class="ck">✓</span>');
+  tg.reveal(); setCount(1); hideCursor(); await w(400);
+}
+
+/* ---------- the three moments ---------- */
+function renderStage(client, n = T().base) {
+  const m = $('#main'); m.style.transition = 'none'; setMr(0); m.scrollTop = 0;
+  m.innerHTML = setupHTML(client, n); $('#q').innerHTML = ''; hideCursor(); $$('.qfly,.ripple').forEach((e) => e.remove());
+  void m.offsetWidth; m.style.transition = '';
+}
+async function pickClient() {
+  const box = $('#clientBox'); await cursorTo(box, 0.3); await click(box); box.classList.add('focus');
+  box.parentElement.insertAdjacentHTML('beforeend', '<div class="ddmenu fadein" id="ddm"><div class="hl">Expedition Pediatric Dentistry <span class="ctag">Client</span></div><div>Bothell Family Dentistry <span class="ctag">Client</span></div><div>Cedar Park Dental <span class="ctag">Client</span></div></div>');
+  await w(500); await cursorTo($('#ddm div'), 0.3); await click($('#ddm div'));
+  $('#ddm').remove(); box.classList.remove('focus', 'ph'); box.innerHTML = 'Expedition Pediatric Dentistry <span class="ctag">Client</span>';
+  const vals = { Domain: 'expeditionpediatricdentistry.com', 'Business name': 'Expedition Pediatric Dentistry', 'City and state': 'Bellevue, WA' };
+  for (const [k, v] of Object.entries(vals)) { const f = $(`[data-f="${k}"]`); f.classList.remove('ph'); f.textContent = v; await w(140); }
+  hideCursor(); await w(600);
+  const m = $('#main'); m.animate([{ opacity: 1 }, { opacity: 0.2 }], { duration: 220, fill: 'both' }); await w(220);
+  m.innerHTML = setupHTML(true, T().base); m.animate([{ opacity: 0.2 }, { opacity: 1 }], { duration: 300, fill: 'both' }); await w(700);
+}
+async function arrive() {
+  drawQuery(false);
+  if (S.d === 3) { const p = $('#pan'); p.classList.add('pre'); void p.offsetWidth; p.classList.remove('pre'); fadeUp($('#tab')); }
+  else fadeUp($('#fab'));
+  await w(650);
+  const h = $('#hello'); h.innerHTML = 'Query knows <b>Expedition</b>'; const an = fadeUp(h);
+  await w(2600); an.reverse(); await w(520); h.innerHTML = '';
+}
+async function motion(m) {
+  if (m === 0) { renderStage(false); await w(500); await pickClient(); await arrive(); return; }
+  if (m === 1) { renderStage(true); drawQuery(false); await w(700); await openPanel(true); await askFirst(true); return; }
+  renderStage(true); drawQuery(true); $('#pbody').innerHTML = convHTML(); await w(600);
+  await addOne($(`#pan [data-id="${CSS.escape(A().auto[0])}"]`), true);
+}
+async function go(m, keep) {
+  RUN.dead = true; RUN = { dead: false }; S.m = m; if (!keep) S.playing = false; S.done = false; renderBar();
+  try { await motion(m); } catch (e) { if (e !== CANCEL) console.error(e); return false; }
+  S.done = true; hideCursor(); return true;
+}
+async function playAll() {
+  S.playing = true;
+  for (let i = 0; i < 3; i++) { if (!S.playing) return; if (!(await go(i, true))) return; try { await w(1200); } catch (e) { return; } }
+  S.playing = false; renderBar();
+}
+$('#play').onclick = () => { if (S.playing) { S.playing = false; RUN.dead = true; renderBar(); } else playAll(); };
+
+/* by hand, once a moment has finished */
+async function byHand(fn) { if (!S.done) return; S.done = false; RUN = { dead: false }; try { await fn(); } catch (e) { if (e !== CANCEL) console.error(e); } S.done = true; }
+$('#q').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'qlaunch' || (b.id === 'tab' && !S.open)) byHand(() => openPanel(false));
+  else if (b.id === 'panX' || (b.id === 'tab' && S.open)) byHand(closePanel);
+  else if (b.dataset.starter !== undefined && b.textContent.startsWith(A().q)) byHand(() => askFirst(false));
+  else if (b.dataset.id && !b.classList.contains('done') && !b.classList.contains('have')) byHand(() => addOne(b, false));
+});
+$('#q').addEventListener('input', (e) => { const l = e.target.closest('.cqin'); if (l) l.classList.toggle('has', !!e.target.value); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && S.open) byHand(closePanel); });
+window.addEventListener('resize', () => document.documentElement.style.setProperty('--barH', `${$('#bar').offsetHeight}px`));
+window.QT = { go, S };
+renderBar(); go(0);
+</script></body></html>
