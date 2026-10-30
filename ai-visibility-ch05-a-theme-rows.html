@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Story chapter 05, A theme rows</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js?v=3"></script>
+<script src="ai-visibility-described-data.js?v=3"></script>
+<script src="ai-visibility-ch05-kit.js?v=2"></script>
+</head><body><div id="top"></div><main class="shell" id="m"></main>
+<script>
+const { D, P, n, said, pad, INK, GREEN, RED, concernCard } = CH5;
+const short = (s) => (s.length > 26 ? `${s.slice(0, 25)}…` : s);
+function formation() {
+  const max = Math.max(...D.themes.map((t) => t.answers));
+  const dots = []; const labels = []; let y = 44;
+  const row = (name, count, look, color) => {
+    const k = Math.max(1, Math.round((count / max) * 16));
+    for (let j = 0; j < k; j += 1) dots.push({ x: 196 + j * 13, y, look });
+    labels.push({ x: 0, y: y + 4, text: short(name), size: 12.5, weight: 600, color: INK });
+    labels.push({ x: 500, y: y + 4, text: `${n(count)} answers`, size: 12.5, weight: 700, color, anchor: 'end' });
+    y += 42;
+  };
+  labels.push({ x: 0, y: y - 22, text: 'WHAT AI PRAISES', size: 10.5, weight: 700, color: GREEN });
+  D.themes.forEach((t) => row(t.name, t.answers, 'good', GREEN));
+  y += 26;
+  labels.push({ x: 0, y: y - 22, text: 'WHAT AI WARNS ABOUT', size: 10.5, weight: 700, color: RED });
+  D.concerns.forEach((c) => row(c.name, said(c), 'bad', RED));
+  return { dots: pad(dots), labels, caption: `Each row is one thing AI says about ${P}; longer rows, said in more answers.` };
+}
+CH5.page({ mock: '05 A, theme rows', formation,
+  note: `Story chapter 05 (#1377): the praise themes and the concern as rows of dots, the concern's suggestion with Make a task on the left. Real data: ${P}'s Snapshot of Oct 28. Scroll through 04, 05, 06; the bar at the bottom switches No task yet / Task made.`,
+  left: (s) => `<p>Of the ${n(D.named)} answers that name ${P}, ${n(D.tone.positive)} praise it and ${n(D.tone.neutral)} just list it.</p>${concernCard(s)}` });
+</script></body></html>

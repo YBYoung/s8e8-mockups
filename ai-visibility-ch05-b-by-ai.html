@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Story chapter 05, B which AI warns</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js?v=3"></script>
+<script src="ai-visibility-described-data.js?v=3"></script>
+<script src="ai-visibility-ch05-kit.js?v=2"></script>
+</head><body><div id="top"></div><main class="shell" id="m"></main>
+<script>
+const { D, P, AI, top: worst, n, lower, pad, INK, RED, concernCard, praiseSentence } = CH5;
+function formation() {
+  const rows = worst.by_ai.slice().sort((a, b) => b.answers - a.answers);
+  const dots = []; const labels = [];
+  labels.push({ x: 0, y: 40, text: `${worst.name.toUpperCase()}, BY AI`, size: 10.5, weight: 700, color: RED });
+  rows.forEach((r, g) => {
+    const y = 90 + g * 72;
+    for (let j = 0; j < r.of; j += 1) dots.push({ x: 150 + j * 19, y, look: j < r.answers ? 'bad' : 'plain', big: false });
+    labels.push({ x: 0, y: y + 4, text: AI[r.surface][0], size: 13, weight: 700, color: INK });
+    labels.push({ x: 150, y: y + 30, text: `${r.answers} of ${r.of} answers`, size: 12, weight: 600, color: r.answers ? RED : '#667085' });
+  });
+  return { dots: pad(dots), labels, caption: `Each dot is one answer to a question that names ${P}. Red: it raised ${lower(worst.name)}.` };
+}
+CH5.page({ mock: '05 B, which AI warns', formation,
+  note: `Story chapter 05 (#1377): the praise in words, the figure on the concern, one dot per answer, so the team sees which AI raises it. Real data: ${P}'s Snapshot of Oct 28. Scroll through 04, 05, 06; the bar at the bottom switches No task yet / Task made.`,
+  left: (s) => `<p>${praiseSentence()}</p>${concernCard(s)}` });
+</script></body></html>

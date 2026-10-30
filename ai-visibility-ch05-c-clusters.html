@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Visibility: Story chapter 05, C theme clusters</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="ai-visibility-tracking-common.js?v=3"></script>
+<script src="ai-visibility-described-data.js?v=3"></script>
+<script src="ai-visibility-ch05-kit.js?v=2"></script>
+</head><body><div id="top"></div><main class="shell" id="m"></main>
+<script>
+const { D, P, n, said, pad, INK, GREEN, RED, concernCard, praiseSentence } = CH5;
+const PER = 3; // one dot for about 3 answers
+const GOLD = Math.PI * (3 - Math.sqrt(5));
+function cluster(dots, cx, cy, k, look) {
+  for (let i = 0; i < k; i += 1) { const r = 6.4 * Math.sqrt(i + 0.5); dots.push({ x: cx + r * Math.cos(i * GOLD), y: cy + r * Math.sin(i * GOLD), look }); }
+}
+function formation() {
+  const dots = []; const labels = [];
+  const spots = [[85, 70], [250, 70], [415, 70], [150, 210], [350, 210]];
+  labels.push({ x: 250, y: 12, text: 'WHAT AI PRAISES', size: 10.5, weight: 700, color: GREEN, anchor: 'middle' });
+  D.themes.slice(0, 5).forEach((t, i) => {
+    const [x, y] = spots[i]; cluster(dots, x, y, Math.max(1, Math.round(t.answers / PER)), 'good');
+    labels.push({ x, y: y + 52, text: t.name, size: 12, weight: 700, color: INK, anchor: 'middle' });
+    labels.push({ x, y: y + 68, text: `${n(t.answers)} answers`, size: 11.5, weight: 600, color: GREEN, anchor: 'middle' });
+  });
+  labels.push({ x: 250, y: 318, text: 'WHAT AI WARNS ABOUT', size: 10.5, weight: 700, color: RED, anchor: 'middle' });
+  D.concerns.slice(0, 3).forEach((c, i) => {
+    const x = 85 + i * 165; const y = 372; cluster(dots, x, y, Math.max(1, Math.round(said(c) / PER)), 'bad');
+    labels.push({ x, y: y + 48, text: c.name, size: 12, weight: 700, color: INK, anchor: 'middle' });
+    labels.push({ x, y: y + 64, text: `${n(said(c))} answers`, size: 11.5, weight: 600, color: RED, anchor: 'middle' });
+  });
+  return { dots: pad(dots), labels, caption: `Each group is one thing AI says about ${P}; bigger groups, said in more answers. One dot is about ${PER} answers.` };
+}
+CH5.page({ mock: '05 C, theme clusters', formation,
+  note: `Story chapter 05 (#1377): each praise theme and each concern as its own group of dots. Real data: ${P}'s Snapshot of Oct 28. Scroll through 04, 05, 06; the bar at the bottom switches No task yet / Task made.`,
+  left: (s) => `<p>${praiseSentence()}</p>${concernCard(s)}` });
+</script></body></html>
