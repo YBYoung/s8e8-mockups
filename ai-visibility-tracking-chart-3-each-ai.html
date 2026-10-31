@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 3. Each AI side by side: the all-AI line on top, then five small charts on the
+   same 0 to 100 scale, one per AI in its own colour. Hovering any of them moves
+   the same date in all five. Moments are faint hairlines; an AI's own change is
+   drawn only in its own panel. */
+const K = KIT, host = K.frame('3', 'The all-AI line, then one small chart per AI on the same scale; hover moves the same date in every panel.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="ctitle">All AIs, times in every 100 answers</div><div class="readout"></div>';
+const overall = K.plot(card, { h: 170, top: 60, ticks: [0, 30, 60] });
+K.line(overall, (p) => p.all, K.C.a, { area: true });
+K.hover(overall, card.querySelector('.readout'), [[(p) => p.all, K.C.a]], K.allWords);
+const grid = document.createElement('div'); grid.className = 'grid5'; grid.style.marginTop = '22px'; card.appendChild(grid);
+const panels = K.AIS.map((ai) => {
+  const box = document.createElement('div'); box.className = 'panel'; grid.appendChild(box);
+  const col = K.D.colors[ai], r = K.last.ais[ai];
+  box.innerHTML = `<div class="pt"><span class="dot" style="background:${col}"></span>${K.D.labels[ai]}</div><div class="pv"></div>`;
+  const pl = K.plot(box, { w: 220, h: 120, top: 100, ticks: [0, 50, 100], pad: { l: 4, r: 30, t: 8, b: 8 }, xLabels: false });
+  K.D.events.filter((e) => e.kind !== 'start' && (e.kind !== 'ai' || e.ai === ai)).forEach((e) => {
+    K.el('line', { x1: pl.x(e.date), x2: pl.x(e.date), y1: pl.pad.t, y2: pl.y(0), stroke: e.kind === 'ai' ? K.C.slate : K.C.ink, opacity: e.kind === 'ai' ? 0.8 : 0.18, 'stroke-dasharray': '3 3' }, pl.svg);
+  });
+  K.line(pl, (p) => p.ais[ai], col, { area: true });
+  const words = (p) => { const q = p.ais[ai]; return `we saw ${q.k} of ${q.n}<br>in reality ${K.range(q)} in every 100`; };
+  box.querySelector('.pv').innerHTML = words(K.last);
+  return { pl, ai, box, words };
+});
+const guides = panels.map(({ pl }) => K.el('line', { y1: pl.pad.t, y2: pl.h - pl.pad.b, stroke: K.C.slate, 'stroke-dasharray': '3 3', opacity: 0 }, pl.svg));
+panels.forEach(({ pl }) => {
+  const hit = K.el('rect', { x: 0, y: 0, width: pl.w, height: pl.h, fill: 'transparent' }, pl.svg);
+  hit.addEventListener('mousemove', (e) => {
+    const box = pl.svg.getBoundingClientRect(), mx = ((e.clientX - box.left) / box.width) * pl.w;
+    const p = K.P.reduce((b, q) => (Math.abs(pl.x(q.date) - mx) < Math.abs(pl.x(b.date) - mx) ? q : b), K.P[0]);
+    panels.forEach((o, i) => { guides[i].setAttribute('x1', o.pl.x(p.date)); guides[i].setAttribute('x2', o.pl.x(p.date)); guides[i].setAttribute('opacity', 1); o.box.querySelector('.pv').innerHTML = `${K.day(p.date)}, ${o.words(p)}`; });
+  });
+  hit.addEventListener('mouseleave', () => panels.forEach((o, i) => { guides[i].setAttribute('opacity', 0); o.box.querySelector('.pv').innerHTML = o.words(K.last); }));
+});
+const lg = document.createElement('div'); lg.className = 'legend';
+lg.innerHTML = '<span>Faint dashed line: work or a change we made</span><span>Grey dashed line in one panel: that AI changed (Perplexity, Oct 14)</span>';
+card.appendChild(lg);
+</script></body></html>

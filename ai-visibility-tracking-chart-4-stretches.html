@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 4. Before and after each moment: the time between moments is one stretch, drawn
+   as one level with its number on it; the daily line stays faint behind. Between
+   stretches: did it really move, or is it the normal swing? */
+const K = KIT, host = K.frame('4', 'Each stretch between moments is one level with its number; the line stays faint behind; each step says if it really moved.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="ctitle">Times in every 100 answers, between the moments</div><div class="readout"></div>';
+const pl = K.plot(card, { h: 290, top: 60, ticks: [0, 20, 40, 60], pad: { l: 8, r: 58, t: 70, b: 28 } });
+K.line(pl, (p) => p.all, K.C.slate, { width: 1.5, opacity: 0.45, end: false });
+const S = K.D.stretches;
+const real = (a, b) => {   // the calibration rule: a move is real only past what the two ranges allow together
+  const pa = a.k / a.n, pb = b.k / b.n, ha = (a.hi - a.lo) / 2, hb = (b.hi - b.lo) / 2;
+  return Math.abs(pb - pa) > Math.sqrt(ha * ha + hb * hb) ? (pb > pa ? 'a real rise' : 'a real drop') : 'within the normal swing';
+};
+S.forEach((s, i) => {
+  const x1 = pl.x(s.from), x2 = pl.x(s.to), v = K.per100(s.k, s.n), yv = pl.y(v);
+  const g = K.el('g', {}, pl.svg);
+  K.el('rect', { x: x1 + 3, y: pl.y(s.hi * 100), width: Math.max(4, x2 - x1 - 6), height: pl.y(s.lo * 100) - pl.y(s.hi * 100), rx: 4, fill: K.C.a, opacity: 0.08 }, g);
+  K.el('line', { x1: x1 + 3, x2: x2 - 3, y1: yv, y2: yv, stroke: K.C.a, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+  K.el('text', { x: (x1 + x2) / 2, y: pl.y(s.hi * 100) - 8, 'font-size': 13, 'font-weight': 700, 'text-anchor': 'middle', fill: K.C.ink }, g).textContent = `${K.range(s)} in 100`;
+  if (i) {
+    const verdict = real(S[i - 1], s), moved = verdict !== 'within the normal swing';
+    K.el('text', { x: (x1 + x2) / 2, y: pl.y(s.lo * 100) + 16, 'font-size': 11.5, 'font-weight': moved ? 700 : 400, 'text-anchor': 'middle',
+                   fill: moved ? (verdict.includes('rise') ? K.C.up : K.C.down) : K.C.muted }, g).textContent = moved ? verdict : 'normal swing';
+  }
+  K.tip(g, `${K.day(s.from)} to ${K.day(s.to)}`, `We saw ${s.k.toLocaleString()} of ${s.n.toLocaleString()} answers name the practice; in reality ${K.range(s)} times in every 100.`);
+});
+K.D.events.filter((e) => e.kind !== 'start').forEach((e, i) => {
+  const x = pl.x(e.date), ai = e.kind === 'ai', ty = 14 + i * 17, right = x > pl.w * 0.62;   // one row per moment
+  K.el('line', { x1: x, x2: x, y1: ty - 10, y2: pl.y(0), stroke: ai ? K.C.slate : K.C.ink, opacity: ai ? 0.6 : 0.35, 'stroke-dasharray': '3 3' }, pl.svg);
+  const t = K.el('text', { x: right ? x - 6 : x + 6, y: ty, 'text-anchor': right ? 'end' : 'start', 'font-size': 11.5, 'font-weight': 600, fill: ai ? K.C.muted : K.C.body }, pl.svg);
+  t.textContent = e.title;
+  K.tip(t, `${e.title}, ${K.day(e.date)}`, e.text);
+});
+K.hover(pl, card.querySelector('.readout'), [[(p) => p.all, K.C.slate]], K.allWords);
+</script></body></html>

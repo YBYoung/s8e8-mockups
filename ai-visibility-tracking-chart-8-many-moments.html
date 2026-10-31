@@ -1,0 +1,306 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .modes{display:inline-flex;gap:2px;background:#F6F7FA;border-radius:10px;padding:3px}
+  .modes button{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;border-radius:8px;padding:6px 12px;font:600 13px Inter,sans-serif;color:#667085;cursor:pointer;transition:color .2s,background .25s,box-shadow .25s}
+  .modes button.on{background:#fff;color:#0B1020;box-shadow:0 1px 3px rgba(11,16,32,.1)}
+  .keys{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:30px;margin:12px 0 6px}
+  .keys .sep{width:1px;height:18px;background:#E7E9EE;margin:0 6px}
+  .keys button{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:6px;background:#F6F7F9;padding:6px 10px;font:600 12.5px Inter,sans-serif;color:#475569;cursor:pointer;transition:color .3s,transform .15s}
+  .keys button:active{transform:scale(.97)} .keys button.off{color:#98A2B3} .keys button[aria-disabled]{cursor:not-allowed}
+  .keys i{display:inline-block;width:18px;border-top:2.5px solid;transition:opacity .3s} .keys button.off i,.keys button.off svg{opacity:.25}
+  .ghost{border:0;background:none;font:600 12.5px Inter,sans-serif;color:#4338CA;cursor:pointer;padding:6px 0}
+  .hint{font-size:12px;color:#98A2B3}
+  @keyframes breathe{0%{r:4;opacity:.55}70%{r:13;opacity:0}100%{r:13;opacity:0}}
+  .pulse{animation:breathe 2.4s cubic-bezier(.2,.8,.2,1) infinite}
+  .notes{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid #E7E9EE}
+  .notes li{display:grid;grid-template-columns:62px 18px 1fr;align-items:center;gap:8px;padding:7px 6px;border-bottom:1px solid #F1F2F5;font-size:13.5px;color:#273043;border-radius:6px;transition:background .2s}
+  .notes li.lit{background:#EEF0FF} .notes .d{color:#667085;font-variant-numeric:tabular-nums}
+  .more{margin-top:8px}
+  .pop{position:absolute;pointer-events:none;background:#fff;border:1px solid #E7E9EE;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5;color:#273043;box-shadow:0 8px 24px rgba(11,16,32,.1);opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s;max-width:300px;z-index:5}
+  .pop.on{opacity:1;transform:none} .pop b{color:#0B1020} .pop .row{display:flex;gap:8px;align-items:center;white-space:nowrap} .pop svg,.notes svg{flex:none}
+  @media (prefers-reduced-motion: reduce){.pulse{animation:none;display:none}}
+</style></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 8. Many moments (owner 10/31: "what if there end up being 30?"): chart 7 plus
+   - moments that would touch merge into one marker with a count; hover fans them out;
+   - drag across the chart to zoom into a stretch (lines, scale, dates and markers
+     morph to it; merged markers spread back into single ones); Show all morphs back;
+   - the notes list follows the stretch on screen, newest first, the latest 3 with
+     "All N moments"; hovering a note lights its marker and the other way round;
+   - three kinds you can switch off: work we did, what we track changed, an AI changed. */
+const KK = KIT, D = KK.D, P = KK.P, C = KK.C;
+const host = KK.frame('8', 'Chart 7 with 30 sample moments: close moments merge into one marker; drag to zoom; the notes follow what is on screen; switch kinds off.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.style.position = 'relative';
+card.innerHTML = `<div class="bar"><div class="modes" role="radiogroup" aria-label="Lines">
+    <button type="button" role="radio" data-m="all"><svg width="18" height="12" viewBox="0 0 18 12"><path d="M1 9 C5 9 6 4 9 5 S14 3 17 2" fill="none" stroke="#4F46E5" stroke-width="2.2" stroke-linecap="round"/></svg>All AIs together</button>
+    <button type="button" role="radio" data-m="each"><svg width="18" height="12" viewBox="0 0 18 12"><path d="M1 6 C6 6 7 2 17 1.5" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round"/><path d="M1 6 C6 6 8 6 17 6" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round" opacity=".6"/><path d="M1 6 C6 6 7 10 17 10.5" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round" opacity=".35"/></svg>Each AI</button>
+  </div><span><span class="hint">Drag across the chart to zoom in</span>&nbsp;&nbsp;<button class="ghost showall" type="button" style="display:none">Show all 7 weeks</button>&nbsp;&nbsp;<button class="ghost replay" type="button">Draw again</button></span></div>
+  <div class="keys"></div><div class="readout" style="height:40px"></div><div class="plot"></div>
+  <ul class="notes"></ul><button class="ghost more" type="button"></button><div class="pop"></div>`;
+
+/* ---------- geometry and timing (the Market Trends kit's) ---------- */
+const NS = 'http://www.w3.org/2000/svg', W = 780, H = 300, M = { l: 8, r: 120, t: 34, b: 30 }, PW = W - M.l - M.r, K = 241, N = P.length;
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SLOW = Number(new URLSearchParams(location.search).get('slow')) || 1;
+const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+const DRAW = 900, MORPH = 700, MERGE_PX = 22;
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+
+/** A monotone cubic through a series (Fritsch-Carlson): value at any fractional index, smooth, never overshooting. */
+function curve(v) {
+  const n = v.length, d = [], t = [];
+  for (let i = 0; i < n - 1; i++) d[i] = v[i + 1] - v[i];
+  t[0] = d[0]; t[n - 1] = d[n - 2];
+  for (let i = 1; i < n - 1; i++) t[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+  for (let i = 0; i < n - 1; i++) { if (d[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; } const a = t[i] / d[i], b = t[i + 1] / d[i], h = a * a + b * b; if (h > 9) { const s = 3 / Math.sqrt(h); t[i] = s * a * d[i]; t[i + 1] = s * b * d[i]; } }
+  return (f) => { f = Math.max(0, Math.min(n - 1, f)); const i = Math.min(n - 2, Math.floor(f)), u = f - i, u2 = u * u, u3 = u2 * u;
+    return (2 * u3 - 3 * u2 + 1) * v[i] + (u3 - 2 * u2 + u) * t[i] + (-2 * u3 + 3 * u2) * v[i + 1] + (u3 - u2) * t[i + 1]; };
+}
+
+/* ---------- state: a window over the dates (zoom), the scale, and per-line mixes ---------- */
+const AX = { id: 'ax', d0: 0, d1: N - 1, top: 60 };
+const AIS = KK.AIS;
+const mk = (id, label, color, width, pick) => ({ id, label, color, width, v: curve(P.map((p) => (pick(p).k / pick(p).n) * 100)),
+  lo: curve(P.map((p) => pick(p).lo * 100)), hi: curve(P.map((p) => pick(p).hi * 100)), mix: 1, band: 0, rev: 0, labOp: 0, op: 1, col: color });
+const LINES = [mk('all', 'All AIs', C.a, 2.5, (p) => p.all), ...AIS.map((a) => mk(a, D.labels[a], D.colors[a], 2, (p) => p.ais[a]))];
+const BY = Object.fromEntries(LINES.map((l) => [l.id, l]));
+let mode = 'all'; const on = Object.fromEntries(AIS.map((a) => [a, true]));
+const KINDS = [{ id: 'work', label: 'Work we did' }, { id: 'change', label: 'What we track changed' }, { id: 'ai', label: 'An AI changed' }];
+const kindOn = { work: true, change: true, ai: true };
+const pos = (iso) => P.findIndex((p) => p.date >= iso);
+const MOMENTS = D.many.map((m, i) => ({ ...m, id: `m${i}`, f: pos(m.date), op: 0 }));
+let lit = null, showAllNotes = false;
+
+/* ---------- tweens ---------- */
+const TW = new Map(); let raf = 0;
+function tween(obj, prop, to, ms, { delay = 0, done } = {}) {
+  const key = obj.id + prop;
+  if (RM || ms === 0) { obj[prop] = to; TW.delete(key); done && done(); kick(); return; }
+  TW.set(key, { obj, prop, from: obj[prop], to, t0: performance.now() + delay * SLOW, ms: ms * SLOW, done }); kick();
+}
+const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+function loop(now) { raf = 0; const fin = []; TW.forEach((t, key) => { const k = Math.max(0, Math.min(1, (now - t.t0) / t.ms)); t.obj[t.prop] = t.from + (t.to - t.from) * ease(k); if (k >= 1) { TW.delete(key); fin.push(t); } }); render(); fin.forEach((t) => t.done && t.done()); if (TW.size) kick(); }
+
+/* ---------- scale ---------- */
+const visible = () => (mode === 'all' ? ['all'] : AIS.filter((a) => on[a]));
+const niceTop = (v) => [20, 40, 60, 80, 100].find((n) => v <= n) || 100;
+function fitTop(d0 = AX.d0, d1 = AX.d1) { let m = 0; visible().forEach((id) => { for (let k = 0; k < 60; k++) m = Math.max(m, BY[id].hi(d0 + ((d1 - d0) * k) / 59)); }); return niceTop(m + 2); }
+const xOfF = (f) => M.l + ((f - AX.d0) / (AX.d1 - AX.d0)) * PW;
+const fOfK = (k) => AX.d0 + ((AX.d1 - AX.d0) * k) / (K - 1);
+const y = (v) => M.t + (1 - v / AX.top) * (H - M.t - M.b);
+const valueAt = (l, f) => { const own = l.v(f), base = BY.all.v(f); return base + (own - base) * l.mix; };
+
+/* ---------- svg ---------- */
+const box = card.querySelector('.plot'), readout = card.querySelector('.readout'), pop = card.querySelector('.pop');
+const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', role: 'img', 'aria-label': 'Times in every 100 answers that named the practice, each point the 7 days before it' }, box);
+const defs = el('defs', {}, svg);
+const glow = el('filter', { id: 'glow', x: '-2', y: '-2', width: '5', height: '5' }, defs); el('feGaussianBlur', { stdDeviation: 3 }, glow);
+const plotClip = el('clipPath', { id: 'plotclip' }, defs); el('rect', { x: M.l - 4, y: 0, width: PW + 8, height: H }, plotClip);
+const gGrid = el('g', {}, svg), gAxis = el('g', {}, svg), gBand = el('g', { 'clip-path': 'url(#plotclip)' }, svg), gLines = el('g', { 'clip-path': 'url(#plotclip)' }, svg),
+  gMom = el('g', {}, svg), gTop = el('g', {}, svg);
+el('text', { x: M.l, y: 14, 'font-size': 11, 'font-weight': 700, 'letter-spacing': '.08em', fill: C.muted }, svg).textContent = 'TIMES IN EVERY 100 ANSWERS · EACH POINT THE 7 DAYS BEFORE IT';
+LINES.forEach((l) => {
+  const cp = el('clipPath', { id: `cp-${l.id}` }, defs); l.clip = el('rect', { x: M.l - 6, y: 0, height: H }, cp);
+  l.bandEl = el('path', { fill: l.color, 'clip-path': `url(#cp-${l.id})` }, gBand);
+  l.g = el('g', { 'clip-path': `url(#cp-${l.id})` }, gLines);
+  l.case = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': l.width + 3, 'stroke-linejoin': 'round' }, l.g);
+  l.path = el('path', { fill: 'none', 'stroke-width': l.width, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, l.g);
+  l.pulse = el('circle', { r: 4, class: 'pulse' }, gTop); l.pulse.style.display = 'none';
+  l.end = el('circle', { r: 4, stroke: '#fff', 'stroke-width': 2, opacity: 0 }, gTop);
+  l.pen = el('circle', { r: 5, filter: 'url(#glow)', opacity: 0 }, gTop);
+  l.lab = el('text', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, opacity: 0 }, gTop); l.lab.textContent = l.label;
+});
+
+/* the three kinds of moment, as shapes (never colour alone) */
+function shape(kind, cx, cy, parent, big = false) {
+  const r = big ? 9 : 6;
+  if (kind === 'work') return el('circle', { cx, cy, r, fill: C.ink }, parent);
+  if (kind === 'change') return el('rect', { x: cx - r * 0.8, y: cy - r * 0.8, width: r * 1.6, height: r * 1.6, fill: C.ink, transform: `rotate(45 ${cx} ${cy})` }, parent);
+  return el('circle', { cx, cy, r: r - 0.75, fill: '#fff', stroke: C.slate, 'stroke-width': 1.5 }, parent);
+}
+const shapeSvg = (kind) => { const s = document.createElementNS(NS, 'svg'); s.setAttribute('width', 14); s.setAttribute('height', 14); shape(kind, 7, 7, s); return s.outerHTML; };
+
+/* ---------- render, every frame ---------- */
+const path = (f) => Array.from({ length: K }, (_, k) => `${k ? 'L' : 'M'}${(M.l + (k / (K - 1)) * PW).toFixed(1)},${y(f(fOfK(k))).toFixed(1)}`).join('');
+let clusters = [];
+function render() {
+  gGrid.innerHTML = ''; gAxis.innerHTML = '';
+  const step = AX.top <= 40 ? 10 : 20;
+  for (let v = 0; v <= AX.top + 0.01; v += step) { el('line', { x1: M.l, x2: W - M.r, y1: y(v), y2: y(v), stroke: C.line }, gGrid); el('text', { x: W - M.r + 8, y: y(v) + 4, 'font-size': 11, fill: C.muted }, gGrid).textContent = Math.round(v); }
+  const span = AX.d1 - AX.d0, every = Math.max(1, Math.round(span / 7));
+  for (let i = Math.ceil(AX.d0); i <= Math.floor(AX.d1); i++) {
+    if ((i - Math.ceil(AX.d0)) % every && i !== Math.floor(AX.d1)) continue;
+    if (i !== Math.floor(AX.d1) && Math.floor(AX.d1) - i < every * 0.6) continue;
+    const x = xOfF(i), a = x < M.l + 20 ? 'start' : x > W - M.r - 20 ? 'end' : 'middle';
+    el('text', { x, y: H - 8, 'font-size': 11, fill: C.muted, 'text-anchor': a }, gAxis).textContent = KK.day(P[i].date);
+  }
+  const labs = [];
+  LINES.forEach((l) => {
+    l.clip.setAttribute('width', Math.max(0, (PW + 12) * l.rev));
+    const d = path((f) => valueAt(l, f)); l.case.setAttribute('d', d); l.path.setAttribute('d', d); l.path.setAttribute('stroke', l.col); l.g.setAttribute('opacity', l.op);
+    if (l.band > 0.01) {
+      const hi = (f) => valueAt(l, f) + (l.hi(f) - l.v(f)) * l.band, lo = (f) => valueAt(l, f) - (l.v(f) - l.lo(f)) * l.band;
+      const back = Array.from({ length: K }, (_, j) => { const k = K - 1 - j; return `L${(M.l + (k / (K - 1)) * PW).toFixed(1)},${y(lo(fOfK(k))).toFixed(1)}`; }).join('');
+      l.bandEl.setAttribute('d', `${path(hi)}${back}Z`); l.bandEl.setAttribute('opacity', 0.11 * l.op);
+    } else l.bandEl.setAttribute('d', '');
+    const ex = M.l + PW, ey = y(valueAt(l, AX.d1)), done = l.rev > 0.995;
+    [l.end, l.pulse].forEach((c) => { c.setAttribute('cx', ex); c.setAttribute('cy', ey); c.setAttribute('fill', l.col); });
+    l.end.setAttribute('opacity', done ? l.op : 0); l.pulse.style.display = done && l.op > 0.9 && AX.d1 > N - 1.5 ? '' : 'none';
+    const kp = Math.min(K - 1, Math.round(l.rev * (K - 1)));
+    l.pen.setAttribute('cx', M.l + (kp / (K - 1)) * PW); l.pen.setAttribute('cy', y(valueAt(l, fOfK(kp)))); l.pen.setAttribute('fill', l.col);
+    l.pen.setAttribute('opacity', l.rev > 0.01 && l.rev < 0.99 ? 0.9 * l.op : 0);
+    if (l.labOp > 0.01) labs.push({ l, y0: ey });
+  });
+  labs.sort((a, b) => a.y0 - b.y0).forEach((r, i, all) => { r.y = i ? Math.max(r.y0, all[i - 1].y + 15) : r.y0; });
+  LINES.forEach((l) => { const r = labs.find((x) => x.l === l); l.lab.setAttribute('opacity', r ? l.labOp * l.op : 0); if (r) { l.lab.setAttribute('x', W - M.r + 36); l.lab.setAttribute('y', r.y + 4); } });
+  drawMoments();
+}
+
+/* moments: those in view and switched on; any that would touch merge into one marker with a count */
+function drawMoments() {
+  gMom.innerHTML = '';
+  const shown = MOMENTS.filter((m) => kindOn[m.kind] && m.f >= AX.d0 - 0.01 && m.f <= AX.d1 + 0.01 && m.op > 0.01).sort((a, b) => a.f - b.f);
+  clusters = [];
+  shown.forEach((m) => { const x = xOfF(m.f), last = clusters[clusters.length - 1];
+    if (last && x - last.x1 < MERGE_PX) { last.items.push(m); last.x1 = x; } else clusters.push({ x0: x, x1: x, items: [m] }); });
+  const cy = H - M.b - 12;
+  clusters.forEach((c) => {
+    const x = (c.x0 + c.x1) / 2, g = el('g', { opacity: Math.max(...c.items.map((m) => m.op)) }, gMom);
+    const hot = c.items.some((m) => m.id === lit);
+    if (hot) el('line', { x1: x, x2: x, y1: M.t - 4, y2: cy - 12, stroke: C.a, opacity: 0.6, 'stroke-dasharray': '3 3' }, g);   // a marker's line rises only while it is hovered: 30 moments never stripe the plot
+    if (c.items.length === 1) shape(c.items[0].kind, x, cy, g, hot);
+    else {
+      el('circle', { cx: x, cy, r: hot ? 12 : 10.5, fill: hot ? C.a : '#fff', stroke: hot ? C.a : C.ink, 'stroke-width': 1.5 }, g);
+      el('text', { x, y: cy + 4, 'font-size': 11, 'font-weight': 700, 'text-anchor': 'middle', fill: hot ? '#fff' : C.ink }, g).textContent = c.items.length;
+    }
+    el('rect', { x: x - 14, y: cy - 14, width: 28, height: 28, fill: 'transparent', style: 'cursor:pointer' }, g).addEventListener('mouseenter', () => fanOut(c, x));
+    g.lastChild.addEventListener('mouseleave', () => { pop.classList.remove('on'); light(null); });
+    g.lastChild.addEventListener('click', () => c.items.length > 1 && zoomTo(c.items[0].f - 2, c.items[c.items.length - 1].f + 2));
+  });
+}
+function fanOut(c, x) {
+  const r = svg.getBoundingClientRect(), cr = card.getBoundingClientRect();
+  pop.innerHTML = c.items.map((m) => `<div class="row">${shapeSvg(m.kind)}<span><b>${KK.day(m.date)}</b> ${m.title}</span></div>`).join('')
+    + (c.items.length > 1 ? '<div style="color:#98A2B3;margin-top:4px">Click to zoom in on these</div>' : '');
+  pop.style.left = `${Math.min(cr.width - 310, r.left - cr.left + (x / W) * r.width - 20)}px`;
+  pop.style.top = `${r.top - cr.top + ((H - M.b - 12) / H) * r.height + 18}px`;
+  pop.classList.add('on'); light(c.items.map((m) => m.id));
+}
+
+/* ---------- the notes: what is on screen, newest first ---------- */
+const notes = card.querySelector('.notes'), more = card.querySelector('.more');
+function paintNotes() {
+  const inView = MOMENTS.filter((m) => kindOn[m.kind] && m.f >= Math.floor(AX.to0 ?? AX.d0) - 0.01 && m.f <= Math.ceil(AX.to1 ?? AX.d1) + 0.01).sort((a, b) => b.f - a.f);
+  const list = showAllNotes ? inView : inView.slice(0, 3);
+  notes.innerHTML = list.map((m) => `<li data-id="${m.id}"><span class="d">${KK.day(m.date)}</span>${shapeSvg(m.kind)}<span>${m.title}</span></li>`).join('');
+  more.textContent = inView.length > 3 ? (showAllNotes ? 'Show the latest 3' : `All ${inView.length} moments${AX.zoomed ? ' in this stretch' : ''}`) : '';
+  more.style.display = inView.length > 3 ? '' : 'none';
+  notes.querySelectorAll('li').forEach((li) => { li.addEventListener('mouseenter', () => light([li.dataset.id])); li.addEventListener('mouseleave', () => light(null)); });
+}
+more.addEventListener('click', () => { showAllNotes = !showAllNotes; paintNotes(); });
+function light(ids) { lit = ids ? ids[0] : null; notes.querySelectorAll('li').forEach((li) => li.classList.toggle('lit', !!ids && ids.includes(li.dataset.id))); if (ids) { const c = clusters.find((c) => c.items.some((m) => ids.includes(m.id))); lit = c ? ids.find((id) => c.items.some((m) => m.id === id)) : lit; } drawMoments(); }
+
+/* ---------- moves ---------- */
+const readoutAt = (i) => {
+  const p = P[i];
+  if (mode === 'all') return `All AIs, 7 days to ${KK.day(p.date)}: we saw <b>${p.all.k.toLocaleString()} of ${p.all.n.toLocaleString()}</b> answers name the practice; in reality <b>${KK.range(p.all)} times in every 100</b>`;
+  const vis = visible();
+  if (vis.length === 1) { const q = p.ais[vis[0]]; return `${D.labels[vis[0]]}, 7 days to ${KK.day(p.date)}: we saw <b>${q.k} of ${q.n}</b>; in reality <b>${KK.range(q)} times in every 100</b>`; }
+  return `7 days to ${KK.day(p.date)}, in reality: ` + vis.map((a) => `${D.labels[a]} <b>${KK.range(p.ais[a])}</b>`).join(' &middot; ') + ' times in every 100';
+};
+const restReadout = () => { readout.innerHTML = readoutAt(Math.round(AX.to1 ?? AX.d1)); };
+function drawIn(l, delay = 0) { tween(l, 'rev', 1, DRAW, { delay }); tween(l, 'labOp', 1, 200, { delay: delay + 850 }); }
+function drawOut(l) { tween(l, 'rev', 0, DRAW); tween(l, 'labOp', 0, 600); }
+const bandFor = () => { const vis = visible(); LINES.forEach((l) => tween(l, 'band', vis.length === 1 && vis[0] === l.id ? 1 : 0, MORPH)); };
+function slideScale() { tween(AX, 'top', fitTop(AX.to0 ?? AX.d0, AX.to1 ?? AX.d1), MORPH); }
+
+function setMode(m) {
+  if (m === mode) return; mode = m; paintControls(); restReadout();
+  const all = BY.all;
+  if (m === 'each') {
+    AIS.forEach((a) => { const l = BY[a]; Object.assign(l, { mix: 0, col: C.a, rev: on[a] ? 1 : 0, labOp: 0, band: 0 }); if (on[a]) { tween(l, 'mix', 1, MORPH); setTimeout(() => (l.col = l.color), MORPH * 0.35 * SLOW); tween(l, 'labOp', 1, 250, { delay: MORPH }); } });
+    Object.assign(all, { rev: 0, labOp: 0, band: 0 });
+  } else {
+    AIS.forEach((a) => { const l = BY[a]; tween(l, 'mix', 0, MORPH); l.col = C.a; tween(l, 'labOp', 0, 250); tween(l, 'band', 0, MORPH); });
+    setTimeout(() => { AIS.forEach((a) => { BY[a].rev = 0; }); Object.assign(all, { rev: 1, labOp: 1 }); render(); }, MORPH * SLOW);
+  }
+  bandFor(); slideScale();
+}
+function toggle(a) {
+  if (on[a] && visible().length === 1) return;
+  on[a] = !on[a]; const l = BY[a];
+  if (on[a]) { Object.assign(l, { mix: 1, col: l.color }); drawIn(l); } else drawOut(l);
+  paintControls(); bandFor(); slideScale(); restReadout();
+}
+function toggleKind(k) {
+  if (kindOn[k] && Object.values(kindOn).filter(Boolean).length === 1) return;
+  kindOn[k] = !kindOn[k];
+  MOMENTS.filter((m) => m.kind === k).forEach((m) => tween(m, 'op', kindOn[k] ? 1 : 0, 350));
+  paintControls(); paintNotes();
+}
+function zoomTo(a, b) {
+  a = Math.max(0, a); b = Math.min(N - 1, b);
+  if (b - a < 6) { const mid = (a + b) / 2; a = Math.max(0, mid - 3); b = Math.min(N - 1, a + 6); a = b - 6; }
+  AX.to0 = a; AX.to1 = b; AX.zoomed = a > 0.01 || b < N - 1.01;
+  tween(AX, 'd0', a, MORPH); tween(AX, 'd1', b, MORPH, { done: () => { AX.to0 = AX.to1 = undefined; } });
+  tween(AX, 'top', fitTop(a, b), MORPH);
+  card.querySelector('.showall').style.display = AX.zoomed ? '' : 'none';
+  showAllNotes = false; paintNotes(); restReadout();
+}
+const spotlight = (id) => LINES.forEach((l) => tween(l, 'op', !id || l.id === id ? 1 : 0.18, 300));
+
+/* ---------- controls ---------- */
+card.querySelectorAll('.modes button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.m)));
+card.querySelector('.showall').addEventListener('click', () => zoomTo(0, N - 1));
+function paintControls() {
+  card.querySelectorAll('.modes button').forEach((b) => { b.classList.toggle('on', b.dataset.m === mode); b.setAttribute('aria-checked', b.dataset.m === mode); });
+  const keys = card.querySelector('.keys'), lone = visible().length === 1;
+  const lineKeys = mode === 'all'
+    ? `<button type="button" aria-disabled="true"><i style="border-color:${C.a}"></i>All AIs</button><button type="button" aria-disabled="true"><i style="border-top:8px solid ${C.a};opacity:.18"></i>Likely range</button>`
+    : AIS.map((a) => `<button type="button" data-a="${a}" aria-pressed="${on[a]}" class="${on[a] ? '' : 'off'}" ${lone && on[a] ? 'aria-disabled="true" title="One line always stays on"' : ''}><i style="border-color:${D.colors[a]}"></i>${D.labels[a]}</button>`).join('');
+  const lastKind = Object.values(kindOn).filter(Boolean).length === 1;
+  keys.innerHTML = lineKeys + '<span class="sep"></span>' + KINDS.map((k) => `<button type="button" data-k="${k.id}" aria-pressed="${kindOn[k.id]}" class="${kindOn[k.id] ? '' : 'off'}" ${lastKind && kindOn[k.id] ? 'aria-disabled="true"' : ''}>${shapeSvg(k.id)}${k.label}</button>`).join('');
+  keys.querySelectorAll('button[data-a]').forEach((b) => { b.addEventListener('click', () => toggle(b.dataset.a)); b.addEventListener('mouseenter', () => on[b.dataset.a] && spotlight(b.dataset.a)); b.addEventListener('mouseleave', () => spotlight(null)); });
+  keys.querySelectorAll('button[data-k]').forEach((b) => b.addEventListener('click', () => toggleKind(b.dataset.k)));
+}
+
+/* ---------- hover and drag-to-zoom ---------- */
+const guide = el('line', { y1: M.t, y2: H - M.b, stroke: C.slate, 'stroke-dasharray': '4 3', opacity: 0 }, gTop);
+const hotDots = LINES.map(() => el('circle', { r: 4, stroke: '#fff', 'stroke-width': 2, opacity: 0 }, gTop));
+const brush = el('rect', { y: M.t, height: H - M.t - M.b - 26, fill: C.a, opacity: 0, rx: 4 }, gTop);
+const hit = el('rect', { x: M.l, y: 0, width: PW, height: H - M.b - 26, fill: 'transparent', style: 'cursor:crosshair' }, svg);
+const fAtEvent = (e) => { const r = svg.getBoundingClientRect(), mx = ((e.clientX - r.left) / r.width) * W; return { mx, f: AX.d0 + ((mx - M.l) / PW) * (AX.d1 - AX.d0) }; };
+let drag = null;
+hit.addEventListener('mousedown', (e) => { drag = fAtEvent(e); e.preventDefault(); });
+window.addEventListener('mouseup', (e) => {
+  if (!drag) return; const end = fAtEvent(e), a = Math.min(drag.f, end.f), b = Math.max(drag.f, end.f), wide = Math.abs(end.mx - drag.mx) > 12;
+  drag = null; brush.setAttribute('opacity', 0); if (wide) zoomTo(a, b);
+});
+hit.addEventListener('mousemove', (e) => {
+  const { mx, f } = fAtEvent(e);
+  if (drag) { brush.setAttribute('x', Math.min(drag.mx, mx)); brush.setAttribute('width', Math.abs(mx - drag.mx)); brush.setAttribute('opacity', 0.1); }
+  const i = Math.max(0, Math.min(N - 1, Math.round(f))), x = xOfF(i);
+  guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('opacity', 1);
+  LINES.forEach((l, j) => { const show = l.rev > 0.99 && (mode === 'all' ? l.id === 'all' : on[l.id] && l.id !== 'all');
+    hotDots[j].setAttribute('cx', x); hotDots[j].setAttribute('cy', y(valueAt(l, i))); hotDots[j].setAttribute('fill', l.col); hotDots[j].setAttribute('opacity', show ? l.op : 0); });
+  readout.innerHTML = readoutAt(i);
+});
+hit.addEventListener('mouseleave', () => { guide.setAttribute('opacity', 0); hotDots.forEach((d) => d.setAttribute('opacity', 0)); restReadout(); });
+
+/* ---------- first look ---------- */
+function firstLook() {
+  TW.clear(); mode = 'all'; Object.assign(AX, { d0: 0, d1: N - 1, to0: undefined, to1: undefined, zoomed: false });
+  AIS.forEach((a) => { on[a] = true; Object.assign(BY[a], { rev: 0, labOp: 0, op: 1, mix: 1, band: 0 }); });
+  Object.assign(BY.all, { rev: 0, labOp: 0, op: 1, band: 0 }); AX.top = fitTop();
+  MOMENTS.forEach((m) => { m.op = 0; }); showAllNotes = false; card.querySelector('.showall').style.display = 'none';
+  paintControls(); paintNotes(); restReadout(); render();
+  drawIn(BY.all, 250); tween(BY.all, 'band', 1, 700, { delay: 900 });
+  MOMENTS.forEach((m) => kindOn[m.kind] && tween(m, 'op', 1, 250, { delay: 250 + DRAW * (m.f / (N - 1)) }));
+}
+card.querySelector('.replay').addEventListener('click', firstLook);
+const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { firstLook(); io.disconnect(); } }, { threshold: 0.4 });
+io.observe(card);
+</script></body></html>

@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 5. All AIs, one picked at a time: one strong line, the others thin and grey for
+   context. Pick an AI and it takes the colour; the rest step back. End labels
+   name the lines, so nothing depends on colour alone. */
+const K = KIT, host = K.frame('5', 'One strong line at a time, the rest thin and grey behind it; pick All AIs or any one AI.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="chips"></div><div class="readout"></div><div class="plot"></div>';
+const opts = [['all', 'All AIs', K.C.a], ...K.AIS.map((ai) => [ai, K.D.labels[ai], K.D.colors[ai]])];
+let picked = 'all';
+const pickOf = (key) => (key === 'all' ? (p) => p.all : (p) => p.ais[key]);
+function draw() {
+  card.querySelector('.chips').innerHTML = opts.map(([k, l, c]) => `<button class="chip ${k === picked ? 'on' : ''}" data-k="${k}"><span class="dot" style="background:${c}"></span>${l}</button>`).join('');
+  card.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => { picked = b.dataset.k; draw(); }));
+  const box = card.querySelector('.plot'); box.innerHTML = '';
+  const pl = K.plot(box, { h: 280, top: 80, ticks: [0, 20, 40, 60, 80], pad: { l: 8, r: 110, t: 12, b: 26 } });
+  K.D.events.filter((e) => e.kind !== 'start').forEach((e) => K.el('line', { x1: pl.x(e.date), x2: pl.x(e.date), y1: pl.pad.t, y2: pl.y(0), stroke: e.kind === 'ai' ? K.C.slate : K.C.ink, opacity: e.kind === 'ai' ? 0.5 : 0.2, 'stroke-dasharray': '3 3' }, pl.svg));
+  opts.filter(([k]) => k !== picked).forEach(([k]) => K.line(pl, pickOf(k), '#C9CED8', { width: 1.25, end: false }));
+  const [, label, colour] = opts.find(([k]) => k === picked);
+  K.line(pl, pickOf(picked), colour, { width: 2.5, area: true });
+  const r = pickOf(picked)(K.last), y = pl.y(K.per100(r.k, r.n));
+  K.el('text', { x: pl.w - pl.pad.r + 34, y: y + 4, 'font-size': 12.5, 'font-weight': 700, fill: K.C.ink }, pl.svg).textContent = label;
+  K.hover(pl, card.querySelector('.readout'), [[pickOf(picked), colour]], (p) => { const q = pickOf(picked)(p); return `${label}, 7 days to ${K.day(p.date)}: we saw <b>${q.k.toLocaleString()} of ${q.n.toLocaleString()}</b>; in reality <b>${K.range(q)} times in every 100</b>`; });
+}
+draw();
+const lg = document.createElement('div'); lg.className = 'legend';
+lg.innerHTML = K.D.events.filter((e) => e.kind !== 'start').map((e) => `<span><span class="key" style="width:1px;height:10px;background:${e.kind === 'ai' ? '#94A3B8' : '#0B1020'};opacity:.5"></span>${K.day(e.date)}: ${e.title}</span>`).join('');
+card.appendChild(lg);
+</script></body></html>

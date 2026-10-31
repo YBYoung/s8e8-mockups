@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 1. One line: the 7-day number and nothing else on the plot. Moments sit on a
+   numbered strip under the dates, explained in one line each underneath. */
+const K = KIT, host = K.frame('1', 'One indigo line, no band and no flags on the plot; the moments move to a numbered strip under it.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="ctitle">Times in every 100 answers, each point the 7 days before it</div><div class="readout"></div>';
+const pl = K.plot(card, { h: 250, top: 60, ticks: [0, 20, 40, 60] });
+K.line(pl, (p) => p.all, K.C.a, { area: true });
+K.hover(pl, card.querySelector('.readout'), [[(p) => p.all, K.C.a]], K.allWords);
+const strip = K.el('g', {}, pl.svg);
+K.D.events.filter((e) => e.kind !== 'start').forEach((e, i) => {
+  const g = K.el('g', {}, strip);
+  const x = pl.x(e.date);
+  K.el('line', { x1: x, x2: x, y1: pl.h - pl.pad.b - 4, y2: pl.h - pl.pad.b, stroke: K.C.faint }, g);
+  K.el('circle', { cx: x, cy: pl.y(0) - 14, r: 8, fill: e.kind === 'ai' ? '#fff' : K.C.ink, stroke: e.kind === 'ai' ? K.C.slate : K.C.ink, 'stroke-width': 1.5 }, g);
+  K.el('text', { x, y: pl.y(0) - 10, 'font-size': 10, 'font-weight': 700, 'text-anchor': 'middle', fill: e.kind === 'ai' ? K.C.slate : '#fff' }, g).textContent = i + 1;
+  K.tip(g, `${e.title}, ${K.day(e.date)}`, e.text);
+});
+const list = document.createElement('ol');
+list.style.cssText = 'margin:10px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px;font-size:13px;color:#667085';
+list.innerHTML = K.D.events.filter((e) => e.kind !== 'start').map((e, i) => `<li><b style="color:#0B1020">${i + 1}</b>&nbsp; ${K.day(e.date)}: ${e.title}</li>`).join('');
+card.appendChild(list);
+</script></body></html>

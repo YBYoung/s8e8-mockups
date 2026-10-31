@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 6. Owner 10/31: 2's line and range + 1's numbered moments + 5's focus, and
+   every AI at once. Chips: All AIs (one line, its band) / Every AI (five
+   coloured lines, named at their ends, no bands) / one AI (its line and band,
+   the others thin and grey). The scale never changes between chips. */
+const K = KIT, host = K.frame('6', 'Line and range with numbered moments; focus on all AIs together, every AI at once, or one AI.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="chips"></div><div class="readout" style="height:40px"></div><div class="plot"></div><ol class="moments"></ol>';   // two lines tall in every mode: switching or hovering never moves the chart
+const TOP = 80;
+const opts = [['all', 'All AIs', K.C.a], ['every', 'Every AI', null], ...K.AIS.map((ai) => [ai, K.D.labels[ai], K.D.colors[ai]])];
+const pickOf = (key) => (key === 'all' ? (p) => p.all : (p) => p.ais[key]);
+const moments = K.D.events.filter((e) => e.kind !== 'start');
+let picked = 'all';
+
+function endLabels(pl, rows) {   // names at the line ends; nudged apart with a short leader when they would touch
+  const at = rows.map(([key, label, colour]) => { const r = pickOf(key)(K.last); return { label, colour, y0: pl.y(K.per100(r.k, r.n)) }; })
+    .sort((a, b) => a.y0 - b.y0);
+  at.forEach((r, i) => { r.y = i ? Math.max(r.y0, at[i - 1].y + 15) : r.y0; });
+  const x = pl.w - pl.pad.r + 34;   // past the axis numbers
+  at.forEach((r) => {
+    if (Math.abs(r.y - r.y0) > 1) K.el('path', { d: `M${x - 8},${r.y0}L${x - 2},${r.y}`, stroke: r.colour, fill: 'none', opacity: 0.6 }, pl.svg);
+    K.el('text', { x: x + 2, y: r.y + 4, 'font-size': 12, 'font-weight': 600, fill: K.C.ink }, pl.svg).textContent = r.label;
+  });
+}
+
+function draw() {
+  card.querySelector('.chips').innerHTML = opts.map(([k, l, c]) => `<button class="chip ${k === picked ? 'on' : ''}" data-k="${k}">${
+    c ? `<span class="dot" style="background:${c}"></span>` : K.AIS.map((ai) => `<span class="dot" style="background:${K.D.colors[ai]};margin-right:2px"></span>`).join('') + '&nbsp;'
+  }${l}</button>`).join('');
+  card.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => { picked = b.dataset.k; draw(); }));
+  const box = card.querySelector('.plot'); box.innerHTML = '';
+  const key = card.querySelector('.rangekey'); if (key) key.style.visibility = picked === 'every' ? 'hidden' : 'visible';
+  const pl = K.plot(box, { h: 290, top: TOP, ticks: [0, 20, 40, 60, 80], pad: { l: 8, r: 112, t: 12, b: 26 } });
+  // the numbered moments, as on chart 1
+  moments.forEach((e, i) => {
+    const x = pl.x(e.date), ai = e.kind === 'ai', g = K.el('g', {}, pl.svg);
+    K.el('line', { x1: x, x2: x, y1: pl.pad.t, y2: pl.y(0) - 22, stroke: ai ? K.C.slate : K.C.ink, opacity: ai ? 0.35 : 0.18, 'stroke-dasharray': '3 3' }, g);
+    K.el('circle', { cx: x, cy: pl.y(0) - 12, r: 8, fill: ai ? '#fff' : K.C.ink, stroke: ai ? K.C.slate : K.C.ink, 'stroke-width': 1.5 }, g);
+    K.el('text', { x, y: pl.y(0) - 8, 'font-size': 10, 'font-weight': 700, 'text-anchor': 'middle', fill: ai ? K.C.slate : '#fff' }, g).textContent = i + 1;
+    K.tip(g, `${e.title}, ${K.day(e.date)}`, e.text);
+  });
+  if (picked === 'every') {
+    const rows = opts.filter(([k]) => K.AIS.includes(k));
+    rows.forEach(([k, , c]) => K.line(pl, pickOf(k), c, { width: 2 }));
+    endLabels(pl, rows);
+    K.hover(pl, card.querySelector('.readout'), rows.map(([k, , c]) => [pickOf(k), c]), (p) => `7 days to ${K.day(p.date)}, in reality: ` +
+      rows.map(([k, l]) => `${l} <b>${K.range(pickOf(k)(p))}</b>`).join(' &middot; ') + ' times in every 100');
+  } else {
+    const [, label, colour] = opts.find(([k]) => k === picked);
+    if (picked !== 'all') opts.filter(([k]) => k !== picked && k !== 'every').forEach(([k]) => K.line(pl, pickOf(k), '#D3D7DF', { width: 1.25, end: false }));
+    K.band(pl, pickOf(picked), colour, 0.11);
+    K.line(pl, pickOf(picked), colour, { width: 2.25 });
+    endLabels(pl, [[picked, label, colour]]);
+    K.hover(pl, card.querySelector('.readout'), [[pickOf(picked), colour]], (p) => { const q = pickOf(picked)(p); return `${label}, 7 days to ${K.day(p.date)}: we saw <b>${q.k.toLocaleString()} of ${q.n.toLocaleString()}</b> answers name the practice; in reality <b>${K.range(q)} times in every 100</b>`; });
+  }
+}
+draw();
+const list = card.querySelector('.moments');
+list.style.cssText = 'margin:10px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 24px;font-size:13px;color:#667085';
+list.innerHTML = moments.map((e, i) => `<li><b style="color:#0B1020">${i + 1}</b>&nbsp; ${K.day(e.date)}: ${e.title}</li>`).join('');
+const lg = document.createElement('div'); lg.className = 'legend';
+lg.innerHTML = '<span class="rangekey"><span class="key" style="height:8px;background:#4F46E5;opacity:.15"></span>Likely range</span><span>Dark number: work or a change we made &middot; open number: an AI changed</span>';
+card.appendChild(lg);
+</script></body></html>

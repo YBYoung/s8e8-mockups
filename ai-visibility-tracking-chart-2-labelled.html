@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 2. Line and range, labelled moments: the likely range as a quiet band; each
+   moment is a hairline with its name written at the top, no icons to decode. */
+const K = KIT, host = K.frame('2', 'The line sits in a quiet band (the likely range); each moment is a hairline with its name written on it.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = '<div class="ctitle">Times in every 100 answers, each point the 7 days before it</div><div class="readout"></div>';
+const pl = K.plot(card, { h: 280, top: 60, ticks: [0, 20, 40, 60], pad: { l: 8, r: 58, t: 66, b: 26 } });
+K.band(pl, (p) => p.all, K.C.a, 0.09);
+K.D.events.filter((e) => e.kind !== 'start').forEach((e, i) => {
+  const x = pl.x(e.date), ai = e.kind === 'ai';
+  const g = K.el('g', {}, pl.svg);
+  const ty = 14 + i * 17, right = x > pl.w * 0.62;   // one row per moment: labels never collide
+  K.el('line', { x1: x, x2: x, y1: ty - 10, y2: pl.y(0), stroke: ai ? K.C.slate : K.C.ink, 'stroke-width': 1, opacity: ai ? 0.6 : 0.3 }, g);
+  K.el('text', { x: right ? x - 6 : x + 6, y: ty, 'font-size': 11.5, 'font-weight': 600, 'text-anchor': right ? 'end' : 'start', fill: ai ? K.C.muted : K.C.body }, g).textContent = `${e.title}, ${K.day(e.date)}`;
+  K.tip(g, e.title, e.text);
+});
+K.line(pl, (p) => p.all, K.C.a);
+K.hover(pl, card.querySelector('.readout'), [[(p) => p.all, K.C.a]], K.allWords);
+const lg = document.createElement('div'); lg.className = 'legend';
+lg.innerHTML = '<span><span class="key" style="background:#4F46E5"></span>The last 7 days</span><span><span class="key" style="height:8px;background:#4F46E5;opacity:.15"></span>Likely range</span><span><span class="key" style="width:1px;height:10px;background:#0B1020;opacity:.4"></span>Work or a change we made</span><span><span class="key" style="width:1px;height:10px;background:#94A3B8"></span>An AI changed</span>';
+card.appendChild(lg);
+</script></body></html>

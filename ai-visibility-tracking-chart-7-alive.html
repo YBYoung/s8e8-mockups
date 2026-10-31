@@ -1,0 +1,258 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  .modes{display:inline-flex;gap:2px;background:#F6F7FA;border-radius:10px;padding:3px}
+  .modes button{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;border-radius:8px;padding:6px 12px;font:600 13px Inter,sans-serif;color:#667085;cursor:pointer;transition:color .2s,background .25s,box-shadow .25s}
+  .modes button.on{background:#fff;color:#0B1020;box-shadow:0 1px 3px rgba(11,16,32,.1)}
+  .keys{display:flex;flex-wrap:wrap;gap:6px;min-height:30px;margin:12px 0 6px}
+  .keys button{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:6px;background:#F6F7F9;padding:6px 10px;font:600 12.5px Inter,sans-serif;color:#475569;cursor:pointer;transition:color .3s,opacity .3s,transform .15s}
+  .keys button:active{transform:scale(.97)} .keys button.off{color:#98A2B3} .keys button[aria-disabled]{cursor:not-allowed}
+  .keys i{display:inline-block;width:18px;border-top:2.5px solid;transition:opacity .3s}
+  .keys button.off i{opacity:.25}
+  .replay{float:right;border:0;background:none;font:600 12.5px Inter,sans-serif;color:#4338CA;cursor:pointer;padding:6px 0}
+  @keyframes breathe{0%{r:4;opacity:.55}70%{r:13;opacity:0}100%{r:13;opacity:0}}
+  .pulse{animation:breathe 2.4s cubic-bezier(.2,.8,.2,1) infinite}
+  @media (prefers-reduced-motion: reduce){.pulse{animation:none;opacity:0}}
+</style></head><body>
+<script src="aiv-chart-data.js"></script><script src="aiv-chart-kit.js"></script><script>
+/* 7. Alive (owner 10/31): the Market Trends chart standard on Tracking.
+   - Lines draw in like a pen plotting live (a glowing tip, 0.9s, cubic ease);
+     the name lands as the pen arrives; the band and moments appear as it passes.
+   - All AIs <-> Each AI is a real morph: the one line splits into five and
+     reshapes, each into its own path and colour; back, they flow into one.
+   - The key toggles a line (wipe out right to left, draw back in); one stays on.
+     Hovering a key item focuses that line, the rest step back.
+   - The scale slides to fit what is shown; its title says what it counts.
+   - The newest point breathes: tracking never stops.
+   No step switch: Tracking reads a rolling 7 days only (ruling 10/31). */
+const KK = KIT, D = KK.D, P = KK.P, C = KK.C;
+const host = KK.frame('7', 'Variation 6 brought alive with the Market Trends chart standard: draw-in, morphs, key toggles, sliding scale.');
+const card = Object.assign(document.createElement('div'), { className: 'card' }); host.appendChild(card);
+card.innerHTML = `<button class="replay" type="button">Draw again</button>
+  <div class="modes" role="radiogroup" aria-label="Lines">
+    <button type="button" role="radio" data-m="all"><svg width="18" height="12" viewBox="0 0 18 12"><path d="M1 9 C5 9 6 4 9 5 S14 3 17 2" fill="none" stroke="#4F46E5" stroke-width="2.2" stroke-linecap="round"/></svg>All AIs together</button>
+    <button type="button" role="radio" data-m="each"><svg width="18" height="12" viewBox="0 0 18 12"><path d="M1 6 C6 6 7 2 17 1.5" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round"/><path d="M1 6 C6 6 8 6 17 6" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round" opacity=".6"/><path d="M1 6 C6 6 7 10 17 10.5" fill="none" stroke="#0B1020" stroke-width="1.6" stroke-linecap="round" opacity=".35"/></svg>Each AI</button>
+  </div>
+  <div class="keys"></div>
+  <div class="readout" style="height:40px"></div>
+  <div class="plot"></div><ol class="moments"></ol>`;
+
+/* ---------- geometry ---------- */
+const NS = 'http://www.w3.org/2000/svg', W = 780, H = 300, M = { l: 8, r: 120, t: 34, b: 28 }, PW = W - M.l - M.r, K = 241;
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SLOW = Number(new URLSearchParams(location.search).get('slow')) || 1;   // ?slow=6 to watch a move closely
+const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);   // the kit's CUBIC
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+/** K points along a monotone cubic through the values (Fritsch-Carlson): smooth, never overshooting a real value. */
+function resample(v) {
+  const n = v.length, d = [], t = [];
+  for (let i = 0; i < n - 1; i++) d[i] = v[i + 1] - v[i];
+  t[0] = d[0]; t[n - 1] = d[n - 2];
+  for (let i = 1; i < n - 1; i++) t[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+  for (let i = 0; i < n - 1; i++) {
+    if (d[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
+    const a = t[i] / d[i], b = t[i + 1] / d[i], h = a * a + b * b;
+    if (h > 9) { const s = 3 / Math.sqrt(h); t[i] = s * a * d[i]; t[i + 1] = s * b * d[i]; }
+  }
+  return Array.from({ length: K }, (_, k) => {
+    const f = (k / (K - 1)) * (n - 1), i = Math.min(n - 2, Math.floor(f)), u = f - i, u2 = u * u, u3 = u2 * u;
+    return (2 * u3 - 3 * u2 + 1) * v[i] + (u3 - 2 * u2 + u) * t[i] + (-2 * u3 + 3 * u2) * v[i + 1] + (u3 - u2) * t[i + 1];
+  });
+}
+const xAt = (k) => M.l + (k / (K - 1)) * PW;
+const xOfDate = (iso) => M.l + (P.findIndex((p) => p.date >= iso) / (P.length - 1)) * PW;
+
+/* ---------- lines: every one through the same K points, so any change reshapes it ---------- */
+const AIS = KK.AIS;
+const series = (pick) => ({ v: resample(P.map((p) => (pick(p).k / pick(p).n) * 100)), lo: resample(P.map((p) => pick(p).lo * 100)), hi: resample(P.map((p) => pick(p).hi * 100)) });
+const LINES = [{ id: 'all', label: 'All AIs', color: C.a, width: 2.5, ...series((p) => p.all) },
+  ...AIS.map((ai) => ({ id: ai, label: D.labels[ai], color: D.colors[ai], width: 2, ...series((p) => p.ais[ai]) }))];
+const BY = Object.fromEntries(LINES.map((l) => [l.id, l]));
+let mode = 'all';
+const on = Object.fromEntries(AIS.map((a) => [a, true]));
+let focus = null;
+
+/* ---------- a small tween engine (the approved preview's) ---------- */
+const TW = new Map(); let raf = 0;
+const lerp = (a, b, k) => (Array.isArray(a) ? a.map((x, i) => x + (b[i] - x) * k) : a + (b - a) * k);
+function tween(obj, prop, to, ms, { delay = 0, done } = {}) {
+  const key = obj.id + prop;
+  if (RM || ms === 0) { obj[prop] = to; TW.delete(key); done && done(); kick(); return; }
+  TW.set(key, { obj, prop, from: Array.isArray(obj[prop]) ? obj[prop].slice() : obj[prop], to, t0: performance.now() + delay * SLOW, ms: ms * SLOW, done }); kick();
+}
+const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+function loop(now) {
+  raf = 0; const fin = [];
+  TW.forEach((t, key) => { const k = Math.max(0, Math.min(1, (now - t.t0) / t.ms)); t.obj[t.prop] = lerp(t.from, t.to, ease(k)); if (k >= 1) { TW.delete(key); fin.push(t); } });
+  render(); fin.forEach((t) => t.done && t.done()); if (TW.size) kick();
+}
+
+/* ---------- the scale: slides to fit what is shown ---------- */
+const AX = { id: 'ax', top: 60 };
+const niceTop = (v) => [20, 40, 60, 80, 100].find((n) => v <= n) || 100;
+const visible = () => (mode === 'all' ? ['all'] : AIS.filter((a) => on[a]));
+const fitTop = () => niceTop(Math.max(...visible().flatMap((id) => BY[id].hi)) + 2);
+const y = (v) => M.t + (1 - v / AX.top) * (H - M.t - M.b);
+
+/* ---------- drawing ---------- */
+const box = card.querySelector('.plot'), readout = card.querySelector('.readout');
+const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, width: '100%', role: 'img', 'aria-label': 'Times in every 100 answers that named the practice, each point the 7 days before it' }, box);
+const defs = el('defs', {}, svg);
+const glow = el('filter', { id: 'glow', x: '-2', y: '-2', width: '5', height: '5' }, defs);
+el('feGaussianBlur', { stdDeviation: 3 }, glow);
+const gGrid = el('g', {}, svg), gMom = el('g', {}, svg), gBand = el('g', {}, svg), gLines = el('g', {}, svg), gTop = el('g', {}, svg);
+el('text', { x: M.l, y: 14, 'font-size': 11, 'font-weight': 700, 'letter-spacing': '.08em', fill: C.muted }, svg).textContent = 'TIMES IN EVERY 100 ANSWERS · EACH POINT THE 7 DAYS BEFORE IT';
+P.filter((_, i) => (i % 7 === 0 && i < P.length - 4) || i === P.length - 1).forEach((p, i, all) =>
+  el('text', { x: xOfDate(p.date), y: H - 8, 'font-size': 11, fill: C.muted, 'text-anchor': i === 0 ? 'start' : i === all.length - 1 ? 'end' : 'middle' }, svg).textContent = KK.day(p.date));
+
+LINES.forEach((l) => {
+  const cp = el('clipPath', { id: `cp-${l.id}` }, defs);
+  l.clip = el('rect', { x: M.l - 6, y: 0, height: H }, cp);
+  l.band = el('path', { fill: l.color, opacity: 0, 'clip-path': `url(#cp-${l.id})` }, gBand);
+  l.g = el('g', { 'clip-path': `url(#cp-${l.id})` }, gLines);
+  l.case = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': l.width + 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, l.g);
+  l.path = el('path', { fill: 'none', 'stroke-width': l.width, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, l.g);
+  l.pulse = el('circle', { r: 4, fill: l.color, class: 'pulse' }, gTop); l.pulse.style.display = 'none';
+  l.end = el('circle', { r: 4, fill: l.color, stroke: '#fff', 'stroke-width': 2, opacity: 0 }, gTop);
+  l.pen = el('circle', { r: 5, fill: l.color, filter: 'url(#glow)', opacity: 0 }, gTop);
+  l.lab = el('text', { 'font-size': 12.5, 'font-weight': 700, fill: C.ink, opacity: 0 }, gTop);
+  l.lab.textContent = l.label;
+  Object.assign(l, { shape: l.v.slice(), bandLo: l.v.slice(), bandHi: l.v.slice(), rev: 0, labOp: 0, op: 1, col: l.color });
+});
+
+const moments = D.events.filter((e) => e.kind !== 'start').map((e, i) => {
+  const x = xOfDate(e.date), ai = e.kind === 'ai', g = el('g', { opacity: 0 }, gMom);
+  el('line', { x1: x, x2: x, y1: M.t - 6, y2: H - M.b - 22, stroke: ai ? C.slate : C.ink, opacity: ai ? 0.4 : 0.2, 'stroke-dasharray': '3 3' }, g);
+  el('circle', { cx: x, cy: H - M.b - 12, r: 8, fill: ai ? '#fff' : C.ink, stroke: ai ? C.slate : C.ink, 'stroke-width': 1.5 }, g);
+  el('text', { x, y: H - M.b - 8, 'font-size': 10, 'font-weight': 700, 'text-anchor': 'middle', fill: ai ? C.slate : '#fff' }, g).textContent = i + 1;
+  KK.tip(g, `${e.title}, ${KK.day(e.date)}`, e.text);
+  return { id: `m${i}`, g, f: (x - M.l) / PW, op: 0 };
+});
+
+const linePath = (arr) => arr.map((v, k) => `${k ? 'L' : 'M'}${xAt(k).toFixed(1)},${y(v).toFixed(1)}`).join('');
+let tickEls = [];
+function render() {
+  tickEls.forEach((t) => t.remove()); tickEls = [];
+  const step = AX.top <= 40 ? 10 : 20;
+  for (let v = 0; v <= AX.top + 0.01; v += step) {
+    tickEls.push(el('line', { x1: M.l, x2: W - M.r, y1: y(v), y2: y(v), stroke: C.line }, gGrid));
+    const t = el('text', { x: W - M.r + 8, y: y(v) + 4, 'font-size': 11, fill: C.muted }, gGrid); t.textContent = Math.round(v); tickEls.push(t);
+  }
+  const labs = [];
+  LINES.forEach((l) => {
+    l.clip.setAttribute('width', Math.max(0, (PW + 12) * l.rev));
+    const d = linePath(l.shape);
+    l.case.setAttribute('d', d); l.path.setAttribute('d', d); l.path.setAttribute('stroke', l.col);
+    l.g.setAttribute('opacity', l.op);
+    const thick = l.bandHi.some((v, k) => v - l.bandLo[k] > 0.3);
+    const lo = thick ? l.bandLo.map((v, k) => `L${xAt(K - 1 - k).toFixed(1)},${y(l.bandLo[K - 1 - k]).toFixed(1)}`).join('') : '';
+    l.band.setAttribute('d', thick ? `${linePath(l.bandHi)}${lo}Z` : '');
+    l.band.setAttribute('opacity', 0.11 * l.op);
+    const kEnd = K - 1, ex = xAt(kEnd), ey = y(l.shape[kEnd]);
+    const done = l.rev > 0.995;
+    [l.end, l.pulse].forEach((c) => { c.setAttribute('cx', ex); c.setAttribute('cy', ey); });
+    l.end.setAttribute('opacity', done ? l.op : 0); l.pulse.style.display = done && l.op > 0.9 ? '' : 'none';   // the breathing ring animates its own opacity, so hide it outright
+    l.end.setAttribute('fill', l.col); l.pulse.setAttribute('fill', l.col);
+    const kp = Math.min(K - 1, Math.round(l.rev * (K - 1)));   // the pen's tip while it draws
+    l.pen.setAttribute('cx', xAt(kp)); l.pen.setAttribute('cy', y(l.shape[kp])); l.pen.setAttribute('fill', l.col);
+    l.pen.setAttribute('opacity', l.rev > 0.01 && l.rev < 0.99 ? 0.9 * l.op : 0);
+    if (l.labOp > 0.01) labs.push({ l, y0: ey });
+  });
+  labs.sort((a, b) => a.y0 - b.y0).forEach((r, i, all) => { r.y = i ? Math.max(r.y0, all[i - 1].y + 15) : r.y0; });
+  LINES.forEach((l) => { const r = labs.find((x) => x.l === l); l.lab.setAttribute('opacity', r ? l.labOp * l.op : 0); if (r) { l.lab.setAttribute('x', W - M.r + 36); l.lab.setAttribute('y', r.y + 4); } });
+  moments.forEach((m) => m.g.setAttribute('opacity', m.op));
+}
+
+/* ---------- moves ---------- */
+const DRAW = 900, MORPH = 700;
+function drawIn(l, delay = 0) { tween(l, 'rev', 1, DRAW, { delay }); tween(l, 'labOp', 1, 200, { delay: delay + 850 }); }
+function drawOut(l) { tween(l, 'rev', 0, DRAW); tween(l, 'labOp', 0, 600); }
+function bandFor(l, show) { tween(l, 'bandHi', show ? l.hi : l.shape.slice(), MORPH); tween(l, 'bandLo', show ? l.lo : l.shape.slice(), MORPH); }
+function slideScale() { tween(AX, 'top', fitTop(), MORPH); }
+
+function setMode(m) {
+  if (m === mode) return;
+  mode = m; paintControls(); readout.innerHTML = words(P.length - 1);
+  const all = BY.all;
+  if (m === 'each') {   // the one line splits into five, each reshaping into its own path and colour
+    bandFor(all, false);
+    AIS.forEach((a) => { const l = BY[a]; l.shape = all.shape.slice(); l.bandHi = l.shape.slice(); l.bandLo = l.shape.slice(); l.col = C.a; l.rev = on[a] ? 1 : 0; l.labOp = 0;
+      if (on[a]) { tween(l, 'shape', l.v, MORPH); setTimeout(() => (l.col = l.color), MORPH * 0.35 * SLOW); tween(l, 'labOp', 1, 250, { delay: MORPH }); } });
+    all.rev = 0; all.labOp = 0;
+    if (visible().length === 1) bandFor(BY[visible()[0]], true);
+  } else {             // five flow back into one, then hand over to the All AIs line
+    AIS.forEach((a) => { const l = BY[a]; tween(l, 'shape', all.v, MORPH); bandFor(l, false); l.col = C.a; tween(l, 'labOp', 0, 250); });
+    setTimeout(() => { AIS.forEach((a) => { BY[a].rev = 0; }); all.shape = all.v.slice(); all.rev = 1; all.labOp = 1; bandFor(all, true); render(); }, MORPH * SLOW);
+  }
+  slideScale();
+}
+
+function toggle(a) {
+  if (on[a] && visible().length === 1) return;   // the last line on stays on
+  on[a] = !on[a]; const l = BY[a];
+  if (on[a]) { l.shape = l.v.slice(); l.col = l.color; drawIn(l); } else drawOut(l);
+  const vis = visible();
+  AIS.forEach((x) => bandFor(BY[x], vis.length === 1 && vis[0] === x));
+  paintControls(); slideScale(); readout.innerHTML = words(P.length - 1);
+}
+
+function spotlight(id) { focus = id; LINES.forEach((l) => tween(l, 'op', !id || l.id === id ? 1 : 0.18, 300)); }
+
+/* ---------- controls ---------- */
+card.querySelectorAll('.modes button').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.m)));
+function paintControls() {
+  card.querySelectorAll('.modes button').forEach((b) => { b.classList.toggle('on', b.dataset.m === mode); b.setAttribute('aria-checked', b.dataset.m === mode); });
+  const keys = card.querySelector('.keys');
+  if (mode === 'all') {
+    keys.innerHTML = `<button type="button" aria-disabled="true"><i style="border-color:${C.a}"></i>All AIs</button><button type="button" aria-disabled="true"><i style="border-top:8px solid ${C.a};opacity:.18"></i>Likely range</button>`;
+    return;
+  }
+  const lone = visible().length === 1;
+  keys.innerHTML = AIS.map((a) => `<button type="button" data-a="${a}" aria-pressed="${on[a]}" class="${on[a] ? '' : 'off'}" ${lone && on[a] ? 'aria-disabled="true" title="One line always stays on"' : `title="Click to ${on[a] ? 'hide' : 'show'} this line"`}><i style="border-color:${D.colors[a]}"></i>${D.labels[a]}</button>`).join('')
+    + (lone ? `<button type="button" aria-disabled="true"><i style="border-top:8px solid ${D.colors[visible()[0]]};opacity:.18"></i>Likely range</button>` : '');
+  keys.querySelectorAll('button[data-a]').forEach((b) => {
+    b.addEventListener('click', () => toggle(b.dataset.a));
+    b.addEventListener('mouseenter', () => on[b.dataset.a] && spotlight(b.dataset.a));
+    b.addEventListener('mouseleave', () => spotlight(null));
+  });
+}
+
+/* ---------- hover: dashed slate guide, a dot per line, the readout above (fixed height) ---------- */
+const guide = el('line', { y1: M.t, y2: H - M.b, stroke: C.slate, 'stroke-dasharray': '4 3', opacity: 0 }, gTop);
+const hotDots = LINES.map((l) => el('circle', { r: 4, stroke: '#fff', 'stroke-width': 2, opacity: 0 }, gTop));
+const words = (i) => {
+  const p = P[i];
+  if (mode === 'all') return `All AIs, 7 days to ${KK.day(p.date)}: we saw <b>${p.all.k.toLocaleString()} of ${p.all.n.toLocaleString()}</b> answers name the practice; in reality <b>${KK.range(p.all)} times in every 100</b>`;
+  const vis = visible();
+  if (vis.length === 1) { const q = p.ais[vis[0]]; return `${D.labels[vis[0]]}, 7 days to ${KK.day(p.date)}: we saw <b>${q.k} of ${q.n}</b>; in reality <b>${KK.range(q)} times in every 100</b>`; }
+  return `7 days to ${KK.day(p.date)}, in reality: ` + vis.map((a) => `${D.labels[a]} <b>${KK.range(p.ais[a])}</b>`).join(' &middot; ') + ' times in every 100';
+};
+const hit = el('rect', { x: M.l, y: 0, width: PW, height: H, fill: 'transparent' }, svg);
+hit.addEventListener('mousemove', (e) => {
+  const r = svg.getBoundingClientRect(), mx = ((e.clientX - r.left) / r.width) * W;
+  const i = Math.max(0, Math.min(P.length - 1, Math.round(((mx - M.l) / PW) * (P.length - 1)))), k = Math.round((i / (P.length - 1)) * (K - 1)), x = xAt(k);
+  guide.setAttribute('x1', x); guide.setAttribute('x2', x); guide.setAttribute('opacity', 1);
+  LINES.forEach((l, j) => { const show = l.rev > 0.99 && (mode === 'all' ? l.id === 'all' : on[l.id] && l.id !== 'all');
+    hotDots[j].setAttribute('cx', x); hotDots[j].setAttribute('cy', y(l.shape[k])); hotDots[j].setAttribute('fill', l.col); hotDots[j].setAttribute('opacity', show ? l.op : 0); });
+  readout.innerHTML = words(i);
+});
+hit.addEventListener('mouseleave', () => { guide.setAttribute('opacity', 0); hotDots.forEach((d) => d.setAttribute('opacity', 0)); readout.innerHTML = words(P.length - 1); });
+
+/* ---------- first look: the pen plots the line, then the band and moments arrive as it passes ---------- */
+function firstLook() {
+  TW.clear(); mode = 'all'; AIS.forEach((a) => { on[a] = true; Object.assign(BY[a], { rev: 0, labOp: 0, op: 1 }); });
+  const all = BY.all; Object.assign(all, { shape: all.v.slice(), bandHi: all.v.slice(), bandLo: all.v.slice(), rev: 0, labOp: 0, op: 1 });
+  AX.top = fitTop(); moments.forEach((m) => { m.op = 0; });
+  paintControls(); readout.innerHTML = words(P.length - 1); render();
+  drawIn(all, 250);
+  tween(all, 'bandHi', all.hi, 700, { delay: 900 }); tween(all, 'bandLo', all.lo, 700, { delay: 900 });
+  moments.forEach((m) => tween(m, 'op', 1, 250, { delay: 250 + DRAW * m.f }));
+}
+card.querySelector('.replay').addEventListener('click', firstLook);
+
+const list = card.querySelector('.moments');
+list.style.cssText = 'margin:10px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 24px;font-size:13px;color:#667085';
+list.innerHTML = D.events.filter((e) => e.kind !== 'start').map((e, i) => `<li><b style="color:#0B1020">${i + 1}</b>&nbsp; ${KK.day(e.date)}: ${e.title}</li>`).join('');
+const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { firstLook(); io.disconnect(); } }, { threshold: 0.4 });
+io.observe(card);
+</script></body></html>
