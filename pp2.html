@@ -1,0 +1,5 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Prototype round 2: practice profile (#1570)</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="pp-proto.css?v=3"><link rel="stylesheet" href="pp2.css?v=4">
+<!-- PROTOTYPE, throwaway (#1570 round 2, map #1564). Variant A polished. ?client=<id> &door=page|station -->
+<script src="pp-data.js?v=3"></script><script src="pp-core.js?v=4"></script><script src="pp-sections.js?v=3"></script><script src="pp2-parts.js?v=1"></script><script src="pp2-a.js?v=6"></script>
+</head><body><script>PP.clientList = Object.keys(PP_DATA).map((k) => [k, PP_DATA[k].practice.name.replace(/ Dental.*| DMD.*/,'')]); if (!new URLSearchParams(location.search).get('client') && PP_DATA['358']) PP.opt.client = '358'; PP.start();</script></body></html>
