@@ -46,7 +46,7 @@
 
   const dlRow = (key, label, val, srcs) => {
     const cur = PP.field(key, val), ch = key in PP.state().fields;
-    return `<div class="kv" data-ebox2="${key}" data-val="${esc(cur || '')}"><div class="l">${esc(label)}</div><div class="v">${cur ? esc(cur) : '<span class="empty">Not on file</span>'}<button class="ed-btn" data-edit2="${key}|${esc(label)}">Edit</button>${ch ? ` <button class="ed-btn" style="opacity:1" data-freset="${key}|${esc(label)}">Undo</button>` : ''}</div><div class="r">${cur ? tag(srcs, ch) : ''}</div></div>`;
+    return `<div class="kv" data-ebox2="${key}" data-val="${esc(cur || '')}"><div class="l">${esc(label)}</div><div class="v">${cur ? esc(cur) : '<span class="empty">Not on file</span>'}<button class="ed-btn" data-edit2="${key}|${esc(label)}">${cur ? 'Edit' : 'Add'}</button>${ch ? `<button class="ed-btn keep" data-freset="${key}|${esc(label)}">Undo</button>` : ''}</div><div class="r">${cur ? tag(srcs, ch) : ''}</div></div>`;
   };
   const K = PP.p2;
 

@@ -62,3 +62,5 @@ body{font-size:14px;color:#344054}
 .qc{background:var(--soft);border-radius:8px;padding:14px 16px;color:var(--ink);line-height:1.5}
 .techs{display:flex;flex-wrap:wrap;gap:8px}.tech{border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13px;color:var(--ink);background:#fff}
 .sub-h .tag{text-transform:none;letter-spacing:0}
+.ed-btn{background:none;border:0;padding:0;margin-left:10px;color:var(--a);font-size:12.5px;font-weight:500;opacity:0;transition:opacity .15s}
+.ed-btn:hover{text-decoration:underline}.kv:hover .ed-btn,.ed-btn.keep{opacity:1}
