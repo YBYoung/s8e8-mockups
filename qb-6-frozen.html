@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="qb-kit.css?v=2">
+<script src="qb-data.js?v=4"></script><script src="qb-kit.js?v=4"></script><script src="qb-list.js?v=4"></script><script src="qb-review.js?v=4"></script><script src="qb-build.js?v=4"></script><script src="qb-views.js?v=4"></script><title>Question bank 6: frozen, with changes (#1842)</title></head><body><script>
+const STATES=[{k:'seo',label:'SEO'},{k:'ms',label:'MS, read-only'}];
+function show(k){ const root=QB.mountPage({ view: '6 of 6 · Frozen after review', pitch: 'The measured bank with its change markers, two suggestions waiting in place (one off strategy), Rebuild with its warning, and the MS read-only view.', states: STATES, state: k, onState: show }); QB.viewFrozen(root, k==='ms'); }
+show('seo');
+</script></body></html>

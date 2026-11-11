@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="qb-kit.css?v=2">
+<script src="qb-data.js?v=4"></script><script src="qb-kit.js?v=4"></script><script src="qb-list.js?v=4"></script><script src="qb-review.js?v=4"></script><script src="qb-build.js?v=4"></script><script src="qb-views.js?v=4"></script><title>Question bank 4: the build (#1842)</title></head><body><script>
+const STATES=[{k:'none',label:'No bank yet'},{k:'gate',label:'Crawl missing'},{k:'running',label:'Building'},{k:'interrupted',label:'Interrupted'},{k:'done',label:'Just finished'}];
+function show(k){ const root=QB.mountPage({ view: '4 of 6 · The build', pitch: 'What the build reads, the estimate on the button, the gate refusal with a one-click crawl, the progress line with steps and a heartbeat, and the interrupted state with Run again. Switch states in this bar.', states: STATES, state: k, onState: show }); QB.viewBuild(root, k); QB.buildGo=(s)=>show(s); }
+show(new URLSearchParams(location.search).get('state')||'none');
+</script></body></html>
