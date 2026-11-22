@@ -1,0 +1,643 @@
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Schorr Platform Proposal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Sans:wght@500;600;700&display=swap">
+<style>
+/* Layout: a sticky section rail on the left, a reading column on the right. Each section is a numbered part of the proposal; stages open into detail; three drawn diagrams carry the timeline, acceptance and change rules. */
+:root {
+  --bg: #FDFDFC; --card: #FFFFFF; --ink: #0B1020; --body: #273043; --muted: #5B6578; --line: #E5E8EE;
+  --teal: #0F766E; --tealDk: #115E59; --tealSoft: #E3F2EF; --mag: #A81058; --magSoft: #FBE6EF;
+  --good: #1F7A4D; --goodSoft: #E3F3EA; --shade: #F2F4F6;
+  --text: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E1318; --card: #151C23; --ink: #EEF2F6; --body: #CBD3DC; --muted: #98A4B1; --line: #26313C;
+  --teal: #4FC7B8; --tealDk: #7FDACE; --tealSoft: #14302D; --mag: #F07AAE; --magSoft: #3A1A2A;
+  --good: #7FD1A6; --goodSoft: #16301F; --shade: #1B232B; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0E1318; --card: #151C23; --ink: #EEF2F6; --body: #CBD3DC; --muted: #98A4B1; --line: #26313C;
+  --teal: #4FC7B8; --tealDk: #7FDACE; --tealSoft: #14302D; --mag: #F07AAE; --magSoft: #3A1A2A;
+  --good: #7FD1A6; --goodSoft: #16301F; --shade: #1B232B; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 24px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body { background: var(--bg); color: var(--ink); font-family: var(--text); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  padding-block: 0 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--teal); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 48px; }
+nav.rail { position: sticky; top: 0; align-self: start; padding-top: calc(32px + env(safe-area-inset-top, 0px)); max-height: 100vh; overflow-y: auto; }
+.rail .brand { font: 700 12px/1.4 var(--text); letter-spacing: .12em; text-transform: uppercase; color: var(--tealDk); margin-bottom: 14px; }
+.rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: s; }
+.rail li a { display: grid; grid-template-columns: 26px 1fr; gap: 4px; padding: 6px 8px; border-radius: 6px; text-decoration: none; color: var(--muted); font-size: 14px; line-height: 1.35; }
+.rail li a span { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+.rail li a:hover { background: var(--shade); color: var(--ink); }
+.rail li a.on { background: var(--tealSoft); color: var(--ink); font-weight: 600; }
+.rail li a.on span { color: var(--teal); }
+
+main { min-width: 0; padding-top: calc(32px + env(safe-area-inset-top, 0px)); display: grid; gap: 22px; }
+section.part { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: clamp(20px, 3.4vw, 36px); display: grid; gap: 14px; min-width: 0; }
+.kt { margin: 0; font: 700 12px/1.4 var(--text); letter-spacing: .12em; text-transform: uppercase; color: var(--tealDk); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+h1 { margin: 0; font: 800 clamp(32px, 4.4vw, 52px)/1.04 var(--text); letter-spacing: -.03em; text-wrap: balance; }
+h1 .c { color: var(--teal); }
+h2 { margin: 0; font: 800 clamp(23px, 2.6vw, 30px)/1.15 var(--text); letter-spacing: -.02em; text-wrap: balance; }
+h3 { margin: 4px 0 0; font: 700 17px/1.3 var(--text); }
+p { margin: 0; max-width: 70ch; color: var(--body); }
+.lede { font-size: 18px; color: var(--body); max-width: 62ch; }
+.small { font-size: 14px; color: var(--muted); }
+ul.list { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--body); max-width: 72ch; }
+ul.list b, p b { color: var(--ink); font-weight: 600; }
+
+.cover { background: var(--card); }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; color: var(--muted); }
+.meta b { color: var(--ink); font-weight: 600; }
+.draft { display: inline-block; font: 700 11.5px var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--mag); background: var(--magSoft); padding: 3px 8px; border-radius: 4px; }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.tile { border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.tile b { font-size: 16px; }
+.tile.on { background: var(--tealSoft); border-color: transparent; }
+blockquote { margin: 0; padding: 14px 18px; background: var(--tealSoft); border-radius: 6px; font-size: 17px; line-height: 1.5; color: var(--ink); max-width: 70ch; }
+blockquote small { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+
+.tw { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--body); }
+th { font: 700 11.5px var(--text); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: var(--shade); }
+td:first-child { color: var(--ink); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+.tag { display: inline-block; font: 600 11.5px var(--text); padding: 2px 7px; border-radius: 4px; background: var(--shade); color: var(--muted); white-space: nowrap; }
+.tag.t { background: var(--tealSoft); color: var(--tealDk); }
+
+/* Stage picker */
+.steps { display: flex; flex-wrap: wrap; gap: 6px; }
+.steps button { font: 600 14px var(--text); color: var(--body); background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 9px 12px; cursor: pointer; display: grid; text-align: left; min-width: 96px; }
+.steps button small { font-weight: 500; font-size: 12px; color: var(--muted); }
+.steps button[aria-selected="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.steps button[aria-selected="true"] small { color: rgba(255,255,255,.85); }
+.stage { border: 1px solid var(--line); border-radius: 8px; padding: clamp(16px, 2.6vw, 26px); display: grid; gap: 14px; }
+.stage .head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+.stage .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px 28px; }
+.stage .cols h4 { margin: 0 0 8px; font: 700 12px/1.4 var(--text); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.checks li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; color: var(--body); font-size: 15px; }
+.checks li::before { content: ""; width: 14px; height: 14px; margin-top: 4px; border: 1.5px solid var(--teal); border-radius: 3px; }
+.later { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+
+.fig { border: 1px solid var(--line); border-radius: 8px; padding: 14px; overflow-x: auto; background: var(--card); }
+.fig svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: var(--text); }
+.fig { position: relative; }
+.tip { position: sticky; left: 0; margin-top: 10px; min-height: 92px; max-width: 100%; box-sizing: border-box; background: var(--bg, #F6F7F9); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; align-content: start; gap: 4px; font-size: 13.5px; line-height: 1.4; color: var(--body); }
+.tip.idle { color: var(--muted); }
+.tip b { color: var(--ink); font-size: 14px; }
+.tip small { color: var(--muted); font-size: 12px; }
+.tlrow { cursor: pointer; outline: none; }
+.tlrow.hot rect:not(:first-child), .tlrow:focus-visible rect:not(:first-child) { stroke: var(--ink); stroke-width: 1; }
+.cap { font-size: 13.5px; color: var(--muted); }
+
+.lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.lane { border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+.lane .k { font: 700 12px var(--text); letter-spacing: .1em; text-transform: uppercase; }
+.lane.free .k { color: var(--good); } .lane.swap .k { color: var(--tealDk); } .lane.add .k { color: var(--mag); }
+.lane .cost { font: 800 20px var(--text); letter-spacing: -.01em; }
+
+.stack { display: grid; gap: 8px; }
+.layer { display: grid; grid-template-columns: 150px 1fr; gap: 14px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; align-items: start; }
+.layer .when { font: 700 13px var(--text); color: var(--tealDk); }
+.layer.opt { border-style: dashed; }
+@media (max-width: 560px) { .layer { grid-template-columns: 1fr; gap: 4px; } }
+
+.cbtn { font: 600 12.5px var(--text); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; text-transform: none; letter-spacing: 0; }
+.cbtn:hover { color: var(--ink); border-color: var(--muted); }
+[hidden] { display: none !important; }
+.note { border-left: 0; background: var(--shade); border-radius: 6px; padding: 12px 14px; font-size: 14px; color: var(--body); }
+details.g { border-bottom: 1px solid var(--line); padding: 10px 0; }
+details.g summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+details.g p { margin-top: 6px; }
+
+@media (max-width: 880px) {
+  .wrap { grid-template-columns: 1fr; gap: 0; }
+  nav.rail { position: static; max-height: none; padding-top: calc(20px + env(safe-area-inset-top, 0px)); }
+  .rail ol { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  main { padding-top: 16px; }
+}
+
+/* Design pass v22: display face for headings; specification rows instead of bullets; grouped subheads; side-by-side pairs. */
+:root { --display: "Instrument Sans", Inter, system-ui, sans-serif; --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; }
+h1, h2, h3, .qbo h3 { font-family: var(--display); }
+h1 { font-weight: 700; letter-spacing: -.025em; }
+h2 { font-weight: 700; font-size: clamp(23px, 2.5vw, 29px); letter-spacing: -.015em; max-width: 30ch; }
+section.part { gap: var(--s4); padding: clamp(20px, 3.6vw, 40px); }
+section.part > h2 + p, section.part > h2 + .lede { margin-top: calc(-1 * var(--s1)); }
+.kt { font-size: 11.5px; }
+.sub { margin: var(--s3) 0 0; font: 700 11.5px/1.4 var(--text); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.spec { display: grid; border-top: 1px solid var(--line); }
+.spec > div { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: var(--s1) var(--s5); padding: var(--s3) 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.spec > div > b { color: var(--ink); font-weight: 600; font-size: 15px; line-height: 1.45; }
+.spec > div > p { font-size: 15px; line-height: 1.55; max-width: 64ch; }
+.spec.tight > div { grid-template-columns: minmax(110px, 150px) minmax(0, 1fr); }
+@media (max-width: 640px) { .spec > div, .spec.tight > div { grid-template-columns: 1fr; gap: 2px; } }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s4) var(--s6); }
+.pair .col { display: grid; gap: var(--s2); align-content: start; min-width: 0; }
+.pair .sub { margin-top: 0; }
+.note b { color: var(--ink); }
+.lanes.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+/* QuickBooks option: a headed panel with two columns of specification rows, then the reasons as a 2 x 2 grid. */
+.qbo { grid-column: 1 / -1; order: 3; background: var(--tealSoft); border-radius: 8px; padding: clamp(18px, 3vw, 30px); display: grid; gap: var(--s5); min-width: 0; }
+.qbo .qhead { display: grid; gap: var(--s2); max-width: 70ch; }
+.qbo .qhead .sub { margin: 0; color: var(--tealDk); }
+.qbo h3 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+.qbo .qcols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s4) var(--s6); }
+.qbo .qcols > div { display: grid; gap: var(--s2); align-content: start; min-width: 0; }
+.qbo .qcols .sub { margin: 0; }
+.qbo .spec { border-color: rgba(15,118,110,.22); }
+.qbo .spec > div { grid-template-columns: 1fr; gap: 2px; border-color: rgba(15,118,110,.22); }
+.qbo .spec > div > p { font-size: 14.5px; }
+.qbo .qwhy { display: grid; gap: var(--s3); border-top: 1px solid rgba(15,118,110,.22); padding-top: var(--s4); }
+.qbo .reasons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+@media (max-width: 640px) { .qbo .reasons { grid-template-columns: 1fr; } }
+.later { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .later { grid-template-columns: 1fr; } }
+.qbo .reasons > div { background: var(--card); border-radius: 6px; padding: var(--s3) var(--s4); display: grid; gap: var(--s1); align-content: start; }
+.qbo .reasons b { font-size: 14.5px; color: var(--ink); }
+.qbo .reasons p { font-size: 14px; color: var(--body); }
+/* Stage panel: hairline rows instead of bullets. */
+.stage ul.list { list-style: none; padding-left: 0; gap: 0; border-top: 1px solid var(--line); }
+.stage ul.list li { padding: var(--s2) 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+/* Next steps: a numbered sequence, since the order matters. */
+.steplist { list-style: none; margin: 0; padding: 0; counter-reset: n; display: grid; border-top: 1px solid var(--line); }
+.steplist li { counter-increment: n; display: grid; grid-template-columns: 36px minmax(140px, 220px) minmax(0, 1fr); gap: var(--s1) var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.steplist li::before { content: counter(n, decimal-leading-zero); font: 700 13px var(--text); color: var(--teal); font-variant-numeric: tabular-nums; }
+.steplist b { color: var(--ink); font-weight: 600; }
+@media (max-width: 640px) { .steplist li { grid-template-columns: 36px minmax(0, 1fr); } .steplist li p { grid-column: 2; } }
+.gloss { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); column-gap: var(--s6); }
+</style>
+
+<div class="wrap">
+  <nav class="rail" aria-label="Proposal sections">
+    <div class="brand">Schorr Platform Proposal</div>
+    <ol id="toc">
+      <li><a href="#summary"><span>01</span>Summary</a></li>
+      <li><a href="#heard"><span>02</span>What you told us</a></li>
+      <li><a href="#work"><span>03</span>The work, stage by stage</a></li>
+      <li><a href="#timeline"><span>04</span>Timeline</a></li>
+      <li><a href="#accept"><span>05</span>How a stage is accepted</a></li>
+      <li><a href="#overlap"><span>06</span>The overlap period</a></li>
+      <li><a href="#changes"><span>07</span>Changes to the plan</a></li>
+      <li><a href="#team"><span>08</span>What we need from your team</a></li>
+      <li><a href="#fees"><span>09</span>Fees and payment</a></li>
+      <li><a href="#own"><span>10</span>Ownership and accounts</a></li>
+      <li><a href="#security"><span>11</span>Security and your data</a></li>
+      <li><a href="#support"><span>12</span>Warranty and support</a></li>
+      <li><a href="#limits"><span>13</span>Assumptions and exclusions</a></li>
+      <li><a href="#ending"><span>14</span>Pausing or ending the work</a></li>
+      <li><a href="#who"><span>15</span>Who's building it</a></li>
+      <li><a href="#terms"><span>16</span>Terms used</a></li>
+      <li><a href="#next"><span>17</span>Next steps</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <section class="part cover" id="summary">
+      <p class="kt"><span>01 · Summary <span class="draft">Draft for discussion</span></span></p>
+      <h1>One place for every <span class="c">project, fee and hour</span> at Schorr.</h1>
+      <p class="lede">Billing, budgets and timesheets move out of one spreadsheet per project and into one platform for the whole firm. It all ties to one client database, with a forecast months ahead that shows how solvent the firm is at any time.</p>
+      <div class="meta"><span>Prepared for <b>Nathan, Schorr Architects</b></span><span>Prepared by <b>Yitzchak Young</b></span><span>November 21, 2026</span><span>Start: <b>second week of December 2026</b></span></div>
+      <div class="three">
+        <div class="tile on"><b>Proof first</b><span class="small">About 2 weeks. The platform must reproduce your own billing workbook to the cent. You pay for it only if it passes.</span></div>
+        <div class="tile"><b>Six stages, built from what you asked for</b><span class="small">Each one tested by your team on real work and accepted before it counts. You can stop after any accepted stage and keep everything you've paid for.</span></div>
+        <div class="tile"><b>No leap of faith</b><span class="small">Your spreadsheet stays the official record for 3 to 6 months while the platform runs alongside it. You switch over when you're satisfied.</span></div>
+      </div>
+      <p class="small">This proposal sets out the work, how it is tested, how changes are handled and what each side does. It isn't a contract yet: once we agree the direction and budget, it becomes a written agreement both sides review. The short walkthrough is <a href="schorr-story.html">here</a>.</p>
+    </section>
+
+    <section class="part" id="heard">
+      <p class="kt"><span>02 · What you told us</span></p>
+      <h2>The spreadsheet works. It just has to do too much.</h2>
+      <blockquote>"So, the spreadsheet works, but it is unwieldly. ... I do this for my projects currently, but it needs to be firm wide. We need to be able to quickly input a job &ndash; it's fees, it's general schedule, and project months ahead to see how solvent the firm is at any given time."<small>Nathan, answers to our questions</small></blockquote>
+      <blockquote>"Overall, I would like billing/budgeting/timesheets all to tie into a database which has our client information &ndash; addresses, contacts, birthdays, etc."<small>Nathan, answers to our questions</small></blockquote>
+      <div class="three">
+        <div class="tile"><b>Today</b><span class="small">A tab per project for the budget, the engineers and their fees, and the fee split across seven milestones. Each month you enter percent complete, which tells the Controller what to bill and what each engineer is owed.</span></div>
+        <div class="tile"><b>What's hard</b><span class="small">It's unwieldy, and it covers only your projects. No way to bill hourly. Setting up a job should be quick, and you want to see months ahead.</span></div>
+        <div class="tile"><b>What you want</b><span class="small">Billing, budgets and timesheets tied to one client database, firm-wide; a forecast; profit per job; and help finding requests for qualifications (RFQs) worth pursuing.</span></div>
+      </div>
+    </section>
+
+    <section class="part" id="work">
+      <p class="kt"><span>03 · The work, stage by stage</span></p>
+      <h2>A proof step, then six stages, built from what you asked for.</h2>
+      <p>Choose a stage to see what it includes, the checks it must pass and what it needs from your team. The checks shown are examples; we agree the exact list for each stage in writing before it starts.</p>
+      <div class="steps" role="tablist" aria-label="Stages" id="steps"></div>
+      <div class="stage" id="stage" role="tabpanel" aria-live="polite"></div>
+      <div class="later">
+        <div class="tile"><b>Optional add-on: a task app</b><span class="small">Task lists for the whole firm, tied to milestones and billing. Offered separately, only if you want it.</span></div>
+        <div class="tile"><b>After the first version</b><span class="small">Reading RFQs straight from district websites, which differ site by site and sometimes block automated reading; and an AI recommendation on go or no-go, which works better once a few years of pursuits, won and lost, are recorded. Either can come earlier if your team wants; the demo shows how they could look.</span></div>
+        <div class="qbo" id="qbo">
+          <div class="qhead">
+            <p class="sub">Stage 5 option</p>
+            <h3>If you move to QuickBooks Online</h3>
+            <p><b>It finishes tying everything together, as you asked.</b> Sage 50 works with a monthly file. QuickBooks Online would make the hand-off automatic, and switching is your Controller's call, never a requirement.</p>
+          </div>
+          <div class="qcols">
+            <div>
+              <p class="sub">What changes</p>
+              <div class="spec">
+                <div><b>Invoices</b><p>Go across to QuickBooks as soon as they're issued in the platform.</p></div>
+                <div><b>Payments</b><p>Payments your Controller records in QuickBooks come back automatically, checked at least once a day, so collections and the forecast stay within a day of your books. No monthly file, and nobody re-typing.</p></div>
+                <div><b>New clients and bills</b><p>New clients and engineer bills go across by themselves.</p></div>
+                <div><b>Other programs</b><p>The QuickBooks-only programs you mentioned could become an option, if they work with QuickBooks Online.</p></div>
+              </div>
+            </div>
+            <div>
+              <p class="sub">What it takes</p>
+              <div class="spec">
+                <div><b>Only after it's proven.</b><p>We first test the connection against a practice QuickBooks company that Intuit (the company that makes QuickBooks) provides for testing, then run it side by side with your current books for at least one month end. You switch only once it matches, the same way as the overlap period.</p></div>
+                <div><b>What it takes</b><p>Your Controller's decision; moving your accounting history across, best timed to the start of a fiscal year; and Intuit's approval of the connection before it can use live data.</p></div>
+                <div><b>Intuit's approval</b><p>The connection is private to your firm and never listed in Intuit's app store, so it only needs Intuit's compliance questionnaire instead of a full app store review. Intuit says results usually show within minutes. If Intuit asks follow-up questions, it sets no deadline for its answer, so we'd start early, while testing on the practice company.</p></div>
+                <div><b>Intuit's fees: none expected.</b><p>Intuit's free plan doesn't count invoices the platform creates one at a time. Reading invoices and payments back comes with 500,000 free look-ups a month, far more than one firm needs.</p></div>
+                <div><b>One step for your team</b><p>Someone at the firm with QuickBooks administrator access approves the connection once. They approve it again if it's ever disconnected or what it can reach changes, and at least every five years. QuickBooks shows a notice 30 days ahead and sends an email 7 days ahead. The Intuit account used to build the connection is in the firm's name, like every other account.</p></div>
+              </div>
+            </div>
+          </div>
+          <div class="qwhy">
+            <p><b>What stays the same: your books stay in your accounting software, Sage or QuickBooks.</b> The platform never holds the ledger, on purpose, because that's the safer setup for your firm.</p>
+            <div class="reasons">
+              <div><b>Accounting software already does that job well.</b><p>Tax forms, payroll, bank feeds and year-end close are built, tested and updated by the vendor every year as rules change. Rebuilding them would add cost and risk and give you nothing new.</p></div>
+              <div><b>Your Controller keeps working the way they do now.</b><p>Year-end, taxes and any outside accountant's review still come from the system they already know and trust.</p></div>
+              <div><b>Your most sensitive data stays in one place.</b><p>Bank details, payroll and tax records never sit on the platform, so there's less to protect.</p></div>
+              <div><b>Your books never depend on the platform.</b><p>If it's paused, changed or replaced, your accounting carries on untouched.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="part" id="timeline">
+      <p class="kt"><span>04 · Timeline</span></p>
+      <h2>About a month per stage: the first version around July 2027.</h2>
+      <p class="lede">Billing in use around early February 2027; all six stages around July. We plan for about a month per stage. The real pace depends on how each build and your team's review go, so dates can move. If they do, we'll tell you early and agree the new date together.</p>
+      <div class="fig"><svg id="tl" viewBox="0 0 860 300" role="img" aria-label="Timeline from the second week of December 2026: proof step, billing in use around early February 2027, stages 2 to 6 about a month each from February to June, the overlap period, and the first version around July 2027"></svg></div>
+      <p class="cap">Starting the second week of December 2026. Hover over or tap a bar to see its dates under the chart. Shaded ends show the range: the earlier edge if things go smoothly, the later edge if they don't.</p>
+      <p><b>This is an estimate, and it can be adjusted to your goals.</b> It's based on how long similar-sized tools took us to build, test and settle in at our own agency, where the team and clients use them every day. Billing and accounting connections are new ground for us, which is why the proof step comes first. If something matters more to you, we can put that stage first, move a stage until after the first version, or shape the order around your busy months. December holidays and your team's testing time can also move these dates.</p>
+    </section>
+
+    <section class="part" id="accept">
+      <p class="kt"><span>05 · How a stage is accepted</span></p>
+      <h2>"Done" means it passed the checks we agreed, on your real work.</h2>
+      <div class="fig"><svg id="flow" viewBox="0 0 760 310" role="img" aria-label="How a stage is accepted: we agree the checks, build it, and tell you in writing when it is ready; your team tries it for 10 business days, and anything that stops your work is fixed first while the 10 days pause; then the stage is accepted, we bill the 75%, it runs side by side with your spreadsheet for 3 to 6 months, and you switch over on a date you choose"></svg></div>
+      <div class="spec">
+        <div><b>We agree the checks first.</b><p>Before a stage starts, we write down a short list of what it must do, using real examples from your work.</p></div>
+        <div><b>We tell you in writing when it's ready.</b><p>Your team then has 10 business days to try it on real work. We send a reminder before the time is up.</p></div>
+        <div><b>If something stops you working (a blocking problem), we fix that first,</b><p>and the 10 days pause until it's fixed. Smaller problems go on a list and get fixed without holding things up.</p></div>
+        <div><b>Up to three rounds of fixes</b><p>are included in each stage.</p></div>
+        <div><b>The stage is accepted</b><p>when you say so in writing, or if the 10 days end with no reply after our reminder.</p></div>
+        <div><b>We start the next stage while you test this one,</b><p>so no time is lost waiting.</p></div>
+      </div>
+    </section>
+
+    <section class="part" id="overlap">
+      <p class="kt"><span>06 · The overlap period</span></p>
+      <h2>Your spreadsheet stays the official record for 3 to 6 months.</h2>
+      <p>Invoices keep coming from your workbook as they do today while the platform runs alongside it. At each month end, a comparison shows workbook against platform, project by project and line by line, with every difference explained. If something doesn't match, nobody is billed wrongly; we find out why and fix it.</p>
+      <div class="spec">
+        <div><b>No double entry.</b><p>You keep your workbook as usual. Each month we bring the same percent-complete figures in from it, so nobody types them twice, and the platform works out its own bills.</p></div>
+        <div><b>You switch over when you choose,</b><p>in writing, for example after three month ends in a row match to the cent.</p></div>
+        <div><b>The same idea applies to each stage</b><p>budgets against your budget tab, timesheets against however hours are tracked today.</p></div>
+      </div>
+    </section>
+
+    <section class="part" id="changes">
+      <p class="kt"><span>07 · Changes to the plan</span></p>
+      <h2>New ideas are welcome, and the plan never grows without you knowing.</h2>
+      <p>Using the platform will give your team ideas. Every request goes on a shared change list and is sorted into one of three kinds:</p>
+      <div class="lanes">
+        <div class="lane free"><span class="k">Clarification</span><span class="cost">No charge</span><span class="small">Making something work the way we already agreed. For example, a report column in the order your Controller expects.</span></div>
+        <div class="lane swap"><span class="k">Swap</span><span class="cost">Logged, not charged</span><span class="small">Trading one idea for another of the same size within the stage. For example, a different summary view instead of one already planned.</span></div>
+        <div class="lane add"><span class="k">Addition</span><span class="cost">Priced in writing</span><span class="small">Genuinely new work. You get a written price and timing within 3 business days. It starts only once you approve it by email.</span></div>
+      </div>
+      <p class="small">Chat messages and calls are for discussion; approvals are by email so there is a record. Small quality-of-life improvements after the platform is in use can come from the monthly hours in the "Care and improve" plan.</p>
+    </section>
+
+    <section class="part" id="team">
+      <p class="kt"><span>08 · What we need from your team</span></p>
+      <h2>A little time, at the right moments.</h2>
+      <div class="tw"><table>
+        <thead><tr><th>Who</th><th>What</th><th>When</th><th>What it unlocks</th></tr></thead>
+        <tbody>
+          <tr><td>Nathan, or whoever the firm names</td><td>One decision-maker who approves each stage's checks, acceptance and changes, and flags anything that feels off early.</td><td>Throughout</td><td>Keeps each stage moving</td></tr>
+          <tr><td>You or your office</td><td>About 30 minutes on a call: create the hosting, backup and email accounts in the firm's name, put the firm card on file, and add us as a team member.</td><td>Before the proof step</td><td>Proof step can start</td></tr>
+          <tr><td>Controller</td><td>A few questions passed along by Nathan (which Sage product, cash or accrual books, how invoices are numbered), and one test import with written instructions, about 15 minutes.</td><td>Proof step</td><td>The accounting hand-off</td></tr>
+          <tr><td>Nathan</td><td>Three real fee tables and the last two months' invoices for those projects (you may change the numbers).</td><td>Proof step</td><td>Matching to the cent</td></tr>
+          <tr><td>Microsoft 365 administrator</td><td>Under an hour to let staff use their Microsoft 365 accounts to sign in to the platform. May be an outside IT firm.</td><td>Proof step</td><td>Staff sign-in</td></tr>
+          <tr><td>Whoever manages your web address (domain)</td><td>Add a few settings so the platform has its own address on your domain and its emails reach inboxes.</td><td>Proof step</td><td>Your own address; email that reaches inboxes</td></tr>
+          <tr><td>Testers</td><td>Real use of each stage during its 10-business-day testing window.</td><td>Every stage</td><td>Acceptance</td></tr>
+          <tr><td>Project managers</td><td>A check of their own projects once loaded.</td><td>Stage 2</td><td>The firm-wide forecast</td></tr>
+          <tr><td>Everyone</td><td>Timesheets each week.</td><td>Stage 4</td><td>Hours and profit per job</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">If something needed is more than a week late, the affected stage pauses and its dates move by the same amount. Nothing else changes.</p>
+    </section>
+
+    <section class="part" id="fees">
+      <p class="kt"><span>09 · Fees and payment</span></p>
+      <h2>Paid stage by stage, mostly after you've accepted the work.</h2>
+      <p>We agree the total together around the firm's budget and set it out in Schedule A, the price page of the written agreement. The structure:</p>
+      <div class="tw"><table>
+        <thead><tr><th>Item</th><th>How it's paid</th><th>Paid to</th></tr></thead>
+        <tbody>
+          <tr><td>Proof step</td><td>Only if it passes</td><td>Builder</td></tr>
+          <tr><td>Each stage</td><td>25% when it starts, 75% once you've tested and accepted it. If a different schedule suits the firm better, we can agree one.</td><td>Builder</td></tr>
+          <tr><td>Hosting and services</td><td>Billed to the firm's own accounts:<br>Hosting (Render, the hosting company): about $81 to $170 a month.<br>Backups, email and monitoring (alerts if something breaks): about $3 to $60 a month, depending on plans.<br>Test copy: about $20 a month (see section 11).</td><td>The services directly</td></tr>
+          <tr><td>Support after the platform is in use</td><td>A monthly plan, amount agreed together (see section 12)</td><td>Builder</td></tr>
+          <tr><td>Outside security test (optional)</td><td>Budget about $6,000 to $10,000 each time, if you choose it; quotes vary and can run higher</td><td>The testing firm directly</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">Payment terms (days to pay, and what happens if a payment is late) are set in the written agreement. Each stage's share of the total follows its share of the work, so the billing stage, the biggest piece, is the largest payment.</p>
+    </section>
+
+    <section class="part" id="own">
+      <p class="kt"><span>10 · Ownership and accounts</span></p>
+      <h2>You own every account from day one, and the code as each stage is paid.</h2>
+      <div class="spec">
+        <div><b>Accounts in the firm's name</b><p>Hosting (Render, in its Ohio region), backups (Backblaze), the email service, the platform's Microsoft sign-in setup inside your firm's own Microsoft 365 account, and the web address on your domain. Each uses a firm email address with Nathan and your Controller as owners, and the firm's card. We're added as a team member.</p></div>
+        <div><b>Code</b><p>We write it in our own workspace, then move it to a code repository (see Terms used) in the firm's name. As each stage is paid, ownership of its code is signed over to Schorr in writing.</p></div>
+        <div><b>Outside components</b><p>Each handover includes a list of the free, publicly shared code the platform uses (open-source components) and the license terms for each.</p></div>
+        <div><b>Reused building blocks</b><p>If general-purpose code we wrote before this project is reused inside your platform, you get a permanent right to use it as part of the platform.</p></div>
+        <div><b>What stays with us</b><p>Our own work tools, such as the AI coding assistant and development software, stay in our name and at our cost. They're tools for making the platform and aren't part of it, so nothing you own depends on them.</p></div>
+      </div>
+    </section>
+
+    <section class="part" id="security">
+      <p class="kt"><span>11 · Security and your data</span></p>
+      <h2>Security is checked at every step. An outside test is your choice.</h2>
+      <div class="stack">
+        <div class="layer"><span class="when">Every change</span><span class="small">Automatic tests look for exposed passwords, unsafe code, and outside code with known security flaws. Another test opens every screen as every type of user, to confirm each person sees only what they should. If any test fails, the change can't go live.</span></div>
+        <div class="layer"><span class="when">Every release</span><span class="small">Each release is a batch of changes we put live. It gets an AI security review of everything that changed, a check of the website's security settings, and a dated record of what was released. We review changes to sign-in, access, exports or files right away, without waiting for a release.</span></div>
+        <div class="layer"><span class="when">Each stage</span><span class="small">A full security review of the stage before it's handed to you, with every fix recorded.</span></div>
+        <div class="layer opt"><span class="when">Optional, yearly</span><span class="small">An independent security firm tries to break in before your data goes live, then once a year. We recommend it; it's your call. You choose the firm and pay them directly.</span></div>
+      </div>
+
+      <p class="sub">Signing in and who sees what</p>
+      <div class="spec">
+        <div><b>Two-factor authentication for everyone</b><p>Staff sign in with their own Microsoft 365 accounts, and each sign-in needs a second step, such as a code or an approval in the Microsoft Authenticator app, on top of the password. The platform refuses a sign-in without it. If it isn't already on for everyone, we set it up with your Microsoft 365 administrator. No new passwords.</p></div>
+        <div><b>Who sees what</b><p>Cost, rate and profit figures only reach people whose access level allows it, on screen, in exports and in search.</p></div>
+        <div><b>When someone leaves</b><p>Their access is switched off in one step inside the platform, as well as in Microsoft. Once a quarter, your Controller reviews and approves who can see what.</p></div>
+        <div><b>The accounts that run it</b><p>Every account used to run the platform, including ours and your hosting and backup accounts, requires two-factor authentication too.</p></div>
+        <div><b>Activity record</b><p>Sign-ins, exports and views of cost figures. Any time we open your live data, the platform records it and we must give a reason. That record is copied every night to storage we can't change.</p></div>
+      </div>
+
+      <p class="sub">Where your data lives</p>
+      <div class="spec">
+        <div><b>Where it lives</b><p>Your records are on Render's servers in Ohio, in an account in your firm's name, encrypted (scrambled so only the platform can read it) both while it travels over the internet and while it's stored. Attached files (agreements, amendments, invoices, receipts) are kept in a private, encrypted storage account at a second company, Backblaze. Nightly database backups go there too, encrypted before they leave so Backblaze can't read them, and locked so they can't be deleted. With the backups at a second company, one outage won't take out both. Only the services the platform needs to run ever hold any of it, each for one job, and nothing is sold or shared for any other purpose. You'll get the full list, and we won't add a new service without telling you first.</p></div>
+        <div><b>A test copy (staging)</b><p>A separate copy of the platform in your hosting account, holding a copy of your data with names, contact details and rates scrambled. Every change is checked there first, and new work can be shown to you there, without touching your live records.</p></div>
+        <div><b>Never in the platform</b><p>Your ledger, payroll, taxes, payments, bank details and Social Security numbers. They stay in your accounting software.</p></div>
+        <div><b>Your files during the build</b><p>We keep the fee tables and invoices you share for the proof step encrypted on our computer and use them only for this project. Once the proof passes, we delete them, along with the AI coding assistant's working records. The assistant's provider keeps its own copy of those records for up to 30 days, then deletes them.</p></div>
+      </div>
+
+      <p class="sub">If something goes wrong</p>
+      <div class="spec">
+        <div><b>If it ever goes down</b><p>Usually only a few minutes of work could be lost. If the hosting company itself failed, we would restore from the last nightly backup, about a day back, and you'd get an alert if a backup were ever missed. We aim to have you back up within one business day, and we prove it with a timed practice restore before your data goes live, and again every year.</p></div>
+        <div><b>Security fixes</b><p>Urgent ones go out within 72 hours of a fix being available, without waiting for the next release.</p></div>
+        <div><b>If there's ever a security problem</b><p>There's a written plan for it, and you're told about any suspected breach within a time set in the agreement.</p></div>
+        <div><b>At the end</b><p>Your data is yours. If we ever stop working together, you get all of it back, and every copy we hold is deleted within 30 days, with a written list of what was deleted.</p></div>
+      </div>
+      <p class="small">The platform isn't built yet, so these are planned. Before your real data goes in, you'll get this list back with each item confirmed and dated.</p>
+    </section>
+
+    <section class="part" id="support">
+      <p class="kt"><span>12 · Warranty and support</span></p>
+      <h2>Software that keeps improving after you start using it.</h2>
+      <p><b>Warranty:</b> each stage is covered until it has been used for two month-end closes, or until the overlap period ends, whichever is later. Anything that fails the agreed checks is fixed at no cost. After that, support continues on a monthly plan; monthly amounts and included hours are agreed together.</p>
+      <div class="lanes two">
+        <div class="lane swap"><span class="k">Care</span><span class="small">Fixes for anything broken; security updates; we watch the backups, with a practice restore, and the alerts that warn us if the platform goes down or shows errors; and the platform's connection to Microsoft sign-in is renewed before it expires, with reminders to both sides, so sign-in never stops.</span></div>
+        <div class="lane add"><span class="k">Care and improve</span><span class="small">Everything in Care, plus a set number of hours each month for improvements from your change list and the small quality-of-life fixes that make daily use smoother.</span></div>
+      </div>
+      <div class="spec">
+        <div><b>When something's wrong</b><p>You tell us in one place, with a screenshot if you have one. We recreate the problem and write an automatic test that fails because of it. We fix it until that test and every other test pass, try the fix on the test copy, and only then put it live. You get a short note saying what changed.</p></div>
+        <div><b>Proposed response times</b><p>(to agree): the same business day when billing or sign-in is blocked; within two business days for everything else.</p></div>
+      </div>
+    </section>
+
+    <section class="part" id="limits">
+      <p class="kt"><span>13 · Assumptions and exclusions</span></p>
+      <h2>What this proposal assumes, and what it leaves out.</h2>
+      <div class="pair">
+        <div class="col"><p class="sub">Assumes</p>
+          <div class="spec tight">
+            <div><b>Accounting software</b><p>Your accounting software is Sage 50. Your Controller will confirm.</p></div>
+            <div><b>Sign-in</b><p>Your staff sign in with Microsoft 365, and someone, in-house or your IT firm, can let the platform use Microsoft sign-in.</p></div>
+            <div><b>Billing method</b><p>The other project managers bill the way your workbook does: the same seven milestones, billed by percent complete. If some work differently, we'll find out in stage 2 and agree how to handle it.</p></div>
+            <div><b>Firm size</b><p>About 36 staff, with four or five access levels, for example principals, project managers, the Controller and everyone else.</p></div>
+            <div><b>RFQ alerts</b><p>RFQ alerts can be sent to one dedicated email inbox that the platform is allowed to read.</p></div>
+          </div>
+        </div>
+        <div class="col"><p class="sub">Not included</p>
+          <div class="spec tight">
+            <div><b>Your accounting itself</b><p>The ledger, payroll, taxes and payments stay in your accounting software; section 3 explains why.</p></div>
+            <div><b>Project documents</b><p>Drawings, specifications and other project documents stay where you keep them today; the platform only keeps the agreements, amendments, invoices and receipts that billing relies on.</p></div>
+            <div><b>A phone app</b><p>The platform works in the web browser on any phone, tablet or computer.</p></div>
+            <div><b>Older projects</b><p>The platform starts from what's in your current workbook; older history can be added later as a separately priced piece.</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>If an assumption is wrong:</b> we'll tell you as soon as we find out, explain what it changes, and agree any change in writing before going on, the same way as any other addition.</p>
+    </section>
+
+    <section class="part" id="ending">
+      <p class="kt"><span>14 · Pausing or ending the work</span></p>
+      <h2>You can stop after any accepted stage and keep everything you've paid for.</h2>
+      <div class="spec">
+        <div><b>Stopping</b><p>After any accepted stage, with written notice. You pay for accepted stages, and the 25% already invoiced for the next stage covers work started on it.</p></div>
+        <div><b>What you keep</b><p>The code for every paid stage, the accounts (already yours), your data, and a handover: how it's set up, how to restore it, and where everything lives.</p></div>
+        <div><b>Continuity</b><p>You get a document with the recovery instructions, the key that unlocks the encrypted backups, and where the code lives. Keep it somewhere safe at the firm, so you can carry on if we are ever unavailable. Once a year, someone other than us uses it to practice a restore.</p></div>
+        <div><b>To finalize in the written agreement</b><p>A limit on liability tied to the fees paid, no responsibility for indirect losses (for example, lost business), and your Controller reviewing each invoice before it's sent.</p></div>
+      </div>
+    </section>
+
+    <section class="part" id="who">
+      <p class="kt"><span>15 · Who's building it</span></p>
+      <h2>Thirteen months building and running an agency's operating system.</h2>
+      <p>Since October 2025, Yitzchak has designed and run the in-house platform his search marketing (SEO) agency's team relies on every day. It began as content-writing tools. Since March 2026, it has grown to cover the SEO department's whole workflow: audience research, market analysis, content calendars, content production, publishing to clients' Webflow sites, performance reporting and more. Clients use it too, through secure links where they approve content calendars, review drafts and open their reports.</p>
+      <p>Alongside the core workflow, the platform tracks how often clients' businesses appear in AI answers from ChatGPT, Perplexity, Gemini and Google's AI Overviews. It scans local Google Maps rankings, checks client websites page by page, and scores, for leadership, how far behind each area of the team's work is. It connects two ways with Asana and reads from Google Analytics, Search Console, Business Profiles and the agency's customer database (CRM). It also keeps a permanent archive of client analytics that Google stops providing after 14 to 18 months.</p>
+      <p>It has replaced five paid marketing-data subscriptions (Peec AI, SparkToro, Screaming Frog, Semrush and Local Falcon) at a fraction of their cost, and it fits how the agency uniquely works. Most requested changes go live within a day or two. Live walkthroughs are available on request.</p>
+      <p><b>How it's built.</b> Yitzchak leads the software's design: what gets built, how it behaves, and what counts as done. AI coding assistants write the code under his direction, inside a disciplined process. More than 17,000 automated tests guard the code. Irreplaceable data such as analytics history and AI answer records is only ever added to, never overwritten or deleted. Long-running jobs recover cleanly if a server restarts; the in-depth AI search visibility analysis, for example, picks up where it left off. Your project goes a step further: every change must pass automatic accuracy tests, access tests for every type of user and security scans before it can go live, and each stage is accepted only after it passes the checks agreed with you.</p>
+    </section>
+
+    <section class="part" id="terms">
+      <p class="kt"><span>16 · Terms used</span></p>
+      <h2>Plain meanings for the terms in this proposal.</h2>
+      <div class="gloss">
+        <details class="g"><summary>We (the builder)</summary><p>Yitzchak Young, who builds and supports the platform.</p></details>
+        <details class="g"><summary>Proof step</summary><p>A short first step that proves the platform reproduces your own workbook to the cent before anything else is built.</p></details>
+        <details class="g"><summary>Stage</summary><p>A piece of the platform your team uses for real, tested and accepted on its own, before the next one counts.</p></details>
+        <details class="g"><summary>Checks</summary><p>The short written list of what a stage must do, agreed before it starts. Automatic tests are separate: they run on every change.</p></details>
+        <details class="g"><summary>Acceptance</summary><p>Your written confirmation that a stage passed its agreed checks, or no reply after our reminder once the 10-business-day testing window closes.</p></details>
+        <details class="g"><summary>Blocking problem</summary><p>A problem that stops your team doing their work in the stage. We fix it first, and your 10 testing days pause until it's fixed.</p></details>
+        <details class="g"><summary>Overlap period</summary><p>The 3 to 6 months when your spreadsheet stays the official record and the platform runs alongside it for comparison.</p></details>
+        <details class="g"><summary>Change list</summary><p>The shared log of every request, sorted into clarifications, swaps and additions.</p></details>
+        <details class="g"><summary>Access level</summary><p>What a person is allowed to see and do in the platform, for example whether cost and rate figures reach them.</p></details>
+        <details class="g"><summary>Two-factor authentication</summary><p>A second step at sign-in, such as a code or an app approval on your phone, on top of the password, so a stolen password alone can't get in.</p></details>
+        <details class="g"><summary>Staging (test copy)</summary><p>A separate copy of the platform, holding a copy of your data with names, contact details and rates scrambled, where every change is checked before it goes live. It never touches your live records.</p></details>
+        <details class="g"><summary>Release</summary><p>A batch of changes we put live at one time, with a dated record of what changed.</p></details>
+        <details class="g"><summary>Repository</summary><p>The online home of the platform's code and its full history, in the firm's name.</p></details>
+        <details class="g"><summary>Outside security test</summary><p>An independent firm, hired with written permission, tries to break in and gives you a dated letter of what it found and that it was fixed.</p></details>
+      </div>
+    </section>
+
+    <section class="part" id="next">
+      <p class="kt"><span>17 · Next steps</span></p>
+      <h2>From here to the second week of December.</h2>
+      <ol class="steplist">
+        <li><b>Read and comment.</b><p>Send questions or notes directly, naming the section number.</p></li>
+        <li><b>Agree direction and budget.</b><p>Which stages matter most, and Schedule A.</p></li>
+        <li><b>Written agreement.</b><p>This proposal becomes the agreement, reviewed by both sides.</p></li>
+        <li><b>Accounts set up.</b><p>On a 30-minute call, you create the firm's accounts and add us as a team member.</p></li>
+        <li><b>Proof step starts</b><p>the second week of December, once your Controller has answered a few questions through Nathan and your Microsoft 365 administrator has approved sign-in.</p></li>
+      </ol>
+      <p class="note" id="cnote">Questions or comments: reply to Yitzchak directly, naming the section number.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Stages: what each includes, example checks, and what it needs. Wording mirrors the plan; checks are examples to agree.
+  var STAGES = [
+    { id: 'proof', name: 'Proof step', when: 'About 2 weeks, mid to late December 2026', gets: ['Your billing workbook loaded and reproduced side by side: milestone fees, monthly bills, the second fee line, the associate split, review flags and firm totals', 'Staff sign-in with your own Microsoft 365 accounts, with two-factor authentication', 'Nightly encrypted backups, and one practice restore to prove they work', 'Reminder email reaching staff inboxes, not junk', 'One invoice importing cleanly into your accounting software'], checks: ['Three real projects across two month ends: every bill matches your workbook to the cent', 'A staff member signs in with their work account and the second step; a sign-in without the second step, or from outside the firm, is refused', 'A backup restored into an empty copy gives the same totals', 'Test emails reach three staff inboxes, not junk', 'One issued invoice imports into Sage with the right customer, number and amount'], needs: ['Accounts set up in the firm\'s name (30-minute call)', 'Three fee tables and the last two months\' invoices', 'A few answers from your Controller, passed along by Nathan, and one test import (about 15 minutes)', 'Under an hour from your Microsoft 365 administrator'], note: 'Paid only if every check passes.' },
+    { id: 's1', name: '1. Projects, clients and billing', when: 'About a month; billing in use around early February 2027', gets: ['One client database: owners, offices, contacts, addresses, birthdays, history', 'Quick job set-up: fee type (percent of construction, lump sum, or hourly with a cap), the seven milestones and their shares, engineers and their fees, a general schedule', 'Monthly billing by percent complete: each month bills the increase over the highest earlier month', 'What each engineer is owed, and what Schorr keeps', 'Everything your workbook handles today: the second fee line, a split with an associate firm (with its rounding rules), additional services and reimbursables', 'Your workbook\'s review flags: over 100%, a percent that went down, a later milestone billed before an earlier one is finished', 'Invoice drafts, review, approval, and issued invoices locked against changes', 'Access levels so cost and rate figures reach only the right people; an activity record', 'Attachments for what billing relies on: agreements, amendments, invoices, receipts', 'Export to Excel on every list'], checks: ['Two past month ends, run again in the platform, match your workbook to the cent', 'Every review flag fires on the same rows as your workbook', 'A project manager can\'t see cost or rate figures above their access level, on screen or in an Excel export', 'An issued invoice is locked; the only way to correct it is with a credit memo', 'Every export matches what the screen shows'], needs: ['Testers for the 10-business-day testing window', 'Your Controller for the invoice review steps'], note: '' },
+    { id: 's2', name: '2. Firm-wide and the forecast', when: 'About a month, after stage 1', gets: ['Every project manager\'s projects loaded and billed the same way', 'A forecast 12 months ahead: what the firm keeps after paying engineers, against overhead, month by month', 'A firm-at-a-glance home page: solvency, month-end status and decisions waiting; unpaid invoices are added once stage 5 brings back which invoices have been paid'], checks: ['Each project manager confirms their own projects', 'Forecast months add up to the firm totals', 'Every figure on the home page matches the screen it comes from'], needs: ['Each project manager\'s current projects', 'Your overhead figure, and what it includes'], note: '' },
+    { id: 's3', name: '3. Budget builder', when: 'About a month, after stage 2', gets: ['Budgets by MasterSpec division, from a cost library of your recent bids', 'Design contingency and escalation; built bottom up, or top down from the owner\'s number', 'Your rounding rules; the fee follows the budget when the estimate moves'], checks: ['A recent budget rebuilt matches your tab to the dollar, both round-downs included', 'Changing a unit cost updates the budget and the fee'], needs: ['Recent bids by division for the cost library'], note: '' },
+    { id: 's4', name: '4. Timesheets and profit', when: 'About a month, after stage 3', gets: ['Weekly timesheets by project and milestone, with approvals', 'Expenses and mileage logged with the timesheet, so billable costs reach the invoice', 'Hourly billing, with a warning before a job passes its cap', 'Hours and profit per job'], checks: ['Reminders go out on schedule, and late or missing timesheets are flagged to the right person', 'A logged billable expense or trip appears on the next invoice draft at the right amount', 'An hourly job warns before it reaches its cap', 'Profit per job matches the hours and rates behind it'], needs: ['Everyone filling in timesheets weekly', 'Rates by role, and the mileage rate you reimburse'], note: '' },
+    { id: 's5', name: '5. Accounting connection', when: 'About a month, after stage 4', gets: ['With Sage 50: a monthly import file of invoices, new clients and engineer bills; which invoices are paid comes back by file', 'If you move to QuickBooks Online: an automatic two-way connection instead'], checks: ['A past month\'s invoices, new clients and engineer bills import into a test copy of your accounting file and match to the cent', 'An invoice marked paid in accounting shows as paid in the platform'], needs: ['Your Controller for one test import, into a test copy of your accounting file'], note: 'Sage 50 works with a monthly file. Moving to QuickBooks Online would make the hand-off automatic; see the QuickBooks box below the stages. Switching is your Controller\'s call, never a requirement.' },
+    { id: 's6', name: '6. Pursuits and RFQs', when: 'About a month, the last stage', gets: ['An RFQ inbox built from the alert emails of RFQ listing services and school districts', 'Each owner\'s history beside each RFQ', 'A go or no-go checklist the team scores'], checks: ['Alerts from the services you use become leads', 'A person confirms each lead before it counts', 'The platform can read only the dedicated alerts mailbox'], needs: ['Which alert services and districts you follow', 'Your IT setting up one alerts mailbox and limiting the platform\'s access to it (a short Exchange setting)'], note: '' }
+  ];
+  var cur = 0;
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function renderSteps() {
+    $('steps').innerHTML = STAGES.map(function (s, i) {
+      var short = i === 0 ? 'Proof' : 'Stage ' + i;
+      var label = i === 0 ? 'Proof step' : s.name.replace(/^\d+\.\s*/, '');
+      return '<button type="button" role="tab" id="tab-' + s.id + '" aria-controls="stage" aria-selected="' + (i === cur) + '" tabindex="' + (i === cur ? 0 : -1) + '" data-i="' + i + '">' + esc(short) + '<small>' + esc(label) + '</small></button>';
+    }).join('');
+  }
+  function renderStage() {
+    var s = STAGES[cur];
+    $('stage').setAttribute('aria-labelledby', 'tab-' + s.id);
+    $('stage').innerHTML = '<div class="head"><h3>' + esc(s.name) + '</h3><span class="tag t">' + esc(s.when) + '</span></div>' +
+      '<div class="cols"><div><h4>What you get</h4><ul class="list">' + s.gets.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></div>' +
+      '<div><h4>Example checks it must pass</h4><ul class="checks">' + s.checks.map(function (c) { return '<li><span>' + esc(c) + '</span></li>'; }).join('') + '</ul>' +
+      '<h4 style="margin-top:16px">Needs from your team</h4><ul class="list">' + s.needs.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></div></div>' +
+      (s.note ? '<p class="small">' + esc(s.note) + '</p>' : '');
+  }
+  $('steps').addEventListener('click', function (e) { var b = e.target.closest('button[data-i]'); if (!b) return; cur = Number(b.dataset.i); renderSteps(); renderStage(); });
+  $('steps').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault(); cur = (cur + (e.key === 'ArrowRight' ? 1 : STAGES.length - 1)) % STAGES.length;
+    renderSteps(); renderStage(); var b = $('steps').querySelector('[data-i="' + cur + '"]'); if (b) b.focus();
+  });
+  renderSteps(); renderStage();
+
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, text) { var n = document.createElementNS(NS, tag); for (var k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; }
+  // Timeline: month scale Dec 2026 to Dec 2027; each bar = a firm part plus a lighter range; hover, focus or tap shows its card.
+  (function timeline() {
+    var svg = $('tl'), fig = svg.parentNode, x0 = 210, x1 = 836, MON = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var FULL = ['December 2026', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December 2027'];
+    var X = function (m) { return x0 + (x1 - x0) * m / 13; }; // m = months after December 1, 2026
+    var when = function (m) { var i = Math.min(12, Math.floor(m)), f = m - Math.floor(m); return (f < 0.34 ? 'early ' : f < 0.67 ? 'mid ' : 'late ') + FULL[i]; };
+    svg.appendChild(el('text', { x: 24, y: 26, 'font-size': 15, 'font-weight': 700, fill: 'var(--ink)' }, 'Billing in use by February; the first version around July 2027'));
+    svg.appendChild(el('text', { x: X(0) + 4, y: 48, 'font-size': 11.5, 'font-weight': 600, fill: 'var(--muted)' }, '2026'));
+    svg.appendChild(el('text', { x: X(1) + 4, y: 48, 'font-size': 11.5, 'font-weight': 600, fill: 'var(--muted)' }, '2027'));
+    MON.forEach(function (mo, i) {
+      svg.appendChild(el('line', { x1: X(i), x2: X(i), y1: 70, y2: 292, stroke: 'var(--line)' }));
+      svg.appendChild(el('text', { x: X(i) + 4, y: 64, 'font-size': 12, fill: 'var(--muted)' }, mo));
+    });
+    var rows = [
+      { y: 98, name: 'Proof step', solid: [0.25, 0.6], fade: [0.6, 0.75], c: 'var(--teal)', note: 'about 2 weeks', dates: 'Starts the second week of December 2026 and takes about 2 weeks.',
+        card: 'Your workbook reproduced to the cent, plus sign-in, backups, email and one test import. Paid only if it passes.' },
+      { y: 140, name: 'Stage 1: billing', solid: [0.6, 2.1], fade: [2.1, 3.1], c: 'var(--teal)', note: 'in use around early Feb', dates: 'Built from mid-December 2026 to mid-January 2027. In use around early February, or a little later if the build or your review takes longer.',
+        card: 'About a month to build. Your team then tests it for 10 business days on real work, and it goes into use.' },
+      { y: 182, name: 'Overlap, billing', lead: [2.1, 3.1], solid: [3.1, 5.1], fade: [5.1, 9.1], c: 'var(--muted)', note: '3 to 6 months', dash: true, dates: 'Starts when billing goes into use, around early February 2027, and lasts 3 to 6 months, so it ends between early May and early September 2027.',
+        card: 'Your spreadsheet stays the official record while the platform runs alongside it. You choose the switch-over date.' },
+      { y: 224, name: 'Stages 2 to 6', solid: [2.1, 7.1], fade: [7.1, 8.1], c: 'var(--teal)', note: 'about a month each', dates: 'About a month each, one after another, from February to June 2027.',
+        card: 'Built one after another, each tested and accepted on its own. We build each stage while you test the one before it.' },
+      { y: 266, name: 'First version complete', solid: null, fade: [7.1, 8.1], c: 'var(--mag)', note: 'around July 2027', dates: 'Around July 2027, if each stage takes about a month.',
+        card: 'All six stages accepted, depending on what we agree to include.' }
+    ];
+    // The detail strip sits under the chart, never over it: hover previews a bar, tap or focus keeps it.
+    var HINT = '<span>Hover over or tap a bar to see its dates here.</span>';
+    var tip = document.createElement('div'); tip.className = 'tip idle'; tip.setAttribute('role', 'status'); tip.setAttribute('aria-live', 'polite'); tip.innerHTML = HINT; fig.appendChild(tip);
+    var pinned = null, hotG = null;
+    function card(r) {
+      var s0 = r.solid ? r.solid[0] : r.fade[0], e0 = r.solid ? r.solid[1] : r.fade[0], e1 = r.fade[1];
+      var dates = r.dates ? esc(r.dates) : (r.solid ? 'Starts ' + esc(when(s0)) + '. ' : '') + 'Done between ' + esc(when(e0)) + ' and ' + esc(when(e1)) + '.';
+      return '<b>' + esc(r.name) + '</b><span>' + dates + '</span><span>' + esc(r.card) + '</span><small>An estimate, adjustable to your goals.</small>';
+    }
+    function paint(item) {
+      if (hotG) hotG.classList.remove('hot');
+      hotG = item ? item.g : null;
+      if (hotG) hotG.classList.add('hot');
+      tip.className = item ? 'tip' : 'tip idle';
+      tip.innerHTML = item ? card(item.r) : HINT;
+    }
+    function show(r, g) { paint({ r: r, g: g }); }
+    function hide() { paint(pinned); }
+    rows.forEach(function (r) {
+      var g = el('g', { tabindex: 0, role: 'button', 'aria-label': r.name + ': ' + r.note + '. ' + r.card, class: 'tlrow' });
+      g.appendChild(el('rect', { x: 0, y: r.y - 20, width: 860, height: 40, fill: 'transparent' }));
+      g.appendChild(el('text', { x: 24, y: r.y + 5, 'font-size': 13.5, 'font-weight': 600, fill: 'var(--ink)' }, r.name));
+      if (r.solid) g.appendChild(el('rect', { x: X(r.solid[0]), y: r.y - 8, width: Math.max(4, X(r.solid[1]) - X(r.solid[0])), height: 16, rx: 4, fill: r.c, 'fill-opacity': r.dash ? 0.18 : 0.85, stroke: r.dash ? r.c : 'none', 'stroke-dasharray': r.dash ? '4 3' : '' }));
+      if (r.lead) g.appendChild(el('rect', { x: X(r.lead[0]), y: r.y - 8, width: X(r.lead[1]) - X(r.lead[0]), height: 16, rx: 4, fill: r.c, 'fill-opacity': 0.12 }));
+      g.appendChild(el('rect', { x: X(r.fade[0]), y: r.y - 8, width: X(r.fade[1]) - X(r.fade[0]), height: 16, rx: 4, fill: r.c, 'fill-opacity': r.solid ? 0.22 : 0.35 }));
+      var start = r.lead ? r.lead[0] : r.solid ? r.solid[0] : r.fade[0], right = X(r.fade[1]) + 8;
+      var lab = right + r.note.length * 6.6 < 852 ? el('text', { x: right, y: r.y + 4, 'font-size': 12, fill: 'var(--muted)' }, r.note)
+                                                  : el('text', { x: X(start) - 8, y: r.y + 4, 'font-size': 12, fill: 'var(--muted)', 'text-anchor': 'end' }, r.note);
+      g.appendChild(lab);
+      g.addEventListener('mouseenter', function () { show(r, g); });
+      g.addEventListener('mouseleave', function () { hide(); });
+      g.addEventListener('focus', function () { pinned = { r: r, g: g }; show(r, g); });
+      g.addEventListener('click', function () { pinned = { r: r, g: g }; paint(pinned); });
+      g.addEventListener('keydown', function (e) { if (e.key === 'Escape') { pinned = null; paint(null); g.blur(); } });
+      svg.appendChild(g);
+    });
+  })();
+
+  // Acceptance flow: four steps across, the blocking-issue loop above, acceptance and what follows below.
+  (function flow() {
+    var svg = $('flow'), defs = el('defs', {}), mk = el('marker', { id: 'ar', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto-start-reverse' });
+    mk.appendChild(el('path', { d: 'M0 0L10 5L0 10z', fill: 'var(--muted)' })); defs.appendChild(mk); svg.appendChild(defs);
+    svg.appendChild(el('text', { x: 24, y: 26, 'font-size': 15, 'font-weight': 700, fill: 'var(--ink)' }, 'A stage is only finished, and billed, once it passes the checks'));
+    var W = 160, H = 58, y1 = 130, y2 = 262, c = [104, 290, 476, 662];
+    function box(cx, cy, l1, l2, accent) {
+      svg.appendChild(el('rect', { x: cx - W / 2, y: cy - H / 2, width: W, height: H, rx: 8, fill: accent ? 'var(--tealSoft)' : 'none', stroke: accent ? 'var(--teal)' : 'var(--muted)', 'stroke-width': accent ? 2 : 1.25 }));
+      svg.appendChild(el('text', { x: cx, y: cy - 3, 'text-anchor': 'middle', 'font-size': 13.5, 'font-weight': 600, fill: 'var(--ink)' }, l1));
+      svg.appendChild(el('text', { x: cx, y: cy + 15, 'text-anchor': 'middle', 'font-size': 11.5, fill: 'var(--muted)' }, l2));
+    }
+    function line(d, dash) { svg.appendChild(el('path', { d: d, fill: 'none', stroke: 'var(--muted)', 'stroke-width': 1.25, 'stroke-dasharray': dash ? '4 4' : '', 'marker-end': 'url(#ar)' })); }
+    box(c[0], y1, 'We agree the checks', 'before work starts'); box(c[1], y1, 'We build it', 'you can look in anytime');
+    box(c[2], y1, 'We say it\'s ready', 'in writing'); box(c[3], y1, 'Your team tries it', 'for 10 business days');
+    line('M' + (c[0] + W / 2) + ' ' + y1 + 'H' + (c[1] - W / 2)); line('M' + (c[1] + W / 2) + ' ' + y1 + 'H' + (c[2] - W / 2)); line('M' + (c[2] + W / 2) + ' ' + y1 + 'H' + (c[3] - W / 2));
+    line('M' + c[3] + ' ' + (y1 - H / 2) + 'V68H' + c[2] + 'V' + (y1 - H / 2 - 2), true);
+    svg.appendChild(el('text', { x: c[3] + W / 2, y: 58, 'text-anchor': 'end', 'font-size': 12, fill: 'var(--muted)' }, 'Something stops your work? We fix it, and the 10 days pause.'));
+    box(c[3], y2, 'Stage accepted', 'you approve, or no reply', true);
+    line('M' + c[3] + ' ' + (y1 + H / 2) + 'V' + (y2 - H / 2 - 2));
+    svg.appendChild(el('text', { x: c[3] - 10, y: (y1 + y2) / 2 + 4, 'text-anchor': 'end', 'font-size': 12, fill: 'var(--muted)' }, 'it does what we agreed'));
+    box(c[2], y2, 'We bill the 75%', 'next stage already going'); box(c[1], y2, 'Run side by side', 'with your spreadsheet'); box(c[0], y2, 'You switch over', 'on a date you choose');
+    line('M' + (c[3] - W / 2) + ' ' + y2 + 'H' + (c[2] + W / 2)); line('M' + (c[2] - W / 2) + ' ' + y2 + 'H' + (c[1] + W / 2)); line('M' + (c[1] - W / 2) + ' ' + y2 + 'H' + (c[0] + W / 2));
+  })();
+
+  // Active section in the rail.
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); }); });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    document.querySelectorAll('section.part').forEach(function (s) { io.observe(s); });
+  }
+
+})();
+</script>
+
+</body></html>

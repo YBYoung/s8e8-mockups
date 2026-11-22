@@ -1,0 +1,1082 @@
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Schorr Story Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one architectural model stays on stage for the whole story; a frosted text rail on the left; the details for each step sit on a flat sheet pinned beside the model (on a phone, the sheet joins the text under the model). The model only shows where we are; everything to read is flat and face-on. */
+:root {
+  --bg: #F5F7F8; --ink: #0B1020; --body: #2A3442; --muted: #5E6876; --line: #D9E0E3;
+  --teal: #0F766E; --teal-dk: #115E59; --teal-soft: #E3F2EF; --mag: #A81058; --mag-soft: #F7E1EB;
+  --top: #FFFFFF; --side-l: #DFE6E9; --side-r: #ECF1F2; --edge: #B4C0C6; --ground: #EBEFF0; --grid: #DCE3E5;
+  --glass: rgba(15,118,110,.07); --glass-edge: rgba(15,118,110,.45); --hl: rgba(15,118,110,.30); --shadow: rgba(11,16,32,.13);
+  --panel: rgba(255,255,255,.80); --panel-edge: rgba(255,255,255,.9); --sheet: #FFFFFF; --sheet-shadow: 0 18px 40px -24px rgba(11,16,32,.35);
+  --found-t: #1B7F76; --found-l: #0D4F49; --found-r: #115E59;
+  --display: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --text: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --rw: min(34vw, 470px); --pw: clamp(300px, 30vw, 410px); --pww: min(640px, 48vw);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1317; --ink: #EEF2F5; --body: #C9D2DA; --muted: #93A0AC; --line: #26313A;
+  --teal: #4FC7B8; --teal-dk: #7FDACE; --teal-soft: #12302C; --mag: #F07AAE; --mag-soft: #3A1A2A;
+  --top: #24323A; --side-l: #131C21; --side-r: #1A252B; --edge: #3A4952; --ground: #10181C; --grid: #1B252B;
+  --glass: rgba(79,199,184,.09); --glass-edge: rgba(79,199,184,.5); --hl: rgba(79,199,184,.32); --shadow: rgba(0,0,0,.45);
+  --panel: rgba(13,19,23,.80); --panel-edge: rgba(255,255,255,.06); --sheet: #141C21; --sheet-shadow: 0 18px 40px -24px rgba(0,0,0,.7);
+  --found-t: #2A8C82; --found-l: #0B3C38; --found-r: #10504A; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1317; --ink: #EEF2F5; --body: #C9D2DA; --muted: #93A0AC; --line: #26313A;
+  --teal: #4FC7B8; --teal-dk: #7FDACE; --teal-soft: #12302C; --mag: #F07AAE; --mag-soft: #3A1A2A;
+  --top: #24323A; --side-l: #131C21; --side-r: #1A252B; --edge: #3A4952; --ground: #10181C; --grid: #1B252B;
+  --glass: rgba(79,199,184,.09); --glass-edge: rgba(79,199,184,.5); --hl: rgba(79,199,184,.32); --shadow: rgba(0,0,0,.45);
+  --panel: rgba(13,19,23,.80); --panel-edge: rgba(255,255,255,.06); --sheet: #141C21; --sheet-shadow: 0 18px 40px -24px rgba(0,0,0,.7);
+  --found-t: #2A8C82; --found-l: #0B3C38; --found-r: #10504A; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--text); -webkit-font-smoothing: antialiased; overflow: hidden; }
+#stage { position: fixed; inset: 0; overflow: hidden; background: var(--bg); }
+
+/* Model */
+#model { position: absolute; top: 0; bottom: 0; right: 0; left: var(--rw); }
+#world { width: 100%; height: 100%; display: block; }
+.m polygon { stroke: var(--edge); stroke-width: .6; stroke-linejoin: round; }
+.m .ft { fill: var(--top); } .m .fl { fill: var(--side-l); } .m .fr { fill: var(--side-r); }
+.glass .ft, .glass .fl, .glass .fr { fill: var(--glass); transition: fill .8s ease; }
+.glass polygon { stroke: var(--glass-edge); stroke-width: .7; }
+.slab .ft { fill: var(--top); } .slab .fl { fill: var(--side-l); } .slab .fr { fill: var(--side-r); }
+.found .ft { fill: var(--found-t); } .found .fl { fill: var(--found-l); } .found .fr { fill: var(--found-r); }
+.found polygon, .core polygon { stroke: none; }
+.core .ft { fill: var(--teal); } .core .fl { fill: var(--teal-dk); } .core .fr { fill: var(--teal); }
+.ghost polygon { fill: none; stroke: var(--teal); stroke-width: .8; stroke-dasharray: 4 4; opacity: .6; }
+.dark .ft { fill: var(--found-t); } .dark .fl { fill: var(--found-l); } .dark .fr { fill: var(--found-r); }
+.dark polygon { stroke: none; }
+.post .ft { fill: var(--teal); } .post .fl { fill: var(--teal-dk); } .post .fr { fill: var(--teal); } .post polygon { stroke: none; }
+.groundplane { fill: var(--ground); }
+.gridline { stroke: var(--grid); stroke-width: .7; }
+.shadow { fill: var(--shadow); filter: url(#soft); }
+.link { stroke: var(--teal); stroke-width: 1.2; fill: none; opacity: .55; }
+.route { stroke: var(--edge); stroke-width: 2.2; fill: none; }
+.leader { stroke: var(--muted); stroke-width: .8; fill: none; }
+.dash { stroke-dasharray: 4 4; }
+.bar-soft { fill: var(--teal-soft); stroke: var(--teal); stroke-width: .6; }
+.glow polygon { fill: none; stroke: var(--teal); stroke-width: 1.6; }
+.pulse { animation: pulse 2.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+/* SVG labels: always upright, never drawn on the slanted planes */
+.l-name { font: 600 15px var(--display); fill: var(--ink); letter-spacing: -.01em; }
+.l-big { font: 700 22px var(--display); fill: var(--ink); letter-spacing: -.02em; }
+.l-hub { font: 600 21px var(--display); fill: var(--ink); letter-spacing: -.015em; }
+.l-sub { font: 400 11px var(--mono); fill: var(--muted); letter-spacing: .02em; }
+.l-num { font: 600 16px var(--mono); fill: var(--ink); }
+.l-mag { fill: var(--mag); }
+.l-teal { fill: var(--teal); }
+.dot-t { fill: var(--teal); } .dot-m { fill: var(--mag); }
+
+/* What shows in which beat */
+.grp { opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility 0s linear .9s; }
+.grp.on { opacity: 1; visibility: visible; transition: opacity .9s ease .25s, visibility 0s; }
+.floor { opacity: 0; transform: translateY(-46px); transition: transform 1.1s cubic-bezier(.2,.7,.2,1), opacity .8s ease; transition-delay: var(--d, 0s); }
+.built .floor { opacity: 1; transform: none; }
+.built.ffocus .floor { opacity: .26; transition-delay: 0s; }
+.built.ffocus .floor.hl { opacity: 1; }
+.floor.hl .glass polygon { fill: var(--hl); }
+#ghostfloors { transition: opacity .8s ease; }
+.built #ghostfloors, .b0 #ghostfloors { opacity: 0; }
+.open1 .floor.f1 { opacity: 0 !important; transition-delay: 0s; }
+#f1slid { opacity: 0; transform: translate(0, 0); transition: transform 1.4s cubic-bezier(.3,.7,.2,1) .2s, opacity .5s ease; }
+#f1slid .glass polygon { fill: var(--hl); }
+.open1 #f1slid { opacity: 1; transform: translate(var(--sx), var(--sy)); }
+#flab .fl { transition: opacity .6s ease; }
+#fnum .fn { opacity: 0; transition: opacity .6s ease; }
+#fnum .fn.hl { opacity: 1; }
+.lfocus #flab .fl { opacity: .3; }
+.lfocus #flab .fl.hl { opacity: 1; }
+
+/* Rail */
+#rail { position: absolute; left: 0; top: 0; bottom: 0; width: var(--rw); z-index: 2; background: var(--panel);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2); backdrop-filter: blur(22px) saturate(1.2);
+  border-right: 1px solid var(--panel-edge); box-shadow: 1px 0 0 var(--line); overflow: hidden; }
+.txt { position: absolute; left: max(clamp(24px, 3.2vw, 48px), env(safe-area-inset-left, 0px)); right: 28px; top: clamp(76px, 11vh, 112px); bottom: 84px; overflow: auto;
+  opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .5s ease, transform .6s ease, visibility 0s linear .5s; scrollbar-width: none; }
+.txt.on { opacity: 1; visibility: visible; transform: none; transition: opacity .7s ease .2s, transform .8s ease .2s, visibility 0s; }
+.kt { margin: 0 0 14px; font: 500 11.5px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--teal-dk); }
+.hd { margin: 0; font: 700 clamp(27px, 2.5vw, 38px)/1.07 var(--display); letter-spacing: -.025em; text-wrap: balance; color: var(--ink); }
+.hero .hd { font-size: clamp(36px, 3.8vw, 56px); line-height: 1.02; letter-spacing: -.032em; }
+.hd .c { color: var(--teal); } .hd .m { color: var(--mag); }
+.bd { margin: 14px 0 0; font: 400 15.5px/1.55 var(--text); color: var(--body); max-width: 46ch; }
+.hero .bd { font-size: clamp(16px, 1.25vw, 18.5px); }
+.meta { margin-top: 22px; font: 400 12px/1.5 var(--mono); color: var(--muted); letter-spacing: .02em; }
+.meta b { color: var(--ink); font-weight: 500; }
+.qt { margin: 16px 0 0; font: 500 17px/1.42 var(--display); color: var(--ink); max-width: 44ch; }
+.qs { display: block; margin-top: 8px; font: 400 11.5px/1.4 var(--mono); color: var(--muted); letter-spacing: .02em; }
+.stagenum { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-right: 10px; border-radius: 6px; background: var(--teal); color: #fff; font: 600 15px var(--mono); vertical-align: 3px; }
+.steps { margin: 18px 0 0; padding: 0; list-style: none; counter-reset: s; display: grid; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 6px; padding: 11px 0; border-top: 1px solid var(--line); font: 400 15px/1.45 var(--text); color: var(--body); }
+.steps li::before { content: counter(s); font: 500 12px/1.9 var(--mono); color: var(--teal-dk); }
+.steps li:last-child { border-bottom: 1px solid var(--line); }
+.steps b { font-weight: 600; color: var(--ink); }
+
+/* The sheet: flat, face-on details for each step */
+.panel { position: absolute; z-index: 3; right: max(28px, env(safe-area-inset-right, 0px)); top: 72px; bottom: 84px; width: var(--pw);
+  display: flex; flex-direction: column; justify-content: center; pointer-events: none;
+  opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .5s ease, transform .6s ease, visibility 0s linear .5s; }
+.panel.wide { width: var(--pww); }
+.panel.on { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition: opacity .8s ease .45s, transform .9s cubic-bezier(.2,.7,.2,1) .45s, visibility 0s; }
+.sheet { background: var(--sheet); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--sheet-shadow); padding: 20px 22px 18px; max-height: 100%; overflow: auto; scrollbar-width: thin; }
+.sheet-tag { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); font: 500 10.5px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--teal-dk); }
+.sheet-tag span:last-child { color: var(--muted); letter-spacing: .06em; }
+.sheet h4 { margin: 14px 0 7px; font: 500 10.5px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.sheet h4:first-of-type { margin-top: 0; }
+.sheet h4.gap { margin-top: 16px; }
+.sheet .flow li { padding-left: 0; }
+.sheet .flow li::before { position: static; width: auto; height: auto; background: none; border: 0; top: auto; }
+.sheet ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.sheet li { position: relative; padding-left: 15px; font: 400 13.5px/1.45 var(--text); color: var(--body); }
+.sheet li::before { content: ""; position: absolute; left: 0; top: 7px; width: 6px; height: 6px; border-radius: 1px; background: var(--teal); }
+.sheet ul.checks li::before { width: 9px; height: 9px; top: 5px; background: none; border: 1.5px solid var(--teal); border-radius: 2px; }
+.sheet ul.needs li::before { background: var(--mag); }
+.sheet p { margin: 0; font: 400 13.5px/1.5 var(--text); color: var(--body); }
+.sheet p + p { margin-top: 8px; }
+.sheet .foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); font: 500 12.5px/1.45 var(--text); color: var(--ink); }
+.sheet .quote { font: 500 15px/1.45 var(--display); color: var(--ink); }
+.sheet .quote small { display: block; margin-top: 6px; font: 400 11px/1.4 var(--mono); color: var(--muted); }
+.kv { display: grid; gap: 0; }
+.kv div { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--line); font: 400 13.5px/1.4 var(--text); color: var(--body); }
+.kv div:last-child { border-bottom: 1px solid var(--line); }
+.kv b { font: 600 14px/1.3 var(--display); color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.kv b.m { color: var(--mag); }
+.lane { padding: 10px 0; border-top: 1px solid var(--line); }
+.lane:last-child { border-bottom: 1px solid var(--line); }
+.lane b { display: block; font: 600 14px/1.3 var(--display); color: var(--ink); }
+.lane i { display: block; font: 500 11px/1.4 var(--mono); font-style: normal; letter-spacing: .06em; text-transform: uppercase; color: var(--teal-dk); margin: 2px 0 4px; }
+.lane.add i { color: var(--mag); }
+.lane p { font-size: 13px; }
+.flow { margin: 0; padding: 0; list-style: none; counter-reset: f; display: grid; gap: 0; }
+.flow li { counter-increment: f; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 4px; padding: 7px 0; border-top: 1px solid var(--line); font: 400 13px/1.35 var(--text); color: var(--muted); }
+.flow li::before { content: counter(f); font: 600 12px/1.6 var(--mono); color: var(--teal-dk); }
+.flow li b { display: block; font: 600 13.5px/1.35 var(--display); color: var(--ink); }
+.flow li.acc b { color: var(--teal); }
+.team { display: grid; gap: 0; }
+.team div { display: grid; grid-template-columns: 34% minmax(0, 1fr); gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); font: 400 12.5px/1.4 var(--text); color: var(--body); }
+.team div:last-child { border-bottom: 1px solid var(--line); }
+.team b { font: 600 12.5px/1.4 var(--display); color: var(--ink); }
+.team small { display: block; font: 400 10.5px/1.4 var(--mono); color: var(--muted); }
+
+/* Example bill: flat bars */
+.bill { display: grid; gap: 5px; margin-bottom: 12px; }
+.bill .row { display: grid; grid-template-columns: minmax(0, 1fr) 120px 34px; gap: 10px; align-items: center; font: 400 12.5px/1.3 var(--text); color: var(--body); }
+.bill .row.dd { color: var(--ink); font-weight: 600; }
+.bill .trk { height: 10px; position: relative; }
+.bill .trk i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--grid); }
+.bill .trk i.done { background: var(--teal); }
+.bill .trk i.now { background: var(--mag); }
+.bill .pc { font: 400 11.5px var(--mono); color: var(--muted); text-align: right; }
+.bill-key { display: flex; gap: 14px; flex-wrap: wrap; margin: 2px 0 10px; font: 400 11px/1.4 var(--mono); color: var(--muted); }
+.bill-key span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--teal); }
+.bill-key span.now::before { background: var(--mag); }
+.total { margin: 10px 0; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.total span { font: 600 14px var(--display); color: var(--ink); }
+.total b { font: 700 38px/1 var(--display); color: var(--mag); letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+
+/* Timeline chart: flat, face-on */
+.tl-chart { width: 100%; height: auto; display: block; margin: 2px 0 10px; }
+.tl-chart text { font-family: var(--mono); fill: var(--muted); font-size: 11px; }
+.tl-chart .rn { font-family: var(--display); font-weight: 600; fill: var(--ink); font-size: 12.5px; }
+.tl-chart .ax { stroke: var(--line); stroke-width: 1; }
+.tl-chart .b-t { fill: var(--teal); } .tl-chart .b-s { fill: var(--teal-soft); stroke: var(--teal); stroke-width: .8; }
+.tl-chart .b-o { fill: var(--grid); stroke: var(--muted); stroke-width: .8; stroke-dasharray: 3 3; } .tl-chart .b-m { fill: var(--mag); }
+.tl-chart .grow { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0s); }
+.panel.on .tl-chart .grow { transform: scaleX(1); transition-delay: calc(.8s + var(--d, 0s)); }
+
+/* Top bar, nav, progress */
+#bar { position: fixed; top: 0; left: 0; right: 0; z-index: 5; height: 56px; display: flex; align-items: center; gap: 12px; pointer-events: none;
+  padding-left: max(clamp(24px, 3.2vw, 48px), env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+#bar .nm { font: 600 13px var(--display); color: var(--ink); }
+#bar .nm span { font: 400 11.5px var(--mono); color: var(--muted); letter-spacing: .04em; margin-left: 6px; }
+#nav { position: fixed; z-index: 5; right: max(20px, env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 8px; }
+#nav button { width: 42px; height: 42px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: 600 18px var(--text); cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+#nav button:disabled { opacity: .35; cursor: default; }
+#nav button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+#count { font: 500 12px var(--mono); color: var(--muted); min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+#hint { position: fixed; z-index: 5; left: max(clamp(24px, 3.2vw, 48px), env(safe-area-inset-left, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); font: 400 11.5px var(--mono); color: var(--muted); letter-spacing: .02em; }
+#ticks { position: fixed; z-index: 5; right: max(8px, env(safe-area-inset-right, 0px)); top: 26%; display: grid; gap: 5px; }
+#ticks i { display: block; width: 3px; height: 10px; border-radius: 2px; background: var(--line); transition: background .4s ease, height .4s ease; }
+#ticks i.on { background: var(--teal); height: 22px; }
+
+/* Phone and narrow screens: the model above, text and sheet below */
+@media (max-width: 900px) {
+  #model { left: 0; right: 0; top: 0; bottom: auto; height: 42%; }
+  #rail { width: auto; right: 0; top: 42%; bottom: 0; border-right: 0; border-top: 1px solid var(--line); box-shadow: none; }
+  .txt { left: max(18px, env(safe-area-inset-left, 0px)); right: max(18px, env(safe-area-inset-right, 0px)); top: 18px; bottom: 70px; }
+  .hd { font-size: 23px; } .hero .hd { font-size: clamp(28px, 8.4vw, 36px); }
+  .bd, .hero .bd { font-size: 14.5px; margin-top: 8px; line-height: 1.45; }
+  .qt { font-size: 15px; margin-top: 10px; }
+  .steps li { padding: 7px 0; font-size: 13.5px; }
+  .panel.inrail { position: static; width: auto; opacity: 1; visibility: inherit; transform: none; pointer-events: auto; margin-top: 16px; display: block; }
+  .panel.inrail .sheet { box-shadow: none; max-height: none; overflow: visible; padding: 14px 14px 12px; }
+  .panel.inrail .tl-chart { display: none; }
+  #hint, #ticks { display: none; }
+  #bar { height: 44px; } #bar .nm span { display: none; }
+  #nav { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  #nav button { width: 38px; height: 38px; }
+  .bill .row { grid-template-columns: minmax(0, 1fr) 90px 30px; gap: 8px; }
+  .total b { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; animation: none !important; } }
+</style>
+
+<div id="stage">
+  <div id="model"><svg id="world" role="img" aria-label="An architectural model of the Schorr platform, framed differently for each step of the story" preserveAspectRatio="xMidYMid meet"></svg></div>
+
+  <aside id="rail">
+    <article class="txt hero" data-b="0">
+      <p class="kt">A plan for Schorr Architects</p>
+      <h1 class="hd">One place for every <span class="c">project, fee and hour</span> at Schorr.</h1>
+      <p class="bd">Billing, budgets and timesheets move out of one spreadsheet per project and into one platform for the whole firm. It all ties to one client database, with a forecast months ahead that shows how solvent the firm is at any time.</p>
+      <p class="meta">Prepared for <b>Nathan, Schorr Architects</b><br>Starting the second week of December 2026</p>
+    </article>
+
+    <article class="txt" data-b="1">
+      <p class="kt">What you told us</p>
+      <h2 class="hd">The spreadsheet works. It just has to do <span class="m">too much</span>.</h2>
+      <p class="qt">"So, the spreadsheet works, but it is unwieldly. ... I do this for my projects currently, but it needs to be firm wide."<span class="qs">Nathan, answers to our questions</span></p>
+    </article>
+
+    <article class="txt" data-b="2">
+      <p class="kt">The plan</p>
+      <h2 class="hd">A proof step, then <span class="c">six stages</span>, built from what you asked for.</h2>
+      <p class="bd">About a month per stage, with the first version around July 2027.</p>
+      <p class="bd">Each stage is tested by your team on real work and accepted before it counts. You can stop after any accepted stage and keep everything you've paid for.</p>
+    </article>
+
+    <article class="txt" data-b="3">
+      <p class="kt">The foundation &middot; Proof step</p>
+      <h2 class="hd">First, prove it on your own workbook, <span class="c">to the cent</span>.</h2>
+      <p class="bd">About 2 weeks. The platform must reproduce your own billing workbook to the cent. You pay for it only if it passes.</p>
+    </article>
+
+    <article class="txt" data-b="4">
+      <p class="kt">Stage 1 &middot; Projects, clients and billing</p>
+      <h2 class="hd"><span class="stagenum">1</span>One client database, and billing <span class="c">worked out for you</span>.</h2>
+      <p class="bd">The biggest piece, and the first one in use: billing in use around early February 2027.</p>
+    </article>
+
+    <article class="txt" data-b="5">
+      <p class="kt">Stage 1 &middot; An example month</p>
+      <h2 class="hd">Your monthly billing, <span class="c">worked out for you</span>.</h2>
+      <p class="bd">You enter how far along each milestone is. The platform works out what to bill the client, what each engineer is owed, and what Schorr keeps, then drafts the invoice for your Controller.</p>
+    </article>
+
+    <article class="txt" data-b="6">
+      <p class="kt">Stage 2 &middot; Firm-wide and the forecast</p>
+      <h2 class="hd"><span class="stagenum">2</span>Every project, firm-wide, and a forecast <span class="c">12 months ahead</span>.</h2>
+      <p class="bd">Every project manager's projects, loaded and billed the same way, so you can see how solvent the firm is at any time.</p>
+    </article>
+
+    <article class="txt" data-b="7">
+      <p class="kt">Stage 3 &middot; Budget builder</p>
+      <h2 class="hd"><span class="stagenum">3</span>Budgets by MasterSpec division, <span class="c">from your own bids</span>.</h2>
+      <p class="bd">The fee follows the budget when the estimate moves.</p>
+    </article>
+
+    <article class="txt" data-b="8">
+      <p class="kt">Stage 4 &middot; Timesheets and profit</p>
+      <h2 class="hd"><span class="stagenum">4</span>Hours, expenses and <span class="c">profit per job</span>.</h2>
+      <p class="bd">Weekly timesheets by project and milestone, and hourly billing with a warning before a job passes its cap.</p>
+    </article>
+
+    <article class="txt" data-b="9">
+      <p class="kt">Stage 5 &middot; Accounting connection</p>
+      <h2 class="hd"><span class="stagenum">5</span>Works with Sage 50 (to confirm). <span class="m">QuickBooks Online</span> would make the hand-off automatic.</h2>
+      <p class="bd">Your books stay in your accounting software either way. Switching is your Controller's call, never a requirement.</p>
+    </article>
+
+    <article class="txt" data-b="10">
+      <p class="kt">Stage 6 &middot; Pursuits and RFQs</p>
+      <h2 class="hd"><span class="stagenum">6</span>Requests for qualifications worth chasing, with <span class="c">your history</span> beside each one.</h2>
+      <p class="bd">The last stage: an inbox of requests for qualifications (RFQs), each owner's history, and a go or no-go checklist the team scores.</p>
+    </article>
+
+    <article class="txt" data-b="11">
+      <p class="kt">Beyond the six stages</p>
+      <h2 class="hd">An optional task app, and <span class="c">two ideas</span> for after the first version.</h2>
+      <p class="bd">Either idea can come earlier if your team wants; the demo we showed you has a picture of each.</p>
+    </article>
+
+    <article class="txt" data-b="12">
+      <p class="kt">Timeline</p>
+      <h2 class="hd">About <span class="c">a month per stage</span>: the first version around July 2027.</h2>
+      <p class="bd">Billing (the proof step plus stage 1) is in use around early February 2027; all six stages around July. We plan for about a month per stage. The real pace depends on how each build and your team's review go, so dates can move. If they do, we'll tell you early and agree the new date together. Starting the second week of December 2026.</p>
+    </article>
+
+    <article class="txt" data-b="13">
+      <p class="kt">How a stage is accepted</p>
+      <h2 class="hd">"Done" means it passed the checks we agreed, <span class="c">on your real work</span>.</h2>
+      <p class="bd">Every stage walks the same route, from checks agreed before work starts to a switch-over on a date you choose.</p>
+    </article>
+
+    <article class="txt" data-b="14">
+      <p class="kt">The overlap period</p>
+      <h2 class="hd">Your spreadsheet stays the official record for <span class="c">3 to 6 months</span>.</h2>
+      <p class="bd">Invoices keep coming from your current method while the platform runs alongside it.</p>
+    </article>
+
+    <article class="txt" data-b="15">
+      <p class="kt">Changes to the plan</p>
+      <h2 class="hd">New ideas are welcome, and the plan <span class="c">never grows without you knowing</span>.</h2>
+      <p class="bd">Using the platform will give your team ideas. Every request goes on a shared change list and is sorted into one of three kinds.</p>
+    </article>
+
+    <article class="txt" data-b="16">
+      <p class="kt">What we need from your team</p>
+      <h2 class="hd">A little time, <span class="c">at the right moments</span>.</h2>
+      <p class="bd">One decision-maker, a few short set-up tasks, and real use of each stage during its 10-business-day testing window.</p>
+    </article>
+
+    <article class="txt" data-b="17">
+      <p class="kt">Security and your data</p>
+      <h2 class="hd">Two-factor authentication <span class="c">for everyone</span>.</h2>
+      <p class="bd">Staff sign in with their own Microsoft 365 accounts, and each sign-in needs a second step, such as a code or an approval in the Microsoft Authenticator app. A stolen password alone can't get in. The platform refuses a sign-in without it, and every account that runs the platform needs it too.</p>
+    </article>
+
+    <article class="txt" data-b="18">
+      <p class="kt">Ownership and support</p>
+      <h2 class="hd">You own every account from day one, and <span class="c">the code</span> as each stage is paid.</h2>
+      <p class="bd">Software that keeps improving after you start using it.</p>
+    </article>
+
+    <article class="txt" data-b="19">
+      <p class="kt">Next steps</p>
+      <h2 class="hd">From here to the <span class="c">second week of December</span>.</h2>
+      <ol class="steps">
+        <li><span><b>Read and comment.</b></span></li>
+        <li><span><b>Agree direction and budget.</b></span></li>
+        <li><span><b>Written agreement.</b></span></li>
+        <li><span><b>Accounts set up,</b> on a 30-minute call.</span></li>
+        <li><span><b>Proof step starts</b> the second week of December, once your Controller's questions are answered and sign-in is approved.</span></li>
+      </ol>
+    </article>
+  </aside>
+
+  <!-- Sheets: the details for each step, flat and face-on -->
+  <section class="panel" data-b="1"><div class="sheet">
+    <p class="sheet-tag"><span>From the workbook</span><span>Today</span></p>
+    <p class="quote">"Overall, I would like billing/budgeting/timesheets all to tie into a database which has our client information &ndash; addresses, contacts, birthdays, etc."<small>Nathan, answers to our questions</small></p>
+    <h4 class="gap">Today</h4>
+    <p>A tab per project for the budget, the engineers and their fees, and the fee split across seven milestones. Each month you enter percent complete, which tells the Controller what to bill and what each engineer is owed.</p>
+    <h4>What's hard</h4>
+    <p>It's unwieldy, and it covers only your projects. No way to bill hourly. Setting up a job should be quick, and you want to see months ahead.</p>
+    <h4>What you want</h4>
+    <p>Billing, budgets and timesheets tied to one client database, firm-wide; a forecast; profit per job; help finding RFQs worth pursuing.</p>
+  </div></section>
+
+  <section class="panel" data-b="3"><div class="sheet">
+    <p class="sheet-tag"><span>Proof step</span><span>About 2 weeks</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>Your billing workbook reproduced side by side: milestone fees, monthly bills, the second fee line, the associate split, review flags and firm totals</li>
+      <li>Staff sign-in with your own Microsoft 365 accounts, with two-factor authentication</li>
+      <li>Nightly encrypted backups, and one practice run restoring from them to prove they work</li>
+      <li>One invoice importing cleanly into your accounting software</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>Three real projects across two month ends: every bill matches your workbook to the cent</li>
+      <li>A sign-in without the second step, or from outside the firm, is refused</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Three fee tables and the last two months' invoices</li>
+      <li>A few answers from your Controller, passed along by Nathan, and one test import (about 15 minutes)</li>
+      <li>Under an hour from your Microsoft 365 administrator</li>
+    </ul>
+    <p class="foot">Paid only if every check passes.</p>
+  </div></section>
+
+  <section class="panel" data-b="4"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 1</span><span>About a month; in use around early February</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>One client database: owners, offices, contacts, addresses, birthdays, history</li>
+      <li>Quick job set-up: fee type (percent of construction, lump sum, or hourly with a cap), the seven milestones and their shares, engineers and their fees, a general schedule</li>
+      <li>Monthly billing by percent complete, what each engineer is owed, and what Schorr keeps</li>
+      <li>Everything your workbook handles today, plus invoice drafts, review, approval, and issued invoices locked against changes</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>Two past month ends, run again in the platform, match your current method to the cent</li>
+      <li>A project manager can't see cost or rate figures above their access level, on screen or in an Excel export</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Testers for the 10-business-day testing window</li>
+      <li>Your Controller for the invoice review steps</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="5"><div class="sheet">
+    <p class="sheet-tag"><span>Example project, made-up numbers</span><span>$800,000 fee</span></p>
+    <div class="bill" aria-label="Each milestone's share of the fee">
+      <div class="row"><span>Program Verification</span><span class="trk"><i class="done" style="width:10%"></i></span><span class="pc">3%</span></div>
+      <div class="row"><span>Schematic Design</span><span class="trk"><i class="done" style="width:33.3%"></i></span><span class="pc">10%</span></div>
+      <div class="row dd"><span>Design Development</span><span class="trk"><i style="width:100%"></i><i class="done" style="width:40%"></i><i class="now" style="left:40%;width:30%"></i></span><span class="pc">30%</span></div>
+      <div class="row"><span>Construction Documents</span><span class="trk"><i style="width:83.3%"></i></span><span class="pc">25%</span></div>
+      <div class="row"><span>Bidding/GMP</span><span class="trk"><i style="width:6.7%"></i></span><span class="pc">2%</span></div>
+      <div class="row"><span>Construction Administration</span><span class="trk"><i style="width:90%"></i></span><span class="pc">27%</span></div>
+      <div class="row"><span>Closeout</span><span class="trk"><i style="width:10%"></i></span><span class="pc">3%</span></div>
+    </div>
+    <p class="bill-key"><span>billed before</span><span class="now">this month</span></p>
+    <div class="kv">
+      <div><span>Design Development slice</span><b>$240,000</b></div>
+      <div><span>Highest earlier month 40%, now 70%</span><b>30% more</b></div>
+    </div>
+    <div class="total"><span>Bill the client</span><b>$72,000</b></div>
+    <div class="kv">
+      <div><span>Engineers' share, say 25%</span><b>$18,000</b></div>
+      <div><span>Schorr keeps</span><b class="m">$54,000</b></div>
+    </div>
+    <p class="foot">The warnings your workbook gives today come too: a percent over 100, a percent that went down, or a later milestone billed before an earlier one is finished.</p>
+  </div></section>
+
+  <section class="panel" data-b="6"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 2</span><span>About a month, after stage 1</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>Every project manager's projects loaded and billed the same way</li>
+      <li>A forecast 12 months ahead: what the firm keeps after paying engineers, against overhead, month by month</li>
+      <li>A firm-at-a-glance home page: solvency, month-end status and decisions waiting; unpaid invoices are added once stage 5 brings back which invoices have been paid</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>Each project manager confirms their own projects</li>
+      <li>Forecast months add up to the firm totals</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Each project manager's current projects</li>
+      <li>Your overhead figure, and what it includes</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="7"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 3</span><span>About a month, after stage 2</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>Budgets by MasterSpec division, from a cost library of your recent bids</li>
+      <li>Design contingency and escalation; built bottom up, or top down from the owner's number</li>
+      <li>Your rounding rules; the fee follows the budget when the estimate moves</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>A recent budget rebuilt matches your tab to the dollar, both round-downs included</li>
+      <li>Changing a unit cost updates the budget and the fee</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Recent bids by division for the cost library</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="8"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 4</span><span>About a month, after stage 3</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>Weekly timesheets by project and milestone, with approvals</li>
+      <li>Expenses and mileage logged with the timesheet, so billable costs reach the invoice</li>
+      <li>Hourly billing, with a warning before a job passes its cap</li>
+      <li>Hours and profit per job</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>A logged billable expense or trip appears on the next invoice draft at the right amount</li>
+      <li>An hourly job warns before it reaches its cap</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Everyone filling in timesheets weekly</li>
+      <li>Billing rates by job title, and the mileage rate you reimburse</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="9"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 5</span><span>About a month, after stage 4</span></p>
+    <h4>With Sage 50 (to confirm)</h4>
+    <p>Each month your Controller imports one file holding the issued invoices, new clients and engineer bills. Which invoices have been paid comes back the same way, by file.</p>
+    <h4>If you move to QuickBooks Online</h4>
+    <p>Invoices go across as soon as they're issued, and payments your Controller records in QuickBooks come back automatically, checked at least once a day, so the forecast stays within a day of your books.</p>
+    <p>Only after it's proven: tested against a practice QuickBooks company, then side by side with your books for at least one month end, and approved by Intuit, the company that makes QuickBooks. Moving your history across is best timed to a fiscal-year start.</p>
+    <h4>Example check</h4>
+    <ul class="checks">
+      <li>A past month's invoices, new clients and engineer bills import into a test copy of your Sage file and match to the cent</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Your Controller for one test import, into a test copy of your Sage file</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="10"><div class="sheet">
+    <p class="sheet-tag"><span>Stage 6</span><span>About a month, the last stage</span></p>
+    <h4>What you get</h4>
+    <ul>
+      <li>An RFQ inbox built from the alert emails of RFQ listing services and school districts</li>
+      <li>Each owner's history beside each RFQ</li>
+      <li>A go or no-go checklist the team scores</li>
+    </ul>
+    <h4>Example checks</h4>
+    <ul class="checks">
+      <li>Alerts from the services you use become leads</li>
+      <li>A person confirms each lead before it counts</li>
+      <li>The platform can read only the dedicated alerts mailbox</li>
+    </ul>
+    <h4>Needs from your team</h4>
+    <ul class="needs">
+      <li>Which alert services and districts you follow</li>
+      <li>Your IT setting up one alerts mailbox and limiting the platform's access to it</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="11"><div class="sheet">
+    <p class="sheet-tag"><span>Beyond the six</span><span>Your choice</span></p>
+    <h4>Optional add-on</h4>
+    <p>A task app for the whole firm, tied to milestones and billing. Offered separately, only if you want it.</p>
+    <h4>After the first version</h4>
+    <ul>
+      <li>Reading RFQs straight from district websites, which differ site by site and sometimes block automated reading</li>
+      <li>An AI recommendation on go or no-go, which works better once a few years of pursuits, won and lost, are recorded</li>
+    </ul>
+    <p class="foot">Either can come earlier if your team wants.</p>
+  </div></section>
+
+  <section class="panel wide" data-b="12"><div class="sheet">
+    <p class="sheet-tag"><span>Timeline</span><span>Starting the second week of December 2026</span></p>
+    <svg class="tl-chart" viewBox="0 0 600 214" role="img" aria-label="Timeline: proof step about 2 weeks from the second week of December 2026; billing in use around early February 2027; overlap 3 to 6 months; stages 2 to 6 about a month each, February to June; first version around July 2027"></svg>
+    <div class="kv">
+      <div><span>Proof step starts</span><b>second week of December 2026</b></div>
+      <div><span>Stage 1, billing in use</span><b>around early February 2027</b></div>
+      <div><span>Overlap, your spreadsheet official</span><b>3 to 6 months</b></div>
+      <div><span>Stages 2 to 6</span><b>about a month each, February to June</b></div>
+      <div><span>First version complete</span><b class="m">around July 2027</b></div>
+    </div>
+    <p class="foot">An estimate, adjustable to your goals. If a build or a review takes longer, the dates move and we tell you early. If something matters more to you, we can put that stage first, move a stage until after the first version, or shape the order around your busy months.</p>
+  </div></section>
+
+  <section class="panel" data-b="13"><div class="sheet">
+    <p class="sheet-tag"><span>The route</span><span>Every stage</span></p>
+    <ol class="flow">
+      <li><span><b>We agree the checks</b>before work starts</span></li>
+      <li><span><b>We build it</b>you can look in anytime</span></li>
+      <li><span><b>We say it's ready</b>in writing</span></li>
+      <li><span><b>Your team tries it</b>for 10 business days</span></li>
+      <li class="acc"><span><b>Stage accepted</b>you approve in writing, or the 10 days end with no reply after our reminder</span></li>
+      <li><span><b>We bill the remaining 75%</b>the next stage is already under way</span></li>
+      <li><span><b>Run side by side</b>with your spreadsheet</span></li>
+      <li><span><b>You switch over</b>on a date you choose</span></li>
+    </ol>
+    <p class="foot">Something stops your work? We fix it first, and the 10 days pause. Up to three rounds of fixes are included.</p>
+    <p class="foot">Each stage: 25% when it starts, 75% once accepted, or another schedule you prefer.</p>
+  </div></section>
+
+  <section class="panel" data-b="14"><div class="sheet">
+    <p class="sheet-tag"><span>Overlap</span><span>3 to 6 months</span></p>
+    <p>At each month end, a comparison shows sheet against platform, project by project and line by line, with every difference explained. If something doesn't match, nobody is billed wrongly; we find out why and fix it.</p>
+    <ul style="margin-top:12px">
+      <li>No double entry: each month the platform takes the same percent-complete figures from your sheet, so nobody types them twice</li>
+      <li>You switch over when you choose, in writing, for example after three month ends in a row match to the cent</li>
+      <li>The same idea applies to each stage: budgets against your budget tab, timesheets against however hours are tracked today</li>
+    </ul>
+  </div></section>
+
+  <section class="panel" data-b="15"><div class="sheet">
+    <p class="sheet-tag"><span>The change list</span><span>Three kinds</span></p>
+    <div class="lane"><b>Clarification</b><i>No charge</i><p>Making something work the way we already agreed.</p></div>
+    <div class="lane"><b>Swap</b><i>Logged, not charged</i><p>Trading one idea for another of the same size within the stage.</p></div>
+    <div class="lane add"><b>Addition</b><i>Priced in writing</i><p>Genuinely new work. You get a written price and timing within 3 business days. It starts only once you approve it by email.</p></div>
+    <p class="foot">Approvals are by email so there is a record.</p>
+  </div></section>
+
+  <section class="panel" data-b="16"><div class="sheet">
+    <p class="sheet-tag"><span>Your team</span><span>Who, what, when</span></p>
+    <div class="team">
+      <div><b>Nathan, or whoever the firm names<small>throughout</small></b><span>One decision-maker who approves each stage's checks, acceptance and changes</span></div>
+      <div><b>You or your office<small>before the proof step</small></b><span>About 30 minutes on a call to create the accounts in the firm's name</span></div>
+      <div><b>Controller<small>proof step</small></b><span>A few questions through Nathan, and one test import with written instructions, about 15 minutes</span></div>
+      <div><b>Microsoft 365 administrator<small>proof step</small></b><span>Under an hour to let staff sign in to the platform with their Microsoft 365 accounts</span></div>
+      <div><b>Testers<small>every stage</small></b><span>Real use of each stage during its 10-business-day testing window</span></div>
+      <div><b>Project managers<small>stage 2</small></b><span>A check of their own projects once loaded</span></div>
+      <div><b>Everyone<small>stage 4</small></b><span>Timesheets each week</span></div>
+    </div>
+    <p class="foot">If something needed is more than a week late, the affected stage pauses and its dates move by the same amount. Nothing else changes.</p>
+  </div></section>
+
+  <section class="panel" data-b="17"><div class="sheet">
+    <p class="sheet-tag"><span>Security</span><span>Checked at every step</span></p>
+    <div class="kv">
+      <div><span>Every change</span><b>automatic tests</b></div>
+      <div><span>Every update we put live</span><b>AI security review</b></div>
+      <div><span>Each stage</span><b>a full security review</b></div>
+      <div><span>Outside security test</span><b>optional, recommended; you choose and pay the firm</b></div>
+    </div>
+    <ul style="margin-top:12px">
+      <li>Cost, rate and profit figures only reach people whose access level allows it</li>
+      <li>When someone leaves, their access is switched off in one step</li>
+      <li>A test copy of your data, with names, contact details and rates scrambled, where every change is tried first</li>
+      <li>Nightly encrypted backups at a second company, locked against deletion</li>
+    </ul>
+    <p class="foot">Never in the platform: your ledger, payroll, taxes, payments, bank details and Social Security numbers.</p>
+    <p class="foot">All of this is planned; each item is confirmed and dated before your real data goes in.</p>
+  </div></section>
+
+  <section class="panel" data-b="18"><div class="sheet">
+    <p class="sheet-tag"><span>Yours</span><span>From day one</span></p>
+    <ul>
+      <li>Every account in the firm's name: hosting, backups, the email service, the platform's Microsoft sign-in setup and the web address</li>
+      <li>The code moves to an online code store in the firm's name. As each stage is paid, ownership of its code is signed over to Schorr in writing</li>
+    </ul>
+    <h4 class="gap">Warranty</h4>
+    <p>Each stage is covered until it has been used for two month-end closes, or until the overlap period ends, whichever is later. Anything that fails the agreed checks is fixed at no cost.</p>
+    <div class="lane" style="margin-top:12px"><b>Care</b><p>Fixes for anything broken, security updates, and we watch the backups and the alerts that warn us if the platform goes down or shows errors.</p></div>
+    <div class="lane"><b>Care and improve</b><p>Everything in Care, plus a set number of hours each month for improvements from your change list.</p></div>
+    <p class="foot">Monthly plans; amounts agreed together.</p>
+  </div></section>
+
+  <header id="bar"><span class="nm">Schorr Architects<span>Platform plan</span></span></header>
+  <div id="hint">Arrow keys, scroll, or the buttons</div>
+  <div id="ticks" aria-hidden="true"></div>
+  <nav id="nav" aria-label="Step through the story">
+    <button type="button" id="prev" aria-label="Previous">&#8249;</button>
+    <span id="count" aria-live="polite">1 / 20</span>
+    <button type="button" id="next" aria-label="Next">&#8250;</button>
+  </nav>
+</div>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = document.getElementById('world');
+  var S = 26, D = 11;
+  function P(x, y, z) { return [(x - y) * S, (x + y) * D - (z || 0) * S]; }
+  function pts(a) { return a.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '); }
+  function add(parent, tag, attrs, text) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    parent.appendChild(n); return n;
+  }
+  function grp(parent, cls, attrs) { var g = add(parent, 'g', attrs || {}); if (cls) g.setAttribute('class', cls); return g; }
+  function box(parent, x, y, z, w, d, h, cls) {
+    var g = grp(parent, 'm ' + (cls || ''));
+    add(g, 'polygon', { points: pts([P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x, y + d, z + h)]), class: 'fl' });
+    add(g, 'polygon', { points: pts([P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x + w, y, z + h)]), class: 'fr' });
+    add(g, 'polygon', { points: pts([P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)]), class: 'ft' });
+    return g;
+  }
+  function quad(parent, x, y, z, w, d, attrs) {
+    attrs = attrs || {}; attrs.points = pts([P(x, y, z), P(x + w, y, z), P(x + w, y + d, z), P(x, y + d, z)]);
+    return add(parent, 'polygon', attrs);
+  }
+  function shadow(parent, x, y, w, d, h) {
+    var k = Math.min(h * .45, 4.5);
+    add(parent, 'polygon', { class: 'shadow', points: pts([P(x, y + d * .2, 0), P(x + w, y + d * .2, 0), P(x + w, y + d + k, 0), P(x - k * .25, y + d + k, 0)]) });
+  }
+  // Labels are always upright screen text placed at a model point.
+  function label(parent, p, str, cls, anchor, dx, dy) {
+    return add(parent, 'text', { x: (p[0] + (dx || 0)).toFixed(1), y: (p[1] + (dy || 0)).toFixed(1), class: cls, 'text-anchor': anchor || 'start' }, str);
+  }
+  function line(parent, a, b, cls) { return add(parent, 'path', { d: 'M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + 'L' + b[0].toFixed(1) + ' ' + b[1].toFixed(1), class: cls }); }
+  function pathOf(list) { return list.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(''); }
+  function mover(parent, cls, r, d, dur, begin, extra) {
+    var c = add(parent, 'circle', { r: r, class: cls });
+    add(c, 'animateMotion', Object.assign({ dur: dur, begin: begin || '0s', repeatCount: 'indefinite', path: d }, extra || {}));
+    return c;
+  }
+  function show(g, beats) { g.setAttribute('data-on', beats); g.classList.add('grp'); return g; }
+
+  var defs = add(svg, 'defs', {});
+  var flt = add(defs, 'filter', { id: 'soft', x: '-20%', y: '-20%', width: '140%', height: '140%' });
+  add(flt, 'feGaussianBlur', { stdDeviation: 6 });
+  var cam = grp(svg, '', { id: 'cam' });
+
+  // Ground: a quiet site plan with a 2-unit grid.
+  var ground = grp(cam, '');
+  quad(ground, -34, -12, 0, 70, 42, { class: 'groundplane' });
+  for (var gx = -34; gx <= 36; gx += 2) line(ground, P(gx, -12, 0), P(gx, 30, 0), 'gridline');
+  for (var gy = -12; gy <= 30; gy += 2) line(ground, P(-34, gy, 0), P(36, gy, 0), 'gridline');
+
+  // ---------- The acceptance route (beat 14): numbered posts; the words are on the sheet ----------
+  var acc = show(grp(cam, ''), '13');
+  var AY = 26, AX = function (k) { return -26 + k * 3.2; };
+  add(acc, 'path', { d: pathOf([0, 1, 2, 3, 4, 5, 6, 7].map(function (k) { return P(AX(k), AY, 0); })), class: 'route' });
+  for (var k8 = 0; k8 < 8; k8++) {
+    shadow(acc, AX(k8) - .35, AY - .35, .7, .7, 1.6);
+    box(acc, AX(k8) - .35, AY - .35, 0, .7, .7, k8 === 4 ? 2.2 : 1.6, k8 === 4 ? 'post' : '');
+    label(acc, P(AX(k8), AY, k8 === 4 ? 2.2 : 1.6), String(k8 + 1), k8 === 4 ? 'l-num l-teal' : 'l-num', 'middle', 0, -12);
+  }
+  var a3 = P(AX(3), AY, 1.7), a2 = P(AX(2), AY, 1.7), apeak = P((AX(2) + AX(3)) / 2, AY, 5.2);
+  add(acc, 'path', { d: 'M' + a3[0] + ' ' + a3[1] + 'Q' + apeak[0] + ' ' + apeak[1] + ' ' + a2[0] + ' ' + a2[1], class: 'route dash', style: 'stroke: var(--mag); stroke-width: 1.4' });
+  var walk = [0, 1, 2, 3, 4, 5, 6, 7].map(function (k) { return P(AX(k), AY, .5); }), vals = [];
+  walk.forEach(function (p) { vals.push(p); vals.push(p); });
+  var am = add(acc, 'circle', { r: 6, class: 'dot-m' });
+  add(am, 'animateMotion', { dur: '14s', repeatCount: 'indefinite', path: pathOf(vals), keyPoints: vals.map(function (v, i) { return (i / (vals.length - 1)).toFixed(3); }).join(';'), keyTimes: vals.map(function (v, i) { return (i / (vals.length - 1)).toFixed(3); }).join(';'), calcMode: 'linear' });
+
+  // ---------- Behind the building: test copy and the backup vault ----------
+  var test = show(grp(cam, ''), '18,19');
+  for (var tf = 0; tf < 4; tf++) box(test, -15, -3, tf * 1.4, 8, 6, 1.4, 'ghost');
+  label(test, P(-11, -3, 6.4), 'Test copy', 'l-name', 'middle', 0, -20);
+  label(test, P(-11, -3, 6.4), 'names, contacts, rates scrambled', 'l-sub', 'middle', 0, -5);
+  var vault = show(grp(cam, ''), '18,19');
+  add(vault, 'path', { d: pathOf([P(10, 2, .05), P(15.5, 2, .05), P(15.5, -3.5, .05)]), class: 'route dash' });
+  mover(vault, 'dot-t', 4, pathOf([P(10, 2, .3), P(15.5, 2, .3), P(15.5, -3.5, .3)]), '5s');
+  shadow(vault, 14, -7.5, 3.5, 3.5, 2.2);
+  box(vault, 14, -7.5, 0, 3.5, 3.5, 2.2, 'dark');
+  label(vault, P(15.75, -7.5, 2.2), 'Second company', 'l-name', 'middle', 40, -30);
+  label(vault, P(15.75, -7.5, 2.2), 'nightly encrypted backups', 'l-sub', 'middle', 40, -15);
+
+  // ---------- The accounting building (stage 5) ----------
+  var acct = show(grp(cam, ''), '9,19');
+  var routes = show(grp(acct, ''), '9');
+  add(routes, 'path', { d: pathOf([P(10, 1.6, .03), P(24, 1.6, .03)]), class: 'route' });
+  add(routes, 'path', { d: pathOf([P(10, 5.4, .03), P(24, 5.4, .03)]), class: 'route' });
+  ['0s', '1.2s', '2.4s'].forEach(function (b) { mover(routes, 'dot-t', 4, pathOf([P(10.4, 1.6, .3), P(16.2, 1.6, .3)]), '3.6s', b); });
+  var fileOut = add(routes, 'g', {}); box(fileOut, -.9, -.6, 0, 1.8, 1.2, .35, 'slab');
+  var fo = P(16.6, 1.6, .05), ft2 = P(23.4, 1.6, .05);
+  add(fileOut, 'animateTransform', { attributeName: 'transform', type: 'translate', dur: '7.2s', repeatCount: 'indefinite',
+    values: [fo, fo, ft2, ft2, fo].map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(';'), keyTimes: '0;0.45;0.7;0.85;1' });
+  ['0s', '.8s', '1.6s'].forEach(function (b) { mover(routes, 'dot-t', 4.5, pathOf([P(10.4, 5.4, .3), P(23.6, 5.4, .3)]), '2.4s', b); });
+  ['.4s', '1.6s'].forEach(function (b) { mover(routes, 'dot-m', 4.5, pathOf([P(23.6, 5.4, .3), P(10.4, 5.4, .3)]), '4.8s', b); });
+  shadow(acct, 24, 0, 6, 6, 5);
+  box(acct, 24, 0, 0, 6, 6, 5, '');
+  for (var af = 1; af < 4; af++) line(acct, P(24, 6, af * 1.25), P(30, 6, af * 1.25), 'gridline');
+  label(acct, P(27, 0, 5), 'Your accounting software', 'l-name', 'middle', 0, -24);
+  label(acct, P(27, 0, 5), 'your books stay here', 'l-sub', 'middle', 0, -9);
+  var rl = show(grp(acct, ''), '9');
+  label(rl, P(17, 1.6, 0), 'Sage 50: one file a month', 'l-name', 'middle', 0, -46);
+  label(rl, P(17, 5.4, 0), 'QuickBooks Online: automatic', 'l-name l-mag', 'middle', 0, 40);
+
+  // ---------- The main building ----------
+  var bld = grp(cam, '');
+  var BW = 10, BDp = 8, FH = 1.7, Z0 = 1;
+  shadow(bld, 0, 0, BW, BDp, 12);
+  var annex = show(grp(bld, ''), '2,11,19');
+  box(annex, -4.6, 4.2, 0, 4, 3.8, 2.2, 'ghost');
+  label(annex, P(-2.6, 8, 2.2), 'Task app', 'l-name', 'end', -6, 8);
+  label(annex, P(-2.6, 8, 2.2), 'optional add-on', 'l-sub', 'end', -6, 23);
+  box(bld, 0, 0, 0, BW, BDp, Z0, 'found');
+  var glow = show(grp(bld, 'glow pulse'), '3');
+  box(glow, -.25, -.25, 0, BW + .5, BDp + .5, Z0 + .1, '');
+  box(bld, 4, 3, 0, 2, 2, 12.6, 'core');
+  var ghosts = grp(bld, '', { id: 'ghostfloors' });
+  for (var gf = 0; gf < 6; gf++) box(ghosts, 0, 0, Z0 + gf * FH, BW, BDp, FH, 'ghost');
+  var floors = grp(bld, '', { id: 'floors' }), floorEls = [];
+  function floorGeo(g, z) { box(g, 0, 0, z, BW, BDp, .26, 'slab'); box(g, .35, .35, z + .26, BW - .7, BDp - .7, FH - .26, 'glass'); }
+  for (var f = 0; f < 6; f++) {
+    var fg = grp(floors, 'floor' + (f === 0 ? ' f1' : ''));
+    fg.style.setProperty('--d', (.15 + f * .22).toFixed(2) + 's');
+    floorGeo(fg, Z0 + f * FH); floorEls.push(fg);
+  }
+  var roof = grp(floors, 'floor'); roof.style.setProperty('--d', '1.5s');
+  box(roof, 0, 0, Z0 + 6 * FH, BW, BDp, .3, 'slab'); floorEls.push(roof);
+  var later = show(grp(bld, ''), '2,11,19');
+  box(later, .6, .6, Z0 + 6 * FH + .3, BW - 1.2, BDp - 1.2, 1.5, 'ghost');
+  var door = show(grp(bld, ''), '16,17,18,19');
+  add(door, 'polygon', { points: pts([P(4.3, 8, 0), P(5.7, 8, 0), P(5.7, 8, 1.6), P(4.3, 8, 1.6)]), style: 'fill: var(--found-l)' });
+
+  // Floor labels on leader lines, upright.
+  var flab = show(grp(cam, '', { id: 'flab' }), '2,11');
+  var NAMES = ['Projects, clients and billing', 'Firm-wide and the forecast', 'Budget builder', 'Timesheets and profit', 'Accounting connection', 'Pursuits and RFQs'];
+  var LX = P(BW, 0, 0)[0] + 46, labEls = {};
+  var fpG = grp(flab, 'fl'), fp = P(BW, BDp / 2, Z0 / 2);
+  line(fpG, fp, [LX - 8, fp[1]], 'leader');
+  label(fpG, [LX, fp[1]], 'Proof step', 'l-name l-teal', 'start', 0, 5);
+  labEls.p = fpG;
+  NAMES.forEach(function (n, i) {
+    var g = grp(flab, 'fl'), a = P(BW, BDp / 2, Z0 + i * FH + FH / 2 + .1);
+    line(g, a, [LX - 8, a[1]], 'leader');
+    add(g, 'text', { x: LX, y: (a[1] + 5).toFixed(1), class: 'l-name' }, '').innerHTML = '<tspan class="l-sub">' + (i + 1) + '</tspan><tspan dx="10">' + n + '</tspan>';
+    labEls[i] = g;
+  });
+  var ltG = grp(flab, 'fl'), lt = P(BW - .6, BDp / 2, Z0 + 6 * FH + 1.2);
+  line(ltG, lt, [LX - 8, lt[1] - 20], 'leader dash');
+  label(ltG, [LX, lt[1] - 20], 'After the first version', 'l-name', 'start', 0, 5);
+  labEls.later = ltG;
+
+  // Stage beats: one short upright tag beside the floor that is lit.
+  var fnum = show(grp(cam, '', { id: 'fnum' }), '3,4,6,7,8,10'), tagEls = {};
+  var tp = P(0, BDp, Z0 / 2), tg = grp(fnum, 'fn');
+  line(tg, [tp[0] - 4, tp[1]], [tp[0] - 26, tp[1]], 'leader');
+  label(tg, tp, 'Proof step', 'l-name l-teal', 'end', -32, 5); tagEls.p = tg;
+  for (var fi = 0; fi < 6; fi++) {
+    var q = P(0, BDp, Z0 + fi * FH + FH / 2), g2 = grp(fnum, 'fn');
+    line(g2, [q[0] - 4, q[1]], [q[0] - 26, q[1]], 'leader');
+    label(g2, q, 'Stage ' + (fi + 1), 'l-name l-teal', 'end', -32, 5); tagEls[fi] = g2;
+  }
+
+  // ---------- Beat 1: everything connects to one database ----------
+  var hub = show(grp(cam, ''), '0');
+  var HUB = ['Clients', 'Projects', 'Fees', 'Budgets', 'Hours', 'Invoices', 'Forecast', 'RFQs'];
+  var hubBack = show(document.createElementNS(NS, 'g'), '0'); cam.insertBefore(hubBack, bld);
+  var hubLinks = grp(hubBack, ''), backPads = grp(hubBack, ''), frontPads = grp(hub, '');
+  HUB.map(function (n, i) {
+    var a = -Math.PI * .75 + Math.PI / 8 + i * Math.PI / 4;
+    return { n: n, x: 5 + Math.cos(a) * 11.5, y: 4 + Math.sin(a) * 9.5 };
+  }).sort(function (p, q) { return (p.x + p.y) - (q.x + q.y); }).forEach(function (h, i) {
+    var pads = (h.x + h.y) < 9 ? backPads : frontPads;
+    line(hubLinks, P(h.x, h.y, .02), P(5, 4, .02), 'link');
+    mover(hubLinks, h.n === 'Invoices' ? 'dot-m' : 'dot-t', 3.5, pathOf([P(h.x, h.y, .2), P(5, 4, .2)]), (2.6 + i * .17).toFixed(2) + 's', (i * .4).toFixed(1) + 's');
+    shadow(pads, h.x - 1.6, h.y - 1.2, 3.2, 2.4, .5);
+    box(pads, h.x - 1.6, h.y - 1.2, 0, 3.2, 2.4, .4, '');
+    label(frontPads, P(h.x, h.y, .4), h.n, 'l-hub', 'middle', 0, -24);
+  });
+  label(hub, P(5, 4, 12.6), 'One database', 'l-big l-teal', 'middle', 0, -34);
+  label(hub, P(5, 4, 12.6), 'for the whole firm', 'l-sub', 'middle', 0, -16);
+
+  // ---------- The workbook: a loose stack of sheets beside the site (beats 2 and 15) ----------
+  var sheets = show(grp(cam, ''), '1,14');
+  shadow(sheets, -18, 1, 9, 6, 1);
+  for (var sh = 0; sh < 7; sh++) box(sheets, -18 + sh * .28, 1.4 - sh * .2, sh * .16, 9, 6, .1, 'slab');
+  var stz = 7 * .16, sx0 = -18 + 6 * .28, sy0 = 1.4 - 6 * .2;
+  line(sheets, P(sx0, sy0 + 1.05, stz), P(sx0 + 9, sy0 + 1.05, stz), 'gridline');
+  for (var r7 = 0; r7 < 7; r7++) line(sheets, P(sx0, sy0 + 1.05 + (r7 + 1) * .68, stz), P(sx0 + 9, sy0 + 1.05 + (r7 + 1) * .68, stz), 'gridline');
+  line(sheets, P(sx0 + 5.4, sy0 + 1.05, stz), P(sx0 + 5.4, sy0 + 6, stz), 'gridline');
+  line(sheets, P(sx0 + 7.2, sy0 + 1.05, stz), P(sx0 + 7.2, sy0 + 6, stz), 'gridline');
+  [[0, 1.5], [1, 1.5], [2, .9], [0, 3.3], [1, 1.1]].forEach(function (c, i) {
+    var col = i < 3 ? 5.55 : 7.35, yy = sy0 + 1.05 + c[0] * .68 + .14;
+    quad(sheets, sx0 + col, yy, stz + .001, c[1], .4, { class: 'bar-soft' });
+  });
+  var pins = show(grp(cam, ''), '1');
+  var PINS = [['Unwieldy', -15.6, 1.6], ['Only your projects', -12.5, 1.4], ['No hourly billing', -9.2, 3.2], ['Quick job set-up, wanted', -13.8, 4.6], ['Months ahead, wanted', -10.4, 5.6]];
+  var colX = P(sx0 + 9, sy0, stz)[0] + 70, colY = P(sx0 + 9, sy0, stz)[1] - 70;
+  PINS.forEach(function (p, i) {
+    var base = P(p[1], p[2], stz), ly = colY + i * 40;
+    add(pins, 'path', { d: 'M' + base[0].toFixed(1) + ' ' + base[1].toFixed(1) + 'L' + (colX - 40) + ' ' + ly + 'L' + (colX - 10) + ' ' + ly, class: 'leader' });
+    add(pins, 'circle', { cx: base[0], cy: base[1], r: 3, class: 'dot-m' });
+    label(pins, [colX, ly], p[0], 'l-name l-mag', 'start', 0, 5);
+  });
+  // The overlap: figures brought in from the sheet each month, side by side.
+  var ov = show(grp(cam, ''), '14');
+  add(ov, 'path', { d: pathOf([P(-9.5, 3.5, .4), P(0, 4, .4)]), class: 'route dash' });
+  ['0s', '1.5s', '3s'].forEach(function (b) { mover(ov, 'dot-t', 4.5, pathOf([P(-9.5, 3.5, .5), P(0, 4, .5)]), '4.5s', b); });
+  label(ov, P(-13.5, 1.4, 1.2), 'Your spreadsheet', 'l-name', 'middle', 0, -34);
+  label(ov, P(-13.5, 1.4, 1.2), 'the official record', 'l-sub', 'middle', 0, -19);
+  label(ov, P(5, 0, 11.5), 'The platform', 'l-name l-teal', 'middle', 0, -30);
+  label(ov, P(5, 0, 11.5), 'runs alongside it', 'l-sub', 'middle', 0, -15);
+
+  // ---------- Stage 1, the example month: floor one slides out ----------
+  var f1 = grp(cam, '', { id: 'f1slid' });
+  var slideTo = [P(0, 10, 0)[0] - P(0, 0, 0)[0], P(0, 10, 0)[1] - P(0, 0, 0)[1]];
+  f1.style.setProperty('--sx', slideTo[0] + 'px'); f1.style.setProperty('--sy', slideTo[1] + 'px');
+  floorGeo(f1, Z0);
+  var f1l = show(grp(cam, ''), '5');
+
+  // ---------- Stage 6: alerts arriving at the top floor ----------
+  var alerts = show(grp(cam, ''), '10');
+  var zt = Z0 + 5 * FH + .85;
+  add(alerts, 'path', { d: pathOf([P(22, 4, zt), P(10, 4, zt)]), class: 'route dash' });
+  ['0s', '1s', '2s'].forEach(function (b) { mover(alerts, 'dot-m', 4.5, pathOf([P(22, 4, zt), P(10.2, 4, zt)]), '3s', b); });
+  label(alerts, P(22, 4, zt), 'Alert emails', 'l-name l-mag', 'middle', 0, -16);
+
+  // ---------- Changes: three kinds, set in front of the building ----------
+  var ch = show(grp(cam, ''), '15');
+  [['Clarification', 'no charge', .4], ['Swap', 'logged', 3.8], ['Addition', 'priced in writing', 7.2]].forEach(function (c, i) {
+    shadow(ch, c[2], 11, 2.6, 2.2, .5);
+    box(ch, c[2], 11, 0, 2.6, 2.2, i === 2 ? .9 : .5, i === 2 ? 'post' : '');
+    label(ch, P(c[2] + 1.3, 12.1, i === 2 ? .9 : .5), c[0], i === 2 ? 'l-name l-mag' : 'l-name', 'middle', 0, 40);
+  });
+
+  // ---------- Your team: people as dots, walking in ----------
+  var ppl = show(grp(cam, ''), '16');
+  add(ppl, 'path', { d: pathOf([P(5, 22, .03), P(5, 8, .03)]), class: 'route' });
+  ['0s', '1.1s', '2.2s', '3.3s', '4.4s'].forEach(function (b, i) {
+    var c = mover(ppl, i === 0 ? 'dot-m' : 'dot-t', 5.5, pathOf([P(5 + (i % 2 ? .5 : -.5), 22, .4), P(5, 8.6, .4)]), '5.5s', b);
+    add(c, 'animate', { attributeName: 'opacity', dur: '5.5s', begin: b, repeatCount: 'indefinite', values: '0;1;1;0', keyTimes: '0;0.1;0.85;1' });
+  });
+
+  // ---------- Security: the entrance, with two gates ----------
+  var gate = show(grp(cam, ''), '17');
+  add(gate, 'path', { d: pathOf([P(5, 24, .03), P(5, 8, .03)]), class: 'route' });
+  function gateAt(y, cls) { box(gate, 3.5, y, 0, .3, .3, 2.6, cls); box(gate, 6.3, y, 0, .3, .3, 2.6, cls); box(gate, 3.5, y, 2.6, 3.1, .3, .3, cls); }
+  gateAt(17, ''); gateAt(13, 'post');
+  label(gate, P(3.4, 17, 2.9), 'Password', 'l-name', 'end', -14, 4);
+  label(gate, P(3.4, 17, 2.9), 'step one', 'l-sub', 'end', -14, 19);
+  label(gate, P(3.4, 13, 2.9), 'Second step', 'l-name l-teal', 'end', -14, 4);
+  label(gate, P(3.4, 13, 2.9), 'a code, or an app approval', 'l-sub', 'end', -14, 19);
+  var A = [P(5, 24, .4), P(5, 17.6, .4), P(5, 17.6, .4), P(5, 13.6, .4), P(5, 13.6, .4), P(5, 8.4, .4)];
+  var dA = add(gate, 'circle', { r: 6, class: 'dot-t' });
+  add(dA, 'animateMotion', { dur: '7s', repeatCount: 'indefinite', path: pathOf(A), keyPoints: '0;0.2;0.4;0.6;0.8;1', keyTimes: '0;0.25;0.35;0.5;0.68;0.9', calcMode: 'linear' });
+  add(dA, 'animate', { attributeName: 'opacity', dur: '7s', repeatCount: 'indefinite', values: '1;1;0;0', keyTimes: '0;0.9;0.95;1' });
+  var B = [P(4.1, 24, .4), P(4.1, 17.6, .4), P(4.1, 17.6, .4), P(4.1, 14.2, .4)];
+  var dB = add(gate, 'circle', { r: 6, class: 'dot-m' });
+  add(dB, 'animateMotion', { dur: '7s', repeatCount: 'indefinite', begin: '1.2s', path: pathOf(B), keyPoints: '0;0.33;0.66;1', keyTimes: '0;0.3;0.42;0.6', calcMode: 'linear' });
+  add(dB, 'animate', { attributeName: 'opacity', dur: '7s', begin: '1.2s', repeatCount: 'indefinite', values: '1;1;0;0', keyTimes: '0;0.7;0.85;1' });
+
+  // ---------- The flat timeline chart on the sheet ----------
+  (function () {
+    var c = document.querySelector('.tl-chart');
+    var X0 = 128, X1 = 592, MW = (X1 - X0) / 13, tx = function (m) { return X0 + m * MW; };
+    var MON = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    MON.forEach(function (m, i) {
+      add(c, 'line', { x1: tx(i), x2: tx(i), y1: 38, y2: 206, class: 'ax' });
+      add(c, 'text', { x: tx(i) + 3, y: 16 }, m);
+    });
+    add(c, 'text', { x: tx(0) + 3, y: 30 }, '2026'); add(c, 'text', { x: tx(1) + 3, y: 30 }, '2027');
+    var rows = [['Proof step', [[.25, .6, 'b-t'], [.6, .75, 'b-s']]], ['Stage 1, billing', [[.6, 2.1, 'b-t'], [2.1, 3.1, 'b-s']]],
+      ['Overlap', [[2.1, 3.1, 'b-o'], [3.1, 5.1, 'b-o'], [5.1, 9.1, 'b-o']]], ['Stages 2 to 6', [[2.1, 7.1, 'b-t'], [7.1, 8.1, 'b-s']]],
+      ['First version', [[7.1, 8.1, 'b-m']]]];
+    rows.forEach(function (r, i) {
+      var y = 60 + i * 34;
+      add(c, 'text', { x: 0, y: y + 4, class: 'rn' }, r[0]);
+      r[1].forEach(function (b, k) {
+        var e = add(c, 'rect', { x: tx(b[0]).toFixed(1), y: y - 7, width: (tx(b[1]) - tx(b[0])).toFixed(1), height: 14, rx: 3, class: b[2] + ' grow' });
+        e.style.setProperty('--d', (i * .18 + k * .25).toFixed(2) + 's');
+      });
+    });
+  })();
+
+  // ---------- Panels: beside the model on wide screens, under the text on narrow ones ----------
+  var texts = Array.prototype.slice.call(document.querySelectorAll('.txt')), n = texts.length;
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var panelFor = {}; panels.forEach(function (p) { panelFor[p.getAttribute('data-b')] = p; });
+  var narrow = window.matchMedia('(max-width: 900px)');
+  var stage = document.getElementById('stage');
+  function placePanels() {
+    panels.forEach(function (p) {
+      var b = p.getAttribute('data-b');
+      if (narrow.matches) { p.classList.add('inrail'); texts[b].appendChild(p); }
+      else { p.classList.remove('inrail'); stage.appendChild(p); }
+    });
+  }
+  placePanels();
+
+  // ---------- Camera ----------
+  // Each framing: model-space boxes [x0, y0, z0, x1, y1, z1] to keep in view, plus room in screen pixels [left, top, right, bottom].
+  var B_BLD = [-1, 0, 0, 10, 8, 12.2], B_LAB = [10, 0, 0, 22, 0, 12.5], ST = { b: [B_BLD], pad: [120, 50, 40, 40] };
+  var PINBOX = [colX - 40, colY - 18, colX + 190, colY + 4 * 40 + 10];
+  var FRAMES = [
+    { b: [[-8, -7, 0, 18, 15, .5], [4, 3, 0, 6, 5, 13.5]], pad: [50, 80, 50, 40] },
+    { b: [[-18.5, -.2, 0, -8, 7.6, 1.2]], s: [PINBOX], pad: [40, 60, 40, 50] },
+    { b: [[-4.6, 0, 0, 10, 8, 13.6], B_LAB], pad: [170, 60, 40, 40] },
+    ST,
+    ST,
+    { b: [[0, 10, 0, 10, 18, 2.8], [0, 0, 0, 10, 8, 11.5]], pad: [40, 50, 40, 70] },
+    ST,
+    ST,
+    ST,
+    { b: [[9, 0, 0, 30, 6, 5]], pad: [40, 80, 40, 80] },
+    { b: [B_BLD, [22, 4, 9, 23, 4, 10]], pad: [120, 50, 40, 40] },
+    { b: [[-4.6, 0, 0, 10, 8, 13.6], B_LAB], pad: [170, 60, 30, 40] },
+    { b: [[-1, 0, 0, 10, 8, 12.6]], pad: [30, 60, 30, 40] },
+    { b: [[-27, 25, 0, -2, 27, 3]], pad: [30, 60, 30, 40] },
+    { b: [[-18.5, -.2, 0, 10, 8, 12]], pad: [40, 80, 40, 40] },
+    { b: [[0, 0, 0, 10, 13.5, 12]], pad: [40, 50, 40, 70] },
+    { b: [[0, 0, 0, 10, 22, 12]], pad: [40, 50, 40, 40] },
+    { b: [[1, 7, 0, 9, 24, 3.2]], pad: [210, 60, 40, 60] },
+    { b: [[-15, -7.5, 0, 17.5, 8, 12]], pad: [40, 80, 70, 40] },
+    { b: [[-15, -7.5, 0, 30, 8, 13.6]], pad: [40, 80, 40, 40] }
+  ];
+  var vb = null, anim = null;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function panelRoom(i) {
+    var p = panelFor[i];
+    if (!p || narrow.matches) return 0;
+    return p.offsetWidth + 48;
+  }
+  function target(i) {
+    var f = FRAMES[i], xs = [], ys = [];
+    f.b.forEach(function (q) {
+      [q[0], q[3]].forEach(function (x) { [q[1], q[4]].forEach(function (y) { [q[2], q[5]].forEach(function (z) { var s = P(x, y, z); xs.push(s[0]); ys.push(s[1]); }); }); });
+    });
+    (f.s || []).forEach(function (r) { xs.push(r[0], r[2]); ys.push(r[1], r[3]); });
+    var bx0 = Math.min.apply(0, xs), bx1 = Math.max.apply(0, xs), by0 = Math.min.apply(0, ys), by1 = Math.max.apply(0, ys);
+    var r = svg.getBoundingClientRect(), W = r.width || 1, H = r.height || 1;
+    var room = panelRoom(i), Wa = Math.max(160, W - room);
+    var p = f.pad, aw = Math.max(80, Wa - p[0] - p[2]), ah = Math.max(80, H - p[1] - p[3]);
+    var s = Math.max((bx1 - bx0) / aw, (by1 - by0) / ah);
+    var vx = bx0 - (p[0] + (aw - (bx1 - bx0) / s) / 2) * s;
+    var vy = by0 - (p[1] + (ah - (by1 - by0) / s) / 2) * s;
+    return [vx, vy, W * s, H * s];
+  }
+  function setVB(v) { vb = v; svg.setAttribute('viewBox', v.map(function (q) { return q.toFixed(1); }).join(' ')); }
+  function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function fly(i) {
+    var to = target(i);
+    if (!vb || reduced) { setVB(to); return; }
+    var from = vb.slice(), t0 = performance.now(), dur = 1700;
+    if (anim) cancelAnimationFrame(anim);
+    (function step(now) {
+      var t = Math.min(1, (now - t0) / dur), e = ease(t);
+      setVB(from.map(function (a, k) { return a + (to[k] - a) * e; }));
+      if (t < 1) anim = requestAnimationFrame(step); else anim = null;
+    })(t0);
+  }
+
+  // ---------- Beats ----------
+  // Which floor and which floor label stand out in each beat.
+  var FOCUS = { 3: { label: 'p' }, 4: { floor: 0, label: 0 }, 5: { floor: 0 }, 6: { floor: 1, label: 1 }, 7: { floor: 2, label: 2 }, 8: { floor: 3, label: 3 },
+    9: { floor: 4 }, 10: { floor: 5, label: 5 }, 11: { label: 'later' } };
+  var BUILT = function (i) { return i >= 2 && i !== 3; };
+  var cur = -1, lock = 0;
+  var ticks = document.getElementById('ticks');
+  for (var k = 0; k < n; k++) ticks.appendChild(document.createElement('i'));
+  var groups = Array.prototype.slice.call(svg.querySelectorAll('[data-on]'));
+  function showBeat(i) {
+    i = Math.max(0, Math.min(n - 1, i));
+    if (i === cur) return;
+    cur = i;
+    texts.forEach(function (t, k) { t.classList.toggle('on', k === i); t.scrollTop = 0; });
+    panels.forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-b') === String(i)); });
+    groups.forEach(function (g) { g.classList.toggle('on', g.getAttribute('data-on').split(',').indexOf(String(i)) > -1); });
+    var fo2 = FOCUS[i] || {};
+    svg.classList.toggle('built', BUILT(i));
+    svg.classList.toggle('b0', i === 0);
+    svg.classList.toggle('open1', i === 5);
+    svg.classList.toggle('ffocus', fo2.floor != null);
+    svg.classList.toggle('lfocus', fo2.label != null);
+    floorEls.forEach(function (el, k) { el.classList.toggle('hl', k === fo2.floor); });
+    Object.keys(labEls).forEach(function (key) { labEls[key].classList.toggle('hl', String(key) === String(fo2.label)); });
+    Object.keys(tagEls).forEach(function (key) { tagEls[key].classList.toggle('hl', String(key) === String(fo2.label)); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + n;
+    document.getElementById('prev').disabled = i === 0;
+    document.getElementById('next').disabled = i === n - 1;
+    ticks.querySelectorAll('i').forEach(function (t, k) { t.classList.toggle('on', k === i); });
+    fly(i);
+    try { history.replaceState(null, '', '#b' + (i + 1)); } catch (e) {}
+  }
+  function step(d) { var now = Date.now(); if (now - lock < 900) return; lock = now; showBeat(cur + d); }
+  document.getElementById('prev').addEventListener('click', function () { showBeat(cur - 1); });
+  document.getElementById('next').addEventListener('click', function () { showBeat(cur + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) > -1) { e.preventDefault(); showBeat(cur + 1); }
+    if (['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); showBeat(cur - 1); }
+  });
+  // The wheel steps beats, except while a long text or sheet is being scrolled.
+  window.addEventListener('wheel', function (e) {
+    var sc = e.target && e.target.closest && e.target.closest('.txt, .sheet');
+    if (sc && sc.scrollHeight > sc.clientHeight + 2) {
+      var atEnd = e.deltaY > 0 ? sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2 : sc.scrollTop <= 0;
+      if (!atEnd) return;
+    }
+    if (Math.abs(e.deltaY) > 18) step(e.deltaY > 0 ? 1 : -1);
+  }, { passive: true });
+  var ty = null, tx0 = null;
+  window.addEventListener('touchstart', function (e) { ty = e.touches[0].clientY; tx0 = e.touches[0].clientX; }, { passive: true });
+  window.addEventListener('touchend', function (e) {
+    if (ty === null) return;
+    var dy = ty - e.changedTouches[0].clientY, dx = tx0 - e.changedTouches[0].clientX;
+    var inRail = e.target && e.target.closest && e.target.closest('#rail');
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx > 0 ? 1 : -1);
+    else if (!inRail && Math.abs(dy) > 40) step(dy > 0 ? 1 : -1);
+    ty = null;
+  }, { passive: true });
+  function onResize() { placePanels(); if (cur > -1) setVB(target(cur)); }
+  window.addEventListener('resize', onResize);
+  if (narrow.addEventListener) narrow.addEventListener('change', onResize);
+  window.addEventListener('hashchange', function () { var m = /^#b(\d+)$/.exec(location.hash); if (m) showBeat(Number(m[1]) - 1); });
+  if (reduced && svg.pauseAnimations) svg.pauseAnimations();
+  var m0 = /^#b(\d+)$/.exec(location.hash);
+  showBeat(m0 ? Number(m0[1]) - 1 : 0);
+})();
+</script>
+
+</body></html>
